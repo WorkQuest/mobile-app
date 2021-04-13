@@ -1,0 +1,8 @@
+{
+  "loginPage": {
+    "welcomeTo": "Welcome to\nWorkQuest",
+    "pleaseSignIn": "Please sign in",
+    "username": "Username",
+    "password": "Password"
+  }
+}
