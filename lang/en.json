@@ -3,6 +3,17 @@
     "welcomeTo": "Welcome to\nWorkQuest",
     "pleaseSignIn": "Please sign in",
     "username": "Username",
-    "password": "Password"
+    "password": "Password",
+    "login": "Login",
+    "doNotHaveAccountText": "Don't have an account?",
+    "signUp": "Sign Up",
+    "forgotPasswordText": "Forgot your password?"
+  },
+  "signUpPage": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "password": "Password",
+    "repeatPassword": "Repeat password"
   }
 }
