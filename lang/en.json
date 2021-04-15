@@ -1,19 +1,20 @@
 {
-  "loginPage": {
-    "welcomeTo": "Welcome to\nWorkQuest",
-    "pleaseSignIn": "Please sign in",
-    "username": "Username",
+  "auth": {
     "password": "Password",
-    "login": "Login",
-    "doNotHaveAccountText": "Don't have an account?",
-    "signUp": "Sign Up",
-    "forgotPasswordText": "Forgot your password?"
-  },
-  "signUpPage": {
-    "firstName": "First name",
-    "lastName": "Last name",
-    "email": "Email",
-    "password": "Password",
-    "repeatPassword": "Repeat password"
+    "signIn": {
+      "welcomeTo": "Welcome to\nWorkQuest",
+      "pleaseSignIn": "Please sign in",
+      "username": "Username",
+      "login": "Login",
+      "doNotHaveAccountText": "Don't have an account?",
+      "signUp": "Sign Up",
+      "forgotPasswordText": "Forgot your password?"
+    },
+    "signUp": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "repeatPassword": "Repeat password"
+    }
   }
 }
