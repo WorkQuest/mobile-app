@@ -27,13 +27,18 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  # Network modules
+  dio: ^4.0.0
+
   # State management.
   mobx: ^2.0.1
   flutter_mobx: ^2.0.0
+
   # DI.
   get_it: ^6.1.1
   injectable: ^1.2.2
   provider: ^5.0.0
+
   # Widgets.
   flutter_svg: ^0.21.0+1
 
@@ -49,6 +54,9 @@ dev_dependencies:
 
   # Code generation for getIt
   injectable_generator:
+
+  json_serializable: ^4.1.0
+  freezed: ^0.14.1+2
 
   # Code generation for mobX
   mobx_codegen: ^2.0.1+3

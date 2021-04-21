@@ -1,23 +1,29 @@
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
 import 'package:app/ui/pages/sign_up_page/sign_up_page.dart';
+import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'di/injector.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case SignInPage.routeName:
         return MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (context) => SignInPage(
-            store: SignInStore(),
+          builder: (context) => Provider(
+            create: (context) => getIt.get<SignInStore>(),
+            child: const SignInPage(),
           ),
         );
 
       case SignUpPage.routeName:
         return MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (context) => SignUpPage(),
+          builder: (context) => Provider(
+            create: (context) => getIt.get<SignUpStore>(),
+            child: const SignUpPage(),
+          ),
         );
 
       default:

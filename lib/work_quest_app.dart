@@ -12,7 +12,6 @@ class WorkQuestApp extends StatelessWidget {
     return MaterialApp(
       theme: _theme,
       onGenerateRoute: Routes.generateRoute,
-      initialRoute: SignInPage.routeName,
       localeResolutionCallback: _localeResolutionCallback,
       localizationsDelegates: [
         AppLocalizations.delegate,
@@ -36,8 +35,9 @@ class WorkQuestApp extends StatelessWidget {
 final _theme = ThemeData(
   scaffoldBackgroundColor: Colors.white,
   cupertinoOverrideTheme: CupertinoThemeData(
-    textTheme: CupertinoTextThemeData(),
     barBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: Colors.white,
+    primaryColor: Color(0xFF0083C7),
   ),
   buttonTheme: ButtonThemeData(
     buttonColor: Color(0xFF0083C7),
@@ -67,8 +67,8 @@ final _theme = ThemeData(
       borderRadius: const BorderRadius.all(Radius.circular(6.0)),
       borderSide: BorderSide.none,
     ),
-    contentPadding: const EdgeInsets.all(
-      15.0,
+    contentPadding: const EdgeInsets.symmetric(
+      vertical: 0.0, horizontal: 15.0
     ),
   ),
 );

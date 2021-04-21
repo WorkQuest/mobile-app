@@ -1,0 +1,7 @@
+abstract class IHttpClient {
+
+  Future get({required query, Map<String, dynamic>? queryParameters});
+
+  Future post({required query, Map<String, dynamic>? data});
+
+}

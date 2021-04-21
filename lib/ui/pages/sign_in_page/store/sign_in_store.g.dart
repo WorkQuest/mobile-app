@@ -46,56 +46,13 @@ mixin _$SignInStore on _SignInStore, Store {
     });
   }
 
-  final _$isSuccessAtom = Atom(name: '_SignInStore.isSuccess');
-
-  @override
-  bool get isSuccess {
-    _$isSuccessAtom.reportRead();
-    return super.isSuccess;
-  }
-
-  @override
-  set isSuccess(bool value) {
-    _$isSuccessAtom.reportWrite(value, super.isSuccess, () {
-      super.isSuccess = value;
-    });
-  }
-
-  final _$isLoadingAtom = Atom(name: '_SignInStore.isLoading');
-
-  @override
-  bool get isLoading {
-    _$isLoadingAtom.reportRead();
-    return super.isLoading;
-  }
-
-  @override
-  set isLoading(bool value) {
-    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
-      super.isLoading = value;
-    });
-  }
-
-  final _$errorMessageAtom = Atom(name: '_SignInStore.errorMessage');
-
-  @override
-  String? get errorMessage {
-    _$errorMessageAtom.reportRead();
-    return super.errorMessage;
-  }
-
-  @override
-  set errorMessage(String? value) {
-    _$errorMessageAtom.reportWrite(value, super.errorMessage, () {
-      super.errorMessage = value;
-    });
-  }
-
-  final _$signInAsyncAction = AsyncAction('_SignInStore.signIn');
+  final _$signInWithUsernameAsyncAction =
+      AsyncAction('_SignInStore.signInWithUsername');
 
   @override
   Future<dynamic> signInWithUsername() {
-    return _$signInAsyncAction.run(() => super.signInWithUsername());
+    return _$signInWithUsernameAsyncAction
+        .run(() => super.signInWithUsername());
   }
 
   final _$_SignInStoreActionController = ActionController(name: '_SignInStore');
@@ -125,9 +82,6 @@ mixin _$SignInStore on _SignInStore, Store {
   @override
   String toString() {
     return '''
-isSuccess: ${isSuccess},
-isLoading: ${isLoading},
-errorMessage: ${errorMessage},
 canSignIn: ${canSignIn}
     ''';
   }
