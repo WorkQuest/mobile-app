@@ -85,3 +85,4 @@ app.*.map.json
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 # End of https://www.gitignore.io/api/flutter
+/ios/Runner/keys.swift

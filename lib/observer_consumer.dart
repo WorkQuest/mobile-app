@@ -5,18 +5,26 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
-class ObserverConsumer<T extends IStore> extends StatefulWidget {
+import 'log_service.dart';
+import 'ui/pages/sign_in_page/store/sign_in_store.dart';
+import 'ui/pages/sign_up_page/sign_up_page.dart';
 
-  final Function? onSuccess;
-  final WidgetBuilder builder;
+class ObserverListener<T extends IStore> extends StatefulWidget {
+  final Function() onSuccess;
+  final Function()? onFailure;
+  final Widget child;
 
-  ObserverConsumer({this.onSuccess, required this.builder});
+  ObserverListener({
+    required this.onSuccess,
+    this.onFailure,
+    required this.child,
+  });
 
   @override
-  _ObserverConsumerState createState() => _ObserverConsumerState<T>();
+  _ObserverListenerState createState() => _ObserverListenerState<T>();
 }
 
-class _ObserverConsumerState<T extends IStore> extends State<ObserverConsumer> {
+class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
   late IStore _store;
   late List<ReactionDisposer> _disposers;
 
@@ -27,46 +35,77 @@ class _ObserverConsumerState<T extends IStore> extends State<ObserverConsumer> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  ReactionDisposer get _successReaction {
+    return reaction(
+      (_) => _store.isSuccess,
+      (bool isSuccess) {
+        if (isSuccess) {
+          widget.onSuccess();
+        }
+      },
+    );
+  }
 
-    if (widget.onSuccess != null) {
-      _disposers.add(
-        reaction(
-          (_) => _store.successData,
-          (dynamic? successData) {
-            if (!_store.isSuccess) {
-              return;
-            }
-
-            widget.onSuccess?.call();
-          },
-        ),
-      );
-    }
-
-    _disposers.add(
-      reaction(
-        (_) => _store.errorMessage,
-        (String? message) {
-          if (message == null) {
-            return;
-          }
-
+  ReactionDisposer get _failureReaction {
+    return reaction(
+      (_) => _store.errorMessage,
+      (String? errorMessage) {
+        if (errorMessage != null) {
           showCupertinoDialog(
             context: context,
             barrierDismissible: true,
             builder: (_) {
               return CupertinoAlertDialog(
                 title: Text('Error'),
-                content: Text(message),
+                content: Text(errorMessage),
               );
             },
           );
-        },
-      ),
+        }
+      },
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _disposers.add(_successReaction);
+    _disposers.add(_failureReaction);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
+
+  @override
+  void dispose() {
+    _disposers.forEach((d) => d());
+    super.dispose();
+  }
+}
+
+class ObserverConsumer<T extends IStore> extends StatefulWidget {
+  final List<ReactionDisposer> reactions;
+  final WidgetBuilder builder;
+
+  ObserverConsumer({
+    Key? key,
+    required this.reactions,
+    required this.builder,
+  }) : super(key: key);
+
+  @override
+  _ObserverConsumerState createState() => _ObserverConsumerState<T>();
+}
+
+class _ObserverConsumerState<T extends IStore> extends State<ObserverConsumer> {
+  late List<ReactionDisposer> _disposers;
+
+  @override
+  void initState() {
+    _disposers = widget.reactions;
+    super.initState();
   }
 
   @override

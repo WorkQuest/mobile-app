@@ -3,9 +3,10 @@ import 'package:app/constants.dart';
 import 'package:app/log_service.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
-import 'package:app/ui/widgets/action_button.dart';
+import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 const _padding = const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0);
@@ -17,7 +18,6 @@ class SignUpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final store = context.read<SignUpStore>();
 
     return Scaffold(
@@ -86,22 +86,46 @@ class SignUpPage extends StatelessWidget {
             ),
             Padding(
               padding: _padding.copyWith(top: 30.0),
-              child: ObserverConsumer<SignUpStore>(
+              child: ObserverListener<SignUpStore>(
                 onSuccess: () {
-                  println('SignUpPage => onSuccess called.');
-                  //Navigator.pushNamed(context, SignUpPage.routeName);
+                  println("SignUpPage => SignUp success!");
                 },
-                builder: (context) {
-                  println('SignUpPage => builder called.');
-                  return ActionButton(
-                    titleLangKey: "Create Account",
-                    isEnable: store.canSignUp,
-                    isLoading: store.isLoading,
-                    onPressed: store.register,
-                  );
-                },
+                child: Observer(
+                  builder: (context) {
+                    return ElevatedButton(
+                      onPressed: store.canSignUp ? store.register : null,
+                      child: store.isLoading
+                          ? PlatformActivityIndicator()
+                          : Text(
+                              context.translate(AuthLangKeys.login),
+                            ),
+                    );
+                  },
+                ),
               ),
-            )
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: Row(
+                children: [
+                  Text(
+                    context.translate(AuthLangKeys.alreadyHaveAccount),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Text(
+                        context.translate(AuthLangKeys.signIn),
+                        style: TextStyle(
+                          color: Color(0xFF0083C7),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

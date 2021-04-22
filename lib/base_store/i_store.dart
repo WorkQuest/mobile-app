@@ -14,6 +14,7 @@ abstract class _IStore<T> with Store {
   @observable
   String? errorMessage;
 
+  @computed
   bool get isSuccess {
     return successData != null;
   }

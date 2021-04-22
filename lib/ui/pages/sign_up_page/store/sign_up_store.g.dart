@@ -9,11 +9,11 @@ part of 'sign_up_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SignUpStore on _SignUpStore, Store {
-  Computed<bool>? _$canSignInComputed;
+  Computed<bool>? _$canSignUpComputed;
 
   @override
-  bool get canSignUp => (_$canSignInComputed ??=
-          Computed<bool>(() => super.canSignUp, name: '_SignUpStore.canSignIn'))
+  bool get canSignUp => (_$canSignUpComputed ??=
+          Computed<bool>(() => super.canSignUp, name: '_SignUpStore.canSignUp'))
       .value;
 
   final _$_emailAtom = Atom(name: '_SignUpStore._email');
@@ -76,13 +76,11 @@ mixin _$SignUpStore on _SignUpStore, Store {
     });
   }
 
-  final _$signUpWithUsernameAsyncAction =
-      AsyncAction('_SignUpStore.signUpWithUsername');
+  final _$registerAsyncAction = AsyncAction('_SignUpStore.register');
 
   @override
   Future<dynamic> register() {
-    return _$signUpWithUsernameAsyncAction
-        .run(() => super.register());
+    return _$registerAsyncAction.run(() => super.register());
   }
 
   final _$_SignUpStoreActionController = ActionController(name: '_SignUpStore');
@@ -134,7 +132,7 @@ mixin _$SignUpStore on _SignUpStore, Store {
   @override
   String toString() {
     return '''
-canSignIn: ${canSignUp}
+canSignUp: ${canSignUp}
     ''';
   }
 }

@@ -6,15 +6,18 @@
       "pleaseSignIn": "Please sign in",
       "username": "Username",
       "login": "Login",
-      "doNotHaveAccountText": "Don't have an account?",
+      "doNotHaveAccount": "Don't have an account?",
       "signUp": "Sign Up",
-      "forgotPasswordText": "Forgot your password?"
+      "forgotPassword": "Forgot your password?"
     },
     "signUp": {
       "firstName": "First name",
       "lastName": "Last name",
       "email": "Email",
-      "repeatPassword": "Repeat password"
+      "repeatPassword": "Repeat password",
+      "createAccount": "Create account",
+      "alreadyHaveAccount": "Already have account",
+      "signIn": "Sign In"
     }
   }
 }

@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import GoogleMaps
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -8,31 +9,11 @@ import Flutter
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     
-//    let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
-//
-//    let channel = FlutterMethodChannel(name: "web3Channel", binaryMessenger: controller as! FlutterBinaryMessenger)
-//
-//    channel.setMethodCallHandler({
-//        [weak self](call: FlutterMethodCall, result: FlutterResult) -> Void in
-//
-//        switch call.method {
-//        case "generateSeed":
-//            self?.generateSeed()
-//        default:
-//            result(FlutterMethodNotImplemented)
-//            return
-//        }
-//    })
+    GMSServices.provideAPIKey(Keys.GoogleMap.apiKey)
     
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
     
-//    private func generateSeed() {
-//        let mnemonic = try! BIP39.generateMnemonics(bitsOfEntropy: 256)!
-//        let keystore = try! BIP32Keystore(mnemonics: mnemonic)
-//        print("mnemonic = \(mnemonic)")
-//        print("address = \(String(describing: keystore?.addresses))")
-//    }
  
 }

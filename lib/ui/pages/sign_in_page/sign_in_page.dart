@@ -1,15 +1,25 @@
 import 'package:app/app_localizations.dart';
 import 'package:app/constants.dart';
-import 'package:app/log_service.dart';
 import 'package:app/observer_consumer.dart';
+import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
 import 'package:app/ui/pages/sign_up_page/sign_up_page.dart';
-import 'package:app/ui/widgets/action_button.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+
+const double _horizontalConstraints = 44.0;
+const double _verticalConstraints = 24.0;
+
+const _prefixConstraints = const BoxConstraints(
+  maxHeight: _verticalConstraints,
+  maxWidth: _horizontalConstraints,
+  minHeight: _verticalConstraints,
+  minWidth: _horizontalConstraints,
+);
 
 class SignInPage extends StatelessWidget {
   static const String routeName = '/';
@@ -78,10 +88,8 @@ class SignInPage extends StatelessWidget {
                 child: TextFormField(
                   onChanged: store.setUsername,
                   decoration: InputDecoration(
-                    prefixIcon: SvgPicture.asset(
-                      'assets/user.svg',
-                      fit: BoxFit.scaleDown,
-                    ),
+                    prefixIconConstraints: _prefixConstraints,
+                    prefixIcon: SvgPicture.asset('assets/user.svg'),
                     hintText: context.translate(
                       AuthLangKeys.username,
                     ),
@@ -93,10 +101,8 @@ class SignInPage extends StatelessWidget {
                 child: TextFormField(
                   onChanged: store.setPassword,
                   decoration: InputDecoration(
-                    prefixIcon: SvgPicture.asset(
-                      'assets/lock.svg',
-                      fit: BoxFit.scaleDown,
-                    ),
+                    prefixIconConstraints: _prefixConstraints,
+                    prefixIcon: SvgPicture.asset('assets/lock.svg'),
                     hintText: context.translate(
                       AuthLangKeys.password,
                     ),
@@ -104,41 +110,49 @@ class SignInPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 20.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
                 child: SizedBox(
                   width: double.infinity,
-                  child: ObserverConsumer<SignInStore>(
+                  child: ObserverListener<SignInStore>(
                     onSuccess: () {
-                      println('SignInPage => onSuccess called.');
-                      Navigator.pushNamed(context, SignUpPage.routeName);
+                      Navigator.pushNamed(context, MainPage.routeName);
                     },
-                    builder: (context) {
-                      println('SignInPage => builder called.');
-                      return ActionButton(
-                        titleLangKey: AuthLangKeys.login,
-                        isEnable: store.canSignIn,
-                        isLoading: store.isLoading,
-                        onPressed: store.signInWithUsername,
-                      );
-                    },
+                    child: Observer(
+                      builder: (context) {
+                        return ElevatedButton(
+                          onPressed: store.signInWithUsername,
+                          child: store.isLoading
+                              ? PlatformActivityIndicator()
+                              : Text(
+                                  context.translate(AuthLangKeys.login),
+                                ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
-              Center(
-                child: Text(
-                  'or',
-                  style: TextStyle(
-                    color: Color(0xFFCBCED2),
-                  ),
-                ),
-              ),
-              _iconsView(),
               Padding(
-                padding: const EdgeInsets.only(left: 16.0),
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Center(
+                  child: Text(
+                    'or',
+                    style: TextStyle(
+                      color: Color(0xFFCBCED2),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 20.0, right: 16),
+                child: _iconsView(),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, top: 50),
                 child: Row(
                   children: [
                     Text(
-                      context.translate(AuthLangKeys.doNotHaveAccountText),
+                      context.translate(AuthLangKeys.doNotHaveAccount),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0),
@@ -158,12 +172,14 @@ class SignInPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 16.0, top: 10, bottom: 40),
+                padding: const EdgeInsets.only(left: 16.0, top: 10),
                 child: GestureDetector(
                   onTap: onForgotPasswordClicked,
                   child: Text(
-                    context.translate(AuthLangKeys.forgotPasswordText),
-                    style: TextStyle(color: Color(0xFF0083C7)),
+                    context.translate(AuthLangKeys.forgotPassword),
+                    style: TextStyle(
+                      color: Color(0xFF0083C7),
+                    ),
                   ),
                 ),
               ),
@@ -175,41 +191,38 @@ class SignInPage extends StatelessWidget {
   }
 
   Widget _iconsView() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0, bottom: 50, left: 16, right: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _iconButton(
-            'assets/google_icon.svg',
-            'https://www.instagram.com/zuck/?hl=ru',
-          ),
-          _iconButton(
-            'assets/instagram_icon.svg',
-            'https://www.instagram.com/zuck/?hl=ru',
-          ),
-          _iconButton(
-            'assets/twitter_icon.svg',
-            'https://www.instagram.com/zuck/?hl=ru',
-          ),
-          _iconButton(
-            'assets/facebook_icon.svg',
-            'https://www.instagram.com/zuck/?hl=ru',
-          ),
-          _iconButton(
-            'assets/linkedin_icon.svg',
-            'https://www.instagram.com/zuck/?hl=ru',
-          ),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _iconButton(
+          'assets/google_icon.svg',
+          'https://www.instagram.com/zuck/?hl=ru',
+        ),
+        _iconButton(
+          'assets/instagram.svg',
+          'https://www.instagram.com/zuck/?hl=ru',
+        ),
+        _iconButton(
+          'assets/twitter_icon.svg',
+          'https://www.instagram.com/zuck/?hl=ru',
+        ),
+        _iconButton(
+          'assets/facebook_icon.svg',
+          'https://www.instagram.com/zuck/?hl=ru',
+        ),
+        _iconButton(
+          'assets/linkedin_icon.svg',
+          'https://www.instagram.com/zuck/?hl=ru',
+        ),
+      ],
     );
   }
 
-  Widget _iconButton(String iconPath, String link) {
+  Widget _iconButton(String iconPath, String link, [Color? color]) {
     return CupertinoButton(
       color: Color(0xFFF7F8FA),
       padding: EdgeInsets.zero,
-      child: SvgPicture.asset(iconPath),
+      child: SvgPicture.asset(iconPath, color: color),
       onPressed: () {},
     );
   }
