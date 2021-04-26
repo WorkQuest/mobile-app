@@ -24,7 +24,8 @@ class WorkQuestApp extends StatelessWidget {
     );
   }
 
-  Locale? _localeResolutionCallback(Locale? locale, Iterable<Locale> supportedLocales) {
+  Locale? _localeResolutionCallback(
+      Locale? locale, Iterable<Locale> supportedLocales) {
     for (var supportedLocale in supportedLocales) {
       if (supportedLocale.toString() == locale.toString()) {
         return locale;
@@ -40,7 +41,7 @@ final _theme = ThemeData(
   cupertinoOverrideTheme: const CupertinoThemeData(
     barBackgroundColor: Colors.white,
     scaffoldBackgroundColor: Colors.white,
-    primaryColor: const Color(0xFF0083C7),
+    primaryColor: AppColors.primary,
     textTheme: CupertinoTextThemeData(
       navLargeTitleTextStyle: TextStyle(
         fontSize: 30,
@@ -54,17 +55,24 @@ final _theme = ThemeData(
       ),
     ),
   ),
+  primaryColor: AppColors.primary,
+  iconTheme: IconThemeData(
+    color: AppColors.primary,
+  ),
   textSelectionTheme: TextSelectionThemeData(
-    cursorColor: const Color(0xFF0083C7),
+    cursorColor: AppColors.primary,
+  ),
+  accentIconTheme: IconThemeData(
+    color: AppColors.primary,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: const Color(0xFF0083C7),
+    backgroundColor: AppColors.primary,
     foregroundColor: Colors.white,
     elevation: 0.0,
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      primary: const Color(0xFF0083C7),
+      primary: AppColors.primary,
       onPrimary: Colors.white,
       onSurface: const Color(0xFFCBCED2),
       elevation: 0.0,
@@ -117,3 +125,7 @@ final _theme = ThemeData(
     ),
   ),
 );
+
+abstract class AppColors {
+  static const Color primary = const Color(0xFF0083C7);
+}

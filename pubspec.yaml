@@ -40,7 +40,7 @@ dependencies:
   provider: ^5.0.0
 
   # Widgets.
-  flutter_svg: ^0.21.0+1
+  flutter_svg: ^0.22.0
 
   google_maps_flutter: ^2.0.3
   location: ^4.1.1
