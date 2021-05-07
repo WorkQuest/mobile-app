@@ -58,8 +58,9 @@ dev_dependencies:
   # Code generation for getIt
   injectable_generator:
 
-  #json_serializable: ^4.1.0
-  #freezed: ^0.14.1+2
+  json_serializable: ^4.1.0
+  freezed: ^0.14.1+2
+  freezed_annotation: ^0.14.0
 
   # Code generation for mobX
   mobx_codegen: ^2.0.1+3

@@ -14,7 +14,7 @@ class WorkQuestApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.generateRoute,
       localeResolutionCallback: _localeResolutionCallback,
-      initialRoute: MainPage.routeName,
+      //initialRoute: MainPage.routeName,
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

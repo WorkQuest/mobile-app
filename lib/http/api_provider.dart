@@ -1,34 +1,40 @@
 import 'package:app/http/core/i_http_client.dart';
+import 'package:app/model/bearer_token/bearer_token.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
 class ApiProvider {
-  final IHttpClient _webService;
+  final IHttpClient _httpClient;
 
-  ApiProvider(this._webService);
+  ApiProvider(this._httpClient);
 }
 
 extension LoginService on ApiProvider {
-  Future login({
+  Future<void> login({
     required String email,
     required String password,
   }) async {
-    await _webService.post(
+    final responseData = await _httpClient.post(
       query: '/v1/auth/login',
       data: {
         'email': email,
         'password': password,
       },
     );
+
+    _httpClient.bearerToken = BearerToken.fromJson(
+      responseData["data"],
+    );
   }
 
-  Future register({
+  Future<void> register({
     required String firstName,
     required String lastName,
     required String email,
     required String password,
   }) async {
-    await _webService.post(
+
+    final responseData = await _httpClient.post(
       query: '/v1/auth/register',
       data: {
         'firstName': firstName,
@@ -36,6 +42,10 @@ extension LoginService on ApiProvider {
         'email': email,
         'password': password
       },
+    );
+
+    _httpClient.bearerToken = BearerToken.fromJson(
+      responseData["data"],
     );
   }
 }

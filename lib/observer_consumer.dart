@@ -31,7 +31,7 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
   @override
   void initState() {
     _store = context.read<T>();
-    _disposers = [];
+    _disposers = [_successReaction, _failureReaction];
     super.initState();
   }
 
@@ -58,19 +58,18 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
               return CupertinoAlertDialog(
                 title: Text('Error'),
                 content: Text(errorMessage),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text("OK"),
+                    onPressed: Navigator.of(context).pop,
+                  )
+                ],
               );
             },
           );
         }
       },
     );
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _disposers.add(_successReaction);
-    _disposers.add(_failureReaction);
   }
 
   @override

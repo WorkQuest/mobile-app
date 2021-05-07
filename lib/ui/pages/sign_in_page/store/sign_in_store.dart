@@ -34,8 +34,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
   Future signInWithUsername() async {
     try {
       this.onLoading();
-      await Future.delayed(Duration(seconds: 2));
-      //await _apiProvider.login(email: _username, password: _password);
+      await _apiProvider.login(email: _username, password: _password);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

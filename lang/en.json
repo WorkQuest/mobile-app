@@ -16,7 +16,7 @@
       "email": "Email",
       "repeatPassword": "Repeat password",
       "createAccount": "Create account",
-      "alreadyHaveAccount": "Already have account",
+      "alreadyHaveAccount": "Already have account?",
       "signIn": "Sign In"
     }
   }

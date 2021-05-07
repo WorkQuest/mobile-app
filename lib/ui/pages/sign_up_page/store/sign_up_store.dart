@@ -51,13 +51,12 @@ abstract class _SignUpStore extends IStore<bool> with Store {
   Future register() async {
     try {
       this.onLoading();
-      await Future.delayed(Duration(seconds: 2));
-      // await _apiProvider.register(
-      //   email: _email,
-      //   firstName: _firstName,
-      //   lastName: _lastName,
-      //   password: _password,
-      // );
+      await _apiProvider.register(
+        email: _email,
+        firstName: _firstName,
+        lastName: _lastName,
+        password: _password,
+      );
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

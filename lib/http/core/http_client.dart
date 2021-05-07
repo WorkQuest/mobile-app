@@ -1,6 +1,7 @@
 import 'package:app/exceptions.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/log_service.dart';
+import 'package:app/model/bearer_token/bearer_token.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -9,15 +10,22 @@ class TestHttpClient extends _HttpClient {
   TestHttpClient()
       : super(
           Dio(BaseOptions(
-            baseUrl: 'http://app-ver1.workquest.co/api',
+            baseUrl: 'https://app-ver1.workquest.co/api',
             connectTimeout: 20000,
             receiveTimeout: 20000,
+            headers: {
+              "content-type": "application/json"
+            }
           )),
         );
 }
 
 class _HttpClient implements IHttpClient {
+
   final Dio _dio;
+
+  @override
+  BearerToken? bearerToken;
 
   _HttpClient(this._dio) {
     _setInterceptors();
@@ -53,8 +61,14 @@ class _HttpClient implements IHttpClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+
+          if (bearerToken != null) {
+
+          }
+
           println("\n---------- DioRequest ----------"
               "\n\turl: ${options.baseUrl}${options.path}"
+              "\n\tmethod: ${options.method}"
               "\n\tdata: ${options.data}"
               "\n\theaders: ${options.headers}\n}"
               "\n--------------------------------\n");
@@ -65,6 +79,7 @@ class _HttpClient implements IHttpClient {
           final options = response.requestOptions;
           println("\n---------- DioResponse ----------"
               "\n\turl: ${options.baseUrl}${options.path}"
+              "\n\tmethod: ${options.method}"
               "\n\tresponse: $response"
               "\n--------------------------------\n");
           return handler.next(response);
@@ -73,6 +88,7 @@ class _HttpClient implements IHttpClient {
           final options = error.requestOptions;
           println("\n---------- DioError ----------"
               "\n\turl: ${options.baseUrl}${options.path}"
+              "\n\tmethod: ${options.method}"
               "\n\tmessage: ${error.message}"
               "\n\tresponse: ${error.response}"
               "\n--------------------------------\n");
@@ -95,6 +111,7 @@ class _HttpClient implements IHttpClient {
       ),
     );
   }
+
 
   //int _refreshAttempt = 0;
 
