@@ -11,6 +11,7 @@ import 'di/injector.dart';
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+
       case SignInPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
