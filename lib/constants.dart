@@ -26,5 +26,9 @@ abstract class AuthLangKeys {
   static const String createAccount = '$_signUp.createAccount';
   static const String alreadyHaveAccount = '$_signUp.alreadyHaveAccount';
   static const String signIn = '$_signUp.signIn';
+
+  // /// Localization keys for [QuestPage] page.
+  // static const String _questPage = '$_main.signIn';
+  // static const String list = '$.email';
 }
 
