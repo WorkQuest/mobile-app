@@ -129,7 +129,9 @@ class SignInPage extends StatelessWidget {
                       child: Observer(
                         builder: (context) {
                           return ElevatedButton(
-                            onPressed: store.signInWithUsername,
+                            onPressed: store.canSignIn
+                                ? store.signInWithUsername
+                                : null,
                             child: store.isLoading
                                 ? PlatformActivityIndicator()
                                 : Text(
@@ -153,7 +155,8 @@ class SignInPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 16, top: 20.0, right: 16),
+                  padding:
+                      const EdgeInsets.only(left: 16, top: 20.0, right: 16),
                   child: _iconsView(),
                 ),
                 Padding(

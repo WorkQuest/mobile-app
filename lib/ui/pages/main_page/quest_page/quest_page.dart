@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app/log_service.dart';
+import 'package:app/work_quest_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -38,11 +39,43 @@ class _QuestPageState extends State<QuestPage> {
                 _controller = controller;
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onMyLocationPressed,
-        child: Icon(
-          Icons.location_on,
-        ),
+      floatingActionButton: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 32.0),
+            child: Container(
+              // onPressed: _onMyLocationPressed,
+              padding: const EdgeInsets.only(
+                  top: 11, bottom: 11, left: 17, right: 15),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(44),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.map_outlined,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 12,
+                  ),
+                  Text(
+                    "Map",
+                    style: TextStyle(color: Colors.white),
+                  )
+                ],
+              ),
+            ),
+          ),
+          Spacer(),
+          FloatingActionButton(
+            onPressed: _onMyLocationPressed,
+            child: Icon(
+              Icons.location_on,
+            ),
+          ),
+        ],
       ),
     );
   }

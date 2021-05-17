@@ -14,7 +14,7 @@ class WorkQuestApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.generateRoute,
       localeResolutionCallback: _localeResolutionCallback,
-      //initialRoute: MainPage.routeName,
+      initialRoute: MainPage.routeName,
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -128,4 +128,5 @@ final _theme = ThemeData(
 
 abstract class AppColors {
   static const Color primary = const Color(0xFF0083C7);
+  static const Color green = const Color(0xFF00AA5B);
 }
