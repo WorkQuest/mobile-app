@@ -1,4 +1,4 @@
-enum ItemType {
+enum QuestItemPriorityType {
   Active,
   Invited,
   Performed,
