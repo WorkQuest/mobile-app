@@ -1,5 +1,6 @@
 import 'package:app/routes.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,7 +15,7 @@ class WorkQuestApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.generateRoute,
       localeResolutionCallback: _localeResolutionCallback,
-      initialRoute: MainPage.routeName,
+      initialRoute: MyQuestDetails.routeName,
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -97,7 +98,7 @@ final _theme = ThemeData(
     color: Colors.white,
     elevation: 0.0,
     iconTheme: const IconThemeData(
-      color: const Color(0xFF7C838D),
+      color: const Color(0xFF0083C7),
     ),
   ),
   textTheme: const TextTheme(
@@ -107,6 +108,10 @@ final _theme = ThemeData(
       fontSize: 16,
     ),
   ),
+  primaryIconTheme: IconThemeData(
+    color: const Color(0xFF7C838D),
+  ),
+
   inputDecorationTheme: const InputDecorationTheme(
     filled: true,
     isDense: true,
