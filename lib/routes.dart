@@ -1,4 +1,5 @@
 import 'package:app/ui/pages/main_page/main_page.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
 import 'package:app/ui/pages/sign_up_page/sign_up_page.dart';
@@ -31,6 +32,11 @@ class Routes {
       case MainPage.routeName:
         return MaterialPageRoute(
           builder: (context) => MainPage(),
+        );
+
+      case MyQuestDetails.routeName:
+        return MaterialPageRoute(
+          builder: (context) => MyQuestDetails(),
         );
 
       default:
