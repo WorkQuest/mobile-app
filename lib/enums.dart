@@ -4,3 +4,8 @@ enum QuestItemPriorityType {
   Performed,
   Starred,
 }
+
+enum UserRole{
+  Worker,
+  Employer
+}
