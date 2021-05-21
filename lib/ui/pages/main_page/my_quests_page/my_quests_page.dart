@@ -1,7 +1,8 @@
-import 'package:app/ui/pages/main_page/quest_page/my_quests_item.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
+
+import '../../../../enums.dart';
 
 class MyQuestsPage extends StatelessWidget {
   @override
@@ -25,10 +26,10 @@ class MyQuestsPage extends StatelessWidget {
           physics: const ClampingScrollPhysics(),
           body: TabBarView(
             children: [
-              Center(child: const _List("Active")),
-              Center(child: const _List("Invited")),
-              Center(child: const _List("Performed")),
-              Center(child: const _List("Starred")),
+              Center(child: const _List(QuestItemPriorityType.Active)),
+              Center(child: const _List(QuestItemPriorityType.Invited)),
+              Center(child: const _List(QuestItemPriorityType.Performed)),
+              Center(child: const _List(QuestItemPriorityType.Starred)),
             ],
           ),
         ),
@@ -38,9 +39,9 @@ class MyQuestsPage extends StatelessWidget {
 }
 
 class _List extends StatelessWidget {
-  final String label;
+  final QuestItemPriorityType questItemPriorityType;
 
-  const _List(this.label);
+  const _List(this.questItemPriorityType);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +51,11 @@ class _List extends StatelessWidget {
         itemCount: 100,
         padding: EdgeInsets.zero,
         itemBuilder: (_, index) {
-          return MyQuestsItem(ItemType.Active);
+          return MyQuestsItem(
+            itemType: questItemPriorityType,
+            price: "1500 WUSD",
+            priority: 2,
+          );
           //   Padding(
           //   padding: const EdgeInsets.all(5.0),
           //   child: Container(
