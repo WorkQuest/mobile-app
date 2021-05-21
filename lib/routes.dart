@@ -2,6 +2,8 @@ import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
+import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
+import 'package:app/ui/pages/sign_up_page/choose_role_page/choose_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/sign_up_page.dart';
 import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,6 @@ import 'di/injector.dart';
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-
       case SignInPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
@@ -37,6 +38,19 @@ class Routes {
       case MyQuestDetails.routeName:
         return MaterialPageRoute(
           builder: (context) => MyQuestDetails(),
+        );
+
+      case ChooseRolePage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<SignUpStore>(),
+            child: ChooseRolePage(),
+          ),
+        );
+
+      case ApproveRolePage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => ApproveRolePage(),
         );
 
       default:
