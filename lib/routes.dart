@@ -4,6 +4,7 @@ import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/choose_role_page.dart';
+import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
 import 'package:app/ui/pages/sign_up_page/sign_up_page.dart';
 import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
 import 'package:flutter/material.dart';
@@ -42,15 +43,30 @@ class Routes {
 
       case ChooseRolePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<SignUpStore>(),
+          builder: (context) => MultiProvider(providers: [
+            Provider(
+              create: (context) => getIt.get<SignUpStore>(),
+            ),
+            Provider(
+              create: (context) => getIt.get<ChooseRoleStore>(),
+            )
+          ],
             child: ChooseRolePage(),
           ),
         );
 
       case ApproveRolePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => ApproveRolePage(),
+          builder: (context) => MultiProvider(providers: [
+            Provider(
+              create: (context) => getIt.get<SignUpStore>(),
+            ),
+            Provider(
+              create: (context) => getIt.get<ChooseRoleStore>(),
+            ),
+          ],
+            child: ApproveRolePage(),
+          ),
         );
 
       default:
