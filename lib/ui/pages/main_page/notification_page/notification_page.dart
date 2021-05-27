@@ -15,16 +15,19 @@ class NotificationPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             IconButton(
+              padding: const EdgeInsets.only(left: 0, bottom: 1),
               alignment: Alignment.centerLeft,
               onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.arrow_back_ios_sharp,),
+              icon: const Icon(
+                Icons.arrow_back_ios_sharp,
+              ),
             ),
             Text(
               'Notifications',
               textAlign: TextAlign.start,
               style: TextStyle(
                 color: Colors.black87,
-                fontSize: 25,
+                fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -38,7 +41,7 @@ class NotificationPage extends StatelessWidget {
         ),
         itemBuilder: (context, index) => notificationCard(
           item[index],
-          item[index],
+          "",
         ),
       ),
     );
@@ -55,34 +58,42 @@ class NotificationPage extends StatelessWidget {
           vertical: 20,
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              alignment: Alignment.centerRight,
-              child: Text(
-                '14 Jan 2021, 14:54',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  child: Image.asset(
+                    "assets/test_employer_avatar.jpg",
+                    width: 40,
+                    height: 40,
+                  ),
                 ),
-              ),
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 0),
-              leading: CircleAvatar(
-                  backgroundImage: AssetImage("assets/test_employer_avatar.jpg"),
-                radius: 30,
-              ),
-              title: Text(firstName + '  ' + lastName),
-              //subtitle: Text('Email : ' + email),
+                SizedBox(width: 10),
+                Padding(
+                  padding: const EdgeInsets.only(top: 11),
+                  child: Text(firstName),
+                ),
+                Spacer(),
+                Text(
+                  '14 Jan 2021, 14:54',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFFAAB0B9),
+                  ),
+                ),
+              ],
             ),
             Container(
-              margin: EdgeInsets.symmetric(vertical: 15),
+              margin: EdgeInsets.symmetric(vertical: 10),
               alignment: Alignment.centerLeft,
               child: Text(
                 'Invites you to a quest:',
                 style: TextStyle(
                   fontSize: 15,
-                  color: Colors.grey,
+                  color: Color(0xFFAAB0B9),
                 ),
               ),
             ),
