@@ -28,15 +28,15 @@ extension GetItInjectableX on _i1.GetIt {
   _i1.GetIt init(
       {String? environment, _i2.EnvironmentFilter? environmentFilter}) {
     final gh = _i2.GetItHelper(this, environment, environmentFilter);
-
-    gh.factory<_i3.ChooseRoleStore>(()  => _i3.ChooseRoleStore());
-    gh.factory<_i4.IHttpClient>    (()  => _i5.TestHttpClient(), registerFor: {_test});
-    gh.factory<_i6.LogService>     (()  => _i6.LogServiceDev(), registerFor: {_dev, _test});
-    gh.factory<_i6.LogService>     (()  => _i6.LogServiceProd(), registerFor: {_prod});
-    gh.factory<_i7.SignInStore>    (()  => _i7.SignInStore(get<_i8.ApiProvider>()));
-    gh.factory<_i9.SignUpStore>    (()  => _i9.SignUpStore(get<_i8.ApiProvider>()));
-
-    gh.singleton<_i8.ApiProvider>(_i8.ApiProvider(get<_i4.IHttpClient>()));
+    gh.factory<_i3.IHttpClient>(() => _i4.TestHttpClient(),
+        registerFor: {_test});
+    gh.factory<_i5.LogService>(() => _i5.LogServiceDev(),
+        registerFor: {_dev, _test});
+    gh.factory<_i5.LogService>(() => _i5.LogServiceProd(),
+        registerFor: {_prod});
+    gh.factory<_i6.SignInStore>(() => _i6.SignInStore(get<_i7.ApiProvider>()));
+    gh.factory<_i8.SignUpStore>(() => _i8.SignUpStore(get<_i7.ApiProvider>()));
+    gh.singleton<_i7.ApiProvider>(_i7.ApiProvider(get<_i3.IHttpClient>()));
     return this;
   }
 }
