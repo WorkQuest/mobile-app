@@ -10,6 +10,7 @@ import 'package:injectable/injectable.dart' as _i2;
 import '../http/api_provider.dart' as _i8;
 import '../http/core/http_client.dart' as _i5;
 import '../http/core/i_http_client.dart' as _i4;
+import '../http/quest_api_provider.dart' as _i10;
 import '../log_service.dart' as _i6;
 import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i7;
 import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
@@ -28,14 +29,17 @@ extension GetItInjectableX on _i1.GetIt {
   _i1.GetIt init(
       {String? environment, _i2.EnvironmentFilter? environmentFilter}) {
     final gh = _i2.GetItHelper(this, environment, environmentFilter);
-
-    gh.factory<_i3.ChooseRoleStore>(()  => _i3.ChooseRoleStore());
-    gh.factory<_i4.IHttpClient>    (()  => _i5.TestHttpClient(), registerFor: {_test});
-    gh.factory<_i6.LogService>     (()  => _i6.LogServiceDev(), registerFor: {_dev, _test});
-    gh.factory<_i6.LogService>     (()  => _i6.LogServiceProd(), registerFor: {_prod});
-    gh.factory<_i7.SignInStore>    (()  => _i7.SignInStore(get<_i8.ApiProvider>()));
-    gh.factory<_i9.SignUpStore>    (()  => _i9.SignUpStore(get<_i8.ApiProvider>()));
-
+    gh.factory<_i3.ChooseRoleStore>(() => _i3.ChooseRoleStore());
+    gh.factory<_i4.IHttpClient>(() => _i5.TestHttpClient(),
+        registerFor: {_test});
+    gh.factory<_i6.LogService>(() => _i6.LogServiceDev(),
+        registerFor: {_dev, _test});
+    gh.factory<_i6.LogService>(() => _i6.LogServiceProd(),
+        registerFor: {_prod});
+    gh.factory<_i7.SignInStore>(() => _i7.SignInStore(get<_i8.ApiProvider>()));
+    gh.factory<_i9.SignUpStore>(() => _i9.SignUpStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i10.QuestApiProvider>(
+        _i10.QuestApiProvider(get<_i4.IHttpClient>()));
     gh.singleton<_i8.ApiProvider>(_i8.ApiProvider(get<_i4.IHttpClient>()));
     return this;
   }

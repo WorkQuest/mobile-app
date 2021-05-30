@@ -1,11 +1,12 @@
+import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class CreateQuestPage extends StatelessWidget {
-  final List<String> item = List<String>.generate(10, (i) => 'Samantha Sparcs');
-
+  CreateQuestStore store = CreateQuestStore();
   static const String routeName = "/createQuestPage";
 
   Widget build(context) {
@@ -52,7 +53,7 @@ class CreateQuestPage extends StatelessWidget {
                     margin: EdgeInsets.symmetric(vertical: 10),
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Proposal',
+                      'Priority',
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -116,26 +117,31 @@ class CreateQuestPage extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(6.0)),
                     ),
                     alignment: Alignment.centerLeft,
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton(
-                        isExpanded: true,
-                        items: <String>['One', 'Two', 'Free', 'Four']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        icon: Icon(
-                          Icons.arrow_drop_down,
-                          size: 30,
-                          color: Colors.blueAccent,
-                        ),
-                        hint: Text(
-                          'Choose',
-                          overflow: TextOverflow.fade,
-                          maxLines: 1,
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                    child: Observer(
+                      builder: (_) => DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          isExpanded: true,
+                          value: store.category,
+                          onChanged: (String? value) {
+                              store.changedDropDownItem(value!);
+                              print(store.category);},
+                          items: store.questCategoriesList
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: new Text(value),
+                            );
+                          }).toList(),
+                          icon: Icon(
+                            Icons.arrow_drop_down,
+                            size: 30,
+                            color: Colors.blueAccent,
+                          ),
+                          hint: Text(
+                            'Choose',
+                            maxLines: 1,
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          ),
                         ),
                       ),
                     ),
@@ -321,12 +327,15 @@ class CreateQuestPage extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top:20.0),
+                    padding: const EdgeInsets.only(top: 20.0),
                     child: DottedBorder(
                       borderType: BorderType.RRect,
                       strokeCap: StrokeCap.round,
                       radius: Radius.circular(10),
-                      dashPattern: [6, 6,],
+                      dashPattern: [
+                        6,
+                        6,
+                      ],
                       color: Colors.grey,
                       strokeWidth: 1.0,
                       child: Container(
@@ -349,12 +358,13 @@ class CreateQuestPage extends StatelessWidget {
                                   fontSize: 16,
                                 ),
                               ),
-
                               SizedBox(
                                 height: 12,
                               ),
-
-                              Icon(Icons.add_to_photos_outlined,color: Colors.blueAccent,),
+                              Icon(
+                                Icons.add_to_photos_outlined,
+                                color: Colors.blueAccent,
+                              ),
                             ],
                           ),
                         ),
@@ -406,10 +416,13 @@ class CreateQuestPage extends StatelessWidget {
                   onPressed: null,
                   child: Text(
                     'Create a quest',
-                    style: TextStyle(color: Colors.white,),
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.blueAccent),
                   ),
                 ),
               ),
@@ -417,5 +430,4 @@ class CreateQuestPage extends StatelessWidget {
           ),
         ));
   }
-
 }

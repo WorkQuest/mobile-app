@@ -5,7 +5,18 @@ enum QuestItemPriorityType {
   Starred,
 }
 
-enum UserRole{
+enum UserRole {
   Worker,
-  Employer
+  Employer,
+}
+
+enum QuestPriority {
+  Low,
+  Normal,
+  Urgent,
+}
+
+enum AdType {
+  Free,
+  Paid,
 }
