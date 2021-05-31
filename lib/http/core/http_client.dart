@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:app/exceptions.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/log_service.dart';
 import 'package:app/model/bearer_token/bearer_token.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
@@ -110,6 +113,12 @@ class _HttpClient implements IHttpClient {
         },
       ),
     );
+    (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      return client;
+    };
   }
 
 
