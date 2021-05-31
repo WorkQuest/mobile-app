@@ -1,17 +1,25 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class BearerToken {
+  String access;
+  String refresh;
+  int status;
 
-part 'bearer_token.freezed.dart';
+  BearerToken({
+    required this.access,
+    required this.refresh,
+    required this.status,
+  });
 
-part 'bearer_token.g.dart';
+  factory BearerToken.fromJson(Map<String, dynamic> json) {
+    return BearerToken(
+      status: json["status"],
+      access: json["access"],
+      refresh: json["refresh"],
+    );
+  }
 
-@freezed
-abstract class BearerToken with _$BearerToken {
-  const factory BearerToken({
-    required String access,
-    required String refresh,
-    required int userStatus,
-  }) = _BearerToken;
-
-  factory BearerToken.fromJson(Map<String, dynamic> json) =>
-      _$BearerTokenFromJson(json);
+  Map<String, dynamic> toJson() => {
+    "status": status,
+    "access": access,
+    "refresh": refresh,
+  };
 }
