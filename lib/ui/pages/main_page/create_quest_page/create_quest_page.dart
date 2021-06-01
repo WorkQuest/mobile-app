@@ -15,7 +15,8 @@ class CreateQuestPage extends StatelessWidget {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           toolbarHeight: 130,
-          elevation: 2,
+          elevation: 0,
+          centerTitle: false,
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -23,7 +24,7 @@ class CreateQuestPage extends StatelessWidget {
                 padding: EdgeInsets.only(left: 12),
                 alignment: Alignment.centerLeft,
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back_ios_sharp,
                 ),
               ),
@@ -124,8 +125,9 @@ class CreateQuestPage extends StatelessWidget {
                           isExpanded: true,
                           value: store.category,
                           onChanged: (String? value) {
-                              store.changedDropDownItem(value!);
-                              print(store.category);},
+                            store.changedDropDownItem(value!);
+                            print(store.category);
+                          },
                           items: store.questCategoriesList
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
