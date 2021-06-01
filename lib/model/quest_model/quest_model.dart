@@ -21,6 +21,20 @@ abstract class QuestModel with _$QuestModel {
   factory QuestModel.fromJson(Map<String, dynamic> json) =>
       _$QuestModelFromJson(json);
 
+  //Map<String, dynamic> toJson() => _$QuestModelToJson(this);
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> questData = new Map<String, dynamic>();
+    questData['category'] = this.category;
+    questData['priority'] = this.priority;
+    questData['location'] = this.location;
+    questData['title'] = this.title;
+    questData['description'] = this.description;
+    questData['price'] = this.price;
+    questData['adType'] = this.adType;
+    return questData;
+  }
+
 }
 
 class Location {
@@ -34,7 +48,7 @@ class Location {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> locationData = new Map<String, double>();
+    final Map<String, dynamic> locationData = new Map<String, dynamic>();
     locationData['longitude'] = this.longitude;
     locationData['latitude'] = this.latitude;
     return locationData;

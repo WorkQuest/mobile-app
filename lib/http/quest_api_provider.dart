@@ -5,13 +5,12 @@ import 'package:injectable/injectable.dart';
 @singleton
 class QuestApiProvider {
   final IHttpClient _httpClient;
-
   QuestApiProvider(this._httpClient);
 }
 
 extension QuestService on QuestApiProvider{
 
-  Future<void> register({
+  Future<void> createQuest({
     required Map<String, dynamic> quest,
   }) async {
 

@@ -2,14 +2,15 @@ import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_stor
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import "package:provider/provider.dart";
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 class CreateQuestPage extends StatelessWidget {
-  CreateQuestStore store = CreateQuestStore();
   static const String routeName = "/createQuestPage";
 
   Widget build(context) {
+    final store = context.read<CreateQuestStore>();
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -279,6 +280,7 @@ class CreateQuestPage extends StatelessWidget {
                     ),
                     alignment: Alignment.centerLeft,
                     child: TextField(
+                      onChanged: store.setQuestTitle,
                       maxLines: 1,
                       decoration: InputDecoration(
                         hintText: 'Title',
@@ -316,6 +318,7 @@ class CreateQuestPage extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(6.0)),
                     ),
                     child: TextField(
+                      onChanged: store.setAboutQuest,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                       decoration: InputDecoration(
@@ -399,6 +402,7 @@ class CreateQuestPage extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(6.0)),
                     ),
                     child: TextField(
+                      onChanged: store.setPrice,
                       decoration: InputDecoration(
                         hintText: 'Price',
                       ),

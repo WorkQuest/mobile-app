@@ -1,11 +1,20 @@
+import 'package:app/http/quest_api_provider.dart';
+import 'package:app/model/quest_model/quest_model.dart';
+import 'package:app/base_store/i_store.dart';
+import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
 part 'create_quest_store.g.dart';
 
-class CreateQuestStore = _CreateQuestStore with _$CreateQuestStore;
+@injectable
+class CreateQuestStore extends _CreateQuestStore with _$CreateQuestStore {
+  CreateQuestStore(QuestApiProvider questApiProvider) : super(questApiProvider);
+}
 
-abstract class _CreateQuestStore with Store {
-  Map<String, int> queryParameters = {'page': 1};
+abstract class _CreateQuestStore extends IStore<bool> with Store {
+  final QuestApiProvider questApiProvider;
+
+  _CreateQuestStore(this.questApiProvider);
 
   List<String> questCategoriesList = [
     "Choose",
@@ -38,32 +47,64 @@ abstract class _CreateQuestStore with Store {
     "Other areas of employment"
   ];
 
-  @observable
-  String category ='Choose' ;
+
+/// location, runtime, images and videos ,priority undone
+
 
   @observable
-  int  priority = 0;
+  String category = 'Choose';
 
   @observable
-  double  longitude = 0;
+  int priority = 0;
 
   @observable
-  double  latitude = 0;
+  double longitude = 0;
 
   @observable
-  String title ='';
+  double latitude = 0;
 
   @observable
-  String description ='';
+  String questTitle = '';
 
   @observable
-  String price ='';
+  String description = '';
 
   @observable
-  int  adType = 0;
+  String price = '';
+
+  @observable
+  int adType = 0;
+/// change location data
+  get location => null;
 
   @action
-  void changedDropDownItem(String selectedCategory) {
-    category = selectedCategory;
+  void setQuestTitle(String value) => questTitle = value;
+
+  @action
+  void setAboutQuest(String value) => description = value;
+
+  @action
+  void setPrice(String value) => price = value;
+
+  @action
+  void changedDropDownItem(String selectedCategory) =>
+      category = selectedCategory;
+
+  @action
+  Future createQuest() async {
+    try {
+      final QuestModel questModel = QuestModel(
+          category: category,
+          priority: priority,
+          ///location data needed
+          location: location,
+
+          title: questTitle,
+          description: description,
+          price: price,
+          adType: adType);
+      await questApiProvider.createQuest(quest: questModel.toJson());
+      this.onSuccess(true);
+    } catch (e) {}
   }
 }

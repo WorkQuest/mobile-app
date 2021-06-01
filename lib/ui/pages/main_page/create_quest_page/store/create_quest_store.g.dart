@@ -69,18 +69,18 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
-  final _$titleAtom = Atom(name: '_CreateQuestStore.title');
+  final _$questTitleAtom = Atom(name: '_CreateQuestStore.questTitle');
 
   @override
-  String get title {
-    _$titleAtom.reportRead();
-    return super.title;
+  String get questTitle {
+    _$questTitleAtom.reportRead();
+    return super.questTitle;
   }
 
   @override
-  set title(String value) {
-    _$titleAtom.reportWrite(value, super.title, () {
-      super.title = value;
+  set questTitle(String value) {
+    _$questTitleAtom.reportWrite(value, super.questTitle, () {
+      super.questTitle = value;
     });
   }
 
@@ -129,8 +129,48 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
+  final _$createQuestAsyncAction = AsyncAction('_CreateQuestStore.createQuest');
+
+  @override
+  Future<dynamic> createQuest() {
+    return _$createQuestAsyncAction.run(() => super.createQuest());
+  }
+
   final _$_CreateQuestStoreActionController =
       ActionController(name: '_CreateQuestStore');
+
+  @override
+  void setQuestTitle(String value) {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.setQuestTitle');
+    try {
+      return super.setQuestTitle(value);
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setAboutQuest(String value) {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.setAboutQuest');
+    try {
+      return super.setAboutQuest(value);
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setPrice(String value) {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.setPrice');
+    try {
+      return super.setPrice(value);
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void changedDropDownItem(String selectedCategory) {
@@ -150,7 +190,7 @@ category: ${category},
 priority: ${priority},
 longitude: ${longitude},
 latitude: ${latitude},
-title: ${title},
+questTitle: ${questTitle},
 description: ${description},
 price: ${price},
 adType: ${adType}
