@@ -2,7 +2,7 @@ import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
-import 'package:app/utils.dart';
+import 'package:app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
