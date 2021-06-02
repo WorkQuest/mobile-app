@@ -10,7 +10,7 @@ class ApiProvider {
 }
 
 extension LoginService on ApiProvider {
-  Future<void> login({
+  Future<String> login({
     required String email,
     required String password,
   }) async {
@@ -21,19 +21,19 @@ extension LoginService on ApiProvider {
         'password': password,
       },
     );
-
-    _httpClient.bearerToken = BearerToken.fromJson(
+    BearerToken bearerToken = BearerToken.fromJson(
       responseData["data"],
     );
+    _httpClient.accessToken = bearerToken.access;
+    return bearerToken.refresh;
   }
 
-  Future<void> register({
+  Future<String> register({
     required String firstName,
     required String lastName,
     required String email,
     required String password,
   }) async {
-
     final responseData = await _httpClient.post(
       query: '/v1/auth/register',
       data: {
@@ -43,9 +43,10 @@ extension LoginService on ApiProvider {
         'password': password
       },
     );
-
-    _httpClient.bearerToken = BearerToken.fromJson(
+    BearerToken bearerToken = BearerToken.fromJson(
       responseData["data"],
     );
+    _httpClient.accessToken = bearerToken.access;
+    return bearerToken.refresh;
   }
 }
