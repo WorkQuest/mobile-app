@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:app/exceptions.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/log_service.dart';
-import 'package:app/model/bearer_token/bearer_token.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -21,14 +20,17 @@ class TestHttpClient extends _HttpClient {
             }
           )),
         );
+
+  @override
+  String? accessToken;
 }
 
 class _HttpClient implements IHttpClient {
-
   final Dio _dio;
 
   @override
-  BearerToken? bearerToken;
+  String? accessToken;
+
 
   _HttpClient(this._dio) {
     _setInterceptors();
@@ -65,8 +67,8 @@ class _HttpClient implements IHttpClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
 
-          if (bearerToken != null) {
-
+          if (accessToken != null) {
+            options.headers["Authorization"] = "Bearer " + accessToken.toString();
           }
 
           println("\n---------- DioRequest ----------"
@@ -121,20 +123,19 @@ class _HttpClient implements IHttpClient {
     };
   }
 
+//int _refreshAttempt = 0;
 
-  //int _refreshAttempt = 0;
-
-  // Future<void> _refreshToken(int attempt) async {
-  //   await _secureStorageService.deleteAccessToken();
-  //
-  //   var authResponseMap = await post(query: 'auth/refresh-token');
-  //
-  //   var authResponse = AuthResponse.fromMap(authResponseMap);
-  //
-  //   if (authResponse != null) {
-  //     await _secureStorageService.saveAccessToken(authResponse.access);
-  //     await _secureStorageService.saveRefreshToken(authResponse.refresh);
-  //     refreshAttempt = 0;
-  //   }
-  // }
+// Future<void> _refreshToken(int attempt) async {
+//   await _secureStorageService.deleteAccessToken();
+//
+//   var authResponseMap = await post(query: 'auth/refresh-token');
+//
+//   var authResponse = AuthResponse.fromMap(authResponseMap);
+//
+//   if (authResponse != null) {
+//     await _secureStorageService.saveAccessToken(authResponse.access);
+//     await _secureStorageService.saveRefreshToken(authResponse.refresh);
+//     refreshAttempt = 0;
+//   }
+// }
 }

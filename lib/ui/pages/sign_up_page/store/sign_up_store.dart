@@ -1,5 +1,6 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -51,12 +52,13 @@ abstract class _SignUpStore extends IStore<bool> with Store {
   Future register() async {
     try {
       this.onLoading();
-      await _apiProvider.register(
+      String refreshToken = await _apiProvider.register(
         email: _email,
         firstName: _firstName,
         lastName: _lastName,
         password: _password,
       );
+      Storage.writeRefreshToken(refreshToken);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

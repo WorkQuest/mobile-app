@@ -1,5 +1,7 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/model/bearer_token/bearer_token.dart';
+import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -22,7 +24,8 @@ abstract class _SignInStore extends IStore<bool> with Store {
   String _password = '';
 
   @computed
-  bool get canSignIn => !isLoading && _username.isNotEmpty && _password.isNotEmpty;
+  bool get canSignIn =>
+      !isLoading && _username.isNotEmpty && _password.isNotEmpty;
 
   @action
   void setUsername(String value) => _username = value;
@@ -34,7 +37,9 @@ abstract class _SignInStore extends IStore<bool> with Store {
   Future signInWithUsername() async {
     try {
       this.onLoading();
-      await _apiProvider.login(email: _username, password: _password);
+      String refreshToken = await _apiProvider.login(
+          email: _username.trim(), password: _password);
+      Storage.writeRefreshToken(refreshToken);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
