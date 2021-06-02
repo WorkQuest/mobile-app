@@ -9,6 +9,14 @@ part of 'create_quest_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$CreateQuestStore on _CreateQuestStore, Store {
+  Computed<bool>? _$canCreateQuestComputed;
+
+  @override
+  bool get canCreateQuest =>
+      (_$canCreateQuestComputed ??= Computed<bool>(() => super.canCreateQuest,
+              name: '_CreateQuestStore.canCreateQuest'))
+          .value;
+
   final _$categoryAtom = Atom(name: '_CreateQuestStore.category');
 
   @override
@@ -24,18 +32,48 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
+  final _$categoryValueAtom = Atom(name: '_CreateQuestStore.categoryValue');
+
+  @override
+  String get categoryValue {
+    _$categoryValueAtom.reportRead();
+    return super.categoryValue;
+  }
+
+  @override
+  set categoryValue(String value) {
+    _$categoryValueAtom.reportWrite(value, super.categoryValue, () {
+      super.categoryValue = value;
+    });
+  }
+
   final _$priorityAtom = Atom(name: '_CreateQuestStore.priority');
 
   @override
-  int get priority {
+  String get priority {
     _$priorityAtom.reportRead();
     return super.priority;
   }
 
   @override
-  set priority(int value) {
+  set priority(String value) {
     _$priorityAtom.reportWrite(value, super.priority, () {
       super.priority = value;
+    });
+  }
+
+  final _$priorityIntAtom = Atom(name: '_CreateQuestStore.priorityInt');
+
+  @override
+  int get priorityInt {
+    _$priorityIntAtom.reportRead();
+    return super.priorityInt;
+  }
+
+  @override
+  set priorityInt(int value) {
+    _$priorityIntAtom.reportWrite(value, super.priorityInt, () {
+      super.priorityInt = value;
     });
   }
 
@@ -173,11 +211,22 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
-  void changedDropDownItem(String selectedCategory) {
+  void changedCategory(String selectedCategory) {
     final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
-        name: '_CreateQuestStore.changedDropDownItem');
+        name: '_CreateQuestStore.changedCategory');
     try {
-      return super.changedDropDownItem(selectedCategory);
+      return super.changedCategory(selectedCategory);
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void changedPriority(String selectedPriority) {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.changedPriority');
+    try {
+      return super.changedPriority(selectedPriority);
     } finally {
       _$_CreateQuestStoreActionController.endAction(_$actionInfo);
     }
@@ -187,13 +236,16 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   String toString() {
     return '''
 category: ${category},
+categoryValue: ${categoryValue},
 priority: ${priority},
+priorityInt: ${priorityInt},
 longitude: ${longitude},
 latitude: ${latitude},
 questTitle: ${questTitle},
 description: ${description},
 price: ${price},
-adType: ${adType}
+adType: ${adType},
+canCreateQuest: ${canCreateQuest}
     ''';
   }
 }

@@ -13,7 +13,6 @@ extension QuestService on QuestApiProvider{
   Future<void> createQuest({
     required Map<String, dynamic> quest,
   }) async {
-
     final responseData = await _httpClient.post(
       query: '/v1/quest/create',
       data: quest,

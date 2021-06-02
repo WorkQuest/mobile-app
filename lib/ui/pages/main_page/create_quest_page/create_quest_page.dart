@@ -69,26 +69,31 @@ class CreateQuestPage extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(6.0)),
                     ),
                     alignment: Alignment.centerLeft,
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton(
-                        isExpanded: true,
-                        items: <String>['One', 'Two', 'Free', 'Four']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        icon: Icon(
-                          Icons.arrow_drop_down,
-                          size: 30,
-                          color: Colors.blueAccent,
-                        ),
-                        hint: Text(
-                          'Choose',
-                          overflow: TextOverflow.fade,
-                          maxLines: 1,
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                    child: Observer(
+                      builder: (_) => DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          isExpanded: true,
+                          value: store.priority,
+                          onChanged: (String? value) {
+                            store.changedPriority(value!);
+                          },
+                          items: store.priorityList
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: new Text(value),
+                            );
+                          }).toList(),
+                          icon: Icon(
+                            Icons.arrow_drop_down,
+                            size: 30,
+                            color: Colors.blueAccent,
+                          ),
+                          hint: Text(
+                            'Choose',
+                            maxLines: 1,
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          ),
                         ),
                       ),
                     ),
@@ -125,8 +130,7 @@ class CreateQuestPage extends StatelessWidget {
                           isExpanded: true,
                           value: store.category,
                           onChanged: (String? value) {
-                            store.changedDropDownItem(value!);
-                            print(store.category);
+                            store.changedCategory(value!);
                           },
                           items: store.questCategoriesList
                               .map<DropdownMenuItem<String>>((String value) {
@@ -404,6 +408,7 @@ class CreateQuestPage extends StatelessWidget {
                       borderRadius: BorderRadius.all(Radius.circular(6.0)),
                     ),
                     child: TextField(
+                      keyboardType: TextInputType.number,
                       onChanged: store.setPrice,
                       decoration: InputDecoration(
                         hintText: 'Price',
@@ -419,7 +424,8 @@ class CreateQuestPage extends StatelessWidget {
                 height: 50.0,
                 margin: const EdgeInsets.symmetric(vertical: 30),
                 child: ElevatedButton(
-                  onPressed: null,
+                  onPressed: (){store.createQuest();
+                  print(store.price);},
                   child: Text(
                     'Create a quest',
                     style: TextStyle(

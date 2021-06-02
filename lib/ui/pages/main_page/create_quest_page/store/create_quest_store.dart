@@ -16,29 +16,29 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   _CreateQuestStore(this.questApiProvider);
 
-  List<String> questCategoriesList = [
+  final List<String> questCategoriesList = [
     "Choose",
     "Retail / sales / purchasing",
     "Transport / logistics / Construction",
     "Telecommunications / Communication",
-    "Bars / restaurants ",
-    "Law and accounting ",
+    "Bars / restaurants",
+    "Law and accounting",
     "Personnel management / HR",
-    "Security / safety ",
+    "Security / safety",
     "Home staff",
-    "Beauty / fitness / sport ",
+    "Beauty / fitness / sport",
     "Tourism / Leisure / Entertainment",
     "Education",
     "Culture / Arts",
     "Medicine / Pharmacy",
     " IT / Telecom / Computers",
     " Banking / Finance / Insurance",
-    "Real Estate ",
-    "Marketing / Advertising ",
+    "Real Estate",
+    "Marketing / Advertising",
     "Design / layout design",
     "Interior and exterior design / 3D visualization",
-    "Production / energy ",
-    "Agriculture / agribusiness / forestry ",
+    "Production / energy",
+    "Agriculture / agribusiness / forestry",
     "Secretariat / document management",
     "Early career / Students",
     "Service and life",
@@ -47,15 +47,26 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     "Other areas of employment"
   ];
 
+  final List<String> priorityList = [
+    "Choose",
+    "Low",
+    "Normal",
+    "Urgent",
+  ];
 
-/// location, runtime, images and videos ,priority undone
-
+  /// location, runtime, images and videos ,priority undone
 
   @observable
   String category = 'Choose';
 
   @observable
-  int priority = 0;
+  String categoryValue = 'other';
+
+  @observable
+  String priority = 'Choose';
+
+  @observable
+  int priorityInt = 0;
 
   @observable
   double longitude = 0;
@@ -74,8 +85,8 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @observable
   int adType = 0;
-/// change location data
-  get location => null;
+
+  /// change location data
 
   @action
   void setQuestTitle(String value) => questTitle = value;
@@ -87,24 +98,120 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   void setPrice(String value) => price = value;
 
   @action
-  void changedDropDownItem(String selectedCategory) =>
-      category = selectedCategory;
+  void changedCategory(String selectedCategory) {
+    category = selectedCategory;
+    switch (category) {
+      case "Choose":
+        categoryValue = "other";
+        break;
+      case "Retail / sales / purchasing":
+        categoryValue = "retail";
+        break;
+      case "Transport / logistics / Construction":
+        categoryValue = "transport";
+        break;
+      case "Telecommunications / Communication":
+        categoryValue = "communication";
+        break;
+      case "Bars / restaurants":
+        categoryValue = "bar";
+        break;
+      case "Law and accounting":
+        categoryValue = "law";
+        break;
+      case "Personnel management / HR":
+        categoryValue = "hr";
+        break;
+      case "Security / safety":
+        categoryValue = "security";
+        break;
+      case "Home staff":
+        categoryValue = "home";
+        break;
+      case "Beauty / fitness / sport":
+        categoryValue = "beauty";
+        break;
+      case "Tourism / Leisure / Entertainment":
+        categoryValue = "entertainment";
+        break;
+      case "Education":
+        categoryValue = "education";
+        break;
+      case "Culture / Arts":
+        categoryValue = "culture";
+        break;
+      case "Medicine / Pharmacy":
+        categoryValue = "medicine";
+        break;
+      case "IT / Telecom / Computers":
+        categoryValue = "it";
+        break;
+      case "Banking / Finance / Insurance":
+        categoryValue = "banking";
+        break;
+      case "Real Estate":
+        categoryValue = "realEstate";
+        break;
+      case "Marketing / Advertising":
+        categoryValue = "marketing";
+        break;
+      case "Design / layout design":
+        categoryValue = "design";
+        break;
+      case "Interior and exterior design / 3D visualization":
+        categoryValue = "design3D";
+        break;
+      case "Production / energy":
+        categoryValue = "production";
+        break;
+      case "Agriculture / agribusiness / forestry":
+        categoryValue = "agriculture";
+        break;
+      case "Secretariat / document management":
+        categoryValue = "secretariat";
+        break;
+      case "Early career / Students":
+        categoryValue = "earlyCareer";
+        break;
+      case "Service and life":
+        categoryValue = "service";
+        break;
+      case "Work abroad":
+        categoryValue = "abroad";
+        break;
+      case "Seasonal work":
+        categoryValue = "seasonal";
+        break;
+      case "Other areas of employment":
+        categoryValue = "other";
+        break;
+    }
+  }
+
+  @action
+  void changedPriority(String selectedPriority) {
+    priority = selectedPriority;
+    priorityInt = priorityList.indexOf(priority);
+  }
+
+  @computed
+  bool get canCreateQuest => !isLoading && priority.isNotEmpty && category.isNotEmpty;
 
   @action
   Future createQuest() async {
     try {
+      final Location location = Location(longitude: longitude, latitude: latitude,);
       final QuestModel questModel = QuestModel(
-          category: category,
-          priority: priority,
+          category: categoryValue,
+          priority: priorityInt,
           ///location data needed
           location: location,
-
           title: questTitle,
           description: description,
           price: price,
           adType: adType);
       await questApiProvider.createQuest(quest: questModel.toJson());
       this.onSuccess(true);
-    } catch (e) {}
+    } catch (e) {this.onError(e.toString());}
   }
 }

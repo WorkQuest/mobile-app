@@ -27,7 +27,7 @@ abstract class QuestModel with _$QuestModel {
     final Map<String, dynamic> questData = new Map<String, dynamic>();
     questData['category'] = this.category;
     questData['priority'] = this.priority;
-    questData['location'] = this.location;
+    questData['location'] = this.location.toJson();
     questData['title'] = this.title;
     questData['description'] = this.description;
     questData['price'] = this.price;
