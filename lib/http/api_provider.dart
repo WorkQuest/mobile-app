@@ -1,5 +1,6 @@
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token/bearer_token.dart';
+import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
@@ -22,7 +23,7 @@ extension LoginService on ApiProvider {
       },
     );
     BearerToken bearerToken = BearerToken.fromJson(
-      responseData["data"],
+      responseData,
     );
     _httpClient.accessToken = bearerToken.access;
     return bearerToken.refresh;
@@ -44,9 +45,32 @@ extension LoginService on ApiProvider {
       },
     );
     BearerToken bearerToken = BearerToken.fromJson(
-      responseData["data"],
+      responseData,
     );
     _httpClient.accessToken = bearerToken.access;
     return bearerToken.refresh;
+  }
+
+  Future<String> refreshToken(String refreshToken) async {
+    _httpClient.accessToken = refreshToken;
+    final responseData = await _httpClient.post(
+      query: '/v1/auth/refresh-tokens',
+    );
+    BearerToken bearerToken = BearerToken.fromJson(
+      responseData,
+    );
+    _httpClient.accessToken = bearerToken.access;
+    return bearerToken.refresh;
+  }
+}
+
+extension QuestService on ApiProvider {
+  Future<void> createQuest({
+    required CreateQuestRequestModel quest,
+  }) async {
+    final responseData = await _httpClient.post(
+      query: '/v1/quest/create',
+      data: quest.toJson(),
+    );
   }
 }
