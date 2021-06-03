@@ -86,3 +86,4 @@ app.*.map.json
 !**/ios/**/default.perspectivev3
 # End of https://www.gitignore.io/api/flutter
 /ios/Runner/keys.swift
+/lib/di/injector.config.dart
