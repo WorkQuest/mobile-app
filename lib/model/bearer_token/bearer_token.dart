@@ -11,14 +11,14 @@ class BearerToken {
 
   factory BearerToken.fromJson(Map<String, dynamic> json) {
     return BearerToken(
-      status: json["status"],
+      status: json["userStatus"],
       access: json["access"],
       refresh: json["refresh"],
     );
   }
 
   Map<String, dynamic> toJson() => {
-    "status": status,
+    "userStatus": status,
     "access": access,
     "refresh": refresh,
   };
