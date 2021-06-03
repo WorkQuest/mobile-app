@@ -1,7 +1,9 @@
 import 'package:app/routes.dart';
+import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/profile_reviews_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -16,7 +18,7 @@ class WorkQuestApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.generateRoute,
       localeResolutionCallback: _localeResolutionCallback,
-      initialRoute: NotificationPage.routeName,
+      initialRoute: CreateQuestPage.routeName,
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

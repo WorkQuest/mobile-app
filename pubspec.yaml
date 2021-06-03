@@ -41,6 +41,7 @@ dependencies:
 
   # Widgets.
   flutter_svg: ^0.22.0
+  dotted_border: ^2.0.0
 
   google_maps_flutter: ^2.0.3
   location: ^4.1.1

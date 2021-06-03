@@ -1,0 +1,217 @@
+import 'package:app/http/quest_api_provider.dart';
+import 'package:app/model/quest_model/quest_model.dart';
+import 'package:app/base_store/i_store.dart';
+import 'package:injectable/injectable.dart';
+import 'package:mobx/mobx.dart';
+
+part 'create_quest_store.g.dart';
+
+@injectable
+class CreateQuestStore extends _CreateQuestStore with _$CreateQuestStore {
+  CreateQuestStore(QuestApiProvider questApiProvider) : super(questApiProvider);
+}
+
+abstract class _CreateQuestStore extends IStore<bool> with Store {
+  final QuestApiProvider questApiProvider;
+
+  _CreateQuestStore(this.questApiProvider);
+
+  final List<String> questCategoriesList = [
+    "Choose",
+    "Retail / sales / purchasing",
+    "Transport / logistics / Construction",
+    "Telecommunications / Communication",
+    "Bars / restaurants",
+    "Law and accounting",
+    "Personnel management / HR",
+    "Security / safety",
+    "Home staff",
+    "Beauty / fitness / sport",
+    "Tourism / Leisure / Entertainment",
+    "Education",
+    "Culture / Arts",
+    "Medicine / Pharmacy",
+    " IT / Telecom / Computers",
+    " Banking / Finance / Insurance",
+    "Real Estate",
+    "Marketing / Advertising",
+    "Design / layout design",
+    "Interior and exterior design / 3D visualization",
+    "Production / energy",
+    "Agriculture / agribusiness / forestry",
+    "Secretariat / document management",
+    "Early career / Students",
+    "Service and life",
+    "Work abroad",
+    "Seasonal work",
+    "Other areas of employment"
+  ];
+
+  final List<String> priorityList = [
+    "Choose",
+    "Low",
+    "Normal",
+    "Urgent",
+  ];
+
+  /// location, runtime, images and videos ,priority undone
+
+  @observable
+  String category = 'Choose';
+
+  @observable
+  String categoryValue = 'other';
+
+  @observable
+  String priority = 'Choose';
+
+  @observable
+  int priorityInt = 0;
+
+  @observable
+  double longitude = 0;
+
+  @observable
+  double latitude = 0;
+
+  @observable
+  String questTitle = '';
+
+  @observable
+  String description = '';
+
+  @observable
+  String price = '';
+
+  @observable
+  int adType = 0;
+
+  /// change location data
+
+  @action
+  void setQuestTitle(String value) => questTitle = value;
+
+  @action
+  void setAboutQuest(String value) => description = value;
+
+  @action
+  void setPrice(String value) => price = value;
+
+  @action
+  void changedCategory(String selectedCategory) {
+    category = selectedCategory;
+    switch (category) {
+      case "Choose":
+        categoryValue = "other";
+        break;
+      case "Retail / sales / purchasing":
+        categoryValue = "retail";
+        break;
+      case "Transport / logistics / Construction":
+        categoryValue = "transport";
+        break;
+      case "Telecommunications / Communication":
+        categoryValue = "communication";
+        break;
+      case "Bars / restaurants":
+        categoryValue = "bar";
+        break;
+      case "Law and accounting":
+        categoryValue = "law";
+        break;
+      case "Personnel management / HR":
+        categoryValue = "hr";
+        break;
+      case "Security / safety":
+        categoryValue = "security";
+        break;
+      case "Home staff":
+        categoryValue = "home";
+        break;
+      case "Beauty / fitness / sport":
+        categoryValue = "beauty";
+        break;
+      case "Tourism / Leisure / Entertainment":
+        categoryValue = "entertainment";
+        break;
+      case "Education":
+        categoryValue = "education";
+        break;
+      case "Culture / Arts":
+        categoryValue = "culture";
+        break;
+      case "Medicine / Pharmacy":
+        categoryValue = "medicine";
+        break;
+      case "IT / Telecom / Computers":
+        categoryValue = "it";
+        break;
+      case "Banking / Finance / Insurance":
+        categoryValue = "banking";
+        break;
+      case "Real Estate":
+        categoryValue = "realEstate";
+        break;
+      case "Marketing / Advertising":
+        categoryValue = "marketing";
+        break;
+      case "Design / layout design":
+        categoryValue = "design";
+        break;
+      case "Interior and exterior design / 3D visualization":
+        categoryValue = "design3D";
+        break;
+      case "Production / energy":
+        categoryValue = "production";
+        break;
+      case "Agriculture / agribusiness / forestry":
+        categoryValue = "agriculture";
+        break;
+      case "Secretariat / document management":
+        categoryValue = "secretariat";
+        break;
+      case "Early career / Students":
+        categoryValue = "earlyCareer";
+        break;
+      case "Service and life":
+        categoryValue = "service";
+        break;
+      case "Work abroad":
+        categoryValue = "abroad";
+        break;
+      case "Seasonal work":
+        categoryValue = "seasonal";
+        break;
+      case "Other areas of employment":
+        categoryValue = "other";
+        break;
+    }
+  }
+
+  @action
+  void changedPriority(String selectedPriority) {
+    priority = selectedPriority;
+    priorityInt = priorityList.indexOf(priority);
+  }
+
+  @computed
+  bool get canCreateQuest => !isLoading && priority.isNotEmpty && category.isNotEmpty;
+
+  @action
+  Future createQuest() async {
+    try {
+      final Location location = Location(longitude: longitude, latitude: latitude,);
+      final QuestModel questModel = QuestModel(
+          category: categoryValue,
+          priority: priorityInt,
+          ///location data needed
+          location: location,
+          title: questTitle,
+          description: description,
+          price: price,
+          adType: adType);
+      await questApiProvider.createQuest(quest: questModel.toJson());
+      this.onSuccess(true);
+    } catch (e) {this.onError(e.toString());}
+  }
+}

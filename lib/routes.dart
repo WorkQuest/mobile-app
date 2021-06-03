@@ -1,6 +1,9 @@
+import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
+import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/profile_reviews_page.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
@@ -73,6 +76,19 @@ class Routes {
       case NotificationPage.routeName:
         return MaterialPageRoute(
           builder: (context) => NotificationPage(),
+        );
+
+      case ProfileReviews.routeName:
+        return MaterialPageRoute(
+          builder: (context) => ProfileReviews(),
+        );
+
+      case CreateQuestPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<CreateQuestStore>(),
+            child: CreateQuestPage(),
+          ),
         );
 
       default:
