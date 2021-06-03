@@ -1,6 +1,7 @@
-import 'package:app/http/quest_api_provider.dart';
-import 'package:app/model/quest_model/quest_model.dart';
+import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
+import 'package:app/model/create_quest_model/create_quest_request_model.dart';
+import 'package:app/model/create_quest_model/location_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -8,13 +9,13 @@ part 'create_quest_store.g.dart';
 
 @injectable
 class CreateQuestStore extends _CreateQuestStore with _$CreateQuestStore {
-  CreateQuestStore(QuestApiProvider questApiProvider) : super(questApiProvider);
+  CreateQuestStore(ApiProvider questApiProvider) : super(questApiProvider);
 }
 
 abstract class _CreateQuestStore extends IStore<bool> with Store {
-  final QuestApiProvider questApiProvider;
+  final ApiProvider apiProvider;
 
-  _CreateQuestStore(this.questApiProvider);
+  _CreateQuestStore(this.apiProvider);
 
   final List<String> questCategoriesList = [
     "Choose",
@@ -195,23 +196,29 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   }
 
   @computed
-  bool get canCreateQuest => !isLoading && priority.isNotEmpty && category.isNotEmpty;
+  bool get canCreateQuest =>
+      !isLoading && priority.isNotEmpty && category.isNotEmpty;
 
   @action
   Future createQuest() async {
     try {
-      final Location location = Location(longitude: longitude, latitude: latitude,);
-      final QuestModel questModel = QuestModel(
-          category: categoryValue,
-          priority: priorityInt,
-          ///location data needed
-          location: location,
-          title: questTitle,
-          description: description,
-          price: price,
-          adType: adType);
-      await questApiProvider.createQuest(quest: questModel.toJson());
+      final Location location = Location(
+        longitude: longitude,
+        latitude: latitude,
+      );
+      final CreateQuestRequestModel questModel = CreateQuestRequestModel(
+        category: categoryValue,
+        priority: priorityInt,
+        location: location,
+        title: questTitle,
+        description: description,
+        price: price,
+        adType: adType,
+      );
+      await apiProvider.createQuest(quest: questModel);
       this.onSuccess(true);
-    } catch (e) {this.onError(e.toString());}
+    } catch (e) {
+      this.onError(e.toString());
+    }
   }
 }
