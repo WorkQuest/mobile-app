@@ -4,6 +4,8 @@ import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profile_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/profile_reviews_page.dart';
+import 'package:app/ui/pages/sign_up_page/sign_up_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
