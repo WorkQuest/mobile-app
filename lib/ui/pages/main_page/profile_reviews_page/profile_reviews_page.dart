@@ -17,6 +17,7 @@ class ProfileReviews extends StatefulWidget {
 class _ProfileReviewsState extends State<ProfileReviews>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  ScrollController _scrollController = ScrollController();
 
   void initState() {
     super.initState();
@@ -30,18 +31,72 @@ class _ProfileReviewsState extends State<ProfileReviews>
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           SliverAppBar(
+            backgroundColor: Color(0xFF0083C7),
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            centerTitle: false,
             pinned: true,
             expandedHeight: 250,
             flexibleSpace: FlexibleSpaceBar(
+              titlePadding: EdgeInsets.only(
+                left: 16.0,
+                bottom: 16.0,
+                top: 0.0,
+              ),
               collapseMode: CollapseMode.pin,
               centerTitle: false,
-              background: Image.asset(
-                "assets/profile_avatar_test.jpg",
-                fit: BoxFit.cover,
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(
+                    "assets/profile_avatar_test.jpg",
+                    fit: BoxFit.cover,
+                  ),
+                  Positioned(
+                    bottom: 85.0,
+                    left: 50.0,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: Color(0xFFE8D20D),
+                          size: 20.0,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Color(0xFFE8D20D),
+                          size: 20.0,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Color(0xFFE8D20D),
+                          size: 20.0,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Color(0xFFE8D20D),
+                          size: 20.0,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Color(0xFFE9EDF2),
+                          size: 20.0,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              //title: appBarTitle(),
+              title: appBarTitle(),
             ),
           ),
           SliverPadding(
@@ -119,6 +174,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                   child: Material(
                     color: Color(0xFFF7F8FA),
                     child: ListView.builder(
+                      controller: _scrollController,
                       padding: EdgeInsets.only(
                         top: 0.0,
                       ),
@@ -138,6 +194,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                   child: Material(
                     color: Color(0xFFF7F8FA),
                     child: ListView.builder(
+                      controller: _scrollController,
                       padding: EdgeInsets.only(
                         top: 0.0,
                       ),
@@ -698,66 +755,94 @@ class _ProfileReviewsState extends State<ProfileReviews>
 
   ///AppBar Title
 
-  // Widget appBarTitle() {
-  //   return Container(
-  //     alignment: Alignment.centerLeft,
-  //     margin: const EdgeInsets.only(left: 16.0),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Row(
-  //           children: [
-  //             Icon(
-  //               Icons.star,
-  //               color: Color(0xFFE8D20D),
-  //               size: 19.0,
-  //             ),
-  //             Icon(
-  //               Icons.star,
-  //               color: Color(0xFFE8D20D),
-  //               size: 19.0,
-  //             ),
-  //             Icon(
-  //               Icons.star,
-  //               color: Color(0xFFE8D20D),
-  //               size: 19.0,
-  //             ),
-  //             Icon(
-  //               Icons.star,
-  //               color: Color(0xFFE8D20D),
-  //               size: 19.0,
-  //             ),
-  //             Icon(
-  //               Icons.star,
-  //               color: Color(0xFFE9EDF2),
-  //               size: 19.0,
-  //             ),
-  //           ],
-  //         ),
-  //         Text(
-  //           "Rosalia Vans",
-  //           style: TextStyle(
-  //             fontSize: 30.0,
-  //             color: Colors.white,
-  //           ),
-  //         ),
-  //         Container(
-  //           decoration: BoxDecoration(
-  //             color: Color(0xFFF6CF00),
-  //             borderRadius: BorderRadius.all(
-  //               Radius.circular(3.0),
-  //             ),
-  //           ),
-  //           child: Text(
-  //             "HIGHER LEVEL",
-  //             style: TextStyle(
-  //               fontSize: 12.0,
-  //               color: Colors.white,
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget appBarTitle() {
+    return Transform.translate(
+      offset: Offset(25.0, 0.0),
+      child: Stack(
+        children: [
+          // Positioned(
+          //   top: 0.0,
+          //   left: 0.0,
+          //   child: IconButton(
+          //     onPressed: () => Navigator.pop(context),
+          //     icon: Icon(
+          //       Icons.arrow_back_ios,
+          //     ),
+          //   ),
+          // ),
+          Positioned(
+            bottom: 18.0,
+            left: 0.0,
+            child: Text(
+              "Rosalia Vans",
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          // Positioned(
+          //   bottom: 42.0,
+          //   left: 0.0,
+          //   child: AnimatedOpacity(
+          //     duration: Duration(seconds: 3),
+          //     opacity: 0.5,
+          //     child: Row(
+          //       children: [
+          //         Icon(
+          //           Icons.star,
+          //           color: Color(0xFFE8D20D),
+          //           size: 15.0,
+          //         ),
+          //         Icon(
+          //           Icons.star,
+          //           color: Color(0xFFE8D20D),
+          //           size: 15.0,
+          //         ),
+          //         Icon(
+          //           Icons.star,
+          //           color: Color(0xFFE8D20D),
+          //           size: 15.0,
+          //         ),
+          //         Icon(
+          //           Icons.star,
+          //           color: Color(0xFFE8D20D),
+          //           size: 15.0,
+          //         ),
+          //         Icon(
+          //           Icons.star,
+          //           color: Color(0xFFE9EDF2),
+          //           size: 15.0,
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 5.0,
+                vertical: 2.0,
+              ),
+              decoration: BoxDecoration(
+                color: Color(0xFFF6CF00),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(3.0),
+                ),
+              ),
+              child: Text(
+                "HIGHER LEVEL",
+                style: TextStyle(
+                  fontSize: 8.0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
