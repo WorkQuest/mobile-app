@@ -1,6 +1,6 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
-import 'package:app/model/quests_models/QuestsResponse.dart';
+import 'package:app/model/profile_me_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -17,14 +17,13 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   _ProfileMeStore(this._apiProvider);
 
-  @observable
-  List<QuestsResponse>? questsList;
+  ProfileMeResponse? userData;
 
   @action
   Future getProfileMe() async {
     try {
       this.onLoading();
-      await _apiProvider.getProfileMe();
+      userData = await _apiProvider.getProfileMe();
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
