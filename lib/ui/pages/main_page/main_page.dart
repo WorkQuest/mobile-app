@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../routes.dart';
 import 'my_quests_page/my_quests_page.dart';
 
 final firstTabNavKey = GlobalKey<NavigatorState>();
@@ -41,13 +42,14 @@ class MainPage extends StatelessWidget {
       tabBuilder: (context, index) {
         if (index == 0) {
           return CupertinoTabView(
-            navigatorKey: firstTabNavKey,
-            builder:  (context) {
-              return QuestPage();
-            }
-          );
+              onGenerateRoute: Routes.generateRoute,
+              navigatorKey: firstTabNavKey,
+              builder: (context) {
+                return QuestPage();
+              });
         } else if (index == 1) {
           return CupertinoTabView(
+            onGenerateRoute: Routes.generateRoute,
             navigatorKey: secondTabNavKey,
             builder: (context) {
               return MyQuestsPage();
@@ -55,13 +57,18 @@ class MainPage extends StatelessWidget {
           );
         } else if (index == 2) {
           return CupertinoTabView(
+            onGenerateRoute: Routes.generateRoute,
             navigatorKey: thirdTabNavKey,
-            builder: (context) {
-              return MyQuestsPage();
-            },
+            builder: (BuildContext context) => CupertinoPageScaffold(
+              navigationBar: CupertinoNavigationBar(
+                middle: Text("Chat"),
+              ),
+              child: Column(),
+            ),
           );
         } else if (index == 3) {
           return CupertinoTabView(
+            onGenerateRoute: Routes.generateRoute,
             navigatorKey: forthTabNavKey,
             builder: (BuildContext context) => CupertinoPageScaffold(
               navigationBar: CupertinoNavigationBar(
@@ -72,6 +79,7 @@ class MainPage extends StatelessWidget {
           );
         } else {
           return CupertinoTabView(
+            onGenerateRoute: Routes.generateRoute,
             navigatorKey: fiveTabNavKey,
             builder: (context) {
               return SettingsPage();
