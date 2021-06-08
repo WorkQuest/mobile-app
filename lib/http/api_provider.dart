@@ -1,6 +1,8 @@
 import 'package:app/http/core/i_http_client.dart';
-import 'package:app/model/bearer_token/bearer_token.dart';
-import 'package:app/model/create_quest_model/create_quest_request_model.dart';
+import 'package:app/model/bearer_token.dart';
+import 'package:app/model/profile_me_response.dart';
+import 'package:app/model/quests_models/QuestsResponse.dart';
+import 'package:app/model/quests_models/create_quest_model/create_quest_request_model.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
@@ -72,5 +74,38 @@ extension QuestService on ApiProvider {
       query: '/v1/quest/create',
       data: quest.toJson(),
     );
+  }
+
+  Future<List<QuestsResponse>> getQuests({
+    int limit = 10,
+    int offset = 0,
+    String? searchWord,
+    int priority = -1,
+    int status = -1,
+  }) async {
+    final responseData = await _httpClient.get(
+      query: '/v1/quests',
+      queryParameters: {
+        // "offset": offset,
+        // "limit": limit,
+        // "q": searchWord,
+        // "priority": priority == -1 ? null : priority,
+        // "status": status == -1 ? null : status,
+      },
+    );
+    return List<QuestsResponse>.from(
+      responseData["quests"].map(
+        (x) => QuestsResponse.fromJson(x),
+      ),
+    );
+  }
+}
+
+extension UserInfoService on ApiProvider {
+  Future<ProfileMeResponse> getProfileMe() async {
+    final responseData = await _httpClient.get(
+      query: '/v1/profile/me',
+    );
+    return ProfileMeResponse.fromJson(responseData);
   }
 }
