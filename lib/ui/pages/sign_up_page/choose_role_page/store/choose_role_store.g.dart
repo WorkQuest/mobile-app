@@ -9,6 +9,13 @@ part of 'choose_role_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
+  Computed<bool>? _$privacyPolicyComputed;
+
+  @override
+  bool get privacyPolicy =>
+      (_$privacyPolicyComputed ??= Computed<bool>(() => super.privacyPolicy,
+              name: '_ChooseRoleStore.privacyPolicy'))
+          .value;
   Computed<bool>? _$termsAndConditionsComputed;
 
   @override
@@ -143,6 +150,7 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   @override
   String toString() {
     return '''
+privacyPolicy: ${privacyPolicy},
 termsAndConditions: ${termsAndConditions},
 amlAndCtfPolicy: ${amlAndCtfPolicy},
 userRole: ${userRole}

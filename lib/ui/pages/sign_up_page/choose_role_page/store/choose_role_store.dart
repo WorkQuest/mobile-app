@@ -6,6 +6,7 @@ import 'package:mobx/mobx.dart';
 part 'choose_role_store.g.dart';
 
 @injectable
+@singleton
 class ChooseRoleStore extends _ChooseRoleStore with _$ChooseRoleStore {
   ChooseRoleStore();
 }
@@ -19,7 +20,6 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   @observable
   bool _termsAndConditions = false;
 
-  bool get privacyPolicy => _privacyPolicy;
   @observable
   bool _amlAndCtfPolicy = false;
 
@@ -37,6 +37,9 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
 
   @action
   void setUserRole(UserRole role) => _userRole = role;
+
+  @computed
+  bool get privacyPolicy => _privacyPolicy;
 
   @computed
   bool get termsAndConditions => _termsAndConditions;
