@@ -1,8 +1,8 @@
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
+import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_me_response.dart';
 import 'package:app/model/quests_models/QuestsResponse.dart';
-import 'package:app/model/quests_models/create_quest_model/create_quest_request_model.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton

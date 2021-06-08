@@ -7,7 +7,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 class CreateQuestPage extends StatelessWidget {
-  static const String routeName = "/createQuestPage";
+  static const String routeName = '/createQuestPage';
+
+  const CreateQuestPage();
 
   Widget build(context) {
     final store = context.read<CreateQuestStore>();

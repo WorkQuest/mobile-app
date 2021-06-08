@@ -1,6 +1,5 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
-import 'package:app/model/bearer_token/bearer_token.dart';
 import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';

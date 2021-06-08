@@ -1,4 +1,4 @@
-import 'package:app/model/create_quest_model/location_model.dart';
+import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 
 class CreateQuestRequestModel {
   String category;

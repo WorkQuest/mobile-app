@@ -1,7 +1,7 @@
 import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
-import 'package:app/model/create_quest_model/location_model.dart';
+import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
