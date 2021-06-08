@@ -4,6 +4,7 @@ import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profile_reviews_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
@@ -11,6 +12,7 @@ import 'package:app/ui/pages/sign_up_page/choose_role_page/choose_role_page.dart
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
 import 'package:app/ui/pages/sign_up_page/sign_up_page.dart';
 import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
+import 'package:app/ui/pages/singleton_stores/profile_me_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +25,7 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<SignInStore>(),
-            child: const SignInPage(),
+            child: SignInPage(),
           ),
         );
 
@@ -37,7 +39,17 @@ class Routes {
 
       case MainPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MainPage(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<QuestsStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
+            child: MainPage(),
+          ),
         );
 
       case MyQuestDetails.routeName:
@@ -47,28 +59,30 @@ class Routes {
 
       case ChooseRolePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MultiProvider(providers: [
-            Provider(
-              create: (context) => getIt.get<SignUpStore>(),
-            ),
-            Provider(
-              create: (context) => getIt.get<ChooseRoleStore>(),
-            )
-          ],
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SignUpStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChooseRoleStore>(),
+              )
+            ],
             child: ChooseRolePage(),
           ),
         );
 
       case ApproveRolePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MultiProvider(providers: [
-            Provider(
-              create: (context) => getIt.get<SignUpStore>(),
-            ),
-            Provider(
-              create: (context) => getIt.get<ChooseRoleStore>(),
-            ),
-          ],
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SignUpStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChooseRoleStore>(),
+              ),
+            ],
             child: ApproveRolePage(),
           ),
         );
