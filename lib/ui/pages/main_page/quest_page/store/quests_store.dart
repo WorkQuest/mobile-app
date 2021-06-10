@@ -1,6 +1,6 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
-import 'package:app/model/quests_models/QuestsResponse.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -18,7 +18,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   _QuestsStore(this._apiProvider);
 
   @observable
-  List<QuestsResponse>? questsList;
+  List<BaseQuestResponse>? questsList;
 
   @observable
   _MapList mapListChecker = _MapList.Map;

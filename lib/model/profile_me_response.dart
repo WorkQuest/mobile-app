@@ -1,4 +1,5 @@
 class ProfileMeResponse {
+
   ProfileMeResponse({
     required this.id,
     required this.firstName,

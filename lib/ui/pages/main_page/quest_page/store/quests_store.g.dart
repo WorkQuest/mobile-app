@@ -12,13 +12,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$questsListAtom = Atom(name: '_QuestsStore.questsList');
 
   @override
-  List<QuestsResponse>? get questsList {
+  List<BaseQuestResponse>? get questsList {
     _$questsListAtom.reportRead();
     return super.questsList;
   }
 
   @override
-  set questsList(List<QuestsResponse>? value) {
+  set questsList(List<BaseQuestResponse>? value) {
     _$questsListAtom.reportWrite(value, super.questsList, () {
       super.questsList = value;
     });

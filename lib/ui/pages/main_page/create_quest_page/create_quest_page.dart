@@ -102,6 +102,7 @@ class CreateQuestPage extends StatelessWidget {
                   ),
                 ],
               ),
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -118,6 +119,7 @@ class CreateQuestPage extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   Container(
                     height: 50,
                     padding: EdgeInsets.symmetric(horizontal: 15),

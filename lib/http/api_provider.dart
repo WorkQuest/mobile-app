@@ -2,7 +2,7 @@ import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_me_response.dart';
-import 'package:app/model/quests_models/QuestsResponse.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
@@ -76,7 +76,7 @@ extension QuestService on ApiProvider {
     );
   }
 
-  Future<List<QuestsResponse>> getQuests({
+  Future<List<BaseQuestResponse>> getQuests({
     int limit = 10,
     int offset = 0,
     String? searchWord,
@@ -93,9 +93,9 @@ extension QuestService on ApiProvider {
         // "status": status == -1 ? null : status,
       },
     );
-    return List<QuestsResponse>.from(
+    return List<BaseQuestResponse>.from(
       responseData["quests"].map(
-        (x) => QuestsResponse.fromJson(x),
+        (x) => BaseQuestResponse.fromJson(x),
       ),
     );
   }

@@ -5,6 +5,9 @@ import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profile_reviews_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/settings_page_employer/settings_page_employer.dart';
+import 'package:app/ui/pages/main_page/settings_page/settings_page_employer/store/settings_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/settings_page_worker/settings_page_worker.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
@@ -25,7 +28,7 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<SignInStore>(),
-            child: SignInPage(),
+            child:  SignInPage(),
           ),
         );
 
@@ -95,6 +98,26 @@ class Routes {
       case ProfileReviews.routeName:
         return MaterialPageRoute(
           builder: (context) => ProfileReviews(),
+        );
+
+      case SettingsPageWorker.routeName:
+        return MaterialPageRoute(
+          builder: (context) => SettingsPageWorker(),
+        );
+
+      case SettingsPageEmployer.routeName:
+        return MaterialPageRoute(
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SettingsPageStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
+            child: SettingsPageEmployer(),
+          ),
         );
 
       case CreateQuestPage.routeName:
