@@ -1,5 +1,6 @@
+import 'package:app/ui/pages/main_page/profile_reviews_page/profile_reviews_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/settings_page_employer/settings_page_employer.dart';
+import 'package:app/ui/pages/main_page/settings_page/settings_page_employer/settings_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -71,7 +72,7 @@ class MainPage extends StatelessWidget {
             onGenerateRoute: Routes.generateRoute,
             navigatorKey: forthTabNavKey,
             builder: (BuildContext context) {
-              return SettingsPageEmployer();
+              return ProfileReviews();
             },
           );
         } else {
@@ -79,7 +80,7 @@ class MainPage extends StatelessWidget {
             onGenerateRoute: Routes.generateRoute,
             navigatorKey: fiveTabNavKey,
             builder: (context) {
-              return SettingsPageEmployer();
+              return SettingsPage();
             },
           );
         }

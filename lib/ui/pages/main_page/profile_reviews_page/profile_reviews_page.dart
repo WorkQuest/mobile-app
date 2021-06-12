@@ -1,8 +1,10 @@
 import 'package:app/enums.dart';
+import 'package:app/ui/pages/singleton_stores/profile_me_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import "package:provider/provider.dart";
 
 class ProfileReviews extends StatefulWidget {
   static const String routeName = "/profileReviewPage";
@@ -29,6 +31,8 @@ class _ProfileReviewsState extends State<ProfileReviews>
 
   @override
   Widget build(BuildContext context) {
+    final userStore = context.read<ProfileMeStore>();
+
     return Scaffold(
       body: CustomScrollView(
         controller: _scrollController,
@@ -96,7 +100,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                   ),
                 ],
               ),
-              title: appBarTitle(),
+              title: appBarTitle(userStore),
             ),
           ),
           SliverPadding(
@@ -117,7 +121,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                   contactDetails(
                       location: "Moscow, Lenina street, 3d",
                       number: "+7 989 989 98 98",
-                      email: "worker@gmail.com"),
+                      email: userStore.userData!.email),
                   skills([
                     "Craft",
                     "DYI",
@@ -755,7 +759,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
 
   ///AppBar Title
 
-  Widget appBarTitle() {
+  Widget appBarTitle(userStore) {
     return Transform.translate(
       offset: Offset(25.0, 0.0),
       child: Stack(
@@ -774,7 +778,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
             bottom: 18.0,
             left: 0.0,
             child: Text(
-              "Rosalia Vans",
+              userStore.userData!.firstName + "  "+ userStore.userData!.lastName,
               style: TextStyle(
                 fontSize: 20.0,
                 color: Colors.white,

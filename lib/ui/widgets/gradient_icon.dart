@@ -6,7 +6,7 @@ class GradientIcon extends StatelessWidget {
       this.size,
       );
 
-  final IconData icon;
+  final Widget icon;
   final double size;
 
   @override
@@ -15,11 +15,7 @@ class GradientIcon extends StatelessWidget {
       child: SizedBox(
         width: size * 1.2,
         height: size * 1.2,
-        child: Icon(
-          icon,
-          size: size,
-          color: Colors.white,
-        ),
+        child: icon,
       ),
       shaderCallback: (Rect bounds) {
         final Rect rect = Rect.fromLTRB(0, 0, size, size);
