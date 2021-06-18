@@ -13,13 +13,10 @@ class TestHttpClient extends _HttpClient {
   TestHttpClient()
       : super(
           Dio(BaseOptions(
-            baseUrl: 'https://app-ver1.workquest.co/api',
-            connectTimeout: 20000,
-            receiveTimeout: 20000,
-            headers: {
-              "content-type": "application/json"
-            }
-          )),
+              baseUrl: 'https://app-ver1.workquest.co/api',
+              connectTimeout: 20000,
+              receiveTimeout: 20000,
+              headers: {"content-type": "application/json"})),
         );
 
   @override
@@ -67,9 +64,14 @@ class _HttpClient implements IHttpClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-
           if (accessToken != null) {
-            options.headers["Authorization"] = "Bearer " + accessToken.toString();
+            options.headers["Authorization"] =
+                "Bearer " + accessToken.toString();
+          }
+          if (tokenExpired == true) {
+            String? token = await Storage.readRefreshToken();
+            options.headers["Authorization"] =
+                "Bearer " +  token.toString();
           }
 
           println("\n---------- DioRequest ----------"
@@ -81,7 +83,7 @@ class _HttpClient implements IHttpClient {
 
           return handler.next(options);
         },
-        onResponse: (response, handler) {
+        onResponse: (response, handler) async {
           final options = response.requestOptions;
           println("\n---------- DioResponse ----------"
               "\n\turl: ${options.baseUrl}${options.path}"
