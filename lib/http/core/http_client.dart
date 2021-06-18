@@ -13,10 +13,13 @@ class TestHttpClient extends _HttpClient {
   TestHttpClient()
       : super(
           Dio(BaseOptions(
-              baseUrl: 'https://app-ver1.workquest.co/api',
-              connectTimeout: 20000,
-              receiveTimeout: 20000,
-              headers: {"content-type": "application/json"})),
+            baseUrl: 'https://app-ver1.workquest.co/api',
+            connectTimeout: 20000,
+            receiveTimeout: 20000,
+            headers: {
+              "content-type": "application/json"
+            }
+          )),
         );
 
   @override
@@ -83,7 +86,7 @@ class _HttpClient implements IHttpClient {
 
           return handler.next(options);
         },
-        onResponse: (response, handler) async {
+        onResponse: (response, handler) {
           final options = response.requestOptions;
           println("\n---------- DioResponse ----------"
               "\n\turl: ${options.baseUrl}${options.path}"
