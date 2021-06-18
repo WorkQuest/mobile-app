@@ -6,19 +6,17 @@ import 'package:app/log_service.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:app/utils/storage.dart';
 
 @Injectable(as: IHttpClient, env: [Environment.test])
 class TestHttpClient extends _HttpClient {
   TestHttpClient()
       : super(
           Dio(BaseOptions(
-            baseUrl: 'https://app-ver1.workquest.co/api',
-            connectTimeout: 20000,
-            receiveTimeout: 20000,
-            headers: {
-              "content-type": "application/json"
-            }
-          )),
+              baseUrl: 'https://app-ver1.workquest.co/api',
+              connectTimeout: 20000,
+              receiveTimeout: 20000,
+              headers: {"content-type": "application/json"})),
         );
 
   @override
@@ -30,7 +28,7 @@ class _HttpClient implements IHttpClient {
 
   @override
   String? accessToken;
-
+  bool tokenExpired = false;
 
   _HttpClient(this._dio) {
     _setInterceptors();
@@ -66,9 +64,14 @@ class _HttpClient implements IHttpClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-
           if (accessToken != null) {
-            options.headers["Authorization"] = "Bearer " + accessToken.toString();
+            options.headers["Authorization"] =
+                "Bearer " + accessToken.toString();
+          }
+          if (tokenExpired == true) {
+            String? token = await Storage.readRefreshToken();
+            options.headers["Authorization"] =
+                "Bearer " +  token.toString();
           }
 
           println("\n---------- DioRequest ----------"
@@ -80,7 +83,7 @@ class _HttpClient implements IHttpClient {
 
           return handler.next(options);
         },
-        onResponse: (response, handler) {
+        onResponse: (response, handler) async {
           final options = response.requestOptions;
           println("\n---------- DioResponse ----------"
               "\n\turl: ${options.baseUrl}${options.path}"
@@ -97,6 +100,10 @@ class _HttpClient implements IHttpClient {
               "\n\tmessage: ${error.message}"
               "\n\tresponse: ${error.response}"
               "\n--------------------------------\n");
+
+          if (error.response?.data["code"] == 401001) {
+            await refreshToken();
+          }
 
           // if (error.response?.data["code"] == 401001) {
           //   if (refreshAttempt == 5) {
@@ -138,4 +145,13 @@ class _HttpClient implements IHttpClient {
 //     refreshAttempt = 0;
 //   }
 // }
+
+  Future refreshToken() async {
+    this.tokenExpired = true;
+    final responseData = await post(
+      query: '/v1/auth/refresh-tokens',
+    );
+    responseData["access"] = this.accessToken!;
+    this.tokenExpired = false;
+  }
 }
