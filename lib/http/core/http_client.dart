@@ -6,6 +6,7 @@ import 'package:app/log_service.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:app/utils/storage.dart';
 
 @Injectable(as: IHttpClient, env: [Environment.test])
 class TestHttpClient extends _HttpClient {
@@ -30,7 +31,7 @@ class _HttpClient implements IHttpClient {
 
   @override
   String? accessToken;
-
+  bool tokenExpired = false;
 
   _HttpClient(this._dio) {
     _setInterceptors();
@@ -98,6 +99,10 @@ class _HttpClient implements IHttpClient {
               "\n\tresponse: ${error.response}"
               "\n--------------------------------\n");
 
+          if (error.response?.data["code"] == 401001) {
+            await refreshToken();
+          }
+
           // if (error.response?.data["code"] == 401001) {
           //   if (refreshAttempt == 5) {
           //     refreshAttempt = 0;
@@ -138,4 +143,13 @@ class _HttpClient implements IHttpClient {
 //     refreshAttempt = 0;
 //   }
 // }
+
+  Future refreshToken() async {
+    this.tokenExpired = true;
+    final responseData = await post(
+      query: '/v1/auth/refresh-tokens',
+    );
+    responseData["access"] = this.accessToken!;
+    this.tokenExpired = false;
+  }
 }
