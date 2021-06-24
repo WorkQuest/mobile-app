@@ -1,5 +1,4 @@
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/store/my_quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,7 @@ import "package:provider/provider.dart";
 import '../../../../enums.dart';
 
 class MyQuestsPage extends StatelessWidget {
-  static const String routeName = "/myQuestPage";
+  //static const String routeName = "/myQuestPage";
 
   @override
   Widget build(BuildContext context) {
