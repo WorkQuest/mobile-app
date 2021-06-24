@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +9,8 @@ class MyQuestsItem extends StatelessWidget {
     required this.itemType,
     required this.priority,
     required this.price,
+    required this.title,
+    required this.description,
     this.creatorName = "Samantha Sparcs",
     this.imageURL =
         "https://i.pinimg.com/736x/a9/3c/b4/a93cb4e0316ef9c4db83846550ff4deb.jpg",
@@ -20,8 +20,10 @@ class MyQuestsItem extends StatelessWidget {
   final QuestItemPriorityType itemType;
   final int priority;
   final String price;
+  final String title;
   final String creatorName;
   final String imageURL;
+  final String description;
   final int distance;
 
   @override
@@ -74,7 +76,8 @@ class MyQuestsItem extends StatelessWidget {
             height: 16,
           ),
           Text(
-            "Paint the gaarage quickly",
+           title,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Color(0xFF1D2127),
               fontSize: 18,
@@ -84,7 +87,8 @@ class MyQuestsItem extends StatelessWidget {
             height: 10,
           ),
           Text(
-            "Hi, i’m urgently looking for a skilled man that can paint my Garage doors and a couple of walls around the garage and by the way...",
+            description,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Color(0xFF4C5767),
             ),
@@ -115,7 +119,7 @@ class MyQuestsItem extends StatelessWidget {
 
   Widget getQuestHeader(QuestItemPriorityType itemType) {
     Widget returnWidget = Container();
-    switch(itemType){
+    switch (itemType) {
       case QuestItemPriorityType.Active:
         returnWidget = Container(
           margin: const EdgeInsets.symmetric(vertical: 16),
@@ -183,11 +187,11 @@ class MyQuestsItem extends StatelessWidget {
         );
         break;
       case QuestItemPriorityType.Starred:
-        returnWidget = SizedBox(height: 16,);
+        returnWidget = SizedBox(
+          height: 16,
+        );
         break;
     }
-
-
     return returnWidget;
   }
 }

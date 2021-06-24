@@ -1,12 +1,19 @@
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/store/my_quests_store.dart';
+import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_mobx/flutter_mobx.dart';
+import "package:provider/provider.dart";
 import '../../../../enums.dart';
 
 class MyQuestsPage extends StatelessWidget {
+  static const String routeName = "/myQuestPage";
+
   @override
   Widget build(BuildContext context) {
+    final myQuestList = context.read<QuestsStore>();
+    myQuestList.getQuests();
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -26,10 +33,11 @@ class MyQuestsPage extends StatelessWidget {
           physics: const ClampingScrollPhysics(),
           body: TabBarView(
             children: [
-              Center(child: const _List(QuestItemPriorityType.Active)),
-              Center(child: const _List(QuestItemPriorityType.Invited)),
-              Center(child: const _List(QuestItemPriorityType.Performed)),
-              Center(child: const _List(QuestItemPriorityType.Starred)),
+              Center(child: _List(QuestItemPriorityType.Active, myQuestList)),
+              Center(child: _List(QuestItemPriorityType.Invited, myQuestList)),
+              Center(
+                  child: _List(QuestItemPriorityType.Performed, myQuestList)),
+              Center(child: _List(QuestItemPriorityType.Starred, myQuestList)),
             ],
           ),
         ),
@@ -40,35 +48,42 @@ class MyQuestsPage extends StatelessWidget {
 
 class _List extends StatelessWidget {
   final QuestItemPriorityType questItemPriorityType;
+  final QuestsStore store;
 
-  const _List(this.questItemPriorityType);
+  const _List(this.questItemPriorityType, this.store);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFF7F8FA),
-      child: ListView.builder(
-        itemCount: 100,
-        padding: EdgeInsets.zero,
-        itemBuilder: (_, index) {
-          return MyQuestsItem(
-            itemType: questItemPriorityType,
-            price: "1500 WUSD",
-            priority: 2,
-          );
-          //   Padding(
-          //   padding: const EdgeInsets.all(5.0),
-          //   child: Container(
-          //     color: Colors.red,
-          //     child: Padding(
-          //       padding: const EdgeInsets.all(20.0),
-          //       child: Center(child: Text("$label $index")),
-          //     ),
-          //   ),
-          // );
-        },
-      ),
-    );
+    return Observer(builder: (_) {
+      return Container(
+        color: const Color(0xFFF7F8FA),
+        child: ListView.builder(
+          itemCount: store.questsList!.length,
+          padding: EdgeInsets.zero,
+          itemBuilder: (_, index) {
+            return MyQuestsItem(
+              title:store.questsList![index].title ,
+              itemType: questItemPriorityType,
+              price: store.questsList![index].price,
+              priority: store.questsList![index].priority,
+              creatorName: store.questsList![index].user.firstName +
+                  store.questsList![index].user.lastName,
+              description: store.questsList![index].description,
+            );
+            //   Padding(
+            //   padding: const EdgeInsets.all(5.0),
+            //   child: Container(
+            //     color: Colors.red,
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(20.0),
+            //       child: Center(child: Text("$label $index")),
+            //     ),
+            //   ),
+            // );
+          },
+        ),
+      );
+    });
   }
 }
 

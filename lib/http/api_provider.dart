@@ -87,12 +87,13 @@ extension QuestService on ApiProvider {
       query: '/v1/quests',
       queryParameters: {
         // "offset": offset,
-        // "limit": limit,
+        //"limit": limit,
         // "q": searchWord,
         // "priority": priority == -1 ? null : priority,
         // "status": status == -1 ? null : status,
       },
     );
+
     return List<BaseQuestResponse>.from(
       responseData["quests"].map(
         (x) => BaseQuestResponse.fromJson(x),

@@ -42,8 +42,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       questsList = await _apiProvider.getQuests();
+      print(questsList);
       this.onSuccess(true);
-    } catch (e) {
+    } catch (e,trace) {
+      print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
   }
