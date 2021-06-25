@@ -17,6 +17,8 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   _ProfileMeStore(this._apiProvider);
 
+
+
   ProfileMeResponse? userData;
 
   @action

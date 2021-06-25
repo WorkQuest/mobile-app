@@ -1,5 +1,5 @@
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/singleton_stores/profile_me_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

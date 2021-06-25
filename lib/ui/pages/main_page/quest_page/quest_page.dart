@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:app/log_service.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
-import 'package:app/ui/pages/singleton_stores/profile_me_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -116,18 +116,36 @@ class _QuestPageState extends State<QuestPage> {
   }
 
   Widget getBody() {
+    // if(profileMeStore!.userData.role == UserRole.Worker){
+    //
+    // }
+
     return Column(
       children: [
         SizedBox(
           height: 250,
         ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.pushNamed(context, CreateQuestPage.routeName);
-          },
-          child: Text("Create quest"),
+        _getDivider(),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, CreateQuestPage.routeName);
+            },
+            child: Text("Create quest"),
+          ),
         ),
+        _getDivider(),
       ],
+    );
+  }
+
+  Widget _getDivider() {
+    return SizedBox(
+      height: 10,
+      child: Container(
+        color: Color(0xFFF7F8FA),
+      ),
     );
   }
 

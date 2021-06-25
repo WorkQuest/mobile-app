@@ -1,5 +1,6 @@
-class ProfileMeResponse {
+import 'package:app/enums.dart';
 
+class ProfileMeResponse {
   ProfileMeResponse({
     required this.id,
     required this.firstName,
@@ -12,22 +13,23 @@ class ProfileMeResponse {
   String firstName;
   String lastName;
   String email;
-  String role;
+  UserRole role;
 
-  factory ProfileMeResponse.fromJson(Map<String, dynamic> json) =>
-      ProfileMeResponse(
+  factory ProfileMeResponse.fromJson(Map<String, dynamic> json) {
+      return ProfileMeResponse(
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
         email: json["email"],
-        role: json["role"],
+        role: json["role"] == "employer"? UserRole.Employer: UserRole.Worker,
       );
+  }
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "firstName": firstName,
         "lastName": lastName,
         "email": email,
-        "role": role,
+        "role": role.toString().split(".").last,
       };
 }

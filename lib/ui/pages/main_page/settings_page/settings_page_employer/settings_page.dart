@@ -1,5 +1,5 @@
 import 'package:app/ui/pages/main_page/settings_page/settings_page_employer/store/settings_store.dart';
-import 'package:app/ui/pages/singleton_stores/profile_me_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

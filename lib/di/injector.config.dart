@@ -14,12 +14,13 @@ import '../log_service.dart' as _i6;
 import '../ui/pages/main_page/create_quest_page/store/create_quest_store.dart'
     as _i7;
 import '../ui/pages/main_page/quest_page/store/quests_store.dart' as _i10;
-import '../ui/pages/main_page/settings_page/settings_page_employer/store/settings_store.dart' as _i11;
+import '../ui/pages/main_page/settings_page/settings_page_employer/store/settings_store.dart'
+    as _i11;
 import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i12;
 import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
     as _i3;
 import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i13;
-import '../ui/pages/singleton_stores/profile_me_store.dart' as _i9;
+import '../ui/pages/profile_me_store/profile_me_store.dart' as _i9;
 
 const String _test = 'test';
 const String _dev = 'dev';
