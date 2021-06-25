@@ -1,6 +1,7 @@
 import 'package:app/ui/pages/main_page/profile_reviews_page/profile_reviews_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_employer/settings_page.dart';
+import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,7 +19,7 @@ const _tabBarIconsData = [
   const _TabBarIconData('assets/search.svg', 'Quest'),
   const _TabBarIconData('assets/list.svg', 'My quests'),
   const _TabBarIconData('assets/message.svg', 'Chat'),
-  const _TabBarIconData('assets/user.svg', 'Profile'),
+  const _TabBarIconData('assets/wallet_icon.svg', 'Wallet'),
   const _TabBarIconData('assets/settings.svg', 'Settings'),
 ];
 
@@ -72,7 +73,7 @@ class MainPage extends StatelessWidget {
             onGenerateRoute: Routes.generateRoute,
             navigatorKey: forthTabNavKey,
             builder: (BuildContext context) {
-              return ProfileReviews();
+              return WalletPage();
             },
           );
         } else {
