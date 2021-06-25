@@ -59,42 +59,40 @@ class _WalletPageState extends State<WalletPage> {
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Expanded(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: Color(0xFFF7F8FA),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Balance",
-                      style: TextStyle(fontSize: 16),
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: Color(0xFFF7F8FA),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Balance",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "1 600 WUSD",
+                    style: TextStyle(
+                        color: Color(0xFF0083C7),
+                        fontSize: 25,
+                        fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    "\$ 120.34",
+                    style: TextStyle(
+                      color: Color(0xFFAAB0B9),
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Text(
-                      "1 600 WUSD",
-                      style: TextStyle(
-                          color: Color(0xFF0083C7),
-                          fontSize: 25,
-                          fontWeight: FontWeight.w700),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Text(
-                      "\$ 120.34",
-                      style: TextStyle(
-                        color: Color(0xFFAAB0B9),
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
           ),
