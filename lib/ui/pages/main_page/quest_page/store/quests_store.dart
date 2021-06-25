@@ -18,6 +18,15 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   _QuestsStore(this._apiProvider);
 
   @observable
+  String? searchWord;
+
+  @observable
+  int priority = -1;
+
+  @observable
+  int status = -1;
+
+  @observable
   List<BaseQuestResponse>? questsList;
 
   @observable
@@ -42,8 +51,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       questsList = await _apiProvider.getQuests();
+      print(questsList);
       this.onSuccess(true);
-    } catch (e) {
+    } catch (e,trace) {
+      print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
   }
