@@ -1,3 +1,4 @@
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,8 +12,8 @@ class MyQuestsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myQuestList = context.read<QuestsStore>();
-    myQuestList.getQuests();
+    final myQuest = context.read<QuestsStore>();
+    myQuest.getQuests();
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -32,11 +33,30 @@ class MyQuestsPage extends StatelessWidget {
           physics: const ClampingScrollPhysics(),
           body: TabBarView(
             children: [
-              Center(child: _List(QuestItemPriorityType.Active, myQuestList)),
-              Center(child: _List(QuestItemPriorityType.Invited, myQuestList)),
               Center(
-                  child: _List(QuestItemPriorityType.Performed, myQuestList)),
-              Center(child: _List(QuestItemPriorityType.Starred, myQuestList)),
+                child: _List(
+                  QuestItemPriorityType.Active,
+                  myQuest.questsList,
+                ),
+              ),
+              Center(
+                child: _List(
+                  QuestItemPriorityType.Invited,
+                  myQuest.invitedQuestsList,
+                ),
+              ),
+              Center(
+                child: _List(
+                  QuestItemPriorityType.Performed,
+                  myQuest.performedQuestsList,
+                ),
+              ),
+              Center(
+                child: _List(
+                  QuestItemPriorityType.Starred,
+                  myQuest.starredQuestsList,
+                ),
+              ),
             ],
           ),
         ),
@@ -47,42 +67,63 @@ class MyQuestsPage extends StatelessWidget {
 
 class _List extends StatelessWidget {
   final QuestItemPriorityType questItemPriorityType;
-  final QuestsStore store;
 
-  const _List(this.questItemPriorityType, this.store);
+  final List<BaseQuestResponse>? questsList;
+
+  const _List(this.questItemPriorityType, this.questsList);
 
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (_) {
       return Container(
         color: const Color(0xFFF7F8FA),
-        child: ListView.builder(
-          itemCount: store.questsList!.length,
-          padding: EdgeInsets.zero,
-          itemBuilder: (_, index) {
-            return MyQuestsItem(
-              title:store.questsList![index].title ,
-              itemType: questItemPriorityType,
-              price: store.questsList![index].price,
-              priority: store.questsList![index].priority,
-              creatorName: store.questsList![index].user.firstName +
-                  store.questsList![index].user.lastName,
-              description: store.questsList![index].description,
-            );
-            //   Padding(
-            //   padding: const EdgeInsets.all(5.0),
-            //   child: Container(
-            //     color: Colors.red,
-            //     child: Padding(
-            //       padding: const EdgeInsets.all(20.0),
-            //       child: Center(child: Text("$label $index")),
-            //     ),
-            //   ),
-            // );
-          },
-        ),
+        child: questsList!.isNotEmpty
+            ? ListView.builder(
+                itemCount: questsList!.length,
+                padding: EdgeInsets.zero,
+                itemBuilder: (_, index) {
+                  return MyQuestsItem(
+                    title: questsList![index].title,
+                    itemType: questItemPriorityType,
+                    price: questsList![index].price,
+                    priority: questsList![index].priority,
+                    creatorName: questsList![index].user.firstName +
+                        questsList![index].user.lastName,
+                    description: questsList![index].description,
+                  );
+
+                  //   Padding(
+                  //   padding: const EdgeInsets.all(5.0),
+                  //   child: Container(
+                  //     color: Colors.red,
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.all(20.0),
+                  //       child: Center(child: Text("$label $index")),
+                  //     ),
+                  //   ),
+                  // );
+                },
+              )
+            : Center(
+                child: Text(
+                  "you don't have any ${enumToString(questItemPriorityType)} Quest yet",
+                ),
+              ),
       );
     });
+  }
+
+  String enumToString(QuestItemPriorityType questItemPriorityType) {
+    switch (questItemPriorityType) {
+      case QuestItemPriorityType.Active:
+        return "Active";
+      case QuestItemPriorityType.Invited:
+        return "Invited";
+      case QuestItemPriorityType.Performed:
+        return "Performed";
+      case QuestItemPriorityType.Starred:
+        return "Starred";
+    }
   }
 }
 
