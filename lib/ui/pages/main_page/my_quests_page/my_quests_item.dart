@@ -76,7 +76,7 @@ class MyQuestsItem extends StatelessWidget {
             height: 16,
           ),
           Text(
-           title,
+            title,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Color(0xFF1D2127),
@@ -118,7 +118,11 @@ class MyQuestsItem extends StatelessWidget {
   }
 
   Widget getQuestHeader(QuestItemPriorityType itemType) {
-    Widget returnWidget = Container();
+    Widget returnWidget = Container(
+      child: Center(
+        child: Text("you don't have any $itemType yet "),
+      ),
+    );
     switch (itemType) {
       case QuestItemPriorityType.Active:
         returnWidget = Container(

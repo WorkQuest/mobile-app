@@ -82,15 +82,23 @@ extension QuestService on ApiProvider {
     String? searchWord,
     int priority = -1,
     int status = -1,
+    String? sort,
+     bool? invited ,
+     bool? performing,
+     bool? starred,
   }) async {
     final responseData = await _httpClient.get(
       query: '/v1/quests',
       queryParameters: {
-        // "offset": offset,
+        //"offset": offset,
         //"limit": limit,
-        // "q": searchWord,
-        // "priority": priority == -1 ? null : priority,
-        // "status": status == -1 ? null : status,
+        //"q": searchWord,
+        //"priority": priority == -1 ? null : priority,
+        //"status": status == -1 ? null : status,
+        //"sort": sort,
+        "invited" : invited,
+        "performing": performing,
+        "starred" : starred,
       },
     );
 
