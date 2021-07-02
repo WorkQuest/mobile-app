@@ -18,16 +18,34 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   _QuestsStore(this._apiProvider);
 
   @observable
-  String? searchWord;
+  String? searchWord = "";
+
+  @observable
+  String? sort = "";
 
   @observable
   int priority = -1;
+
+  @observable
+  int offset = 0;
+
+  @observable
+  int limit = 10;
 
   @observable
   int status = -1;
 
   @observable
   List<BaseQuestResponse>? questsList;
+
+  @observable
+  List<BaseQuestResponse>? starredQuestsList;
+
+  @observable
+  List<BaseQuestResponse>? performedQuestsList;
+
+  @observable
+  List<BaseQuestResponse>? invitedQuestsList;
 
   @observable
   _MapList mapListChecker = _MapList.Map;
@@ -42,18 +60,70 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  isMapOpened(){
+  isMapOpened() {
     return mapListChecker == _MapList.Map;
   }
 
   @action
-  Future getQuests() async {
+  Future getQuests(/*{
+    required bool invited,
+    required performing,
+    required bool starred,
+  }*/) async {
     try {
       this.onLoading();
-      questsList = await _apiProvider.getQuests();
+      questsList = await _apiProvider.getQuests(
+        offset: this.offset,
+        limit: this.limit,
+        status: this.status,
+        invited: false,
+        performing: false,
+        priority: this.priority,
+        searchWord: this.searchWord,
+        sort: this.sort,
+        starred: false,
+      );
+
+      starredQuestsList = await _apiProvider.getQuests(
+        offset: this.offset,
+        limit: this.limit,
+        status: this.status,
+        invited: false,
+        performing: false,
+        priority: this.priority,
+        searchWord: this.searchWord,
+        sort: this.sort,
+        starred: true,
+      );
+
+      invitedQuestsList = await _apiProvider.getQuests(
+        offset: this.offset,
+        limit: this.limit,
+        status: this.status,
+        invited: true,
+        performing: false,
+        priority: this.priority,
+        searchWord: this.searchWord,
+        sort: this.sort,
+        starred: false,
+      );
+
+      performedQuestsList = await _apiProvider.getQuests(
+        offset: this.offset,
+        limit: this.limit,
+        status: this.status,
+        invited: false,
+        performing: true,
+        priority: this.priority,
+        searchWord: this.searchWord,
+        sort: this.sort,
+        starred: false,
+      );
       print(questsList);
+      print(starredQuestsList);
+      print(invitedQuestsList);
       this.onSuccess(true);
-    } catch (e,trace) {
+    } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
