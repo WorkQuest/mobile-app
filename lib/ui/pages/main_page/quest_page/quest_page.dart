@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app/log_service.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/work_quest_app.dart';
@@ -11,6 +12,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import "package:provider/provider.dart";
+
+import '../../../../enums.dart';
 
 class QuestPage extends StatefulWidget {
   @override
@@ -24,6 +27,8 @@ class _QuestPageState extends State<QuestPage> {
   CameraPosition? _initialCameraPosition;
   QuestsStore? questsStore;
   ProfileMeStore? profileMeStore;
+  final QuestItemPriorityType questItemPriorityType =
+      QuestItemPriorityType.Starred;
 
   @override
   void initState() {
@@ -101,14 +106,16 @@ class _QuestPageState extends State<QuestPage> {
               ),
             ),
             Spacer(),
-            questsStore!.isMapOpened()
-                ? FloatingActionButton(
-                    onPressed: _onMyLocationPressed,
-                    child: Icon(
-                      Icons.location_on,
-                    ),
-                  )
-                : Container(),
+            Opacity(
+              opacity: questsStore!.isMapOpened() ? 0 : 1,
+              child: FloatingActionButton(
+                onPressed: _onMyLocationPressed,
+                child: Icon(
+                  Icons.location_on,
+                ),
+              ),
+            )
+            //: Container(),
           ],
         ),
       ),
@@ -123,7 +130,7 @@ class _QuestPageState extends State<QuestPage> {
     return Column(
       children: [
         SizedBox(
-          height: 250,
+          height: 20,
         ),
         _getDivider(),
         Padding(
@@ -136,6 +143,22 @@ class _QuestPageState extends State<QuestPage> {
           ),
         ),
         _getDivider(),
+        Expanded(
+          child: ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: questsStore!.questsList!.length,
+              itemBuilder: (_, index) {
+                return MyQuestsItem(
+                  title: questsStore!.questsList![index].title,
+                  itemType: this.questItemPriorityType,
+                  price: questsStore!.questsList![index].price,
+                  priority: questsStore!.questsList![index].priority,
+                  creatorName: questsStore!.questsList![index].user.firstName +
+                      questsStore!.questsList![index].user.lastName,
+                  description: questsStore!.questsList![index].description,
+                );
+              }),
+        )
       ],
     );
   }

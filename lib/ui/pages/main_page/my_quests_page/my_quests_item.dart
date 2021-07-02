@@ -118,11 +118,7 @@ class MyQuestsItem extends StatelessWidget {
   }
 
   Widget getQuestHeader(QuestItemPriorityType itemType) {
-    Widget returnWidget = Container(
-      child: Center(
-        child: Text("you don't have any $itemType yet "),
-      ),
-    );
+    Widget returnWidget = Container();
     switch (itemType) {
       case QuestItemPriorityType.Active:
         returnWidget = Container(
