@@ -131,7 +131,6 @@ class SignInPage extends StatelessWidget {
                       child: ObserverListener<SignInStore>(
                         onSuccess: () {
                           Navigator.pushNamed(context, MainPage.routeName);
-
                         },
                         child: Observer(
                           builder: (context) {
@@ -139,7 +138,7 @@ class SignInPage extends StatelessWidget {
                               onPressed: signInStore.canSignIn
                                   ? () async{
                                       if (_formKey.currentState!.validate()) {
-                                        await  signInStore.signInWithUsername();
+                                        await signInStore.signInWithUsername();
                                       }
                                     }
                                   : null,

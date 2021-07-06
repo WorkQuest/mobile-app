@@ -129,19 +129,18 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$performingQuestsListAtom =
-      Atom(name: '_QuestsStore.performingQuestsList');
+  final _$performedQuestsListAtom =
+      Atom(name: '_QuestsStore.performedQuestsList');
 
   @override
   List<BaseQuestResponse>? get performedQuestsList {
-    _$performingQuestsListAtom.reportRead();
+    _$performedQuestsListAtom.reportRead();
     return super.performedQuestsList;
   }
 
   @override
   set performedQuestsList(List<BaseQuestResponse>? value) {
-    _$performingQuestsListAtom.reportWrite(value, super.performedQuestsList,
-        () {
+    _$performedQuestsListAtom.reportWrite(value, super.performedQuestsList, () {
       super.performedQuestsList = value;
     });
   }
@@ -218,7 +217,7 @@ limit: ${limit},
 status: ${status},
 questsList: ${questsList},
 starredQuestsList: ${starredQuestsList},
-performingQuestsList: ${performedQuestsList},
+performedQuestsList: ${performedQuestsList},
 invitedQuestsList: ${invitedQuestsList},
 mapListChecker: ${mapListChecker}
     ''';

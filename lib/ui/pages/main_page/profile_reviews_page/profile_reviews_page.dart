@@ -61,8 +61,8 @@ class _ProfileReviewsState extends State<ProfileReviews>
               background: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.asset(
-                    "assets/profile_avatar_test.jpg",
+                  Image.network(
+                    userStore.userData!.avatar.url,
                     fit: BoxFit.cover,
                   ),
                   Positioned(
@@ -114,13 +114,17 @@ class _ProfileReviewsState extends State<ProfileReviews>
               delegate: SliverChildListDelegate(
                 [
                   Container(
-                    child: Text(
-                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel'),
-                  ),
+                      child: Text(
+                    userStore.userData!.additionalInfo.description ??
+                        "no description",
+                  )),
                   socialAccounts(),
                   contactDetails(
-                      location: "Moscow, Lenina street, 3d",
-                      number: "+7 989 989 98 98",
+                      location: userStore.userData!.additionalInfo.address,
+                      number:
+                          userStore.userData!.additionalInfo.firstMobileNumber,
+                      secondNumber:
+                          userStore.userData!.additionalInfo.secondMobileNumber,
                       email: userStore.userData!.email),
                   skills([
                     "Craft",
@@ -354,6 +358,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
     required String location,
     required String number,
     required String email,
+    String? secondNumber,
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
@@ -402,6 +407,20 @@ class _ProfileReviewsState extends State<ProfileReviews>
               ),
             ],
           ),
+          SizedBox(
+            height: 5,
+          ),
+          if (secondNumber != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 27.0),
+              child: Text(
+                secondNumber,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF7C838D),
+                ),
+              ),
+            ),
           SizedBox(
             height: 17,
           ),
@@ -479,8 +498,6 @@ class _ProfileReviewsState extends State<ProfileReviews>
   }
 
   ///Quest Rating Widget
-  ///
-  ///
   ///
 
   Widget rating({
@@ -587,8 +604,6 @@ class _ProfileReviewsState extends State<ProfileReviews>
   }
 
   ///Reviews Widget
-  ///
-  ///
   ///
   Widget reviews(
       String name, UserRole userRole, String questTitle, String quest) {
@@ -778,7 +793,9 @@ class _ProfileReviewsState extends State<ProfileReviews>
             bottom: 18.0,
             left: 0.0,
             child: Text(
-              userStore.userData!.firstName + "  "+ userStore.userData!.lastName,
+              userStore.userData!.firstName +
+                  "  " +
+                  userStore.userData!.lastName,
               style: TextStyle(
                 fontSize: 20.0,
                 color: Colors.white,

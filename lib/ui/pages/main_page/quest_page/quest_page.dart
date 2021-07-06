@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app/log_service.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
@@ -12,7 +10,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import "package:provider/provider.dart";
-
 import '../../../../enums.dart';
 
 class QuestPage extends StatefulWidget {
@@ -106,16 +103,15 @@ class _QuestPageState extends State<QuestPage> {
               ),
             ),
             Spacer(),
-            Opacity(
-              opacity: questsStore!.isMapOpened() ? 0 : 1,
-              child: FloatingActionButton(
-                onPressed: _onMyLocationPressed,
-                child: Icon(
-                  Icons.location_on,
-                ),
+
+            if(questsStore!.isMapOpened())
+
+            FloatingActionButton(
+              onPressed: _onMyLocationPressed,
+              child: Icon(
+                Icons.location_on,
               ),
-            )
-            //: Container(),
+            ),
           ],
         ),
       ),
