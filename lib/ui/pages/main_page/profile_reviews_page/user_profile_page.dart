@@ -15,6 +15,8 @@ class ProfileReviews extends StatefulWidget {
 
 ///ADD KEEP ALIVE FOR TABS
 ///CHECK SCROLLING ISSUE
+///
+/// View other users profile
 
 class _ProfileReviewsState extends State<ProfileReviews>
     with SingleTickerProviderStateMixin {
@@ -115,24 +117,25 @@ class _ProfileReviewsState extends State<ProfileReviews>
                 [
                   Container(
                       child: Text(
-                    userStore.userData!.additionalInfo.description ??
-                        "no description",
-                  )),
+                        userStore.userData!.additionalInfo.description ??
+                            "no description",
+                      )),
                   socialAccounts(),
                   contactDetails(
                       location: userStore.userData!.additionalInfo.address,
                       number:
-                          userStore.userData!.additionalInfo.firstMobileNumber,
+                      userStore.userData!.additionalInfo.firstMobileNumber,
                       secondNumber:
-                          userStore.userData!.additionalInfo.secondMobileNumber,
+                      userStore.userData!.additionalInfo.secondMobileNumber,
                       email: userStore.userData!.email),
-                  skills([
-                    "Craft",
-                    "DYI",
-                    "Design",
-                    "Painting Works",
-                    "Mobile Dev",
-                  ]),
+                  if (userStore.userData!.role == UserRole.Worker)
+                    skills([
+                      "Craft",
+                      "DYI",
+                      "Design",
+                      "Painting Works",
+                      "Mobile Dev",
+                    ]),
                   rating(
                     completedQuests: "12",
                     averageRating: "4.5",
@@ -468,29 +471,62 @@ class _ProfileReviewsState extends State<ProfileReviews>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Skills',
+            'Your Skills',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontSize: 16.0,
             ),
           ),
           Wrap(
+            direction: Axis.horizontal,
             spacing: 9.0,
-            runSpacing: 8.0,
+            runSpacing: 0.0,
             children: skills
                 .map(
-                  (item) => new Chip(
-                    label: Text(
-                      item,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Color(0xFF0083C7),
-                      ),
-                    ),
-                    backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
+                  (item) => new ActionChip(
+                padding: EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 10.0,
+                ),
+                onPressed: () {},
+                label: Text(
+                  item,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Color(0xFF0083C7),
                   ),
-                )
-                .toList(),
+                ),
+                backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
+              ),
+            )
+                .toList()
+              ..add(
+                ActionChip(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 10.0,
+                    horizontal: 10.0,
+                  ),
+                  onPressed: () {},
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Add",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                  backgroundColor: Color(0xFF0083C7),
+                ),
+              ),
           ),
         ],
       ),
