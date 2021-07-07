@@ -1,9 +1,7 @@
-import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
 import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import '../../../../enums.dart';
 
@@ -12,8 +10,8 @@ class MyQuestsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myQuest = context.read<QuestsStore>();
-    myQuest.getQuests();
+    final questStore = context.read<QuestsStore>();
+    questStore.getQuests();
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -34,27 +32,27 @@ class MyQuestsPage extends StatelessWidget {
           body: TabBarView(
             children: [
               Center(
-                child: _List(
+                child: QuestsList(
                   QuestItemPriorityType.Active,
-                  myQuest.questsList,
+                  questStore.questsList,
                 ),
               ),
               Center(
-                child: _List(
+                child: QuestsList(
                   QuestItemPriorityType.Invited,
-                  myQuest.invitedQuestsList,
+                  questStore.invitedQuestsList,
                 ),
               ),
               Center(
-                child: _List(
+                child: QuestsList(
                   QuestItemPriorityType.Performed,
-                  myQuest.performedQuestsList,
+                  questStore.performedQuestsList,
                 ),
               ),
               Center(
-                child: _List(
+                child: QuestsList(
                   QuestItemPriorityType.Starred,
-                  myQuest.starredQuestsList,
+                  questStore.starredQuestsList,
                 ),
               ),
             ],
@@ -65,67 +63,7 @@ class MyQuestsPage extends StatelessWidget {
   }
 }
 
-class _List extends StatelessWidget {
-  final QuestItemPriorityType questItemPriorityType;
 
-  final List<BaseQuestResponse>? questsList;
-
-  const _List(this.questItemPriorityType, this.questsList);
-
-  @override
-  Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return Container(
-        color: const Color(0xFFF7F8FA),
-        child: questsList!.isNotEmpty
-            ? ListView.builder(
-                itemCount: questsList!.length,
-                padding: EdgeInsets.zero,
-                itemBuilder: (_, index) {
-                  return MyQuestsItem(
-                    title: questsList![index].title,
-                    itemType: questItemPriorityType,
-                    price: questsList![index].price,
-                    priority: questsList![index].priority,
-                    creatorName: questsList![index].user.firstName +
-                        questsList![index].user.lastName,
-                    description: questsList![index].description,
-                  );
-
-                  //   Padding(
-                  //   padding: const EdgeInsets.all(5.0),
-                  //   child: Container(
-                  //     color: Colors.red,
-                  //     child: Padding(
-                  //       padding: const EdgeInsets.all(20.0),
-                  //       child: Center(child: Text("$label $index")),
-                  //     ),
-                  //   ),
-                  // );
-                },
-              )
-            : Center(
-                child: Text(
-                  "you don't have any ${enumToString(questItemPriorityType)} Quest yet",
-                ),
-              ),
-      );
-    });
-  }
-
-  String enumToString(QuestItemPriorityType questItemPriorityType) {
-    switch (questItemPriorityType) {
-      case QuestItemPriorityType.Active:
-        return "Active";
-      case QuestItemPriorityType.Invited:
-        return "Invited";
-      case QuestItemPriorityType.Performed:
-        return "Performed";
-      case QuestItemPriorityType.Starred:
-        return "Starred";
-    }
-  }
-}
 
 class _PersistentTabBar extends SliverPersistentHeaderDelegate {
   const _PersistentTabBar();
