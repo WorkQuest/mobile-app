@@ -1,7 +1,7 @@
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
-import 'package:app/model/profile_me_response.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:injectable/injectable.dart';
 
@@ -83,9 +83,9 @@ extension QuestService on ApiProvider {
     int priority = -1,
     int status = -1,
     String? sort,
-     bool? invited ,
-     bool? performing,
-     bool? starred,
+    bool? invited,
+    bool? performing,
+    bool? starred,
   }) async {
     final responseData = await _httpClient.get(
       query: '/v1/quests',
@@ -96,9 +96,9 @@ extension QuestService on ApiProvider {
         //"priority": priority == -1 ? null : priority,
         //"status": status == -1 ? null : status,
         //"sort": sort,
-        "invited" : invited,
+        "invited": invited,
         "performing": performing,
-        "starred" : starred,
+        "starred": starred,
       },
     );
 

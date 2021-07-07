@@ -73,7 +73,7 @@ class MainPage extends StatelessWidget {
             onGenerateRoute: Routes.generateRoute,
             navigatorKey: forthTabNavKey,
             builder: (BuildContext context) {
-              return WalletPage();
+              return ProfileReviews();
             },
           );
         } else {

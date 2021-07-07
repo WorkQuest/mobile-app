@@ -1,3 +1,4 @@
+import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_employer/store/settings_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
@@ -32,7 +33,13 @@ class SettingsPage extends StatelessWidget {
                   Container(
                     height: 125.0,
                     width: 343.0,
-                    decoration: BoxDecoration(
+                    decoration: BoxDecoration(image:
+                      DecorationImage(
+                        image: NetworkImage(
+                          userStore.userData!.avatar.url,
+                        ),
+                        fit: BoxFit.cover,
+                      ),
                       color: Colors.blue,
                       borderRadius: BorderRadius.circular(
                         6.0,
@@ -279,8 +286,9 @@ class SettingsPage extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  userStore.userData!.role == "worker" ? workerSettings():
-                  employerSettings(settingStore),
+                  userStore.userData!.role == UserRole.Worker
+                      ? workerSettings()
+                      : employerSettings(settingStore),
                 ],
               ),
             ),

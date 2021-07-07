@@ -121,6 +121,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       );
       print(questsList);
       print(starredQuestsList);
+      print(performedQuestsList);
       print(invitedQuestsList);
       this.onSuccess(true);
     } catch (e, trace) {

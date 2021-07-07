@@ -1,6 +1,6 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
-import 'package:app/model/profile_me_response.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -27,8 +27,10 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       this.onLoading();
       // await _apiProvider.getQuests();
       userData = await _apiProvider.getProfileMe();
+      print("userrrrrrr$userData");
       this.onSuccess(true);
-    } catch (e) {
+    } catch (e,trace) {
+      print(trace);
       this.onError(e.toString());
     }
   }
