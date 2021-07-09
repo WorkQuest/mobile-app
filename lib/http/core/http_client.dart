@@ -1,10 +1,10 @@
 import 'dart:io';
-
 import 'package:app/exceptions.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/log_service.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/utils/storage.dart';
 
@@ -13,13 +13,10 @@ class TestHttpClient extends _HttpClient {
   TestHttpClient()
       : super(
           Dio(BaseOptions(
-            baseUrl: 'https://app-ver1.workquest.co/api',
-            connectTimeout: 20000,
-            receiveTimeout: 20000,
-            headers: {
-              "content-type": "application/json"
-            }
-          )),
+              baseUrl: 'https://app-ver1.workquest.co/api',
+              connectTimeout: 20000,
+              receiveTimeout: 20000,
+              headers: {"content-type": "application/json"})),
         );
 
   @override
@@ -47,19 +44,21 @@ class _HttpClient implements IHttpClient {
   @override
   Future post({required query, Map<String, dynamic>? data}) async {
     return await _sendRequest(
-      _dio.post(query, data: data),
+      _dio.post(
+        query,
+        data: data,
+      ),
     );
   }
 
   Future _sendRequest(Future<Response> request) async {
     final Response response = await request.catchError((error) {
       if (error is DioError) {
-        throw RequestError(
-          message: error.response.toString(),
+        throw RequestErrorModel.fromJson(
+            error.response!.data
         );
       }
     });
-
     return response.data["result"];
   }
 
@@ -73,8 +72,7 @@ class _HttpClient implements IHttpClient {
           }
           if (tokenExpired == true) {
             String? token = await Storage.readRefreshToken();
-            options.headers["Authorization"] =
-                "Bearer " +  token.toString();
+            options.headers["Authorization"] = "Bearer " + token.toString();
           }
 
           println("\n---------- DioRequest ----------"
