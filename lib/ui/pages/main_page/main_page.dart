@@ -1,4 +1,5 @@
-import 'package:app/ui/pages/main_page/profile_reviews_page/profile_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_employer/settings_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';

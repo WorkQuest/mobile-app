@@ -6,20 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
 
-class ProfileReviews extends StatefulWidget {
+class UserProfileReviews extends StatefulWidget {
   static const String routeName = "/profileReviewPage";
 
   @override
-  _ProfileReviewsState createState() => _ProfileReviewsState();
+  _UserProfileReviewsState createState() => _UserProfileReviewsState();
 }
 
-///ADD KEEP ALIVE FOR TABS
-///CHECK SCROLLING ISSUE
-
-class _ProfileReviewsState extends State<ProfileReviews>
+class _UserProfileReviewsState extends State<UserProfileReviews>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  ScrollController _scrollController = ScrollController();
 
   void initState() {
     super.initState();
@@ -34,189 +30,187 @@ class _ProfileReviewsState extends State<ProfileReviews>
     final userStore = context.read<ProfileMeStore>();
 
     return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            backgroundColor: Color(0xFF0083C7),
-            automaticallyImplyLeading: false,
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-            centerTitle: false,
-            pinned: true,
-            expandedHeight: 250,
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.only(
-                left: 16.0,
-                bottom: 16.0,
-                top: 0.0,
-              ),
-              collapseMode: CollapseMode.pin,
-              centerTitle: false,
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.network(
-                    userStore.userData!.avatar.url,
-                    fit: BoxFit.cover,
-                  ),
-                  Positioned(
-                    bottom: 85.0,
-                    left: 50.0,
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.star,
-                          color: Color(0xFFE8D20D),
-                          size: 20.0,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Color(0xFFE8D20D),
-                          size: 20.0,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Color(0xFFE8D20D),
-                          size: 20.0,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Color(0xFFE8D20D),
-                          size: 20.0,
-                        ),
-                        Icon(
-                          Icons.star,
-                          color: Color(0xFFE9EDF2),
-                          size: 20.0,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              title: appBarTitle(userStore),
-            ),
-          ),
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-              16.0,
-              16.0,
-              16.0,
-              0.0,
-            ),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  Container(
-                      child: Text(
-                    userStore.userData!.additionalInfo.description ??
-                        "no description",
-                  )),
-                  socialAccounts(),
-                  contactDetails(
-                      location: userStore.userData!.additionalInfo.address,
-                      number:
-                          userStore.userData!.additionalInfo.firstMobileNumber,
-                      secondNumber:
-                          userStore.userData!.additionalInfo.secondMobileNumber,
-                      email: userStore.userData!.email),
-                  skills([
-                    "Craft",
-                    "DYI",
-                    "Design",
-                    "Painting Works",
-                    "Mobile Dev",
-                  ]),
-                  rating(
-                    completedQuests: "12",
-                    averageRating: "4.5",
-                    reviews: "23",
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: StickyTabBarDelegate(
-              child: TabBar(
-                unselectedLabelColor: Color(0xFF8D96A1),
-                indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6.0),
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              backgroundColor: Color(0xFF0083C7),
+              automaticallyImplyLeading: false,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios,
                   color: Colors.white,
                 ),
-                labelColor: Colors.black,
-                controller: this._tabController,
-                tabs: <Widget>[
-                  Tab(
-                    child: Text(
-                      "Reviews",
-                      style: TextStyle(fontSize: 14.0),
+                onPressed: () => Navigator.pop(context),
+              ),
+              centerTitle: false,
+              pinned: true,
+              expandedHeight: 250,
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: EdgeInsets.only(
+                  left: 16.0,
+                  bottom: 16.0,
+                  top: 0.0,
+                ),
+                collapseMode: CollapseMode.pin,
+                centerTitle: false,
+                background: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.network(
+                      userStore.userData!.avatar.url,
+                      fit: BoxFit.cover,
                     ),
-                  ),
-                  Tab(
-                    child: Text(
-                      "Portfolio",
-                      style: TextStyle(fontSize: 14.0),
+                    Positioned(
+                      bottom: 85.0,
+                      left: 50.0,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: Color(0xFFE8D20D),
+                            size: 20.0,
+                          ),
+                          Icon(
+                            Icons.star,
+                            color: Color(0xFFE8D20D),
+                            size: 20.0,
+                          ),
+                          Icon(
+                            Icons.star,
+                            color: Color(0xFFE8D20D),
+                            size: 20.0,
+                          ),
+                          Icon(
+                            Icons.star,
+                            color: Color(0xFFE8D20D),
+                            size: 20.0,
+                          ),
+                          Icon(
+                            Icons.star,
+                            color: Color(0xFFE9EDF2),
+                            size: 20.0,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                title: appBarTitle(userStore),
               ),
             ),
-          ),
-          SliverFillRemaining(
-            child: TabBarView(
-              controller: this._tabController,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: Material(
-                    color: Color(0xFFF7F8FA),
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      padding: EdgeInsets.only(
-                        top: 0.0,
-                      ),
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        return reviews(
-                            "Edward cooper",
-                            UserRole.Worker,
-                            "SPA saloon design",
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum.");
-                      },
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(
+                16.0,
+                16.0,
+                16.0,
+                0.0,
+              ),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    Container(
+                        child: Text(
+                      userStore.userData!.additionalInfo.description ??
+                          "no description",
+                    )),
+                    socialAccounts(),
+                    contactDetails(
+                        location: userStore.userData!.additionalInfo.address,
+                        number: userStore
+                            .userData!.additionalInfo.firstMobileNumber,
+                        secondNumber: userStore
+                            .userData!.additionalInfo.secondMobileNumber,
+                        email: userStore.userData!.email),
+                    if (userStore.userData!.role == UserRole.Worker)
+                      skills([
+                        "Craft",
+                        "DYI",
+                        "Design",
+                        "Painting Works",
+                        "Mobile Dev",
+                      ]),
+                    rating(
+                      completedQuests: "12",
+                      averageRating: "4.5",
+                      reviews: "23",
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: Material(
-                    color: Color(0xFFF7F8FA),
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      padding: EdgeInsets.only(
-                        top: 0.0,
-                      ),
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        return portfolio();
-                      },
+                    SizedBox(
+                      height: 20.0,
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: StickyTabBarDelegate(
+                child: TabBar(
+                  unselectedLabelColor: Color(0xFF8D96A1),
+                  indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6.0),
+                    color: Colors.white,
+                  ),
+                  labelColor: Colors.black,
+                  controller: this._tabController,
+                  tabs: <Widget>[
+                    Tab(
+                      child: Text(
+                        "Reviews",
+                        style: TextStyle(fontSize: 14.0),
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                        "Portfolio",
+                        style: TextStyle(fontSize: 14.0),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ];
+        },
+        body: TabBarView(
+          controller: this._tabController,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Material(
+                color: Color(0xFFF7F8FA),
+                child: ListView.builder(
+                  padding: EdgeInsets.only(
+                    top: 0.0,
+                  ),
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return reviews(
+                        "Edward cooper",
+                        UserRole.Worker,
+                        "SPA saloon design",
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum.");
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Material(
+                color: Color(0xFFF7F8FA),
+                child: ListView.builder(
+                  padding: EdgeInsets.only(
+                    top: 0.0,
+                  ),
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return portfolio();
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: Container(
         height: 43.0,
@@ -468,18 +462,24 @@ class _ProfileReviewsState extends State<ProfileReviews>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Skills',
+            'Your Skills',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontSize: 16.0,
             ),
           ),
           Wrap(
+            direction: Axis.horizontal,
             spacing: 9.0,
-            runSpacing: 8.0,
+            runSpacing: 0.0,
             children: skills
                 .map(
-                  (item) => new Chip(
+                  (item) => new ActionChip(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 10.0,
+                    ),
+                    onPressed: () {},
                     label: Text(
                       item,
                       style: TextStyle(
@@ -490,7 +490,34 @@ class _ProfileReviewsState extends State<ProfileReviews>
                     backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
                   ),
                 )
-                .toList(),
+                .toList()
+                  ..add(
+                    ActionChip(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 10.0,
+                        horizontal: 10.0,
+                      ),
+                      onPressed: () {},
+                      label: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Add",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                      backgroundColor: Color(0xFF0083C7),
+                    ),
+                  ),
           ),
         ],
       ),
