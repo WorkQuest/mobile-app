@@ -93,6 +93,7 @@ class SignInPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
                     child: TextFormField(
+                      keyboardType: TextInputType.emailAddress,
                       onChanged: signInStore.setUsername,
                       validator: Validators.emailValidator,
                       decoration: InputDecoration(

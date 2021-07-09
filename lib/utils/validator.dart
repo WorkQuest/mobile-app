@@ -12,6 +12,6 @@ class Validators {
 
     RegExp regExp = new RegExp(p);
 
-    return regExp.hasMatch(email!) ? null : "Email invalid";
+    return regExp.hasMatch(email!.trim()) ? null : "Email invalid";
   }
 }

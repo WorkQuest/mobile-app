@@ -4,7 +4,6 @@ import 'package:app/http/core/i_http_client.dart';
 import 'package:app/log_service.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/utils/storage.dart';
 
