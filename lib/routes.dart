@@ -28,7 +28,7 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<SignInStore>(),
-            child:  SignInPage(),
+            child: SignInPage(),
           ),
         );
 
@@ -36,7 +36,7 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<SignUpStore>(),
-            child:  SignUpPage(),
+            child: SignUpPage(),
           ),
         );
 
@@ -47,7 +47,6 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<QuestsStore>(),
               ),
-
               Provider(
                 create: (context) => getIt.get<SettingsPageStore>(),
               ),
@@ -66,31 +65,17 @@ class Routes {
 
       case ChooseRolePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MultiProvider(
-            providers: [
-              Provider(
-                create: (context) => getIt.get<SignUpStore>(),
-              ),
-              Provider(
-                create: (context) => getIt.get<ChooseRoleStore>(),
-              )
-            ],
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChooseRoleStore>(),
             child: ChooseRolePage(),
           ),
         );
 
       case ApproveRolePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MultiProvider(
-            providers: [
-              Provider(
-                create: (context) => getIt.get<SignUpStore>(),
-              ),
-              Provider(
-                create: (context) => getIt.get<ChooseRoleStore>(),
-              ),
-            ],
-            child: ApproveRolePage(),
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChooseRoleStore>(),
+            child: ApproveRolePage(settings.arguments),
           ),
         );
 

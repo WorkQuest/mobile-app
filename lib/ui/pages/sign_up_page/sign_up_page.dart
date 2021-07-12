@@ -2,7 +2,7 @@ import 'package:app/app_localizations.dart';
 import 'package:app/constants.dart';
 import 'package:app/log_service.dart';
 import 'package:app/observer_consumer.dart';
-import 'package:app/ui/pages/main_page/main_page.dart';
+import 'package:app/ui/pages/sign_up_page/choose_role_page/choose_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/utils/validator.dart';
@@ -150,7 +150,7 @@ class SignUpPage extends StatelessWidget {
                   child: ObserverListener<SignUpStore>(
                     onSuccess: () {
                       println("SignUpPage => SignUp success!");
-                      Navigator.pushNamed(context, MainPage.routeName);
+                      Navigator.pushNamed(context, ChooseRolePage.routeName);
                     },
                     child: Observer(
                       builder: (context) {

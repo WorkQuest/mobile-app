@@ -16,6 +16,6 @@ class Validators {
   }
 
   static String? signUpPasswordValidator(String? text) {
-    return text!.length > 8 ?  null : "Password length should be greater than 8" ;
+    return text!.length >= 8 ?  null : "Password length should be greater than 8" ;
   }
 }
