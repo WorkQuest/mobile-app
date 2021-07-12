@@ -76,6 +76,21 @@ mixin _$SignUpStore on _SignUpStore, Store {
     });
   }
 
+  final _$_confirmPasswordAtom = Atom(name: '_SignUpStore._confirmPassword');
+
+  @override
+  String get _confirmPassword {
+    _$_confirmPasswordAtom.reportRead();
+    return super._confirmPassword;
+  }
+
+  @override
+  set _confirmPassword(String value) {
+    _$_confirmPasswordAtom.reportWrite(value, super._confirmPassword, () {
+      super._confirmPassword = value;
+    });
+  }
+
   final _$registerAsyncAction = AsyncAction('_SignUpStore.register');
 
   @override
@@ -124,6 +139,17 @@ mixin _$SignUpStore on _SignUpStore, Store {
         name: '_SignUpStore.setPassword');
     try {
       return super.setPassword(value);
+    } finally {
+      _$_SignUpStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setConfirmPassword(String value) {
+    final _$actionInfo = _$_SignUpStoreActionController.startAction(
+        name: '_SignUpStore.setConfirmPassword');
+    try {
+      return super.setConfirmPassword(value);
     } finally {
       _$_SignUpStoreActionController.endAction(_$actionInfo);
     }

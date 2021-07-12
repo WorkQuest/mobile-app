@@ -36,7 +36,7 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<SignUpStore>(),
-            child: const SignUpPage(),
+            child:  SignUpPage(),
           ),
         );
 
