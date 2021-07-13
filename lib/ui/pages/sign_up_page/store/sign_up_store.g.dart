@@ -15,6 +15,12 @@ mixin _$SignUpStore on _SignUpStore, Store {
   bool get canSignUp => (_$canSignUpComputed ??=
           Computed<bool>(() => super.canSignUp, name: '_SignUpStore.canSignUp'))
       .value;
+  Computed<String>? _$emailComputed;
+
+  @override
+  String get email => (_$emailComputed ??=
+          Computed<String>(() => super.email, name: '_SignUpStore.email'))
+      .value;
 
   final _$_emailAtom = Atom(name: '_SignUpStore._email');
 
@@ -158,7 +164,8 @@ mixin _$SignUpStore on _SignUpStore, Store {
   @override
   String toString() {
     return '''
-canSignUp: ${canSignUp}
+canSignUp: ${canSignUp},
+email: ${email}
     ''';
   }
 }

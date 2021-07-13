@@ -55,6 +55,10 @@ abstract class _SignUpStore extends IStore<bool> with Store {
   @action
   void setConfirmPassword(String value) => _confirmPassword = value;
 
+  @computed
+  String get email => _email;
+
+
   @action
   Future register() async {
     try {

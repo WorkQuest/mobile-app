@@ -62,7 +62,6 @@ class ChooseRolePage extends StatelessWidget {
         onTap: () {
           try {
             ctx.read<ChooseRoleStore>().setUserRole(UserRole.Worker);
-            print('${ctx.read<ChooseRoleStore>().userRole}');
           } catch (e, trace) {
             e.toString();
             trace.toString();

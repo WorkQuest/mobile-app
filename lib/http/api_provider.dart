@@ -119,7 +119,7 @@ extension UserInfoService on ApiProvider {
   }
 }
 
-extension SetRoleServiceFromSocialNetwork on ApiProvider {
+extension SetRoleService on ApiProvider {
   Future<void> setRole(String role) async {
     await _httpClient.post(
       query: '/v1/profile/set-role',
@@ -130,16 +130,14 @@ extension SetRoleServiceFromSocialNetwork on ApiProvider {
   }
 }
 
-extension SetRoleServiceFromSignUp on ApiProvider {
+extension ConfirmEmailService on ApiProvider {
   Future<void> confirmEmail({
-    required String role,
     required String code,
   }) async {
-    await _httpClient.post(
+     final response = await _httpClient.post(
       query: '/v1/auth/confirm-email',
       data: {
         "confirmCode": code,
-        "role": role,
       },
     );
   }

@@ -9,6 +9,13 @@ part of 'choose_role_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
+  Computed<bool>? _$canSubmitCodeComputed;
+
+  @override
+  bool get canSubmitCode =>
+      (_$canSubmitCodeComputed ??= Computed<bool>(() => super.canSubmitCode,
+              name: '_ChooseRoleStore.canSubmitCode'))
+          .value;
   Computed<bool>? _$privacyPolicyComputed;
 
   @override
@@ -133,9 +140,9 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
       AsyncAction('_ChooseRoleStore.approveRoleFromSignUp');
 
   @override
-  Future<dynamic> approveRoleFromSignUp() {
+  Future<dynamic> confirmEmail() {
     return _$approveRoleFromSignUpAsyncAction
-        .run(() => super.approveRoleFromSignUp());
+        .run(() => super.confirmEmail());
   }
 
   final _$_ChooseRoleStoreActionController =
@@ -199,6 +206,7 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   @override
   String toString() {
     return '''
+canSubmitCode: ${canSubmitCode},
 privacyPolicy: ${privacyPolicy},
 termsAndConditions: ${termsAndConditions},
 amlAndCtfPolicy: ${amlAndCtfPolicy},

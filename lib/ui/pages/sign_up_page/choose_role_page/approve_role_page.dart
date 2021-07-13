@@ -6,18 +6,15 @@ import 'package:app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import '../../../../observer_consumer.dart';
 
 
 class ApproveRolePage extends StatelessWidget{
   final store;
   const ApproveRolePage(this.store);
   static const String routeName = '/approveRolePage';
-
   @override
   Widget build(BuildContext ctx) {
     print('store: ${this.store.userRole}');
-
     return Scaffold(
       appBar: CupertinoNavigationBar(
         previousPageTitle: "  back",
@@ -120,24 +117,19 @@ class ApproveRolePage extends StatelessWidget{
                   ),
                 ),
 
-                ///TODO change api to match
-                ///
-                ObserverListener<ChooseRoleStore>(
-                  onSuccess: () {
-                    Navigator.pushNamed(ctx, MainPage.routeName);
-                  },
-                  child: ElevatedButton(
-                    onPressed: store.canApprove
-                        ? () async {
-                            await store.approveRole();
-                          }
-                        : null,
-                    child: store.isLoading
-                        ? PlatformActivityIndicator()
-                        : Text(
-                            "I agree",
-                          ),
-                  ),
+
+                ElevatedButton(
+                  onPressed: store.canApprove
+                      ? () async {
+                          await store.approveRole();
+                          Navigator.pushNamed(ctx, MainPage.routeName);
+                        }
+                      : null,
+                  child: store.isLoading
+                      ? PlatformActivityIndicator()
+                      : Text(
+                          "I agree",
+                        ),
                 ),
               ],
             ),

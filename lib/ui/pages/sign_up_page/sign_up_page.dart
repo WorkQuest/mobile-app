@@ -2,7 +2,7 @@ import 'package:app/app_localizations.dart';
 import 'package:app/constants.dart';
 import 'package:app/log_service.dart';
 import 'package:app/observer_consumer.dart';
-import 'package:app/ui/pages/sign_up_page/choose_role_page/choose_role_page.dart';
+import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/utils/validator.dart';
@@ -144,13 +144,15 @@ class SignUpPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  ///TODO change route
-                  ///
                   padding: _padding.copyWith(top: 30.0),
                   child: ObserverListener<SignUpStore>(
                     onSuccess: () {
                       println("SignUpPage => SignUp success!");
-                      Navigator.pushNamed(context, ChooseRolePage.routeName);
+                      Navigator.pushNamed(
+                        context,
+                        ConfirmEmail.routeName,
+                        arguments: store.email
+                      );
                     },
                     child: Observer(
                       builder: (context) {
@@ -175,16 +177,23 @@ class SignUpPage extends StatelessWidget {
                 ),
                 const Spacer(),
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
+                  padding: const EdgeInsets.only(
+                    left: 16.0,
+                    bottom: 20.0,
+                  ),
                   child: Row(
                     children: [
                       Text(
                         context.translate(AuthLangKeys.alreadyHaveAccount),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
+                        padding: const EdgeInsets.only(
+                          left: 10.0,
+                        ),
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                           child: Text(
                             context.translate(AuthLangKeys.signIn),
                             style: TextStyle(
