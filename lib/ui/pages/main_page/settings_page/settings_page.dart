@@ -1,5 +1,7 @@
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/main_page/settings_page/settings_page_employer/store/settings_store.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/web_view_page/web_view_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,46 +32,7 @@ class SettingsPage extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  Container(
-                    height: 125.0,
-                    width: 343.0,
-                    decoration: BoxDecoration(image:
-                      DecorationImage(
-                        image: NetworkImage(
-                          userStore.userData!.avatar.url,
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(
-                        6.0,
-                      ),
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          bottom: 16.0,
-                          left: 16.0,
-                          child: Text(
-                            userStore.userData!.firstName +
-                                userStore.userData!.lastName,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 16.0,
-                          right: 23.0,
-                          child: Icon(
-                            Icons.arrow_right_sharp,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  _myProfileImage(context, userStore),
                   Padding(
                     padding: const EdgeInsets.only(top: 15.0),
                     child: Column(
@@ -287,7 +250,7 @@ class SettingsPage extends StatelessWidget {
               delegate: SliverChildListDelegate(
                 [
                   userStore.userData!.role == UserRole.Worker
-                      ? workerSettings()
+                      ? workerSettings(context)
                       : employerSettings(settingStore),
                 ],
               ),
@@ -298,7 +261,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget workerSettings() {
+  Widget workerSettings(context) {
     return Column(
       children: [
         Container(
@@ -315,297 +278,316 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(
-            bottom: 10.0,
-          ),
-          height: 54.0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              6.0,
+        GestureDetector(onTap: (){
+          Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "pension");
+        },
+          child: Container(
+            margin: EdgeInsets.only(bottom: 10.0),
+            height: 54.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
             ),
-          ),
-          child: Material(
-            color: Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.circular(
-              6.0,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 14.0,
-                    left: 17.0,
-                  ),
-                  child: GradientIcon(
-                    SvgPicture.asset(
-                      "assets/settings_pension_icon.svg",
+            child: Material(
+              color: Color(0xFFF7F8FA),
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 14.0,
+                      left: 17.0,
                     ),
-                    16.0,
+                    child: GradientIcon(
+                      SvgPicture.asset(
+                        "assets/settings_pension_icon.svg",
+                      ),
+                      16.0,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Text(
-                    "Pension program",
-                    style: TextStyle(color: Colors.black, fontSize: 16.0),
+                  Expanded(
+                    child: Text(
+                      "Pension program",
+                      style: TextStyle(color: Colors.black, fontSize: 16.0),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 19.0,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 19.0,
+                    ),
+                    child: Icon(
+                      Icons.arrow_forward_ios_sharp,
+                      color: Color(0xFFD8DFE3),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.arrow_forward_ios_sharp,
-                    color: Color(0xFFD8DFE3),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-        Container(
-          height: 54.0,
-          margin: EdgeInsets.only(
-            bottom: 10.0,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              6.0,
+        GestureDetector(
+          onTap: (){
+            Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "referral");
+          },
+          child: Container(
+            height: 54.0,
+            margin: EdgeInsets.only(
+              bottom: 10.0,
             ),
-          ),
-          child: Material(
-            color: Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.circular(
-              6.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 14.0,
-                    left: 17.0,
-                  ),
-                  child: GradientIcon(
-                    SvgPicture.asset(
-                      "assets/settings_referral_icon.svg",
+            child: Material(
+              color: Color(0xFFF7F8FA),
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 14.0,
+                      left: 17.0,
                     ),
-                    16.0,
+                    child: GradientIcon(
+                      SvgPicture.asset(
+                        "assets/settings_referral_icon.svg",
+                      ),
+                      16.0,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Text(
-                    "Referral Program",
-                    style: TextStyle(color: Colors.black, fontSize: 16.0),
+                  Expanded(
+                    child: Text(
+                      "Referral Program",
+                      style: TextStyle(color: Colors.black, fontSize: 16.0),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 19.0,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 19.0,
+                    ),
+                    child: Icon(
+                      Icons.arrow_forward_ios_sharp,
+                      color: Color(0xFFD8DFE3),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.arrow_forward_ios_sharp,
-                    color: Color(0xFFD8DFE3),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(
-            bottom: 10.0,
-          ),
-          height: 54.0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              6.0,
+        GestureDetector(
+          onTap: (){ Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "insuring");},
+          child: Container(
+            margin: EdgeInsets.only(
+              bottom: 10.0,
             ),
-          ),
-          child: Material(
-            color: Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.circular(
-              6.0,
+            height: 54.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 14.0,
-                    left: 17.0,
-                  ),
-                  child: GradientIcon(
-                    SvgPicture.asset(
-                      "assets/settings_p2p_icon.svg",
+            child: Material(
+              color: Color(0xFFF7F8FA),
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 14.0,
+                      left: 17.0,
                     ),
-                    16.0,
+                    child: GradientIcon(
+                      SvgPicture.asset(
+                        "assets/settings_p2p_icon.svg",
+                      ),
+                      16.0,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Text(
-                    "P2P insurance",
-                    style: TextStyle(color: Colors.black, fontSize: 16.0),
+                  Expanded(
+                    child: Text(
+                      "P2P insurance",
+                      style: TextStyle(color: Colors.black, fontSize: 16.0),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 19.0,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 19.0,
+                    ),
+                    child: Icon(
+                      Icons.arrow_forward_ios_sharp,
+                      color: Color(0xFFD8DFE3),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.arrow_forward_ios_sharp,
-                    color: Color(0xFFD8DFE3),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(
-            bottom: 10.0,
-          ),
-          height: 54.0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              6.0,
+        GestureDetector(
+          onTap:(){ Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "savings");}, child: Container(
+            margin: EdgeInsets.only(
+              bottom: 10.0,
             ),
-          ),
-          child: Material(
-            color: Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.circular(
-              6.0,
+            height: 54.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 14.0,
-                    left: 17.0,
-                  ),
-                  child: GradientIcon(
-                    SvgPicture.asset(
-                      "assets/setting_saving_product_icon.svg",
+            child: Material(
+              color: Color(0xFFF7F8FA),
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 14.0,
+                      left: 17.0,
                     ),
-                    16.0,
+                    child: GradientIcon(
+                      SvgPicture.asset(
+                        "assets/setting_saving_product_icon.svg",
+                      ),
+                      16.0,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Text(
-                    "Savings product",
-                    style: TextStyle(color: Colors.black, fontSize: 16.0),
+                  Expanded(
+                    child: Text(
+                      "Savings product",
+                      style: TextStyle(color: Colors.black, fontSize: 16.0),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 19.0,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 19.0,
+                    ),
+                    child: Icon(
+                      Icons.arrow_forward_ios_sharp,
+                      color: Color(0xFFD8DFE3),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.arrow_forward_ios_sharp,
-                    color: Color(0xFFD8DFE3),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(
-            bottom: 10.0,
-          ),
-          height: 54.0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              6.0,
+        GestureDetector(onTap: (){ Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "crediting");},
+          child: Container(
+            margin: EdgeInsets.only(
+              bottom: 10.0,
             ),
-          ),
-          child: Material(
-            color: Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.circular(
-              6.0,
+            height: 54.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 14.0,
-                    left: 17.0,
-                  ),
-                  child: GradientIcon(
-                    SvgPicture.asset(
-                      "assets/settings_wallet.svg",
+            child: Material(
+              color: Color(0xFFF7F8FA),
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 14.0,
+                      left: 17.0,
                     ),
-                    16.0,
+                    child: GradientIcon(
+                      SvgPicture.asset(
+                        "assets/settings_wallet.svg",
+                      ),
+                      16.0,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Text(
-                    "Сrediting",
-                    style: TextStyle(color: Colors.black, fontSize: 16.0),
+                  Expanded(
+                    child: Text(
+                      "Сrediting",
+                      style: TextStyle(color: Colors.black, fontSize: 16.0),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 19.0,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 19.0,
+                    ),
+                    child: Icon(
+                      Icons.arrow_forward_ios_sharp,
+                      color: Color(0xFFD8DFE3),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.arrow_forward_ios_sharp,
-                    color: Color(0xFFD8DFE3),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-        Container(
-          height: 54.0,
-          margin: EdgeInsets.only(
-            bottom: 10.0,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              6.0,
+        GestureDetector(
+          onTap: (){
+            Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "mining");
+          },
+          child: Container(
+            height: 54.0,
+            margin: EdgeInsets.only(
+              bottom: 10.0,
             ),
-          ),
-          child: Material(
-            color: Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.circular(
-              6.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 14.0,
-                    left: 17.0,
-                  ),
-                  child: GradientIcon(
-                    SvgPicture.asset(
-                      "assets/setting_chart.svg",
+            child: Material(
+              color: Color(0xFFF7F8FA),
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 14.0,
+                      left: 17.0,
                     ),
-                    16.0,
+                    child: GradientIcon(
+                      SvgPicture.asset(
+                        "assets/setting_chart.svg",
+                      ),
+                      16.0,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Text(
-                    "Liquidity mining",
-                    style: TextStyle(color: Colors.black, fontSize: 16.0),
+                  Expanded(
+                    child: Text(
+                      "Liquidity mining",
+                      style: TextStyle(color: Colors.black, fontSize: 16.0),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 19.0,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 19.0,
+                    ),
+                    child: Icon(
+                      Icons.arrow_forward_ios_sharp,
+                      color: Color(0xFFD8DFE3),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.arrow_forward_ios_sharp,
-                    color: Color(0xFFD8DFE3),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -804,6 +786,53 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _myProfileImage(context, userStore) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context,rootNavigator: true).pushNamed(ProfileReviews.routeName);
+      },
+      child: Container(
+        height: 125.0,
+        width: 343.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(
+              userStore.userData!.avatar.url,
+            ),
+            fit: BoxFit.cover,
+          ),
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(
+            6.0,
+          ),
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 16.0,
+              left: 16.0,
+              child: Text(
+                userStore.userData!.firstName + userStore.userData!.lastName,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 16.0,
+              right: 23.0,
+              child: Icon(
+                Icons.arrow_right_sharp,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
