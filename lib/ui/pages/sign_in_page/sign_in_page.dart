@@ -130,13 +130,17 @@ class SignInPage extends StatelessWidget {
                       width: double.infinity,
                       child: ObserverListener<SignInStore>(
                         onSuccess: () {
-                          Navigator.pushNamed(context, MainPage.routeName);
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            MainPage.routeName,
+                            (_) => false,
+                          );
                         },
                         child: Observer(
                           builder: (context) {
                             return ElevatedButton(
                               onPressed: signInStore.canSignIn
-                                  ? () async{
+                                  ? () async {
                                       if (_formKey.currentState!.validate()) {
                                         await signInStore.signInWithUsername();
                                       }
@@ -183,7 +187,8 @@ class SignInPage extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10.0),
                           child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, SignUpPage.routeName);
+                              Navigator.pushNamed(
+                                  context, SignUpPage.routeName);
                             },
                             child: Text(
                               context.translate(AuthLangKeys.signUp),
