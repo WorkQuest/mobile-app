@@ -35,6 +35,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
   @action
   Future signInWithUsername() async {
     try {
+
       this.onLoading();
       String refreshToken = await _apiProvider.login(
           email: _username.trim(), password: _password);

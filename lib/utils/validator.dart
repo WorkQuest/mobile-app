@@ -12,6 +12,10 @@ class Validators {
 
     RegExp regExp = new RegExp(p);
 
-    return regExp.hasMatch(email!) ? null : "Email invalid";
+    return regExp.hasMatch(email!.trim()) ? null : "Email invalid";
+  }
+
+  static String? signUpPasswordValidator(String? text) {
+    return text!.length >= 8 ?  null : "Password length should be greater than 8" ;
   }
 }

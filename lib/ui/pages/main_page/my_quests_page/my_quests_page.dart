@@ -92,11 +92,11 @@ class _PersistentTabBar extends SliverPersistentHeaderDelegate {
         ),
         child: TabBar(
           labelPadding: const EdgeInsets.symmetric(
-            horizontal: 5.0,
+            horizontal: 0.0,
           ),
           indicator: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(6.0),
           ),
           labelColor: const Color(0xFF353C47),
           labelStyle: TextStyle(
@@ -107,10 +107,26 @@ class _PersistentTabBar extends SliverPersistentHeaderDelegate {
             fontSize: 14,
           ),
           tabs: [
-            Text("Active"),
-            Text("Invited"),
-            Text("Performed"),
-            Text("Starred"),
+            Text(
+              "Active",
+              maxLines: 1,
+              overflow: TextOverflow.fade,
+            ),
+            Text(
+              "Invited",
+              maxLines: 1,
+              overflow: TextOverflow.fade,
+            ),
+            Text(
+              "Performed",
+              maxLines: 1,
+              overflow: TextOverflow.fade,
+            ),
+            Text(
+              "Starred",
+              maxLines: 1,
+              overflow: TextOverflow.fade,
+            ),
           ],
         ),
       ),

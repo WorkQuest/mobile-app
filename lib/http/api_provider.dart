@@ -118,3 +118,27 @@ extension UserInfoService on ApiProvider {
     return ProfileMeResponse.fromJson(responseData);
   }
 }
+
+extension SetRoleService on ApiProvider {
+  Future<void> setRole(String role) async {
+    await _httpClient.post(
+      query: '/v1/profile/set-role',
+      data: {
+        "role": role,
+      },
+    );
+  }
+}
+
+extension ConfirmEmailService on ApiProvider {
+  Future<void> confirmEmail({
+    required String code,
+  }) async {
+     final response = await _httpClient.post(
+      query: '/v1/auth/confirm-email',
+      data: {
+        "confirmCode": code,
+      },
+    );
+  }
+}

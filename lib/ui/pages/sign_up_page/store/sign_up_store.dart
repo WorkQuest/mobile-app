@@ -28,13 +28,17 @@ abstract class _SignUpStore extends IStore<bool> with Store {
   @observable
   String _password = '';
 
+  @observable
+  String _confirmPassword = '';
+
   @computed
   bool get canSignUp =>
       !isLoading &&
       _email.isNotEmpty &&
       _firstName.isNotEmpty &&
       _lastName.isNotEmpty &&
-      _password.isNotEmpty;
+      _password.isNotEmpty &&
+      _password == _confirmPassword;
 
   @action
   void setEmail(String value) => _email = value;
@@ -47,6 +51,13 @@ abstract class _SignUpStore extends IStore<bool> with Store {
 
   @action
   void setPassword(String value) => _password = value;
+
+  @action
+  void setConfirmPassword(String value) => _confirmPassword = value;
+
+  @computed
+  String get email => _email;
+
 
   @action
   Future register() async {

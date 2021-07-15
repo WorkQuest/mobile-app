@@ -15,6 +15,7 @@ import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/choose_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
+import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import 'package:app/ui/pages/sign_up_page/sign_up_page.dart';
 import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<SignInStore>(),
-            child:  SignInPage(),
+            child: SignInPage(),
           ),
         );
 
@@ -37,7 +38,7 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<SignUpStore>(),
-            child: const SignUpPage(),
+            child: SignUpPage(),
           ),
         );
 
@@ -66,31 +67,17 @@ class Routes {
 
       case ChooseRolePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MultiProvider(
-            providers: [
-              Provider(
-                create: (context) => getIt.get<SignUpStore>(),
-              ),
-              Provider(
-                create: (context) => getIt.get<ChooseRoleStore>(),
-              )
-            ],
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChooseRoleStore>(),
             child: ChooseRolePage(),
           ),
         );
 
       case ApproveRolePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MultiProvider(
-            providers: [
-              Provider(
-                create: (context) => getIt.get<SignUpStore>(),
-              ),
-              Provider(
-                create: (context) => getIt.get<ChooseRoleStore>(),
-              ),
-            ],
-            child: ApproveRolePage(),
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChooseRoleStore>(),
+            child: ApproveRolePage(settings.arguments),
           ),
         );
 
@@ -108,6 +95,14 @@ class Routes {
               ),
             ],
             child: ProfileReviews(),
+          ),
+        );
+
+      case ConfirmEmail.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChooseRoleStore>(),
+            child: ConfirmEmail(settings.arguments),
           ),
         );
 

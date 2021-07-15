@@ -9,6 +9,13 @@ part of 'choose_role_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
+  Computed<bool>? _$canSubmitCodeComputed;
+
+  @override
+  bool get canSubmitCode =>
+      (_$canSubmitCodeComputed ??= Computed<bool>(() => super.canSubmitCode,
+              name: '_ChooseRoleStore.canSubmitCode'))
+          .value;
   Computed<bool>? _$privacyPolicyComputed;
 
   @override
@@ -30,6 +37,13 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
       (_$amlAndCtfPolicyComputed ??= Computed<bool>(() => super.amlAndCtfPolicy,
               name: '_ChooseRoleStore.amlAndCtfPolicy'))
           .value;
+  Computed<bool>? _$canApproveComputed;
+
+  @override
+  bool get canApprove =>
+      (_$canApproveComputed ??= Computed<bool>(() => super.canApprove,
+              name: '_ChooseRoleStore.canApprove'))
+          .value;
   Computed<UserRole>? _$userRoleComputed;
 
   @override
@@ -50,6 +64,21 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   set _privacyPolicy(bool value) {
     _$_privacyPolicyAtom.reportWrite(value, super._privacyPolicy, () {
       super._privacyPolicy = value;
+    });
+  }
+
+  final _$_codeFromEmailAtom = Atom(name: '_ChooseRoleStore._codeFromEmail');
+
+  @override
+  String get _codeFromEmail {
+    _$_codeFromEmailAtom.reportRead();
+    return super._codeFromEmail;
+  }
+
+  @override
+  set _codeFromEmail(String value) {
+    _$_codeFromEmailAtom.reportWrite(value, super._codeFromEmail, () {
+      super._codeFromEmail = value;
     });
   }
 
@@ -100,8 +129,35 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     });
   }
 
+  final _$approveRoleAsyncAction = AsyncAction('_ChooseRoleStore.approveRole');
+
+  @override
+  Future<dynamic> approveRole() {
+    return _$approveRoleAsyncAction.run(() => super.approveRole());
+  }
+
+  final _$approveRoleFromSignUpAsyncAction =
+      AsyncAction('_ChooseRoleStore.approveRoleFromSignUp');
+
+  @override
+  Future<dynamic> confirmEmail() {
+    return _$approveRoleFromSignUpAsyncAction
+        .run(() => super.confirmEmail());
+  }
+
   final _$_ChooseRoleStoreActionController =
       ActionController(name: '_ChooseRoleStore');
+
+  @override
+  void setCode(String value) {
+    final _$actionInfo = _$_ChooseRoleStoreActionController.startAction(
+        name: '_ChooseRoleStore.setCode');
+    try {
+      return super.setCode(value);
+    } finally {
+      _$_ChooseRoleStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setPrivacyPolicy(bool value) {
@@ -150,9 +206,11 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   @override
   String toString() {
     return '''
+canSubmitCode: ${canSubmitCode},
 privacyPolicy: ${privacyPolicy},
 termsAndConditions: ${termsAndConditions},
 amlAndCtfPolicy: ${amlAndCtfPolicy},
+canApprove: ${canApprove},
 userRole: ${userRole}
     ''';
   }

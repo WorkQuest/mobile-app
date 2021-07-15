@@ -15,6 +15,12 @@ mixin _$SignUpStore on _SignUpStore, Store {
   bool get canSignUp => (_$canSignUpComputed ??=
           Computed<bool>(() => super.canSignUp, name: '_SignUpStore.canSignUp'))
       .value;
+  Computed<String>? _$emailComputed;
+
+  @override
+  String get email => (_$emailComputed ??=
+          Computed<String>(() => super.email, name: '_SignUpStore.email'))
+      .value;
 
   final _$_emailAtom = Atom(name: '_SignUpStore._email');
 
@@ -76,6 +82,21 @@ mixin _$SignUpStore on _SignUpStore, Store {
     });
   }
 
+  final _$_confirmPasswordAtom = Atom(name: '_SignUpStore._confirmPassword');
+
+  @override
+  String get _confirmPassword {
+    _$_confirmPasswordAtom.reportRead();
+    return super._confirmPassword;
+  }
+
+  @override
+  set _confirmPassword(String value) {
+    _$_confirmPasswordAtom.reportWrite(value, super._confirmPassword, () {
+      super._confirmPassword = value;
+    });
+  }
+
   final _$registerAsyncAction = AsyncAction('_SignUpStore.register');
 
   @override
@@ -130,9 +151,21 @@ mixin _$SignUpStore on _SignUpStore, Store {
   }
 
   @override
+  void setConfirmPassword(String value) {
+    final _$actionInfo = _$_SignUpStoreActionController.startAction(
+        name: '_SignUpStore.setConfirmPassword');
+    try {
+      return super.setConfirmPassword(value);
+    } finally {
+      _$_SignUpStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
-canSignUp: ${canSignUp}
+canSignUp: ${canSignUp},
+email: ${email}
     ''';
   }
 }
