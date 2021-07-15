@@ -6,7 +6,6 @@ import 'package:mobx/mobx.dart';
 
 part 'profile_me_store.g.dart';
 
-@injectable
 @singleton
 class ProfileMeStore extends _ProfileMeStore with _$ProfileMeStore {
   ProfileMeStore(ApiProvider apiProvider) : super(apiProvider);
@@ -27,7 +26,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       this.onLoading();
       // await _apiProvider.getQuests();
       userData = await _apiProvider.getProfileMe();
-      print("userrrrrrr$userData");
       this.onSuccess(true);
     } catch (e,trace) {
       print(trace);
