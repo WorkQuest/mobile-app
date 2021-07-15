@@ -5,8 +5,9 @@ import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
-import 'package:app/ui/pages/main_page/settings_page/settings_page_employer/settings_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/settings_page_employer/store/settings_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/web_view_page/web_view_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
@@ -47,7 +48,6 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<QuestsStore>(),
               ),
-
               Provider(
                 create: (context) => getIt.get<SettingsPageStore>(),
               ),
@@ -101,7 +101,14 @@ class Routes {
 
       case ProfileReviews.routeName:
         return MaterialPageRoute(
-          builder: (context) => ProfileReviews(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
+            child: ProfileReviews(),
+          ),
         );
 
       case SettingsPage.routeName:
@@ -130,6 +137,11 @@ class Routes {
       case WalletPage.routeName:
         return MaterialPageRoute(
           builder: (context) => WalletPage(),
+        );
+
+      case WebViewPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => WebViewPage(settings.arguments.toString()),
         );
 
       default:
