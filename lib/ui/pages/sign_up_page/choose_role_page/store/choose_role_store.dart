@@ -63,8 +63,7 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   Future confirmEmail() async {
     try {
       this.onLoading();
-      await _apiProvider.confirmEmail(
-        code: _codeFromEmail,
+      await _apiProvider.confirmEmail(code: _codeFromEmail.trim(),
       );
       this.onSuccess(true);
     } catch (e) {
