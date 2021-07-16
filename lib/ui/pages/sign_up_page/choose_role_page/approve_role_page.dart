@@ -1,11 +1,11 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
-import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ApproveRolePage extends StatelessWidget {
   final store;
@@ -13,6 +13,8 @@ class ApproveRolePage extends StatelessWidget {
   const ApproveRolePage(this.store);
 
   static const String routeName = '/approveRolePage';
+
+  final String _baseUrl = "https://app-ver1.workquest.co/";
 
   @override
   Widget build(BuildContext ctx) {
@@ -51,8 +53,8 @@ class ApproveRolePage extends StatelessWidget {
                   value: store.privacyPolicy,
                   onChanged: (value) => store.setPrivacyPolicy(value!),
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: checkBoxText(
-                    urlLink: "urlLink",
+                  title: checkBoxText(ctx,
+                    urlLink: "docs/privacy.pdf",
                     title: 'Privacy policy',
                   ),
                 ),
@@ -62,8 +64,8 @@ class ApproveRolePage extends StatelessWidget {
                   value: store.termsAndConditions,
                   onChanged: (value) => store.setTermsAndConditions(value!),
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: checkBoxText(
-                    urlLink: "urlLink",
+                  title: checkBoxText(ctx,
+                    urlLink: "docs/terms.pdf",
                     title: 'Terms & Conditions',
                   ),
                 ),
@@ -73,8 +75,8 @@ class ApproveRolePage extends StatelessWidget {
                   value: store.amlAndCtfPolicy,
                   onChanged: (value) => store.setAmlAndCtfPolicy(value!),
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: checkBoxText(
-                    urlLink: "urlLink",
+                  title: checkBoxText(ctx,
+                    urlLink: "docs/aml.pdf",
                     title: "AML & CTF Policy",
                   ),
                 ),
@@ -99,7 +101,7 @@ class ApproveRolePage extends StatelessWidget {
     );
   }
 
-  Widget checkBoxText({
+  Widget checkBoxText(BuildContext context,{
     required String urlLink,
     required String title,
   }) {
@@ -113,7 +115,9 @@ class ApproveRolePage extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () async {
+            await launch(_baseUrl+urlLink);
+          },
           child: Text(
             title,
             style: TextStyle(
