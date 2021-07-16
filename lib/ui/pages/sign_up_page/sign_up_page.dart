@@ -130,6 +130,7 @@ class SignUpPage extends StatelessWidget {
                   padding: _padding,
                   child: TextFormField(
                     obscureText: true,
+                    validator: store.signUpConfirmPasswordValidator,
                     onChanged: store.setConfirmPassword,
                     decoration: InputDecoration(
                       prefixIcon: SvgPicture.asset(

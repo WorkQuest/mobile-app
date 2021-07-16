@@ -38,7 +38,7 @@ abstract class _SignUpStore extends IStore<bool> with Store {
       _firstName.isNotEmpty &&
       _lastName.isNotEmpty &&
       _password.isNotEmpty &&
-      _password == _confirmPassword;
+      _confirmPassword.isNotEmpty;
 
   @action
   void setEmail(String value) => _email = value;
@@ -58,7 +58,6 @@ abstract class _SignUpStore extends IStore<bool> with Store {
   @computed
   String get email => _email;
 
-
   @action
   Future register() async {
     try {
@@ -74,5 +73,12 @@ abstract class _SignUpStore extends IStore<bool> with Store {
     } catch (e) {
       this.onError(e.toString());
     }
+  }
+
+  @action
+  String? signUpConfirmPasswordValidator(String? text) {
+    return text! == _password
+        ? null
+        : "Does not match password";
   }
 }
