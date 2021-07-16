@@ -7,7 +7,7 @@ import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_pa
 import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
-import 'package:app/ui/pages/main_page/settings_page/web_view_page/web_view_page.dart';
+import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';

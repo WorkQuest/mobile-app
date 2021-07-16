@@ -7,11 +7,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
-
-class ApproveRolePage extends StatelessWidget{
+class ApproveRolePage extends StatelessWidget {
   final store;
+
   const ApproveRolePage(this.store);
+
   static const String routeName = '/approveRolePage';
+
   @override
   Widget build(BuildContext ctx) {
     print('store: ${this.store.userRole}');
@@ -35,13 +37,13 @@ class ApproveRolePage extends StatelessWidget{
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 store.userRole == UserRole.Worker
                     ? getWorkerCard()
                     : getEmployerCard(),
-                SizedBox(
+                const SizedBox(
                   height: 0,
                 ),
                 CheckboxListTile(
@@ -49,75 +51,33 @@ class ApproveRolePage extends StatelessWidget{
                   value: store.privacyPolicy,
                   onChanged: (value) => store.setPrivacyPolicy(value!),
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Color(0xFF1D2127),
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(text: 'I agree with '),
-                        TextSpan(
-                          text: 'Privacy policy',
-                          style: TextStyle(
-                            color: Color(0xFF0083C7),
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ],
-                    ),
+                  title: checkBoxText(
+                    urlLink: "urlLink",
+                    title: 'Privacy policy',
                   ),
                 ),
+
                 CheckboxListTile(
                   contentPadding: const EdgeInsets.all(0),
                   value: store.termsAndConditions,
                   onChanged: (value) => store.setTermsAndConditions(value!),
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Color(0xFF1D2127),
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(text: 'I agree with '),
-                        TextSpan(
-                          text: 'Terms & Conditions',
-                          style: TextStyle(
-                            color: Color(0xFF0083C7),
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ],
-                    ),
+                  title: checkBoxText(
+                    urlLink: "urlLink",
+                    title: 'Terms & Conditions',
                   ),
                 ),
+
                 CheckboxListTile(
                   contentPadding: const EdgeInsets.all(0),
                   value: store.amlAndCtfPolicy,
                   onChanged: (value) => store.setAmlAndCtfPolicy(value!),
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Color(0xFF1D2127),
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(text: 'I agree with '),
-                        TextSpan(
-                          text: 'AML & CTF Policy',
-                          style: TextStyle(
-                            color: Color(0xFF0083C7),
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ],
-                    ),
+                  title: checkBoxText(
+                    urlLink: "urlLink",
+                    title: "AML & CTF Policy",
                   ),
                 ),
-
-
                 ElevatedButton(
                   onPressed: store.canApprove
                       ? () async {
@@ -136,6 +96,33 @@ class ApproveRolePage extends StatelessWidget{
           );
         },
       ),
+    );
+  }
+
+  Widget checkBoxText({
+    required String urlLink,
+    required String title,
+  }) {
+    return Row(
+      children: [
+        Text(
+          'I agree with ',
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Color(0xFF1D2127),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {},
+          child: Text(
+            title,
+            style: TextStyle(
+              color: Color(0xFF0083C7),
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -208,5 +195,4 @@ class ApproveRolePage extends StatelessWidget{
       ),
     );
   }
-
 }

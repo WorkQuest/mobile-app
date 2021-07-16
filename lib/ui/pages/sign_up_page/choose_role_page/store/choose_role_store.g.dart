@@ -136,13 +136,12 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     return _$approveRoleAsyncAction.run(() => super.approveRole());
   }
 
-  final _$approveRoleFromSignUpAsyncAction =
-      AsyncAction('_ChooseRoleStore.approveRoleFromSignUp');
+  final _$confirmEmailAsyncAction =
+      AsyncAction('_ChooseRoleStore.confirmEmail');
 
   @override
   Future<dynamic> confirmEmail() {
-    return _$approveRoleFromSignUpAsyncAction
-        .run(() => super.confirmEmail());
+    return _$confirmEmailAsyncAction.run(() => super.confirmEmail());
   }
 
   final _$_ChooseRoleStoreActionController =

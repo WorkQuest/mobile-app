@@ -1,0 +1,74 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'settings_store.dart';
+
+// **************************************************************************
+// StoreGenerator
+// **************************************************************************
+
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+
+mixin _$SettingsPageStore on _SettingsPageStore, Store {
+  final _$privacyAtom = Atom(name: '_SettingsPageStore.privacy');
+
+  @override
+  int get privacy {
+    _$privacyAtom.reportRead();
+    return super.privacy;
+  }
+
+  @override
+  set privacy(int value) {
+    _$privacyAtom.reportWrite(value, super.privacy, () {
+      super.privacy = value;
+    });
+  }
+
+  final _$filterAtom = Atom(name: '_SettingsPageStore.filter');
+
+  @override
+  int get filter {
+    _$filterAtom.reportRead();
+    return super.filter;
+  }
+
+  @override
+  set filter(int value) {
+    _$filterAtom.reportWrite(value, super.filter, () {
+      super.filter = value;
+    });
+  }
+
+  final _$_SettingsPageStoreActionController =
+      ActionController(name: '_SettingsPageStore');
+
+  @override
+  void changePrivacy(int choice) {
+    final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
+        name: '_SettingsPageStore.changePrivacy');
+    try {
+      return super.changePrivacy(choice);
+    } finally {
+      _$_SettingsPageStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void changeFilter(int choice) {
+    final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
+        name: '_SettingsPageStore.changeFilter');
+    try {
+      return super.changeFilter(choice);
+    } finally {
+      _$_SettingsPageStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String toString() {
+    return '''
+privacy: ${privacy},
+filter: ${filter}
+    ''';
+  }
+}

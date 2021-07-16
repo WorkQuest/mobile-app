@@ -1,7 +1,7 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
-import 'package:app/ui/pages/main_page/settings_page/web_view_page/web_view_page.dart';
+import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/cupertino.dart';
@@ -278,9 +278,13 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
         ),
-        GestureDetector(onTap: (){
-          Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "pension");
-        },
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context, rootNavigator: true).pushNamed(
+              WebViewPage.routeName,
+              arguments: "pension",
+            );
+          },
           child: Container(
             margin: EdgeInsets.only(bottom: 10.0),
             height: 54.0,
@@ -330,8 +334,9 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: (){
-            Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "referral");
+          onTap: () {
+            Navigator.of(context, rootNavigator: true)
+                .pushNamed(WebViewPage.routeName, arguments: "referral");
           },
           child: Container(
             height: 54.0,
@@ -384,7 +389,10 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: (){ Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "insuring");},
+          onTap: () {
+            Navigator.of(context, rootNavigator: true)
+                .pushNamed(WebViewPage.routeName, arguments: "insuring");
+          },
           child: Container(
             margin: EdgeInsets.only(
               bottom: 10.0,
@@ -436,7 +444,11 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap:(){ Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "savings");}, child: Container(
+          onTap: () {
+            Navigator.of(context, rootNavigator: true)
+                .pushNamed(WebViewPage.routeName, arguments: "savings");
+          },
+          child: Container(
             margin: EdgeInsets.only(
               bottom: 10.0,
             ),
@@ -486,7 +498,11 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
         ),
-        GestureDetector(onTap: (){ Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "crediting");},
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context, rootNavigator: true)
+                .pushNamed(WebViewPage.routeName, arguments: "crediting");
+          },
           child: Container(
             margin: EdgeInsets.only(
               bottom: 10.0,
@@ -538,8 +554,9 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: (){
-            Navigator.of(context,rootNavigator: true).pushNamed(WebViewPage.routeName,arguments: "mining");
+          onTap: () {
+            Navigator.of(context, rootNavigator: true)
+                .pushNamed(WebViewPage.routeName, arguments: "mining");
           },
           child: Container(
             height: 54.0,
@@ -792,7 +809,8 @@ class SettingsPage extends StatelessWidget {
   Widget _myProfileImage(context, userStore) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context,rootNavigator: true).pushNamed(ProfileReviews.routeName);
+        Navigator.of(context, rootNavigator: true)
+            .pushNamed(ProfileReviews.routeName);
       },
       child: Container(
         height: 125.0,
