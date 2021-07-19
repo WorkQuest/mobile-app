@@ -38,194 +38,64 @@ class SettingsPage extends StatelessWidget {
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
-                              height: 125.0,
-                              width: 165.0,
-                              child: Material(
-                                color: Color(0xFFF7F8FA),
-                                borderRadius: BorderRadius.circular(
-                                  6.0,
+                            ///Change Password
+                            settingsCard(
+                              icon: GradientIcon(
+                                SvgPicture.asset(
+                                  "assets/settings_password_icon.svg",
                                 ),
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      top: 8.0,
-                                      left: 8.0,
-                                      child: IconButton(
-                                        onPressed: null,
-                                        icon: GradientIcon(
-                                          SvgPicture.asset(
-                                            "assets/settings_password_icon.svg",
-                                          ),
-                                          20.0,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 16.0,
-                                      left: 16.0,
-                                      right: 60.0,
-                                      child: Text(
-                                        "Change Password",
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 16.0,
-                                      right: 26.0,
-                                      child: Icon(
-                                        Icons.arrow_right_sharp,
-                                        color: Color(0xFFD8DFE3),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                20.0,
                               ),
+                              title: "Change\nPassword",
+                              onTap: () {},
                             ),
-                            SizedBox(
-                              height: 125.0,
-                              width: 165.0,
-                              child: Material(
-                                color: Color(0xFFF7F8FA),
-                                borderRadius: BorderRadius.circular(
-                                  6.0,
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      bottom: 16.0,
-                                      left: 16.0,
-                                      right: 60.0,
-                                      child: Text(
-                                        "2FA",
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 16.0,
-                                      right: 26.0,
-                                      child: Icon(
-                                        Icons.arrow_right_sharp,
-                                        color: Color(0xFFD8DFE3),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 16.0,
-                                      left: 16.0,
-                                      bottom: 83,
-                                      child: CupertinoSwitch(
-                                        onChanged: null,
-                                        value: false,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            const SizedBox(
+                              width: 10.0,
+                            ),
+
+                            ///2FA
+                            settingsCard(
+                              icon: CupertinoSwitch(
+                                onChanged: null,
+                                value: false,
                               ),
+                              title: "2FA",
+                              onTap: () {},
                             ),
                           ],
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 15.0),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                height: 125.0,
-                                width: 165.0,
-                                child: Material(
-                                  color: Color(0xFFF7F8FA),
-                                  borderRadius: BorderRadius.circular(
-                                    6.0,
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        bottom: 16.0,
-                                        left: 16.0,
-                                        right: 60.0,
-                                        child: Text(
-                                          "SMS \nVerification",
-                                          maxLines: 2,
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 16.0,
-                                        right: 26.0,
-                                        child: Icon(
-                                          Icons.arrow_right_sharp,
-                                          color: Color(0xFFD8DFE3),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: 16.0,
-                                        left: 16.0,
-                                        bottom: 83,
-                                        child: CupertinoSwitch(
-                                          onChanged: null,
-                                          value: false,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                              ///SMS Verification
+                              settingsCard(
+                                icon: CupertinoSwitch(
+                                  onChanged: null,
+                                  value: false,
                                 ),
+                                title: "SMS \nVerification",
+                                onTap: () {},
                               ),
-                              SizedBox(
-                                height: 125.0,
-                                width: 165.0,
-                                child: Material(
-                                  color: Color(0xFFF7F8FA),
-                                  borderRadius: BorderRadius.circular(
-                                    6.0,
+                              const SizedBox(
+                                width: 10.0,
+                              ),
+
+                              ///Change Role
+                              settingsCard(
+                                icon: GradientIcon(
+                                  SvgPicture.asset(
+                                    "assets/settings_role_icon.svg",
                                   ),
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        top: 8.0,
-                                        left: 8.0,
-                                        child: IconButton(
-                                          onPressed: null,
-                                          icon: GradientIcon(
-                                            SvgPicture.asset(
-                                              "assets/settings_role_icon.svg",
-                                            ),
-                                            20.0,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 16.0,
-                                        left: 16.0,
-                                        right: 60.0,
-                                        child: Text(
-                                          "Change \nRole",
-                                          maxLines: 2,
-                                          style: TextStyle(
-                                            fontSize: 16.0,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 16.0,
-                                        right: 26.0,
-                                        child: Icon(
-                                          Icons.arrow_right_sharp,
-                                          color: Color(0xFFD8DFE3),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  20.0,
                                 ),
+                                title: "Change \nRole",
+                                onTap: () {},
                               ),
                             ],
                           ),
@@ -249,7 +119,7 @@ class SettingsPage extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  userStore.userData!.role == UserRole.Worker
+                  userStore.userData!.role != UserRole.Worker
                       ? workerSettings(context)
                       : employerSettings(settingStore),
                 ],
@@ -261,7 +131,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget workerSettings(context) {
+  Widget workerSettings(BuildContext context) {
     return Column(
       children: [
         Container(
@@ -278,335 +148,41 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
         ),
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context, rootNavigator: true).pushNamed(
-              WebViewPage.routeName,
-              arguments: "pension",
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.only(bottom: 10.0),
-            height: 54.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-            ),
-            child: Material(
-              color: Color(0xFFF7F8FA),
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 14.0,
-                      left: 17.0,
-                    ),
-                    child: GradientIcon(
-                      SvgPicture.asset(
-                        "assets/settings_pension_icon.svg",
-                      ),
-                      16.0,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      "Pension program",
-                      style: TextStyle(color: Colors.black, fontSize: 16.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 19.0,
-                    ),
-                    child: Icon(
-                      Icons.arrow_forward_ios_sharp,
-                      color: Color(0xFFD8DFE3),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        instrumentsCard(
+          context,
+          urlArgument: "pension",
+          iconPath: "assets/settings_pension_icon.svg",
+          title: "Retirement program",
         ),
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context, rootNavigator: true)
-                .pushNamed(WebViewPage.routeName, arguments: "referral");
-          },
-          child: Container(
-            height: 54.0,
-            margin: EdgeInsets.only(
-              bottom: 10.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-            ),
-            child: Material(
-              color: Color(0xFFF7F8FA),
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 14.0,
-                      left: 17.0,
-                    ),
-                    child: GradientIcon(
-                      SvgPicture.asset(
-                        "assets/settings_referral_icon.svg",
-                      ),
-                      16.0,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      "Referral Program",
-                      style: TextStyle(color: Colors.black, fontSize: 16.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 19.0,
-                    ),
-                    child: Icon(
-                      Icons.arrow_forward_ios_sharp,
-                      color: Color(0xFFD8DFE3),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        instrumentsCard(
+          context,
+          urlArgument: "referral",
+          iconPath: "assets/settings_referral_icon.svg",
+          title: "Referral Program",
         ),
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context, rootNavigator: true)
-                .pushNamed(WebViewPage.routeName, arguments: "insuring");
-          },
-          child: Container(
-            margin: EdgeInsets.only(
-              bottom: 10.0,
-            ),
-            height: 54.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-            ),
-            child: Material(
-              color: Color(0xFFF7F8FA),
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 14.0,
-                      left: 17.0,
-                    ),
-                    child: GradientIcon(
-                      SvgPicture.asset(
-                        "assets/settings_p2p_icon.svg",
-                      ),
-                      16.0,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      "P2P insurance",
-                      style: TextStyle(color: Colors.black, fontSize: 16.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 19.0,
-                    ),
-                    child: Icon(
-                      Icons.arrow_forward_ios_sharp,
-                      color: Color(0xFFD8DFE3),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        instrumentsCard(
+          context,
+          urlArgument: "insuring",
+          iconPath: "assets/settings_p2p_icon.svg",
+          title: "P2P insurance",
         ),
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context, rootNavigator: true)
-                .pushNamed(WebViewPage.routeName, arguments: "savings");
-          },
-          child: Container(
-            margin: EdgeInsets.only(
-              bottom: 10.0,
-            ),
-            height: 54.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-            ),
-            child: Material(
-              color: Color(0xFFF7F8FA),
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 14.0,
-                      left: 17.0,
-                    ),
-                    child: GradientIcon(
-                      SvgPicture.asset(
-                        "assets/setting_saving_product_icon.svg",
-                      ),
-                      16.0,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      "Savings product",
-                      style: TextStyle(color: Colors.black, fontSize: 16.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 19.0,
-                    ),
-                    child: Icon(
-                      Icons.arrow_forward_ios_sharp,
-                      color: Color(0xFFD8DFE3),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        instrumentsCard(
+          context,
+          urlArgument: "savings",
+          iconPath: "assets/setting_saving_product_icon.svg",
+          title: "Savings product",
         ),
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context, rootNavigator: true)
-                .pushNamed(WebViewPage.routeName, arguments: "crediting");
-          },
-          child: Container(
-            margin: EdgeInsets.only(
-              bottom: 10.0,
-            ),
-            height: 54.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-            ),
-            child: Material(
-              color: Color(0xFFF7F8FA),
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 14.0,
-                      left: 17.0,
-                    ),
-                    child: GradientIcon(
-                      SvgPicture.asset(
-                        "assets/settings_wallet.svg",
-                      ),
-                      16.0,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      "Сrediting",
-                      style: TextStyle(color: Colors.black, fontSize: 16.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 19.0,
-                    ),
-                    child: Icon(
-                      Icons.arrow_forward_ios_sharp,
-                      color: Color(0xFFD8DFE3),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        instrumentsCard(
+          context,
+          urlArgument: "crediting",
+          iconPath: "assets/settings_wallet.svg",
+          title: "Lending",
         ),
-        GestureDetector(
-          onTap: () {
-            Navigator.of(context, rootNavigator: true)
-                .pushNamed(WebViewPage.routeName, arguments: "mining");
-          },
-          child: Container(
-            height: 54.0,
-            margin: EdgeInsets.only(
-              bottom: 10.0,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-            ),
-            child: Material(
-              color: Color(0xFFF7F8FA),
-              borderRadius: BorderRadius.circular(
-                6.0,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 14.0,
-                      left: 17.0,
-                    ),
-                    child: GradientIcon(
-                      SvgPicture.asset(
-                        "assets/setting_chart.svg",
-                      ),
-                      16.0,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      "Liquidity mining",
-                      style: TextStyle(color: Colors.black, fontSize: 16.0),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 19.0,
-                    ),
-                    child: Icon(
-                      Icons.arrow_forward_ios_sharp,
-                      color: Color(0xFFD8DFE3),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        instrumentsCard(
+          context,
+          urlArgument: "mining",
+          iconPath: "assets/setting_chart.svg",
+          title: "Liquidity mining",
         ),
       ],
     );
@@ -806,6 +382,119 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  ///Settings Card
+  Widget settingsCard({
+    required Widget icon,
+    required String title,
+    required void Function() onTap,
+  }) =>
+      Expanded(
+        child: GestureDetector(
+          onTap: onTap,
+          child: SizedBox(
+            height: 130.0,
+            child: Material(
+              color: Color(0xFFF7F8FA),
+              borderRadius: BorderRadius.circular(
+                6.0,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    icon,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title,
+                            maxLines: 2,
+                            style: TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_right_sharp,
+                          color: Color(0xFFD8DFE3),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+  ///Instrument Card
+
+  Widget instrumentsCard(
+    context, {
+    required String urlArgument,
+    required String iconPath,
+    required String title,
+  }) =>
+      GestureDetector(
+        onTap: () {
+          Navigator.of(context, rootNavigator: true).pushNamed(
+            WebViewPage.routeName,
+            arguments: urlArgument,
+          );
+        },
+        child: Container(
+          margin: EdgeInsets.only(bottom: 10.0),
+          height: 54.0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(
+              6.0,
+            ),
+          ),
+          child: Material(
+            color: Color(0xFFF7F8FA),
+            borderRadius: BorderRadius.circular(
+              6.0,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    right: 14.0,
+                    left: 17.0,
+                  ),
+                  child: GradientIcon(
+                    SvgPicture.asset(
+                      iconPath,
+                    ),
+                    16.0,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(color: Colors.black, fontSize: 16.0),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    right: 19.0,
+                  ),
+                  child: Icon(
+                    Icons.arrow_forward_ios_sharp,
+                    color: Color(0xFFD8DFE3),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
   Widget _myProfileImage(context, userStore) {
     return GestureDetector(
       onTap: () {
@@ -813,8 +502,7 @@ class SettingsPage extends StatelessWidget {
             .pushNamed(ProfileReviews.routeName);
       },
       child: Container(
-        height: 125.0,
-        width: 343.0,
+        height: 150.0,
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
