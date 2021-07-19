@@ -103,15 +103,13 @@ class _QuestPageState extends State<QuestPage> {
               ),
             ),
             Spacer(),
-
-            if(questsStore!.isMapOpened())
-
-            FloatingActionButton(
-              onPressed: _onMyLocationPressed,
-              child: Icon(
-                Icons.location_on,
+            if (questsStore!.isMapOpened())
+              FloatingActionButton(
+                onPressed: _onMyLocationPressed,
+                child: Icon(
+                  Icons.location_on,
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -123,38 +121,89 @@ class _QuestPageState extends State<QuestPage> {
     //
     // }
 
-    return Column(
-      children: [
-        SizedBox(
-          height: 20,
-        ),
-        _getDivider(),
-        Padding(
-          padding: const EdgeInsets.all(20),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, CreateQuestPage.routeName);
-            },
-            child: Text("Create quest"),
+    return CustomScrollView(
+      slivers: [
+        CupertinoSliverNavigationBar(
+          largeTitle: Row(
+            children: [
+              Expanded(
+                child: Text("Quests"),
+              ),
+              Icon(
+                Icons.notifications_none_outlined,
+              ),
+              const SizedBox(
+                width: 20.0,
+              )
+            ],
           ),
         ),
-        _getDivider(),
-        Expanded(
-          child: ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: questsStore!.questsList!.length,
-              itemBuilder: (_, index) {
-                return MyQuestsItem(
-                  title: questsStore!.questsList![index].title,
-                  itemType: this.questItemPriorityType,
-                  price: questsStore!.questsList![index].price,
-                  priority: questsStore!.questsList![index].priority,
-                  creatorName: questsStore!.questsList![index].user.firstName +
-                      questsStore!.questsList![index].user.lastName,
-                  description: questsStore!.questsList![index].description,
-                );
-              }),
-        )
+        SliverAppBar(
+          pinned: true,
+          title: TextFormField(
+            maxLines: 1,
+            decoration: InputDecoration(
+              prefixIcon: Icon(
+                Icons.search,
+                size: 25.0,
+              ),
+              hintText: "City / Street / Place",
+            ),
+          ),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  if (profileMeStore!.userData!.role == UserRole.Employer)
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _getDivider(),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, CreateQuestPage.routeName);
+                          },
+                          child: Text("Create new quest"),
+                        ),
+                      ),
+                    ],
+                  ),
+                  _getDivider(),
+                  ListView.separated(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) {
+                        return _getDivider();
+                      },
+                      padding: EdgeInsets.zero,
+                      itemCount: questsStore!.questsList!.length,
+                      itemBuilder: (_, index) {
+                        return MyQuestsItem(
+                          title: questsStore!.questsList![index].title,
+                          itemType: this.questItemPriorityType,
+                          price: questsStore!.questsList![index].price,
+                          priority: questsStore!.questsList![index].priority,
+                          creatorName:
+                              questsStore!.questsList![index].user.firstName +
+                                  questsStore!.questsList![index].user.lastName,
+                          description:
+                              questsStore!.questsList![index].description,
+                        );
+                      })
+                ],
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
