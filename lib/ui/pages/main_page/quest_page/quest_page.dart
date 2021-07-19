@@ -26,6 +26,10 @@ class _QuestPageState extends State<QuestPage> {
   ProfileMeStore? profileMeStore;
   final QuestItemPriorityType questItemPriorityType =
       QuestItemPriorityType.Starred;
+  // ScrollController? _scrollController;
+  // bool scroll = false;
+
+  final scrollKey = new GlobalKey();
 
   @override
   void initState() {
@@ -34,8 +38,21 @@ class _QuestPageState extends State<QuestPage> {
     profileMeStore!.getProfileMe();
     questsStore!.getQuests();
     _getCurrentLocation();
+    // _scrollController = ScrollController();
+    // _scrollController!.addListener(_listener);
+
     super.initState();
   }
+
+  // bool _listener() {
+  //   print("test");
+  //   if (_scrollController!.position.atEdge &&
+  //       _scrollController!.position.pixels == 0) {
+  //     // You're at the top.
+  //     return false;
+  //   } else
+  //     return true;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +86,11 @@ class _QuestPageState extends State<QuestPage> {
                 child: Container(
                   // onPressed: _onMyLocationPressed,
                   padding: const EdgeInsets.only(
-                      top: 11, bottom: 11, left: 17, right: 15),
+                    top: 11,
+                    bottom: 11,
+                    left: 17,
+                    right: 15,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.primary,
                     borderRadius: BorderRadius.circular(44),
@@ -85,7 +106,7 @@ class _QuestPageState extends State<QuestPage> {
                               Icons.map_outlined,
                               color: Colors.white,
                             ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                       questsStore!.isMapOpened()
@@ -103,13 +124,27 @@ class _QuestPageState extends State<QuestPage> {
               ),
             ),
             Spacer(),
-            if (questsStore!.isMapOpened())
-              FloatingActionButton(
-                onPressed: _onMyLocationPressed,
-                child: Icon(
-                  Icons.location_on,
+            questsStore!.isMapOpened()
+                ? FloatingActionButton(
+                    onPressed: _onMyLocationPressed,
+                    child: Icon(
+                      Icons.location_on,
+                    ),
+                  )
+                : FloatingActionButton(
+                  mini: true,
+                  onPressed: () {
+                    Scrollable.ensureVisible(
+                      scrollKey.currentContext!,
+                      curve: Curves.fastOutSlowIn,
+                      duration: Duration(seconds: 1),
+                    );
+                  },
+                  child: Icon(
+                    Icons.keyboard_arrow_up,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
           ],
         ),
       ),
@@ -120,8 +155,8 @@ class _QuestPageState extends State<QuestPage> {
     // if(profileMeStore!.userData.role == UserRole.Worker){
     //
     // }
-
     return CustomScrollView(
+      //controller: _scrollController,
       slivers: [
         CupertinoSliverNavigationBar(
           largeTitle: Row(
@@ -154,53 +189,48 @@ class _QuestPageState extends State<QuestPage> {
         SliverList(
           delegate: SliverChildListDelegate(
             [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  if (profileMeStore!.userData!.role == UserRole.Employer)
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _getDivider(),
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                                context, CreateQuestPage.routeName);
-                          },
-                          child: Text("Create new quest"),
-                        ),
-                      ),
-                    ],
-                  ),
-                  _getDivider(),
-                  ListView.separated(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      separatorBuilder: (context, index) {
-                        return _getDivider();
-                      },
-                      padding: EdgeInsets.zero,
-                      itemCount: questsStore!.questsList!.length,
-                      itemBuilder: (_, index) {
-                        return MyQuestsItem(
-                          title: questsStore!.questsList![index].title,
-                          itemType: this.questItemPriorityType,
-                          price: questsStore!.questsList![index].price,
-                          priority: questsStore!.questsList![index].priority,
-                          creatorName:
-                              questsStore!.questsList![index].user.firstName +
-                                  questsStore!.questsList![index].user.lastName,
-                          description:
-                              questsStore!.questsList![index].description,
-                        );
-                      })
-                ],
+              SizedBox(
+                height: 20,
               ),
+              if (profileMeStore!.userData!.role == UserRole.Employer)
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _getDivider(),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(
+                              context, CreateQuestPage.routeName);
+                        },
+                        child: Text("Create new quest"),
+                      ),
+                    ),
+                  ],
+                ),
+              _getDivider(),
+              ListView.separated(
+                  key: scrollKey,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) {
+                    return _getDivider();
+                  },
+                  padding: EdgeInsets.zero,
+                  itemCount: questsStore!.questsList!.length,
+                  itemBuilder: (_, index) {
+                    return MyQuestsItem(
+                      title: questsStore!.questsList![index].title,
+                      itemType: this.questItemPriorityType,
+                      price: questsStore!.questsList![index].price,
+                      priority: questsStore!.questsList![index].priority,
+                      creatorName:
+                          questsStore!.questsList![index].user.firstName +
+                              questsStore!.questsList![index].user.lastName,
+                      description: questsStore!.questsList![index].description,
+                    );
+                  }),
             ],
           ),
         ),
