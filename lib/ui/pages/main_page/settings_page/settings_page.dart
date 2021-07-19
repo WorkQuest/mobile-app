@@ -119,7 +119,7 @@ class SettingsPage extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  userStore.userData!.role != UserRole.Worker
+                  userStore.userData!.role == UserRole.Worker
                       ? workerSettings(context)
                       : employerSettings(settingStore),
                 ],
