@@ -1,3 +1,4 @@
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
@@ -62,7 +63,7 @@ class Routes {
 
       case MyQuestDetails.routeName:
         return MaterialPageRoute(
-          builder: (context) => MyQuestDetails(),
+          builder: (context) => MyQuestDetails(settings.arguments as BaseQuestResponse),
         );
 
       case ChooseRolePage.routeName:
