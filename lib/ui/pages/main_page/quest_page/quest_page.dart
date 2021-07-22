@@ -26,6 +26,7 @@ class _QuestPageState extends State<QuestPage> {
   ProfileMeStore? profileMeStore;
   final QuestItemPriorityType questItemPriorityType =
       QuestItemPriorityType.Starred;
+
   // ScrollController? _scrollController;
   // bool scroll = false;
 
@@ -58,20 +59,22 @@ class _QuestPageState extends State<QuestPage> {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => Scaffold(
-        body: _initialCameraPosition == null
-            ? getBody()
-            : questsStore!.isMapOpened()
-                ? GoogleMap(
-                    mapType: MapType.normal,
-                    rotateGesturesEnabled: false,
-                    initialCameraPosition: _initialCameraPosition!,
-                    myLocationEnabled: true,
-                    myLocationButtonEnabled: false,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller = controller;
-                    },
-                  )
-                : getBody(),
+        body: questsStore!.isLoading
+            ? Center(child: CircularProgressIndicator())
+            : _initialCameraPosition == null
+                ? getBody()
+                : questsStore!.isMapOpened()
+                    ? GoogleMap(
+                        mapType: MapType.normal,
+                        rotateGesturesEnabled: false,
+                        initialCameraPosition: _initialCameraPosition!,
+                        myLocationEnabled: true,
+                        myLocationButtonEnabled: false,
+                        onMapCreated: (GoogleMapController controller) {
+                          _controller = controller;
+                        },
+                      )
+                    : getBody(),
         floatingActionButton: Row(
           children: [
             Padding(
@@ -132,19 +135,19 @@ class _QuestPageState extends State<QuestPage> {
                     ),
                   )
                 : FloatingActionButton(
-                  mini: true,
-                  onPressed: () {
-                    Scrollable.ensureVisible(
-                      scrollKey.currentContext!,
-                      curve: Curves.fastOutSlowIn,
-                      duration: Duration(seconds: 1),
-                    );
-                  },
-                  child: Icon(
-                    Icons.keyboard_arrow_up,
-                    color: Colors.white,
+                    mini: true,
+                    onPressed: () {
+                      Scrollable.ensureVisible(
+                        scrollKey.currentContext!,
+                        curve: Curves.fastOutSlowIn,
+                        duration: Duration(seconds: 1),
+                      );
+                    },
+                    child: Icon(
+                      Icons.keyboard_arrow_up,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
           ],
         ),
       ),
@@ -211,26 +214,21 @@ class _QuestPageState extends State<QuestPage> {
                 ),
               _getDivider(),
               ListView.separated(
-                  key: scrollKey,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  separatorBuilder: (context, index) {
-                    return _getDivider();
-                  },
-                  padding: EdgeInsets.zero,
-                  itemCount: questsStore!.questsList!.length,
-                  itemBuilder: (_, index) {
-                    return MyQuestsItem(
-                      title: questsStore!.questsList![index].title,
-                      itemType: this.questItemPriorityType,
-                      price: questsStore!.questsList![index].price,
-                      priority: questsStore!.questsList![index].priority,
-                      creatorName:
-                          questsStore!.questsList![index].user.firstName +
-                              questsStore!.questsList![index].user.lastName,
-                      description: questsStore!.questsList![index].description,
-                    );
-                  }),
+                key: scrollKey,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                separatorBuilder: (context, index) {
+                  return _getDivider();
+                },
+                padding: EdgeInsets.zero,
+                itemCount: questsStore!.questsList!.length,
+                itemBuilder: (_, index) {
+                  return MyQuestsItem(
+                    questsStore!.questsList![index],
+                    this.questItemPriorityType,
+                  );
+                },
+              ),
             ],
           ),
         ),

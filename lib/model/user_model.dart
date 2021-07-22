@@ -1,3 +1,4 @@
+import 'package:app/model/profile_response/avatar.dart';
 
 class User {
   User({
@@ -9,7 +10,7 @@ class User {
     required this.status,
     required this.statusKyc,
     // required this.deletedAt,
-    // required this.avatar,
+    required this.avatar,
     // required this.ratingStatistic,
   });
 
@@ -20,12 +21,13 @@ class User {
   String role;
   int status;
   int statusKyc;
+
   // dynamic deletedAt;
-  // String avatar;
+  Avatar avatar;
+
   // dynamic ratingStatistic;
 
-  factory User.fromJson(Map<String, dynamic> json) =>
-      User(
+  factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
         email: json["email"],
         firstName: json["firstName"],
@@ -34,7 +36,7 @@ class User {
         status: json["status"],
         statusKyc: json["statusKYC"],
         // deletedAt: json["deletedAt"],
-        // avatar: json["avatar"],
+        avatar: json["avatar"] != null ? Avatar.fromJson(json["avatar"]) : Avatar(id: "11", url: "https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg"),
         // ratingStatistic: json["ratingStatistic"],
       );
 }

@@ -1,10 +1,13 @@
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:flutter/material.dart';
 
 class MyQuestDetails extends StatefulWidget {
   static const String routeName = "/myQuestDetails";
 
-  const MyQuestDetails();
+  const MyQuestDetails(this.questInfo);
+
+  final BaseQuestResponse questInfo;
 
   @override
   _MyQuestDetailsState createState() => _MyQuestDetailsState();
@@ -39,7 +42,7 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(37),
                   child: Image.network(
-                    "https://i.pinimg.com/736x/a9/3c/b4/a93cb4e0316ef9c4db83846550ff4deb.jpg",
+                    widget.questInfo.user.avatar.url,
                     width: 30,
                     height: 30,
                   ),
@@ -48,7 +51,7 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
                   width: 10,
                 ),
                 Text(
-                  "Simon Berk",
+                  widget.questInfo.user.firstName + widget.questInfo.user.lastName,
                   style: TextStyle(fontSize: 16),
                 ),
                 Spacer(),
@@ -68,7 +71,7 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
                   width: 9,
                 ),
                 Text(
-                  "200 from you",
+                  "150 from you",
                   style: TextStyle(color: Color(0xFF7C838D)),
                 ),
               ],
@@ -81,7 +84,7 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
               height: 15,
             ),
             Text(
-              "Paint the garage quicklyyy",
+              widget.questInfo.title,
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
@@ -92,7 +95,7 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
               height: 15,
             ),
             Text(
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum facilisis leo, vel fringilla est ullamcorper eget nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra",
+              widget.questInfo.description,
             ),
             SizedBox(
               height: 15,

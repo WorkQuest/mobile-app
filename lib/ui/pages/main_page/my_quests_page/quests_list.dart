@@ -20,26 +20,7 @@ class QuestsList extends StatelessWidget {
               itemCount: questsList!.length,
               padding: EdgeInsets.zero,
               itemBuilder: (_, index) {
-                return MyQuestsItem(
-                  title: questsList![index].title,
-                  itemType: questItemPriorityType,
-                  price: questsList![index].price,
-                  priority: questsList![index].priority,
-                  creatorName: questsList![index].user.firstName +
-                      questsList![index].user.lastName,
-                  description: questsList![index].description,
-                );
-
-                //   Padding(
-                //   padding: const EdgeInsets.all(5.0),
-                //   child: Container(
-                //     color: Colors.red,
-                //     child: Padding(
-                //       padding: const EdgeInsets.all(20.0),
-                //       child: Center(child: Text("$label $index")),
-                //     ),
-                //   ),
-                // );
+                return MyQuestsItem(questsList![index], questItemPriorityType);
               },
             )
           : Center(
