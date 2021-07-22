@@ -44,193 +44,106 @@ class _QuestPageState extends State<QuestPage> {
   @override
   Widget build(BuildContext context) {
     return Observer(
-      builder: (_) => Scaffold(
-        body: _initialCameraPosition == null
-            ? getBody()
-            : questsStore!.isMapOpened()
-                ? Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      GoogleMap(
-                        mapType: MapType.normal,
-                        rotateGesturesEnabled: false,
-                        initialCameraPosition: _initialCameraPosition!,
-                        myLocationEnabled: true,
-                        myLocationButtonEnabled: false,
-                        markers: questsStore!.getMapMakers(),
-                        onMapCreated: (GoogleMapController controller) {
-                          _controller = controller;
-                        },
-                        onTap: (point) {
+        builder: (_) => Scaffold(
+              body: questsStore!.isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : _initialCameraPosition == null
+                      ? getBody()
+                      : questsStore!.isMapOpened()
+                          ? Stack(
+                              alignment: Alignment.bottomCenter,
+                              children: [
+                                GoogleMap(
+                                  mapType: MapType.normal,
+                                  rotateGesturesEnabled: false,
+                                  initialCameraPosition:
+                                      _initialCameraPosition!,
+                                  myLocationEnabled: true,
+                                  myLocationButtonEnabled: false,
+                                  markers: questsStore!.getMapMakers(),
+                                  onMapCreated:
+                                      (GoogleMapController controller) {
+                                    _controller = controller;
+                                  },
+                                  onTap: (point) {
+                                    if (questsStore!.selectQuestInfo != null)
+                                      questsStore!.selectQuestInfo = null;
+                                  },
+                                ),
+                                QuestQuickInfo(questsStore!.selectQuestInfo),
+                              ],
+                            )
+                          : getBody(),
+              floatingActionButton: AnimatedContainer(
+                padding: EdgeInsets.only(
+                    bottom: questsStore!.selectQuestInfo != null ? 324.0 : 0.0),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.fastOutSlowIn,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 32.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          print("value should be changed");
                           if (questsStore!.selectQuestInfo != null)
                             questsStore!.selectQuestInfo = null;
+                          setState(() {
+                            questsStore!.changeValue();
+                          });
                         },
-                      ),
-                      QuestQuickInfo(questsStore!.selectQuestInfo),
-                    ],
-                  )
-                : getBody(),
-        floatingActionButton: AnimatedContainer(
-          padding: EdgeInsets.only(
-              bottom: questsStore!.selectQuestInfo != null ? 324.0 : 0.0),
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.fastOutSlowIn,
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 32.0),
-                child: GestureDetector(
-                  onTap: () {
-                    print("value should be changed");
-                    if (questsStore!.selectQuestInfo != null)
-                      questsStore!.selectQuestInfo = null;
-                    setState(() {
-                      questsStore!.changeValue();
-                    });
-                  },
-                  child: Container(
-                    // onPressed: _onMyLocationPressed,
-                    padding: const EdgeInsets.only(
-                        top: 11, bottom: 11, left: 17, right: 15),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(44),
-                    ),
-                    child: Row(
-                      children: [
-                        questsStore!.isMapOpened()
-                            ? Icon(
-                                Icons.list,
-                                color: Colors.white,
-                              )
-                            : Icon(
-                                Icons.map_outlined,
-                                color: Colors.white,
+                        child: Container(
+                          // onPressed: _onMyLocationPressed,
+                          padding: const EdgeInsets.only(
+                              top: 11, bottom: 11, left: 17, right: 15),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(44),
+                          ),
+                          child: Row(
+                            children: [
+                              questsStore!.isMapOpened()
+                                  ? Icon(
+                                      Icons.list,
+                                      color: Colors.white,
+                                    )
+                                  : Icon(
+                                      Icons.map_outlined,
+                                      color: Colors.white,
+                                    ),
+                              SizedBox(
+                                width: 12,
                               ),
-                        SizedBox(
-                          width: 12,
+                              questsStore!.isMapOpened()
+                                  ? Text(
+                                      "List",
+                                      style: TextStyle(color: Colors.white),
+                                    )
+                                  : Text(
+                                      "Map",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                            ],
+                          ),
                         ),
-                        questsStore!.isMapOpened()
-                            ? Text(
-                                "List",
-                                style: TextStyle(color: Colors.white),
-                              )
-                            : Text(
-                                "Map",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Spacer(),
-              if (questsStore!.isMapOpened())
-                FloatingActionButton(
-                  onPressed: questsStore!.selectQuestInfo == null
-                      ? _onMyLocationPressed
-                      : () => questsStore!.selectQuestInfo = null,
-                  child: Icon(
-                    questsStore!.selectQuestInfo == null
-                        ? Icons.location_on
-                        : Icons.close,
-                  ),
-                ),
-            ],
-          ),
-        body: questsStore!.isLoading
-            ? Center(child: CircularProgressIndicator())
-            : _initialCameraPosition == null
-                ? getBody()
-                : questsStore!.isMapOpened()
-                    ? GoogleMap(
-                        mapType: MapType.normal,
-                        rotateGesturesEnabled: false,
-                        initialCameraPosition: _initialCameraPosition!,
-                        myLocationEnabled: true,
-                        myLocationButtonEnabled: false,
-                        onMapCreated: (GoogleMapController controller) {
-                          _controller = controller;
-                        },
-                      )
-                    : getBody(),
-        floatingActionButton: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 32.0),
-              child: GestureDetector(
-                onTap: () {
-                  print("value should be changed");
-                  setState(() {
-                    questsStore!.changeValue();
-                  });
-                },
-                child: Container(
-                  // onPressed: _onMyLocationPressed,
-                  padding: const EdgeInsets.only(
-                    top: 11,
-                    bottom: 11,
-                    left: 17,
-                    right: 15,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(44),
-                  ),
-                  child: Row(
-                    children: [
-                      questsStore!.isMapOpened()
-                          ? Icon(
-                              Icons.list,
-                              color: Colors.white,
-                            )
-                          : Icon(
-                              Icons.map_outlined,
-                              color: Colors.white,
-                            ),
-                      const SizedBox(
-                        width: 12,
                       ),
-                      questsStore!.isMapOpened()
-                          ? Text(
-                              "List",
-                              style: TextStyle(color: Colors.white),
-                            )
-                          : Text(
-                              "Map",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                    ],
-                  ),
+                    ),
+                    Spacer(),
+                    if (questsStore!.isMapOpened())
+                      FloatingActionButton(
+                        onPressed: questsStore!.selectQuestInfo == null
+                            ? _onMyLocationPressed
+                            : () => questsStore!.selectQuestInfo = null,
+                        child: Icon(
+                          questsStore!.selectQuestInfo == null
+                              ? Icons.location_on
+                              : Icons.close,
+                        ),
+                      ),
+                  ],
                 ),
               ),
-            ),
-            Spacer(),
-            questsStore!.isMapOpened()
-                ? FloatingActionButton(
-                    onPressed: _onMyLocationPressed,
-                    child: Icon(
-                      Icons.location_on,
-                    ),
-                  )
-                : FloatingActionButton(
-                    mini: true,
-                    onPressed: () {
-                      Scrollable.ensureVisible(
-                        scrollKey.currentContext!,
-                        curve: Curves.fastOutSlowIn,
-                        duration: Duration(seconds: 1),
-                      );
-                    },
-                    child: Icon(
-                      Icons.keyboard_arrow_up,
-                      color: Colors.white,
-                    ),
-                  ),
-          ],
-        ),
-      ),
-    );
+            ));
   }
 
   Widget getBody() {

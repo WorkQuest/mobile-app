@@ -208,14 +208,21 @@ class SignInPage extends StatelessWidget {
                       top: 10.0,
                       bottom: 40.0,
                     ),
-                    child: GestureDetector(
-                      onTap: onForgotPasswordClicked,
-                      child: Text(
-                        context.translate(AuthLangKeys.forgotPassword),
-                        style: TextStyle(
-                          color: Color(0xFF0083C7),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: onForgotPasswordClicked,
+                          child: Text(
+                            context.translate(AuthLangKeys.forgotPassword),
+                            style: TextStyle(
+                              color: Color(0xFF0083C7),
+                            ),
+                          ),
                         ),
-                      ),
+                        Spacer(),
+                        Text("Build 1.0.7"),
+                        const SizedBox(width: 15,)
+                      ],
                     ),
                   ),
                 ],
