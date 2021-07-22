@@ -162,6 +162,17 @@ mixin _$SignUpStore on _SignUpStore, Store {
   }
 
   @override
+  String? signUpConfirmPasswordValidator(String? text) {
+    final _$actionInfo = _$_SignUpStoreActionController.startAction(
+        name: '_SignUpStore.signUpConfirmPasswordValidator');
+    try {
+      return super.signUpConfirmPasswordValidator(text);
+    } finally {
+      _$_SignUpStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 canSignUp: ${canSignUp},

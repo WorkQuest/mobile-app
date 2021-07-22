@@ -31,14 +31,3 @@ abstract class AuthLangKeys {
   // static const String _questPage = '$_main.signIn';
   // static const String list = '$.email';
 }
-
-abstract class WebViewUrl {
-
-  static const String mainUrl = 'https://workquest.co';
-
-  static const String _privacyPolicy = '$mainUrl/privacy_policy';
-  static const String _termsAndConditions = '$mainUrl/privacy_policy';
-  static const String _AMLCTFPolicy = '$mainUrl/privacy_policy';
-}
-
-
