@@ -1,6 +1,8 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -49,6 +51,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @observable
   _MapList mapListChecker = _MapList.Map;
+
+  @observable
+  List<BitmapDescriptor> iconsMarker = [];
+  
+  @observable
+  BaseQuestResponse? selectQuestInfo;
 
   @action
   changeValue() {
@@ -129,7 +137,33 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
+
+  @action
+  loadIcons() async {
+    iconsMarker.add(await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/LowMarker.png'));
+    iconsMarker.add(iconsMarker[0]);
+    iconsMarker.add(await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/NormalMarker.png'));
+    iconsMarker.add(await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/UrgentMarker.png'));
+  }
+
+   Set<Marker> getMapMakers() {
+    return {
+      for (BaseQuestResponse quest in questsList ?? [])
+        Marker(
+            onTap: () => selectQuestInfo = quest,
+            icon: iconsMarker[quest.priority],
+            markerId: MarkerId(quest.id),
+            position: LatLng(quest.location.latitude, quest.location.longitude))
+    };
+  }
 }
+
+ 
+
+
 
 enum _MapList {
   Map,
