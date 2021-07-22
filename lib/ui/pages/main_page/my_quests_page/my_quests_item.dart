@@ -101,7 +101,7 @@ class MyQuestsItem extends StatelessWidget {
               PriorityView(priority),
               Spacer(),
               Text(
-                price,
+                "$price  WUSD",
                 style: TextStyle(
                     color: Color(0xFF00AA5B),
                     fontSize: 18,
