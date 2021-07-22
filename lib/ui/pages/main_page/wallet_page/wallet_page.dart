@@ -1,3 +1,4 @@
+import 'package:app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -329,8 +330,9 @@ class _WalletPageState extends State<WalletPage> with TickerProviderStateMixin {
           TextFormField(
             keyboardType: TextInputType.number,
             inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(19),
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+              LengthLimitingTextInputFormatter(16),
+              new CardNumberInputFormatter(),
             ],
             decoration: InputDecoration(
               hintText: "0000  0000  0000  0000",
@@ -341,11 +343,42 @@ class _WalletPageState extends State<WalletPage> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(child: titledTextBox("Date", "02/24")),
+              Expanded(
+                child: titledTextBox(
+                  "Date",
+                  TextFormField(
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      LengthLimitingTextInputFormatter(4),
+                      new CardDateInputFormatter(),
+                    ],
+                    maxLines: 1,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: "02/24",
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(
                 width: 10.0,
               ),
-              Expanded(child: titledTextBox("CVV", "242")),
+              Expanded(
+                child: titledTextBox(
+                  "CVV",
+                  TextFormField(
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      LengthLimitingTextInputFormatter(3),
+                    ],
+                    maxLines: 1,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: "242",
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
           Row(
@@ -410,7 +443,7 @@ class _WalletPageState extends State<WalletPage> with TickerProviderStateMixin {
         ],
       );
 
-  Widget titledTextBox(String title, String hint) => Column(
+  Widget titledTextBox(String title, Widget textField) => Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -420,15 +453,7 @@ class _WalletPageState extends State<WalletPage> with TickerProviderStateMixin {
           const SizedBox(
             height: 5.0,
           ),
-          Flexible(
-            fit: FlexFit.loose,
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: hint,
-              ),
-            ),
-          ),
+          Flexible(fit: FlexFit.loose, child: textField),
         ],
       );
 
