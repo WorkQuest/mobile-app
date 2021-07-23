@@ -54,7 +54,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @observable
   List<BitmapDescriptor> iconsMarker = [];
-  
+
   @observable
   BaseQuestResponse? selectQuestInfo;
 
@@ -73,11 +73,13 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  Future getQuests(/*{
+  Future getQuests(
+      /*{
     required bool invited,
     required performing,
     required bool starred,
-  }*/) async {
+  }*/
+      ) async {
     try {
       this.onLoading();
       questsList = await _apiProvider.getQuests(
@@ -140,16 +142,22 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   loadIcons() async {
-    iconsMarker.add(await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/LowMarker.png'));
+    iconsMarker.add(
+      await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(size: Size(22,29)), 'assets/LowMarker.png'),
+    );
     iconsMarker.add(iconsMarker[0]);
-    iconsMarker.add(await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/NormalMarker.png'));
-    iconsMarker.add(await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/UrgentMarker.png'));
+    iconsMarker.add(
+      await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(size: Size(22,29)), 'assets/NormalMarker.png'),
+    );
+    iconsMarker.add(
+      await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(size: Size(22,29)), 'assets/UrgentMarker.png'),
+    );
   }
 
-   Set<Marker> getMapMakers() {
+  Set<Marker> getMapMakers() {
     return {
       for (BaseQuestResponse quest in questsList ?? [])
         Marker(
@@ -160,10 +168,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     };
   }
 }
-
- 
-
-
 
 enum _MapList {
   Map,

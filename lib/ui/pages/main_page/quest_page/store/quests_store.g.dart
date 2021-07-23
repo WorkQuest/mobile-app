@@ -175,11 +175,48 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$iconsMarkerAtom = Atom(name: '_QuestsStore.iconsMarker');
+
+  @override
+  List<BitmapDescriptor> get iconsMarker {
+    _$iconsMarkerAtom.reportRead();
+    return super.iconsMarker;
+  }
+
+  @override
+  set iconsMarker(List<BitmapDescriptor> value) {
+    _$iconsMarkerAtom.reportWrite(value, super.iconsMarker, () {
+      super.iconsMarker = value;
+    });
+  }
+
+  final _$selectQuestInfoAtom = Atom(name: '_QuestsStore.selectQuestInfo');
+
+  @override
+  BaseQuestResponse? get selectQuestInfo {
+    _$selectQuestInfoAtom.reportRead();
+    return super.selectQuestInfo;
+  }
+
+  @override
+  set selectQuestInfo(BaseQuestResponse? value) {
+    _$selectQuestInfoAtom.reportWrite(value, super.selectQuestInfo, () {
+      super.selectQuestInfo = value;
+    });
+  }
+
   final _$getQuestsAsyncAction = AsyncAction('_QuestsStore.getQuests');
 
   @override
   Future<dynamic> getQuests() {
     return _$getQuestsAsyncAction.run(() => super.getQuests());
+  }
+
+  final _$loadIconsAsyncAction = AsyncAction('_QuestsStore.loadIcons');
+
+  @override
+  Future loadIcons() {
+    return _$loadIconsAsyncAction.run(() => super.loadIcons());
   }
 
   final _$_QuestsStoreActionController = ActionController(name: '_QuestsStore');
@@ -219,7 +256,9 @@ questsList: ${questsList},
 starredQuestsList: ${starredQuestsList},
 performedQuestsList: ${performedQuestsList},
 invitedQuestsList: ${invitedQuestsList},
-mapListChecker: ${mapListChecker}
+mapListChecker: ${mapListChecker},
+iconsMarker: ${iconsMarker},
+selectQuestInfo: ${selectQuestInfo}
     ''';
   }
 }
