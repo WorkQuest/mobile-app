@@ -1,4 +1,5 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:flutter/material.dart';
 
 class QuestQuickInfo extends StatefulWidget {
@@ -36,7 +37,7 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
                   child: Image.network(
-                    'https://pbs.twimg.com/profile_images/2881220369/2b27ac38b43b17a8c5eacfc443ce3384_400x400.jpeg',
+                    widget.quest!.user.avatar.url,
                     width: 30.0,
                     height: 30.0,
                     fit: BoxFit.fill,
@@ -91,9 +92,8 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                priority.lable.length == 0
-                    ? Container()
-                    : Container(
+                if(priority.lable.length != 0)
+                    Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 5, vertical: 4),
                         decoration: BoxDecoration(
@@ -121,7 +121,12 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
                 width: MediaQuery.of(context).size.width - 32,
                 height: 43,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pushNamed(
+                        MyQuestDetails.routeName,
+                        arguments: widget.quest
+                    );
+                  },
                   child:
                       Text("Show more", style: TextStyle(color: Colors.white)),
                   style: ButtonStyle(
