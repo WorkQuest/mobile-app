@@ -6,6 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
+import '../../../../../utils/marker_louder_for_map.dart';
+
 part 'quests_store.g.dart';
 
 @injectable
@@ -54,7 +56,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @observable
   List<BitmapDescriptor> iconsMarker = [];
-  
+
   @observable
   BaseQuestResponse? selectQuestInfo;
 
@@ -73,11 +75,13 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  Future getQuests(/*{
+  Future getQuests(
+      /*{
     required bool invited,
     required performing,
     required bool starred,
-  }*/) async {
+  }*/
+      ) async {
     try {
       this.onLoading();
       questsList = await _apiProvider.getQuests(
@@ -140,16 +144,13 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   loadIcons() async {
-    iconsMarker.add(await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/LowMarker.png'));
+    iconsMarker.add( await getMarkerIcon("assets/LowMarker.png", Size(110.0, 145.0)));
     iconsMarker.add(iconsMarker[0]);
-    iconsMarker.add(await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/NormalMarker.png'));
-    iconsMarker.add(await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/UrgentMarker.png'));
+    iconsMarker.add( await getMarkerIcon("assets/NormalMarker.png", Size(110.0, 145.0)));
+    iconsMarker.add( await getMarkerIcon("assets/UrgentMarker.png", Size(110.0, 145.0)));
   }
 
-   Set<Marker> getMapMakers() {
+  Set<Marker> getMapMakers() {
     return {
       for (BaseQuestResponse quest in questsList ?? [])
         Marker(
@@ -160,10 +161,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     };
   }
 }
-
- 
-
-
 
 enum _MapList {
   Map,
