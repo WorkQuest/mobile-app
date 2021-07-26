@@ -1,6 +1,7 @@
 import 'package:app/log_service.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
+import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_quick_info.dart';
 import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -159,8 +160,13 @@ class _QuestPageState extends State<QuestPage> {
               Expanded(
                 child: Text("Quests"),
               ),
-              Icon(
-                Icons.notifications_none_outlined,
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, NotificationPage.routeName);
+                },
+                child: Icon(
+                  Icons.notifications_none_outlined,
+                ),
               ),
               const SizedBox(
                 width: 20.0,
@@ -172,6 +178,7 @@ class _QuestPageState extends State<QuestPage> {
           pinned: true,
           title: TextFormField(
             maxLines: 1,
+            onChanged: questsStore!.setSearchWord,
             decoration: InputDecoration(
               prefixIcon: Icon(
                 Icons.search,
@@ -187,23 +194,22 @@ class _QuestPageState extends State<QuestPage> {
               SizedBox(
                 height: 20,
               ),
-              if (profileMeStore!.userData!.role == UserRole.Employer)
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _getDivider(),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, CreateQuestPage.routeName);
-                        },
-                        child: Text("Create new quest"),
-                      ),
+              //if (profileMeStore!.userData!.role == UserRole.Employer)
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _getDivider(),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, CreateQuestPage.routeName);
+                      },
+                      child: Text("Create new quest"),
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
               _getDivider(),
               ListView.separated(
                 key: scrollKey,
@@ -213,10 +219,14 @@ class _QuestPageState extends State<QuestPage> {
                   return _getDivider();
                 },
                 padding: EdgeInsets.zero,
-                itemCount: questsStore!.questsList!.length,
+                itemCount: questsStore!.searchWord.isEmpty
+                    ? questsStore!.questsList!.length
+                    : questsStore!.searchResultList!.length,
                 itemBuilder: (_, index) {
                   return MyQuestsItem(
-                    questsStore!.questsList![index],
+                    questsStore!.searchWord.isEmpty
+                        ? questsStore!.questsList![index]
+                        : questsStore!.searchResultList![index],
                     this.questItemPriorityType,
                   );
                 },

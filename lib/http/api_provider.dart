@@ -79,7 +79,7 @@ extension QuestService on ApiProvider {
   Future<List<BaseQuestResponse>> getQuests({
     int limit = 10,
     int offset = 0,
-    String? searchWord,
+    String searchWord = "",
     int priority = -1,
     int status = -1,
     String? sort,
@@ -92,7 +92,8 @@ extension QuestService on ApiProvider {
       queryParameters: {
         //"offset": offset,
         //"limit": limit,
-        //"q": searchWord,
+        if(searchWord.isNotEmpty)
+        "q": searchWord,
         //"priority": priority == -1 ? null : priority,
         //"status": status == -1 ? null : status,
         //"sort": sort,

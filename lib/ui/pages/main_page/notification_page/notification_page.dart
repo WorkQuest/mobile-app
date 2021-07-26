@@ -8,43 +8,33 @@ class NotificationPage extends StatelessWidget {
 
   Widget build(context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        toolbarHeight: 100,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            IconButton(
-              padding: const EdgeInsets.only(left: 0, bottom: 1),
-              alignment: Alignment.centerLeft,
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.arrow_back_ios_sharp,
+        body: CustomScrollView(
+      slivers: [
+        CupertinoSliverNavigationBar(
+          largeTitle: Text(
+            "Notification",
+          ),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              ListView.separated(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: item.length,
+                separatorBuilder: (context, index) => Divider(
+                  thickness: 1,
+                ),
+                itemBuilder: (context, index) => notificationCard(
+                  item[index],
+                  "",
+                ),
               ),
-            ),
-            Text(
-              'Notifications',
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      body: ListView.separated(
-        itemCount: item.length,
-        separatorBuilder: (context, index) => Divider(
-          thickness: 1,
-        ),
-        itemBuilder: (context, index) => notificationCard(
-          item[index],
-          "",
-        ),
-      ),
-    );
+      ],
+    ));
   }
 
   Widget notificationCard(

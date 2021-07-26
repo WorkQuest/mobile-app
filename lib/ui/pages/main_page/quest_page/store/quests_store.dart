@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
-
 import '../../../../../utils/marker_louder_for_map.dart';
 
 part 'quests_store.g.dart';
@@ -22,7 +21,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   _QuestsStore(this._apiProvider);
 
   @observable
-  String? searchWord = "";
+  String searchWord = "";
 
   @observable
   String? sort = "";
@@ -43,6 +42,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   List<BaseQuestResponse>? questsList;
 
   @observable
+  List<BaseQuestResponse>? searchResultList;
+
+  @observable
   List<BaseQuestResponse>? starredQuestsList;
 
   @observable
@@ -56,9 +58,15 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @observable
   List<BitmapDescriptor> iconsMarker = [];
-  
+
   @observable
   BaseQuestResponse? selectQuestInfo;
+
+  @action
+  void setSearchWord(String value) {
+    searchWord = value;
+    getSearchedQuests();
+  }
 
   @action
   changeValue() {
@@ -75,13 +83,31 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  Future getQuests(/*{
+  Future getSearchedQuests() async {
+    searchResultList = await _apiProvider.getQuests(
+      status: this.status,
+      invited: false,
+      performing: false,
+      priority: this.priority,
+      searchWord: this.searchWord,
+      sort: this.sort,
+      starred: false,
+    );
+    print(" list search $searchWord");
+    print(" list search $searchResultList");
+  }
+
+  @action
+  Future getQuests(
+      /*{
     required bool invited,
     required performing,
     required bool starred,
-  }*/) async {
+  }*/
+      ) async {
     try {
       this.onLoading();
+
       questsList = await _apiProvider.getQuests(
         offset: this.offset,
         limit: this.limit,
@@ -89,10 +115,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         invited: false,
         performing: false,
         priority: this.priority,
-        searchWord: this.searchWord,
         sort: this.sort,
         starred: false,
       );
+      print("quwest list $questsList ");
 
       starredQuestsList = await _apiProvider.getQuests(
         offset: this.offset,
@@ -101,7 +127,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         invited: false,
         performing: false,
         priority: this.priority,
-        searchWord: this.searchWord,
         sort: this.sort,
         starred: true,
       );
@@ -113,7 +138,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         invited: true,
         performing: false,
         priority: this.priority,
-        searchWord: this.searchWord,
         sort: this.sort,
         starred: false,
       );
@@ -125,14 +149,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         invited: false,
         performing: true,
         priority: this.priority,
-        searchWord: this.searchWord,
         sort: this.sort,
         starred: false,
       );
-      print(questsList);
-      print(starredQuestsList);
-      print(performedQuestsList);
-      print(invitedQuestsList);
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -142,13 +161,16 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   loadIcons() async {
-    iconsMarker.add( await getMarkerIcon("assets/LowMarker.png", Size(110.0, 145.0)));
+    iconsMarker
+        .add(await getMarkerIcon("assets/LowMarker.png", Size(110.0, 145.0)));
     iconsMarker.add(iconsMarker[0]);
-    iconsMarker.add( await getMarkerIcon("assets/NormalMarker.png", Size(110.0, 145.0)));
-    iconsMarker.add( await getMarkerIcon("assets/UrgentMarker.png", Size(110.0, 145.0)));
+    iconsMarker.add(
+        await getMarkerIcon("assets/NormalMarker.png", Size(110.0, 145.0)));
+    iconsMarker.add(
+        await getMarkerIcon("assets/UrgentMarker.png", Size(110.0, 145.0)));
   }
 
-   Set<Marker> getMapMakers() {
+  Set<Marker> getMapMakers() {
     return {
       for (BaseQuestResponse quest in questsList ?? [])
         Marker(
@@ -159,10 +181,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     };
   }
 }
-
- 
-
-
 
 enum _MapList {
   Map,
