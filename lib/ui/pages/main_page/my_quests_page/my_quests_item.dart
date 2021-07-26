@@ -98,7 +98,7 @@ class MyQuestsItem extends StatelessWidget {
                 PriorityView(questInfo.priority),
                 Spacer(),
                 Text(
-                  questInfo.price + "WUSD",
+                  questInfo.price + "  WUSD",
                   style: TextStyle(
                       color: Color(0xFF00AA5B),
                       fontSize: 18,
