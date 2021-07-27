@@ -8,12 +8,11 @@ import 'package:injectable/injectable.dart';
 @singleton
 class ApiProvider {
   final IHttpClient _httpClient;
-
   ApiProvider(this._httpClient);
 }
 
 extension LoginService on ApiProvider {
-  Future<String> login({
+  Future<BearerToken> login({
     required String email,
     required String password,
   }) async {
@@ -28,10 +27,10 @@ extension LoginService on ApiProvider {
       responseData,
     );
     _httpClient.accessToken = bearerToken.access;
-    return bearerToken.refresh;
+    return bearerToken;
   }
 
-  Future<String> register({
+  Future<BearerToken> register({
     required String firstName,
     required String lastName,
     required String email,
@@ -50,10 +49,10 @@ extension LoginService on ApiProvider {
       responseData,
     );
     _httpClient.accessToken = bearerToken.access;
-    return bearerToken.refresh;
+    return bearerToken;
   }
 
-  Future<String> refreshToken(String refreshToken) async {
+  Future<BearerToken> refreshToken(String refreshToken) async {
     _httpClient.accessToken = refreshToken;
     final responseData = await _httpClient.post(
       query: '/v1/auth/refresh-tokens',
@@ -62,7 +61,7 @@ extension LoginService on ApiProvider {
       responseData,
     );
     _httpClient.accessToken = bearerToken.access;
-    return bearerToken.refresh;
+    return bearerToken;
   }
 }
 

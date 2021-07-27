@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:app/utils/storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class _WebViewPageState extends State<WebViewPage> {
       Completer<WebViewController>();
 
   final String baseUrl = "https://app-ver1.workquest.co/";
+  final storage = new FlutterSecureStorage();
 
   @override
   void initState() {
@@ -39,10 +42,25 @@ class _WebViewPageState extends State<WebViewPage> {
       // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {
         return WebView(
-          initialUrl: baseUrl + widget.inputUrlRoute,
+          initialUrl: "http://localhost:8000/indexTest.html",
+          
           javascriptMode: JavascriptMode.unrestricted,
+          
           onWebViewCreated: (WebViewController webViewController) {
             _controller.complete(webViewController);
+            // String? accessToken = await storage.read(key: "accessToken");
+            // String? refreshToken = await storage.read(key: "refreshToken");
+            // webViewController.evaluateJavascript(
+            //     '''const refresh_token_from_mobile = "${accessToken ?? ''}";
+            //     const access_token_from_mobile = "${refreshToken ?? ''}";
+            //     alert(refresh_token_from_mobile);
+            //     Alert.postMessage("Hellow From javaScript");''');
+            // webViewController.evaluateJavascript(
+            //     """save("SOMETOKEN");""");
+            // Map<String, String> headers = {"Authorization": "Bearer " + "jwt"};
+            // Wrapped `setItem` into a func that would return some helpful info in case it throws.
+            // webViewController.loadUrl("http://localhost:8000/indexTest.html");
+            // webViewController.loadUrl("https://app-ver1.workquest.co/pension");
           },
           onProgress: (int progress) {
             print("WebView is loading (progress : $progress%)");
@@ -55,8 +73,13 @@ class _WebViewPageState extends State<WebViewPage> {
             print('allowing navigation to $request');
             return NavigationDecision.navigate;
           },
-          onPageStarted: (String url) {
+          onPageStarted: (String url) async {
             print('Page started loading: $url');
+            String? accessToken = await Storage.readAccessToken();
+            String? refreshToken = await Storage.readRefreshToken();
+            _controller.future.then((value) => value.evaluateJavascript(
+                """localStorage.setItem("accessToken","${accessToken ?? ''}");
+                localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
           },
           onPageFinished: (String url) {
             print('Page finished loading: $url');

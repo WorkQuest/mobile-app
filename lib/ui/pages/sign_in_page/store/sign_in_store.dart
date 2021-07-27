@@ -1,5 +1,6 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/model/bearer_token.dart';
 import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -35,11 +36,11 @@ abstract class _SignInStore extends IStore<bool> with Store {
   @action
   Future signInWithUsername() async {
     try {
-
       this.onLoading();
-      String refreshToken = await _apiProvider.login(
+      BearerToken bearerToken = await _apiProvider.login(
           email: _username.trim(), password: _password);
-      Storage.writeRefreshToken(refreshToken);
+      Storage.writeRefreshToken(bearerToken.refresh);
+      Storage.writeAccessToken(bearerToken.access);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
