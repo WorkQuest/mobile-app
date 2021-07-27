@@ -37,7 +37,7 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
                   child: Image.network(
-                    widget.quest!.user.avatar.url,
+                    "widget.quest!.user.avatar.url",
                     width: 30.0,
                     height: 30.0,
                     fit: BoxFit.fill,

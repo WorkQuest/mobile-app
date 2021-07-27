@@ -56,7 +56,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @observable
   List<BitmapDescriptor> iconsMarker = [];
-  
+
   @observable
   BaseQuestResponse? selectQuestInfo;
 
@@ -75,11 +75,13 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  Future getQuests(/*{
+  Future getQuests(
+      /*{
     required bool invited,
     required performing,
     required bool starred,
-  }*/) async {
+  }*/
+      ) async {
     try {
       this.onLoading();
       questsList = await _apiProvider.getQuests(
@@ -152,17 +154,17 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     return {
       for (BaseQuestResponse quest in questsList ?? [])
         Marker(
-            onTap: () => selectQuestInfo = quest,
-            icon: iconsMarker[quest.priority],
-            markerId: MarkerId(quest.id),
-            position: LatLng(quest.location.latitude, quest.location.longitude))
+          onTap: () => selectQuestInfo = quest,
+          icon: iconsMarker[quest.priority],
+          markerId: MarkerId(quest.id),
+          position: LatLng(
+            quest.location.latitude,
+            quest.location.longitude,
+          ),
+        )
     };
   }
 }
-
- 
-
-
 
 enum _MapList {
   Map,

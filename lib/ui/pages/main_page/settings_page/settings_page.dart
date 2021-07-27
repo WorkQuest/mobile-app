@@ -495,7 +495,7 @@ class SettingsPage extends StatelessWidget {
         ),
       );
 
-  Widget _myProfileImage(context, userStore) {
+  Widget _myProfileImage(context,ProfileMeStore userStore) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context, rootNavigator: true)

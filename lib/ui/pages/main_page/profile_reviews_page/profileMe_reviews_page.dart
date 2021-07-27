@@ -143,7 +143,10 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                   style: _style,
                                 ),
                               ),
-                              userStore.userData!.additionalInfo.skills.isEmpty
+                              (userStore.userData!.additionalInfo.skills ==
+                                          null ||
+                                      userStore.userData!.additionalInfo.skills!
+                                          .isEmpty)
                                   ? Text(
                                       "No skills",
                                       style: _style.copyWith(
@@ -151,10 +154,11 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                         fontWeight: FontWeight.normal,
                                       ),
                                     )
-                                  : Container(),
-                              skills(
-                                  skills: userStore
-                                      .userData!.additionalInfo.skills),
+                                  : _skills(
+                                      skills: userStore
+                                          .userData!.additionalInfo.skills!,
+                                    ),
+
                               _spacer,
 
                               ///About Column
@@ -187,30 +191,32 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                 ),
                               ),
 
-                              userStore.userData!.additionalInfo.educations
-                                      .isNotEmpty
+                              (userStore.userData!.additionalInfo.educations !=
+                                          null ||
+                                      userStore.userData!.additionalInfo
+                                          .educations!.isNotEmpty)
                                   ? ListView.builder(
                                       padding: EdgeInsets.zero,
                                       shrinkWrap: true,
                                       physics: NeverScrollableScrollPhysics(),
                                       itemCount: userStore.userData!
-                                          .additionalInfo.educations.length,
+                                          .additionalInfo.educations!.length,
                                       itemBuilder: (_, index) {
                                         return experience(
                                             place: userStore
                                                 .userData!
                                                 .additionalInfo
-                                                .educations[index]
+                                                .educations![index]
                                                 .place,
                                             from: userStore
                                                 .userData!
                                                 .additionalInfo
-                                                .educations[index]
+                                                .educations![index]
                                                 .from,
                                             to: userStore
                                                 .userData!
                                                 .additionalInfo
-                                                .educations[index]
+                                                .educations![index]
                                                 .to);
                                       })
                                   : Text("No Information"),
@@ -229,8 +235,11 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                 ),
                               ),
 
-                              userStore.userData!.additionalInfo.workExperiences
-                                      .isNotEmpty
+                              (userStore.userData!.additionalInfo
+                                              .workExperiences !=
+                                          null ||
+                                      userStore.userData!.additionalInfo
+                                          .workExperiences!.isNotEmpty)
                                   ? ListView.builder(
                                       padding: EdgeInsets.zero,
                                       shrinkWrap: true,
@@ -238,24 +247,24 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                       itemCount: userStore
                                           .userData!
                                           .additionalInfo
-                                          .workExperiences
+                                          .workExperiences!
                                           .length,
                                       itemBuilder: (_, index) {
                                         return experience(
                                             place: userStore
                                                 .userData!
                                                 .additionalInfo
-                                                .workExperiences[index]
+                                                .workExperiences![index]
                                                 .place,
                                             from: userStore
                                                 .userData!
                                                 .additionalInfo
-                                                .workExperiences[index]
+                                                .workExperiences![index]
                                                 .from,
                                             to: userStore
                                                 .userData!
                                                 .additionalInfo
-                                                .workExperiences[index]
+                                                .workExperiences![index]
                                                 .to);
                                       })
                                   : Text(
@@ -570,7 +579,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
 
   ///Skills widget
 
-  Widget skills({required List<String> skills}) {
+  Widget _skills({required List<String> skills}) {
     return Wrap(
       direction: Axis.horizontal,
       spacing: 9.0,
