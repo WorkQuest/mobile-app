@@ -42,25 +42,10 @@ class _WebViewPageState extends State<WebViewPage> {
       // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {
         return WebView(
-          initialUrl: "http://localhost:8000/indexTest.html",
-          
+          initialUrl: baseUrl + widget.inputUrlRoute,
           javascriptMode: JavascriptMode.unrestricted,
-          
           onWebViewCreated: (WebViewController webViewController) {
             _controller.complete(webViewController);
-            // String? accessToken = await storage.read(key: "accessToken");
-            // String? refreshToken = await storage.read(key: "refreshToken");
-            // webViewController.evaluateJavascript(
-            //     '''const refresh_token_from_mobile = "${accessToken ?? ''}";
-            //     const access_token_from_mobile = "${refreshToken ?? ''}";
-            //     alert(refresh_token_from_mobile);
-            //     Alert.postMessage("Hellow From javaScript");''');
-            // webViewController.evaluateJavascript(
-            //     """save("SOMETOKEN");""");
-            // Map<String, String> headers = {"Authorization": "Bearer " + "jwt"};
-            // Wrapped `setItem` into a func that would return some helpful info in case it throws.
-            // webViewController.loadUrl("http://localhost:8000/indexTest.html");
-            // webViewController.loadUrl("https://app-ver1.workquest.co/pension");
           },
           onProgress: (int progress) {
             print("WebView is loading (progress : $progress%)");
