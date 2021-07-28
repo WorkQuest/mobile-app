@@ -56,7 +56,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @observable
   List<BitmapDescriptor> iconsMarker = [];
-  
+
   @observable
   BaseQuestResponse? selectQuestInfo;
 
@@ -75,13 +75,24 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  Future getQuests(/*{
+  Future getQuests(
+      /*{
     required bool invited,
     required performing,
     required bool starred,
-  }*/) async {
+  }*/
+      ) async {
     try {
       this.onLoading();
+      try {
+// 62f95aec-d2bd-44a6-8bc5-295cb7dc2c04
+// 80121778-3d64-4f46-880b-e6f5745e0325
+        print(
+            "Tag_WK  ${await _apiProvider.getEmployerQuests("62f95aec-d2bd-44a6-8bc5-295cb7dc2c04")}");
+      } catch (e) {
+        print("Tag_WK Error $e");
+      }
+
       questsList = await _apiProvider.getQuests(
         offset: this.offset,
         limit: this.limit,
@@ -129,10 +140,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         sort: this.sort,
         starred: false,
       );
-      print(questsList);
-      print(starredQuestsList);
-      print(performedQuestsList);
-      print(invitedQuestsList);
+      print("Tag1_WK questsList          $questsList");
+      print("Tag1_WK starredQuestsList   $starredQuestsList");
+      print("Tag1_WK performedQuestsList $performedQuestsList");
+      print("Tag1_WK invitedQuestsList   $invitedQuestsList");
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -153,7 +164,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         context, "assets/marker.svg", size, Color(0xFFDF3333)));
   }
 
-   Set<Marker> getMapMakers() {
+  Set<Marker> getMapMakers() {
     return {
       for (BaseQuestResponse quest in questsList ?? [])
         Marker(
