@@ -1,4 +1,5 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -110,6 +111,12 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
                   fontWeight: FontWeight.w500),
             ),
             // Container(height: 215, child: ScreenCoordinate(x: 1, y: 2)),
+            ImageViewerWidget([
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhwLMUTqqY2BADUh6b1tIn8kTD3tvUz9l6gw&usqp=CAU',
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQZWElbaF0pNId-dQDH-lbGmCuMW9nMK2mEQ&usqp=CAU',
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2Li261EJEg_W2sNpMl-LsEQ3p0aHVrDR0sA&usqp=CAU',
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbsZs3HAIsLZ62rqmMj17W3TOxeLexZAvwCA&usqp=CAU'
+            ]),
             Container(
               height: 215,
               child: Stack(
