@@ -18,8 +18,24 @@ class Storage {
     _secureStorage.write(key: "accessToken", value: token);
   }
 
+   static Future<void> writePinCode(String pinCode) async {
+    _secureStorage.write(key: "pinCode", value: pinCode);
+  }
+
+  static Future<String?> readPinCode() async {
+    return await _secureStorage.read(key: "pinCode");
+  }
+
   static Future<String?> readRefreshToken() async {
     return await _secureStorage.read(key: "refreshToken");
+  }
+
+  static Future<bool> toLoginCheck()async{
+    if (!await _secureStorage.containsKey(key: "refreshToken"))
+      return false;
+    if(!await _secureStorage.containsKey(key: "pinCode"))
+      return false;
+    return true;
   }
 
   static Future<String?> readAccessToken() async {

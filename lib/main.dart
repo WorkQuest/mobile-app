@@ -8,5 +8,5 @@ import 'di/injector.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   injectDependencies(env: Environment.test);
-  runApp(WorkQuestApp(await Storage.readRefreshToken() != null));
+  runApp(WorkQuestApp(await Storage.toLoginCheck()));
 }

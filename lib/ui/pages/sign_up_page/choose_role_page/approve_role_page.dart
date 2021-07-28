@@ -1,5 +1,6 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
+import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -84,7 +85,7 @@ class ApproveRolePage extends StatelessWidget {
                   onPressed: store.canApprove
                       ? () async {
                           await store.approveRole();
-                          Navigator.pushNamed(ctx, MainPage.routeName);
+                          Navigator.pushNamed(ctx, PinCodePage.routeName);
                         }
                       : null,
                   child: store.isLoading
