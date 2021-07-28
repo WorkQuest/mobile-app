@@ -58,16 +58,16 @@ class _WebViewPageState extends State<WebViewPage> {
             print('allowing navigation to $request');
             return NavigationDecision.navigate;
           },
-          onPageStarted: (String url) async {
+          onPageStarted: (String url) {
             print('Page started loading: $url');
+          },
+          onPageFinished: (String url) async {
+            print('Page finished loading: $url');
             String? accessToken = await Storage.readAccessToken();
             String? refreshToken = await Storage.readRefreshToken();
             _controller.future.then((value) => value.evaluateJavascript(
                 """localStorage.setItem("accessToken","${accessToken ?? ''}");
                 localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
-          },
-          onPageFinished: (String url) {
-            print('Page finished loading: $url');
           },
           gestureNavigationEnabled: true,
         );
