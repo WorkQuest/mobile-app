@@ -10,6 +10,7 @@ import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -143,6 +144,11 @@ class Routes {
       case WalletPage.routeName:
         return MaterialPageRoute(
           builder: (context) => WalletPage(),
+        );
+
+      case TransferPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => TransferPage(),
         );
 
       case WebViewPage.routeName:

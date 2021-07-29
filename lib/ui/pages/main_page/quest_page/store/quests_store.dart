@@ -22,7 +22,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   _QuestsStore(this._apiProvider);
 
   @observable
-  String? searchWord = "";
+  String searchWord = "";
 
   @observable
   String? sort = "";
@@ -43,6 +43,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   List<BaseQuestResponse>? questsList;
 
   @observable
+  List<BaseQuestResponse>? searchResultList;
+
+  @observable
   List<BaseQuestResponse>? starredQuestsList;
 
   @observable
@@ -61,6 +64,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   BaseQuestResponse? selectQuestInfo;
 
   @action
+  void setSearchWord(String value) {
+    searchWord = value;
+    getSearchedQuests();
+  }
+
+  @action
   changeValue() {
     if (mapListChecker == _MapList.Map) {
       mapListChecker = _MapList.List;
@@ -75,6 +84,21 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
+  Future getSearchedQuests() async {
+    searchResultList = await _apiProvider.getQuests(
+      status: this.status,
+      invited: false,
+      performing: false,
+      priority: this.priority,
+      searchWord: this.searchWord,
+      sort: this.sort,
+      starred: false,
+    );
+    print(" list search $searchWord");
+    print(" list search $searchResultList");
+  }
+
+  @action
   Future getQuests(
       /*{
     required bool invited,
@@ -84,6 +108,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       ) async {
     try {
       this.onLoading();
+
       questsList = await _apiProvider.getQuests(
         offset: this.offset,
         limit: this.limit,
@@ -91,10 +116,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         invited: false,
         performing: false,
         priority: this.priority,
-        searchWord: this.searchWord,
         sort: this.sort,
         starred: false,
       );
+      print("quwest list $questsList ");
 
       starredQuestsList = await _apiProvider.getQuests(
         offset: this.offset,
@@ -103,7 +128,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         invited: false,
         performing: false,
         priority: this.priority,
-        searchWord: this.searchWord,
         sort: this.sort,
         starred: true,
       );
@@ -115,7 +139,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         invited: true,
         performing: false,
         priority: this.priority,
-        searchWord: this.searchWord,
         sort: this.sort,
         starred: false,
       );
@@ -127,7 +150,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         invited: false,
         performing: true,
         priority: this.priority,
-        searchWord: this.searchWord,
         sort: this.sort,
         starred: false,
       );
@@ -143,30 +165,21 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  loadIcons(BuildContext context) async {
-    const size = Size(22, 29);
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFF22CC14)));
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFF22CC14)));
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFFE8D20D)));
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFFDF3333)));
+  loadIcons() async {
+    iconsMarker.add( await getMarkerIcon("assets/LowMarker.png", Size(110.0, 145.0)));
+    iconsMarker.add(iconsMarker[0]);
+    iconsMarker.add( await getMarkerIcon("assets/NormalMarker.png", Size(110.0, 145.0)));
+    iconsMarker.add( await getMarkerIcon("assets/UrgentMarker.png", Size(110.0, 145.0)));
   }
 
-   Set<Marker> getMapMakers() {
+  Set<Marker> getMapMakers() {
     return {
       for (BaseQuestResponse quest in questsList ?? [])
         Marker(
-          onTap: () => selectQuestInfo = quest,
-          icon: iconsMarker[quest.priority],
-          markerId: MarkerId(quest.id),
-          position: LatLng(
-            quest.location.latitude,
-            quest.location.longitude,
-          ),
-        )
+            onTap: () => selectQuestInfo = quest,
+            icon: iconsMarker[quest.priority],
+            markerId: MarkerId(quest.id),
+            position: LatLng(quest.location.latitude, quest.location.longitude))
     };
   }
 }
