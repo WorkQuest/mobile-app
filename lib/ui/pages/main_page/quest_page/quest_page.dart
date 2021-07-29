@@ -37,7 +37,7 @@ class _QuestPageState extends State<QuestPage> {
     profileMeStore = context.read<ProfileMeStore>();
     profileMeStore!.getProfileMe();
     questsStore!.getQuests();
-    questsStore!.loadIcons(context);
+    questsStore!.loadIcons();
     _getCurrentLocation();
     super.initState();
   }
@@ -226,7 +226,7 @@ class _QuestPageState extends State<QuestPage> {
                 itemBuilder: (_, index) {
                   return MyQuestsItem(
                     questsStore!.questsList![index],
-                    this.questItemPriorityType,
+                    itemType: this.questItemPriorityType,
                   );
                 },
               ),

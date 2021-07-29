@@ -212,9 +212,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 children: [
                                   Text("Add Runtime"),
                                   Checkbox(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6.0),
-                                    ),
                                     value: store.hasRuntime,
                                     onChanged: store.setRuntime,
                                   ),

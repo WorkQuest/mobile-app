@@ -238,8 +238,8 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$loadIconsAsyncAction = AsyncAction('_QuestsStore.loadIcons');
 
   @override
-  Future loadIcons(BuildContext context) {
-    return _$loadIconsAsyncAction.run(() => super.loadIcons(context));
+  Future loadIcons() {
+    return _$loadIconsAsyncAction.run(() => super.loadIcons());
   }
 
   final _$_QuestsStoreActionController = ActionController(name: '_QuestsStore');
