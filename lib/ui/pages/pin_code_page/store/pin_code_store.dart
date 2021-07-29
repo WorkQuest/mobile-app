@@ -3,6 +3,7 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:mobx/mobx.dart';
 
 part 'pin_code_store.g.dart';
@@ -16,7 +17,9 @@ abstract class _PinCodeStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
   _PinCodeStore(this._apiProvider) {
     Storage.readPinCode().then((value) {
-      print("WKLOG $value");
+      LocalAuthentication()
+          .canCheckBiometrics
+          .then((check) => canCheckBiometrics = check);
       if (value == null) {
         statePin = StatePinCode.Create;
       }
@@ -32,6 +35,9 @@ abstract class _PinCodeStore extends IStore<bool> with Store {
   @observable
   String newPinCode = "";
 
+  @observable
+  bool canCheckBiometrics = false;
+
   @action
   inputPin(int num) {
     if (pin.length < 4) pin += num.toString();
@@ -43,11 +49,35 @@ abstract class _PinCodeStore extends IStore<bool> with Store {
     if (pin.isNotEmpty) pin = pin.substring(0, pin.length - 1);
   }
 
+  biometricScan() async {
+    var localAuth = LocalAuthentication();
+    // late List<BiometricType> availableBiometrics;
+    // try {
+    //   availableBiometrics =
+    //       await localAuth.getAvailableBiometrics();
+    // } catch (e) {
+    //   availableBiometrics = <BiometricType>[];
+    //   print(e);
+    // }
+    try {
+      bool didAuthenticate = await localAuth.authenticate(
+        localizedReason: 'Login authorization',
+      );
+      if (didAuthenticate) {
+        signIn(isBiometric: true);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @action
-  Future signIn() async {
+  Future signIn({bool isBiometric = false}) async {
     try {
       this.onLoading();
-      if (statePin == StatePinCode.Create) {
+      if (isBiometric) {
+        pin = "";
+      } else if (statePin == StatePinCode.Create) {
         newPinCode = pin;
         pin = "";
         statePin = StatePinCode.Repeat;

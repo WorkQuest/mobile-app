@@ -60,7 +60,11 @@ class PinCodePage extends StatelessWidget {
                         ],
                       ),
                 PinCodeKeyboard(pinCodeStore.inputPin,
-                    onTabRemove: pinCodeStore.popPin),
+                    onTabRemove: pinCodeStore.popPin,
+                    onTabSensor: (pinCodeStore.statePin == StatePinCode.Check &&
+                            pinCodeStore.canCheckBiometrics)
+                        ? pinCodeStore.biometricScan
+                        : null),
               ],
             ),
           ),
@@ -85,24 +89,9 @@ class PinCodeKeyboard extends StatelessWidget {
       crossAxisSpacing: 30,
       mainAxisSpacing: 30,
       children: <Widget>[
-        KeyboardButton(
-            const Text("1", style: buttonText), () => onTabNumber(1)),
-        KeyboardButton(
-            const Text("2", style: buttonText), () => onTabNumber(2)),
-        KeyboardButton(
-            const Text("3", style: buttonText), () => onTabNumber(3)),
-        KeyboardButton(
-            const Text("4", style: buttonText), () => onTabNumber(4)),
-        KeyboardButton(
-            const Text("5", style: buttonText), () => onTabNumber(5)),
-        KeyboardButton(
-            const Text("6", style: buttonText), () => onTabNumber(6)),
-        KeyboardButton(
-            const Text("7", style: buttonText), () => onTabNumber(7)),
-        KeyboardButton(
-            const Text("8", style: buttonText), () => onTabNumber(8)),
-        KeyboardButton(
-            const Text("9", style: buttonText), () => onTabNumber(9)),
+        for (var i = 1; i < 10; i++)
+          KeyboardButton(
+              Text(i.toString(), style: buttonText), () => onTabNumber(i)),
         KeyboardButton(
             const Icon(
               Icons.fingerprint,
