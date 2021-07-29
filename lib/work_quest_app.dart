@@ -1,4 +1,6 @@
 import 'package:app/routes.dart';
+import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
+import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -6,6 +8,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'app_localizations.dart';
 
 class WorkQuestApp extends StatelessWidget {
+  final bool isToken;
+  WorkQuestApp(this.isToken);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,7 +18,7 @@ class WorkQuestApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.generateRoute,
       localeResolutionCallback: _localeResolutionCallback,
-      // initialRoute: SettingsPageWorker.routeName,
+      initialRoute: isToken ? PinCodePage.routeName : SignInPage.routeName,
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

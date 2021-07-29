@@ -7,9 +7,11 @@ import '../../../../enums.dart';
 import 'my_quest_details.dart';
 
 class MyQuestsItem extends StatelessWidget {
-  const MyQuestsItem(this.questInfo, this.itemType);
+  const MyQuestsItem(this.questInfo,
+      {this.itemType = QuestItemPriorityType.Active, this.isExpanded = false});
 
   final BaseQuestResponse questInfo;
+  final bool isExpanded;
   final QuestItemPriorityType itemType;
 
   @override
@@ -30,7 +32,7 @@ class MyQuestsItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            getQuestHeader(itemType),
+            if (!isExpanded) getQuestHeader(itemType),
             Row(
               children: [
                 ClipRRect(

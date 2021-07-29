@@ -20,7 +20,8 @@ class QuestsList extends StatelessWidget {
               itemCount: questsList!.length,
               padding: EdgeInsets.zero,
               itemBuilder: (_, index) {
-                return MyQuestsItem(questsList![index], questItemPriorityType);
+                return MyQuestsItem(questsList![index],
+                    itemType: questItemPriorityType);
               },
             )
           : Center(

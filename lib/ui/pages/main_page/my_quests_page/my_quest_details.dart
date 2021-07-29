@@ -1,6 +1,8 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MyQuestDetails extends StatefulWidget {
   static const String routeName = "/myQuestDetails";
@@ -103,9 +105,38 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
             Text(
               "Quest materials",
               style: TextStyle(
-                fontSize: 18,
-                color: Color(0xFF1D2127),
-                fontWeight: FontWeight.w500
+                  fontSize: 18,
+                  color: Color(0xFF1D2127),
+                  fontWeight: FontWeight.w500),
+            ),
+            // Container(height: 215, child: ScreenCoordinate(x: 1, y: 2)),
+            Container(
+              height: 215,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  GoogleMap(
+                    mapType: MapType.normal,
+                    tiltGesturesEnabled: false,
+                    rotateGesturesEnabled: false,
+                    zoomControlsEnabled: false,
+                    scrollGesturesEnabled: false,
+                    zoomGesturesEnabled: false,
+                    initialCameraPosition: CameraPosition(
+                      bearing: 0,
+                      target: LatLng(widget.questInfo.location.latitude,
+                          widget.questInfo.location.longitude),
+                      zoom: 15.0,
+                    ),
+                    myLocationButtonEnabled: false,
+                  ),
+                  SvgPicture.asset(
+                    "assets/marker.svg",
+                    width: 22,
+                    height: 29,
+                    color: priorityColors[widget.questInfo.priority],
+                  ),
+                ],
               ),
             ),
           ],
@@ -131,3 +162,10 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
     );
   }
 }
+
+const List<Color> priorityColors = [
+  Color.fromRGBO(34, 204, 20, 1),
+  Color.fromRGBO(34, 204, 20, 1),
+  Color.fromRGBO(232, 210, 13, 1),
+  Color.fromRGBO(223, 51, 51, 1)
+];

@@ -143,11 +143,16 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  loadIcons() async {
-    iconsMarker.add( await getMarkerIcon("assets/LowMarker.png", Size(110.0, 145.0)));
-    iconsMarker.add(iconsMarker[0]);
-    iconsMarker.add( await getMarkerIcon("assets/NormalMarker.png", Size(110.0, 145.0)));
-    iconsMarker.add( await getMarkerIcon("assets/UrgentMarker.png", Size(110.0, 145.0)));
+  loadIcons(BuildContext context) async {
+    const size = Size(22, 29);
+    iconsMarker.add(await svgToBitMap(
+        context, "assets/marker.svg", size, Color(0xFF22CC14)));
+    iconsMarker.add(await svgToBitMap(
+        context, "assets/marker.svg", size, Color(0xFF22CC14)));
+    iconsMarker.add(await svgToBitMap(
+        context, "assets/marker.svg", size, Color(0xFFE8D20D)));
+    iconsMarker.add(await svgToBitMap(
+        context, "assets/marker.svg", size, Color(0xFFDF3333)));
   }
 
    Set<Marker> getMapMakers() {

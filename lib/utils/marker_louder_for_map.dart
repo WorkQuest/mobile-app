@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 Future<ui.Image> getImageFromPath(String imagePath) async {
@@ -32,4 +33,25 @@ Future<BitmapDescriptor> getMarkerIcon(String imagePath, Size size) async {
   final Uint8List uint8List = byteData!.buffer.asUint8List();
 
   return BitmapDescriptor.fromBytes(uint8List);
+}
+
+Future<BitmapDescriptor> svgToBitMap(
+    BuildContext context, String assetName, Size size, Color color) async {
+  String svgString = await DefaultAssetBundle.of(context).loadString(assetName);
+
+  DrawableRoot svgDrawableRoot = await svg.fromSvgString(svgString, "key");
+
+  MediaQueryData queryData = MediaQuery.of(context);
+  double devicePixelRatio = queryData.devicePixelRatio;
+  double width = size.width * devicePixelRatio;
+  double height = size.height * devicePixelRatio;
+
+  ui.Picture picture = svgDrawableRoot.toPicture(
+      size: Size(width, height),
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn));
+
+  ui.Image image = await picture.toImage(width.round(), height.round());
+  ByteData? bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+  if (bytes == null) return BitmapDescriptor.defaultMarker;
+  return BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
 }

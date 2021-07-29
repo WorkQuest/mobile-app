@@ -14,8 +14,32 @@ class Storage {
     _secureStorage.write(key: "refreshToken", value: token);
   }
 
+  static Future<void> writeAccessToken(String token) async {
+    _secureStorage.write(key: "accessToken", value: token);
+  }
+
+   static Future<void> writePinCode(String pinCode) async {
+    _secureStorage.write(key: "pinCode", value: pinCode);
+  }
+
+  static Future<String?> readPinCode() async {
+    return await _secureStorage.read(key: "pinCode");
+  }
+
   static Future<String?> readRefreshToken() async {
-    return _secureStorage.read(key: "refreshToken");
+    return await _secureStorage.read(key: "refreshToken");
+  }
+
+  static Future<bool> toLoginCheck()async{
+    if (!await _secureStorage.containsKey(key: "refreshToken"))
+      return false;
+    if(!await _secureStorage.containsKey(key: "pinCode"))
+      return false;
+    return true;
+  }
+
+  static Future<String?> readAccessToken() async {
+    return await _secureStorage.read(key: "accessToken");
   }
 
   static deleteAllFromSecureStorage() async {
