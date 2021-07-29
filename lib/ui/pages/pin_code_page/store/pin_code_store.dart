@@ -90,13 +90,13 @@ abstract class _PinCodeStore extends IStore<bool> with Store {
         } else {
           statePin = StatePinCode.Create;
           pin = "";
-          this.onError("Пин код не совпал");
+          this.onError("PIN-code did not match");
           return;
         }
       } else {
         if (await Storage.readPinCode() != pin) {
           pin = "";
-          this.onError("Неверный пинкод");
+          this.onError("Invalid PIN-code");
           return;
         }
       }

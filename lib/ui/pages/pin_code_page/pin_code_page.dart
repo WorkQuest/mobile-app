@@ -31,9 +31,9 @@ class PinCodePage extends StatelessWidget {
               children: [
                 Text(
                   pinCodeStore.statePin == StatePinCode.Create
-                      ? "Придумайте пинкод"
+                      ? "Come up with a PIN-code"
                       : pinCodeStore.statePin == StatePinCode.Repeat
-                          ? "Повторите пинкод"
+                          ? "Repeat PIN-code"
                           : "Please, write your PIN-code",
                   textAlign: TextAlign.center,
                 ),
