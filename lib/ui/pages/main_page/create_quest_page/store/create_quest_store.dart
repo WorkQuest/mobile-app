@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -18,7 +20,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   _CreateQuestStore(this.apiProvider);
 
   final List<String> questCategoriesList = [
-    "Choose",
     "Retail / sales / purchasing",
     "Transport / logistics / Construction",
     "Telecommunications / Communication",
@@ -55,6 +56,21 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     "Urgent",
   ];
 
+  static const List<String> months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
   /// location, runtime, images and videos ,priority undone
 
   @observable
@@ -68,6 +84,17 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @observable
   int priorityInt = 0;
+
+  @observable
+  bool hasRuntime = false;
+
+  @observable
+  DateTime runtimeValue = DateTime.now().add(
+    Duration(days: 1),
+  );
+
+  @observable
+  String dateTime = '';
 
   @observable
   double longitude = 0;
@@ -87,10 +114,52 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @observable
   int adType = 0;
 
+  @observable
+  ObservableList<File> media = ObservableList();
+
   /// change location data
 
   @action
   void setQuestTitle(String value) => questTitle = value;
+
+  @action
+  void setRuntime(bool? value) => hasRuntime = value!;
+
+  @computed
+  String get dateString =>
+      "${runtimeValue.year.toString()} - "
+          "${months[runtimeValue.month - 1].padLeft(2, '0')} - "
+          "${runtimeValue.day.toString().padLeft(2, '0')} ";
+
+  @action
+  void setDateTime(DateTime value) => runtimeValue = value ;
+
+  @action
+  Future choosePictures() async {
+    this.onLoading();
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowMultiple: true,
+      allowedExtensions: [
+        'jpg',
+        'png',
+        'jpeg',
+        'tiff',
+        'mp3',
+        'mp4',
+        'svg',
+      ],
+    );
+    if (result != null) {
+      media.addAll(result.paths.map((path) => File(path!)).toList());
+      print("files $media");
+    } else {
+      // User canceled the picker
+    }
+  }
+
+  @action
+  void removeImage(int index) => media.removeAt(index);
 
   @action
   void setAboutQuest(String value) => description = value;
@@ -102,9 +171,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   void changedCategory(String selectedCategory) {
     category = selectedCategory;
     switch (category) {
-      case "Choose":
-        categoryValue = "other";
-        break;
       case "Retail / sales / purchasing":
         categoryValue = "retail";
         break;
@@ -202,6 +268,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @action
   Future createQuest() async {
     try {
+      this.onLoading();
       final Location location = Location(
         longitude: longitude,
         latitude: latitude,
@@ -210,6 +277,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         category: categoryValue,
         priority: priorityInt,
         location: location,
+        media: [],
         title: questTitle,
         description: description,
         price: price,
