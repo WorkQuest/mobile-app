@@ -7,6 +7,7 @@ class CreateQuestRequestModel {
   String title;
   String description;
   String price;
+  List media;
   int adType;
 
   CreateQuestRequestModel({
@@ -14,6 +15,7 @@ class CreateQuestRequestModel {
     required this.priority,
     required this.location,
     required this.title,
+    required this.media,
     required this.description,
     required this.price,
     required this.adType,
@@ -25,6 +27,7 @@ class CreateQuestRequestModel {
     questData['priority'] = this.priority;
     questData['location'] = this.location.toJson();
     questData['title'] = this.title;
+    questData['medias'] = this.media;
     questData['description'] = this.description;
     questData['price'] = this.price;
     questData['adType'] = this.adType;
