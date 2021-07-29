@@ -11,7 +11,7 @@ class BearerToken {
 
   factory BearerToken.fromJson(Map<String, dynamic> json) {
     return BearerToken(
-      status: json["userStatus"]?? 232323142342342312,
+      status: json["userStatus"],
       access: json["access"],
       refresh: json["refresh"],
     );
