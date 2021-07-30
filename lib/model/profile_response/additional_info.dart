@@ -36,17 +36,17 @@ class AdditionalInfo {
         company: json["company"],
         ceo: json["CEO"],
         website: json["website"],
-        skills: json["skills"] == null || json["skills"].isEmpty()
+        skills: json["skills"] == null || json["skills"] == []
             ? List.empty()
             : List<String>.from(
                 json["skills"].map((x) => x),
               ),
-        educations: json["educations"] == null || json["educations"].isEmpty()
+        educations: json["educations"] == null || json["educations"] == []
             ? List.empty()
             : List<Education>.from(
                 json["educations"].map((x) => Education.fromJson(x))),
         workExperiences:
-            json["workExperiences"] == null || json["workExperiences"].isEmpty()
+            json["workExperiences"] == null || json["workExperiences"] == []
                 ? List.empty()
                 : List<WorkExperience>.from(
                     json["workExperiences"].map(

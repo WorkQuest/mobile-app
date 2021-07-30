@@ -220,9 +220,9 @@ class _QuestPageState extends State<QuestPage> {
                   return _getDivider();
                 },
                 padding: EdgeInsets.zero,
-                itemCount: questsStore!.searchWord.isEmpty
+                itemCount: questsStore!.searchWord.isEmpty // needs fix with search result list
                     ? questsStore!.questsList!.length
-                    : questsStore!.searchResultList!.length,
+                    : questsStore!.questsList!.length, // questsStore!.searchResultList!.length
                 itemBuilder: (_, index) {
                   return MyQuestsItem(
                     questsStore!.questsList![index],

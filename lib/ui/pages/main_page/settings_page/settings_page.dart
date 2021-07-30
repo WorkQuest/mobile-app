@@ -1,9 +1,11 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
+import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
+import 'package:app/utils/storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -28,7 +30,7 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           SliverPadding(
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
@@ -106,6 +108,9 @@ class SettingsPage extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+          SliverToBoxAdapter(
+            child: _logOutButton(context),
           ),
           SliverToBoxAdapter(
             child: Container(
@@ -495,7 +500,7 @@ class SettingsPage extends StatelessWidget {
         ),
       );
 
-  Widget _myProfileImage(context,ProfileMeStore userStore) {
+  Widget _myProfileImage(context, ProfileMeStore userStore) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context, rootNavigator: true)
@@ -505,7 +510,13 @@ class SettingsPage extends StatelessWidget {
         height: 150.0,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(
+            image:
+                // (userStore.isLoading || userStore.userData?.avatar.url == null)
+                //     ? NetworkImage(
+                //         "https://m.media-amazon.com/images/I/61TMDIj38XL._AC_SX425_.jpg",
+                //       )
+                //     :
+                NetworkImage(
               userStore.userData!.avatar.url,
             ),
             fit: BoxFit.cover,
@@ -520,13 +531,24 @@ class SettingsPage extends StatelessWidget {
             Positioned(
               bottom: 16.0,
               left: 16.0,
-              child: Text(
-                userStore.userData!.firstName + userStore.userData!.lastName,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                ),
-              ),
+              child: (userStore.userData?.firstName == null ||
+                      userStore.userData?.lastName == null)
+                  ? Text(
+                      "Maks Brskin",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
+                    )
+                  : Text(
+                      userStore.userData!.firstName +
+                          " " +
+                          userStore.userData!.lastName,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
+                    ),
             ),
             Positioned(
               bottom: 16.0,
@@ -537,6 +559,33 @@ class SettingsPage extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _logOutButton(context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: OutlinedButton(
+        onPressed: () {
+          Navigator.of(context, rootNavigator: false)
+              .pushReplacementNamed(SignInPage.routeName);
+
+
+          Storage.deleteAllFromSecureStorage();
+        },
+        child: Text(
+          "Logout",
+          style: TextStyle(
+            color: Color(0xFFDF3333),
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(
+            width: 1.0,
+            color: Color.fromRGBO(223, 51, 51, 0.1),
+          ),
         ),
       ),
     );
