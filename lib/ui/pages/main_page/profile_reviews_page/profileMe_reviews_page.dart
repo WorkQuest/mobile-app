@@ -72,7 +72,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                   fit: StackFit.expand,
                   children: [
                     Image.network(
-                      userStore.userData!.avatar.url,
+                      userStore.userData!.avatar!.url,
                       fit: BoxFit.cover,
                     ),
                     Positioned(
@@ -111,7 +111,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                   ],
                 ),
                 title: widget._profileWidgets.appBarTitle(
-                  "${userStore.userData!.firstName} ${userStore.userData!.lastName}",
+                  "${userStore.userData!.firstName} ${userStore.userData!.lastName ??" "}",
                 ),
               ),
             ),
@@ -143,9 +143,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                   style: _style,
                                 ),
                               ),
-                              (userStore.userData!.additionalInfo.skills ==
-                                          null ||
-                                      userStore.userData!.additionalInfo.skills!
+                              (userStore.userData!.additionalInfo!.skills!
                                           .isEmpty)
                                   ? Text(
                                       "No skills",
@@ -156,7 +154,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                     )
                                   : _skills(
                                       skills: userStore
-                                          .userData!.additionalInfo.skills!,
+                                          .userData!.additionalInfo!.skills!,
                                     ),
 
                               _spacer,
@@ -172,8 +170,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                 ),
                               ),
                               Text(
-                                userStore
-                                        .userData!.additionalInfo.description ??
+                                userStore.userData?.additionalInfo?.description ??
                                     "No description",
                               ),
 
@@ -191,31 +188,29 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                 ),
                               ),
 
-                              (userStore.userData!.additionalInfo.educations !=
-                                          null ||
-                                      userStore.userData!.additionalInfo
+                              (userStore.userData!.additionalInfo!
                                           .educations!.isNotEmpty)
                                   ? ListView.builder(
                                       padding: EdgeInsets.zero,
                                       shrinkWrap: true,
                                       physics: NeverScrollableScrollPhysics(),
                                       itemCount: userStore.userData!
-                                          .additionalInfo.educations!.length,
+                                          .additionalInfo!.educations!.length,
                                       itemBuilder: (_, index) {
                                         return experience(
                                             place: userStore
                                                 .userData!
-                                                .additionalInfo
+                                                .additionalInfo!
                                                 .educations![index]
                                                 .place,
                                             from: userStore
                                                 .userData!
-                                                .additionalInfo
+                                                .additionalInfo!
                                                 .educations![index]
                                                 .from,
                                             to: userStore
                                                 .userData!
-                                                .additionalInfo
+                                                .additionalInfo!
                                                 .educations![index]
                                                 .to);
                                       })
@@ -235,10 +230,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                 ),
                               ),
 
-                              (userStore.userData!.additionalInfo
-                                              .workExperiences !=
-                                          null ||
-                                      userStore.userData!.additionalInfo
+                              (userStore.userData!.additionalInfo!
                                           .workExperiences!.isNotEmpty)
                                   ? ListView.builder(
                                       padding: EdgeInsets.zero,
@@ -246,26 +238,26 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                       physics: NeverScrollableScrollPhysics(),
                                       itemCount: userStore
                                           .userData!
-                                          .additionalInfo
+                                          .additionalInfo!
                                           .workExperiences!
                                           .length,
                                       itemBuilder: (_, index) {
                                         return experience(
                                             place: userStore
                                                 .userData!
-                                                .additionalInfo
+                                                .additionalInfo!
                                                 .workExperiences![index]
-                                                .place,
+                                                .place ?? " ",
                                             from: userStore
                                                 .userData!
-                                                .additionalInfo
+                                                .additionalInfo!
                                                 .workExperiences![index]
-                                                .from,
+                                                .from ?? " ",
                                             to: userStore
                                                 .userData!
-                                                .additionalInfo
+                                                .additionalInfo!
                                                 .workExperiences![index]
-                                                .to);
+                                                .to ?? " ");
                                       })
                                   : Text(
                                       "No Information",
@@ -284,12 +276,12 @@ class _ProfileReviewsState extends State<ProfileReviews>
 
                     ///Contact Details
                     contactDetails(
-                        location: userStore.userData!.additionalInfo.address,
-                        number: userStore
-                            .userData!.additionalInfo.firstMobileNumber,
+                        location:
+                            userStore.userData?.additionalInfo?.address ?? ' ',
+                        number: userStore.userData?.phone ?? " ",
                         secondNumber: userStore
-                            .userData!.additionalInfo.secondMobileNumber,
-                        email: userStore.userData!.email),
+                            .userData?.additionalInfo?.secondMobileNumber ?? "",
+                        email: userStore.userData?.email ?? " "),
                     rating(
                       completedQuests: "12",
                       averageRating: "4.5",
@@ -487,7 +479,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
     required String location,
     required String number,
     required String email,
-    String? secondNumber,
+    required String secondNumber,
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
@@ -514,9 +506,11 @@ class _ProfileReviewsState extends State<ProfileReviews>
               ),
             ],
           ),
+
           const SizedBox(
-            height: 15.0,
+            height: 10.0,
           ),
+
           Row(
             children: [
               Icon(
@@ -536,23 +530,30 @@ class _ProfileReviewsState extends State<ProfileReviews>
               ),
             ],
           ),
-          SizedBox(
-            height: 5,
-          ),
-          if (secondNumber != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 27.0),
-              child: Text(
-                secondNumber,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF7C838D),
+
+          if (secondNumber.isNotEmpty)
+            Column(
+              children: [
+                const SizedBox(
+                  height: 10.0,
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 27.0),
+                  child: Text(
+                    secondNumber,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF7C838D),
+                    ),
+                  ),
+                ),
+              ],
             ),
+
           const SizedBox(
-            height: 15.0,
+            height: 10.0,
           ),
+
           Row(
             children: [
               Icon(

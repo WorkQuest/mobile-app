@@ -119,7 +119,7 @@ class SettingsPage extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  userStore.userData!.role == UserRole.Worker
+                  userStore.userData?.role == UserRole.Worker
                       ? workerSettings(context)
                       : employerSettings(settingStore),
                 ],
@@ -506,7 +506,7 @@ class SettingsPage extends StatelessWidget {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-              userStore.userData!.avatar.url,
+              userStore.userData!.avatar!.url ,
             ),
             fit: BoxFit.cover,
           ),
@@ -521,7 +521,7 @@ class SettingsPage extends StatelessWidget {
               bottom: 16.0,
               left: 16.0,
               child: Text(
-                userStore.userData!.firstName + userStore.userData!.lastName,
+                " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16.0,
