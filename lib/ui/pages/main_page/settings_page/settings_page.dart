@@ -1,7 +1,9 @@
+import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
+import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
@@ -569,9 +571,15 @@ class SettingsPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: OutlinedButton(
         onPressed: () {
-          Navigator.of(context, rootNavigator: false)
-              .pushReplacementNamed(SignInPage.routeName);
-
+          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => Provider(
+                create: (context) => getIt.get<SignInStore>(),
+                child: SignInPage(),
+              ),
+            ),
+            (route) => false,
+          );
 
           Storage.deleteAllFromSecureStorage();
         },
