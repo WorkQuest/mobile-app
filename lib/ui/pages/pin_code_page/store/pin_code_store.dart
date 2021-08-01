@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/bearer_token.dart';
@@ -13,21 +14,39 @@ class PinCodeStore extends _PinCodeStore with _$PinCodeStore {
   PinCodeStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _PinCodeStore extends IStore<bool> with Store {
+abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   final ApiProvider _apiProvider;
   _PinCodeStore(this._apiProvider) {
-    Storage.readPinCode().then((value) {
-      LocalAuthentication()
-          .canCheckBiometrics
-          .then((check) => canCheckBiometrics = check);
+    Storage.readPinCode().then((value) async {
+      var auth = LocalAuthentication();
       if (value == null) {
         statePin = StatePinCode.Create;
+      } else {
+        canCheckBiometrics = await auth.canCheckBiometrics;
+        if (canCheckBiometrics) {
+          List<BiometricType> availableBiometrics =
+              await auth.getAvailableBiometrics();
+          if (Platform.isIOS) {
+            if (availableBiometrics.contains(BiometricType.face)) {
+              // Face ID.
+              bool didAuthenticate = await auth.authenticate(
+                localizedReason: 'Login authorization',
+              );
+              if (didAuthenticate) {
+                signIn(isBiometric: true);
+              }
+            }
+          }
+        }
       }
     });
   }
 
   @observable
   String pin = "";
+
+  @observable
+  int attempts = 0;
 
   @observable
   StatePinCode statePin = StatePinCode.Check;
@@ -71,6 +90,14 @@ abstract class _PinCodeStore extends IStore<bool> with Store {
     }
   }
 
+  changeState(StatePinCode state, {errorAnimation = false}) {
+    statePin = state;
+    if (errorAnimation)
+      this.onError("");
+    else
+      this.onSuccess(state);
+  }
+
   @action
   Future signIn({bool isBiometric = false}) async {
     try {
@@ -80,39 +107,45 @@ abstract class _PinCodeStore extends IStore<bool> with Store {
       } else if (statePin == StatePinCode.Create) {
         newPinCode = pin;
         pin = "";
-        statePin = StatePinCode.Repeat;
-        this.onSuccess(true);
+        changeState(StatePinCode.Repeat);
         return;
       } else if (statePin == StatePinCode.Repeat) {
-        if (pin == newPinCode) {
-          await Storage.writePinCode(pin);
-          statePin = StatePinCode.Check;
-        } else {
-          statePin = StatePinCode.Create;
+        if (pin != newPinCode) {
           pin = "";
-          this.onError("PIN-code did not match");
+          changeState(StatePinCode.Create, errorAnimation: true);
           return;
         }
+        await Storage.writePinCode(pin);
       } else {
         if (await Storage.readPinCode() != pin) {
           pin = "";
-          this.onError("Invalid PIN-code");
+          attempts += 1;
+          if (attempts >= 3) {
+            await Storage.deleteAllFromSecureStorage();
+            this.onSuccess(StatePinCode.ToLogin);
+            return;
+          }
+          changeState(StatePinCode.Check, errorAnimation: true);
           return;
         }
       }
 
       String? token = await Storage.readRefreshToken();
+      if (token == null) {
+        await Storage.deleteAllFromSecureStorage();
+        this.onSuccess(StatePinCode.ToLogin);
+        return;
+      }
 
-      BearerToken bearerToken = await _apiProvider.refreshToken(token!);
+      BearerToken bearerToken = await _apiProvider.refreshToken(token);
+      await Storage.writeRefreshToken(bearerToken.refresh);
+      await Storage.writeAccessToken(bearerToken.access);
 
-      Storage.writeRefreshToken(bearerToken.refresh);
-      Storage.writeAccessToken(bearerToken.access);
-
-      this.onSuccess(true);
+      this.onSuccess(StatePinCode.Success);
     } catch (e) {
       this.onError(e.toString());
     }
   }
 }
 
-enum StatePinCode { Create, Repeat, Check }
+enum StatePinCode { Create, Repeat, Check, ToLogin, Success }

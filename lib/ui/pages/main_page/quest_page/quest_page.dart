@@ -37,7 +37,7 @@ class _QuestPageState extends State<QuestPage> {
     profileMeStore = context.read<ProfileMeStore>();
     profileMeStore!.getProfileMe();
     questsStore!.getQuests();
-    questsStore!.loadIcons();
+    questsStore!.loadIcons(context);
     _getCurrentLocation();
     super.initState();
   }
