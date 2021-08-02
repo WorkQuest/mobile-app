@@ -17,6 +17,7 @@ class PinCodeStore extends _PinCodeStore with _$PinCodeStore {
 abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   final ApiProvider _apiProvider;
   _PinCodeStore(this._apiProvider) {
+    statePin = StatePinCode.Check;
     Storage.readPinCode().then((value) async {
       var auth = LocalAuthentication();
       if (value == null) {
@@ -24,19 +25,10 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       } else {
         canCheckBiometrics = await auth.canCheckBiometrics;
         if (canCheckBiometrics) {
-          List<BiometricType> availableBiometrics =
-              await auth.getAvailableBiometrics();
-          if (Platform.isIOS) {
-            if (availableBiometrics.contains(BiometricType.face)) {
-              // Face ID.
-              bool didAuthenticate = await auth.authenticate(
-                localizedReason: 'Login authorization',
-              );
-              if (didAuthenticate) {
-                signIn(isBiometric: true);
-              }
-            }
-          }
+          bool didAuthenticate = await auth.authenticate(
+            localizedReason: 'Login authorization',
+          );
+          if (didAuthenticate) signIn(isBiometric: true);
         }
       }
     });

@@ -6,6 +6,7 @@ import "package:app/ui/widgets/platform_activity_indicator.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_mobx/flutter_mobx.dart";
+import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
 
 class PinCodePage extends StatefulWidget {
@@ -40,7 +41,9 @@ class _PinCodePageState extends State<PinCodePage>
     return ObserverListener<PinCodeStore>(
       onFailure: () {
         controller!.forward(from: 0.0);
-        if (pinCodeStore.errorMessage == null) return false;
+        if (pinCodeStore.errorMessage != null) if (pinCodeStore
+            .errorMessage!.isNotEmpty) return false;
+        print(pinCodeStore.errorMessage);
         return true;
       },
       onSuccess: () {
@@ -110,13 +113,15 @@ class _PinCodePageState extends State<PinCodePage>
                             );
                           },
                         ),
-                  PinCodeKeyboard(pinCodeStore.inputPin,
-                      onTabRemove: pinCodeStore.popPin,
-                      onTabSensor:
-                          (pinCodeStore.successData == StatePinCode.Check &&
-                                  pinCodeStore.canCheckBiometrics)
-                              ? pinCodeStore.biometricScan
-                              : null),
+                  PinCodeKeyboard(
+                    pinCodeStore.inputPin,
+                    onTabRemove: pinCodeStore.popPin,
+                    onTabSensor: (pinCodeStore.statePin == StatePinCode.Check &&
+                            pinCodeStore.canCheckBiometrics)
+                        ? pinCodeStore.biometricScan
+                        : null,
+                    canBiometric: pinCodeStore.canCheckBiometrics,
+                  ),
                 ],
               );
             },
@@ -131,7 +136,9 @@ class PinCodeKeyboard extends StatelessWidget {
   final Function(int) onTabNumber;
   final Function()? onTabSensor;
   final Function()? onTabRemove;
-  PinCodeKeyboard(this.onTabNumber, {this.onTabSensor, this.onTabRemove});
+  final bool canBiometric;
+  PinCodeKeyboard(this.onTabNumber,
+      {this.onTabSensor, this.onTabRemove, this.canBiometric = false});
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -146,17 +153,21 @@ class PinCodeKeyboard extends StatelessWidget {
           KeyboardButton(
               Text(i.toString(), style: buttonText), () => onTabNumber(i)),
         KeyboardButton(
-            const Icon(
-              Icons.fingerprint,
-              size: 20,
+            SvgPicture.asset(
+              "assets/biometric.svg",
+              width: 20,
+              height: 20,
+              color: canBiometric ? Color(0xFF0083C7) : Colors.grey[500],
             ),
             onTabSensor),
         KeyboardButton(
             const Text("0", style: buttonText), () => onTabNumber(0)),
         KeyboardButton(
-            const Icon(
-              Icons.clear,
-              size: 20,
+            SvgPicture.asset(
+              "assets/remove.svg",
+              width: 20,
+              height: 12,
+              color: Color(0xFF0083C7),
             ),
             onTabRemove),
       ],
