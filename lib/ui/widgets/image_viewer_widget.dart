@@ -9,23 +9,25 @@ class ImageViewerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.symmetric(vertical: 15),
       height: 200,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Flexible(
             flex: 3,
             child: getImageCell(0, context),
           ),
-          const SizedBox(width: 5),
+          const SizedBox(width: 10),
           Flexible(
             flex: 1,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 getImageCell(1, context),
-                const SizedBox(height: 5),
+                const SizedBox(height: 10),
                 getImageCell(2, context),
-                const SizedBox(height: 5),
+                const SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
                     Navigator.push(
@@ -35,6 +37,8 @@ class ImageViewerWidget extends StatelessWidget {
                   },
                   child: Icon(Icons.more_horiz),
                   style: ButtonStyle(
+                    fixedSize:
+                        MaterialStateProperty.all(Size(double.maxFinite, 60)),
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
                         if (states.contains(MaterialState.pressed))
@@ -46,7 +50,7 @@ class ImageViewerWidget extends StatelessWidget {
                       },
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -68,10 +72,8 @@ class ImageViewerWidget extends StatelessWidget {
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
-        child: Image.network(
-          media[index],
-          fit: BoxFit.fitHeight,
-        ),
+        child: Image.network(media[index],
+            fit: BoxFit.fitHeight, height: index == 0 ? double.infinity : 60),
       ),
     );
   }
