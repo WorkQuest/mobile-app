@@ -12,13 +12,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$searchWordAtom = Atom(name: '_QuestsStore.searchWord');
 
   @override
-  String? get searchWord {
+  String get searchWord {
     _$searchWordAtom.reportRead();
     return super.searchWord;
   }
 
   @override
-  set searchWord(String? value) {
+  set searchWord(String value) {
     _$searchWordAtom.reportWrite(value, super.searchWord, () {
       super.searchWord = value;
     });
@@ -114,6 +114,21 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$searchResultListAtom = Atom(name: '_QuestsStore.searchResultList');
+
+  @override
+  List<BaseQuestResponse>? get searchResultList {
+    _$searchResultListAtom.reportRead();
+    return super.searchResultList;
+  }
+
+  @override
+  set searchResultList(List<BaseQuestResponse>? value) {
+    _$searchResultListAtom.reportWrite(value, super.searchResultList, () {
+      super.searchResultList = value;
+    });
+  }
+
   final _$starredQuestsListAtom = Atom(name: '_QuestsStore.starredQuestsList');
 
   @override
@@ -205,6 +220,14 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$getSearchedQuestsAsyncAction =
+      AsyncAction('_QuestsStore.getSearchedQuests');
+
+  @override
+  Future<dynamic> getSearchedQuests() {
+    return _$getSearchedQuestsAsyncAction.run(() => super.getSearchedQuests());
+  }
+
   final _$getQuestsAsyncAction = AsyncAction('_QuestsStore.getQuests');
 
   @override
@@ -220,6 +243,17 @@ mixin _$QuestsStore on _QuestsStore, Store {
   }
 
   final _$_QuestsStoreActionController = ActionController(name: '_QuestsStore');
+
+  @override
+  void setSearchWord(String value) {
+    final _$actionInfo = _$_QuestsStoreActionController.startAction(
+        name: '_QuestsStore.setSearchWord');
+    try {
+      return super.setSearchWord(value);
+    } finally {
+      _$_QuestsStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   dynamic changeValue() {
@@ -253,6 +287,7 @@ offset: ${offset},
 limit: ${limit},
 status: ${status},
 questsList: ${questsList},
+searchResultList: ${searchResultList},
 starredQuestsList: ${starredQuestsList},
 performedQuestsList: ${performedQuestsList},
 invitedQuestsList: ${invitedQuestsList},

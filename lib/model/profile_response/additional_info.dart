@@ -19,41 +19,55 @@ class AdditionalInfo {
   String firstMobileNumber;
   String? secondMobileNumber;
   String address;
-  SocialNetwork socialNetwork;
+  SocialNetwork? socialNetwork;
   String? company;
   String? ceo;
   String? website;
-  List<String> skills;
-  List<Education> educations;
-  List<WorkExperience> workExperiences;
+  List<String>? skills;
+  List<Education>? educations;
+  List<WorkExperience>? workExperiences;
   String? description;
 
   factory AdditionalInfo.fromJson(Map<String, dynamic> json) => AdditionalInfo(
-    firstMobileNumber: json["firstMobileNumber"],
-    secondMobileNumber: json["secondMobileNumber"],
-    address: json["address"],
-    socialNetwork: SocialNetwork.fromJson(json["socialNetwork"]),
-    company: json["company"],
-    ceo: json["CEO"],
-    website: json["website"],
-    skills: List<String>.from(json["skills"].map((x) => x)),
-    educations: List<Education>.from(json["educations"].map((x) => Education.fromJson(x))),
-    workExperiences:
-    List<WorkExperience>.from(json["workExperiences"].map((x) => WorkExperience.fromJson(x))),
-    description: json["description"],
-  );
+        firstMobileNumber: json["firstMobileNumber"] ?? "",
+        secondMobileNumber: json["secondMobileNumber"] ?? "",
+        address: json["address"],
+        socialNetwork: SocialNetwork.fromJson(json["socialNetwork"]),
+        company: json["company"],
+        ceo: json["CEO"],
+        website: json["website"],
+        skills: json["skills"] == null || json["skills"] == []
+            ? List.empty()
+            : List<String>.from(
+                json["skills"].map((x) => x),
+              ),
+        educations: json["educations"] == null || json["educations"] == []
+            ? List.empty()
+            : List<Education>.from(
+                json["educations"].map((x) => Education.fromJson(x))),
+        workExperiences:
+            json["workExperiences"] == null || json["workExperiences"] == []
+                ? List.empty()
+                : List<WorkExperience>.from(
+                    json["workExperiences"].map(
+                      (x) => WorkExperience.fromJson(x),
+                    ),
+                  ),
+        description: json["description"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "firstMobileNumber": firstMobileNumber,
-    "secondMobileNumber": secondMobileNumber,
-    "address": address,
-    "socialNetwork": socialNetwork.toJson(),
-    "company": company,
-    "CEO": ceo,
-    "website": website,
-    "skills": List<String>.from(skills.map((x) => x)),
-    "educations": List<Education>.from(educations.map((x) => x.toJson())),
-    "workExperiences": List<WorkExperience>.from(workExperiences.map((x) => x.toJson())),
-    "description": description,
-  };
+        "firstMobileNumber": firstMobileNumber,
+        "secondMobileNumber": secondMobileNumber,
+        "address": address,
+        "socialNetwork": socialNetwork!.toJson(),
+        "company": company,
+        "CEO": ceo,
+        "website": website,
+        "skills": List<String>.from(skills!.map((x) => x)),
+        "educations": List<Education>.from(educations!.map((x) => x.toJson())),
+        "workExperiences":
+            List<WorkExperience>.from(workExperiences!.map((x) => x.toJson())),
+        "description": description,
+      };
 }

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:app/utils/storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class _WebViewPageState extends State<WebViewPage> {
       Completer<WebViewController>();
 
   final String baseUrl = "https://app-ver1.workquest.co/";
+  final storage = new FlutterSecureStorage();
 
   @override
   void initState() {
@@ -58,8 +61,13 @@ class _WebViewPageState extends State<WebViewPage> {
           onPageStarted: (String url) {
             print('Page started loading: $url');
           },
-          onPageFinished: (String url) {
+          onPageFinished: (String url) async {
             print('Page finished loading: $url');
+            String? accessToken = await Storage.readAccessToken();
+            String? refreshToken = await Storage.readRefreshToken();
+            _controller.future.then((value) => value.evaluateJavascript(
+                """localStorage.setItem("accessToken","${accessToken ?? ''}");
+                localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
           },
           gestureNavigationEnabled: true,
         );

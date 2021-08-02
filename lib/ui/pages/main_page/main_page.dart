@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../routes.dart';
+import 'chat_page/chat_page.dart';
 import 'my_quests_page/my_quests_page.dart';
 
 final firstTabNavKey = GlobalKey<NavigatorState>();
@@ -60,12 +61,7 @@ class MainPage extends StatelessWidget {
           return CupertinoTabView(
             onGenerateRoute: Routes.generateRoute,
             navigatorKey: thirdTabNavKey,
-            builder: (BuildContext context) => CupertinoPageScaffold(
-              navigationBar: CupertinoNavigationBar(
-                middle: Text("Chat"),
-              ),
-              child: Column(),
-            ),
+            builder: (BuildContext context) => ChatPage(),
           );
         } else if (index == 3) {
           return CupertinoTabView(

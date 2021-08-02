@@ -1,3 +1,4 @@
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page.dart';
 import 'package:app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -162,7 +163,9 @@ class _WalletPageState extends State<WalletPage> with TickerProviderStateMixin {
                   child: SizedBox(
                     height: 46,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, TransferPage.routeName);
+                      },
                       child: Text("Transfer"),
                     ),
                   ),
