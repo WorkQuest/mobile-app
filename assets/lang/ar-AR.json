@@ -1,0 +1,23 @@
+{
+    "auth": {
+      "password": "لمة المرور",
+      "signIn": {
+        "welcomeTo": "مرحباً بك في \nWorkQuest",
+        "pleaseSignIn": "الرجاء تسجيل الدخول",
+        "username": "اسم المستخدم",
+        "login": "تسجيل الدخول",
+        "doNotHaveAccount": "ليس لديك حساب؟",
+        "signUp": "اشتراك",
+        "forgotPassword": "نسيت رقمك السري؟"
+      },
+      "signUp": {
+        "firstName": "الاسم الاول",
+        "lastName": "الكنية",
+        "email": "بريد إلكتروني",
+        "repeatPassword": "اعد كلمة السر",
+        "createAccount": "إنشاء حساب",
+        "alreadyHaveAccount": "لديك حساب بالفعل؟",
+        "signIn": "تسجيل الدخول"
+      }
+    }
+  }

@@ -1,0 +1,23 @@
+{
+    "auth": {
+        "password": "Пароль",
+        "signIn": {
+            "welcomeTo": "Добро пожаловать в \nWorkQuest",
+            "pleaseSignIn": "Пожалуйста, войдите",
+            "username": "Имя пользователя",
+            "login": "Войти",
+            "doNotHaveAccount": "Нет учетной записи?",
+            "signUp": "Зарегистрироваться",
+            "forgotPassword": "Забыли пароль?"
+        },
+        "signUp": {
+            "firstName": "Имя",
+            "lastName": "Фамилия",
+            "email": "Электронная почта",
+            "repeatPassword": "Повторить пароль",
+            "createAccount": "Создать учетную запись",
+            "alreadyHaveAccount": "У вас уже есть аккаунт?",
+            "signIn": "Войти"
+        }
+    }
+}
