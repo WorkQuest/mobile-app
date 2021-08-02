@@ -29,12 +29,14 @@ import 'di/injector.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    TextDirection dir = TextDirection.rtl;
     switch (settings.name) {
       case SignInPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<SignInStore>(),
-            child: SignInPage(),
+            child: Directionality(
+                textDirection: dir, child: SignInPage()),
           ),
         );
 
@@ -42,15 +44,17 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<SignUpStore>(),
-            child: SignUpPage(),
+            child: Directionality(
+                textDirection: dir, child: SignUpPage()),
           ),
         );
 
-        case PinCodePage.routeName:
+      case PinCodePage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<PinCodeStore>(),
-            child: PinCodePage(),
+            child: Directionality(
+                textDirection: dir, child: PinCodePage()),
           ),
         );
 
@@ -68,20 +72,24 @@ class Routes {
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
             ],
-            child: MainPage(),
+            child: Directionality(
+                textDirection: dir, child: MainPage()),
           ),
         );
 
       case MyQuestDetails.routeName:
         return MaterialPageRoute(
-          builder: (context) => MyQuestDetails(settings.arguments as BaseQuestResponse),
+          builder: (context) => Directionality(
+              textDirection: dir,
+              child: MyQuestDetails(settings.arguments as BaseQuestResponse)),
         );
 
       case ChooseRolePage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<ChooseRoleStore>(),
-            child: ChooseRolePage(),
+            child: Directionality(
+                textDirection: dir, child: ChooseRolePage()),
           ),
         );
 
@@ -89,13 +97,16 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<ChooseRoleStore>(),
-            child: ApproveRolePage(settings.arguments),
+            child: Directionality(
+                textDirection: dir,
+                child: ApproveRolePage(settings.arguments)),
           ),
         );
 
       case NotificationPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => NotificationPage(),
+          builder: (context) => Directionality(
+              textDirection: dir, child: NotificationPage()),
         );
 
       case ProfileReviews.routeName:
@@ -106,7 +117,8 @@ class Routes {
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
             ],
-            child: ProfileReviews(),
+            child: Directionality(
+                textDirection: dir, child: ProfileReviews()),
           ),
         );
 
@@ -114,7 +126,9 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<ChooseRoleStore>(),
-            child: ConfirmEmail(settings.arguments),
+            child: Directionality(
+                textDirection: dir,
+                child: ConfirmEmail(settings.arguments)),
           ),
         );
 
@@ -129,7 +143,8 @@ class Routes {
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
             ],
-            child: SettingsPage(),
+            child: Directionality(
+                textDirection: dir, child: SettingsPage()),
           ),
         );
 
@@ -137,13 +152,15 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<CreateQuestStore>(),
-            child: CreateQuestPage(),
+            child: Directionality(
+                textDirection: dir, child: CreateQuestPage()),
           ),
         );
 
       case WalletPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => WalletPage(),
+          builder: (context) => Directionality(
+              textDirection: dir, child: WalletPage()),
         );
 
       case TransferPage.routeName:
@@ -153,12 +170,15 @@ class Routes {
 
       case WebViewPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => WebViewPage(settings.arguments.toString()),
+          builder: (context) => Directionality(
+              textDirection: dir,
+              child: WebViewPage(settings.arguments.toString())),
         );
 
       default:
         return MaterialPageRoute(
-          builder: (context) => Container(),
+          builder: (context) => Directionality(
+              textDirection: dir, child: Container()),
         );
     }
   }
