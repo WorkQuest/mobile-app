@@ -1,23 +1,24 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:app/ui/widgets/priority_view.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MyQuestDetails extends StatefulWidget {
   static const String routeName = "/myQuestDetails";
-
   const MyQuestDetails(this.questInfo);
-
   final BaseQuestResponse questInfo;
-
   @override
   _MyQuestDetailsState createState() => _MyQuestDetailsState();
 }
 
-class _MyQuestDetailsState extends State<MyQuestDetails> {
+class _MyQuestDetailsState extends State<MyQuestDetails>
+    with TickerProviderStateMixin {
+  AnimationController? controller;
   int selectedResponders = -1;
+  bool sendRequestBodyHide = true;
   static const List<String> months = [
     'January',
     'February',
@@ -32,6 +33,13 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
     'November',
     'December',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    controller = BottomSheet.createAnimationController(this);
+    controller!.duration = Duration(seconds: 1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +57,6 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
   }
 
   Widget getBody() {
-    print(widget.questInfo.toJson());
     return SingleChildScrollView(
       physics: ClampingScrollPhysics(),
       child: Padding(
@@ -74,7 +81,7 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
                   style: TextStyle(fontSize: 16),
                 ),
                 Spacer(),
-                PriorityView(1),
+                PriorityView(widget.questInfo.priority),
               ],
             ),
             const SizedBox(height: 17),
@@ -123,7 +130,7 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
               (DateTime t) {
                 String h = t.hour < 10 ? '0${t.hour}' : t.hour.toString();
                 String m = t.minute < 10 ? '0${t.minute}' : t.minute.toString();
-                return "${t.day} ${months[t.month]} $h:$m";
+                return "${t.day} ${months[t.month]} ${t.year}, $h:$m";
               }(widget.questInfo.createdAt), // For convenience =D
               style: TextStyle(color: Color(0xFFAAB0B9), fontSize: 12),
             ),
@@ -159,7 +166,7 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
             ),
             const SizedBox(height: 20),
             Text(
-              "1500 WUSD",
+              "${widget.questInfo.price} WUSD",
               textAlign: TextAlign.end,
               style: const TextStyle(
                   color: Color(0xFF00AA5B),
@@ -168,8 +175,10 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
             ),
             const SizedBox(height: 20),
             TextButton(
-              onPressed: () {},
-              child: const Text("Show more",
+              onPressed: () {
+                bottomForm();
+              },
+              child: const Text("Send a request",
                   style: TextStyle(color: Colors.white)),
               style: ButtonStyle(
                 fixedSize:
@@ -193,6 +202,110 @@ class _MyQuestDetailsState extends State<MyQuestDetails> {
       ),
     );
   }
+
+  bottomForm() => showModalBottomSheet(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(6.0), topRight: Radius.circular(6.0)),
+          ),
+          context: context,
+          backgroundColor: Colors.white,
+          transitionAnimationController: controller,
+          isScrollControlled: true,
+          builder: (BuildContext context) {
+            return Padding(
+              padding: EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  top: 10.0,
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      height: 5.0,
+                      width: 70.0,
+                      decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 23),
+                      Text(
+                        "Write a few words to the employer",
+                        style: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 5),
+                      TextField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 6,
+                        decoration: InputDecoration(
+                          hintText: 'Hello...',
+                        ),
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      DottedBorder(
+                        padding: EdgeInsets.all(0),
+                        color: Color(0xFFe9edf2),
+                        strokeWidth: 3.0,
+                        child: Container(
+                          height: 66,
+                          padding: EdgeInsets.only(left: 20, right: 10),
+                          color: Color(0xFFf7f8fa),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Upload a images or videos"),
+                              IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.add_a_photo))
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text("Send a request",
+                            style: TextStyle(color: Colors.white)),
+                        style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all(
+                              Size(double.maxFinite, 43)),
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.pressed))
+                                return Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.5);
+                              return const Color(0xFF0083C7);
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }).whenComplete(() {
+        controller = BottomSheet.createAnimationController(this);
+      });
 
   Widget respondedList() {
     return Column(
