@@ -82,14 +82,14 @@ class ImageViewerWidget extends StatelessWidget {
 class ScrollingImages extends StatefulWidget {
   ScrollingImages(this.images, {this.index});
   final List<String> images;
-  int? index;
+  final int? index;
 
   @override
   _ScrollingImagesState createState() => _ScrollingImagesState();
 }
 
 class _ScrollingImagesState extends State<ScrollingImages> {
-  int index = 1;
+  int index = 0;
   double width = 0;
   final scrollController = ScrollController();
   @override
@@ -99,11 +99,11 @@ class _ScrollingImagesState extends State<ScrollingImages> {
       () {
         width = MediaQuery.of(context).size.width;
         if (widget.index != null) {
-          index = widget.index! + 1;
+          index = widget.index!;
           scrollController.jumpTo(width * widget.index!);
         }
         setState(() {});
-      }, //
+      },
     );
     super.initState();
   }
@@ -114,7 +114,7 @@ class _ScrollingImagesState extends State<ScrollingImages> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
-          "$index of ${widget.images.length}",
+          "${index + 1} of ${widget.images.length}",
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
@@ -151,13 +151,22 @@ class _ScrollingImagesState extends State<ScrollingImages> {
         },
         onHorizontalDragEnd: (details) {
           if (scrollController.offset <= 0) return;
-          int indexImage = (((scrollController.offset) / width)).round();
-          if (indexImage >= widget.images.length) return;
-          scrollController.animateTo(width * indexImage,
+          if (details.primaryVelocity! < -500) {
+            if (index == widget.images.length-1)
+              return;
+            else
+              index += 1;
+          } else if (details.primaryVelocity! > 500) index -= 1;
+          setState(() {});
+          scrollController.animateTo(width * index,
               duration: Duration(milliseconds: 500), curve: Curves.easeOut);
-          setState(() {
-            index = indexImage + 1;
-          });
+          // int indexImage = (((scrollController.offset) / width)).round();
+          // if (indexImage >= widget.images.length) return;
+          // scrollController.animateTo(width * indexImage,
+          //     duration: Duration(milliseconds: 500), curve: Curves.easeOut);
+          // setState(() {
+          //   index = indexImage + 1;
+          // });
         },
       ),
     );
