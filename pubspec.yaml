@@ -52,8 +52,7 @@ dependencies:
   url_launcher: ^6.0.9
 
   #Media and Files
-  file_picker: ^3.0.3
-  camera: ^0.8.1+1
+  drishya_picker: ^1.0.2+1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
