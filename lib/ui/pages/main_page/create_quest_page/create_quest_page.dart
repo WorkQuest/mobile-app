@@ -1,13 +1,11 @@
-import 'package:app/ui/pages/main_page/create_quest_page/camera_page.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
-import 'package:camera/camera.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-
 import '../../../../observer_consumer.dart';
 
 class CreateQuestPage extends StatefulWidget {
@@ -20,35 +18,22 @@ class CreateQuestPage extends StatefulWidget {
 }
 
 class _CreateQuestPageState extends State<CreateQuestPage> {
-  late CameraController controller;
-  late List<CameraDescription> cameras;
-  late int selectedCameraIdx;
-  late String imagePath;
+  late final GalleryController gallController;
 
   void initState() {
     super.initState();
-    availableCameras().then((availableCameras) {
-      cameras = availableCameras;
-      controller = CameraController(cameras.first, ResolutionPreset.max);
-      controller.initialize().then((_) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {});
-      });
-    }).catchError((err) {
-      // 3
-      print('Error: ${err.code}\nError Message: ${err.message}');
-      print("cam$cameras");
-      print("can$controller");
-    });
+    const setting = GallerySetting(
+      maximum:20,
+      albumSubtitle: 'All',
+      requestType: RequestType.common,
+    );
+    gallController = GalleryController(
+      gallerySetting: setting,
+    );
   }
 
   Widget build(context) {
     final store = context.read<CreateQuestStore>();
-    print("cam$cameras");
-    print("can$controller");
-
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -212,6 +197,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 children: [
                                   Text("Add Runtime"),
                                   Checkbox(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                    ),
                                     value: store.hasRuntime,
                                     onChanged: store.setRuntime,
                                   ),
@@ -293,7 +281,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       child: TextField(
                         onChanged: store.setAboutQuest,
                         keyboardType: TextInputType.multiline,
-                        maxLines: null,
                         decoration: InputDecoration(
                           hintText: 'Quest text',
                         ),
@@ -331,8 +318,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   children: [
                                     Expanded(child: mediaView(store, context)),
                                     IconButton(
-                                      onPressed: () =>
-                                          addFile(store),
+                                      onPressed: () => showGallery(store),
                                       icon: Icon(
                                         Icons.add_circle,
                                       ),
@@ -362,10 +348,10 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                   Container(
                     height: 50.0,
                     margin: const EdgeInsets.symmetric(vertical: 30),
-                    child: ObserverListener <CreateQuestStore>(
-                    onSuccess: () {
-                      Navigator.pop(context);
-                    },
+                    child: ObserverListener<CreateQuestStore>(
+                      onSuccess: () {
+                        Navigator.pop(context);
+                      },
                       child: ElevatedButton(
                         onPressed: () {
                           store.createQuest();
@@ -393,34 +379,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       ),
     );
   }
-
-  // child: ObserverListener<SignInStore>(
-  // onSuccess: () {
-  // Navigator.pushNamedAndRemoveUntil(
-  // context,
-  // MainPage.routeName,
-  // (_) => false,
-  // );
-  // },
-  // child: Observer(
-  // builder: (context) {
-  // return ElevatedButton(
-  // onPressed: signInStore.canSignIn
-  // ? () async {
-  // if (_formKey.currentState!.validate()) {
-  // await signInStore.signInWithUsername();
-  // }
-  // }
-  //     : null,
-  // child: signInStore.isLoading
-  // ? PlatformActivityIndicator()
-  //     : Text(
-  // context.translate(AuthLangKeys.login),
-  // ),
-  // );
-  // },
-  // ),
-  // ),
 
   Widget titledField(
     String title,
@@ -460,26 +418,47 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
         itemBuilder: (context, index) {
           return Container(
             width: 150,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: FileImage(
-                  store.media[index],
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Media
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.memory(
+                    store.media[index].bytes,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                fit: BoxFit.cover,
-              ),
-              borderRadius: BorderRadius.circular(
-                15,
-              ),
-            ),
-            child: IconButton(
-              onPressed: () {
-                store.removeImage(index);
-              },
-              icon: Icon(
-                Icons.cancel_outlined,
-                color: Colors.redAccent,
-              ),
+
+                IconButton(
+                  onPressed: () => store.removeImage(index),
+                  icon: Icon(Icons.cancel_outlined),
+                  color: Colors.redAccent,
+                ),
+                // For video duration
+                if (store.media[index].entity.type == AssetType.video)
+                  Positioned(
+                    right: 4.0,
+                    bottom: 4.0,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.7),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6.0, vertical: 2.0),
+                        child: Text(
+                          store.media[index].entity.duration.formatedDuration,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 13.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           );
         },
@@ -487,14 +466,14 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     );
   }
 
-
   Widget bottomSheet(
     CreateQuestStore store,
     BuildContext context,
   ) =>
       Observer(
         builder: (context) => InkWell(
-          onTap: () =>addFile(store),
+
+          onTap: () => showGallery(store),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -518,52 +497,14 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
         ),
       );
 
-
-  ///Add media Function
-  addFile(CreateQuestStore store) => modalBottomSheet(
-    Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Expanded(
-          child: AspectRatio(
-            aspectRatio: controller.value.aspectRatio,
-            child: CameraPreview(
-              controller,
-              child: IconButton(
-                icon: Icon(
-                  Icons.camera,
-                  size: 30.0,
-                ),
-                onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TakePictureScreen(
-                        cameras: cameras,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Observer(
-            builder: (context) => IconButton(
-                icon: Icon(
-                  Icons.folder,
-                  size: 30.0,
-                ),
-                onPressed: () {
-                  store.choosePictures();
-                  Navigator.pop(context);
-                }),
-          ),
-        ),
-      ],
-    ),
-  ); 
+  ///trigger gallery
+  Future showGallery(CreateQuestStore store) async {
+    final entities = await gallController.pick(
+      context,
+      selectedEntities: store.media,
+    );
+    store.media.addAll(entities);
+  }
 
   ///Show Modal Sheet Function
   modalBottomSheet(Widget child) => showModalBottomSheet(
@@ -579,4 +520,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       builder: (context) {
         return child;
       });
+}
+
+extension on int {
+  String get formatedDuration {
+    final duration = Duration(seconds: this);
+    final min = duration.inMinutes.remainder(60).toString();
+    final sec = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '$min:$sec';
+  }
 }
