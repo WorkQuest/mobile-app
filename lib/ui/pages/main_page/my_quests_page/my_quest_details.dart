@@ -1,4 +1,6 @@
+import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -8,8 +10,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MyQuestDetails extends StatefulWidget {
   static const String routeName = "/myQuestDetails";
-  const MyQuestDetails(this.questInfo);
+  const MyQuestDetails(this.questInfo, this.role);
   final BaseQuestResponse questInfo;
+  final UserRole? role;
   @override
   _MyQuestDetailsState createState() => _MyQuestDetailsState();
 }
@@ -45,13 +48,49 @@ class _MyQuestDetailsState extends State<MyQuestDetails>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_sharp,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios_sharp,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.share_outlined,
+              ),
+              onPressed: () {},
+            ),
+            if (widget.role == UserRole.Employer)
+              PopupMenuButton<String>(
+                elevation: 10,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6.0)),
+                onSelected: (value) {
+                  switch (value) {
+                    case "Raise views":
+                      print("[tag] Raise views");
+                      break;
+                    case "Edit":
+                      Navigator.pushNamed(context, CreateQuestPage.routeName,
+                          arguments: widget.questInfo);
+                      break;
+                    case "Delete":
+                      print("[tag] Delete");
+                      break;
+                    default:
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return {'Raise views', 'Edit', 'Delete'}.map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(choice),
+                    );
+                  }).toList();
+                },
+              ),
+          ]),
       body: getBody(),
     );
   }
@@ -67,11 +106,12 @@ class _MyQuestDetailsState extends State<MyQuestDetails>
             Row(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(37),
+                  borderRadius: BorderRadius.circular(100),
                   child: Image.network(
                     widget.questInfo.user.avatar.url,
                     width: 30,
                     height: 30,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -100,7 +140,7 @@ class _MyQuestDetailsState extends State<MyQuestDetails>
             ),
             const SizedBox(height: 17),
             tagItem("Painting works"),
-            inProgressBy(),
+            if (widget.role == UserRole.Employer) inProgressBy(),
             const SizedBox(height: 15),
             Text(
               widget.questInfo.title,
@@ -164,38 +204,38 @@ class _MyQuestDetailsState extends State<MyQuestDetails>
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            Text(
-              "${widget.questInfo.price} WUSD",
-              textAlign: TextAlign.end,
-              style: const TextStyle(
-                  color: Color(0xFF00AA5B),
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                bottomForm();
-              },
-              child: const Text("Send a request",
-                  style: TextStyle(color: Colors.white)),
-              style: ButtonStyle(
-                fixedSize:
-                    MaterialStateProperty.all(Size(double.maxFinite, 43)),
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.pressed))
-                      return Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.5);
-                    return const Color(0xFF0083C7);
-                  },
-                ),
+            if (widget.role == UserRole.Worker) ...<Widget>[
+              const SizedBox(height: 20),
+              Text(
+                "${widget.questInfo.price} WUSD",
+                textAlign: TextAlign.end,
+                style: const TextStyle(
+                    color: Color(0xFF00AA5B),
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700),
               ),
-            ),
-            respondedList(),
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: bottomForm,
+                child: const Text("Send a request",
+                    style: TextStyle(color: Colors.white)),
+                style: ButtonStyle(
+                  fixedSize:
+                      MaterialStateProperty.all(Size(double.maxFinite, 43)),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed))
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
+                      return const Color(0xFF0083C7);
+                    },
+                  ),
+                ),
+              )
+            ],
+            if (widget.role == UserRole.Employer) respondedList(),
             const SizedBox(height: 20),
           ],
         ),

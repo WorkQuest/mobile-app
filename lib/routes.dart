@@ -74,7 +74,7 @@ class Routes {
 
       case MyQuestDetails.routeName:
         return MaterialPageRoute(
-          builder: (context) => MyQuestDetails(settings.arguments as BaseQuestResponse),
+          builder: (context) => MyQuestDetails(settings.arguments as BaseQuestResponse, getIt.get<ProfileMeStore>().userData?.role ),
         );
 
       case ChooseRolePage.routeName:
@@ -137,7 +137,7 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<CreateQuestStore>(),
-            child: CreateQuestPage(),
+            child: CreateQuestPage(questInfo:  settings.arguments as BaseQuestResponse?),
           ),
         );
 

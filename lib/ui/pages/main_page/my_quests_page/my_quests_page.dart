@@ -11,7 +11,6 @@ class MyQuestsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final questStore = context.read<QuestsStore>();
-    questStore.getQuests();
     return DefaultTabController(
       length: 4,
       child: Scaffold(
