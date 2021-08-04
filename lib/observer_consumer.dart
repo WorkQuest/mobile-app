@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/base_store/i_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,16 +54,27 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
             context: context,
             barrierDismissible: true,
             builder: (_) {
-              return CupertinoAlertDialog(
-                title: Text('Error'),
-                content: Text(errorMessage),
-                actions: [
-                  CupertinoDialogAction(
-                    child: Text("OK"),
-                    onPressed: Navigator.of(context).pop,
-                  )
-                ],
-              );
+              return Platform.isIOS
+                  ? CupertinoAlertDialog(
+                      title: Text('Error'),
+                      content: Text(errorMessage),
+                      actions: [
+                        CupertinoDialogAction(
+                          child: Text("OK"),
+                          onPressed: Navigator.of(context).pop,
+                        )
+                      ],
+                    )
+                  : AlertDialog(
+                      title: Text('Error'),
+                      content: Text(errorMessage),
+                      actions: [
+                        CupertinoDialogAction(
+                          child: Text("OK"),
+                          onPressed: Navigator.of(context).pop,
+                        )
+                      ],
+                    );
             },
           );
         }
