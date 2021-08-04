@@ -11,7 +11,8 @@ import "package:provider/provider.dart";
 
 class PinCodePage extends StatefulWidget {
   static const String routeName = "/PinCode";
-  PinCodePage();
+  final bool isRecheck;
+  PinCodePage({this.isRecheck = false});
   @override
   State<StatefulWidget> createState() => _PinCodePageState();
 }
@@ -43,16 +44,19 @@ class _PinCodePageState extends State<PinCodePage>
         controller!.forward(from: 0.0);
         if (pinCodeStore.errorMessage != null) if (pinCodeStore
             .errorMessage!.isNotEmpty) return false;
-        print(pinCodeStore.errorMessage);
         return true;
       },
       onSuccess: () {
         if (pinCodeStore.successData == StatePinCode.Success) {
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            MainPage.routeName,
-            (_) => false,
-          );
+          if (widget.isRecheck) {
+            Navigator.pop(context);
+          } else {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              MainPage.routeName,
+              (_) => false,
+            );
+          }
         } else if (pinCodeStore.successData == StatePinCode.ToLogin) {
           Navigator.pushNamedAndRemoveUntil(
             context,
