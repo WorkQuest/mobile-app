@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'chat_room_page/chat_room_page.dart';
+
 class ChatPage extends StatefulWidget {
   const ChatPage();
 
@@ -29,6 +31,15 @@ class _ChatPageState extends State<ChatPage> {
             CupertinoSliverNavigationBar(
               largeTitle: Text("Chat"),
               border: const Border.fromBorderSide(BorderSide.none),
+              trailing: Container(
+                transform: Matrix4.translationValues(0, 50, 0),
+                child: InkWell(
+                  onTap: () {},
+                  child: Icon(
+                    Icons.more_vert,
+                  ),
+                ),
+              ),
             ),
           ];
         },
@@ -40,7 +51,11 @@ class _ChatPageState extends State<ChatPage> {
           },
           child: SingleChildScrollView(
             child: Column(
-              children: currentList.map((e) => _chatItem(e)).toList(),
+              children: currentList
+                  .map(
+                    (e) => _chatItem(e),
+                  )
+                  .toList(),
             ),
           ),
         ),
@@ -48,76 +63,94 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _chatItem(ChatDetails chatDetails) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 12.5,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: Image.network(
-                    chatDetails.imageUrl,
-                    width: 56,
-                    height: 56,
-                    fit: BoxFit.cover,
+  Widget _chatItem(ChatDetails chatDetails, {bool hasUnreadMessages = false}) {
+    return GestureDetector(
+      onTap: (){
+        Navigator.of(context, rootNavigator: true)
+            .pushNamed(ChatRoomPage.routeName);
+      },
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 12.5,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Image.network(
+                      chatDetails.imageUrl,
+                      width: 56,
+                      height: 56,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      chatDetails.name,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        chatDetails.name,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "You: ${chatDetails.lastMessage} " * 10,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF7C838D),
+                      const SizedBox(
+                        height: 5,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      chatDetails.dateOfLastMessage,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFFD8DFE3),
+                      Text(
+                        "You: ${chatDetails.lastMessage} " * 10,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF7C838D),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    )
-                  ],
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        chatDetails.dateOfLastMessage,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFFD8DFE3),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              )
-            ],
+                const SizedBox(
+                  width: 50,
+                ),
+                Container(
+                  width: 11,
+                  height: 11,
+                  margin: const EdgeInsets.only(top: 25, right: 16),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xFF0083C7),
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-        Divider(
-          height: 1,
-          color: Color(0xFFF7F8FA),
-        )
-      ],
+          Divider(
+            height: 1,
+            color: Color(0xFFF7F8FA),
+          )
+        ],
+      ),
     );
   }
 }

@@ -47,7 +47,9 @@ class _QuestPageState extends State<QuestPage> {
     return Observer(
         builder: (_) => Scaffold(
               body: questsStore!.isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
                   : _initialCameraPosition == null
                       ? getBody()
                       : questsStore!.isMapOpened()
@@ -220,9 +222,11 @@ class _QuestPageState extends State<QuestPage> {
                   return _getDivider();
                 },
                 padding: EdgeInsets.zero,
-                itemCount: questsStore!.searchWord.isEmpty // needs fix with search result list
+                itemCount: questsStore!
+                        .searchWord.isEmpty // needs fix with search result list
                     ? questsStore!.questsList!.length
-                    : questsStore!.questsList!.length, // questsStore!.searchResultList!.length
+                    : questsStore!.questsList!.length,
+                // questsStore!.searchResultList!.length
                 itemBuilder: (_, index) {
                   return MyQuestsItem(
                     questsStore!.questsList![index],

@@ -1,4 +1,5 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
@@ -154,6 +155,11 @@ class Routes {
       case WebViewPage.routeName:
         return MaterialPageRoute(
           builder: (context) => WebViewPage(settings.arguments.toString()),
+        );
+
+      case ChatRoomPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => ChatRoomPage(),
         );
 
       default:
