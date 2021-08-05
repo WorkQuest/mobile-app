@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../background_observer_page.dart';
 import '../../../routes.dart';
 import 'chat_page/chat_page.dart';
 import 'my_quests_page/my_quests_page.dart';
@@ -28,59 +29,62 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        items: _tabBarIconsData
-            .map((item) => BottomNavigationBarItem(
-                  icon: SvgPicture.asset(item.svgPath),
-                  activeIcon: SvgPicture.asset(
-                    item.svgPath,
-                    color: CupertinoTheme.of(context).primaryColor,
-                  ),
-                  label: item.label,
-                ))
-            .toList(),
-      ),
-      tabBuilder: (context, index) {
-        if (index == 0) {
-          return CupertinoTabView(
+    return BackgroundObserverPage(
+      con: context,
+      child: CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+          items: _tabBarIconsData
+              .map((item) => BottomNavigationBarItem(
+                    icon: SvgPicture.asset(item.svgPath),
+                    activeIcon: SvgPicture.asset(
+                      item.svgPath,
+                      color: CupertinoTheme.of(context).primaryColor,
+                    ),
+                    label: item.label,
+                  ))
+              .toList(),
+        ),
+        tabBuilder: (context, index) {
+          if (index == 0) {
+            return CupertinoTabView(
+                onGenerateRoute: Routes.generateRoute,
+                navigatorKey: firstTabNavKey,
+                builder: (context) {
+                  return QuestPage();
+                });
+          } else if (index == 1) {
+            return CupertinoTabView(
               onGenerateRoute: Routes.generateRoute,
-              navigatorKey: firstTabNavKey,
+              navigatorKey: secondTabNavKey,
               builder: (context) {
-                return QuestPage();
-              });
-        } else if (index == 1) {
-          return CupertinoTabView(
-            onGenerateRoute: Routes.generateRoute,
-            navigatorKey: secondTabNavKey,
-            builder: (context) {
-              return MyQuestsPage();
-            },
-          );
-        } else if (index == 2) {
-          return CupertinoTabView(
-            onGenerateRoute: Routes.generateRoute,
-            navigatorKey: thirdTabNavKey,
-            builder: (BuildContext context) => ChatPage(),
-          );
-        } else if (index == 3) {
-          return CupertinoTabView(
-            onGenerateRoute: Routes.generateRoute,
-            navigatorKey: forthTabNavKey,
-            builder: (BuildContext context) {
-              return WalletPage();
-            },
-          );
-        } else {
-          return CupertinoTabView(
-            onGenerateRoute: Routes.generateRoute,
-            navigatorKey: fiveTabNavKey,
-            builder: (context) {
-              return SettingsPage();
-            },
-          );
-        }
-      },
+                return MyQuestsPage();
+              },
+            );
+          } else if (index == 2) {
+            return CupertinoTabView(
+              onGenerateRoute: Routes.generateRoute,
+              navigatorKey: thirdTabNavKey,
+              builder: (BuildContext context) => ChatPage(),
+            );
+          } else if (index == 3) {
+            return CupertinoTabView(
+              onGenerateRoute: Routes.generateRoute,
+              navigatorKey: forthTabNavKey,
+              builder: (BuildContext context) {
+                return WalletPage();
+              },
+            );
+          } else {
+            return CupertinoTabView(
+              onGenerateRoute: Routes.generateRoute,
+              navigatorKey: fiveTabNavKey,
+              builder: (context) {
+                return SettingsPage();
+              },
+            );
+          }
+        },
+      ),
     );
   }
 }

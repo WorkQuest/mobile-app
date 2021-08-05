@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/bearer_token.dart';
@@ -9,7 +8,7 @@ import 'package:mobx/mobx.dart';
 
 part 'pin_code_store.g.dart';
 
-@injectable
+@singleton
 class PinCodeStore extends _PinCodeStore with _$PinCodeStore {
   PinCodeStore(ApiProvider apiProvider) : super(apiProvider);
 }
