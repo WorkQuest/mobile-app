@@ -1,5 +1,4 @@
-import 'package:app/app_localizations.dart';
-import 'package:app/constants.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:app/log_service.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
@@ -54,7 +53,7 @@ class SignUpPage extends StatelessWidget {
                 Padding(
                   padding: _padding.copyWith(top: 40.0),
                   child: Text(
-                    "Sign Up",
+                    "auth.signIn.signUp".tr(),
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w700,
@@ -71,7 +70,7 @@ class SignUpPage extends StatelessWidget {
                         "assets/user.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      hintText: context.translate(AuthLangKeys.firstName),
+                      hintText: "auth.signUp.firstName".tr(),
                     ),
                   ),
                 ),
@@ -85,7 +84,7 @@ class SignUpPage extends StatelessWidget {
                         "assets/user.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      hintText: context.translate(AuthLangKeys.lastName),
+                      hintText: "auth.signUp.lastName".tr(),
                     ),
                   ),
                 ),
@@ -106,7 +105,7 @@ class SignUpPage extends StatelessWidget {
                           color: Theme.of(context).iconTheme.color,
                         ),
                       ),
-                      hintText: context.translate(AuthLangKeys.email),
+                      hintText: "auth.signUp.email".tr(),
                     ),
                   ),
                 ),
@@ -118,7 +117,7 @@ class SignUpPage extends StatelessWidget {
                     onChanged: store.setPassword,
                     decoration: InputDecoration(
                       prefixIconConstraints: _prefixConstraints,
-                      hintText: context.translate(AuthLangKeys.password),
+                      hintText: "auth.password".tr(),
                       prefixIcon: SvgPicture.asset(
                         "assets/lock.svg",
                         color: Theme.of(context).iconTheme.color,
@@ -138,9 +137,7 @@ class SignUpPage extends StatelessWidget {
                         color: Theme.of(context).iconTheme.color,
                       ),
                       prefixIconConstraints: _prefixConstraints,
-                      hintText: context.translate(
-                        AuthLangKeys.repeatPassword,
-                      ),
+                      hintText: "auth.signUp.repeatPassword".tr(),
                     ),
                   ),
                 ),
@@ -169,7 +166,7 @@ class SignUpPage extends StatelessWidget {
                           child: store.isLoading
                               ? PlatformActivityIndicator()
                               : Text(
-                                  context.translate(AuthLangKeys.createAccount),
+                                  "auth.signUp.createAccount".tr(),
                                 ),
                         );
                       },
@@ -185,7 +182,7 @@ class SignUpPage extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        context.translate(AuthLangKeys.alreadyHaveAccount),
+                        "auth.signUp.alreadyHaveAccount".tr(),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -196,7 +193,7 @@ class SignUpPage extends StatelessWidget {
                             Navigator.pop(context);
                           },
                           child: Text(
-                            context.translate(AuthLangKeys.signIn),
+                            "auth.signUp.signIn".tr(),
                             style: TextStyle(
                               color: Color(0xFF0083C7),
                             ),

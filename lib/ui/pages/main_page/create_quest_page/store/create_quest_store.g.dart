@@ -69,21 +69,6 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
-  final _$priorityIntAtom = Atom(name: '_CreateQuestStore.priorityInt');
-
-  @override
-  int get priorityInt {
-    _$priorityIntAtom.reportRead();
-    return super.priorityInt;
-  }
-
-  @override
-  set priorityInt(int value) {
-    _$priorityIntAtom.reportWrite(value, super.priorityInt, () {
-      super.priorityInt = value;
-    });
-  }
-
   final _$hasRuntimeAtom = Atom(name: '_CreateQuestStore.hasRuntime');
 
   @override
@@ -222,24 +207,16 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   final _$mediaAtom = Atom(name: '_CreateQuestStore.media');
 
   @override
-  ObservableList<File> get media {
+  ObservableList<DrishyaEntity> get media {
     _$mediaAtom.reportRead();
     return super.media;
   }
 
   @override
-  set media(ObservableList<File> value) {
+  set media(ObservableList<DrishyaEntity> value) {
     _$mediaAtom.reportWrite(value, super.media, () {
       super.media = value;
     });
-  }
-
-  final _$choosePicturesAsyncAction =
-      AsyncAction('_CreateQuestStore.choosePictures');
-
-  @override
-  Future<dynamic> choosePictures() {
-    return _$choosePicturesAsyncAction.run(() => super.choosePictures());
   }
 
   final _$createQuestAsyncAction = AsyncAction('_CreateQuestStore.createQuest');
@@ -346,7 +323,6 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
 category: ${category},
 categoryValue: ${categoryValue},
 priority: ${priority},
-priorityInt: ${priorityInt},
 hasRuntime: ${hasRuntime},
 runtimeValue: ${runtimeValue},
 dateTime: ${dateTime},

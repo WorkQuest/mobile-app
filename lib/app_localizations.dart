@@ -1,97 +1,97 @@
-import 'dart:convert';
+// import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 
-class AppLocalizations {
+// class AppLocalizations {
 
-  final Locale locale;
+//   final Locale locale;
 
-  AppLocalizations(this.locale);
+//   AppLocalizations(this.locale);
 
-  static AppLocalizations? of(BuildContext context) {
-    return Localizations.of<AppLocalizations>(context, AppLocalizations);
-  }
+//   static AppLocalizations? of(BuildContext context) {
+//     return Localizations.of<AppLocalizations>(context, AppLocalizations);
+//   }
 
-  static const LocalizationsDelegate delegate = _AppLocalizationsDelegate();
+//   static const LocalizationsDelegate delegate = _AppLocalizationsDelegate();
 
-  late Map<String, dynamic> _localizedStrings;
+//   late Map<String, dynamic> _localizedStrings;
 
-  Future<bool> load() async {
-    // Load the language JSON file from the "lang" folder.
-    String jsonString = await rootBundle.loadString("lang/${locale.languageCode}.json");
-    Map<String, dynamic> jsonMap = json.decode(jsonString);
+//   Future<bool> load() async {
+//     // Load the language JSON file from the "lang" folder.
+//     String jsonString = await rootBundle.loadString("lang/${locale.languageCode}.json");
+//     Map<String, dynamic> jsonMap = json.decode(jsonString);
 
-    _localizedStrings = jsonMap.map((key, value) {
-      return MapEntry(key, value);
-    });
+//     _localizedStrings = jsonMap.map((key, value) {
+//       return MapEntry(key, value);
+//     });
 
-    return true;
-  }
+//     return true;
+//   }
 
-  // This method will be called from every widget witch needs a localized text.
-  String translate(String key, List<String>? arguments) {
-    final keys = key.split(".").toSet();
+//   // This method will be called from every widget witch needs a localized text.
+//   String translate(String key, List<String>? arguments) {
+//     final keys = key.split(".").toSet();
 
-    String localizedStr = getLocalizedStr(_localizedStrings, keys);
+//     String localizedStr = getLocalizedStr(_localizedStrings, keys);
 
-    if (arguments == null) {
-      return localizedStr;
-    }
+//     if (arguments == null) {
+//       return localizedStr;
+//     }
 
-    for (var argument in arguments) {
-      localizedStr = localizedStr.replaceFirst("{}", argument);
-    }
+//     for (var argument in arguments) {
+//       localizedStr = localizedStr.replaceFirst("{}", argument);
+//     }
 
-    return localizedStr;
-  }
+//     return localizedStr;
+//   }
 
-  String getLocalizedStr(
-    Map<String, dynamic> localizedStrings,
-    Set<String> keys,
-  ) {
-    /// Get value from "lang/en.json" and can be String or Map<String, dynamic> only.
-    final dynamic localizedStrValue = localizedStrings[keys.first];
+//   String getLocalizedStr(
+//     Map<String, dynamic> localizedStrings,
+//     Set<String> keys,
+//   ) {
+//     /// Get value from "lang/en.json" and can be String or Map<String, dynamic> only.
+//     final dynamic localizedStrValue = localizedStrings[keys.first];
 
-    if (localizedStrValue is String) {
-      return localizedStrValue;
-    }
+//     if (localizedStrValue is String) {
+//       return localizedStrValue;
+//     }
 
-    if (localizedStrValue is Map<String, dynamic>) {
-      return getLocalizedStr(localizedStrValue, keys..remove(keys.first));
-    }
+//     if (localizedStrValue is Map<String, dynamic>) {
+//       return getLocalizedStr(localizedStrValue, keys..remove(keys.first));
+//     }
 
-    return keys.toString();
-  }
-}
+//     return keys.toString();
+//   }
+// }
 
-// LocalizationsDelegate is a factory for a set of localized resources.
-// In this case, the localized strings will be gotten in an AppLocalizations object.
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
-  const _AppLocalizationsDelegate();
+// // LocalizationsDelegate is a factory for a set of localized resources.
+// // In this case, the localized strings will be gotten in an AppLocalizations object.
+// class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+//   const _AppLocalizationsDelegate();
 
-  @override
-  bool isSupported(Locale locale) {
-    // Include all supported language codes hear.
-    return ["en", "ru"].contains(locale.languageCode);
-  }
+//   @override
+//   bool isSupported(Locale locale) {
+//     // Include all supported language codes hear.
+//     return ["en", "ru"].contains(locale.languageCode);
+//   }
 
-  @override
-  Future<AppLocalizations> load(Locale locale) async {
-    // AppLocalizations class is where he JSON loading actually runs.
-    AppLocalizations localizations = AppLocalizations(locale);
-    await localizations.load();
-    return localizations;
-  }
+//   @override
+//   Future<AppLocalizations> load(Locale locale) async {
+//     // AppLocalizations class is where he JSON loading actually runs.
+//     AppLocalizations localizations = AppLocalizations(locale);
+//     await localizations.load();
+//     return localizations;
+//   }
 
-  @override
-  bool shouldReload(LocalizationsDelegate<AppLocalizations> old) {
-    return false;
-  }
-}
+//   @override
+//   bool shouldReload(LocalizationsDelegate<AppLocalizations> old) {
+//     return false;
+//   }
+// }
 
-extension AppLocalizationsExtension on BuildContext {
-  String translate(String key, {List<String>? arguments}) {
-    return AppLocalizations.of(this)!.translate(key, arguments);
-  }
-}
+// extension AppLocalizationsExtension on BuildContext {
+//   String translate(String key, {List<String>? arguments}) {
+//     return AppLocalizations.of(this)!.translate(key, arguments);
+//   }
+// }

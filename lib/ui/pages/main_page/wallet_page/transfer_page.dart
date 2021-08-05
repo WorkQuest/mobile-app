@@ -36,7 +36,7 @@ class _TransferPageState extends State<TransferPage>
         slivers: [
           CupertinoSliverNavigationBar(
             largeTitle: Text("Transfer"),
-            automaticallyImplyLeading: false,
+            automaticallyImplyLeading: true,
           ),
           SliverPadding(
             padding: EdgeInsets.only(top: 10.0),

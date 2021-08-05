@@ -37,7 +37,7 @@ class _QuestPageState extends State<QuestPage> {
     profileMeStore = context.read<ProfileMeStore>();
     profileMeStore!.getProfileMe();
     questsStore!.getQuests();
-    questsStore!.loadIcons();
+    questsStore!.loadIcons(context);
     _getCurrentLocation();
     super.initState();
   }
@@ -47,7 +47,9 @@ class _QuestPageState extends State<QuestPage> {
     return Observer(
         builder: (_) => Scaffold(
               body: questsStore!.isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
                   : _initialCameraPosition == null
                       ? getBody()
                       : questsStore!.isMapOpened()
@@ -162,7 +164,8 @@ class _QuestPageState extends State<QuestPage> {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, NotificationPage.routeName);
+                  Navigator.of(context, rootNavigator: true)
+                      .pushNamed(NotificationPage.routeName);
                 },
                 child: Icon(
                   Icons.notifications_none_outlined,
@@ -203,8 +206,8 @@ class _QuestPageState extends State<QuestPage> {
                       padding: const EdgeInsets.all(20.0),
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, CreateQuestPage.routeName);
+                          Navigator.of(context, rootNavigator: true)
+                              .pushNamed(CreateQuestPage.routeName);
                         },
                         child: Text("Create new quest"),
                       ),
@@ -220,12 +223,17 @@ class _QuestPageState extends State<QuestPage> {
                   return _getDivider();
                 },
                 padding: EdgeInsets.zero,
-                itemCount: questsStore!.searchWord.isEmpty // needs fix with search result list
+                itemCount: questsStore!
+                        .searchWord.isEmpty // needs fix with search result list
                     ? questsStore!.questsList!.length
-                    : questsStore!.questsList!.length, // questsStore!.searchResultList!.length
+                    : questsStore!.questsList!.length,
+                // questsStore!.searchResultList!.length
                 itemBuilder: (_, index) {
                   return MyQuestsItem(
-                    questsStore!.questsList![index],
+                    questsStore!.searchWord.isEmpty
+                        ? questsStore!.questsList![index]
+                        : questsStore!.searchResultList![index],
+                   // questsStore!.questsList![index],
                     itemType: this.questItemPriorityType,
                   );
                 },

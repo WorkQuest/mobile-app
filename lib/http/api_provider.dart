@@ -1,15 +1,22 @@
+import 'dart:typed_data';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:dio/dio.dart';
+import 'package:drishya_picker/drishya_picker.dart';
+import 'dart:io';
 import 'package:injectable/injectable.dart';
 
 @singleton
 class ApiProvider {
   final IHttpClient _httpClient;
+
   ApiProvider(this._httpClient);
 }
+
+final Dio _dio = Dio();
 
 extension LoginService on ApiProvider {
   Future<BearerToken> login({
@@ -69,7 +76,7 @@ extension QuestService on ApiProvider {
   Future<void> createQuest({
     required CreateQuestRequestModel quest,
   }) async {
-    final responseData = await _httpClient.post(
+    await _httpClient.post(
       query: '/v1/quest/create',
       data: quest.toJson(),
     );
@@ -88,7 +95,7 @@ extension QuestService on ApiProvider {
     bool starred = false,
   }) async {
     try {
-      // final responseData = 
+      // final responseData =
       await _httpClient.get(
         query: '/v1/employer/$userId/quests',
         queryParameters: {
@@ -127,8 +134,7 @@ extension QuestService on ApiProvider {
       queryParameters: {
         //"offset": offset,
         //"limit": limit,
-        if(searchWord.isNotEmpty)
-        "q": searchWord,
+        if (searchWord.isNotEmpty) "q": searchWord,
         //"priority": priority == -1 ? null : priority,
         //"status": status == -1 ? null : status,
         //"sort": sort,
@@ -170,11 +176,62 @@ extension ConfirmEmailService on ApiProvider {
   Future<void> confirmEmail({
     required String code,
   }) async {
-    final response = await _httpClient.post(
+    await _httpClient.post(
       query: '/v1/auth/confirm-email',
       data: {
         "confirmCode": code,
       },
     );
   }
+}
+
+extension GetUploadLink on ApiProvider {
+  Future<List<String>> uploadMedia({
+    required List<DrishyaEntity> medias,
+  }) async {
+    List<String> mediaId = [];
+    Uint8List? bytes;
+
+    for (var media in medias) {
+      String contentType =
+          media.entity.type == AssetType.video ? "video/mp4" : "image/jpeg";
+
+      if (media.entity.type == AssetType.video) {
+        File? file = await media.entity.file;
+        bytes = await file!.readAsBytes();
+      } else
+        bytes = media.bytes;
+
+      final response = await _httpClient.post(
+        query: '/v1/storage/get-upload-link',
+        data: {
+          "contentType": contentType,
+        },
+      );
+      await _uploadMedia(
+        response["url"],
+        bytes,
+        contentType,
+      );
+      mediaId.add(response["mediaId"]);
+    }
+    print("$mediaId");
+    return mediaId;
+  }
+}
+
+Future _uploadMedia(
+    String uploadLink, Uint8List? bytes, String contentType) async {
+  await _dio.put(
+    '$uploadLink',
+    data: MultipartFile.fromBytes(bytes!).finalize(),
+    options: Options(
+      headers: {
+        'Content-Type': contentType,
+        "x-amz-acl": " public-read",
+        'Connection': 'keep-alive',
+        'Content-Length': bytes.length,
+      },
+    ),
+  );
 }

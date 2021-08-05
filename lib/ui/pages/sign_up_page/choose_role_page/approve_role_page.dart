@@ -46,54 +46,56 @@ class ApproveRolePage extends StatelessWidget {
                 store.userRole == UserRole.Worker
                     ? getWorkerCard()
                     : getEmployerCard(),
-                const SizedBox(
-                  height: 0,
-                ),
                 CheckboxListTile(
                   contentPadding: const EdgeInsets.all(0),
                   value: store.privacyPolicy,
                   onChanged: (value) => store.setPrivacyPolicy(value!),
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: checkBoxText(ctx,
+                  title: checkBoxText(
+                    ctx,
                     urlLink: "docs/privacy.pdf",
                     title: 'Privacy policy',
                   ),
                 ),
-
                 CheckboxListTile(
                   contentPadding: const EdgeInsets.all(0),
                   value: store.termsAndConditions,
                   onChanged: (value) => store.setTermsAndConditions(value!),
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: checkBoxText(ctx,
+                  title: checkBoxText(
+                    ctx,
                     urlLink: "docs/terms.pdf",
                     title: 'Terms & Conditions',
                   ),
                 ),
-
                 CheckboxListTile(
                   contentPadding: const EdgeInsets.all(0),
                   value: store.amlAndCtfPolicy,
                   onChanged: (value) => store.setAmlAndCtfPolicy(value!),
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: checkBoxText(ctx,
+                  title: checkBoxText(
+                    ctx,
                     urlLink: "docs/aml.pdf",
                     title: "AML & CTF Policy",
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: store.canApprove
-                      ? () async {
-                          await store.approveRole();
-                          Navigator.pushNamed(ctx, PinCodePage.routeName);
-                        }
-                      : null,
-                  child: store.isLoading
-                      ? PlatformActivityIndicator()
-                      : Text(
-                          "I agree",
-                        ),
+                Spacer(),
+                SafeArea(
+                  child: ElevatedButton(
+                    onPressed: store.canApprove
+                        ? () async {
+                            await store.approveRole();
+                            Navigator.pushNamed(ctx, PinCodePage.routeName);
+                          }
+                        : null,
+                    child: store.isLoading
+                        ? PlatformActivityIndicator()
+                        : Text(
+                            "I agree",
+                          ),
+                  ),
                 ),
+                SizedBox(height: 15,),
               ],
             ),
           );
@@ -102,7 +104,8 @@ class ApproveRolePage extends StatelessWidget {
     );
   }
 
-  Widget checkBoxText(BuildContext context,{
+  Widget checkBoxText(
+    BuildContext context, {
     required String urlLink,
     required String title,
   }) {
@@ -117,7 +120,7 @@ class ApproveRolePage extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () async {
-            await launch(_baseUrl+urlLink);
+            await launch(_baseUrl + urlLink);
           },
           child: Text(
             title,

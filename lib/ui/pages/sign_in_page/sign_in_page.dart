@@ -1,11 +1,9 @@
-import "package:app/app_localizations.dart";
-import "package:app/constants.dart";
 import "package:app/observer_consumer.dart";
-import "package:app/ui/pages/main_page/main_page.dart";
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import "package:app/ui/widgets/platform_activity_indicator.dart";
+import 'package:easy_localization/easy_localization.dart';
 import 'package:app/utils/validator.dart';
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
@@ -70,7 +68,7 @@ class SignInPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              context.translate(AuthLangKeys.welcomeTo),
+                              "auth.signIn.welcomeTo".tr(),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 34,
@@ -79,7 +77,7 @@ class SignInPage extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(top: 10.0),
                               child: Text(
-                                context.translate(AuthLangKeys.pleaseSignIn),
+                                "auth.signIn.pleaseSignIn".tr(),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -103,9 +101,7 @@ class SignInPage extends StatelessWidget {
                           "assets/user.svg",
                           color: Theme.of(context).iconTheme.color,
                         ),
-                        hintText: context.translate(
-                          AuthLangKeys.username,
-                        ),
+                        hintText: "auth.signIn.username".tr(),
                       ),
                     ),
                   ),
@@ -120,9 +116,7 @@ class SignInPage extends StatelessWidget {
                           "assets/lock.svg",
                           color: Theme.of(context).iconTheme.color,
                         ),
-                        hintText: context.translate(
-                          AuthLangKeys.password,
-                        ),
+                        hintText: "auth.password".tr(),
                       ),
                     ),
                   ),
@@ -151,7 +145,7 @@ class SignInPage extends StatelessWidget {
                               child: signInStore.isLoading
                                   ? PlatformActivityIndicator()
                                   : Text(
-                                      context.translate(AuthLangKeys.login),
+                                      "auth.signIn.login".tr(),
                                     ),
                             );
                           },
@@ -183,7 +177,7 @@ class SignInPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Text(
-                          context.translate(AuthLangKeys.doNotHaveAccount),
+                          "auth.signIn.doNotHaveAccount".tr(),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
@@ -193,7 +187,7 @@ class SignInPage extends StatelessWidget {
                                   context, SignUpPage.routeName);
                             },
                             child: Text(
-                              context.translate(AuthLangKeys.signUp),
+                              "auth.signIn.signUp".tr(),
                               style: TextStyle(
                                 color: Color(0xFF0083C7),
                               ),
@@ -214,7 +208,7 @@ class SignInPage extends StatelessWidget {
                         GestureDetector(
                           onTap: onForgotPasswordClicked,
                           child: Text(
-                            context.translate(AuthLangKeys.forgotPassword),
+                            "auth.signIn.forgotPassword".tr(),
                             style: TextStyle(
                               color: Color(0xFF0083C7),
                             ),

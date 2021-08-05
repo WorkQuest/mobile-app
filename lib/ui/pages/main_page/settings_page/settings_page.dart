@@ -126,7 +126,7 @@ class SettingsPage extends StatelessWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  userStore.userData!.role == UserRole.Worker
+                  userStore.userData?.role == UserRole.Worker
                       ? workerSettings(context)
                       : employerSettings(settingStore),
                 ],
@@ -512,14 +512,8 @@ class SettingsPage extends StatelessWidget {
         height: 150.0,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image:
-                // (userStore.isLoading || userStore.userData?.avatar.url == null)
-                //     ? NetworkImage(
-                //         "https://m.media-amazon.com/images/I/61TMDIj38XL._AC_SX425_.jpg",
-                //       )
-                //     :
-                NetworkImage(
-              userStore.userData!.avatar.url,
+            image: NetworkImage(
+              userStore.userData!.avatar!.url ,
             ),
             fit: BoxFit.cover,
           ),
@@ -533,24 +527,13 @@ class SettingsPage extends StatelessWidget {
             Positioned(
               bottom: 16.0,
               left: 16.0,
-              child: (userStore.userData?.firstName == null ||
-                      userStore.userData?.lastName == null)
-                  ? Text(
-                      "Maks Brskin",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                      ),
-                    )
-                  : Text(
-                      userStore.userData!.firstName +
-                          " " +
-                          userStore.userData!.lastName,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                      ),
-                    ),
+              child: Text(
+                " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
+              ),
             ),
             Positioned(
               bottom: 16.0,

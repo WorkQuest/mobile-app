@@ -1,9 +1,8 @@
-import 'dart:io';
 import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -83,9 +82,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   String priority = 'Choose';
 
   @observable
-  int priorityInt = 0;
-
-  @observable
   bool hasRuntime = false;
 
   @observable
@@ -115,7 +111,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   int adType = 0;
 
   @observable
-  ObservableList<File> media = ObservableList();
+  ObservableList<DrishyaEntity> media = ObservableList();
 
   /// change location data
 
@@ -126,37 +122,12 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   void setRuntime(bool? value) => hasRuntime = value!;
 
   @computed
-  String get dateString =>
-      "${runtimeValue.year.toString()} - "
-          "${months[runtimeValue.month - 1].padLeft(2, '0')} - "
-          "${runtimeValue.day.toString().padLeft(2, '0')} ";
+  String get dateString => "${runtimeValue.year.toString()} - "
+      "${months[runtimeValue.month - 1].padLeft(2, '0')} - "
+      "${runtimeValue.day.toString().padLeft(2, '0')} ";
 
   @action
-  void setDateTime(DateTime value) => runtimeValue = value ;
-
-  @action
-  Future choosePictures() async {
-    this.onLoading();
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowMultiple: true,
-      allowedExtensions: [
-        'jpg',
-        'png',
-        'jpeg',
-        'tiff',
-        'mp3',
-        'mp4',
-        'svg',
-      ],
-    );
-    if (result != null) {
-      media.addAll(result.paths.map((path) => File(path!)).toList());
-      print("files $media");
-    } else {
-      // User canceled the picker
-    }
-  }
+  void setDateTime(DateTime value) => runtimeValue = value;
 
   @action
   void removeImage(int index) => media.removeAt(index);
@@ -252,18 +223,19 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
       case "Other areas of employment":
         categoryValue = "other";
         break;
+      default:
+        categoryValue = "other";
     }
   }
 
   @action
   void changedPriority(String selectedPriority) {
     priority = selectedPriority;
-    priorityInt = priorityList.indexOf(priority);
   }
 
   @computed
   bool get canCreateQuest =>
-      !isLoading && priority.isNotEmpty && category.isNotEmpty;
+      !isLoading && price.isNotEmpty && questTitle.isNotEmpty;
 
   @action
   Future createQuest() async {
@@ -275,9 +247,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
       );
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         category: categoryValue,
-        priority: priorityInt,
+        priority: priorityList.indexOf(priority),
         location: location,
-        media: [],
+        media: await apiProvider.uploadMedia(medias: media),
         title: questTitle,
         description: description,
         price: price,

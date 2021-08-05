@@ -5,9 +5,9 @@ class Education {
     required this.place,
   });
 
-  String from;
-  String to;
-  String place;
+  String? from;
+  String? to;
+  String? place;
 
   factory Education.fromJson(Map<String, dynamic> json) => Education(
         from: json["from"],
@@ -29,9 +29,9 @@ class WorkExperience {
     required this.place,
   });
 
-  String from;
-  String to;
-  String place;
+  String? from;
+  String? to;
+  String? place;
 
   factory WorkExperience.fromJson(Map<String, dynamic> json) => WorkExperience(
         from: json["from"],
