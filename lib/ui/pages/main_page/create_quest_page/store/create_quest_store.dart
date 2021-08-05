@@ -82,9 +82,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   String priority = 'Choose';
 
   @observable
-  int priorityInt = 0;
-
-  @observable
   bool hasRuntime = false;
 
   @observable
@@ -125,13 +122,12 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   void setRuntime(bool? value) => hasRuntime = value!;
 
   @computed
-  String get dateString =>
-      "${runtimeValue.year.toString()} - "
-          "${months[runtimeValue.month - 1].padLeft(2, '0')} - "
-          "${runtimeValue.day.toString().padLeft(2, '0')} ";
+  String get dateString => "${runtimeValue.year.toString()} - "
+      "${months[runtimeValue.month - 1].padLeft(2, '0')} - "
+      "${runtimeValue.day.toString().padLeft(2, '0')} ";
 
   @action
-  void setDateTime(DateTime value) => runtimeValue = value ;
+  void setDateTime(DateTime value) => runtimeValue = value;
 
   @action
   void removeImage(int index) => media.removeAt(index);
@@ -227,22 +223,22 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
       case "Other areas of employment":
         categoryValue = "other";
         break;
+      default:
+        categoryValue = "other";
     }
   }
 
   @action
   void changedPriority(String selectedPriority) {
     priority = selectedPriority;
-    priorityInt = priorityList.indexOf(priority);
   }
 
   @computed
   bool get canCreateQuest =>
-      !isLoading && priority.isNotEmpty && category.isNotEmpty;
+      !isLoading && price.isNotEmpty && questTitle.isNotEmpty;
 
   @action
   Future createQuest() async {
-    await apiProvider.uploadMedia(medias: media);
     try {
       this.onLoading();
       final Location location = Location(
@@ -251,9 +247,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
       );
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         category: categoryValue,
-        priority: priorityInt,
+        priority: priorityList.indexOf(priority),
         location: location,
-        media: media,
+        media: await apiProvider.uploadMedia(medias: media),
         title: questTitle,
         description: description,
         price: price,
