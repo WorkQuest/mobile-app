@@ -191,56 +191,57 @@ class _QuestPageState extends State<QuestPage> {
             ),
           ),
         ),
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              SizedBox(
-                height: 20,
-              ),
-              if (profileMeStore!.userData!.role == UserRole.Employer)
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _getDivider(),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true)
-                              .pushNamed(CreateQuestPage.routeName);
-                        },
-                        child: Text("Create new quest"),
-                      ),
-                    ),
-                  ],
+        if (profileMeStore?.userData != null)
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                SizedBox(
+                  height: 20,
                 ),
-              _getDivider(),
-              ListView.separated(
-                key: scrollKey,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                separatorBuilder: (context, index) {
-                  return _getDivider();
-                },
-                padding: EdgeInsets.zero,
-                itemCount: questsStore!
-                        .searchWord.isEmpty // needs fix with search result list
-                    ? questsStore!.questsList!.length
-                    : questsStore!.questsList!.length,
-                // questsStore!.searchResultList!.length
-                itemBuilder: (_, index) {
-                  return MyQuestsItem(
-                    questsStore!.searchWord.isEmpty
-                        ? questsStore!.questsList![index]
-                        : questsStore!.searchResultList![index],
-                   // questsStore!.questsList![index],
-                    itemType: this.questItemPriorityType,
-                  );
-                },
-              ),
-            ],
+                if (profileMeStore!.userData!.role == UserRole.Employer)
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _getDivider(),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context, rootNavigator: true)
+                                .pushNamed(CreateQuestPage.routeName);
+                          },
+                          child: Text("Create new quest"),
+                        ),
+                      ),
+                    ],
+                  ),
+                _getDivider(),
+                ListView.separated(
+                  key: scrollKey,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) {
+                    return _getDivider();
+                  },
+                  padding: EdgeInsets.zero,
+                  itemCount: questsStore!.searchWord
+                          .isEmpty // needs fix with search result list
+                      ? questsStore!.questsList!.length
+                      : questsStore!.questsList!.length,
+                  // questsStore!.searchResultList!.length
+                  itemBuilder: (_, index) {
+                    return MyQuestsItem(
+                      questsStore!.searchWord.isEmpty
+                          ? questsStore!.questsList![index]
+                          : questsStore!.searchResultList![index],
+                      // questsStore!.questsList![index],
+                      itemType: this.questItemPriorityType,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
       ],
     );
   }

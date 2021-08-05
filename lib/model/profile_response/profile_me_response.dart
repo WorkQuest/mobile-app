@@ -41,11 +41,11 @@ class ProfileMeResponse {
   factory ProfileMeResponse.fromJson(Map<String, dynamic> json) {
     return ProfileMeResponse(
       id: json["id"],
-      avatarId: json["avatarId"],
+      avatarId: json["avatarId"] ?? "",
       firstName: json["firstName"],
       lastName: json["lastName"],
-      phone: json["phone"],
-      tempPhone: json["tempPhone"],
+      phone: json["phone"] ?? "",
+      tempPhone: json["tempPhone"] ?? "",
       email: json["email"],
       additionalInfo: json["additionalInfo"] == null
           ? null
