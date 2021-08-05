@@ -50,6 +50,16 @@ class _HttpClient implements IHttpClient {
     );
   }
 
+  @override
+  Future put({required query, Map<String, dynamic>? data}) async {
+    return await _sendRequest(
+      _dio.put(
+        query,
+        data: data,
+      ),
+    );
+  }
+
   Future _sendRequest(Future<Response> request) async {
     final Response response = await request.catchError((error) {
       if (error is DioError) {

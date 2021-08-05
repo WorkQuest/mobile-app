@@ -11,7 +11,6 @@ class SettingsPageStore extends _SettingsPageStore with _$SettingsPageStore {
 }
 
 abstract class _SettingsPageStore extends IStore<bool> with Store {
-
   final ApiProvider apiProvider;
 
   _SettingsPageStore(this.apiProvider);
@@ -20,10 +19,52 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
   int privacy = 1;
   @observable
   int filter = 2;
+  @observable
+  String password = '';
+  @observable
+  String newPassword = '';
+  @observable
+  String confirmNewPassword = '';
 
   @action
-  void changePrivacy(int choice) {
-    privacy = choice;
+  void changePrivacy(int value) {
+    privacy = value;
+  }
+
+  @action
+  void setPassword(String value) {
+    password = value;
+  }
+
+  @action
+  void setNewPassword(String value) {
+    newPassword = value;
+  }
+
+  @action
+  void setConfirmNewPassword(String value) {
+    confirmNewPassword = value;
+  }
+
+  @computed
+  bool get canSubmit =>
+      !isLoading &&
+      password.isNotEmpty &&
+      newPassword.isNotEmpty &&
+      confirmNewPassword.isNotEmpty;
+
+  @action
+  Future changePassword() async {
+    try {
+      this.onLoading();
+      await apiProvider.changePassword(
+        oldPassword: password,
+        newPassword: newPassword,
+      );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
   }
 
   @action

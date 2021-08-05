@@ -1,6 +1,7 @@
 import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/change_passsword_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_in_page/store/sign_in_store.dart';
@@ -54,7 +55,12 @@ class SettingsPage extends StatelessWidget {
                                 20.0,
                               ),
                               title: "Change\nPassword",
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushNamed(
+                                  ChangePasswordPage.routeName,
+                                );
+                              },
                             ),
                             const SizedBox(
                               width: 10.0,
@@ -513,7 +519,7 @@ class SettingsPage extends StatelessWidget {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-              userStore.userData!.avatar!.url ,
+              userStore.userData!.avatar!.url,
             ),
             fit: BoxFit.cover,
           ),

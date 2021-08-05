@@ -185,6 +185,21 @@ extension ConfirmEmailService on ApiProvider {
   }
 }
 
+extension ChangePassword on ApiProvider {
+  Future<void> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    await _httpClient.put(
+      query: '/v1/profile/change-password',
+      data: {
+        "oldPassword": oldPassword,
+        "newPassword": newPassword,
+      },
+    );
+  }
+}
+
 extension GetUploadLink on ApiProvider {
   Future<List<String>> uploadMedia({
     required List<DrishyaEntity> medias,
