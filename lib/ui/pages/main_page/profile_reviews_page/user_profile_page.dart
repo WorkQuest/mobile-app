@@ -58,7 +58,7 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
                   fit: StackFit.expand,
                   children: [
                     Image.network(
-                      userStore.userData!.avatar.url,
+                      userStore.userData!.avatar!.url,
                       fit: BoxFit.cover,
                     ),
                     Positioned(
@@ -111,18 +111,18 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
                   [
                     Container(
                         child: Text(
-                      userStore.userData!.additionalInfo.description ??
+                      userStore.userData?.additionalInfo?.description ??
                           "no description",
                     )),
                     socialAccounts(),
                     contactDetails(
-                        location: userStore.userData!.additionalInfo.address,
+                        location: userStore.userData?.additionalInfo?.address ?? " ",
                         number: userStore
-                            .userData!.additionalInfo.firstMobileNumber,
+                            .userData?.phone ?? " ",
                         secondNumber: userStore
-                            .userData!.additionalInfo.secondMobileNumber,
-                        email: userStore.userData!.email),
-                    if (userStore.userData!.role == UserRole.Worker)
+                            .userData?.additionalInfo?.secondMobileNumber ?? " ",
+                        email: userStore.userData?.email ?? " "),
+                    if (userStore.userData?.role == UserRole.Worker)
                       skills([
                         "Craft",
                         "DYI",
@@ -352,7 +352,7 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
     required String location,
     required String number,
     required String email,
-    String? secondNumber,
+     String? secondNumber,
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
@@ -820,9 +820,9 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
             bottom: 18.0,
             left: 0.0,
             child: Text(
-              userStore.userData!.firstName +
+              userStore.userData?.firstName ?? " " +
                   "  " +
-                  userStore.userData!.lastName,
+                  userStore.userData?.lastName ?? " ",
               style: TextStyle(
                 fontSize: 20.0,
                 color: Colors.white,
