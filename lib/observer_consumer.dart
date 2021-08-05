@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/base_store/i_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,13 +7,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
-import 'log_service.dart';
-import 'ui/pages/sign_in_page/store/sign_in_store.dart';
-import 'ui/pages/sign_up_page/sign_up_page.dart';
-
 class ObserverListener<T extends IStore> extends StatefulWidget {
   final Function() onSuccess;
-  final Function()? onFailure;
+  final bool Function()? onFailure;
   final Widget child;
 
   ObserverListener({
@@ -51,20 +49,32 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
       (_) => _store.errorMessage,
       (String? errorMessage) {
         if (errorMessage != null) {
+          if (widget.onFailure != null) if (widget.onFailure!()) return;
           showCupertinoDialog(
             context: context,
             barrierDismissible: true,
             builder: (_) {
-              return CupertinoAlertDialog(
-                title: Text('Error'),
-                content: Text(errorMessage),
-                actions: [
-                  CupertinoDialogAction(
-                    child: Text("OK"),
-                    onPressed: Navigator.of(context).pop,
-                  )
-                ],
-              );
+              return Platform.isIOS
+                  ? CupertinoAlertDialog(
+                      title: Text('Error'),
+                      content: Text(errorMessage),
+                      actions: [
+                        CupertinoDialogAction(
+                          child: Text("OK"),
+                          onPressed: Navigator.of(context).pop,
+                        )
+                      ],
+                    )
+                  : AlertDialog(
+                      title: Text('Error'),
+                      content: Text(errorMessage),
+                      actions: [
+                        CupertinoDialogAction(
+                          child: Text("OK"),
+                          onPressed: Navigator.of(context).pop,
+                        )
+                      ],
+                    );
             },
           );
         }
