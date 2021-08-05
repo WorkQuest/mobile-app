@@ -97,6 +97,17 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
       ActionController(name: '_PinCodeStore');
 
   @override
+  dynamic initPage() {
+    final _$actionInfo = _$_PinCodeStoreActionController.startAction(
+        name: '_PinCodeStore.initPage');
+    try {
+      return super.initPage();
+    } finally {
+      _$_PinCodeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic inputPin(int num) {
     final _$actionInfo = _$_PinCodeStoreActionController.startAction(
         name: '_PinCodeStore.inputPin');

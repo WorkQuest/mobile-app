@@ -31,7 +31,7 @@ import 'di/injector.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    print(context.locale.toString() );
+    print(context.locale.toString());
     return context.locale.toString() == "ar_SA"
         ? TextDirection.rtl
         : TextDirection.ltr;
@@ -89,7 +89,8 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Directionality(
               textDirection: checkDirection(context),
-              child: MyQuestDetails(settings.arguments as BaseQuestResponse)),
+              child: MyQuestDetails(settings.arguments as BaseQuestResponse,
+                  getIt.get<ProfileMeStore>().userData?.role)),
         );
 
       case ChooseRolePage.routeName:
@@ -165,7 +166,8 @@ class Routes {
             create: (context) => getIt.get<CreateQuestStore>(),
             child: Directionality(
                 textDirection: checkDirection(context),
-                child: CreateQuestPage()),
+                child: CreateQuestPage(
+                    questInfo: settings.arguments as BaseQuestResponse?)),
           ),
         );
 

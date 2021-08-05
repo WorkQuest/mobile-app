@@ -7,9 +7,9 @@ class Avatar {
   String? id;
   String url;
 
-  factory Avatar.fromJson(Map<String, dynamic> json) => Avatar(
-        id: json["id"] ?? "kakoi-to avatar",
-        url: json["url"] ?? "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpuzzlefactory.pl%2Fen%2Fpuzzle%2Fplay%2Ffor-kids%2F335393-stitch_lilo-and-stitch&psig=AOvVaw2OU36Xbqn7_ZDnJ0e8MGVT&ust=1627370973411000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCOjFjLmbgPICFQAAAAAdAAAAABAH",
+  factory Avatar.fromJson(Map<String, dynamic>? json) => Avatar(
+        id: json?["id"] ?? "kakoi-to avatar",
+        url: json?["url"] ?? "https://rembitteh.ru/Media/images/hozyayke-na-zametku/televizory/zvuk-est-izobrazhenia-net.jpg",
       );
 
   Map<String, dynamic> toJson() => {

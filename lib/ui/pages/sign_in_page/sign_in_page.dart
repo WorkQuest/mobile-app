@@ -1,6 +1,7 @@
 import "package:app/observer_consumer.dart";
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
+import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import "package:app/ui/widgets/platform_activity_indicator.dart";
 import 'package:easy_localization/easy_localization.dart';
@@ -62,7 +63,8 @@ class SignInPage extends StatelessWidget {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
+                        padding:
+                            const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,6 +133,14 @@ class SignInPage extends StatelessWidget {
                             PinCodePage.routeName,
                             (_) => false,
                           );
+                        },
+                        onFailure: () {
+                          if (signInStore.errorMessage == "unconfirmed") {
+                            Navigator.pushNamed(context, ConfirmEmail.routeName,
+                                arguments: signInStore.getUsername());
+                            return true;
+                          }
+                          return false;
                         },
                         child: Observer(
                           builder: (context) {
@@ -215,8 +225,8 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         Spacer(),
-                        Text("Version 1.0.13"),
-                        const SizedBox(width: 15,)
+                        const Text("Version 1.0.13"),
+                        const SizedBox(width: 15)
                       ],
                     ),
                   ),

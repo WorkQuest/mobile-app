@@ -1,3 +1,4 @@
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/utils/validator.dart';
@@ -13,8 +14,8 @@ import '../../../../observer_consumer.dart';
 
 class CreateQuestPage extends StatefulWidget {
   static const String routeName = '/createQuestPage';
-
-  CreateQuestPage();
+  final BaseQuestResponse? questInfo;
+  CreateQuestPage({this.questInfo});
 
   @override
   _CreateQuestPageState createState() => _CreateQuestPageState();
@@ -26,6 +27,14 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
 
   void initState() {
     super.initState();
+    if (widget.questInfo != null) {
+      final store = context.read<CreateQuestStore>();
+      store.priority = store.priorityList[widget.questInfo!.priority];
+      store.category = widget.questInfo!.category;
+      store.questTitle = widget.questInfo!.title;
+      store.description = widget.questInfo!.description;
+      store.price = widget.questInfo!.price;
+    }
     gallController = GalleryController(
       gallerySetting: const GallerySetting(
         maximum: 20,
@@ -40,6 +49,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
 
   Widget build(context) {
     final store = context.read<CreateQuestStore>();
+
     return Form(
       //key: _formKey,
       child: Scaffold(
@@ -47,7 +57,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
           slivers: [
             CupertinoSliverNavigationBar(
               largeTitle: Text(
-                "Create Quest",
+                "${widget.questInfo == null ? "Create" : "Edit"} Quest",
               ),
             ),
             SliverPadding(
@@ -293,6 +303,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           borderRadius: BorderRadius.all(Radius.circular(6.0)),
                         ),
                         child: TextFormField(
+                          initialValue: store.description,
                           onChanged: store.setAboutQuest,
                           keyboardType: TextInputType.multiline,
                           decoration: InputDecoration(
@@ -376,7 +387,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           builder: (context) => ElevatedButton(
                             onPressed: store.canCreateQuest
                                 ? () {
-                              store.createQuest();
+                                    store.createQuest();
                                     // if (_formKey.currentState!.validate()) {
                                     //   store.createQuest();
                                     // }

@@ -15,7 +15,13 @@ class PinCodeStore extends _PinCodeStore with _$PinCodeStore {
 
 abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   final ApiProvider _apiProvider;
-  _PinCodeStore(this._apiProvider) {
+  _PinCodeStore(this._apiProvider);
+  @action
+  initPage() {
+    attempts = 0;
+    pin = "";
+    newPinCode = "";
+    canCheckBiometrics = false;
     statePin = StatePinCode.Check;
     Storage.readPinCode().then((value) async {
       var auth = LocalAuthentication();
