@@ -24,6 +24,21 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
     });
   }
 
+  final _$attemptsAtom = Atom(name: '_PinCodeStore.attempts');
+
+  @override
+  int get attempts {
+    _$attemptsAtom.reportRead();
+    return super.attempts;
+  }
+
+  @override
+  set attempts(int value) {
+    _$attemptsAtom.reportWrite(value, super.attempts, () {
+      super.attempts = value;
+    });
+  }
+
   final _$statePinAtom = Atom(name: '_PinCodeStore.statePin');
 
   @override
@@ -107,6 +122,7 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
   String toString() {
     return '''
 pin: ${pin},
+attempts: ${attempts},
 statePin: ${statePin},
 newPinCode: ${newPinCode},
 canCheckBiometrics: ${canCheckBiometrics}
