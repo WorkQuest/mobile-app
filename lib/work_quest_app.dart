@@ -4,9 +4,7 @@ import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-
-import 'app_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class WorkQuestApp extends StatelessWidget {
   final bool isToken;
@@ -14,29 +12,16 @@ class WorkQuestApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(context.locale.toString());
     return MaterialApp(
       theme: _theme,
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.generateRoute,
-      localeResolutionCallback: _localeResolutionCallback,
       initialRoute: isToken ? PinCodePage.routeName : SignInPage.routeName,
-      localizationsDelegates: [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
     );
-  }
-
-  Locale? _localeResolutionCallback(
-      Locale? locale, Iterable<Locale> supportedLocales) {
-    for (var supportedLocale in supportedLocales) {
-      if (supportedLocale.toString() == locale.toString()) {
-        return locale;
-      }
-    }
-    return supportedLocales.first;
   }
 }
 
@@ -115,7 +100,6 @@ final _theme = ThemeData(
   primaryIconTheme: IconThemeData(
     color: const Color(0xFF7C838D),
   ),
-
   inputDecorationTheme: const InputDecorationTheme(
     filled: true,
     isDense: true,
