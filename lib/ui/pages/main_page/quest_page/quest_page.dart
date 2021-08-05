@@ -162,7 +162,8 @@ class _QuestPageState extends State<QuestPage> {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, NotificationPage.routeName);
+                  Navigator.of(context, rootNavigator: true)
+                      .pushNamed(NotificationPage.routeName);
                 },
                 child: Icon(
                   Icons.notifications_none_outlined,
@@ -203,8 +204,8 @@ class _QuestPageState extends State<QuestPage> {
                       padding: const EdgeInsets.all(20.0),
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, CreateQuestPage.routeName);
+                          Navigator.of(context, rootNavigator: true)
+                              .pushNamed(CreateQuestPage.routeName);
                         },
                         child: Text("Create new quest"),
                       ),
@@ -225,7 +226,10 @@ class _QuestPageState extends State<QuestPage> {
                     : questsStore!.searchResultList!.length,
                 itemBuilder: (_, index) {
                   return MyQuestsItem(
-                    questsStore!.questsList![index],
+                    questsStore!.searchWord.isEmpty
+                        ? questsStore!.questsList![index]
+                        : questsStore!.searchResultList![index],
+                   // questsStore!.questsList![index],
                     itemType: this.questItemPriorityType,
                   );
                 },
