@@ -1,5 +1,6 @@
 import 'package:app/log_service.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
+import 'package:app/ui/pages/main_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_quick_info.dart';
@@ -175,17 +176,33 @@ class _QuestPageState extends State<QuestPage> {
           ),
         ),
         SliverAppBar(
+          toolbarHeight: 90,
           pinned: true,
-          title: TextFormField(
-            maxLines: 1,
-            onChanged: questsStore!.setSearchWord,
-            decoration: InputDecoration(
-              prefixIcon: Icon(
-                Icons.search,
-                size: 25.0,
+          title: Column(
+            children: [
+              TextFormField(
+                maxLines: 1,
+                onChanged: questsStore!.setSearchWord,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    size: 25.0,
+                  ),
+                  hintText: "City / Street / Place",
+                ),
               ),
-              hintText: "City / Street / Place",
-            ),
+              OutlinedButton(  
+                onPressed: () => Navigator.push(context,  // Сделано для отладки будет перенесена в routes.dart
+                    MaterialPageRoute(builder: (_) => FilterQuestsPage())),
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.0))),
+                ),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Icon(Icons.filter_list), const Text("Filters")]),
+              ),
+            ],
           ),
         ),
         SliverList(
