@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ChatRoomPage extends StatefulWidget {
   static const String routeName = "/chatRoomPage";
@@ -11,6 +12,10 @@ class ChatRoomPage extends StatefulWidget {
 }
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
+  ScrollController _scrollController = ScrollController(
+    initialScrollOffset: 0.0,
+    keepScrollOffset: true,
+  );
   List<Message> listMessages = List.generate(
     20,
     (index) => Message(
@@ -21,39 +26,60 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        physics: const ClampingScrollPhysics(),
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            CupertinoSliverNavigationBar(
-              largeTitle: Text("Chat"),
-              border: const Border.fromBorderSide(BorderSide.none),
-              trailing: Container(
-                transform: Matrix4.translationValues(0, 50, 0),
-                child: InkWell(
-                  onTap: () {},
-                  child: Icon(
-                    Icons.more_vert,
+        appBar: AppBar(
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+          flexibleSpace: SafeArea(
+            child: Container(
+              padding: EdgeInsets.only(right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
+                  Text(
+                    "Kriss Benwat",
+                    style: TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        "https://randomuser.me/api/portraits/men/6.jpg"),
+                    maxRadius: 20,
+                  ),
+                ],
               ),
-            ),
-          ];
-        },
-        body: RefreshIndicator(
-          onRefresh: () async {
-            return Future.delayed(
-              Duration(milliseconds: 1000),
-            );
-          },
-          child: SingleChildScrollView(
-            child: Column(
-              children: listMessages.map((e) => _message(e)).toList(),
             ),
           ),
         ),
-      ),
-    );
+        body: CustomScrollView(
+          controller: _scrollController,
+          physics: const ClampingScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: listMessages.map((e) => _message(e)).toList(),
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 10,
+              ),
+            )
+          ],
+        ),
+        bottomNavigationBar: _bottomTextFormFieldWithIcons());
   }
 
   Widget _message(Message e) {
@@ -93,6 +119,40 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 ),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _bottomTextFormFieldWithIcons() {
+    return SafeArea(
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 18, right: 12),
+            child: InkWell(
+                onTap: () {},
+                child: SvgPicture.asset("assets/attach_media_icon.svg")),
+          ),
+          Expanded(
+            child: TextFormField(
+              onChanged: (text) {
+                print(text);
+              },
+              decoration: InputDecoration(
+                hintText: 'Text',
+              ),
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 14, right: 20),
+            child: InkWell(
+                onTap: () {},
+                child: SvgPicture.asset("assets/send_message_icon.svg")),
           ),
         ],
       ),
