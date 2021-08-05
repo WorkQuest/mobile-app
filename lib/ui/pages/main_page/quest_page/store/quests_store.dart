@@ -43,7 +43,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   List<BaseQuestResponse>? questsList;
 
   @observable
-  List<BaseQuestResponse>? searchResultList;
+  List<BaseQuestResponse>? searchResultList = [];
 
   @observable
   List<BaseQuestResponse>? starredQuestsList;
