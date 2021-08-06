@@ -43,6 +43,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   List<BaseQuestResponse>? questsList;
 
   @observable
+  List<BaseQuestResponse>? myQuestsList;
+
+  @observable
   List<BaseQuestResponse>? searchResultList = [];
 
   @observable
@@ -99,15 +102,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  Future getQuests(
-      /*{
-    required bool invited,
-    required performing,
-    required bool starred,
-  }*/
-      ) async {
+  Future getQuests(String userId) async {
     try {
       this.onLoading();
+
+      myQuestsList = await _apiProvider
+          .getEmployerQuests(userId);
 
       questsList = await _apiProvider.getQuests(
         offset: this.offset,
@@ -119,7 +119,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         sort: this.sort,
         starred: false,
       );
-      print("quwest list $questsList ");
 
       starredQuestsList = await _apiProvider.getQuests(
         offset: this.offset,

@@ -114,6 +114,21 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$myQuestsListAtom = Atom(name: '_QuestsStore.myQuestsList');
+
+  @override
+  List<BaseQuestResponse>? get myQuestsList {
+    _$myQuestsListAtom.reportRead();
+    return super.myQuestsList;
+  }
+
+  @override
+  set myQuestsList(List<BaseQuestResponse>? value) {
+    _$myQuestsListAtom.reportWrite(value, super.myQuestsList, () {
+      super.myQuestsList = value;
+    });
+  }
+
   final _$searchResultListAtom = Atom(name: '_QuestsStore.searchResultList');
 
   @override
@@ -231,8 +246,8 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$getQuestsAsyncAction = AsyncAction('_QuestsStore.getQuests');
 
   @override
-  Future<dynamic> getQuests() {
-    return _$getQuestsAsyncAction.run(() => super.getQuests());
+  Future<dynamic> getQuests(String userId) {
+    return _$getQuestsAsyncAction.run(() => super.getQuests(userId));
   }
 
   final _$loadIconsAsyncAction = AsyncAction('_QuestsStore.loadIcons');
@@ -287,6 +302,7 @@ offset: ${offset},
 limit: ${limit},
 status: ${status},
 questsList: ${questsList},
+myQuestsList: ${myQuestsList},
 searchResultList: ${searchResultList},
 starredQuestsList: ${starredQuestsList},
 performedQuestsList: ${performedQuestsList},

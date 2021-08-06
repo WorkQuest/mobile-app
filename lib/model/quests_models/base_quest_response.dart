@@ -1,4 +1,5 @@
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
+import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 
 import '../user_model.dart';
 
@@ -6,7 +7,7 @@ class BaseQuestResponse {
   BaseQuestResponse({
     required this.id,
     required this.userId,
-   // required this.assignedWorkerId,
+    // required this.assignedWorkerId,
     //required this.assignedWorker,
     required this.medias,
     required this.user,
@@ -25,9 +26,9 @@ class BaseQuestResponse {
   String id;
   String userId;
   String category;
- // String assignedWorkerId;
- // dynamic assignedWorker;
-  List medias;
+  // String assignedWorkerId;
+  // dynamic assignedWorker;
+  List<Media> medias;
   User user;
   int status;
   int priority;
@@ -44,9 +45,11 @@ class BaseQuestResponse {
         id: json["id"],
         userId: json["userId"],
         category: json["category"],
-       // assignedWorker: json["assignedWorker"],
+        // assignedWorker: json["assignedWorker"],
         //assignedWorkerId: json["assignedWorkerId"] == null ? " " : json["assignedWorkerId"],
-        medias: json["medias"],
+        medias: (json["medias"] as List<dynamic>)
+            .map((e) => Media.fromJson(e as Map<String, dynamic>))
+            .toList(),
         user: User.fromJson(json["user"]),
         status: json["status"],
         priority: json["priority"],

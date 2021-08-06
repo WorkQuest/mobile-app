@@ -82,7 +82,7 @@ extension QuestService on ApiProvider {
     );
   }
 
-  Future<dynamic> getEmployerQuests(
+  Future<List<BaseQuestResponse>> getEmployerQuests(
     String userId, {
     int limit = 10,
     int offset = 0,
@@ -94,28 +94,14 @@ extension QuestService on ApiProvider {
     bool performing = false,
     bool starred = false,
   }) async {
-    try {
-      // final responseData =
-      await _httpClient.get(
-        query: '/v1/employer/$userId/quests',
-        queryParameters: {
-          // "offset": offset,
-          // "limit": limit,
-          // "q": searchWord,
-          // if (priority == -1) "priority": priority,
-          // if (status == -1) "status": status,
-          // if (sort != null) "sort": sort,
-          "userId": userId,
-          "invited": invited,
-          "performing": performing,
-          "starred": starred,
-        },
-      );
-      return "responseData";
-    } catch (e) {
-      print("Tag_WK Error $e");
-      return "Error";
-    }
+    final responseData = await _httpClient.get(
+      query: "/v1/employer/$userId/quests",
+    );
+    return List<BaseQuestResponse>.from(
+      responseData["quests"].map(
+        (x) => BaseQuestResponse.fromJson(x),
+      ),
+    );
   }
 
   Future<List<BaseQuestResponse>> getQuests({

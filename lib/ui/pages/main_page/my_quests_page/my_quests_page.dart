@@ -6,8 +6,6 @@ import "package:provider/provider.dart";
 import '../../../../enums.dart';
 
 class MyQuestsPage extends StatelessWidget {
-  //static const String routeName = "/myQuestPage";
-
   @override
   Widget build(BuildContext context) {
     final questStore = context.read<QuestsStore>();
@@ -33,7 +31,7 @@ class MyQuestsPage extends StatelessWidget {
               Center(
                 child: QuestsList(
                   QuestItemPriorityType.Active,
-                  questStore.questsList,
+                  questStore.myQuestsList,
                 ),
               ),
               Center(

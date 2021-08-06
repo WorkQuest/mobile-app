@@ -1,15 +1,16 @@
 import 'dart:async';
 
+import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:flutter/material.dart';
 
 class ImageViewerWidget extends StatelessWidget {
-  ImageViewerWidget(this.media, {Key? key}) : super(key: key);
-  final List<String> media;
+  ImageViewerWidget(this.medias, {Key? key}) : super(key: key);
+  final List<Media> medias;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 15),
+      margin: const EdgeInsets.symmetric(vertical: 15),
       height: 200,
       child: Row(
         children: [
@@ -17,43 +18,45 @@ class ImageViewerWidget extends StatelessWidget {
             flex: 3,
             child: getImageCell(0, context),
           ),
-          const SizedBox(width: 10),
-          Flexible(
-            flex: 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                getImageCell(1, context),
-                const SizedBox(height: 10),
-                getImageCell(2, context),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => ScrollingImages(media)));
-                  },
-                  child: Icon(Icons.more_horiz),
-                  style: ButtonStyle(
-                    fixedSize:
-                        MaterialStateProperty.all(Size(double.maxFinite, 60)),
-                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                        if (states.contains(MaterialState.pressed))
-                          return Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.5);
-                        return const Color(0xFFF7F8FA);
-                      },
+          if (medias.length > 1) ...[
+            const SizedBox(width: 10),
+            Flexible(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  for (int i = 1; i < medias.length-1; i++) ...[
+                    getImageCell(i, context),
+                    const SizedBox(height: 10),
+                  ],
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => ScrollingImages(medias)));
+                    },
+                    child: Icon(Icons.more_horiz),
+                    style: ButtonStyle(
+                      fixedSize:
+                          MaterialStateProperty.all(Size(double.maxFinite, 60)),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed))
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
+                          return const Color(0xFFF7F8FA);
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -66,22 +69,26 @@ class ImageViewerWidget extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (_) => ScrollingImages(
-                      media,
+                      medias,
                       index: index,
                     )));
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
-        child: Image.network(media[index],
-            fit: BoxFit.fitHeight, height: index == 0 ? double.infinity : 60),
+        child: Image.network(
+          medias[index].url,
+          fit: BoxFit.cover,
+          height: index == 0 ? double.infinity : 60,
+          width: double.maxFinite,
+        ),
       ),
     );
   }
 }
 
 class ScrollingImages extends StatefulWidget {
-  ScrollingImages(this.images, {this.index});
-  final List<String> images;
+  ScrollingImages(this.medias, {this.index});
+  final List<Media> medias;
   final int? index;
 
   @override
@@ -114,7 +121,7 @@ class _ScrollingImagesState extends State<ScrollingImages> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
-          "${index + 1} of ${widget.images.length}",
+          "${index + 1} of ${widget.medias.length}",
           style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
@@ -134,12 +141,12 @@ class _ScrollingImagesState extends State<ScrollingImages> {
           controller: scrollController,
           scrollDirection: Axis.horizontal,
           children: [
-            for (var image in widget.images)
+            for (var media in widget.medias)
               Center(
                 child: Container(
                   width: width,
                   child: Image.network(
-                    image,
+                    media.url,
                     fit: BoxFit.fitWidth,
                   ),
                 ),
@@ -152,7 +159,7 @@ class _ScrollingImagesState extends State<ScrollingImages> {
         onHorizontalDragEnd: (details) {
           if (scrollController.offset <= 0) return;
           if (details.primaryVelocity! < -500) {
-            if (index == widget.images.length-1)
+            if (index == widget.medias.length - 1)
               return;
             else
               index += 1;
@@ -160,13 +167,6 @@ class _ScrollingImagesState extends State<ScrollingImages> {
           setState(() {});
           scrollController.animateTo(width * index,
               duration: Duration(milliseconds: 500), curve: Curves.easeOut);
-          // int indexImage = (((scrollController.offset) / width)).round();
-          // if (indexImage >= widget.images.length) return;
-          // scrollController.animateTo(width * indexImage,
-          //     duration: Duration(milliseconds: 500), curve: Curves.easeOut);
-          // setState(() {
-          //   index = indexImage + 1;
-          // });
         },
       ),
     );
