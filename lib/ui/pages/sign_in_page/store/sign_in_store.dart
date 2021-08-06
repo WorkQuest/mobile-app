@@ -31,6 +31,9 @@ abstract class _SignInStore extends IStore<bool> with Store {
   void setUsername(String value) => _username = value;
 
   @action
+  String getUsername() => _username;
+
+  @action
   void setPassword(String value) => _password = value;
 
   @action
@@ -39,6 +42,10 @@ abstract class _SignInStore extends IStore<bool> with Store {
       this.onLoading();
       BearerToken bearerToken = await _apiProvider.login(
           email: _username.trim(), password: _password);
+      if (bearerToken.status == 0) {
+        this.onError("unconfirmed");
+        return;
+      }
       Storage.writeRefreshToken(bearerToken.refresh);
       Storage.writeAccessToken(bearerToken.access);
       this.onSuccess(true);
