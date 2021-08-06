@@ -74,8 +74,6 @@ class _BackgroundObserverPageState extends State<BackgroundObserverPage>
     sp.setInt(lastKnownStateKey, AppLifecycleState.inactive.index);
   }
 
-  final pinLockMillis = 900000; //(15 minutes) milli seconds
-
   Future _resumed() async {
     if (isOpen) return;
     final sp = await SharedPreferences.getInstance();
@@ -109,4 +107,5 @@ class _BackgroundObserverPageState extends State<BackgroundObserverPage>
 
 const lastKnownStateKey = 'lastKnownStateKey';
 const backgroundedTimeKey = 'backgroundedTimeKey';
-const MAX_INT = 9223372036854775807;
+const pinLockMillis = 900000; //(15 minutes) milli seconds
+const MAX_INT = 9223372036854775807 - pinLockMillis;
