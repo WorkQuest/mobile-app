@@ -1,5 +1,5 @@
 import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
-import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";

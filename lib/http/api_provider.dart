@@ -82,6 +82,16 @@ extension QuestService on ApiProvider {
     );
   }
 
+  Future<String> mapPoints() async {
+    try {
+      return await _httpClient.post(
+        query: '/v1/quest/create',
+      );
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
   Future<List<BaseQuestResponse>> getEmployerQuests(
     String userId, {
     int limit = 10,

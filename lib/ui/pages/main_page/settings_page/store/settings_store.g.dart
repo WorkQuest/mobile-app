@@ -9,6 +9,14 @@ part of 'settings_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SettingsPageStore on _SettingsPageStore, Store {
+  Computed<bool>? _$canSubmitComputed;
+
+  @override
+  bool get canSubmit =>
+      (_$canSubmitComputed ??= Computed<bool>(() => super.canSubmit,
+              name: '_SettingsPageStore.canSubmit'))
+          .value;
+
   final _$privacyAtom = Atom(name: '_SettingsPageStore.privacy');
 
   @override
@@ -158,7 +166,8 @@ privacy: ${privacy},
 filter: ${filter},
 password: ${password},
 newPassword: ${newPassword},
-confirmNewPassword: ${confirmNewPassword}
+confirmNewPassword: ${confirmNewPassword},
+canSubmit: ${canSubmit}
     ''';
   }
 }
