@@ -1,12 +1,8 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
-
-import '../../../../../../utils/marker_louder_for_map.dart';
 
 part 'quests_store.g.dart';
 
@@ -43,47 +39,13 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   List<BaseQuestResponse>? questsList;
 
   @observable
-  List<BaseQuestResponse>? myQuestsList;
-
-  @observable
   List<BaseQuestResponse>? searchResultList = [];
-
-  @observable
-  List<BaseQuestResponse>? starredQuestsList;
-
-  @observable
-  List<BaseQuestResponse>? performedQuestsList;
-
-  @observable
-  List<BaseQuestResponse>? invitedQuestsList;
-
-  @observable
-  _MapList mapListChecker = _MapList.Map;
-
-  @observable
-  List<BitmapDescriptor> iconsMarker = [];
-
-  @observable
-  BaseQuestResponse? selectQuestInfo;
+  
 
   @action
   void setSearchWord(String value) {
     searchWord = value;
     getSearchedQuests();
-  }
-
-  @action
-  changeValue() {
-    if (mapListChecker == _MapList.Map) {
-      mapListChecker = _MapList.List;
-    } else {
-      mapListChecker = _MapList.Map;
-    }
-  }
-
-  @action
-  isMapOpened() {
-    return mapListChecker == _MapList.Map;
   }
 
   @action
@@ -105,10 +67,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   Future getQuests(String userId) async {
     try {
       this.onLoading();
-
-      myQuestsList = await _apiProvider.getEmployerQuests(userId);
-
-      questsList = await _apiProvider.getQuests(
+      final loadQuestsList = await _apiProvider.getQuests(
         offset: this.offset,
         limit: this.limit,
         status: this.status,
@@ -118,77 +77,17 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         sort: this.sort,
         starred: false,
       );
-
-      starredQuestsList = await _apiProvider.getQuests(
-        offset: this.offset,
-        limit: this.limit,
-        status: this.status,
-        invited: false,
-        performing: false,
-        priority: this.priority,
-        sort: this.sort,
-        starred: true,
-      );
-
-      invitedQuestsList = await _apiProvider.getQuests(
-        offset: this.offset,
-        limit: this.limit,
-        status: this.status,
-        invited: true,
-        performing: false,
-        priority: this.priority,
-        sort: this.sort,
-        starred: false,
-      );
-
-      performedQuestsList = await _apiProvider.getQuests(
-        offset: this.offset,
-        limit: this.limit,
-        status: this.status,
-        invited: false,
-        performing: true,
-        priority: this.priority,
-        sort: this.sort,
-        starred: false,
-      );
-      print(questsList);
-      print(starredQuestsList);
-      print(performedQuestsList);
-      print(invitedQuestsList);
+      if (questsList != null) {
+        this.questsList = [...this.questsList!, ...loadQuestsList];
+        this.offset += 10;
+      } else {
+        questsList = loadQuestsList;
+         this.offset += 10;
+      }
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
   }
-
-  @action
-  loadIcons(BuildContext context) async {
-    const size = Size(22, 29);
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFF22CC14)));
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFF22CC14)));
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFFE8D20D)));
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFFDF3333)));
-  }
-
-  Set<Marker> getMapMakers() {
-    return {
-      for (BaseQuestResponse quest in questsList ?? [])
-        Marker(
-          onTap: () => selectQuestInfo = quest,
-          icon: iconsMarker[quest.priority],
-          markerId: MarkerId(quest.id),
-          position: LatLng(quest.location.latitude, quest.location.longitude),
-        )
-    };
-  }
-}
-
-enum _MapList {
-  Map,
-  List,
 }

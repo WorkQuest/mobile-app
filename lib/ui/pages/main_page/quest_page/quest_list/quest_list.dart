@@ -7,6 +7,7 @@ import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 
 class QuestList extends StatefulWidget {
@@ -17,22 +18,31 @@ class QuestList extends StatefulWidget {
 }
 
 class _QuestListState extends State<QuestList> {
+  ScrollController? controller;
+
   QuestsStore? questsStore;
+
   ProfileMeStore? profileMeStore;
+
   final QuestItemPriorityType questItemPriorityType =
       QuestItemPriorityType.Starred;
   final scrollKey = new GlobalKey();
 
   @override
   void initState() {
+    controller = ScrollController()..addListener(_scrollListener);
     questsStore = context.read<QuestsStore>();
-    profileMeStore = context.read<ProfileMeStore>();
     profileMeStore = context.read<ProfileMeStore>();
     profileMeStore!.getProfileMe().then((value) {
       questsStore!.getQuests(profileMeStore!.userData!.id);
-      questsStore!.loadIcons(context);
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller!.removeListener(_scrollListener);
+    super.dispose();
   }
 
   @override
@@ -70,6 +80,7 @@ class _QuestListState extends State<QuestList> {
 
   Widget getBody() {
     return CustomScrollView(
+      controller: controller,
       slivers: [
         CupertinoSliverNavigationBar(
           largeTitle: Row(
@@ -119,9 +130,7 @@ class _QuestListState extends State<QuestList> {
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 if (profileMeStore!.userData!.role == UserRole.Employer)
                   Column(
                     mainAxisSize: MainAxisSize.min,
@@ -140,26 +149,25 @@ class _QuestListState extends State<QuestList> {
                     ],
                   ),
                 _getDivider(),
-                ListView.separated(
-                  key: scrollKey,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  separatorBuilder: (context, index) {
-                    return _getDivider();
-                  },
-                  padding: EdgeInsets.zero,
-                  itemCount: questsStore!.searchWord
-                          .isEmpty // needs fix with search result list
-                      ? questsStore!.questsList!.length
-                      : questsStore!.questsList!.length,
-                  itemBuilder: (_, index) {
-                    return MyQuestsItem(
-                      questsStore!.searchWord.isEmpty
-                          ? questsStore!.questsList![index]
-                          : questsStore!.searchResultList![index],
-                      itemType: this.questItemPriorityType,
-                    );
-                  },
+                Observer(
+                  builder: (_) => ListView.separated(
+                    key: scrollKey,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    separatorBuilder: (context, index) {
+                      return _getDivider();
+                    },
+                    padding: EdgeInsets.zero,
+                    itemCount: questsStore!.questsList!.length,
+                    itemBuilder: (_, index) {
+                      return MyQuestsItem(
+                        questsStore!.searchWord.isEmpty
+                            ? questsStore!.questsList![index]
+                            : questsStore!.searchResultList![index],
+                        itemType: this.questItemPriorityType,
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -175,5 +183,14 @@ class _QuestListState extends State<QuestList> {
         color: Color(0xFFF7F8FA),
       ),
     );
+  }
+
+  void _scrollListener() {
+    if (controller!.position.extentAfter < 500) {
+      if (questsStore != null) {
+        if (questsStore!.isLoading) return;
+        questsStore!.getQuests(profileMeStore!.userData!.id);
+      }
+    }
   }
 }

@@ -128,8 +128,8 @@ extension QuestService on ApiProvider {
     final responseData = await _httpClient.get(
       query: '/v1/quests',
       queryParameters: {
-        //"offset": offset,
-        //"limit": limit,
+        "offset": offset,
+        "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
         //"priority": priority == -1 ? null : priority,
         //"status": status == -1 ? null : status,

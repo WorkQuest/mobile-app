@@ -1,66 +1,86 @@
 import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import '../../../../enums.dart';
 
-class MyQuestsPage extends StatelessWidget {
+class MyQuestsPage extends StatefulWidget {
+  MyQuestsPage();
+  @override
+  _MyQuestsPageState createState() => _MyQuestsPageState();
+}
+
+class _MyQuestsPageState extends State<MyQuestsPage> {
+  MyQuestStore? myQuests;
+  @override
+  void initState() {
+    myQuests = context.read<MyQuestStore>();
+    ProfileMeStore? profileMeStore = context.read<ProfileMeStore>();
+    profileMeStore.getProfileMe().then((value) {
+      myQuests!.getQuests(profileMeStore.userData!.id);
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final questStore = context.read<QuestsStore>();
     return DefaultTabController(
       length: 4,
-      child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              CupertinoSliverNavigationBar(
-                largeTitle: Text("My quests"),
-                border: const Border.fromBorderSide(BorderSide.none),
-              ),
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: const _PersistentTabBar(),
-              ),
-            ];
-          },
-          physics: const ClampingScrollPhysics(),
-          body: TabBarView(
-            children: [
-              Center(
-                child: QuestsList(
-                  QuestItemPriorityType.Active,
-                  questStore.myQuestsList,
+      child: Observer(
+        builder: (_) => Scaffold(
+          body: NestedScrollView(
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return <Widget>[
+                      CupertinoSliverNavigationBar(
+                        largeTitle: Text("My quests"),
+                        border: const Border.fromBorderSide(BorderSide.none),
+                      ),
+                      SliverPersistentHeader(
+                        pinned: true,
+                        delegate: const _PersistentTabBar(),
+                      ),
+                    ];
+                  },
+                  physics: const ClampingScrollPhysics(),
+                  body: TabBarView(
+                    children: [
+                      Center(
+                        child: QuestsList(
+                          QuestItemPriorityType.Active,
+                          myQuests?.all,
+                        ),
+                      ),
+                      Center(
+                        child: QuestsList(
+                          QuestItemPriorityType.Invited,
+                          myQuests?.invited,
+                        ),
+                      ),
+                      Center(
+                        child: QuestsList(
+                          QuestItemPriorityType.Performed,
+                          myQuests?.performed,
+                        ),
+                      ),
+                      Center(
+                        child: QuestsList(
+                          QuestItemPriorityType.Starred,
+                          myQuests?.starred,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Center(
-                child: QuestsList(
-                  QuestItemPriorityType.Invited,
-                  questStore.invitedQuestsList,
-                ),
-              ),
-              Center(
-                child: QuestsList(
-                  QuestItemPriorityType.Performed,
-                  questStore.performedQuestsList,
-                ),
-              ),
-              Center(
-                child: QuestsList(
-                  QuestItemPriorityType.Starred,
-                  questStore.starredQuestsList,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
   }
 }
-
-
 
 class _PersistentTabBar extends SliverPersistentHeaderDelegate {
   const _PersistentTabBar();

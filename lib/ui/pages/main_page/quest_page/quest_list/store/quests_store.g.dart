@@ -114,21 +114,6 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$myQuestsListAtom = Atom(name: '_QuestsStore.myQuestsList');
-
-  @override
-  List<BaseQuestResponse>? get myQuestsList {
-    _$myQuestsListAtom.reportRead();
-    return super.myQuestsList;
-  }
-
-  @override
-  set myQuestsList(List<BaseQuestResponse>? value) {
-    _$myQuestsListAtom.reportWrite(value, super.myQuestsList, () {
-      super.myQuestsList = value;
-    });
-  }
-
   final _$searchResultListAtom = Atom(name: '_QuestsStore.searchResultList');
 
   @override
@@ -141,97 +126,6 @@ mixin _$QuestsStore on _QuestsStore, Store {
   set searchResultList(List<BaseQuestResponse>? value) {
     _$searchResultListAtom.reportWrite(value, super.searchResultList, () {
       super.searchResultList = value;
-    });
-  }
-
-  final _$starredQuestsListAtom = Atom(name: '_QuestsStore.starredQuestsList');
-
-  @override
-  List<BaseQuestResponse>? get starredQuestsList {
-    _$starredQuestsListAtom.reportRead();
-    return super.starredQuestsList;
-  }
-
-  @override
-  set starredQuestsList(List<BaseQuestResponse>? value) {
-    _$starredQuestsListAtom.reportWrite(value, super.starredQuestsList, () {
-      super.starredQuestsList = value;
-    });
-  }
-
-  final _$performedQuestsListAtom =
-      Atom(name: '_QuestsStore.performedQuestsList');
-
-  @override
-  List<BaseQuestResponse>? get performedQuestsList {
-    _$performedQuestsListAtom.reportRead();
-    return super.performedQuestsList;
-  }
-
-  @override
-  set performedQuestsList(List<BaseQuestResponse>? value) {
-    _$performedQuestsListAtom.reportWrite(value, super.performedQuestsList, () {
-      super.performedQuestsList = value;
-    });
-  }
-
-  final _$invitedQuestsListAtom = Atom(name: '_QuestsStore.invitedQuestsList');
-
-  @override
-  List<BaseQuestResponse>? get invitedQuestsList {
-    _$invitedQuestsListAtom.reportRead();
-    return super.invitedQuestsList;
-  }
-
-  @override
-  set invitedQuestsList(List<BaseQuestResponse>? value) {
-    _$invitedQuestsListAtom.reportWrite(value, super.invitedQuestsList, () {
-      super.invitedQuestsList = value;
-    });
-  }
-
-  final _$mapListCheckerAtom = Atom(name: '_QuestsStore.mapListChecker');
-
-  @override
-  _MapList get mapListChecker {
-    _$mapListCheckerAtom.reportRead();
-    return super.mapListChecker;
-  }
-
-  @override
-  set mapListChecker(_MapList value) {
-    _$mapListCheckerAtom.reportWrite(value, super.mapListChecker, () {
-      super.mapListChecker = value;
-    });
-  }
-
-  final _$iconsMarkerAtom = Atom(name: '_QuestsStore.iconsMarker');
-
-  @override
-  List<BitmapDescriptor> get iconsMarker {
-    _$iconsMarkerAtom.reportRead();
-    return super.iconsMarker;
-  }
-
-  @override
-  set iconsMarker(List<BitmapDescriptor> value) {
-    _$iconsMarkerAtom.reportWrite(value, super.iconsMarker, () {
-      super.iconsMarker = value;
-    });
-  }
-
-  final _$selectQuestInfoAtom = Atom(name: '_QuestsStore.selectQuestInfo');
-
-  @override
-  BaseQuestResponse? get selectQuestInfo {
-    _$selectQuestInfoAtom.reportRead();
-    return super.selectQuestInfo;
-  }
-
-  @override
-  set selectQuestInfo(BaseQuestResponse? value) {
-    _$selectQuestInfoAtom.reportWrite(value, super.selectQuestInfo, () {
-      super.selectQuestInfo = value;
     });
   }
 
@@ -250,13 +144,6 @@ mixin _$QuestsStore on _QuestsStore, Store {
     return _$getQuestsAsyncAction.run(() => super.getQuests(userId));
   }
 
-  final _$loadIconsAsyncAction = AsyncAction('_QuestsStore.loadIcons');
-
-  @override
-  Future loadIcons(BuildContext context) {
-    return _$loadIconsAsyncAction.run(() => super.loadIcons(context));
-  }
-
   final _$_QuestsStoreActionController = ActionController(name: '_QuestsStore');
 
   @override
@@ -265,28 +152,6 @@ mixin _$QuestsStore on _QuestsStore, Store {
         name: '_QuestsStore.setSearchWord');
     try {
       return super.setSearchWord(value);
-    } finally {
-      _$_QuestsStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic changeValue() {
-    final _$actionInfo = _$_QuestsStoreActionController.startAction(
-        name: '_QuestsStore.changeValue');
-    try {
-      return super.changeValue();
-    } finally {
-      _$_QuestsStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic isMapOpened() {
-    final _$actionInfo = _$_QuestsStoreActionController.startAction(
-        name: '_QuestsStore.isMapOpened');
-    try {
-      return super.isMapOpened();
     } finally {
       _$_QuestsStoreActionController.endAction(_$actionInfo);
     }
@@ -302,14 +167,7 @@ offset: ${offset},
 limit: ${limit},
 status: ${status},
 questsList: ${questsList},
-myQuestsList: ${myQuestsList},
-searchResultList: ${searchResultList},
-starredQuestsList: ${starredQuestsList},
-performedQuestsList: ${performedQuestsList},
-invitedQuestsList: ${invitedQuestsList},
-mapListChecker: ${mapListChecker},
-iconsMarker: ${iconsMarker},
-selectQuestInfo: ${selectQuestInfo}
+searchResultList: ${searchResultList}
     ''';
   }
 }

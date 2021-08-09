@@ -1,4 +1,4 @@
-import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_quick_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +16,13 @@ class QuestMap extends StatefulWidget {
 
 class _QuestMapState extends State<QuestMap> {
   Location _location = Location();
-  QuestsStore? questsStore;
+  QuestMapStore? mapStore;
   CameraPosition? _initialCameraPosition;
   late GoogleMapController _controller;
 
   @override
   void initState() {
-    questsStore = context.read<QuestsStore>();
-    // questsStore!.selectQuestInfo = questsStore!.questsList![0];
+    mapStore = context.read<QuestMapStore>();
     _getCurrentLocation();
     super.initState();
   }
@@ -48,23 +47,23 @@ class _QuestMapState extends State<QuestMap> {
                     initialCameraPosition: _initialCameraPosition!,
                     myLocationEnabled: true,
                     myLocationButtonEnabled: false,
-                    markers: questsStore!.getMapMakers(),
+                    // markers: questsStore!.getMapMakers(),
                     onMapCreated: (GoogleMapController controller) {
                       _controller = controller;
                     },
                     onTap: (point) {
-                      if (questsStore!.selectQuestInfo != null)
-                        questsStore!.selectQuestInfo = null;
+                      if (mapStore!.selectQuestInfo != null)
+                        mapStore!.selectQuestInfo = null;
                     },
                   ),
-                  QuestQuickInfo(questsStore!.selectQuestInfo),
+                  QuestQuickInfo(mapStore!.selectQuestInfo),
                 ],
               ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: AnimatedContainer(
           padding: EdgeInsets.only(
               left: 25,
-              bottom: questsStore!.selectQuestInfo != null ? 324.0 : 0.0),
+              bottom: mapStore!.selectQuestInfo != null ? 324.0 : 0.0),
           duration: const Duration(milliseconds: 300),
           curve: Curves.fastOutSlowIn,
           child: Row(
@@ -80,11 +79,11 @@ class _QuestMapState extends State<QuestMap> {
               ),
               FloatingActionButton(
                 heroTag: "QuestMapRightActionButton",
-                onPressed: questsStore!.selectQuestInfo == null
+                onPressed: mapStore!.selectQuestInfo == null
                     ? _onMyLocationPressed
-                    : () => questsStore!.selectQuestInfo = null,
+                    : () => mapStore!.selectQuestInfo = null,
                 child: Icon(
-                  questsStore!.selectQuestInfo == null
+                  mapStore!.selectQuestInfo == null
                       ? Icons.location_on
                       : Icons.close,
                 ),
