@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 import 'dart:typed_data';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,23 +17,53 @@ Future<ui.Image> getImageFromPath(String imagePath) async {
   return completer.future;
 }
 
-Future<BitmapDescriptor> getMarkerIcon(String imagePath, Size size) async {
-  final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+Future<BitmapDescriptor> getClusterMarker(
+  int clusterSize,
+  Color clusterColor,
+  Color textColor,
+  int width,
+) async {
+  final PictureRecorder pictureRecorder = PictureRecorder();
   final Canvas canvas = Canvas(pictureRecorder);
+  final Paint paint = Paint()..color = clusterColor;
+  final TextPainter textPainter = TextPainter(
+    textDirection: TextDirection.ltr,
+  );
 
-  Rect oval = Rect.fromLTWH(0, 0, size.width, size.height);
-  ui.Image image = await getImageFromPath(imagePath);
-  paintImage(canvas: canvas, image: image, rect: oval, fit: BoxFit.fitWidth);
+  final double radius = width / 2;
 
-  final ui.Image markerAsImage = await pictureRecorder
-      .endRecording()
-      .toImage(size.width.toInt(), size.height.toInt());
+  canvas.drawCircle(
+    Offset(radius, radius),
+    radius,
+    paint,
+  );
 
-  final ByteData? byteData =
-      await markerAsImage.toByteData(format: ui.ImageByteFormat.png);
-  final Uint8List uint8List = byteData!.buffer.asUint8List();
+  textPainter.text = TextSpan(
+    text: clusterSize.toString(),
+    style: TextStyle(
+      fontSize: radius - 5,
+      fontWeight: FontWeight.bold,
+      color: textColor,
+    ),
+  );
 
-  return BitmapDescriptor.fromBytes(uint8List);
+  textPainter.layout();
+  textPainter.paint(
+    canvas,
+    Offset(
+      radius - textPainter.width / 2,
+      radius - textPainter.height / 2,
+    ),
+  );
+
+  final image = await pictureRecorder.endRecording().toImage(
+    radius.toInt() * 2,
+    radius.toInt() * 2,
+  );
+
+  final data = await image.toByteData(format: ImageByteFormat.png);
+
+  return BitmapDescriptor.fromBytes(data!.buffer.asUint8List());
 }
 
 Future<BitmapDescriptor> svgToBitMap(

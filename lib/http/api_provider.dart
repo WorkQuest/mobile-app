@@ -4,8 +4,10 @@ import 'package:app/model/bearer_token.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/model/quests_models/quest_map_point.dart';
 import 'package:dio/dio.dart';
 import 'package:drishya_picker/drishya_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:io';
 import 'package:injectable/injectable.dart';
 
@@ -82,13 +84,23 @@ extension QuestService on ApiProvider {
     );
   }
 
-  Future<String> mapPoints() async {
+  Future<List<QuestMapPoint>> mapPoints(LatLngBounds bounds) async {
     try {
-      return await _httpClient.post(
-        query: '/v1/quest/create',
+      final response = await _httpClient.get(
+        query: '/v1/quests/map/points' +
+            '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
+            'north[longitude]=${bounds.northeast.longitude.toString()}' +
+            '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
+            'south[longitude]=${bounds.southwest.longitude.toString()}',
+      );
+      return List<QuestMapPoint>.from(
+        response.map(
+          (x) => QuestMapPoint.fromJson(x),
+        ),
       );
     } catch (e) {
-      return e.toString();
+      print("[Token] Error $e");
+      throw Exception(e);
     }
   }
 

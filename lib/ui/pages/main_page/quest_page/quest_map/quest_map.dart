@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_quick_info.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,7 @@ class _QuestMapState extends State<QuestMap> {
   @override
   void initState() {
     mapStore = context.read<QuestMapStore>();
+    mapStore!.loadIcons(context);
     _getCurrentLocation();
     super.initState();
   }
@@ -42,12 +44,22 @@ class _QuestMapState extends State<QuestMap> {
                 alignment: Alignment.bottomCenter,
                 children: [
                   GoogleMap(
+                    onCameraMove: (CameraPosition position) {
+                      if (mapStore?.debounce != null)
+                        mapStore!.debounce!.cancel();
+                      mapStore!.debounce =
+                          Timer(const Duration(milliseconds: 50), () async {
+                        LatLngBounds bounds =
+                            await _controller.getVisibleRegion();
+                        mapStore!.getQuests(bounds);
+                      });
+                    },
                     mapType: MapType.normal,
                     rotateGesturesEnabled: false,
                     initialCameraPosition: _initialCameraPosition!,
                     myLocationEnabled: true,
                     myLocationButtonEnabled: false,
-                    // markers: questsStore!.getMapMakers(),
+                    markers: mapStore!.markers.toSet(),
                     onMapCreated: (GoogleMapController controller) {
                       _controller = controller;
                     },
@@ -56,7 +68,7 @@ class _QuestMapState extends State<QuestMap> {
                         mapStore!.selectQuestInfo = null;
                     },
                   ),
-                  QuestQuickInfo(mapStore!.selectQuestInfo),
+                  // QuestQuickInfo(mapStore!.selectQuestInfo),
                 ],
               ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
