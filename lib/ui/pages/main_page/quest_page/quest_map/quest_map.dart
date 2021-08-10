@@ -67,7 +67,7 @@ class _QuestMapState extends State<QuestMap> {
                       mapStore!.getQuests(bounds);
                     },
                     onTap: (point) {
-                      if (mapStore!.selectQuestId != null)
+                      if (mapStore!.infoPanel != InfoPanel.Nope)
                         mapStore!.onCloseQuest();
                     },
                   ),
@@ -77,7 +77,9 @@ class _QuestMapState extends State<QuestMap> {
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: AnimatedContainer(
           padding: EdgeInsets.only(
-              left: 25, bottom: mapStore!.selectQuestId != null ? 324.0 : 0.0),
+            left: 25,
+            bottom: mapStore!.infoPanel != InfoPanel.Nope ? 324.0 : 0.0,
+          ),
           duration: const Duration(milliseconds: 300),
           curve: Curves.fastOutSlowIn,
           child: Row(
@@ -93,11 +95,11 @@ class _QuestMapState extends State<QuestMap> {
               ),
               FloatingActionButton(
                 heroTag: "QuestMapRightActionButton",
-                onPressed: mapStore!.selectQuestId == null
+                onPressed: mapStore!.infoPanel == InfoPanel.Nope
                     ? _onMyLocationPressed
                     : mapStore!.onCloseQuest,
                 child: Icon(
-                  mapStore!.selectQuestId == null
+                  mapStore!.infoPanel == InfoPanel.Nope
                       ? Icons.location_on
                       : Icons.close,
                 ),

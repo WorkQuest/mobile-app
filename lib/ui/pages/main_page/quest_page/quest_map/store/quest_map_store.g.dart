@@ -9,18 +9,18 @@ part of 'quest_map_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$QuestMapStore on _QuestMapStore, Store {
-  final _$selectQuestIdAtom = Atom(name: '_QuestMapStore.selectQuestId');
+  final _$infoPanelAtom = Atom(name: '_QuestMapStore.infoPanel');
 
   @override
-  String? get selectQuestId {
-    _$selectQuestIdAtom.reportRead();
-    return super.selectQuestId;
+  InfoPanel get infoPanel {
+    _$infoPanelAtom.reportRead();
+    return super.infoPanel;
   }
 
   @override
-  set selectQuestId(String? value) {
-    _$selectQuestIdAtom.reportWrite(value, super.selectQuestId, () {
-      super.selectQuestId = value;
+  set infoPanel(InfoPanel value) {
+    _$infoPanelAtom.reportWrite(value, super.infoPanel, () {
+      super.infoPanel = value;
     });
   }
 
@@ -152,7 +152,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   @override
   String toString() {
     return '''
-selectQuestId: ${selectQuestId},
+infoPanel: ${infoPanel},
 selectQuestInfo: ${selectQuestInfo},
 bufferQuests: ${bufferQuests},
 points: ${points},

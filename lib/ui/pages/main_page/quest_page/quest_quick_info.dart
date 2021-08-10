@@ -16,55 +16,84 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
   Widget build(BuildContext context) {
     final QuestMapStore mapStore = context.read<QuestMapStore>();
     return AnimatedContainer(
-      height: mapStore.selectQuestId == null ? 0.0 : 324.0,
+      height: mapStore.infoPanel == InfoPanel.Nope ? 0.0 : 324.0,
       width: MediaQuery.of(context).size.width,
       duration: const Duration(milliseconds: 300),
       curve: Curves.fastOutSlowIn,
-      child: Container(
-        color: Colors.white,
-        child: mapStore.selectQuestInfo != null
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyQuestsItem(mapStore.selectQuestInfo!, isExpanded: true),
-                  Spacer(),
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 18, horizontal: 16),
-                    width: MediaQuery.of(context).size.width - 32,
-                    height: 43,
-                    child: TextButton(
-                      onPressed: mapStore.selectQuestInfo != null
-                          ? () {
-                              Navigator.of(context, rootNavigator: true)
-                                  .pushNamed(MyQuestDetails.routeName,
-                                      arguments: mapStore.selectQuestInfo!);
-                            }
-                          : null,
-                      child: Text("Show more",
-                          style: TextStyle(color: Colors.white)),
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed))
-                              return Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.5);
-                            return const Color(0xFF0083C7);
-                          },
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              )
-            : Flexible(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
+      child: mapStore.infoPanel == InfoPanel.Point
+          ? getQuestBody()
+          : getClusterBody(),
+    );
+  }
+
+  Widget getClusterBody() {
+    return Container(
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Cluster"),
+          Spacer(),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+            width: MediaQuery.of(context).size.width - 32,
+            height: 43,
+            child: button(
+              title: "View all",
+              onPressed: () {},
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getQuestBody() {
+    final QuestMapStore mapStore = context.read<QuestMapStore>();
+    return Container(
+      color: Colors.white,
+      child: mapStore.selectQuestInfo != null
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                MyQuestsItem(mapStore.selectQuestInfo!, isExpanded: true),
+                Spacer(),
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+                  width: MediaQuery.of(context).size.width - 32,
+                  height: 43,
+                  child: button(
+                    title: "Show more",
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pushNamed(
+                          MyQuestDetails.routeName,
+                          arguments: mapStore.selectQuestInfo!);
+                    },
+                  ),
+                )
+              ],
+            )
+          : Flexible(
+              child: Center(
+                child: CircularProgressIndicator(),
               ),
+            ),
+    );
+  }
+
+  Widget button({required String title, required void Function()? onPressed}) {
+    return TextButton(
+      onPressed: onPressed,
+      child: Text(title, style: TextStyle(color: Colors.white)),
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.pressed))
+              return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+            return const Color(0xFF0083C7);
+          },
+        ),
       ),
     );
   }

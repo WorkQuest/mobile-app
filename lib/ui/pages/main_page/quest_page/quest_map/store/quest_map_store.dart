@@ -24,7 +24,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   _QuestMapStore(this._apiProvider);
 
   @observable
-  String? selectQuestId;
+  InfoPanel infoPanel = InfoPanel.Nope;
 
   @observable
   BaseQuestResponse? selectQuestInfo;
@@ -64,7 +64,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
       newMarkersList.add(
         Marker(
           onTap: item.type == TypeMarker.Cluster
-              ? null
+              ? () => this.infoPanel = InfoPanel.Cluster
               : () => onTabQuest(item.questId!),
           icon: item.type == TypeMarker.Cluster
               ? await getClusterMarker(item.pointsCount, elipse)
@@ -82,17 +82,19 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
 
   @action
   onTabQuest(String id) async {
-    if (this.selectQuestId == id) return;
+    this.infoPanel = InfoPanel.Point;
     this.selectQuestInfo = null;
-    this.selectQuestId = id;
-    if (bufferQuests.containsKey(id)) this.selectQuestInfo = bufferQuests[id];
-    this.selectQuestInfo = await _apiProvider.getQuest(id: id);
-    bufferQuests[id] = this.selectQuestInfo!;
+    if (bufferQuests.containsKey(id)) {
+      this.selectQuestInfo = bufferQuests[id];
+    } else {
+      this.selectQuestInfo = await _apiProvider.getQuest(id: id);
+      bufferQuests[id] = this.selectQuestInfo!;
+    }
   }
 
   @action
   onCloseQuest() {
-    this.selectQuestId = null;
+    this.infoPanel = InfoPanel.Nope;
     this.selectQuestInfo = null;
   }
 
@@ -109,3 +111,5 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
         context, "assets/marker.svg", size, Color(0xFFDF3333)));
   }
 }
+
+enum InfoPanel { Nope, Point, Cluster }
