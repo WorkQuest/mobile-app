@@ -26,8 +26,12 @@ class ImageViewerWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  for (int i = 1; i < medias.length-1; i++) ...[
-                    getImageCell(i, context),
+                  if (medias.length >= 2) ...[
+                    getImageCell(1, context),
+                    const SizedBox(height: 10),
+                  ],
+                  if (medias.length >= 3) ...[
+                    getImageCell(2, context),
                     const SizedBox(height: 10),
                   ],
                   TextButton(

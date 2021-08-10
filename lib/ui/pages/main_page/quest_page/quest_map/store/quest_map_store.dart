@@ -58,6 +58,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   }
 
   Future<List<Marker>> getMarkerList() async {
+    final elipse = await getImageFromPath("assets/Ellipse.png");
     List<Marker> newMarkersList = [];
     for (var item in points) {
       newMarkersList.add(
@@ -66,8 +67,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
               ? null
               : () => onTabQuest(item.questId!),
           icon: item.type == TypeMarker.Cluster
-              ? await getClusterMarker(
-                  item.pointsCount, Colors.red, Colors.white, 120)
+              ? await getClusterMarker(item.pointsCount, elipse)
               : iconsMarker[1],
           markerId: MarkerId(item.questId == null
               ? item.location.latitude.toString() +
@@ -98,7 +98,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
 
   @action
   loadIcons(BuildContext context) async {
-    const size = Size(22, 29);
+    const size = Size(26, 34.27);
     iconsMarker.add(await svgToBitMap(
         context, "assets/marker.svg", size, Color(0xFF22CC14)));
     iconsMarker.add(await svgToBitMap(

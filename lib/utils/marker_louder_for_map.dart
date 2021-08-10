@@ -13,37 +13,25 @@ Future<ui.Image> getImageFromPath(String imagePath) async {
   ui.decodeImageFromList(byteData.buffer.asUint8List(), (ui.Image img) {
     return completer.complete(img);
   });
-
   return completer.future;
 }
 
 Future<BitmapDescriptor> getClusterMarker(
-  int clusterSize,
-  Color clusterColor,
-  Color textColor,
-  int width,
-) async {
+    int clusterSize, ui.Image elipse) async {
   final PictureRecorder pictureRecorder = PictureRecorder();
   final Canvas canvas = Canvas(pictureRecorder);
-  final Paint paint = Paint()..color = clusterColor;
-  final TextPainter textPainter = TextPainter(
-    textDirection: TextDirection.ltr,
-  );
-
-  final double radius = width / 2;
-
-  canvas.drawCircle(
-    Offset(radius, radius),
-    radius,
-    paint,
-  );
+  final TextPainter textPainter = TextPainter(textDirection: TextDirection.ltr);
+  final width = 120.0;
+  final height = 150.27;
+  Rect oval = Rect.fromLTWH(0, 0, width, height);
+  paintImage(canvas: canvas, image: elipse, rect: oval, fit: BoxFit.fitHeight);
 
   textPainter.text = TextSpan(
     text: clusterSize.toString(),
     style: TextStyle(
-      fontSize: radius - 5,
+      fontSize: clusterSize >= 1000 ? 40 : 50,
       fontWeight: FontWeight.bold,
-      color: textColor,
+      color: Colors.white,
     ),
   );
 
@@ -51,18 +39,15 @@ Future<BitmapDescriptor> getClusterMarker(
   textPainter.paint(
     canvas,
     Offset(
-      radius - textPainter.width / 2,
-      radius - textPainter.height / 2,
+      (width / 2) - textPainter.width / 2,
+      30,
     ),
   );
-
   final image = await pictureRecorder.endRecording().toImage(
-    radius.toInt() * 2,
-    radius.toInt() * 2,
-  );
-
+        width.round(),
+        height.round(),
+      );
   final data = await image.toByteData(format: ImageByteFormat.png);
-
   return BitmapDescriptor.fromBytes(data!.buffer.asUint8List());
 }
 
