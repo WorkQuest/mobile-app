@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/quest_map_point.dart';
 import 'package:app/utils/marker_louder_for_map.dart';
 import 'package:flutter/material.dart';
@@ -22,18 +23,20 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
 
   _QuestMapStore(this._apiProvider);
 
-  String? selectQuestInfo;
+  @observable
+  String? selectQuestId;
+
+  @observable
+  BaseQuestResponse? selectQuestInfo;
+
+  @observable
+  Map<String, BaseQuestResponse> bufferQuests = {};
 
   @observable
   List<QuestMapPoint> points = [];
 
   @observable
-  List<Marker> markers = [
-    Marker(
-        markerId: MarkerId("1"),
-        position: LatLng(56.4740921, 84.9480469),
-        icon: BitmapDescriptor.defaultMarker)
-  ];
+  List<Marker> markers = [];
 
   @observable
   Timer? debounce;
@@ -46,28 +49,51 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       points = await _apiProvider.mapPoints(bounds);
-      List<Marker> newMarkersList = [];
-      for (var item in points) {
-        newMarkersList.add(
-          Marker(
-            icon: item.type == TypeMarker.Cluster
-                ? await getClusterMarker(
-                    item.pointsCount, Colors.red, Colors.white, 140)
-                : iconsMarker[1],
-            markerId: MarkerId(item.questId == null
-                ? item.location.latitude.toString() +
-                    item.location.longitude.toString()
-                : item.questId!),
-            position: LatLng(item.location.longitude, item.location.latitude),
-          ),
-        );
-      }
-      markers = newMarkersList;
+      markers = await getMarkerList();
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
+  }
+
+  Future<List<Marker>> getMarkerList() async {
+    List<Marker> newMarkersList = [];
+    for (var item in points) {
+      newMarkersList.add(
+        Marker(
+          onTap: item.type == TypeMarker.Cluster
+              ? null
+              : () => onTabQuest(item.questId!),
+          icon: item.type == TypeMarker.Cluster
+              ? await getClusterMarker(
+                  item.pointsCount, Colors.red, Colors.white, 120)
+              : iconsMarker[1],
+          markerId: MarkerId(item.questId == null
+              ? item.location.latitude.toString() +
+                  item.location.longitude.toString()
+              : item.questId!),
+          position: LatLng(item.location.longitude, item.location.latitude),
+        ),
+      );
+    }
+    return newMarkersList;
+  }
+
+  @action
+  onTabQuest(String id) async {
+    if (this.selectQuestId == id) return;
+    this.selectQuestInfo = null;
+    this.selectQuestId = id;
+    if (bufferQuests.containsKey(id)) this.selectQuestInfo = bufferQuests[id];
+    this.selectQuestInfo = await _apiProvider.getQuest(id: id);
+    bufferQuests[id] = this.selectQuestInfo!;
+  }
+
+  @action
+  onCloseQuest() {
+    this.selectQuestId = null;
+    this.selectQuestInfo = null;
   }
 
   @action

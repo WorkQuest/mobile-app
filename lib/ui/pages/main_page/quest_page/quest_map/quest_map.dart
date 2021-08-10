@@ -60,22 +60,24 @@ class _QuestMapState extends State<QuestMap> {
                     myLocationEnabled: true,
                     myLocationButtonEnabled: false,
                     markers: mapStore!.markers.toSet(),
-                    onMapCreated: (GoogleMapController controller) {
+                    onMapCreated: (GoogleMapController controller) async {
                       _controller = controller;
+                      LatLngBounds bounds =
+                          await _controller.getVisibleRegion();
+                      mapStore!.getQuests(bounds);
                     },
                     onTap: (point) {
-                      if (mapStore!.selectQuestInfo != null)
-                        mapStore!.selectQuestInfo = null;
+                      if (mapStore!.selectQuestId != null)
+                        mapStore!.onCloseQuest();
                     },
                   ),
-                  // QuestQuickInfo(mapStore!.selectQuestInfo),
+                  QuestQuickInfo(),
                 ],
               ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: AnimatedContainer(
           padding: EdgeInsets.only(
-              left: 25,
-              bottom: mapStore!.selectQuestInfo != null ? 324.0 : 0.0),
+              left: 25, bottom: mapStore!.selectQuestId != null ? 324.0 : 0.0),
           duration: const Duration(milliseconds: 300),
           curve: Curves.fastOutSlowIn,
           child: Row(
@@ -91,11 +93,11 @@ class _QuestMapState extends State<QuestMap> {
               ),
               FloatingActionButton(
                 heroTag: "QuestMapRightActionButton",
-                onPressed: mapStore!.selectQuestInfo == null
+                onPressed: mapStore!.selectQuestId == null
                     ? _onMyLocationPressed
-                    : () => mapStore!.selectQuestInfo = null,
+                    : mapStore!.onCloseQuest,
                 child: Icon(
-                  mapStore!.selectQuestInfo == null
+                  mapStore!.selectQuestId == null
                       ? Icons.location_on
                       : Icons.close,
                 ),

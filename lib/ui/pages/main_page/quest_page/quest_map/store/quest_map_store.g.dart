@@ -9,6 +9,51 @@ part of 'quest_map_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$QuestMapStore on _QuestMapStore, Store {
+  final _$selectQuestIdAtom = Atom(name: '_QuestMapStore.selectQuestId');
+
+  @override
+  String? get selectQuestId {
+    _$selectQuestIdAtom.reportRead();
+    return super.selectQuestId;
+  }
+
+  @override
+  set selectQuestId(String? value) {
+    _$selectQuestIdAtom.reportWrite(value, super.selectQuestId, () {
+      super.selectQuestId = value;
+    });
+  }
+
+  final _$selectQuestInfoAtom = Atom(name: '_QuestMapStore.selectQuestInfo');
+
+  @override
+  BaseQuestResponse? get selectQuestInfo {
+    _$selectQuestInfoAtom.reportRead();
+    return super.selectQuestInfo;
+  }
+
+  @override
+  set selectQuestInfo(BaseQuestResponse? value) {
+    _$selectQuestInfoAtom.reportWrite(value, super.selectQuestInfo, () {
+      super.selectQuestInfo = value;
+    });
+  }
+
+  final _$bufferQuestsAtom = Atom(name: '_QuestMapStore.bufferQuests');
+
+  @override
+  Map<String, BaseQuestResponse> get bufferQuests {
+    _$bufferQuestsAtom.reportRead();
+    return super.bufferQuests;
+  }
+
+  @override
+  set bufferQuests(Map<String, BaseQuestResponse> value) {
+    _$bufferQuestsAtom.reportWrite(value, super.bufferQuests, () {
+      super.bufferQuests = value;
+    });
+  }
+
   final _$pointsAtom = Atom(name: '_QuestMapStore.points');
 
   @override
@@ -76,6 +121,13 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     return _$getQuestsAsyncAction.run(() => super.getQuests(bounds));
   }
 
+  final _$onTabQuestAsyncAction = AsyncAction('_QuestMapStore.onTabQuest');
+
+  @override
+  Future onTabQuest(String id) {
+    return _$onTabQuestAsyncAction.run(() => super.onTabQuest(id));
+  }
+
   final _$loadIconsAsyncAction = AsyncAction('_QuestMapStore.loadIcons');
 
   @override
@@ -83,9 +135,26 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     return _$loadIconsAsyncAction.run(() => super.loadIcons(context));
   }
 
+  final _$_QuestMapStoreActionController =
+      ActionController(name: '_QuestMapStore');
+
+  @override
+  dynamic onCloseQuest() {
+    final _$actionInfo = _$_QuestMapStoreActionController.startAction(
+        name: '_QuestMapStore.onCloseQuest');
+    try {
+      return super.onCloseQuest();
+    } finally {
+      _$_QuestMapStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
+selectQuestId: ${selectQuestId},
+selectQuestInfo: ${selectQuestInfo},
+bufferQuests: ${bufferQuests},
 points: ${points},
 markers: ${markers},
 debounce: ${debounce},

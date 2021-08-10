@@ -85,23 +85,18 @@ extension QuestService on ApiProvider {
   }
 
   Future<List<QuestMapPoint>> mapPoints(LatLngBounds bounds) async {
-    try {
-      final response = await _httpClient.get(
-        query: '/v1/quests/map/points' +
-            '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
-            'north[longitude]=${bounds.northeast.longitude.toString()}' +
-            '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
-            'south[longitude]=${bounds.southwest.longitude.toString()}',
-      );
-      return List<QuestMapPoint>.from(
-        response.map(
-          (x) => QuestMapPoint.fromJson(x),
-        ),
-      );
-    } catch (e) {
-      print("[Token] Error $e");
-      throw Exception(e);
-    }
+    final response = await _httpClient.get(
+      query: '/v1/quests/map/points' +
+          '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
+          'north[longitude]=${bounds.northeast.longitude.toString()}' +
+          '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
+          'south[longitude]=${bounds.southwest.longitude.toString()}',
+    );
+    return List<QuestMapPoint>.from(
+      response.map(
+        (x) => QuestMapPoint.fromJson(x),
+      ),
+    );
   }
 
   Future<List<BaseQuestResponse>> getEmployerQuests(
@@ -124,6 +119,13 @@ extension QuestService on ApiProvider {
         (x) => BaseQuestResponse.fromJson(x),
       ),
     );
+  }
+
+  Future<BaseQuestResponse> getQuest({
+    required String id,
+  }) async {
+    final responseData = await _httpClient.get(query: '/v1/quest/$id');
+    return BaseQuestResponse.fromJson(responseData);
   }
 
   Future<List<BaseQuestResponse>> getQuests({
