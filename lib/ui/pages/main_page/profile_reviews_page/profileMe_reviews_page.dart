@@ -1,4 +1,5 @@
 import 'package:app/enums.dart';
+import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profile_widgets.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
@@ -57,6 +58,16 @@ class _ProfileReviewsState extends State<ProfileReviews>
                 ),
                 onPressed: () => Navigator.pop(context),
               ),
+              actions: [
+                IconButton(
+                  icon: Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                  ),
+                  onPressed: () => Navigator.of(context, rootNavigator: true)
+                      .pushNamed(ChangeProfilePage.routeName),
+                ),
+              ],
               centerTitle: false,
               pinned: true,
               expandedHeight: 250,
