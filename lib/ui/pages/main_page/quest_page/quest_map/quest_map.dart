@@ -24,7 +24,7 @@ class _QuestMapState extends State<QuestMap> {
   @override
   void initState() {
     mapStore = context.read<QuestMapStore>();
-    mapStore!.loadIcons(context);
+    mapStore!.createMarkerLoader(context);
     _getCurrentLocation();
     super.initState();
   }

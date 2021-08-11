@@ -32,16 +32,23 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Cluster"),
-          Spacer(),
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-            width: MediaQuery.of(context).size.width - 32,
-            height: 43,
-            child: button(
-              title: "View all",
-              onPressed: () {},
+            padding: EdgeInsets.only(top: 36.0, left: 16),
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                Text(
+                  "Quests in the region:\n",
+                  style: TextStyle(fontSize: 20),
+                ),
+                Text("132"),
+              ],
             ),
+          ),
+          Spacer(),
+          button(
+            title: "View all",
+            onPressed: () {},
           ),
         ],
       ),
@@ -58,20 +65,14 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
               children: [
                 MyQuestsItem(mapStore.selectQuestInfo!, isExpanded: true),
                 Spacer(),
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-                  width: MediaQuery.of(context).size.width - 32,
-                  height: 43,
-                  child: button(
-                    title: "Show more",
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pushNamed(
-                          MyQuestDetails.routeName,
-                          arguments: mapStore.selectQuestInfo!);
-                    },
-                  ),
-                )
+                button(
+                  title: "Show more",
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pushNamed(
+                        MyQuestDetails.routeName,
+                        arguments: mapStore.selectQuestInfo!);
+                  },
+                ),
               ],
             )
           : Flexible(
@@ -83,16 +84,21 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
   }
 
   Widget button({required String title, required void Function()? onPressed}) {
-    return TextButton(
-      onPressed: onPressed,
-      child: Text(title, style: TextStyle(color: Colors.white)),
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-          (Set<MaterialState> states) {
-            if (states.contains(MaterialState.pressed))
-              return Theme.of(context).colorScheme.primary.withOpacity(0.5);
-            return const Color(0xFF0083C7);
-          },
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+      width: MediaQuery.of(context).size.width - 32,
+      height: 43,
+      child: TextButton(
+        onPressed: onPressed,
+        child: Text(title, style: TextStyle(color: Colors.white)),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+            (Set<MaterialState> states) {
+              if (states.contains(MaterialState.pressed))
+                return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+              return const Color(0xFF0083C7);
+            },
+          ),
         ),
       ),
     );

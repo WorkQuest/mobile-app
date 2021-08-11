@@ -99,18 +99,18 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
-  final _$iconsMarkerAtom = Atom(name: '_QuestMapStore.iconsMarker');
+  final _$markerLoaderAtom = Atom(name: '_QuestMapStore.markerLoader');
 
   @override
-  List<BitmapDescriptor> get iconsMarker {
-    _$iconsMarkerAtom.reportRead();
-    return super.iconsMarker;
+  MarkerLoader? get markerLoader {
+    _$markerLoaderAtom.reportRead();
+    return super.markerLoader;
   }
 
   @override
-  set iconsMarker(List<BitmapDescriptor> value) {
-    _$iconsMarkerAtom.reportWrite(value, super.iconsMarker, () {
-      super.iconsMarker = value;
+  set markerLoader(MarkerLoader? value) {
+    _$markerLoaderAtom.reportWrite(value, super.markerLoader, () {
+      super.markerLoader = value;
     });
   }
 
@@ -128,13 +128,6 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     return _$onTabQuestAsyncAction.run(() => super.onTabQuest(id));
   }
 
-  final _$loadIconsAsyncAction = AsyncAction('_QuestMapStore.loadIcons');
-
-  @override
-  Future loadIcons(BuildContext context) {
-    return _$loadIconsAsyncAction.run(() => super.loadIcons(context));
-  }
-
   final _$_QuestMapStoreActionController =
       ActionController(name: '_QuestMapStore');
 
@@ -150,6 +143,17 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   }
 
   @override
+  dynamic createMarkerLoader(BuildContext context) {
+    final _$actionInfo = _$_QuestMapStoreActionController.startAction(
+        name: '_QuestMapStore.createMarkerLoader');
+    try {
+      return super.createMarkerLoader(context);
+    } finally {
+      _$_QuestMapStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 infoPanel: ${infoPanel},
@@ -158,7 +162,7 @@ bufferQuests: ${bufferQuests},
 points: ${points},
 markers: ${markers},
 debounce: ${debounce},
-iconsMarker: ${iconsMarker}
+markerLoader: ${markerLoader}
     ''';
   }
 }

@@ -42,7 +42,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   Timer? debounce;
 
   @observable
-  List<BitmapDescriptor> iconsMarker = [];
+  MarkerLoader? markerLoader;
 
   @action
   Future getQuests(LatLngBounds bounds) async {
@@ -58,7 +58,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   }
 
   Future<List<Marker>> getMarkerList() async {
-    final elipse = await getImageFromPath("assets/Ellipse.png");
+    if (this.markerLoader == null) return [];
     List<Marker> newMarkersList = [];
     for (var item in points) {
       newMarkersList.add(
@@ -67,8 +67,8 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
               ? () => this.infoPanel = InfoPanel.Cluster
               : () => onTabQuest(item.questId!),
           icon: item.type == TypeMarker.Cluster
-              ? await getClusterMarker(item.pointsCount, elipse)
-              : iconsMarker[1],
+              ? await markerLoader!.getCluster(item.pointsCount)
+              : markerLoader!.icons[1],
           markerId: MarkerId(item.questId == null
               ? item.location.latitude.toString() +
                   item.location.longitude.toString()
@@ -99,17 +99,8 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   }
 
   @action
-  loadIcons(BuildContext context) async {
-    const size = Size(26, 34.27);
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFF22CC14)));
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFF22CC14)));
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFFE8D20D)));
-    iconsMarker.add(await svgToBitMap(
-        context, "assets/marker.svg", size, Color(0xFFDF3333)));
-  }
+  createMarkerLoader(BuildContext context) =>
+      this.markerLoader = new MarkerLoader(context);
 }
 
 enum InfoPanel { Nope, Point, Cluster }
