@@ -23,9 +23,19 @@ import '../ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_stor
 import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i17;
 import '../ui/pages/profile_me_store/profile_me_store.dart' as _i18;
 import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i13;
+import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i10;
+import '../ui/pages/main_page/quest_page/quest_list/store/quests_store.dart'
+    as _i12;
+import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
+    as _i11;
+import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i13;
+import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i16;
+import '../ui/pages/profile_me_store/profile_me_store.dart' as _i17;
+import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i14;
 import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
     as _i7;
 import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i14;
+import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i15;
 import '../utils/set_environment.dart' as _i6;
 
 const String _test = 'test';
@@ -65,10 +75,25 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i15.WalletStore(get<_i8.ApiProvider>()));
     gh.factory<_i16.WithdrawPageStore>(
         () => _i16.WithdrawPageStore(get<_i8.ApiProvider>()));
+    gh.factory<_i10.MyQuestStore>(
+        () => _i10.MyQuestStore(get<_i8.ApiProvider>()));
+    gh.factory<_i11.QuestMapStore>(
+        () => _i11.QuestMapStore(get<_i8.ApiProvider>()));
+    gh.factory<_i12.QuestsStore>(
+        () => _i12.QuestsStore(get<_i8.ApiProvider>()));
+    gh.factory<_i13.SettingsPageStore>(
+        () => _i13.SettingsPageStore(get<_i8.ApiProvider>()));
+    gh.factory<_i14.SignInStore>(
+        () => _i14.SignInStore(get<_i8.ApiProvider>()));
+    gh.factory<_i15.SignUpStore>(
+        () => _i15.SignUpStore(get<_i8.ApiProvider>()));
     gh.singleton<_i8.ApiProvider>(_i8.ApiProvider(get<_i3.IHttpClient>()));
     gh.singleton<_i17.PinCodeStore>(_i17.PinCodeStore(get<_i8.ApiProvider>()));
     gh.singleton<_i18.ProfileMeStore>(
         _i18.ProfileMeStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i16.PinCodeStore>(_i16.PinCodeStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i17.ProfileMeStore>(
+        _i17.ProfileMeStore(get<_i8.ApiProvider>()));
     return this;
   }
 }

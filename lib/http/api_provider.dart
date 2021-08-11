@@ -4,8 +4,10 @@ import 'package:app/model/bearer_token.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/model/quests_models/quest_map_point.dart';
 import 'package:dio/dio.dart';
 import 'package:drishya_picker/drishya_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:io';
 import 'package:injectable/injectable.dart';
 
@@ -82,7 +84,22 @@ extension QuestService on ApiProvider {
     );
   }
 
-  Future<dynamic> getEmployerQuests(
+  Future<List<QuestMapPoint>> mapPoints(LatLngBounds bounds) async {
+    final response = await _httpClient.get(
+      query: '/v1/quests/map/points' +
+          '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
+          'north[longitude]=${bounds.northeast.longitude.toString()}' +
+          '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
+          'south[longitude]=${bounds.southwest.longitude.toString()}',
+    );
+    return List<QuestMapPoint>.from(
+      response.map(
+        (x) => QuestMapPoint.fromJson(x),
+      ),
+    );
+  }
+
+  Future<List<BaseQuestResponse>> getEmployerQuests(
     String userId, {
     int limit = 10,
     int offset = 0,
@@ -94,28 +111,21 @@ extension QuestService on ApiProvider {
     bool performing = false,
     bool starred = false,
   }) async {
-    try {
-      // final responseData =
-      await _httpClient.get(
-        query: '/v1/employer/$userId/quests',
-        queryParameters: {
-          // "offset": offset,
-          // "limit": limit,
-          // "q": searchWord,
-          // if (priority == -1) "priority": priority,
-          // if (status == -1) "status": status,
-          // if (sort != null) "sort": sort,
-          "userId": userId,
-          "invited": invited,
-          "performing": performing,
-          "starred": starred,
-        },
-      );
-      return "responseData";
-    } catch (e) {
-      print("Tag_WK Error $e");
-      return "Error";
-    }
+    final responseData = await _httpClient.get(
+      query: "/v1/employer/$userId/quests",
+    );
+    return List<BaseQuestResponse>.from(
+      responseData["quests"].map(
+        (x) => BaseQuestResponse.fromJson(x),
+      ),
+    );
+  }
+
+  Future<BaseQuestResponse> getQuest({
+    required String id,
+  }) async {
+    final responseData = await _httpClient.get(query: '/v1/quest/$id');
+    return BaseQuestResponse.fromJson(responseData);
   }
 
   Future<List<BaseQuestResponse>> getQuests({
@@ -132,8 +142,8 @@ extension QuestService on ApiProvider {
     final responseData = await _httpClient.get(
       query: '/v1/quests',
       queryParameters: {
-        //"offset": offset,
-        //"limit": limit,
+        "offset": offset,
+        "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
         //"priority": priority == -1 ? null : priority,
         //"status": status == -1 ? null : status,

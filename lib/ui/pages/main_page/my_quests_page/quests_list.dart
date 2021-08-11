@@ -14,22 +14,35 @@ class QuestsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFFF7F8FA),
-      child: questsList!.isNotEmpty
-          ? ListView.builder(
-              itemCount: questsList!.length,
-              padding: EdgeInsets.zero,
-              itemBuilder: (_, index) {
-                return MyQuestsItem(questsList![index],
-                    itemType: questItemPriorityType);
-              },
-            )
-          : Center(
-              child: Text(
-                "you don't have any ${enumToString(questItemPriorityType)} Quest yet",
-              ),
-            ),
+        color: const Color(0xFFF7F8FA),
+        child: questsList == null
+            ? getLoadingBody()
+            : questsList!.isNotEmpty
+                ? getBody()
+                : getEmptyBody());
+  }
+
+  Widget getBody() {
+    return ListView.builder(
+      itemCount: questsList!.length,
+      padding: EdgeInsets.zero,
+      itemBuilder: (_, index) {
+        return MyQuestsItem(questsList![index],
+            itemType: questItemPriorityType);
+      },
     );
+  }
+
+  Widget getEmptyBody() {
+    return Center(
+      child: Text(
+        "you don't have any ${enumToString(questItemPriorityType)} Quest yet",
+      ),
+    );
+  }
+
+  Widget getLoadingBody() {
+    return Center(child: CircularProgressIndicator());
   }
 
   String enumToString(QuestItemPriorityType questItemPriorityType) {

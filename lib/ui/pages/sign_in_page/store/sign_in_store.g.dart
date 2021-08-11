@@ -69,6 +69,17 @@ mixin _$SignInStore on _SignInStore, Store {
   }
 
   @override
+  String getUsername() {
+    final _$actionInfo = _$_SignInStoreActionController.startAction(
+        name: '_SignInStore.getUsername');
+    try {
+      return super.getUsername();
+    } finally {
+      _$_SignInStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setPassword(String value) {
     final _$actionInfo = _$_SignInStoreActionController.startAction(
         name: '_SignInStore.setPassword');

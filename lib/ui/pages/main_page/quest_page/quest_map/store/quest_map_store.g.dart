@@ -1,0 +1,168 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'quest_map_store.dart';
+
+// **************************************************************************
+// StoreGenerator
+// **************************************************************************
+
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+
+mixin _$QuestMapStore on _QuestMapStore, Store {
+  final _$infoPanelAtom = Atom(name: '_QuestMapStore.infoPanel');
+
+  @override
+  InfoPanel get infoPanel {
+    _$infoPanelAtom.reportRead();
+    return super.infoPanel;
+  }
+
+  @override
+  set infoPanel(InfoPanel value) {
+    _$infoPanelAtom.reportWrite(value, super.infoPanel, () {
+      super.infoPanel = value;
+    });
+  }
+
+  final _$selectQuestInfoAtom = Atom(name: '_QuestMapStore.selectQuestInfo');
+
+  @override
+  BaseQuestResponse? get selectQuestInfo {
+    _$selectQuestInfoAtom.reportRead();
+    return super.selectQuestInfo;
+  }
+
+  @override
+  set selectQuestInfo(BaseQuestResponse? value) {
+    _$selectQuestInfoAtom.reportWrite(value, super.selectQuestInfo, () {
+      super.selectQuestInfo = value;
+    });
+  }
+
+  final _$bufferQuestsAtom = Atom(name: '_QuestMapStore.bufferQuests');
+
+  @override
+  Map<String, BaseQuestResponse> get bufferQuests {
+    _$bufferQuestsAtom.reportRead();
+    return super.bufferQuests;
+  }
+
+  @override
+  set bufferQuests(Map<String, BaseQuestResponse> value) {
+    _$bufferQuestsAtom.reportWrite(value, super.bufferQuests, () {
+      super.bufferQuests = value;
+    });
+  }
+
+  final _$pointsAtom = Atom(name: '_QuestMapStore.points');
+
+  @override
+  List<QuestMapPoint> get points {
+    _$pointsAtom.reportRead();
+    return super.points;
+  }
+
+  @override
+  set points(List<QuestMapPoint> value) {
+    _$pointsAtom.reportWrite(value, super.points, () {
+      super.points = value;
+    });
+  }
+
+  final _$markersAtom = Atom(name: '_QuestMapStore.markers');
+
+  @override
+  List<Marker> get markers {
+    _$markersAtom.reportRead();
+    return super.markers;
+  }
+
+  @override
+  set markers(List<Marker> value) {
+    _$markersAtom.reportWrite(value, super.markers, () {
+      super.markers = value;
+    });
+  }
+
+  final _$debounceAtom = Atom(name: '_QuestMapStore.debounce');
+
+  @override
+  Timer? get debounce {
+    _$debounceAtom.reportRead();
+    return super.debounce;
+  }
+
+  @override
+  set debounce(Timer? value) {
+    _$debounceAtom.reportWrite(value, super.debounce, () {
+      super.debounce = value;
+    });
+  }
+
+  final _$markerLoaderAtom = Atom(name: '_QuestMapStore.markerLoader');
+
+  @override
+  MarkerLoader? get markerLoader {
+    _$markerLoaderAtom.reportRead();
+    return super.markerLoader;
+  }
+
+  @override
+  set markerLoader(MarkerLoader? value) {
+    _$markerLoaderAtom.reportWrite(value, super.markerLoader, () {
+      super.markerLoader = value;
+    });
+  }
+
+  final _$getQuestsAsyncAction = AsyncAction('_QuestMapStore.getQuests');
+
+  @override
+  Future<dynamic> getQuests(LatLngBounds bounds) {
+    return _$getQuestsAsyncAction.run(() => super.getQuests(bounds));
+  }
+
+  final _$onTabQuestAsyncAction = AsyncAction('_QuestMapStore.onTabQuest');
+
+  @override
+  Future onTabQuest(String id) {
+    return _$onTabQuestAsyncAction.run(() => super.onTabQuest(id));
+  }
+
+  final _$_QuestMapStoreActionController =
+      ActionController(name: '_QuestMapStore');
+
+  @override
+  dynamic onCloseQuest() {
+    final _$actionInfo = _$_QuestMapStoreActionController.startAction(
+        name: '_QuestMapStore.onCloseQuest');
+    try {
+      return super.onCloseQuest();
+    } finally {
+      _$_QuestMapStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic createMarkerLoader(BuildContext context) {
+    final _$actionInfo = _$_QuestMapStoreActionController.startAction(
+        name: '_QuestMapStore.createMarkerLoader');
+    try {
+      return super.createMarkerLoader(context);
+    } finally {
+      _$_QuestMapStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String toString() {
+    return '''
+infoPanel: ${infoPanel},
+selectQuestInfo: ${selectQuestInfo},
+bufferQuests: ${bufferQuests},
+points: ${points},
+markers: ${markers},
+debounce: ${debounce},
+markerLoader: ${markerLoader}
+    ''';
+  }
+}

@@ -296,22 +296,16 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                     ),
                     titledField(
                       "About Quest",
-                      Container(
-                        height: 245,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFF7F8FA),
-                          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                      TextFormField(
+                        initialValue: store.description,
+                        onChanged: store.setAboutQuest,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 12,
+                        decoration: InputDecoration(
+                          hintText: 'Quest text',
                         ),
-                        child: TextFormField(
-                          initialValue: store.description,
-                          onChanged: store.setAboutQuest,
-                          keyboardType: TextInputType.multiline,
-                          decoration: InputDecoration(
-                            hintText: 'Quest text',
-                          ),
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
+                        style: TextStyle(
+                          fontSize: 16,
                         ),
                       ),
                     ),

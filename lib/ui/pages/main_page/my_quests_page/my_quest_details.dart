@@ -153,19 +153,16 @@ class _MyQuestDetailsState extends State<MyQuestDetails>
             const SizedBox(height: 15),
             Text(widget.questInfo.description),
             const SizedBox(height: 15),
-            Text(
-              "Quest materials",
-              style: TextStyle(
-                  fontSize: 18,
-                  color: Color(0xFF1D2127),
-                  fontWeight: FontWeight.w500),
-            ),
-            ImageViewerWidget([
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhwLMUTqqY2BADUh6b1tIn8kTD3tvUz9l6gw&usqp=CAU',
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQZWElbaF0pNId-dQDH-lbGmCuMW9nMK2mEQ&usqp=CAU',
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2Li261EJEg_W2sNpMl-LsEQ3p0aHVrDR0sA&usqp=CAU',
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbsZs3HAIsLZ62rqmMj17W3TOxeLexZAvwCA&usqp=CAU'
-            ]),
+            if (widget.questInfo.medias.isNotEmpty) ...[
+              const Text(
+                "Quest materials",
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Color(0xFF1D2127),
+                    fontWeight: FontWeight.w500),
+              ),
+              ImageViewerWidget(widget.questInfo.medias),
+            ],
             Text(
               (DateTime t) {
                 String h = t.hour < 10 ? '0${t.hour}' : t.hour.toString();

@@ -4,10 +4,14 @@ import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart'
 import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/change_password_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/change_passsword_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
@@ -31,6 +35,7 @@ import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
+
 import 'di/injector.dart';
 
 class Routes {
@@ -84,6 +89,12 @@ class Routes {
             providers: [
               Provider(
                 create: (context) => getIt.get<QuestsStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<MyQuestStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<QuestMapStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<SettingsPageStore>(),
