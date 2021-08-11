@@ -7,7 +7,8 @@ final _divider = const SizedBox(
 );
 
 class BankCardTransaction extends StatefulWidget {
- const BankCardTransaction({required this.transaction});
+  const BankCardTransaction({required this.transaction});
+
   final String transaction;
 
   @override
@@ -17,104 +18,132 @@ class BankCardTransaction extends StatefulWidget {
 class _BankCardTransactionState extends State<BankCardTransaction> {
   bool _expanded = true;
   int _groupValue = 0;
+
   @override
   Widget build(BuildContext context) {
-
-
-
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: ListView(
-
-        children: [
-          Row(
+    return Scaffold(
+      body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ListView(
             children: [
-              Text(
-                "Choose Card",
-              ),
-              Spacer(),
-              TextButton(
-                onPressed: () => bottomForm(
-                  context,
-                ),
-                child: Text("Add Card"),
-              ),
-            ],
-          ),
-          ExpansionPanelList(
-            elevation: 0,
-            children: [
-              ExpansionPanel(
-                headerBuilder: (context, isExpanded) {
-                  return SizedBox(
-                    height: 50.0,
-                    child: ListTile(
-                      title: Text(
-                        'Choose Card ',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  );
-                },
-                body: Column(
-                  children: [
-                    RadioListTile(
-                      title: Text(
-                        'Card 1',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      onChanged: (value) {},
-                      groupValue: 1,
-                      value: 0,
-                    ),
-                    RadioListTile(
-                      title: Text(
-                        'Card 2',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      onChanged: (value) {
-                        _groupValue = 2;
-                      },
-                      groupValue: _groupValue,
-                      value: 2,
-                    ),
-                    RadioListTile(
-                      toggleable: true,
-                      title: Text(
-                        'Card 3',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      onChanged: (value) {},
-                      groupValue: 1,
-                      value: 3,
-                    ),
-                  ],
-                ),
-                isExpanded: _expanded,
-                canTapOnHeader: true,
-              ),
-            ],
-            dividerColor: Colors.grey,
-            expansionCallback: (panelIndex, isExpanded) {
-              setState(() {
-                _expanded =!_expanded;
-              });
-            },
-          ),
-          Text("Amount"),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: "0 WDX",
+              Row(
+                children: [
+                  Text(
+                    "Choose Card",
                   ),
-                ),
+                  Spacer(),
+                  TextButton(
+                    onPressed: () => bottomForm(
+                      context,
+                    ),
+                    child: Text("Add Card"),
+                  ),
+                ],
               ),
-              Text("   =   "),
-              Expanded(
-                child: Container(
+              ExpansionPanelList(
+                elevation: 0,
+                children: [
+                  ExpansionPanel(
+                    headerBuilder: (context, isExpanded) {
+                      return SizedBox(
+                        height: 50.0,
+                        child: ListTile(
+                          title: Text(
+                            'Choose Card ',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      );
+                    },
+                    body: Column(
+                      children: [
+                        RadioListTile(
+                          title: Text(
+                            'Card 1',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _groupValue = 1;
+                            });
+                          },
+                          groupValue: _groupValue,
+                          value: 1,
+                        ),
+                        RadioListTile(
+                          title: Text(
+                            'Card 2',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _groupValue = 2;
+                            });
+                          },
+                          groupValue: _groupValue,
+                          value: 2,
+                        ),
+                        RadioListTile(
+                          toggleable: true,
+                          title: Text(
+                            'Card 3',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          onChanged: (value) {
+                           setState(() {
+                             _groupValue = 3;
+                           });
+                          },
+                          groupValue: _groupValue,
+                          value: 3,
+                        ),
+                      ],
+                    ),
+                    isExpanded: _expanded,
+                    canTapOnHeader: true,
+                  ),
+                ],
+                dividerColor: Colors.grey,
+                expansionCallback: (panelIndex, isExpanded) {
+                  setState(() {
+                    _expanded = !_expanded;
+                  });
+                },
+              ),
+              Text("Amount"),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        hintText: "0 WDX",
+                      ),
+                    ),
+                  ),
+                  Text("   =   "),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Color(0xFFF7F8FA),
+                          width: 2.0,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(6.0),
+                        ),
+                      ),
+                      height: 50.0,
+                      child: Text(r"   $ 0"),
+                    ),
+                  )
+                ],
+              ),
+              _divider,
+              titledTextBox(
+                "Total Fee",
+                Container(
                   alignment: Alignment.centerLeft,
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -128,56 +157,38 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                   height: 50.0,
                   child: Text(r"   $ 0"),
                 ),
-              )
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              titledTextBox(
+                "Processing Time",
+                Container(
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Color(0xFFF7F8FA),
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(6.0),
+                    ),
+                  ),
+                  height: 50.0,
+                  child: Text("   5 mins"),
+                ),
+              ),
+              const SizedBox(
+                height: 30.0,
+              ),
+              //Spacer(),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text(widget.transaction),
+              ),
             ],
           ),
-          _divider,
-          titledTextBox(
-            "Total Fee",
-            Container(
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Color(0xFFF7F8FA),
-                  width: 2.0,
-                ),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(6.0),
-                ),
-              ),
-              height: 50.0,
-              child: Text(r"   $ 0"),
-            ),
-          ),
-          const SizedBox(
-            height: 20.0,
-          ),
-          titledTextBox(
-            "Processing Time",
-            Container(
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Color(0xFFF7F8FA),
-                  width: 2.0,
-                ),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(6.0),
-                ),
-              ),
-              height: 50.0,
-              child: Text("   5 mins"),
-            ),
-          ),
-          const SizedBox(
-            height: 30.0,
-          ),
-          //Spacer(),
-          ElevatedButton(
-            onPressed: () {},
-            child: Text(widget.transaction),
-          ),
-        ],
+
       ),
     );
   }

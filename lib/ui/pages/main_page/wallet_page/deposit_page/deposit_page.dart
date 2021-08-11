@@ -3,6 +3,7 @@ import 'package:app/ui/pages/main_page/wallet_page/deposit_page/store/deposit_st
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
@@ -30,12 +31,18 @@ class _DepositPageState extends State<DepositPage>
       vsync: this,
       length: 2,
     );
+    _tabController.addListener(() {
+      if (_tabController.index == 0) {
+        FocusScope.of(context).unfocus();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final depositStore = context.read<DepositStore>();
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
         middle: Text("Deposit"),
@@ -81,6 +88,7 @@ class _DepositPageState extends State<DepositPage>
               children: [
                 ///Wallet Transfer
                 walletTab(),
+
                 ///Card Transfer
                 BankCardTransaction(
                   transaction: "Deposit",
@@ -94,7 +102,7 @@ class _DepositPageState extends State<DepositPage>
   }
 
   Widget walletTab() => Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -175,6 +183,10 @@ class _DepositPageState extends State<DepositPage>
           ],
         ),
       );
+
+  closeKeyboard() {
+    FocusScope.of(context).unfocus();
+  }
 
   Widget titledTextBox(String title, Widget textField) => Column(
         mainAxisSize: MainAxisSize.min,
