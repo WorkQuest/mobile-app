@@ -18,7 +18,6 @@ class BackgroundObserverPage extends StatefulWidget {
 
 class _BackgroundObserverPageState extends State<BackgroundObserverPage>
     with WidgetsBindingObserver {
-
   bool isOpen = false;
 
   @override
@@ -56,9 +55,6 @@ class _BackgroundObserverPageState extends State<BackgroundObserverPage>
     }
   }
 
-  final lastKnownStateKey = 'lastKnownStateKey';
-  final backgroundedTimeKey = 'backgroundedTimeKey';
-
   Future _paused() async {
     final sp = await SharedPreferences.getInstance();
     sp.setInt(lastKnownStateKey, AppLifecycleState.paused.index);
@@ -78,13 +74,11 @@ class _BackgroundObserverPageState extends State<BackgroundObserverPage>
     sp.setInt(lastKnownStateKey, AppLifecycleState.inactive.index);
   }
 
-  final pinLockMillis = 900000; //(15 minutes) milli seconds
-  
   Future _resumed() async {
     if (isOpen) return;
     final sp = await SharedPreferences.getInstance();
 
-    final bgTime = sp.getInt(backgroundedTimeKey) ?? 0;
+    final bgTime = sp.getInt(backgroundedTimeKey) ?? MAX_INT;
     final allowedBackgroundTime = bgTime + pinLockMillis;
     final shouldShowPIN =
         DateTime.now().millisecondsSinceEpoch > allowedBackgroundTime;
@@ -110,3 +104,8 @@ class _BackgroundObserverPageState extends State<BackgroundObserverPage>
     sp.setInt(lastKnownStateKey, AppLifecycleState.resumed.index);
   }
 }
+
+const lastKnownStateKey = 'lastKnownStateKey';
+const backgroundedTimeKey = 'backgroundedTimeKey';
+const pinLockMillis = 900000; //(15 minutes) milli seconds
+const MAX_INT = 9223372036854775807 - pinLockMillis;
