@@ -113,7 +113,8 @@ class _QuestListState extends State<QuestList> {
               ),
               OutlinedButton(
                 onPressed: () => Navigator.push(
-                    context, // Сделано для отладки будет перенесена в routes.dart
+                    context,
+                    // Сделано для отладки будет перенесена в routes.dart
                     MaterialPageRoute(builder: (_) => FilterQuestsPage())),
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
@@ -150,25 +151,37 @@ class _QuestListState extends State<QuestList> {
                   ),
                 _getDivider(),
                 Observer(
-                  builder: (_) => ListView.separated(
-                    key: scrollKey,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    separatorBuilder: (context, index) {
-                      return _getDivider();
-                    },
-                    padding: EdgeInsets.zero,
-                    itemCount: questsStore!.questsList!.length,
-                    itemBuilder: (_, index) {
-                      return MyQuestsItem(
-                        questsStore!.searchWord.isEmpty
-                            ? questsStore!.questsList![index]
-                            : questsStore!.searchResultList![index],
-                        itemType: this.questItemPriorityType,
-                      );
-                    },
-                  ),
+                  builder: (_) => questsStore!.searchWord.isNotEmpty &&
+                          questsStore!.searchResultList!.isEmpty
+                      ? Center(
+                          child: Text(
+                            "No Quest Found",
+                          ),
+                        )
+                      : ListView.separated(
+                          key: scrollKey,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          separatorBuilder: (context, index) {
+                            return _getDivider();
+                          },
+                          padding: EdgeInsets.zero,
+                          itemCount: questsStore!.searchWord.isEmpty
+                              ? questsStore!.questsList!.length
+                              : questsStore!.searchResultList!.length,
+                          itemBuilder: (_, index) {
+                            return MyQuestsItem(
+                              questsStore!.searchWord.isEmpty
+                                  ? questsStore!.questsList![index]
+                                  : questsStore!.searchResultList![index],
+                              itemType: this.questItemPriorityType,
+                            );
+                          }),
                 ),
+                if (questsStore!.isLoading)
+                  Center(
+                    child: PlatformActivityIndicator(),
+                  ),
               ],
             ),
           ),
