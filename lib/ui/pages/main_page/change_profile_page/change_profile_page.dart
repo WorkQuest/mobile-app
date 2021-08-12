@@ -96,6 +96,26 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           //     },
           //     child: Text("Get Skill And Specialization")),
           // Text(testText),
+          inputBody(
+            title: "Twitter",
+            initialValue: "link",
+            onChanged: (text) {},
+          ),
+          inputBody(
+            title: "Facebook",
+            initialValue: "link",
+            onChanged: (text) {},
+          ),
+          inputBody(
+            title: "LinkedIn",
+            initialValue: "link",
+            onChanged: (text) {},
+          ),
+          inputBody(
+            title: "Instagram",
+            initialValue: "link",
+            onChanged: (text) {},
+          ),
           const SizedBox(height: 200),
         ],
       ),

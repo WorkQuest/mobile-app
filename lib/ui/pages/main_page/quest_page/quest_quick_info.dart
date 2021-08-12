@@ -41,7 +41,7 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
                   "Quests in the region:\n",
                   style: TextStyle(fontSize: 20),
                 ),
-                Text("132"),
+                Text("???"),
               ],
             ),
           ),
