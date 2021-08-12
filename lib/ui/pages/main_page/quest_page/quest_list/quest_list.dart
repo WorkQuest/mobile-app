@@ -5,6 +5,7 @@ import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -150,25 +151,37 @@ class _QuestListState extends State<QuestList> {
                   ),
                 _getDivider(),
                 Observer(
-                  builder: (_) => ListView.separated(
-                    key: scrollKey,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    separatorBuilder: (context, index) {
-                      return _getDivider();
-                    },
-                    padding: EdgeInsets.zero,
-                    itemCount: questsStore!.questsList!.length,
-                    itemBuilder: (_, index) {
-                      return MyQuestsItem(
-                        questsStore!.searchWord.isEmpty
-                            ? questsStore!.questsList![index]
-                            : questsStore!.searchResultList![index],
-                        itemType: this.questItemPriorityType,
-                      );
-                    },
-                  ),
+                  builder: (_) => questsStore!.searchWord.isNotEmpty &&
+                      questsStore!.searchResultList!.isEmpty
+                      ? Center(
+                    child: Text(
+                      "No Quest Found",
+                    ),
+                  )
+                      : ListView.separated(
+                      key: scrollKey,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) {
+                        return _getDivider();
+                      },
+                      padding: EdgeInsets.zero,
+                      itemCount: questsStore!.searchWord.isEmpty
+                          ? questsStore!.questsList!.length
+                          : questsStore!.searchResultList!.length,
+                      itemBuilder: (_, index) {
+                        return MyQuestsItem(
+                          questsStore!.searchWord.isEmpty
+                              ? questsStore!.questsList![index]
+                              : questsStore!.searchResultList![index],
+                          itemType: this.questItemPriorityType,
+                        );
+                      }),
                 ),
+                if (questsStore!.isLoading)
+                  Center(
+                    child: PlatformActivityIndicator(),
+                  ),
               ],
             ),
           ),

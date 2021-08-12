@@ -8,14 +8,18 @@ import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/change_password_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
-import 'package:app/ui/pages/main_page/settings_page/change_passsword_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
+import 'package:app/ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transfer_page.dart';
+import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -97,6 +101,9 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
+              Provider(
+                create: (context) => getIt.get<WalletStore>(),
+              ),
             ],
             child: Directionality(
                 textDirection: checkDirection(context), child: MainPage()),
@@ -174,7 +181,9 @@ class Routes {
               ),
             ],
             child: Directionality(
-                textDirection: checkDirection(context), child: SettingsPage()),
+              textDirection: checkDirection(context),
+              child: SettingsPage(),
+            ),
           ),
         );
 
@@ -194,21 +203,44 @@ class Routes {
           builder: (context) => Provider(
             create: (context) => getIt.get<CreateQuestStore>(),
             child: Directionality(
-                textDirection: checkDirection(context),
-                child: CreateQuestPage(
-                    questInfo: settings.arguments as BaseQuestResponse?)),
+              textDirection: checkDirection(context),
+              child: CreateQuestPage(
+                  questInfo: settings.arguments as BaseQuestResponse?),
+            ),
           ),
         );
 
       case WalletPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Directionality(
-              textDirection: checkDirection(context), child: WalletPage()),
+          builder: (context) => Provider(
+            create: (context) => getIt.get<WalletStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: WalletPage(),
+            ),
+          ),
         );
 
-      case TransferPage.routeName:
+      case DepositPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => TransferPage(),
+          builder: (context) => Provider(
+            create: (context) => getIt.get<DepositStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: DepositPage(),
+            ),
+          ),
+        );
+
+      case WithdrawPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<WithdrawPageStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: WithdrawPage(),
+            ),
+          ),
         );
 
       case WebViewPage.routeName:
