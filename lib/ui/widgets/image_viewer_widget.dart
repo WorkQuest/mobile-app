@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:video_player/video_player.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:flutter/material.dart';
 
@@ -79,12 +79,24 @@ class ImageViewerWidget extends StatelessWidget {
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
-        child: Image.network(
-          medias[index].url,
-          fit: BoxFit.cover,
-          height: index == 0 ? double.infinity : 60,
-          width: double.maxFinite,
-        ),
+        child: medias[index].type == TypeMedia.Image
+            ? Image.network(
+                medias[index].url,
+                fit: BoxFit.cover,
+                height: index == 0 ? double.infinity : 60,
+                width: double.maxFinite,
+              )
+            : Container(
+                color: Colors.black,
+                height: index == 0 ? double.infinity : 60,
+                width: double.maxFinite,
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.play_arrow,
+                  size: index == 0 ? 100 : 40,
+                  color: Color(0xDDFFFFFF),
+                ),
+              ),
       ),
     );
   }
@@ -121,6 +133,9 @@ class _ScrollingImagesState extends State<ScrollingImages> {
 
   @override
   Widget build(BuildContext context) {
+    widget.medias.forEach((element) {
+      print("RTag   ${element.id}  ${element.type}  ${element.url}");
+    });
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -149,10 +164,12 @@ class _ScrollingImagesState extends State<ScrollingImages> {
               Center(
                 child: Container(
                   width: width,
-                  child: Image.network(
-                    media.url,
-                    fit: BoxFit.fitWidth,
-                  ),
+                  child: media.type == TypeMedia.Image
+                      ? Image.network(
+                          media.url,
+                          fit: BoxFit.fitWidth,
+                        )
+                      : VideoWidget(url: media.url),
                 ),
               ),
           ],
@@ -177,43 +194,64 @@ class _ScrollingImagesState extends State<ScrollingImages> {
   }
 }
 
-class DetailScreen extends StatelessWidget {
-  DetailScreen(this.tag, this.assetImage);
-  final String tag;
-  final String assetImage;
+class VideoWidget extends StatefulWidget {
+  final String url;
+  VideoWidget({required this.url});
+  @override
+  _VideoWidgetState createState() => _VideoWidgetState();
+}
+
+class _VideoWidgetState extends State<VideoWidget> {
+  VideoPlayerController? _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.network(widget.url)
+      ..initialize().then((_) {
+        setState(() {});
+      });
+    _controller!.addListener(() {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Hero(
-        tag: tag,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(6),
-          child: Image.asset(
-            assetImage,
-            fit: BoxFit.fitHeight,
-          ),
+    return MaterialApp(
+      home: GestureDetector(
+        onTap: () {
+          setState(() {
+            _controller!.value.isPlaying
+                ? _controller!.pause()
+                : _controller!.play();
+          });
+        },
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            _controller!.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _controller!.value.aspectRatio,
+                    child: VideoPlayer(_controller!),
+                  )
+                : CircularProgressIndicator(),
+            if (!_controller!.value.isPlaying &&
+                _controller!.value.isInitialized)
+              Icon(
+                Icons.play_arrow,
+                size: MediaQuery.of(context).size.width * 0.5,
+                color: Color(0xDDFFFFFF),
+              ),
+          ],
         ),
       ),
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) {
-          return Scaffold(
-            backgroundColor: Colors.black,
-            body: GestureDetector(
-              child: Center(
-                child: Hero(
-                  tag: tag,
-                  child: Image.asset(
-                    assetImage,
-                  ),
-                ),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          );
-        }));
-      },
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller!.dispose();
   }
 }
