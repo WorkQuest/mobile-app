@@ -144,21 +144,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     });
   }
 
-  final _$mapListCheckerAtom = Atom(name: '_MyQuestStore.mapListChecker');
-
-  @override
-  _MapList get mapListChecker {
-    _$mapListCheckerAtom.reportRead();
-    return super.mapListChecker;
-  }
-
-  @override
-  set mapListChecker(_MapList value) {
-    _$mapListCheckerAtom.reportWrite(value, super.mapListChecker, () {
-      super.mapListChecker = value;
-    });
-  }
-
   final _$iconsMarkerAtom = Atom(name: '_MyQuestStore.iconsMarker');
 
   @override
@@ -208,7 +193,6 @@ all: ${all},
 starred: ${starred},
 performed: ${performed},
 invited: ${invited},
-mapListChecker: ${mapListChecker},
 iconsMarker: ${iconsMarker},
 selectQuestInfo: ${selectQuestInfo}
     ''';

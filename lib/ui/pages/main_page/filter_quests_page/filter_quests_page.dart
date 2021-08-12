@@ -1,6 +1,7 @@
 import 'package:app/ui/pages/main_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class FilterQuestsPage extends StatefulWidget {
   const FilterQuestsPage({Key? key}) : super(key: key);
@@ -72,7 +73,7 @@ class _ExpensionCellState extends State<ExpensionCell> {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text(widget.filter.header),
+      title: Text("filter.${widget.filter.header}.title".tr()),
       children: [
         for (int i = 0; i < widget.filter.list.length; i++)
           widget.filter.type == TypeFilter.Radio
@@ -98,7 +99,8 @@ class _ExpensionCellState extends State<ExpensionCell> {
           ),
           Expanded(
             child: Text(
-              widget.filter.list[index],
+              "filter.${widget.filter.header}.arg.${widget.filter.list[index]}"
+                  .tr(),
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               softWrap: false,
@@ -112,7 +114,7 @@ class _ExpensionCellState extends State<ExpensionCell> {
   Widget getRadioButton(int index) {
     return RadioListTile<String>(
       title: Text(
-        widget.filter.list[index],
+        "filter.${widget.filter.header}.arg.${widget.filter.list[index]}".tr(),
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
         softWrap: false,

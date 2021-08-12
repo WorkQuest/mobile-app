@@ -21,426 +21,425 @@
     }
   },
   "filter": {
-    "Retail, Sales & Purchasing": {
+    "1": {
       "title": "Retail, Sales & Purchasing",
-      "arg": [
-        "Convenience Stores",
-        "Grocery Stores",
-        "Specialty retailers",
-        "Clothing Stores",
-        "Auto Retailers",
-        "Home furnishing retailers",
-        "Drug Stores",
-        "Department Stores",
-        "Super Markets and Hyper Markets",
-        "Multichannel Stores",
-        "Discount Stores",
-        "Direct Sales Catalog and mail order companies",
-        "E-commerce Stores",
-        "Other Retail, Sales & Purchasing"
-      ]
+      "arg": {
+        "1": "Convenience Stores",
+        "2": "Grocery Stores",
+        "3": "Specialty retailers",
+        "4": "Clothing Stores",
+        "5": "Auto Retailers",
+        "6": "Home furnishing retailers",
+        "7": "Drug Stores",
+        "8": "Department Stores",
+        "9": "Super Markets and Hyper Markets",
+        "10": "Multichannel Stores",
+        "11": "Discount Stores",
+        "12": "Direct Sales Catalog and mail order companies",
+        "13": "E-commerce Stores",
+        "14": "Other Retail, Sales & Purchasing"
+      }
     },
-    "Bars & Restaurants Staff": {
+    "2": {
       "title": "Bars & Restaurants Staff",
-      "arg": [
-        "Ethnic.",
-        "Fast food.",
-        "Fast casual.",
-        "Casual dining.",
-        "Premium casual.",
-        "Family style.",
-        "Fine dining.",
-        "Brasserie and bistro.",
-        "Other Bars & Restaurants Staff"
-      ]
+      "arg": {
+        "1": "Ethnic.",
+        "2": "Fast food.",
+        "3": "Fast casual.",
+        "4": "Casual dining.",
+        "5": "Premium casual.",
+        "6": "Family style.",
+        "7": "Fine dining.",
+        "8": "Brasserie and bistro.",
+        "9": "Other Bars & Restaurants Staff"
+      }
     },
-    "Accounting & Consulting": {
+    "3": {
       "title": "Accounting & Consulting",
-      "arg": [
-        "Accounting",
-        "Financial Planning",
-        "Human Resources",
-        "Management Consulting",
-        "Other Accounting & Consulting"
-      ]
+      "arg": {
+        "1": "Accounting",
+        "2": "Financial Planning",
+        "3": "Human Resources",
+        "4": "Management Consulting",
+        "5": "Other Accounting & Consulting"
+      }
     },
-    "Admin Support": {
+    "4": {
       "title": "Admin Support",
-      "arg": [
-        "Data Entry",
-        "Other Admin Support",
-        "Personal / Virtual Assistance",
-        "Project Management",
-        "Transcription",
-        "Web Research",
-        "Other Admin Support"
-      ]
+      "arg": {
+        "1": "Data Entry",
+        "2": "Personal / Virtual Assistance",
+        "3": "Project Management",
+        "4": "Transcription",
+        "5": "Web Research",
+        "6": "Other Admin Support"
+      }
     },
-    "Customer Service": {
+    "5": {
       "title": "Customer Service",
-      "arg": [
-        "Customer Service",
-        "Technical Support"
-      ]
+      "arg": {
+        "1": "Customer Service",
+        "2": "Technical Support"
+      }
     },
-    "Data Science & Analytics": {
+    "6": {
       "title": "Data Science & Analytics",
-      "arg": [
-        "A / B Testing",
-        "Data Extraction / ETL",
-        "Data Mining & Management",
-        "Data Visualization",
-        "Machine Learning",
-        "Quantitative Analysis",
-        "Other Data Science & Analytics"
-      ]
+      "arg": {
+        "1": "A / B Testing",
+        "2": "Data Extraction / ETL",
+        "3": "Data Mining & Management",
+        "4": "Data Visualization",
+        "5": "Machine Learning",
+        "6": "Quantitative Analysis",
+        "7": "Other Data Science & Analytics"
+      }
     },
-    "Personnel Management & HR": {
+    "7": {
       "title": "Personnel Management & HR",
-      "arg": [
-        "Human Resource Planning",
-        "Recruitment and Selection",
-        "Performance Management",
-        "Learning and Development",
-        "Career Planning",
-        "Function Evaluation",
-        "Rewards",
-        "Industrial Relations",
-        "Employee Participation and Communication",
-        "Health and Safety",
-        "Personal Wellbeing",
-        "Administrative Responsibilities",
-        "Other Personnel Management & HR"
-      ]
+      "arg": {
+        "1": "Human Resource Planning",
+        "2": "Recruitment and Selection",
+        "3": "Performance Management",
+        "4": "Learning and Development",
+        "5": "Career Planning",
+        "6": "Function Evaluation",
+        "7": "Rewards",
+        "8": "Industrial Relations",
+        "9": "Employee Participation and Communication",
+        "10": "Health and Safety",
+        "11": "Personal Wellbeing",
+        "12": "Administrative Responsibilities",
+        "13": "Other Personnel Management & HR"
+      }
     },
-    "Security": {
+    "8": {
       "title": "Security",
-      "arg": [
-        "Risk Manager",
-        "Systems, Network & Web Penetration Tester",
-        "Network Security Engineer",
-        "Network Security Administrator",
-        "Cyber Crime Investigator",
-        "Information Security Analyst",
-        "Security Analyst",
-        "Security Manager",
-        "Security Guard",
-        "Other Security",
-        "Home Staff",
-        "Babysitting",
-        "Governess",
-        "Tutors",
-        "Housekeepers",
-        "Caregivers",
-        "Cooks",
-        "Gardeners",
-        "Drivers",
-        "Other Home Staff"
-      ]
+      "arg": {
+        "1": "Risk Manager",
+        "2": "Systems, Network & Web Penetration Tester",
+        "3": "Network Security Engineer",
+        "4": "Network Security Administrator",
+        "5": "Cyber Crime Investigator",
+        "6": "Information Security Analyst",
+        "7": "Security Analyst",
+        "8": "Security Manager",
+        "9": "Security Guard",
+        "10": "Other Security",
+        "11": "Home Staff",
+        "12": "Babysitting",
+        "13": "Governess",
+        "14": "Tutors",
+        "15": "Housekeepers",
+        "16": "Caregivers",
+        "17": "Cooks",
+        "18": "Gardeners",
+        "19": "Drivers",
+        "20": "Other Home Staff"
+      }
     },
-    "Beauty, Fitness & Sport": {
+    "9": {
       "title": "Beauty, Fitness & Sport",
-      "arg": [
-        "Athletic Trainer",
-        "Exercise Physiologist",
-        "Fitness Trainer",
-        "Massage Therapist",
-        "Occupational Therapist",
-        "Physical Therapist",
-        "Recreational Therapist",
-        "Beauty salon",
-        "Other Beauty, Fitness & Sport"
-      ]
+      "arg": {
+        "1": "Athletic Trainer",
+        "2": "Exercise Physiologist",
+        "3": "Fitness Trainer",
+        "4": "Massage Therapist",
+        "5": "Occupational Therapist",
+        "6": "Physical Therapist",
+        "7": "Recreational Therapist",
+        "8": "Beauty salon",
+        "9": "Other Beauty, Fitness & Sport"
+      }
     },
-    "Education": {
+    "10": {
       "title": "Education",
-      "arg": [
-        "Teaching",
-        "Education Administration",
-        "School Counseling",
-        "School Social Work",
-        "Teaching Lanquages",
-        "Other Education"
-      ]
+      "arg": {
+        "1": "Teaching",
+        "2": "Education Administration",
+        "3": "School Counseling",
+        "4": "School Social Work",
+        "5": "Teaching Lanquages",
+        "6": "Other Education"
+      }
     },
-    "Culture & Arts": {
+    "11": {
       "title": "Culture & Arts",
-      "arg": [
-        "Actor",
-        "Community Arts Worker",
-        "Choreographer",
-        "Dancer",
-        "Dramatherapist",
-        "Music producer",
-        "Music therapist",
-        "Theatre director",
-        "Multimedia Specialist",
-        "Systems Designer",
-        "Product Designer",
-        "Curator",
-        "Art Director",
-        "Museum Director",
-        "Art Teacher",
-        "Art Therapist",
-        "Medical Illustrator",
-        "Film Director",
-        "Other Culture & Arts"
-      ]
+      "arg": {
+        "1": "Actor",
+        "2": "Community Arts Worker",
+        "3": "Choreographer",
+        "4": "Dancer",
+        "5": "Dramatherapist",
+        "6": "Music producer",
+        "7": "Music therapist",
+        "8": "Theatre director",
+        "9": "Multimedia Specialist",
+        "10": "Systems Designer",
+        "11": "Product Designer",
+        "12": "Curator",
+        "13": "Art Director",
+        "14": "Museum Director",
+        "15": "Art Teacher",
+        "16": "Art Therapist",
+        "17": "Medical Illustrator",
+        "18": "Film Director",
+        "19": "Other Culture & Arts"
+      }
     },
-    "IT / Networking": {
+    "12": {
       "title": "IT / Networking",
-      "arg": [
-        "Database Administration",
-        "ERP / CRM Software",
-        "Information Security",
-        "Network & System Administration",
-        "Other IT & Networking"
-      ]
+      "arg": {
+        "1": "Database Administration",
+        "2": "ERP / CRM Software",
+        "3": "Information Security",
+        "4": "Network & System Administration",
+        "5": "Other IT & Networking"
+      }
     },
-    "Design": {
+    "13": {
       "title": "Design",
-      "arg": [
-        "Layout Design",
-        "Branding",
-        "Gaming & AR / VR",
-        "Graphic, Editorial & Presentation Design",
-        "Product Design",
-        "Interior & Exterior Design",
-        "Other Design"
-      ]
+      "arg": {
+        "1": "Layout Design",
+        "2": "Branding",
+        "3": "Gaming & AR / VR",
+        "4": "Graphic, Editorial & Presentation Design",
+        "5": "Product Design",
+        "6": "Interior & Exterior Design",
+        "7": "Other Design"
+      }
     },
-    "Creative Production": {
+    "14": {
       "title": "Creative Production",
-      "arg": [
-        "Art & Illustration",
-        "Audio & Music Production",
-        "Performing Arts",
-        "Photography",
-        "Video & Animation",
-        "Voice Talent",
-        "3D Visualization",
-        "Other Creative Production"
-      ]
+      "arg": {
+        "1": "Art & Illustration",
+        "2": "Audio & Music Production",
+        "3": "Performing Arts",
+        "4": "Photography",
+        "5": "Video & Animation",
+        "6": "Voice Talent",
+        "7": "3D Visualization",
+        "8": "Other Creative Production"
+      }
     },
-    "Engineering & Architecture": {
+    "15": {
       "title": "Engineering & Architecture",
-      "arg": [
-        "3D Modeling & CAD",
-        "Architecture",
-        "Chemical Engineering",
-        "Civil & Structural Engineering",
-        "Contract Manufacturing",
-        "Electrical Engineering",
-        "Mechanical Engineering",
-        "Physical Sciences",
-        "Other Engineering"
-      ]
+      "arg": {
+        "1": "3D Modeling & CAD",
+        "2": "Architecture",
+        "3": "Chemical Engineering",
+        "4": "Civil & Structural Engineering",
+        "5": "Contract Manufacturing",
+        "6": "Electrical Engineering",
+        "7": "Mechanical Engineering",
+        "8": "Physical Sciences",
+        "9": "Other Engineering"
+      }
     },
-    "Law & Legal Support": {
+    "16": {
       "title": "Law & Legal Support",
-      "arg": [
-        "Contract Law",
-        "Corporate Law",
-        "Intellectual Property Law",
-        "Paralegal Services",
-        "Other Law & Legal Support"
-      ]
+      "arg": {
+        "1": "Contract Law",
+        "2": "Corporate Law",
+        "3": "Intellectual Property Law",
+        "4": "Paralegal Services",
+        "5": "Other Law & Legal Support"
+      }
     },
-    "Marketing & Sales": {
+    "17": {
       "title": "Marketing & Sales",
-      "arg": [
-        "Display Advertising",
-        "Email & Marketing Automation",
-        "Lead Generation",
-        "Market & Customer Research",
-        "Marketing Strategy",
-        "Public Relations",
-        "SEM - Search Engine Marketing",
-        "SEO - Search Engine Optimization",
-        "SMM - Social Media Marketing",
-        "Other Sales & Marketing"
-      ]
+      "arg": {
+        "1": "Display Advertising",
+        "2": "Email & Marketing Automation",
+        "3": "Lead Generation",
+        "4": "Market & Customer Research",
+        "5": "Marketing Strategy",
+        "6": "Public Relations",
+        "7": "SEM - Search Engine Marketing",
+        "8": "SEO - Search Engine Optimization",
+        "9": "SMM - Social Media Marketing",
+        "10": "Other Sales & Marketing"
+      }
     },
-    "Translation": {
+    "18": {
       "title": "Translation",
-      "arg": [
-        "General Translation",
-        "Legal Translation",
-        "Medical Translation",
-        "Technical Translation",
-        "Other Translation"
-      ]
+      "arg": {
+        "1": "General Translation",
+        "2": "Legal Translation",
+        "3": "Medical Translation",
+        "4": "Technical Translation",
+        "5": "Other Translation"
+      }
     },
-    "Real Estate": {
+    "19": {
       "title": "Real Estate",
-      "arg": [
-        "Residential Real Estate",
-        "New Construction & Resale Homes",
-        "Commercial Real Estate",
-        "Industrial Real Estate",
-        "Vacant Land",
-        "Other Real Estate"
-      ]
+      "arg": {
+        "1": "Residential Real Estate",
+        "2": "New Construction & Resale Homes",
+        "3": "Commercial Real Estate",
+        "4": "Industrial Real Estate",
+        "5": "Vacant Land",
+        "6": "Other Real Estate"
+      }
     },
-    "Web, Mobile & Software Development": {
+    "20": {
       "title": "Web, Mobile & Software Development",
-      "arg": [
-        "Desktop Software Development",
-        "Ecommerce Development",
-        "Game Development",
-        "Mobile Development",
-        "Other Software Development",
-        "Product Management",
-        "QA & Testing",
-        "Scripts & Utilities",
-        "Web & Mobile Design",
-        "Web Development",
-        "Other Web, Mobile & Software Dev"
-      ]
+      "arg": {
+        "1": "Desktop Software Development",
+        "2": "Ecommerce Development",
+        "3": "Game Development",
+        "4": "Mobile Development",
+        "5": "Other Software Development",
+        "6": "Product Management",
+        "7": "QA & Testing",
+        "8": "Scripts & Utilities",
+        "9": "Web & Mobile Design",
+        "10": "Web Development",
+        "11": "Other Web, Mobile & Software Dev"
+      }
     },
-    "Writing": {
+    "21": {
       "title": "Writing",
-      "arg": [
-        "Content & Copywriting",
-        "Creative Writing",
-        "Editing & Proofreading",
-        "Grant Writing",
-        "Resumes & Cover Letters",
-        "Technical Writing",
-        "Other Writing"
-      ]
+      "arg": {
+        "1": "Content & Copywriting",
+        "2": "Creative Writing",
+        "3": "Editing & Proofreading",
+        "4": "Grant Writing",
+        "5": "Resumes & Cover Letters",
+        "6": "Technical Writing",
+        "7": "Other Writing"
+      }
     },
-    "Agriculture & Agribusiness": {
+    "22": {
       "title": "Agriculture & Agribusiness",
-      "arg": [
-        "Crops",
-        "Livestock (both production and animal health)",
-        "Fisheries and Aquaculture (including capture fisheries)",
-        "Forestry",
-        "Othet Agriculture & Agribussiness"
-      ]
+      "arg": {
+        "1": "Crops",
+        "2": "Livestock (both production and animal health)",
+        "3": "Fisheries and Aquaculture (including capture fisheries)",
+        "4": "Forestry",
+        "5": "Othet Agriculture & Agribussiness"
+      }
     },
-    "Secretariat, Correspondence & Records Management": {
+    "23": {
       "title": "Secretariat, Correspondence & Records Management",
-      "arg": [
-        "Property records - title deeds and settlements",
-        "Accounting papers - rentals, vouchers, surveys and valuations.",
-        "Legal papers",
-        "Inventories",
-        "Correspondence",
-        "Enclosure papers",
-        "Manorial papers - court rolls, custumals, terriers, surveys etc.",
-        "Personal and political papers",
-        "Maps and plans",
-        "Other Secretariat, Correspondence & Records Management"
-      ]
+      "arg": {
+        "1": "Property records - title deeds and settlements",
+        "2": "Accounting papers - rentals, vouchers, surveys and valuations.",
+        "3": "Legal papers",
+        "4": "Inventories",
+        "5": "Correspondence",
+        "6": "Enclosure papers",
+        "7": "Manorial papers - court rolls, custumals, terriers, surveys etc.",
+        "8": "Personal and political papers",
+        "9": "Maps and plans",
+        "10": "Other Secretariat, Correspondence & Records Management"
+      }
     },
-    "Medicine & Pharmacy": {
+    "24": {
       "title": "Medicine & Pharmacy",
-      "arg": [
-        "Retail Pharmacy",
-        "Hospital Pharmacy",
-        "Medication Distribution Center",
-        "Homecare & Hospice Pharmacy",
-        "Pharmacy Informatics",
-        "Ambulatory Care Pharmacy",
-        "Pharmacists",
-        "Other Medicine & Pharmacy"
-      ]
+      "arg": {
+        "1": "Retail Pharmacy",
+        "2": "Hospital Pharmacy",
+        "3": "Medication Distribution Center",
+        "4": "Homecare & Hospice Pharmacy",
+        "5": "Pharmacy Informatics",
+        "6": "Ambulatory Care Pharmacy",
+        "7": "Pharmacists",
+        "8": "Other Medicine & Pharmacy"
+      }
     },
-    "Transport & Logistics": {
+    "25": {
       "title": "Transport & Logistics",
-      "arg": [
-        "Management",
-        "Inventory Planning",
-        "Warehousing",
-        "Procurement of Goods and Services",
-        "Packaging and Storage",
-        "Transportation",
-        "Customer service.",
-        "Other Transpot & Logistics"
-      ]
+      "arg": {
+        "1": "Management",
+        "2": "Inventory Planning",
+        "3": "Warehousing",
+        "4": "Procurement of Goods and Services",
+        "5": "Packaging and Storage",
+        "6": "Transportation",
+        "7": "Customer service.",
+        "8": "Other Transpot & Logistics"
+      }
     },
-    "Construction": {
+    "26": {
       "title": "Construction",
-      "arg": [
-        "Residential Building",
-        "Institutional and Commercial Building",
-        "Infrastructure and Heavy Construction",
-        "Specialized Industrial Construction",
-        "Other Construction"
-      ]
+      "arg": {
+        "1": "Residential Building",
+        "2": "Institutional and Commercial Building",
+        "3": "Infrastructure and Heavy Construction",
+        "4": "Specialized Industrial Construction",
+        "5": "Other Construction"
+      }
     },
-    "Banking, Finance & Insurance": {
+    "27": {
       "title": "Banking, Finance & Insurance",
-      "arg": [
-        "The Financial Services Industry",
-        "Financial Planning",
-        "Corporate Finance",
-        "Commercial Banking",
-        "Investment Banking",
-        "Hedge Funds",
-        "Private Equity, Venture Capital",
-        "Insurance",
-        "Other Banking, Finance & Insurance"
-      ]
+      "arg": {
+        "1": "The Financial Services Industry",
+        "2": "Financial Planning",
+        "3": "Corporate Finance",
+        "4": "Commercial Banking",
+        "5": "Investment Banking",
+        "6": "Hedge Funds",
+        "7": "Private Equity, Venture Capital",
+        "8": "Insurance",
+        "9": "Other Banking, Finance & Insurance"
+      }
     },
-    "Tourism, Leisure & Entertainment": {
+    "28": {
       "title": "Tourism, Leisure & Entertainment",
-      "arg": [
-        "Amusement Attendant",
-        "Concierge",
-        "Cruise Ship Director",
-        "Curator",
-        "Gaming Dealers",
-        "Lifeguard",
-        "Information Clerk",
-        "Recreation Worker",
-        "Tour and Travel Guide",
-        "Other Tourism, Leisure & Entertainment"
-      ]
+      "arg": {
+        "1": "Amusement Attendant",
+        "2": "Concierge",
+        "3": "Cruise Ship Director",
+        "4": "Curator",
+        "5": "Gaming Dealers",
+        "6": "Lifeguard",
+        "7": "Information Clerk",
+        "8": "Recreation Worker",
+        "9": "Tour and Travel Guide",
+        "10": "Other Tourism, Leisure & Entertainment"
+      }
     },
-    "Telecommunications": {
+    "29": {
       "title": "Telecommunications",
-      "arg": [
-        "Telecommunications Systems Managers",
-        "Line Installers",
-        "Customer Service Representative",
-        "Computer Software Engineers",
-        "Computer Programmers",
-        "Professional Associations",
-        "Related Certification Bodies",
-        "Other Telecommunications"
-      ]
+      "arg": {
+        "1": "Telecommunications Systems Managers",
+        "2": "Line Installers",
+        "3": "Customer Service Representative",
+        "4": "Computer Software Engineers",
+        "5": "Computer Programmers",
+        "6": "Professional Associations",
+        "7": "Related Certification Bodies",
+        "8": "Other Telecommunications"
+      }
     },
-    "Early Career & Students": {
+    "30": {
       "title": "Early Career & Students",
-      "arg": [
-        "Courier",
-        "Waiter",
-        "Other Early Career & Students"
-      ]
+      "arg": {
+        "1": "Courier",
+        "2": "Waiter",
+        "3": "Other Early Career & Students"
+      }
     },
-    "Service Occupations": {
+    "31": {
       "title": "Service Occupations",
-      "arg": [
-        "Restaurants & Food Services industry",
-        "Other Service Occupations"
-      ]
+      "arg": {
+        "1": "Restaurants & Food Services industry",
+        "2": "Other Service Occupations"
+      }
     },
-    "Work abroad": {
+    "32": {
       "title": "Work abroad",
-      "arg": [
-        "Work abroad"
-      ]
+      "arg": {
+        "1": "Work abroad"
+      }
     },
-    "Seasonal Work": {
+    "33": {
       "title": "Seasonal Work",
-      "arg": [
-        "Variable",
-        "Part-time",
-        "Full-time"
-      ]
+      "arg": {
+        "1": "Variable",
+        "2": "Part-time",
+        "3": "Full-time"
+      }
     }
   }
 }

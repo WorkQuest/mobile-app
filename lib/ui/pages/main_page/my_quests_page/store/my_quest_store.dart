@@ -46,9 +46,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   List<BaseQuestResponse>? invited;
 
   @observable
-  _MapList mapListChecker = _MapList.Map;
-
-  @observable
   List<BitmapDescriptor> iconsMarker = [];
 
   @observable
@@ -106,9 +103,4 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
-}
-
-enum _MapList {
-  Map,
-  List,
 }

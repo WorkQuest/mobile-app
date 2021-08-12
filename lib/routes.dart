@@ -1,4 +1,5 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
@@ -184,6 +185,17 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: SettingsPage(),
+            ),
+          ),
+        );
+
+      case ChangeProfilePage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ProfileMeStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ChangeProfilePage(),
             ),
           ),
         );
