@@ -1,6 +1,7 @@
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
+import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -69,7 +70,8 @@ class _MyQuestDetailsState extends State<MyQuestDetails>
                 onSelected: (value) {
                   switch (value) {
                     case "Raise views":
-                      print("[tag] Raise views");
+                      Navigator.pushNamed(context, RaiseViews.routeName,
+                          arguments: widget.questInfo);
                       break;
                     case "Edit":
                       Navigator.pushNamed(context, CreateQuestPage.routeName,
@@ -499,5 +501,5 @@ const List<Color> priorityColors = [
   Color.fromRGBO(34, 204, 20, 1),
   Color.fromRGBO(34, 204, 20, 1),
   Color.fromRGBO(232, 210, 13, 1),
-  Color.fromRGBO(223, 51, 51, 1)
+  Color.fromRGBO(223, 51, 51, 1),
 ];
