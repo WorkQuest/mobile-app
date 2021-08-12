@@ -27,7 +27,7 @@ abstract class FilterQuestsStoreBase with Store {
     filtersJson.forEach((key, value) {
       filters.add(FilterItem(
           header: key,
-          list: new List<String>.from(value["arg"]),
+          list: (value["arg"] as Map<String, dynamic>).keys.toList(),
           type: TypeFilter.values[i % 2]));
       i++;
     });

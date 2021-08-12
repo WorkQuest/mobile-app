@@ -11,17 +11,20 @@ class SkillSpecializationStore = SkillSpecializationStoreBase
 
 abstract class SkillSpecializationStoreBase with Store {
   SkillSpecializationStoreBase() {
-    readFilters();
+    readSpecialization();
   }
+
+  @observable
+  int numberOfSpices = 0;
 
   @observable
   bool isLoading = true;
 
   @observable
-  List<FilterItem> specialization = [];
+  List<Specialization> specialization = [];
 
   @observable
-  Map<int, FilterItem> selectSpecializations = {};
+  Map<int, Specialization> selectSpecializations = {};
 
   @observable
   Map<int, List<String>> selectSkills = {};
@@ -31,30 +34,40 @@ abstract class SkillSpecializationStoreBase with Store {
   }
 
   @action
-  Future readFilters() async {
+  addSpices() {
+    numberOfSpices += 1;
+  }
+
+  @action
+  deleteSpices() {
+    if (this.selectSkills[numberOfSpices - 1] != null) {
+      this.selectSkills.remove(numberOfSpices - 1);
+    }
+    this.selectSpecializations.remove(numberOfSpices - 1);
+    numberOfSpices -= 1;
+  }
+
+  @action
+  Future readSpecialization() async {
     final json = await parseJsonFromAssets("assets/lang/en-US.json");
     final filtersJson = json["filter"] as Map<String, dynamic>;
-    int i = 0;
     filtersJson.forEach((key, value) {
-      specialization.add(FilterItem(
-          header: key,
-          list: new List<String>.from(value["arg"]),
-          type: TypeFilter.values[i % 2]));
-      i++;
+      specialization.add(Specialization(
+        header: key,
+        list: (value["arg"] as Map<String, dynamic>).keys.toList(),
+      ));
     });
     isLoading = false;
   }
 }
 
-class FilterItem {
-  FilterItem({
+class Specialization {
+  Specialization({
     required this.list,
     required this.header,
-    this.type = TypeFilter.Radio,
   });
   List<String> list;
   String header;
-  TypeFilter type;
 }
 
 enum TypeFilter { Radio, Check }

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 class SkillSpecializationSelection extends StatefulWidget {
+  final SkillSpecializationController? controller;
+  SkillSpecializationSelection({this.controller});
   @override
   _SkillSpecializationSelectionState createState() =>
       _SkillSpecializationSelectionState();
@@ -11,77 +13,70 @@ class SkillSpecializationSelection extends StatefulWidget {
 class _SkillSpecializationSelectionState
     extends State<SkillSpecializationSelection> {
   final store = SkillSpecializationStore();
-  int countSelectors = 0;
+
+  @override
+  void initState() {
+    if (widget.controller != null) widget.controller!.setStore(store);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        for (int i = 0; i < countSelectors; i++) getSelector(i),
-        if (countSelectors != 0)
-          OutlinedButton(
-            onPressed: () {
-              if (store.selectSkills[countSelectors - 1] != null) {
-                store.selectSkills.remove(countSelectors - 1);
-              }
-              store.selectSpecializations.remove(countSelectors - 1);
-              countSelectors -= 1;
-              setState(() {});
-            },
-            child: Text(
-              "Delete",
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xFFDF3333),
+    return Observer(
+      builder: (_) => Column(
+        children: [
+          for (int i = 0; i < store.numberOfSpices; i++) getSelector(i),
+          if (store.numberOfSpices != 0)
+            OutlinedButton(
+              onPressed: store.deleteSpices,
+              child: Text(
+                "Delete",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFFDF3333),
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                fixedSize: Size.fromWidth(double.maxFinite),
+                side: BorderSide(
+                  width: 1.0,
+                  color: Color.fromRGBO(223, 51, 51, 0.1),
+                ),
               ),
             ),
-            style: OutlinedButton.styleFrom(
-              fixedSize: Size.fromWidth(double.maxFinite),
-              side: BorderSide(
-                width: 1.0,
-                color: Color.fromRGBO(223, 51, 51, 0.1),
+          if (store.numberOfSpices < 3)
+            OutlinedButton(
+              onPressed: store.addSpices,
+              child: Text(
+                "Add specialization",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFF0083C7),
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                fixedSize: Size.fromWidth(double.maxFinite),
+                side: BorderSide(
+                  width: 1.0,
+                  color: Color.fromRGBO(0, 131, 199, 0.1),
+                ),
               ),
             ),
-          ),
-        if (countSelectors < 3)
-          OutlinedButton(
-            onPressed: () {
-              setState(() {
-                countSelectors += 1;
-              });
-            },
-            child: Text(
-              "Add specialization",
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xFF0083C7),
-              ),
-            ),
-            style: OutlinedButton.styleFrom(
-              fixedSize: Size.fromWidth(double.maxFinite),
-              side: BorderSide(
-                width: 1.0,
-                color: Color.fromRGBO(0, 131, 199, 0.1),
-              ),
-            ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget getSelector(int count) {
-    return Observer(
-      builder: (_) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Specialization ${count + 1}"),
-          const SizedBox(height: 5),
-          getSpecializationSelector(count),
-          const SizedBox(height: 20),
-          if (store.selectSpecializations[count] != null)
-            getSkillSelector(count),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Specialization ${count + 1}"),
+        const SizedBox(height: 5),
+        getSpecializationSelector(count),
+        const SizedBox(height: 20),
+        if (store.selectSpecializations[count] != null) getSkillSelector(count),
+      ],
     );
   }
 
@@ -119,6 +114,25 @@ class _SkillSpecializationSelectionState
         ),
       ],
     );
+  }
+
+  Widget getSpecializationSelector(int count) {
+    final list = store.specialization
+        .where(
+            (element) => !store.selectSpecializations.values.contains(element))
+        .toList();
+    return getSelectorButton<Specialization>(
+        plaseholder: store.selectSpecializations[count]?.header ?? "Choose",
+        data: list,
+        builder: (item) => Center(
+                child: new Text(
+              item.header,
+              textAlign: TextAlign.center,
+            )),
+        onSelect: (item) {
+          store.selectSpecializations[count] = item;
+          store.selectSkills[count] = [];
+        });
   }
 
   Widget skillBody(String title, void Function() onRemove) {
@@ -172,21 +186,6 @@ class _SkillSpecializationSelectionState
     //     ),
     //   ]),
     // );
-  }
-
-  Widget getSpecializationSelector(int count) {
-    return getSelectorButton<FilterItem>(
-        plaseholder: store.selectSpecializations[count]?.header ?? "Choose",
-        data: store.specialization,
-        builder: (item) => Center(
-                child: new Text(
-              item.header,
-              textAlign: TextAlign.center,
-            )),
-        onSelect: (item) {
-          store.selectSpecializations[count] = item;
-          store.selectSkills[count] = [];
-        });
   }
 
   Widget getSelectorButton<T>({
@@ -271,4 +270,11 @@ class _SkillSpecializationSelectionState
       builder: (context) {
         return child;
       });
+}
+
+class SkillSpecializationController {
+  SkillSpecializationStore? store;
+  setStore(SkillSpecializationStore s) {
+    store = s;
+  }
 }
