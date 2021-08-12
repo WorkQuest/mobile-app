@@ -19,5 +19,427 @@
             "alreadyHaveAccount": "У вас уже есть аккаунт?",
             "signIn": "Войти"
         }
+    },
+    "filter": {
+        "1": {
+            "title": "Retail, Sales & Purchasing",
+            "arg": {
+                "1": "Convenience Stores",
+                "2": "Grocery Stores",
+                "3": "Specialty retailers",
+                "4": "Clothing Stores",
+                "5": "Auto Retailers",
+                "6": "Home furnishing retailers",
+                "7": "Drug Stores",
+                "8": "Department Stores",
+                "9": "Super Markets and Hyper Markets",
+                "10": "Multichannel Stores",
+                "11": "Discount Stores",
+                "12": "Direct Sales Catalog and mail order companies",
+                "13": "E-commerce Stores",
+                "14": "Other Retail, Sales & Purchasing"
+            }
+        },
+        "2": {
+            "title": "Bars & Restaurants Staff",
+            "arg": {
+                "1": "Ethnic.",
+                "2": "Fast food.",
+                "3": "Fast casual.",
+                "4": "Casual dining.",
+                "5": "Premium casual.",
+                "6": "Family style.",
+                "7": "Fine dining.",
+                "8": "Brasserie and bistro.",
+                "9": "Other Bars & Restaurants Staff"
+            }
+        },
+        "3": {
+            "title": "Accounting & Consulting",
+            "arg": {
+                "1": "Accounting",
+                "2": "Financial Planning",
+                "3": "Human Resources",
+                "4": "Management Consulting",
+                "5": "Other Accounting & Consulting"
+            }
+        },
+        "4": {
+            "title": "Admin Support",
+            "arg": {
+                "1": "Data Entry",
+                "2": "Personal / Virtual Assistance",
+                "3": "Project Management",
+                "4": "Transcription",
+                "5": "Web Research",
+                "6": "Other Admin Support"
+            }
+        },
+        "5": {
+            "title": "Customer Service",
+            "arg": {
+                "1": "Customer Service",
+                "2": "Technical Support"
+            }
+        },
+        "6": {
+            "title": "Data Science & Analytics",
+            "arg": {
+                "1": "A / B Testing",
+                "2": "Data Extraction / ETL",
+                "3": "Data Mining & Management",
+                "4": "Data Visualization",
+                "5": "Machine Learning",
+                "6": "Quantitative Analysis",
+                "7": "Other Data Science & Analytics"
+            }
+        },
+        "7": {
+            "title": "Personnel Management & HR",
+            "arg": {
+                "1": "Human Resource Planning",
+                "2": "Recruitment and Selection",
+                "3": "Performance Management",
+                "4": "Learning and Development",
+                "5": "Career Planning",
+                "6": "Function Evaluation",
+                "7": "Rewards",
+                "8": "Industrial Relations",
+                "9": "Employee Participation and Communication",
+                "10": "Health and Safety",
+                "11": "Personal Wellbeing",
+                "12": "Administrative Responsibilities",
+                "13": "Other Personnel Management & HR"
+            }
+        },
+        "8": {
+            "title": "Security",
+            "arg": {
+                "1": "Risk Manager",
+                "2": "Systems, Network & Web Penetration Tester",
+                "3": "Network Security Engineer",
+                "4": "Network Security Administrator",
+                "5": "Cyber Crime Investigator",
+                "6": "Information Security Analyst",
+                "7": "Security Analyst",
+                "8": "Security Manager",
+                "9": "Security Guard",
+                "10": "Other Security",
+                "11": "Home Staff",
+                "12": "Babysitting",
+                "13": "Governess",
+                "14": "Tutors",
+                "15": "Housekeepers",
+                "16": "Caregivers",
+                "17": "Cooks",
+                "18": "Gardeners",
+                "19": "Drivers",
+                "20": "Other Home Staff"
+            }
+        },
+        "9": {
+            "title": "Beauty, Fitness & Sport",
+            "arg": {
+                "1": "Athletic Trainer",
+                "2": "Exercise Physiologist",
+                "3": "Fitness Trainer",
+                "4": "Massage Therapist",
+                "5": "Occupational Therapist",
+                "6": "Physical Therapist",
+                "7": "Recreational Therapist",
+                "8": "Beauty salon",
+                "9": "Other Beauty, Fitness & Sport"
+            }
+        },
+        "10": {
+            "title": "Education",
+            "arg": {
+                "1": "Teaching",
+                "2": "Education Administration",
+                "3": "School Counseling",
+                "4": "School Social Work",
+                "5": "Teaching Lanquages",
+                "6": "Other Education"
+            }
+        },
+        "11": {
+            "title": "Culture & Arts",
+            "arg": {
+                "1": "Actor",
+                "2": "Community Arts Worker",
+                "3": "Choreographer",
+                "4": "Dancer",
+                "5": "Dramatherapist",
+                "6": "Music producer",
+                "7": "Music therapist",
+                "8": "Theatre director",
+                "9": "Multimedia Specialist",
+                "10": "Systems Designer",
+                "11": "Product Designer",
+                "12": "Curator",
+                "13": "Art Director",
+                "14": "Museum Director",
+                "15": "Art Teacher",
+                "16": "Art Therapist",
+                "17": "Medical Illustrator",
+                "18": "Film Director",
+                "19": "Other Culture & Arts"
+            }
+        },
+        "12": {
+            "title": "IT / Networking",
+            "arg": {
+                "1": "Database Administration",
+                "2": "ERP / CRM Software",
+                "3": "Information Security",
+                "4": "Network & System Administration",
+                "5": "Other IT & Networking"
+            }
+        },
+        "13": {
+            "title": "Design",
+            "arg": {
+                "1": "Layout Design",
+                "2": "Branding",
+                "3": "Gaming & AR / VR",
+                "4": "Graphic, Editorial & Presentation Design",
+                "5": "Product Design",
+                "6": "Interior & Exterior Design",
+                "7": "Other Design"
+            }
+        },
+        "14": {
+            "title": "Creative Production",
+            "arg": {
+                "1": "Art & Illustration",
+                "2": "Audio & Music Production",
+                "3": "Performing Arts",
+                "4": "Photography",
+                "5": "Video & Animation",
+                "6": "Voice Talent",
+                "7": "3D Visualization",
+                "8": "Other Creative Production"
+            }
+        },
+        "15": {
+            "title": "Engineering & Architecture",
+            "arg": {
+                "1": "3D Modeling & CAD",
+                "2": "Architecture",
+                "3": "Chemical Engineering",
+                "4": "Civil & Structural Engineering",
+                "5": "Contract Manufacturing",
+                "6": "Electrical Engineering",
+                "7": "Mechanical Engineering",
+                "8": "Physical Sciences",
+                "9": "Other Engineering"
+            }
+        },
+        "16": {
+            "title": "Law & Legal Support",
+            "arg": {
+                "1": "Contract Law",
+                "2": "Corporate Law",
+                "3": "Intellectual Property Law",
+                "4": "Paralegal Services",
+                "5": "Other Law & Legal Support"
+            }
+        },
+        "17": {
+            "title": "Marketing & Sales",
+            "arg": {
+                "1": "Display Advertising",
+                "2": "Email & Marketing Automation",
+                "3": "Lead Generation",
+                "4": "Market & Customer Research",
+                "5": "Marketing Strategy",
+                "6": "Public Relations",
+                "7": "SEM - Search Engine Marketing",
+                "8": "SEO - Search Engine Optimization",
+                "9": "SMM - Social Media Marketing",
+                "10": "Other Sales & Marketing"
+            }
+        },
+        "18": {
+            "title": "Translation",
+            "arg": {
+                "1": "General Translation",
+                "2": "Legal Translation",
+                "3": "Medical Translation",
+                "4": "Technical Translation",
+                "5": "Other Translation"
+            }
+        },
+        "19": {
+            "title": "Real Estate",
+            "arg": {
+                "1": "Residential Real Estate",
+                "2": "New Construction & Resale Homes",
+                "3": "Commercial Real Estate",
+                "4": "Industrial Real Estate",
+                "5": "Vacant Land",
+                "6": "Other Real Estate"
+            }
+        },
+        "20": {
+            "title": "Web, Mobile & Software Development",
+            "arg": {
+                "1": "Desktop Software Development",
+                "2": "Ecommerce Development",
+                "3": "Game Development",
+                "4": "Mobile Development",
+                "5": "Other Software Development",
+                "6": "Product Management",
+                "7": "QA & Testing",
+                "8": "Scripts & Utilities",
+                "9": "Web & Mobile Design",
+                "10": "Web Development",
+                "11": "Other Web, Mobile & Software Dev"
+            }
+        },
+        "21": {
+            "title": "Writing",
+            "arg": {
+                "1": "Content & Copywriting",
+                "2": "Creative Writing",
+                "3": "Editing & Proofreading",
+                "4": "Grant Writing",
+                "5": "Resumes & Cover Letters",
+                "6": "Technical Writing",
+                "7": "Other Writing"
+            }
+        },
+        "22": {
+            "title": "Agriculture & Agribusiness",
+            "arg": {
+                "1": "Crops",
+                "2": "Livestock (both production and animal health)",
+                "3": "Fisheries and Aquaculture (including capture fisheries)",
+                "4": "Forestry",
+                "5": "Othet Agriculture & Agribussiness"
+            }
+        },
+        "23": {
+            "title": "Secretariat, Correspondence & Records Management",
+            "arg": {
+                "1": "Property records - title deeds and settlements",
+                "2": "Accounting papers - rentals, vouchers, surveys and valuations.",
+                "3": "Legal papers",
+                "4": "Inventories",
+                "5": "Correspondence",
+                "6": "Enclosure papers",
+                "7": "Manorial papers - court rolls, custumals, terriers, surveys etc.",
+                "8": "Personal and political papers",
+                "9": "Maps and plans",
+                "10": "Other Secretariat, Correspondence & Records Management"
+            }
+        },
+        "24": {
+            "title": "Medicine & Pharmacy",
+            "arg": {
+                "1": "Retail Pharmacy",
+                "2": "Hospital Pharmacy",
+                "3": "Medication Distribution Center",
+                "4": "Homecare & Hospice Pharmacy",
+                "5": "Pharmacy Informatics",
+                "6": "Ambulatory Care Pharmacy",
+                "7": "Pharmacists",
+                "8": "Other Medicine & Pharmacy"
+            }
+        },
+        "25": {
+            "title": "Transport & Logistics",
+            "arg": {
+                "1": "Management",
+                "2": "Inventory Planning",
+                "3": "Warehousing",
+                "4": "Procurement of Goods and Services",
+                "5": "Packaging and Storage",
+                "6": "Transportation",
+                "7": "Customer service.",
+                "8": "Other Transpot & Logistics"
+            }
+        },
+        "26": {
+            "title": "Construction",
+            "arg": {
+                "1": "Residential Building",
+                "2": "Institutional and Commercial Building",
+                "3": "Infrastructure and Heavy Construction",
+                "4": "Specialized Industrial Construction",
+                "5": "Other Construction"
+            }
+        },
+        "27": {
+            "title": "Banking, Finance & Insurance",
+            "arg": {
+                "1": "The Financial Services Industry",
+                "2": "Financial Planning",
+                "3": "Corporate Finance",
+                "4": "Commercial Banking",
+                "5": "Investment Banking",
+                "6": "Hedge Funds",
+                "7": "Private Equity, Venture Capital",
+                "8": "Insurance",
+                "9": "Other Banking, Finance & Insurance"
+            }
+        },
+        "28": {
+            "title": "Tourism, Leisure & Entertainment",
+            "arg": {
+                "1": "Amusement Attendant",
+                "2": "Concierge",
+                "3": "Cruise Ship Director",
+                "4": "Curator",
+                "5": "Gaming Dealers",
+                "6": "Lifeguard",
+                "7": "Information Clerk",
+                "8": "Recreation Worker",
+                "9": "Tour and Travel Guide",
+                "10": "Other Tourism, Leisure & Entertainment"
+            }
+        },
+        "29": {
+            "title": "Telecommunications",
+            "arg": {
+                "1": "Telecommunications Systems Managers",
+                "2": "Line Installers",
+                "3": "Customer Service Representative",
+                "4": "Computer Software Engineers",
+                "5": "Computer Programmers",
+                "6": "Professional Associations",
+                "7": "Related Certification Bodies",
+                "8": "Other Telecommunications"
+            }
+        },
+        "30": {
+            "title": "Early Career & Students",
+            "arg": {
+                "1": "Courier",
+                "2": "Waiter",
+                "3": "Other Early Career & Students"
+            }
+        },
+        "31": {
+            "title": "Service Occupations",
+            "arg": {
+                "1": "Restaurants & Food Services industry",
+                "2": "Other Service Occupations"
+            }
+        },
+        "32": {
+            "title": "Work abroad",
+            "arg": {
+                "1": "Work abroad"
+            }
+        },
+        "33": {
+            "title": "Seasonal Work",
+            "arg": {
+                "1": "Variable",
+                "2": "Part-time",
+                "3": "Full-time"
+            }
+        }
     }
 }

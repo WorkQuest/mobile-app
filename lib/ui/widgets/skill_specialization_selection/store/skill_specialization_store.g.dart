@@ -40,52 +40,50 @@ mixin _$SkillSpecializationStore on SkillSpecializationStoreBase, Store {
     });
   }
 
-  final _$specializationAtom =
-      Atom(name: 'SkillSpecializationStoreBase.specialization');
+  final _$allSpicesAtom = Atom(name: 'SkillSpecializationStoreBase.allSpices');
 
   @override
-  List<Specialization> get specialization {
-    _$specializationAtom.reportRead();
-    return super.specialization;
+  List<Specialization> get allSpices {
+    _$allSpicesAtom.reportRead();
+    return super.allSpices;
   }
 
   @override
-  set specialization(List<Specialization> value) {
-    _$specializationAtom.reportWrite(value, super.specialization, () {
-      super.specialization = value;
+  set allSpices(List<Specialization> value) {
+    _$allSpicesAtom.reportWrite(value, super.allSpices, () {
+      super.allSpices = value;
     });
   }
 
-  final _$selectSpecializationsAtom =
-      Atom(name: 'SkillSpecializationStoreBase.selectSpecializations');
+  final _$selectedSpicesAtom =
+      Atom(name: 'SkillSpecializationStoreBase.selectedSpices');
 
   @override
-  Map<int, Specialization> get selectSpecializations {
-    _$selectSpecializationsAtom.reportRead();
-    return super.selectSpecializations;
+  Map<int, Specialization> get selectedSpices {
+    _$selectedSpicesAtom.reportRead();
+    return super.selectedSpices;
   }
 
   @override
-  set selectSpecializations(Map<int, Specialization> value) {
-    _$selectSpecializationsAtom.reportWrite(value, super.selectSpecializations,
-        () {
-      super.selectSpecializations = value;
+  set selectedSpices(Map<int, Specialization> value) {
+    _$selectedSpicesAtom.reportWrite(value, super.selectedSpices, () {
+      super.selectedSpices = value;
     });
   }
 
-  final _$selectSkillsAtom =
-      Atom(name: 'SkillSpecializationStoreBase.selectSkills');
+  final _$selectedSkillsAtom =
+      Atom(name: 'SkillSpecializationStoreBase.selectedSkills');
 
   @override
-  Map<int, List<String>> get selectSkills {
-    _$selectSkillsAtom.reportRead();
-    return super.selectSkills;
+  Map<int, List<String>> get selectedSkills {
+    _$selectedSkillsAtom.reportRead();
+    return super.selectedSkills;
   }
 
   @override
-  set selectSkills(Map<int, List<String>> value) {
-    _$selectSkillsAtom.reportWrite(value, super.selectSkills, () {
-      super.selectSkills = value;
+  set selectedSkills(Map<int, List<String>> value) {
+    _$selectedSkillsAtom.reportWrite(value, super.selectedSkills, () {
+      super.selectedSkills = value;
     });
   }
 
@@ -128,9 +126,9 @@ mixin _$SkillSpecializationStore on SkillSpecializationStoreBase, Store {
     return '''
 numberOfSpices: ${numberOfSpices},
 isLoading: ${isLoading},
-specialization: ${specialization},
-selectSpecializations: ${selectSpecializations},
-selectSkills: ${selectSkills}
+allSpices: ${allSpices},
+selectedSpices: ${selectedSpices},
+selectedSkills: ${selectedSkills}
     ''';
   }
 }

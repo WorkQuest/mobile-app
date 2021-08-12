@@ -1,6 +1,7 @@
 import 'package:app/ui/widgets/skill_specialization_selection/store/skill_specialization_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SkillSpecializationSelection extends StatefulWidget {
   final SkillSpecializationController? controller;
@@ -31,14 +32,14 @@ class _SkillSpecializationSelectionState
               onPressed: store.deleteSpices,
               child: Text(
                 "Delete",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Color(0xFFDF3333),
                 ),
               ),
               style: OutlinedButton.styleFrom(
-                fixedSize: Size.fromWidth(double.maxFinite),
-                side: BorderSide(
+                fixedSize: const Size.fromWidth(double.maxFinite),
+                side: const BorderSide(
                   width: 1.0,
                   color: Color.fromRGBO(223, 51, 51, 0.1),
                 ),
@@ -49,14 +50,14 @@ class _SkillSpecializationSelectionState
               onPressed: store.addSpices,
               child: Text(
                 "Add specialization",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Color(0xFF0083C7),
                 ),
               ),
               style: OutlinedButton.styleFrom(
-                fixedSize: Size.fromWidth(double.maxFinite),
-                side: BorderSide(
+                fixedSize: const Size.fromWidth(double.maxFinite),
+                side: const BorderSide(
                   width: 1.0,
                   color: Color.fromRGBO(0, 131, 199, 0.1),
                 ),
@@ -75,14 +76,15 @@ class _SkillSpecializationSelectionState
         const SizedBox(height: 5),
         getSpecializationSelector(count),
         const SizedBox(height: 20),
-        if (store.selectSpecializations[count] != null) getSkillSelector(count),
+        if (store.selectedSpices[count] != null) getSkillSelector(count),
       ],
     );
   }
 
   Widget getSkillSelector(int count) {
-    final list = store.selectSpecializations[count]!.list
-        .where((element) => !store.selectSkills[count]!.contains(element))
+    final title = store.selectedSpices[count]!.header;
+    final list = store.selectedSpices[count]!.list
+        .where((element) => !store.selectedSkills[count]!.contains(element))
         .toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,46 +94,39 @@ class _SkillSpecializationSelectionState
         getSelectorButton<String>(
             plaseholder: "Choose",
             data: list,
-            builder: (item) => Center(
-                    child: new Text(
-                  item,
-                  textAlign: TextAlign.center,
-                )),
-            onSelect: (item) {
-              store.selectSkills[count]!.add(item);
-            }),
+            builder: (item) =>
+                Center(child: new Text("filter.$title.arg.$item".tr())),
+            onSelect: (item) =>
+                store.selectedSkills[count]!.add("filter.$title.arg.$item")),
         const SizedBox(height: 10),
-        Wrap(
-          children: store.selectSkills[count]!
-              .map((str) => skillBody(
-                    str,
-                    () {
-                      store.selectSkills[count]!.remove(str);
+        Observer(
+          builder: (_) => Wrap(
+            children: store.selectedSkills[count]!
+                .map((str) => skillBody(str, () {
+                      store.selectedSkills[count]!.remove(str);
                       setState(() {});
-                    },
-                  ))
-              .toList(),
+                    }))
+                .toList(),
+          ),
         ),
       ],
     );
   }
 
   Widget getSpecializationSelector(int count) {
-    final list = store.specialization
-        .where(
-            (element) => !store.selectSpecializations.values.contains(element))
+    final list = store.allSpices
+        .where((element) => !store.selectedSpices.values.contains(element))
         .toList();
     return getSelectorButton<Specialization>(
-        plaseholder: store.selectSpecializations[count]?.header ?? "Choose",
+        plaseholder: store.selectedSpices[count]?.header != null
+            ? "filter.${store.selectedSpices[count]?.header}.title".tr()
+            : "Choose",
         data: list,
-        builder: (item) => Center(
-                child: new Text(
-              item.header,
-              textAlign: TextAlign.center,
-            )),
+        builder: (item) =>
+            Center(child: new Text("filter.${item.header}.title".tr())),
         onSelect: (item) {
-          store.selectSpecializations[count] = item;
-          store.selectSkills[count] = [];
+          store.selectedSpices[count] = item;
+          store.selectedSkills[count] = [];
         });
   }
 
@@ -144,8 +139,8 @@ class _SkillSpecializationSelectionState
               constraints: BoxConstraints(
                   maxWidth: MediaQuery.of(context).size.width - 100),
               child: Text(
-                title,
-                style: TextStyle(color: const Color(0xFF0083C7)),
+                title.tr(),
+                style: const TextStyle(color: const Color(0xFF0083C7)),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 softWrap: false,
@@ -159,33 +154,6 @@ class _SkillSpecializationSelectionState
           backgroundColor: const Color.fromRGBO(0, 131, 199, 0.1),
           onPressed: onRemove),
     );
-
-    // return Container(
-    //   margin: const EdgeInsets.only(right: 10, bottom: 10),
-    //   padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 6),
-    //   decoration: BoxDecoration(
-    //     borderRadius: BorderRadius.circular(44),
-    //     color: const Color.fromRGBO(0, 131, 199, 0.1),
-    //   ),
-    //   child: Row(mainAxisSize: MainAxisSize.min, children: [
-    //     Text(
-    //       title,
-    //       style: TextStyle(
-    //         color: const Color(0xFF0083C7),
-    //       ),
-    //     ),
-    //     GestureDetector(
-    //       onTap: onRemove,
-    //       child: Padding(
-    //         padding: const EdgeInsets.only(left: 4, right: 1),
-    //         child: const Icon(
-    //           Icons.close,
-    //           size: 20,
-    //         ),
-    //       ),
-    //     ),
-    //   ]),
-    // );
   }
 
   Widget getSelectorButton<T>({
@@ -196,45 +164,44 @@ class _SkillSpecializationSelectionState
   }) {
     return Container(
       height: 50,
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      decoration: const BoxDecoration(
         color: Color(0xFFF7F8FA),
         borderRadius: BorderRadius.all(Radius.circular(6.0)),
       ),
       alignment: Alignment.centerLeft,
       child: InkWell(
         onTap: () => modalBottomSheet(
-          DraggableScrollableSheet(
-            initialChildSize: 1.0,
-            expand: false,
-            builder: (context, scrollController) => ListView.separated(
-              padding: EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 15.0,
-              ),
-              separatorBuilder: (context, index) => const Divider(
-                color: Colors.black12,
-                endIndent: 50.0,
-                indent: 50.0,
-              ),
-              controller: scrollController,
-              shrinkWrap: true,
-              itemCount: data.length,
-              itemBuilder: (context, index) => SizedBox(
-                height: 40.0,
-                width: double.maxFinite,
-                child: InkWell(
-                  onTap: () {
-                    onSelect(data[index]);
-                    setState(() {});
-                    Navigator.pop(context);
-                  },
-                  child: builder(data[index]),
+            DraggableScrollableSheet(
+              initialChildSize: 0.9,
+              builder: (context, scrollController) => ListView.separated(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 15.0,
+                ),
+                separatorBuilder: (context, index) => const Divider(
+                  color: Colors.black12,
+                  endIndent: 50.0,
+                  indent: 50.0,
+                ),
+                controller: scrollController,
+                shrinkWrap: true,
+                itemCount: data.length,
+                itemBuilder: (context, index) => SizedBox(
+                  height: 40.0,
+                  width: double.maxFinite,
+                  child: InkWell(
+                    onTap: () {
+                      onSelect(data[index]);
+                      setState(() {});
+                      Navigator.pop(context);
+                    },
+                    child: builder(data[index]),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
+            isScrollControlled: data.length > 10),
         child: Row(
           children: [
             Expanded(
@@ -246,7 +213,7 @@ class _SkillSpecializationSelectionState
                 ),
               ),
             ),
-            Icon(
+            const Icon(
               Icons.arrow_drop_down,
               size: 30,
               color: Colors.blueAccent,
@@ -257,24 +224,35 @@ class _SkillSpecializationSelectionState
     );
   }
 
-  modalBottomSheet(Widget child) => showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(
-            20.0,
+  modalBottomSheet(Widget child, {bool isScrollControlled = false}) =>
+      showModalBottomSheet(
+          isScrollControlled: isScrollControlled,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
           ),
-        ),
-      ),
-      context: context,
-      builder: (context) {
-        return child;
-      });
+          context: context,
+          builder: (context) {
+            return child;
+          });
 }
 
 class SkillSpecializationController {
   SkillSpecializationStore? store;
   setStore(SkillSpecializationStore s) {
     store = s;
+  }
+
+  Map<String, List<String>> getSkillAndSpecialization() {
+    Map<String, List<String>> genMap = {};
+    if (store != null) {
+      for (final index in store!.selectedSpices.keys) {
+        genMap[store!.selectedSpices[index]!.header] =
+            store!.selectedSkills[index]!;
+      }
+    }
+    return genMap;
   }
 }

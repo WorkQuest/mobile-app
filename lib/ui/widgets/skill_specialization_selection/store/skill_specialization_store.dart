@@ -21,13 +21,13 @@ abstract class SkillSpecializationStoreBase with Store {
   bool isLoading = true;
 
   @observable
-  List<Specialization> specialization = [];
+  List<Specialization> allSpices = [];
 
   @observable
-  Map<int, Specialization> selectSpecializations = {};
+  Map<int, Specialization> selectedSpices = {};
 
   @observable
-  Map<int, List<String>> selectSkills = {};
+  Map<int, List<String>> selectedSkills = {};
 
   Future<Map<String, dynamic>> parseJsonFromAssets(String assetsPath) async {
     return jsonDecode(await rootBundle.loadString(assetsPath));
@@ -40,10 +40,10 @@ abstract class SkillSpecializationStoreBase with Store {
 
   @action
   deleteSpices() {
-    if (this.selectSkills[numberOfSpices - 1] != null) {
-      this.selectSkills.remove(numberOfSpices - 1);
+    if (this.selectedSkills[numberOfSpices - 1] != null) {
+      this.selectedSkills.remove(numberOfSpices - 1);
     }
-    this.selectSpecializations.remove(numberOfSpices - 1);
+    this.selectedSpices.remove(numberOfSpices - 1);
     numberOfSpices -= 1;
   }
 
@@ -52,7 +52,7 @@ abstract class SkillSpecializationStoreBase with Store {
     final json = await parseJsonFromAssets("assets/lang/en-US.json");
     final filtersJson = json["filter"] as Map<String, dynamic>;
     filtersJson.forEach((key, value) {
-      specialization.add(Specialization(
+      allSpices.add(Specialization(
         header: key,
         list: (value["arg"] as Map<String, dynamic>).keys.toList(),
       ));

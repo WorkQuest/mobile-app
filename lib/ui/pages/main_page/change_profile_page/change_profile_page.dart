@@ -12,9 +12,13 @@ class ChangeProfilePage extends StatefulWidget {
 
 class _ChangeProfilePageState extends State<ChangeProfilePage> {
   ProfileMeStore? profile;
+  SkillSpecializationController? _controller;
+
+  String testText = "";
 
   @override
   void initState() {
+    _controller = SkillSpecializationController();
     profile = context.read<ProfileMeStore>();
     super.initState();
   }
@@ -51,7 +55,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           changeImage(),
           inputBody(
             title: "First name",
-            initialValue: profile!.userData!.firstName ,
+            initialValue: profile!.userData!.firstName,
             onChanged: (text) {},
           ),
           inputBody(
@@ -80,7 +84,18 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                   profile!.userData!.additionalInfo!.description ?? "",
               onChanged: (text) {},
               maxLines: null),
-          SkillSpecializationSelection(),
+          SkillSpecializationSelection(
+            controller: _controller,
+          ),
+          // TextButton(
+          //     onPressed: () {
+          //       setState(() {
+          //         testText =
+          //             _controller!.getSkillAndSpecialization().toString();
+          //       });
+          //     },
+          //     child: Text("Get Skill And Specialization")),
+          // Text(testText),
           const SizedBox(height: 200),
         ],
       ),
