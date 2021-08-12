@@ -7,6 +7,8 @@ import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
+import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/change_password_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
@@ -231,11 +233,25 @@ class Routes {
           ),
         );
 
+      case RaiseViews.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<RaiseViewStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: RaiseViews(),
+            ),
+          ),
+        );
+
       case WebViewPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Directionality(
-              textDirection: checkDirection(context),
-              child: WebViewPage(settings.arguments.toString())),
+            textDirection: checkDirection(context),
+            child: WebViewPage(
+              settings.arguments.toString(),
+            ),
+          ),
         );
 
       case ChatRoomPage.routeName:
@@ -246,7 +262,9 @@ class Routes {
       default:
         return MaterialPageRoute(
           builder: (context) => Directionality(
-              textDirection: checkDirection(context), child: Container()),
+            textDirection: checkDirection(context),
+            child: Container(),
+          ),
         );
     }
   }
