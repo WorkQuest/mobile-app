@@ -169,6 +169,53 @@ extension UserInfoService on ApiProvider {
     );
     return ProfileMeResponse.fromJson(responseData);
   }
+
+  Future<ProfileMeResponse> changeProfileMe(ProfileMeResponse userData) async {
+    try {
+      print("[RTag]  ${userData.toJson()}");
+      final responseData =
+          await _httpClient.put(query: '/v1/profile/edit', data: {
+        // "avatarId": "f1b882dc-6f96-442b-bd51-f5b13e8fee24",
+        // "firstName": "ivan",
+        // "lastName": "ivanov",
+        // "additionalInfo": {
+        //   "secondMobileNumber": "string",
+        //   "address": "string",
+        //   "socialNetwork": {
+        //     "instagram": "string",
+        //     "twitter": "string",
+        //     "linkedin": "string",
+        //     "facebook": "string"
+        //   },
+        //   "description": "string",
+        //   "company": "string",
+        //   "CEO": "string",
+        //   "website": "string"
+        // },
+        "avatarId": userData.avatarId,
+        "firstName": userData.firstName,
+        "lastName": userData.lastName,
+        "additionalInfo": {
+          "secondMobileNumber": userData.additionalInfo!.secondMobileNumber,
+          "address": userData.additionalInfo!.address,
+          "socialNetwork": {
+            "instagram":
+                userData.additionalInfo?.socialNetwork?.instagram ?? "",
+            "twitter": userData.additionalInfo?.socialNetwork?.twitter ?? "",
+            "linkedin": userData.additionalInfo?.socialNetwork?.linkedin ?? "",
+            "facebook": userData.additionalInfo?.socialNetwork?.facebook ?? ""
+          },
+          "description": userData.additionalInfo?.description,
+          "company": userData.additionalInfo?.company,
+          "CEO": userData.additionalInfo?.ceo,
+          "website": userData.additionalInfo?.website
+        }
+      });
+      return ProfileMeResponse.fromJson(responseData);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
 
 extension SetRoleService on ApiProvider {

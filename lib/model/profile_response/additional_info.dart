@@ -26,6 +26,21 @@ class AdditionalInfo {
   List<Education>? educations;
   List<WorkExperience>? workExperiences;
 
+  AdditionalInfo.clone(AdditionalInfo object)
+      : this(
+            secondMobileNumber: object.secondMobileNumber,
+            address: object.address,
+            socialNetwork: object.socialNetwork != null
+                ? SocialNetwork.clone(object.socialNetwork!)
+                : null,
+            description: object.description,
+            company: object.company,
+            ceo: object.ceo,
+            website: object.website,
+            skills: object.skills,
+            educations: object.educations,
+            workExperiences: object.workExperiences);
+
   factory AdditionalInfo.fromJson(Map<String, dynamic> json) => AdditionalInfo(
         secondMobileNumber: json["secondMobileNumber"],
         address: json["address"],

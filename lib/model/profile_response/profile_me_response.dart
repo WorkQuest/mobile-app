@@ -1,8 +1,8 @@
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/avatar.dart';
-import 'package:app/model/profile_response/rating_statistic.dart';
-import 'package:app/model/profile_response/review.dart';
+// import 'package:app/model/profile_response/rating_statistic.dart';
+// import 'package:app/model/profile_response/review.dart';
 
 class ProfileMeResponse {
   ProfileMeResponse({
@@ -32,6 +32,22 @@ class ProfileMeResponse {
   AdditionalInfo? additionalInfo;
   UserRole role;
   Avatar? avatar;
+
+  ProfileMeResponse.clone(ProfileMeResponse object)
+      : this(
+          id: object.id,
+          avatarId: object.avatarId,
+          firstName: object.firstName,
+          lastName: object.lastName,
+          phone: object.phone,
+          tempPhone: object.tempPhone,
+          email: object.email,
+          additionalInfo: object.additionalInfo != null
+              ? AdditionalInfo.clone(object.additionalInfo!)
+              : null,
+          role: object.role,
+          avatar: object.avatar,
+        );
 
   // List<Review>? reviews;
   //RatingStatistic? ratingStatistic;
