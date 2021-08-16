@@ -1,6 +1,5 @@
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
-import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,46 +17,20 @@ class ChatRoomPage extends StatefulWidget {
 }
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
-  ChatRoomStore? store;
-
+  ChatRoomStore? _store;
+  ScrollController _controller = ScrollController();
   @override
   void initState() {
-    store = context.read<ChatRoomStore>();
-    store!.chat = widget.chat;
-    store!.loadChat();
+    _store = context.read<ChatRoomStore>();
+    _store!.chat = widget.chat;
+    _store!.loadChat();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
-        title: Text(
-          store!.chat!.name,
-          style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
-        ),
-        actions: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(store!.chat!.imageUrl),
-            maxRadius: 20,
-          ),
-          const SizedBox(width: 20),
-        ],
-      ),
+      appBar: _appBar(),
       body: Container(
         alignment: Alignment.bottomLeft,
         height: MediaQuery.of(context).size.height,
@@ -67,20 +40,20 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           children: [
             Flexible(
               child: Observer(
-                builder: (_) => store!.isLoading
+                builder: (_) => _store!.isLoading
                     ? Center(child: CircularProgressIndicator())
                     : Observer(
                         builder: (_) => ListView.builder(
                           reverse: true,
-                          itemCount: store?.messages!.length,
-                          itemBuilder: (context, index) {
-                            return _message(store!.messages![index]);
-                          },
+                          controller: _controller,
+                          itemCount: _store?.messages!.length,
+                          itemBuilder: (context, index) =>
+                              _message(_store!.messages![index]),
                         ),
                       ),
               ),
             ),
-            InputToolbar(store!.sendMessage),
+            InputToolbar(_store!.sendMessage),
             const SizedBox(height: 10),
           ],
         ),
@@ -145,11 +118,35 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       ),
     );
   }
-}
 
-class Message {
-  String text;
-  bool myMessage;
-
-  Message(this.text, this.myMessage);
+  PreferredSizeWidget _appBar() {
+    return AppBar(
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      backgroundColor: Colors.white,
+      leading: IconButton(
+        onPressed: () => Navigator.pop(context),
+        icon: Icon(
+          Icons.arrow_back,
+          color: Colors.black,
+        ),
+      ),
+      centerTitle: true,
+      title: Text(
+        _store!.chat!.name,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
+        ),
+      ),
+      actions: [
+        CircleAvatar(
+          backgroundImage: NetworkImage(_store!.chat!.imageUrl),
+          maxRadius: 20,
+        ),
+        const SizedBox(width: 20),
+      ],
+    );
+  }
 }
