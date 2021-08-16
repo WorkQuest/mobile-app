@@ -1,6 +1,10 @@
+import 'package:app/model/chat_model/chat_model.dart';
+import 'package:app/observer_consumer.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_mobx/flutter_mobx.dart';
+import "package:provider/provider.dart";
 import 'chat_room_page/chat_room_page.dart';
 
 class ChatPage extends StatefulWidget {
@@ -11,15 +15,14 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<ChatDetails> currentList = List<ChatDetails>.generate(
-    100,
-    (index) => ChatDetails(
-      "Samantha Sparcks",
-      "https://decimalchain.com/_nuxt/img/image.b668d57.jpg",
-      "Hello Samantha!",
-      "14 days ago",
-    ),
-  );
+  ChatStore? store;
+
+  @override
+  void initState() {
+    store = context.read<ChatStore>();
+    store!.loadChats();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,17 +48,19 @@ class _ChatPageState extends State<ChatPage> {
         },
         body: RefreshIndicator(
           onRefresh: () async {
-            return Future.delayed(
-              Duration(milliseconds: 1000),
-            );
+            return await store!.loadChats();
           },
-          child: SingleChildScrollView(
-            child: Column(
-              children: currentList
-                  .map(
-                    (e) => _chatItem(e),
-                  )
-                  .toList(),
+          child: ObserverListener<ChatStore>(
+            onSuccess: () {},
+            child: Observer(
+              builder: (_) => store!.isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
+                      child: Column(
+                        children:
+                            store!.chats.map((e) => _chatItem(e)).toList(),
+                      ),
+                    ),
             ),
           ),
         ),
@@ -63,11 +68,11 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _chatItem(ChatDetails chatDetails, {bool hasUnreadMessages = false}) {
+  Widget _chatItem(ChatModel chatDetails, {bool hasUnreadMessages = false}) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         Navigator.of(context, rootNavigator: true)
-            .pushNamed(ChatRoomPage.routeName);
+            .pushNamed(ChatRoomPage.routeName, arguments: chatDetails);
       },
       child: Column(
         children: [
@@ -108,25 +113,27 @@ class _ChatPageState extends State<ChatPage> {
                       const SizedBox(
                         height: 5,
                       ),
-                      Text(
-                        "You: ${chatDetails.lastMessage} " * 10,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF7C838D),
+                      if (chatDetails.lastMessage != null)
+                        Text(
+                          "You: ${chatDetails.lastMessage} " * 10,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF7C838D),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
                       const SizedBox(
                         height: 5,
                       ),
-                      Text(
-                        chatDetails.dateOfLastMessage,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFFD8DFE3),
-                        ),
-                      )
+                      if (chatDetails.lastMessageDate != null)
+                        Text(
+                          chatDetails.lastMessageDate!.toString(),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFFD8DFE3),
+                          ),
+                        )
                     ],
                   ),
                 ),
@@ -153,18 +160,4 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-}
-
-class ChatDetails {
-  String imageUrl;
-  String name;
-  String lastMessage;
-  String dateOfLastMessage;
-
-  ChatDetails(
-    this.name,
-    this.imageUrl,
-    this.lastMessage,
-    this.dateOfLastMessage,
-  );
 }

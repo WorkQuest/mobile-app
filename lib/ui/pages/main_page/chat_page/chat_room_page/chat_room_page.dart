@@ -1,158 +1,145 @@
+import 'package:app/model/chat_model/chat_model.dart';
+import 'package:app/model/chat_model/message_model.dart';
+import 'package:app/observer_consumer.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import "package:provider/provider.dart";
 
 class ChatRoomPage extends StatefulWidget {
   static const String routeName = "/chatRoomPage";
-
-  const ChatRoomPage();
+  final ChatModel chat;
+  ChatRoomPage(this.chat);
 
   @override
   _ChatRoomPageState createState() => _ChatRoomPageState();
 }
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
-  ScrollController _scrollController = ScrollController(
-    initialScrollOffset: 0.0,
-    keepScrollOffset: true,
-  );
-  List<Message> listMessages = List.generate(
-    20,
-    (index) => Message(
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam",
-        index % 2 == 1),
-  );
+  ChatRoomStore? store;
+
+  @override
+  void initState() {
+    store = context.read<ChatRoomStore>();
+    store!.chat = widget.chat;
+    store!.loadChat();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-          flexibleSpace: SafeArea(
-            child: Container(
-              padding: EdgeInsets.only(right: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Text(
-                    "Kriss Benwat",
-                    style: TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        "https://randomuser.me/api/portraits/men/6.jpg"),
-                    maxRadius: 20,
-                  ),
-                ],
-              ),
-            ),
+      appBar: AppBar(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
           ),
         ),
-        body: CustomScrollView(
-          controller: _scrollController,
-          physics: const ClampingScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                child: Column(
-                  children: listMessages.map((e) => _message(e)).toList(),
-                ),
+        centerTitle: true,
+        title: Text(
+          store!.chat!.name,
+          style: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w600, color: Colors.black),
+        ),
+        actions: [
+          CircleAvatar(
+            backgroundImage: NetworkImage(store!.chat!.imageUrl),
+            maxRadius: 20,
+          ),
+          const SizedBox(width: 20),
+        ],
+      ),
+      body: Container(
+        alignment: Alignment.bottomLeft,
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Observer(
+                builder: (_) => store!.isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : Observer(
+                        builder: (_) => ListView.builder(
+                          reverse: true,
+                          itemCount: store?.messages!.length,
+                          itemBuilder: (context, index) {
+                            return _message(store!.messages![index]);
+                          },
+                        ),
+                      ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 10,
-              ),
-            )
+            InputToolbar(store!.sendMessage),
+            const SizedBox(height: 10),
           ],
         ),
-        bottomNavigationBar: _bottomTextFormFieldWithIcons());
+      ),
+    );
   }
 
-  Widget _message(Message e) {
+  Widget _message(MessageModel mess) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          if (!e.myMessage) Spacer(),
+          if (!mess.isMy) Spacer(),
           Container(
             padding: const EdgeInsets.all(10),
             margin: const EdgeInsets.only(bottom: 16),
             width: MediaQuery.of(context).size.width * 0.7,
             decoration: BoxDecoration(
-              color: e.myMessage ? Color(0xFF0083C7) : Color(0xFFF7F8FA),
-              // Color(0xFFF7F8FA)
+              color: mess.isMy ? Color(0xFF0083C7) : Color(0xFFF7F8FA),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  e.text,
+                  mess.text,
                   style: TextStyle(
-                    color: e.myMessage ? Color(0xFFFFFFFF) : Color(0xFF1D2127),
+                    color: mess.isMy ? Color(0xFFFFFFFF) : Color(0xFF1D2127),
                   ),
                 ),
                 const SizedBox(
                   height: 5,
                 ),
-                Text(
-                  "14:47",
-                  style: TextStyle(
-                    color: e.myMessage
-                        ? Color(0xFFFFFFFF).withOpacity(0.4)
-                        : Color(0xFF8D96A1).withOpacity(0.4),
-                  ),
-                ),
+                Row(
+                  children: [
+                    if (mess.status != MessageStatus.None)
+                      Icon(
+                        mess.status == MessageStatus.Wait
+                            ? Icons.watch_later
+                            : mess.status == MessageStatus.Send
+                                ? Icons.check
+                                : Icons.error,
+                        size: 15,
+                        color:
+                            !mess.isMy ? Color(0xFF0083C7) : Color(0xFFF7F8FA),
+                      ),
+                    Text(
+                      "${mess.updatedAt.hour < 10 ? "0${mess.updatedAt.hour}" : mess.updatedAt.hour}:" +
+                          "${mess.updatedAt.minute < 10 ? "0${mess.updatedAt.minute}" : mess.updatedAt.minute}",
+                      style: TextStyle(
+                        color: mess.isMy
+                            ? Color(0xFFFFFFFF).withOpacity(0.4)
+                            : Color(0xFF8D96A1).withOpacity(0.4),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _bottomTextFormFieldWithIcons() {
-    return SafeArea(
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 18, right: 12),
-            child: InkWell(
-                onTap: () {},
-                child: SvgPicture.asset("assets/attach_media_icon.svg")),
-          ),
-          Expanded(
-            child: TextFormField(
-              onChanged: (text) {
-                print(text);
-              },
-              decoration: InputDecoration(
-                hintText: 'Text',
-              ),
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 14, right: 20),
-            child: InkWell(
-                onTap: () {},
-                child: SvgPicture.asset("assets/send_message_icon.svg")),
           ),
         ],
       ),

@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
+import 'package:app/model/chat_model/chat_model.dart';
+import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
@@ -241,7 +243,44 @@ extension GetUploadLink on ApiProvider {
       mediaId.add(response["mediaId"]);
     }
     print("$mediaId");
+
     return mediaId;
+  }
+}
+
+extension ChatsService on ApiProvider {
+  Future<List<ChatModel>> getChats() async {
+    final responseData = await _httpClient.get(query: '/v1/user/me/chats');
+    return List<ChatModel>.from(
+      responseData["chats"].map(
+        (x) => ChatModel.fromJson(x),
+      ),
+    );
+  }
+
+  Future<List<MessageModel>> getMessages({required String chatId}) async {
+    final responseData =
+        await _httpClient.get(query: '/v1/user/me/chat/$chatId/messages');
+    return List<MessageModel>.from(
+      responseData["messages"].map(
+        (x) => MessageModel.fromJson(x),
+      ),
+    );
+  }
+
+  Future<bool> sendMessageToChat({
+    required String chatId,
+    String? text,
+    List<String>? mediasId,
+  }) async {
+    final responseData = await _httpClient.post(
+      query: '/v1/chat/$chatId/send-message',
+      data: {
+        "text": text ?? "",
+        "medias": mediasId ?? [],
+      },
+    );
+    return responseData == null;
   }
 }
 
