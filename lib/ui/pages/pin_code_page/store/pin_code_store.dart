@@ -95,6 +95,10 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       this.onSuccess(state);
   }
 
+  Future<void> onWillPop() async {
+    await Storage.deleteAllFromSecureStorage();
+  }
+
   @action
   Future signIn({bool isBiometric = false}) async {
     try {

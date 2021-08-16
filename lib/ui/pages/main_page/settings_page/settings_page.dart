@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
@@ -560,17 +562,41 @@ class SettingsPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: OutlinedButton(
         onPressed: () {
-          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => Provider(
-                create: (context) => getIt.get<SignInStore>(),
-                child: SignInPage(),
-              ),
-            ),
-            (route) => false,
+          showCupertinoDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext contextDialog) {
+              return Platform.isIOS
+                  ? CupertinoAlertDialog(
+                      title: Text('Go out?'),
+                      content: Text("Are you sure you want to log out?"),
+                      actions: [
+                        CupertinoDialogAction(
+                          child: Text("Yes"),
+                          onPressed: () => _onLogout(context),
+                        ),
+                        CupertinoDialogAction(
+                          child: Text("No"),
+                          onPressed: (){Navigator.pop(contextDialog);},
+                        ),
+                      ],
+                    )
+                  : AlertDialog(
+                      title: Text('Go out?'),
+                      content: Text("Are you sure you want to log out?"),
+                      actions: [
+                        CupertinoDialogAction(
+                          child: Text("Yes"),
+                          onPressed: () => _onLogout(context),
+                        ),
+                        CupertinoDialogAction(
+                          child: Text("No"),
+                          onPressed:(){Navigator.pop(contextDialog);},
+                        ),
+                      ],
+                    );
+            },
           );
-
-          Storage.deleteAllFromSecureStorage();
         },
         child: Text(
           "Logout",
@@ -586,5 +612,19 @@ class SettingsPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _onLogout(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => Provider(
+          create: (context) => getIt.get<SignInStore>(),
+          child: SignInPage(),
+        ),
+      ),
+      (route) => false,
+    );
+
+    Storage.deleteAllFromSecureStorage();
   }
 }
