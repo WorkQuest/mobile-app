@@ -40,96 +40,104 @@ class _PinCodePageState extends State<PinCodePage>
               controller!.reverse();
             }
           });
-    return ObserverListener<PinCodeStore>(
-      onFailure: () {
-        controller!.forward(from: 0.0);
-        if (pinCodeStore.errorMessage != null) if (pinCodeStore
-            .errorMessage!.isNotEmpty) return false;
+    return WillPopScope(
+      onWillPop: () async {
+        if (widget.isRecheck) return false;
+        pinCodeStore.onWillPop();
         return true;
       },
-      onSuccess: () {
-        if (pinCodeStore.successData == StatePinCode.Success) {
-          if (widget.isRecheck) {
-            Navigator.pop(context);
-          } else {
+      child: ObserverListener<PinCodeStore>(
+        onFailure: () {
+          controller!.forward(from: 0.0);
+          if (pinCodeStore.errorMessage != null) if (pinCodeStore
+              .errorMessage!.isNotEmpty) return false;
+          return true;
+        },
+        onSuccess: () {
+          if (pinCodeStore.successData == StatePinCode.Success) {
+            if (widget.isRecheck) {
+              Navigator.pop(context);
+            } else {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                MainPage.routeName,
+                (_) => false,
+              );
+            }
+          } else if (pinCodeStore.successData == StatePinCode.ToLogin) {
             Navigator.pushNamedAndRemoveUntil(
               context,
-              MainPage.routeName,
+              SignInPage.routeName,
               (_) => false,
             );
           }
-        } else if (pinCodeStore.successData == StatePinCode.ToLogin) {
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            SignInPage.routeName,
-            (_) => false,
-          );
-        }
-      },
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(59.0, 114.0, 59.0, 0.0),
-          child: Observer(
-            builder: (_) {
-              return Column(
-                children: [
-                  Text(
-                    pinCodeStore.statePin == StatePinCode.Create
-                        ? "Come up with a PIN-code"
-                        : pinCodeStore.statePin == StatePinCode.Repeat
-                            ? "Repeat PIN-code"
-                            : "Please, write your PIN-code",
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 40),
-                  pinCodeStore.isLoading
-                      ? PlatformActivityIndicator()
-                      : AnimatedBuilder(
-                          animation: offsetAnimation,
-                          builder: (buildContext, child) {
-                            return Container(
-                              margin: EdgeInsets.symmetric(horizontal: 24.0),
-                              padding: EdgeInsets.only(
-                                  left: offsetAnimation.value + 24.0,
-                                  right: 24.0 - offsetAnimation.value),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  for (int i = 1; i < 5; i++)
-                                    Observer(
-                                      builder: (_) => Container(
-                                        height: 10,
-                                        width: 10,
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 7.5),
-                                        decoration: BoxDecoration(
-                                          color: !offsetAnimation.isDismissed
-                                              ? Colors.red
-                                              : pinCodeStore.pin.length >= i
-                                                  ? Color(0xFF0083C7)
-                                                  : Color(0xFFE9EDF2),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5.0)),
+        },
+        child: Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.fromLTRB(59.0, 114.0, 59.0, 0.0),
+            child: Observer(
+              builder: (_) {
+                return Column(
+                  children: [
+                    Text(
+                      pinCodeStore.statePin == StatePinCode.Create
+                          ? "Come up with a PIN-code"
+                          : pinCodeStore.statePin == StatePinCode.Repeat
+                              ? "Repeat PIN-code"
+                              : "Please, write your PIN-code",
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 40),
+                    pinCodeStore.isLoading
+                        ? PlatformActivityIndicator()
+                        : AnimatedBuilder(
+                            animation: offsetAnimation,
+                            builder: (buildContext, child) {
+                              return Container(
+                                margin: EdgeInsets.symmetric(horizontal: 24.0),
+                                padding: EdgeInsets.only(
+                                    left: offsetAnimation.value + 24.0,
+                                    right: 24.0 - offsetAnimation.value),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    for (int i = 1; i < 5; i++)
+                                      Observer(
+                                        builder: (_) => Container(
+                                          height: 10,
+                                          width: 10,
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 7.5),
+                                          decoration: BoxDecoration(
+                                            color: !offsetAnimation.isDismissed
+                                                ? Colors.red
+                                                : pinCodeStore.pin.length >= i
+                                                    ? Color(0xFF0083C7)
+                                                    : Color(0xFFE9EDF2),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5.0)),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                  PinCodeKeyboard(
-                    pinCodeStore.inputPin,
-                    onTabRemove: pinCodeStore.popPin,
-                    onTabSensor: (pinCodeStore.statePin == StatePinCode.Check &&
-                            pinCodeStore.canCheckBiometrics)
-                        ? pinCodeStore.biometricScan
-                        : null,
-                    canBiometric: pinCodeStore.canCheckBiometrics,
-                  ),
-                ],
-              );
-            },
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                    PinCodeKeyboard(
+                      pinCodeStore.inputPin,
+                      onTabRemove: pinCodeStore.popPin,
+                      onTabSensor:
+                          (pinCodeStore.statePin == StatePinCode.Check &&
+                                  pinCodeStore.canCheckBiometrics)
+                              ? pinCodeStore.biometricScan
+                              : null,
+                      canBiometric: pinCodeStore.canCheckBiometrics,
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),
