@@ -16,16 +16,15 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
   _ChatRoomStore(this._apiProvider);
 
-  int count = 1;
+  int count = 0;
   int offset = 0;
   int limit = 10;
+
+  @observable
   ChatModel? chat;
 
   @observable
   bool isloadingMessages = false;
-
-  @observable
-  ObservableList<MessageModel>? messagesPtr;
 
   @action
   Future loadChat() async {
@@ -33,7 +32,6 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
       this.onLoading();
       if (chat!.messages == null)
         chat!.messages = ObservableList<MessageModel>.of([]);
-      messagesPtr = chat!.messages;
       count = chat!.messages!.length + 1;
       await getMessages();
       this.onSuccess(true);
@@ -59,7 +57,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
             ? count
             : offset + (count % limit);
     chat!.messages!.insertAll(
-      0,
+      chat!.messages!.length,
       ObservableList<MessageModel>.of(
         List<MessageModel>.from(
           responseData["messages"].map(
@@ -85,14 +83,14 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
       status: MessageStatus.Wait,
     );
     chat!.messages!.insert(0, message);
-    final data = await _apiProvider.sendMessageToChat(
+    final check = await _apiProvider.sendMessageToChat(
       chatId: chat!.id,
       text: text,
     );
 
     chat!.messages!.remove(message);
     message.updatedAt = DateTime.now();
-    if (data)
+    if (check)
       message.status = MessageStatus.Send;
     else
       message.status = MessageStatus.Error;

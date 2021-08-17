@@ -22,13 +22,14 @@ class MessageModel {
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
-        id: json["id"],
-        chatId: json["chatId"],
+        id: json["id"] ?? "",
+        chatId: json["chatId"] ?? "",
         text: json["text"],
         senderUserId: json["senderUserId"],
         isMy: true,
-        updatedAt: DateTime.parse(json['updatedAt']),
-        createdAt: DateTime.parse(json['createdAt']),
+        updatedAt: DateTime.parse(json['updatedAt'] ?? json['createdAt'])
+            .add(Duration(hours: 7)),
+        createdAt: DateTime.parse(json['createdAt']).add(Duration(hours: 7)),
         medias: [],
       );
 }

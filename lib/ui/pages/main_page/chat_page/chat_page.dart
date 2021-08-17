@@ -91,7 +91,7 @@ class _ChatPageState extends State<ChatPage> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.network(
-                      chatDetails.imageUrl,
+                      chatDetails.otherMember.avatar.url,
                       width: 56,
                       height: 56,
                       fit: BoxFit.cover,
@@ -104,15 +104,13 @@ class _ChatPageState extends State<ChatPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        chatDetails.name,
+                        "${chatDetails.otherMember.firstName} ${chatDetails.otherMember.lastName}",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       if (chatDetails.lastMessage != null)
                         Text(
                           "You: ${chatDetails.lastMessage} " * 10,
@@ -123,9 +121,7 @@ class _ChatPageState extends State<ChatPage> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       if (chatDetails.lastMessageDate != null)
                         Text(
                           chatDetails.lastMessageDate!.toString(),
@@ -137,9 +133,7 @@ class _ChatPageState extends State<ChatPage> {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  width: 50,
-                ),
+                const SizedBox(width: 50),
                 Container(
                   width: 11,
                   height: 11,

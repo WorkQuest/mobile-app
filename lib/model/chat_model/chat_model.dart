@@ -1,13 +1,13 @@
 import 'package:app/model/chat_model/message_model.dart';
+import 'package:app/model/profile_response/avatar.dart';
 import 'package:mobx/mobx.dart';
 
 class ChatModel {
   String id;
   String name;
   int type;
-  Map<String, dynamic> otherMember;
-  String imageUrl;
-  String? lastMessage;
+  ChatUserModel otherMember;
+  MessageModel? lastMessage;
   DateTime? lastMessageDate;
   ObservableList<MessageModel>? messages;
   ChatModel({
@@ -15,7 +15,6 @@ class ChatModel {
     required this.name,
     required this.type,
     required this.otherMember,
-    required this.imageUrl,
     required this.lastMessage,
     required this.lastMessageDate,
   });
@@ -24,11 +23,35 @@ class ChatModel {
         id: json["id"],
         name: json["name"] ?? "TestGroup",
         type: json["type"],
-        lastMessage: json["lastMessage"].toString(),
-        otherMember: json["otherMember"],
+        lastMessage: json["lastMessage"] == null
+            ? null
+            : MessageModel.fromJson(json["lastMessage"]),
+        otherMember: ChatUserModel.fromJson(json["otherMember"]["user"]),
         lastMessageDate: json["lastMessageDate"] == null
             ? null
             : DateTime.parse(json['lastMessageDate']),
-        imageUrl: "https://decimalchain.com/_nuxt/img/image.b668d57.jpg",
+      );
+}
+
+class ChatUserModel {
+  String id;
+  String firstName;
+  String lastName;
+  String avatarId;
+  Avatar avatar;
+  ChatUserModel({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.avatarId,
+    required this.avatar,
+  });
+  factory ChatUserModel.fromJson(Map<String, dynamic> json) => ChatUserModel(
+        id: json["id"],
+        firstName: json["firstName"],
+        lastName: json["lastName"],
+        avatarId: json["avatarId"] ??
+            "https://decimalchain.com/_nuxt/img/image.b668d57.jpg",
+        avatar: Avatar.fromJson(json["avatar"]),
       );
 }
