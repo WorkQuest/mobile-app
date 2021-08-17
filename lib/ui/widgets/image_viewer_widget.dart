@@ -133,9 +133,6 @@ class _ScrollingImagesState extends State<ScrollingImages> {
 
   @override
   Widget build(BuildContext context) {
-    widget.medias.forEach((element) {
-      print("RTag   ${element.id}  ${element.type}  ${element.url}");
-    });
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(

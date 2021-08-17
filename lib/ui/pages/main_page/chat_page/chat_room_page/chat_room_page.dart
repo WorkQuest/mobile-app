@@ -25,6 +25,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     _store!.chat = widget.chat;
     _store!.loadChat();
     super.initState();
+    _controller.addListener(() {
+      if (_controller.position.extentAfter < 500) {
+        if (_store != null) {
+          if (!_store!.isloadingMessages) _store!.getMessages();
+        }
+      }
+    });
   }
 
   @override
@@ -46,9 +53,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         builder: (_) => ListView.builder(
                           reverse: true,
                           controller: _controller,
-                          itemCount: _store?.messages!.length,
+                          itemCount: _store!.messagesPtr!.length,
                           itemBuilder: (context, index) =>
-                              _message(_store!.messages![index]),
+                              _message(_store!.messagesPtr![index]),
                         ),
                       ),
               ),

@@ -1,4 +1,5 @@
 import 'package:app/model/chat_model/message_model.dart';
+import 'package:mobx/mobx.dart';
 
 class ChatModel {
   String id;
@@ -8,7 +9,7 @@ class ChatModel {
   String imageUrl;
   String? lastMessage;
   DateTime? lastMessageDate;
-  List<MessageModel>? messages;
+  ObservableList<MessageModel>? messages;
   ChatModel({
     required this.id,
     required this.name,

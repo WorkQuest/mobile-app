@@ -16,22 +16,59 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
   _ChatRoomStore(this._apiProvider);
 
+  int count = 1;
+  int offset = 0;
+  int limit = 10;
   ChatModel? chat;
 
   @observable
-  ObservableList<MessageModel>? messages;
+  bool isloadingMessages = false;
+
+  @observable
+  ObservableList<MessageModel>? messagesPtr;
 
   @action
   Future loadChat() async {
     try {
       this.onLoading();
-      chat!.messages = await _apiProvider.getMessages(chatId: chat!.id);
-      if (chat!.messages == null) chat!.messages = [];
-      messages = ObservableList<MessageModel>.of(chat!.messages!);
+      if (chat!.messages == null)
+        chat!.messages = ObservableList<MessageModel>.of([]);
+      messagesPtr = chat!.messages;
+      count = chat!.messages!.length + 1;
+      await getMessages();
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
     }
+  }
+
+  getMessages() async {
+    if (chat!.messages!.length >= count) return;
+    isloadingMessages = true;
+    final responseData = await _apiProvider.getMessages(
+      chatId: chat!.id,
+      offset: offset,
+      limit: limit,
+    );
+    count = responseData["count"];
+    if (count == 0) return;
+    if (chat!.messages!.length >= count) return;
+    offset = count - offset > limit
+        ? offset + limit
+        : offset == 0
+            ? count
+            : offset + (count % limit);
+    chat!.messages!.insertAll(
+      0,
+      ObservableList<MessageModel>.of(
+        List<MessageModel>.from(
+          responseData["messages"].map(
+            (x) => MessageModel.fromJson(x),
+          ),
+        ),
+      ),
+    );
+    isloadingMessages = false;
   }
 
   @action
@@ -47,16 +84,18 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
       medias: [],
       status: MessageStatus.Wait,
     );
-    messages!.insert(0, message);
-    final data =
-        await _apiProvider.sendMessageToChat(chatId: chat!.id, text: text);
+    chat!.messages!.insert(0, message);
+    final data = await _apiProvider.sendMessageToChat(
+      chatId: chat!.id,
+      text: text,
+    );
 
-    messages!.remove(message);
+    chat!.messages!.remove(message);
     message.updatedAt = DateTime.now();
     if (data)
       message.status = MessageStatus.Send;
     else
       message.status = MessageStatus.Error;
-    messages!.insert(0, message);
+    chat!.messages!.insert(0, message);
   }
 }

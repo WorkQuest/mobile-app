@@ -2,7 +2,6 @@ import 'dart:typed_data';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/model/chat_model/chat_model.dart';
-import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
@@ -258,14 +257,19 @@ extension ChatsService on ApiProvider {
     );
   }
 
-  Future<List<MessageModel>> getMessages({required String chatId}) async {
-    final responseData =
-        await _httpClient.get(query: '/v1/user/me/chat/$chatId/messages');
-    return List<MessageModel>.from(
-      responseData["messages"].map(
-        (x) => MessageModel.fromJson(x),
-      ),
+  Future<Map<String,dynamic>> getMessages({
+    required String chatId,
+    required int offset,
+    required int limit,
+  }) async {
+    final responseData = await _httpClient.get(
+      query: '/v1/user/me/chat/$chatId/messages',
+      queryParameters: {
+        "offset": offset,
+        "limit": limit,
+      },
     );
+    return responseData;
   }
 
   Future<bool> sendMessageToChat({
