@@ -7,8 +7,11 @@ import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/raise_views_page/payment_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/SMS_verification_page/sms_verification_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/change_password_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
@@ -80,6 +83,14 @@ class Routes {
           builder: (context) => Provider(
             create: (context) => getIt.get<SettingsPageStore>(),
             child: ChangePasswordPage(),
+          ),
+        );
+
+      case SMSVerificationPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<SMSVerificationStore>(),
+            child: SMSVerificationPage(),
           ),
         );
 
@@ -240,6 +251,17 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: RaiseViews(),
+            ),
+          ),
+        );
+
+      case PaymentPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<RaiseViewStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: PaymentPage(),
             ),
           ),
         );
