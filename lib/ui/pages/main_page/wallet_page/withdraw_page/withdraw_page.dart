@@ -150,22 +150,4 @@ class _WithdrawPageState extends State<WithdrawPage>
         ),
       );
 
-  Widget titledTextBox(
-    String title,
-    Widget textField,
-  ) =>
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-          ),
-          _divider,
-          Flexible(
-            fit: FlexFit.loose,
-            child: textField,
-          ),
-        ],
-      );
 }

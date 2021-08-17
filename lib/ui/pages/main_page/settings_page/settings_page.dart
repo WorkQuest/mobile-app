@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/SMS_verification_page/sms_verification_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/change_password_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
@@ -15,7 +17,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:easy_localization/easy_localization.dart';
 import "package:provider/provider.dart";
+import '../../../../constants.dart';
 
 class SettingsPage extends StatelessWidget {
   static const String routeName = "/settingsPageEmployer";
@@ -42,77 +46,116 @@ class SettingsPage extends StatelessWidget {
                   _myProfileImage(context, userStore),
                   Padding(
                     padding: const EdgeInsets.only(top: 15.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ///Change Password
-                            settingsCard(
-                              icon: GradientIcon(
-                                SvgPicture.asset(
-                                  "assets/settings_password_icon.svg",
-                                ),
-                                20.0,
-                              ),
-                              title: "Change\nPassword",
-                              onTap: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushNamed(
-                                  ChangePasswordPage.routeName,
-                                );
-                              },
-                            ),
-                            const SizedBox(
-                              width: 10.0,
-                            ),
-
-                            ///2FA
-                            settingsCard(
-                              icon: CupertinoSwitch(
-                                onChanged: null,
-                                value: false,
-                              ),
-                              title: "2FA",
-                              onTap: () {},
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: Row(
+                    child: Observer(
+                      builder: (_) => Column(
+                        children: [
+                          Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              ///SMS Verification
+                              ///Change Password
                               settingsCard(
-                                icon: CupertinoSwitch(
-                                  onChanged: null,
-                                  value: false,
+                                icon: GradientIcon(
+                                  SvgPicture.asset(
+                                    "assets/settings_password_icon.svg",
+                                  ),
+                                  20.0,
                                 ),
-                                title: "SMS \nVerification",
-                                onTap: () {},
+                                title: "Change\nPassword",
+                                onTap: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed(
+                                    ChangePasswordPage.routeName,
+                                  );
+                                },
                               ),
                               const SizedBox(
                                 width: 10.0,
                               ),
 
-                              ///Change Role
+                              ///2FA
                               settingsCard(
-                                icon: GradientIcon(
-                                  SvgPicture.asset(
-                                    "assets/settings_role_icon.svg",
-                                  ),
-                                  20.0,
+                                icon: CupertinoSwitch(
+                                  activeColor: const Color(0xFF0083C7),
+                                  onChanged: settingStore.change2FAStatus,
+                                  value: settingStore.faStatus,
                                 ),
-                                title: "Change \nRole",
+                                title: "2FA",
                                 onTap: () {},
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ///SMS Verification
+                                settingsCard(
+                                  icon: CupertinoSwitch(
+                                    activeColor: const Color(0xFF0083C7),
+                                    onChanged:
+                                        settingStore.changeSmsVerification,
+                                    value: settingStore.smsVerificationStatus,
+                                  ),
+                                  title: "SMS \nVerification",
+                                  onTap: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pushNamed(
+                                      SMSVerificationPage.routeName,
+                                    );
+                                  },
+                                ),
+                                const SizedBox(
+                                  width: 10.0,
+                                ),
+
+                                ///Change Role
+                                settingsCard(
+                                  icon: GradientIcon(
+                                    SvgPicture.asset(
+                                      "assets/settings_role_icon.svg",
+                                    ),
+                                    20.0,
+                                  ),
+                                  title: "Change \nRole",
+                                  onTap: () {},
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: Row(
+                              children: [
+                                settingsCard(
+                                  icon: GradientIcon(
+                                    SvgPicture.asset(
+                                      "assets/settings_language_icon.svg",
+                                    ),
+                                    20.0,
+                                  ),
+                                  title:
+                                      "Language \n${Constants.languageList.keys.firstWhere(
+                                    (k) =>
+                                        Constants.languageList[k] ==
+                                        context.locale,
+                                  )}",
+                                  onTap: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .push(
+                                      MaterialPageRoute(
+                                        builder: (context) => ChangeLanguage(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

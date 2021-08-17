@@ -336,19 +336,6 @@ class WalletPage extends StatelessWidget {
             );
           }).then((value) => store.clearValues());
 
-  Widget titledTextBox(String title, Widget textField) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-          ),
-          const SizedBox(
-            height: 5.0,
-          ),
-          Flexible(fit: FlexFit.loose, child: textField),
-        ],
-      );
 }
 
 class Tx {

@@ -9,6 +9,14 @@ part of 'quests_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$QuestsStore on _QuestsStore, Store {
+  Computed<bool>? _$emptySearchComputed;
+
+  @override
+  bool get emptySearch =>
+      (_$emptySearchComputed ??= Computed<bool>(() => super.emptySearch,
+              name: '_QuestsStore.emptySearch'))
+          .value;
+
   final _$searchWordAtom = Atom(name: '_QuestsStore.searchWord');
 
   @override
@@ -167,7 +175,8 @@ offset: ${offset},
 limit: ${limit},
 status: ${status},
 questsList: ${questsList},
-searchResultList: ${searchResultList}
+searchResultList: ${searchResultList},
+emptySearch: ${emptySearch}
     ''';
   }
 }
