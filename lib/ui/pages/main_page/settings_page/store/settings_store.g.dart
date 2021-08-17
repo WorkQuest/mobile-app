@@ -17,6 +17,38 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
               name: '_SettingsPageStore.canSubmit'))
           .value;
 
+  final _$smsVerificationStatusAtom =
+      Atom(name: '_SettingsPageStore.smsVerificationStatus');
+
+  @override
+  bool get smsVerificationStatus {
+    _$smsVerificationStatusAtom.reportRead();
+    return super.smsVerificationStatus;
+  }
+
+  @override
+  set smsVerificationStatus(bool value) {
+    _$smsVerificationStatusAtom.reportWrite(value, super.smsVerificationStatus,
+        () {
+      super.smsVerificationStatus = value;
+    });
+  }
+
+  final _$faStatusAtom = Atom(name: '_SettingsPageStore.faStatus');
+
+  @override
+  bool get faStatus {
+    _$faStatusAtom.reportRead();
+    return super.faStatus;
+  }
+
+  @override
+  set faStatus(bool value) {
+    _$faStatusAtom.reportWrite(value, super.faStatus, () {
+      super.faStatus = value;
+    });
+  }
+
   final _$privacyAtom = Atom(name: '_SettingsPageStore.privacy');
 
   @override
@@ -116,6 +148,28 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
   }
 
   @override
+  void changeSmsVerification(bool value) {
+    final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
+        name: '_SettingsPageStore.changeSmsVerification');
+    try {
+      return super.changeSmsVerification(value);
+    } finally {
+      _$_SettingsPageStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void change2FAStatus(bool value) {
+    final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
+        name: '_SettingsPageStore.change2FAStatus');
+    try {
+      return super.change2FAStatus(value);
+    } finally {
+      _$_SettingsPageStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setPassword(String value) {
     final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
         name: '_SettingsPageStore.setPassword');
@@ -162,6 +216,8 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
   @override
   String toString() {
     return '''
+smsVerificationStatus: ${smsVerificationStatus},
+faStatus: ${faStatus},
 privacy: ${privacy},
 filter: ${filter},
 password: ${password},

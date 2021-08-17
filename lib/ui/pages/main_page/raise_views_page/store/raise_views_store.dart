@@ -6,6 +6,7 @@ import 'package:mobx/mobx.dart';
 part 'raise_views_store.g.dart';
 
 @injectable
+@singleton
 class RaiseViewStore extends _RaiseViewStore with _$RaiseViewStore {
   RaiseViewStore(ApiProvider apiProvider) : super(apiProvider);
 }

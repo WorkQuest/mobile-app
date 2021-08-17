@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_up_page/sign_up_page.dart';
 
@@ -30,4 +31,19 @@ abstract class AuthLangKeys {
   // /// Localization keys for [QuestPage] page.
   // static const String _questPage = '$_main.signIn';
   // static const String list = '$.email';
+}
+
+class Constants{
+  static const Map<String, Locale> languageList = {
+    "English": Locale('en', 'US'),
+    // "Mandarin Chinese": Locale('en', 'US'),
+    // "Hindi": Locale('en', 'US'),
+    // "Spanish": Locale('en', 'US'),
+    // "French": Locale('en', 'US'),
+    "Standard Arabic": Locale('ar', 'SA'),
+    //"Bengali": Locale('en', 'US'),
+    "Russian": Locale('ru', 'RU'),
+    // "Portuguese": Locale('en', 'US'),
+    // "Indonesian ": Locale('en', 'US'),
+  };
 }

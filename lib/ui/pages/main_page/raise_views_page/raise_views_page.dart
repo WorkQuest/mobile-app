@@ -1,3 +1,4 @@
+import 'package:app/ui/pages/main_page/raise_views_page/payment_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,15 @@ class RaiseViews extends StatelessWidget {
     return Observer(
       builder: (_) => Scaffold(
         persistentFooterButtons: [
-          ElevatedButton(onPressed: (){}, child: Text("Go to payment"))
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed(PaymentPage.routeName);
+            },
+            child: Text(
+              "Go to payment",
+            ),
+          ),
         ],
         body: CustomScrollView(
           slivers: [

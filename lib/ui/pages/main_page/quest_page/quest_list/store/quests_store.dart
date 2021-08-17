@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
@@ -40,27 +42,41 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @observable
   List<BaseQuestResponse>? searchResultList = [];
-  
+
+  Timer? debounce;
 
   @action
   void setSearchWord(String value) {
-    searchWord = value;
-    getSearchedQuests();
+    searchWord = value.trim();
+    if (debounce != null) {
+      debounce!.cancel();
+      this.onSuccess(true);
+    }
+    if (searchWord.length > 2) getSearchedQuests();
   }
+
+  @computed
+  bool get emptySearch =>
+      searchWord.length > 2 && searchResultList!.isEmpty && !this.isLoading;
 
   @action
   Future getSearchedQuests() async {
-    searchResultList = await _apiProvider.getQuests(
-      status: this.status,
-      invited: false,
-      performing: false,
-      priority: this.priority,
-      searchWord: this.searchWord,
-      sort: this.sort,
-      starred: false,
-    );
-    print(" list search $searchWord");
-    print(" list search $searchResultList");
+    this.onLoading();
+    debounce = Timer(const Duration(milliseconds: 300), () async {
+      searchResultList = await _apiProvider.getQuests(
+        status: this.status,
+        invited: false,
+        performing: false,
+        priority: this.priority,
+        searchWord: this.searchWord,
+        sort: this.sort,
+        starred: false,
+      );
+      this.onSuccess(true);
+      print("search word $searchWord");
+      print("search result $searchResultList");
+    });
+    print("search word $searchWord");
   }
 
   @action
@@ -82,7 +98,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         this.offset += 10;
       } else {
         questsList = loadQuestsList;
-         this.offset += 10;
+        this.offset += 10;
       }
       this.onSuccess(true);
     } catch (e, trace) {

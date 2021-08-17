@@ -1,9 +1,7 @@
 import 'package:app/ui/pages/main_page/wallet_page/bank_card_widget.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
@@ -161,7 +159,7 @@ class _DepositPageState extends State<DepositPage>
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () =>
-                        Clipboard.setData(new ClipboardData(text: "email"))
+                        Clipboard.setData(new ClipboardData(text: "wallet Address"))
                             .then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -184,22 +182,4 @@ class _DepositPageState extends State<DepositPage>
         ),
       );
 
-  closeKeyboard() {
-    FocusScope.of(context).unfocus();
-  }
-
-  Widget titledTextBox(String title, Widget textField) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-          ),
-          _divider,
-          Flexible(
-            fit: FlexFit.loose,
-            child: textField,
-          ),
-        ],
-      );
 }
