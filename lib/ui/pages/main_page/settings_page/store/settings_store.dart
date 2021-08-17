@@ -2,7 +2,6 @@ import 'package:app/http/api_provider.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
-
 part 'settings_store.g.dart';
 
 @injectable
@@ -15,6 +14,10 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
 
   _SettingsPageStore(this.apiProvider);
 
+  @observable
+  bool smsVerificationStatus = false;
+  @observable
+  bool faStatus = false;
   @observable
   int privacy = 1;
   @observable
@@ -29,6 +32,16 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
   @action
   void changePrivacy(int value) {
     privacy = value;
+  }
+
+  @action
+  void changeSmsVerification(bool value) {
+    smsVerificationStatus = value;
+  }
+
+  @action
+  void change2FAStatus(bool value) {
+    faStatus = value;
   }
 
   @action
