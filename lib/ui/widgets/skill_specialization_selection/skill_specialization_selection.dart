@@ -96,13 +96,12 @@ class _SkillSpecializationSelectionState
             data: list,
             builder: (item) =>
                 Center(child: new Text("filter.$title.arg.$item".tr())),
-            onSelect: (item) =>
-                store.selectedSkills[count]!.add("filter.$title.arg.$item")),
+            onSelect: (item) => store.selectedSkills[count]!.add(item)),
         const SizedBox(height: 10),
         Observer(
           builder: (_) => Wrap(
             children: store.selectedSkills[count]!
-                .map((str) => skillBody(str, () {
+                .map((str) => skillBody("filter.$title.arg.$str", () {
                       store.selectedSkills[count]!.remove(str);
                       setState(() {});
                     }))
