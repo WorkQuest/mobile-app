@@ -3,10 +3,8 @@ import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_up_page/sign_up_page.dart';
 
 abstract class AuthLangKeys {
-
   static const String _main = 'auth';
   static const String password = '$_main.password';
-
 
   /// Localization keys for [SignInPage] page.
   static const String _signIn = '$_main.signIn';
@@ -33,7 +31,7 @@ abstract class AuthLangKeys {
   // static const String list = '$.email';
 }
 
-class Constants{
+class Constants {
   static const Map<String, Locale> languageList = {
     "English": Locale('en', 'US'),
     // "Mandarin Chinese": Locale('en', 'US'),
@@ -46,4 +44,18 @@ class Constants{
     // "Portuguese": Locale('en', 'US'),
     // "Indonesian ": Locale('en', 'US'),
   };
+  static const List<String> months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
 }

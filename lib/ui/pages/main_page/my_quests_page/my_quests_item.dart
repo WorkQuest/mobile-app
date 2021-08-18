@@ -1,4 +1,5 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class MyQuestsItem extends StatelessWidget {
     return GestureDetector(
       onTap: (){
         Navigator.of(context, rootNavigator: true).pushNamed(
-          MyQuestDetails.routeName,
+          QuestDetails.routeName,
           arguments: questInfo
         );
       },
