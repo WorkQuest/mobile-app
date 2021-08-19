@@ -21,7 +21,7 @@ const _tabBarIconsData = [
   const _TabBarIconData('assets/list.svg', 'My quests'),
   const _TabBarIconData('assets/message.svg', 'Chat'),
   const _TabBarIconData('assets/wallet_icon.svg', 'Wallet'),
-  const _TabBarIconData('assets/settings.svg', 'Settings'),
+  const _TabBarIconData('assets/more.svg', 'More'),
 ];
 
 class MainPage extends StatelessWidget {
