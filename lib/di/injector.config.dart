@@ -27,7 +27,7 @@ import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
     as _i14;
 import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
     as _i16;
-import '../ui/pages/main_page/settings_page/SMS_verification_page/store/sms_verification_store.dart'
+import '../ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart'
     as _i17;
 import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i18;
 import '../ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart'
