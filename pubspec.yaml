@@ -34,6 +34,11 @@ dependencies:
   mobx: ^2.0.1
   flutter_mobx: ^2.0.0
 
+  #Firebase and Notification
+  flutter_local_notifications: ^8.1.1+1
+  firebase_messaging: ^10.0.5
+  firebase_core: ^1.5.0
+
   # DI.
   get_it: ^6.1.1
   injectable: ^1.2.2
