@@ -105,7 +105,6 @@ class ProfileSettings extends StatelessWidget {
   }) =>
       RadioListTile(
         dense: true,
-        activeColor: Colors.blueAccent,
         value: value,
         onChanged: onChanged,
         groupValue: groupValue,
