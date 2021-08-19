@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 
-import '../../../../observer_consumer.dart';
+import '../../../../../observer_consumer.dart';
 
 final spacer = const SizedBox(
   height: 20.0,
