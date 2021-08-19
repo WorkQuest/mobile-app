@@ -31,7 +31,7 @@ class PushNotificationService {
         print('User granted permission');
         Platform.isAndroid
             ? implementAndroidNotificationPlugin()
-            : implementAndroidNotificationPlugin();
+            : implementIOSNotificationPlugin();
         messaging();
       } else {
         print('User declined or has not accepted permission');
