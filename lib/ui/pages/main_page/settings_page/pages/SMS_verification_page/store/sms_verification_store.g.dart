@@ -54,6 +54,22 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
     });
   }
 
+  final _$submitPhoneNumberAsyncAction =
+      AsyncAction('_SMSVerificationStore.submitPhoneNumber');
+
+  @override
+  Future<dynamic> submitPhoneNumber() {
+    return _$submitPhoneNumberAsyncAction.run(() => super.submitPhoneNumber());
+  }
+
+  final _$submitCodeAsyncAction =
+      AsyncAction('_SMSVerificationStore.submitCode');
+
+  @override
+  Future<dynamic> submitCode() {
+    return _$submitCodeAsyncAction.run(() => super.submitCode());
+  }
+
   final _$_SMSVerificationStoreActionController =
       ActionController(name: '_SMSVerificationStore');
 

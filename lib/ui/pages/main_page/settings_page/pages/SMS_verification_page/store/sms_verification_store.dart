@@ -7,7 +7,8 @@ part 'sms_verification_store.g.dart';
 
 @injectable
 @singleton
-class SMSVerificationStore extends _SMSVerificationStore with _$SMSVerificationStore {
+class SMSVerificationStore extends _SMSVerificationStore
+    with _$SMSVerificationStore {
   SMSVerificationStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
@@ -20,14 +21,18 @@ abstract class _SMSVerificationStore extends IStore<bool> with Store {
   int index = 0;
 
   @observable
-  String phone = '';
+  String phone = '+';
 
   @observable
   String code = '';
 
   @action
   void setPhone(String value) {
-    phone = value;
+    if(value.startsWith("+")){
+      phone = value.trim();
+    }
+    else  phone = "+"+value.trim();
+    //value.startsWith("+") ? phone = value.trim() : phone = "+"+value.trim();
   }
 
   @action
@@ -35,4 +40,29 @@ abstract class _SMSVerificationStore extends IStore<bool> with Store {
     code = value;
   }
 
+  @action
+  Future submitPhoneNumber() async {
+    try {
+      this.onLoading();
+      await apiProvider.submitPhoneNumber(
+        phoneNumber: phone,
+      );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future submitCode() async {
+    try {
+      this.onLoading();
+      await apiProvider.submitCode(
+        confirmCode: code,
+      );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
 }
