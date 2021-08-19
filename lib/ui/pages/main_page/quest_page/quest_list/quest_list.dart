@@ -8,6 +8,7 @@ import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 
 class QuestList extends StatefulWidget {
@@ -98,22 +99,17 @@ class _QuestListState extends State<QuestList> {
           ),
         ),
         SliverAppBar(
-          toolbarHeight: 90,
           pinned: true,
-          title: Column(
-            children: [
-              TextFormField(
-                maxLines: 1,
-                onChanged: questsStore!.setSearchWord,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    size: 25.0,
-                  ),
-                  hintText: "City / Street / Place",
-                ),
+          title: TextFormField(
+            maxLines: 1,
+            onChanged: questsStore!.setSearchWord,
+            decoration: InputDecoration(
+              prefixIcon: const Icon(
+                Icons.search,
+                size: 25.0,
               ),
-            ],
+              hintText: "City / Street / Place",
+            ),
           ),
         ),
         if (profileMeStore?.userData != null)
@@ -158,8 +154,15 @@ class _QuestListState extends State<QuestList> {
                 Observer(
                   builder: (_) => questsStore!.emptySearch
                       ? Center(
-                          child: Text(
-                            "No Quest Found",
+                          child: Column(
+                            children: [
+                              SvgPicture.asset(
+                                "assets/empty_quest_icon.svg",
+                              ),
+                              Text(
+                                "No Quest Found",
+                              ),
+                            ],
                           ),
                         )
                       : ListView.separated(
@@ -188,7 +191,7 @@ class _QuestListState extends State<QuestList> {
         SliverToBoxAdapter(
           child: Observer(
             builder: (_) => questsStore!.isLoading
-                ? PlatformActivityIndicator()
+                ? Center(child: PlatformActivityIndicator())
                 : const SizedBox(),
           ),
         ),

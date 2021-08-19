@@ -1,6 +1,7 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../../../enums.dart';
 import 'my_quests_item.dart';
@@ -60,28 +61,26 @@ class QuestsList extends StatelessWidget {
 
   Widget getEmptyBody() {
     return Center(
-      child: Text(
-        "you don't have any ${enumToString(questItemPriorityType)} Quest yet",
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            "assets/empty_quest_icon.svg",
+          ),
+          const SizedBox(
+            height: 10.0,
+          ),
+          Text(
+            "You don't have any ${questItemPriorityType.toString().split(".").last} Quest yet",
+          ),
+        ],
       ),
     );
   }
 
   Widget getLoadingBody() {
     return Center(child: CircularProgressIndicator());
-  }
-
-  String enumToString(QuestItemPriorityType questItemPriorityType) {
-    switch (questItemPriorityType) {
-      case QuestItemPriorityType.Active:
-        return "Active";
-      case QuestItemPriorityType.Invited:
-        return "Invited";
-      case QuestItemPriorityType.Requested:
-        return "Requested";
-      case QuestItemPriorityType.Performed:
-        return "Performed";
-      case QuestItemPriorityType.Starred:
-        return "Starred";
-    }
   }
 }

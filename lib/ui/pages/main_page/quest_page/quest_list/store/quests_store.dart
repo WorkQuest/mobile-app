@@ -64,13 +64,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     this.onLoading();
     debounce = Timer(const Duration(milliseconds: 300), () async {
       searchResultList = await _apiProvider.getQuests(
-        status: this.status,
-        invited: false,
-        performing: false,
-        priority: this.priority,
         searchWord: this.searchWord,
-        sort: this.sort,
-        starred: false,
       );
       this.onSuccess(true);
     });
