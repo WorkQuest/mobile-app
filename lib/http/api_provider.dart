@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:app/enums.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/model/chat_model/chat_model.dart';
@@ -239,45 +240,79 @@ extension UserInfoService on ApiProvider {
 
   Future<ProfileMeResponse> changeProfileMe(ProfileMeResponse userData) async {
     try {
-      print("[RTag]  ${userData.toJson()}");
-      final responseData =
-          await _httpClient.put(query: '/v1/profile/edit', data: {
-        // "avatarId": "f1b882dc-6f96-442b-bd51-f5b13e8fee24",
-        // "firstName": "ivan",
-        // "lastName": "ivanov",
-        // "additionalInfo": {
-        //   "secondMobileNumber": "string",
-        //   "address": "string",
-        //   "socialNetwork": {
-        //     "instagram": "string",
-        //     "twitter": "string",
-        //     "linkedin": "string",
-        //     "facebook": "string"
-        //   },
-        //   "description": "string",
-        //   "company": "string",
-        //   "CEO": "string",
-        //   "website": "string"
-        // },
-        "avatarId": userData.avatarId,
+      final body = {
+        "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
         "firstName": userData.firstName,
-        "lastName": userData.lastName,
+        "lastName":
+            (userData.lastName?.isNotEmpty ?? false) ? userData.lastName : null,
         "additionalInfo": {
-          "secondMobileNumber": userData.additionalInfo!.secondMobileNumber,
-          "address": userData.additionalInfo!.address,
+          "secondMobileNumber":
+              (userData.additionalInfo?.secondMobileNumber?.isNotEmpty ?? false)
+                  ? userData.additionalInfo?.secondMobileNumber
+                  : null,
+          "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
+              ? userData.additionalInfo?.address
+              : null,
           "socialNetwork": {
-            "instagram":
-                userData.additionalInfo?.socialNetwork?.instagram ?? "",
-            "twitter": userData.additionalInfo?.socialNetwork?.twitter ?? "",
-            "linkedin": userData.additionalInfo?.socialNetwork?.linkedin ?? "",
-            "facebook": userData.additionalInfo?.socialNetwork?.facebook ?? ""
+            "instagram": (userData
+                        .additionalInfo?.socialNetwork?.instagram?.isNotEmpty ??
+                    false)
+                ? userData.additionalInfo?.socialNetwork?.instagram
+                : null,
+            "twitter":
+                (userData.additionalInfo?.socialNetwork?.twitter?.isNotEmpty ??
+                        false)
+                    ? userData.additionalInfo?.socialNetwork?.twitter
+                    : null,
+            "linkedin":
+                (userData.additionalInfo?.socialNetwork?.linkedin?.isNotEmpty ??
+                        false)
+                    ? userData.additionalInfo?.socialNetwork?.linkedin
+                    : null,
+            "facebook":
+                (userData.additionalInfo?.socialNetwork?.facebook?.isNotEmpty ??
+                        false)
+                    ? userData.additionalInfo?.socialNetwork?.facebook
+                    : null,
           },
-          "description": userData.additionalInfo?.description,
-          "company": userData.additionalInfo?.company,
-          "CEO": userData.additionalInfo?.ceo,
-          "website": userData.additionalInfo?.website
+          "description":
+              (userData.additionalInfo?.description?.isNotEmpty ?? false)
+                  ? userData.additionalInfo?.description
+                  : null,
+          if (userData.role == UserRole.Employer)
+            "company": (userData.additionalInfo?.company?.isNotEmpty ?? false)
+                ? userData.additionalInfo?.company
+                : null,
+          if (userData.role == UserRole.Employer)
+            "CEO": (userData.additionalInfo?.ceo?.isNotEmpty ?? false)
+                ? userData.additionalInfo?.ceo
+                : null,
+          if (userData.role == UserRole.Employer)
+            "website": (userData.additionalInfo?.website?.isNotEmpty ?? false)
+                ? userData.additionalInfo?.website
+                : null,
+          if (userData.role == UserRole.Worker)
+            "educations": [
+              {
+                "from": DateTime.now().toString(),
+                "to": DateTime.now().toString(),
+                "place": DateTime.now().toString(),
+              }
+            ],
+          if (userData.role == UserRole.Worker)
+            "workExperiences": [
+              {
+                "from": DateTime.now().toString(),
+                "to": DateTime.now().toString(),
+                "place": DateTime.now().toString(),
+              }
+            ],
+          if (userData.role == UserRole.Worker) "skills": [],
         }
-      });
+      };
+      if (userData.firstName.isEmpty) throw Exception("firstName is empty");
+      final responseData =
+          await _httpClient.put(query: '/v1/profile/edit', data: body);
       return ProfileMeResponse.fromJson(responseData);
     } catch (e) {
       throw Exception(e.toString());
