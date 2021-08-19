@@ -1,18 +1,29 @@
+import 'package:app/enums.dart';
+import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/employer/quest_employer_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/worker/quest_worker_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
+import 'package:app/ui/pages/main_page/raise_views_page/payment_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/SMS_verification_page/sms_verification_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
@@ -84,6 +95,14 @@ class Routes {
           ),
         );
 
+      case SMSVerificationPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<SMSVerificationStore>(),
+            child: SMSVerificationPage(),
+          ),
+        );
+
       case MainPage.routeName:
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
@@ -106,18 +125,39 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<WalletStore>(),
               ),
+              Provider(
+                create: (context) => getIt.get<ChatStore>(),
+              ),
             ],
             child: Directionality(
                 textDirection: checkDirection(context), child: MainPage()),
           ),
         );
 
-      case MyQuestDetails.routeName:
+      case QuestDetails.routeName:
         return MaterialPageRoute(
-          builder: (context) => Directionality(
-              textDirection: checkDirection(context),
-              child: MyQuestDetails(settings.arguments as BaseQuestResponse,
-                  getIt.get<ProfileMeStore>().userData?.role)),
+          builder: (context) {
+            final role = getIt.get<ProfileMeStore>().userData?.role;
+            final quest = settings.arguments as BaseQuestResponse;
+            if (role == UserRole.Employer)
+              return Provider(
+                  create: (context) => getIt.get<EmployerStore>(),
+                  child: Directionality(
+                    textDirection: checkDirection(context),
+                    child: QuestEmployer(quest),
+                  ));
+            else {
+              return Provider(
+                  create: (context) => getIt.get<WorkerStore>(),
+                  child: Directionality(
+                    textDirection: checkDirection(context),
+                    child: QuestWorker(
+                        quest,
+                        getIt.get<ProfileMeStore>().userData!.id ==
+                            quest.userId),
+                  ));
+            }
+          },
         );
 
       case ChooseRolePage.routeName:
@@ -256,6 +296,17 @@ class Routes {
           ),
         );
 
+      case PaymentPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<RaiseViewStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: PaymentPage(),
+            ),
+          ),
+        );
+
       case WebViewPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Directionality(
@@ -268,7 +319,13 @@ class Routes {
 
       case ChatRoomPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => ChatRoomPage(),
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChatRoomStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ChatRoomPage(settings.arguments as ChatModel),
+            ),
+          ),
         );
 
       default:
