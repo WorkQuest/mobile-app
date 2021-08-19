@@ -15,13 +15,14 @@ Widget instrumentsCard(
   required String iconPath,
   required String title,
 }) =>
-    GestureDetector(
-      onTap: () {
+    CupertinoButton(
+      onPressed: () {
         Navigator.of(context, rootNavigator: true).pushNamed(
           WebViewPage.routeName,
           arguments: urlArgument,
         );
       },
+      padding: EdgeInsets.zero,
       child: Container(
         margin: EdgeInsets.only(bottom: 10.0),
         height: 54.0,
