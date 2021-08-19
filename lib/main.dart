@@ -10,7 +10,6 @@ import 'di/injector.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 ///Android Notification Channel
-
 const AndroidNotificationChannel _channel = AndroidNotificationChannel(
   'high_importance_channel',
   'High Importance Notification',
@@ -23,7 +22,6 @@ final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 ///BackGround Message Handler
-
 // Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 //   await Firebase.initializeApp();
 //   print("Handling a background message: ${message.messageId}");
