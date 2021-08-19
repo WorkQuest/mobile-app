@@ -359,6 +359,30 @@ extension ChangePassword on ApiProvider {
   }
 }
 
+extension SMSVerification on ApiProvider {
+  Future<void> submitPhoneNumber({
+    required String phoneNumber,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/profile/phone/send-code',
+      data: {
+        "phoneNumber": phoneNumber,
+      },
+    );
+  }
+
+  Future<void> submitCode({
+    required String confirmCode,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/profile/phone/confirm',
+      data: {
+        "confirmCode": confirmCode,
+      },
+    );
+  }
+}
+
 extension GetUploadLink on ApiProvider {
   Future<List<String>> uploadMedia({
     required List<DrishyaEntity> medias,
@@ -392,6 +416,22 @@ extension GetUploadLink on ApiProvider {
     print("$mediaId");
 
     return mediaId;
+  }
+
+  Future _uploadMedia(
+      String uploadLink, Uint8List? bytes, String contentType) async {
+    await _dio.put(
+      '$uploadLink',
+      data: MultipartFile.fromBytes(bytes!).finalize(),
+      options: Options(
+        headers: {
+          'Content-Type': contentType,
+          "x-amz-acl": " public-read",
+          'Connection': 'keep-alive',
+          'Content-Length': bytes.length,
+        },
+      ),
+    );
   }
 }
 
@@ -434,20 +474,4 @@ extension ChatsService on ApiProvider {
     );
     return responseData == null;
   }
-}
-
-Future _uploadMedia(
-    String uploadLink, Uint8List? bytes, String contentType) async {
-  await _dio.put(
-    '$uploadLink',
-    data: MultipartFile.fromBytes(bytes!).finalize(),
-    options: Options(
-      headers: {
-        'Content-Type': contentType,
-        "x-amz-acl": " public-read",
-        'Connection': 'keep-alive',
-        'Content-Length': bytes.length,
-      },
-    ),
-  );
 }
