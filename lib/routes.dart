@@ -8,13 +8,14 @@ import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/my_quest_details.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/quest_employer_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/quest_worker_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/payment_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
@@ -139,16 +140,22 @@ class Routes {
             final role = getIt.get<ProfileMeStore>().userData?.role;
             final quest = settings.arguments as BaseQuestResponse;
             if (role == UserRole.Employer)
-              return Directionality(
-                textDirection: checkDirection(context),
-                child: QuestEmployer(quest),
-              );
+              return Provider(
+                  create: (context) => getIt.get<EmployerStore>(),
+                  child: Directionality(
+                    textDirection: checkDirection(context),
+                    child: QuestEmployer(quest),
+                  ));
             else {
-              return Directionality(
-                textDirection: checkDirection(context),
-                child: QuestWorker(quest,
-                    getIt.get<ProfileMeStore>().userData!.id == quest.userId),
-              );
+              return Provider(
+                  create: (context) => getIt.get<WorkerStore>(),
+                  child: Directionality(
+                    textDirection: checkDirection(context),
+                    child: QuestWorker(
+                        quest,
+                        getIt.get<ProfileMeStore>().userData!.id ==
+                            quest.userId),
+                  ));
             }
           },
         );

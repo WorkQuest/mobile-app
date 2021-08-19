@@ -1,5 +1,4 @@
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
@@ -114,29 +113,6 @@ class _QuestListState extends State<QuestList> {
                   hintText: "City / Street / Place",
                 ),
               ),
-              OutlinedButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  // Сделано для отладки будет перенесена в routes.dart
-                  MaterialPageRoute(
-                    builder: (_) => FilterQuestsPage(),
-                  ),
-                ),
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6.0),
-                    ),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.filter_list),
-                    const Text("Filters"),
-                  ],
-                ),
-              ),
             ],
           ),
         ),
@@ -152,12 +128,28 @@ class _QuestListState extends State<QuestList> {
                       _getDivider(),
                       Padding(
                         padding: const EdgeInsets.all(20.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context, rootNavigator: true)
-                                .pushNamed(CreateQuestPage.routeName);
-                          },
-                          child: Text("Create new quest"),
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.push(
+                            context,
+                            // Сделано для отладки будет перенесена в routes.dart
+                            MaterialPageRoute(
+                              builder: (_) => FilterQuestsPage(),
+                            ),
+                          ),
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.0),
+                              ),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.filter_list),
+                              const Text("Filters"),
+                            ],
+                          ),
                         ),
                       ),
                     ],

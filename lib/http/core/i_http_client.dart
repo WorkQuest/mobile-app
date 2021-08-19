@@ -8,4 +8,6 @@ abstract class IHttpClient {
   Future post({required query, Map<String, dynamic>? data});
 
   Future put({required query, Map<String, dynamic>? data});
+
+  Future delete({required query, Map<String, dynamic>? data});
 }

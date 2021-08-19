@@ -6,6 +6,7 @@ import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/quest_map_point.dart';
+import 'package:app/model/responded_model.dart';
 import 'package:dio/dio.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -108,18 +109,25 @@ extension QuestService on ApiProvider {
     int priority = -1,
     int status = -1,
     String? sort,
-    bool invited = true,
+    bool invited = false,
     bool performing = false,
     bool starred = false,
   }) async {
-    final responseData = await _httpClient.get(
-      query: "/v1/employer/$userId/quests",
-    );
-    return List<BaseQuestResponse>.from(
-      responseData["quests"].map(
-        (x) => BaseQuestResponse.fromJson(x),
-      ),
-    );
+    try {
+      final responseData = await _httpClient
+          .get(query: "/v1/employer/$userId/quests", queryParameters: {
+        if (invited) "invited": invited.toString(),
+        if (performing) "performing": performing.toString(),
+        if (starred) "starred": starred.toString(),
+      });
+      return List<BaseQuestResponse>.from(
+        responseData["quests"].map(
+          (x) => BaseQuestResponse.fromJson(x),
+        ),
+      );
+    } catch (e) {
+      return [];
+    }
   }
 
   Future<BaseQuestResponse> getQuest({
@@ -133,8 +141,8 @@ extension QuestService on ApiProvider {
     int limit = 10,
     int offset = 0,
     String searchWord = "",
-    int priority = -1,
-    int status = -1,
+    int? priority,
+    int? status,
     String? sort,
     bool? invited,
     bool? performing,
@@ -146,12 +154,12 @@ extension QuestService on ApiProvider {
         "offset": offset,
         "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
-        //"priority": priority == -1 ? null : priority,
-        //"status": status == -1 ? null : status,
+        if (priority != null) "priority": priority,
+        if (status != null) "status": status,
         //"sort": sort,
-        "invited": invited,
-        "performing": performing,
-        "starred": starred,
+        if (invited != null) "invited": invited,
+        if (performing != null) "performing": performing,
+        if (starred != null) "starred": starred,
       },
     );
 
@@ -160,6 +168,64 @@ extension QuestService on ApiProvider {
         (x) => BaseQuestResponse.fromJson(x),
       ),
     );
+  }
+
+  Future<bool> setStar({
+    required String id,
+  }) async {
+    final isSuccess = await _httpClient.post(query: '/v1/quest/$id/star');
+    return isSuccess == null;
+  }
+
+  Future<bool> removeStar({
+    required String id,
+  }) async {
+    final isSuccess = await _httpClient.delete(query: '/v1/quest/$id/star');
+    return isSuccess == null;
+  }
+
+  Future<bool> respondOnQuest({
+    required String id,
+    required String message,
+  }) async {
+    try {
+      final responseData = await _httpClient.post(
+        query: '/v1/quest/$id/response',
+        data: {"message": message},
+      );
+      return responseData == null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<List<BaseQuestResponse>> responsesQuests() async {
+    try {
+      final responseData =
+          await _httpClient.get(query: '/v1/quest/responses/my');
+      return List<BaseQuestResponse>.from(
+        responseData["responses"].map(
+          (x) => BaseQuestResponse.fromJson(x),
+        ),
+      );
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<List<RespondedModel>> responsesQuest(String id) async {
+    try {
+      final responseData =
+          await _httpClient.get(query: '/v1/quest/$id/responses');
+
+      return List<RespondedModel>.from(
+        responseData["responses"].map(
+          (x) => RespondedModel.fromJson(x),
+        ),
+      );
+    } catch (e) {
+      return [];
+    }
   }
 }
 
@@ -257,7 +323,7 @@ extension ChatsService on ApiProvider {
     );
   }
 
-  Future<Map<String,dynamic>> getMessages({
+  Future<Map<String, dynamic>> getMessages({
     required String chatId,
     required int offset,
     required int limit,

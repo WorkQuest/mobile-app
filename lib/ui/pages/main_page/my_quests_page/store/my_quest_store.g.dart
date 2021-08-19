@@ -84,18 +84,18 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     });
   }
 
-  final _$allAtom = Atom(name: '_MyQuestStore.all');
+  final _$activeAtom = Atom(name: '_MyQuestStore.active');
 
   @override
-  List<BaseQuestResponse>? get all {
-    _$allAtom.reportRead();
-    return super.all;
+  List<BaseQuestResponse>? get active {
+    _$activeAtom.reportRead();
+    return super.active;
   }
 
   @override
-  set all(List<BaseQuestResponse>? value) {
-    _$allAtom.reportWrite(value, super.all, () {
-      super.all = value;
+  set active(List<BaseQuestResponse>? value) {
+    _$activeAtom.reportWrite(value, super.active, () {
+      super.active = value;
     });
   }
 
@@ -126,6 +126,21 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   set performed(List<BaseQuestResponse>? value) {
     _$performedAtom.reportWrite(value, super.performed, () {
       super.performed = value;
+    });
+  }
+
+  final _$requestedAtom = Atom(name: '_MyQuestStore.requested');
+
+  @override
+  List<BaseQuestResponse>? get requested {
+    _$requestedAtom.reportRead();
+    return super.requested;
+  }
+
+  @override
+  set requested(List<BaseQuestResponse>? value) {
+    _$requestedAtom.reportWrite(value, super.requested, () {
+      super.requested = value;
     });
   }
 
@@ -177,8 +192,8 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   final _$getQuestsAsyncAction = AsyncAction('_MyQuestStore.getQuests');
 
   @override
-  Future<dynamic> getQuests(String userId) {
-    return _$getQuestsAsyncAction.run(() => super.getQuests(userId));
+  Future<dynamic> getQuests(String userId, UserRole role) {
+    return _$getQuestsAsyncAction.run(() => super.getQuests(userId, role));
   }
 
   @override
@@ -189,9 +204,10 @@ priority: ${priority},
 offset: ${offset},
 limit: ${limit},
 status: ${status},
-all: ${all},
+active: ${active},
 starred: ${starred},
 performed: ${performed},
+requested: ${requested},
 invited: ${invited},
 iconsMarker: ${iconsMarker},
 selectQuestInfo: ${selectQuestInfo}

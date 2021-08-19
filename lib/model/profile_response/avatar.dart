@@ -9,7 +9,8 @@ class Avatar {
 
   factory Avatar.fromJson(Map<String, dynamic>? json) => Avatar(
         id: json?["id"] ?? "kakoi-to avatar",
-        url: json?["url"] ?? "https://rembitteh.ru/Media/images/hozyayke-na-zametku/televizory/zvuk-est-izobrazhenia-net.jpg",
+        url: json?["url"] ??
+            "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
       );
 
   Map<String, dynamic> toJson() => {

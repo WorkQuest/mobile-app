@@ -16,12 +16,15 @@ class MyQuestsPage extends StatefulWidget {
 
 class _MyQuestsPageState extends State<MyQuestsPage> {
   MyQuestStore? myQuests;
+  late UserRole role;
   @override
   void initState() {
     myQuests = context.read<MyQuestStore>();
-    ProfileMeStore? profileMeStore = context.read<ProfileMeStore>();
+    ProfileMeStore profileMeStore = context.read<ProfileMeStore>();
+    role = profileMeStore.userData?.role ?? UserRole.Employer;
     profileMeStore.getProfileMe().then((value) {
-      myQuests!.getQuests(profileMeStore.userData!.id);
+      setState(() => role = profileMeStore.userData!.role);
+      myQuests!.getQuests(profileMeStore.userData!.id, role);
     });
     super.initState();
   }
@@ -29,53 +32,64 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: role == UserRole.Worker ? 4 : 3,
       child: Observer(
         builder: (_) => Scaffold(
           body: NestedScrollView(
-                  headerSliverBuilder:
-                      (BuildContext context, bool innerBoxIsScrolled) {
-                    return <Widget>[
-                      CupertinoSliverNavigationBar(
-                        largeTitle: Text("My quests"),
-                        border: const Border.fromBorderSide(BorderSide.none),
-                      ),
-                      SliverPersistentHeader(
-                        pinned: true,
-                        delegate: const _PersistentTabBar(),
-                      ),
-                    ];
-                  },
-                  physics: const ClampingScrollPhysics(),
-                  body: TabBarView(
-                    children: [
-                      Center(
-                        child: QuestsList(
-                          QuestItemPriorityType.Active,
-                          myQuests?.all,
-                        ),
-                      ),
-                      Center(
-                        child: QuestsList(
-                          QuestItemPriorityType.Invited,
-                          myQuests?.invited,
-                        ),
-                      ),
-                      Center(
-                        child: QuestsList(
-                          QuestItemPriorityType.Performed,
-                          myQuests?.performed,
-                        ),
-                      ),
-                      Center(
-                        child: QuestsList(
-                          QuestItemPriorityType.Starred,
-                          myQuests?.starred,
-                        ),
-                      ),
-                    ],
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                CupertinoSliverNavigationBar(
+                  largeTitle: Text("My quests"),
+                  border: const Border.fromBorderSide(BorderSide.none),
+                ),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _PersistentTabBar(role == UserRole.Worker
+                      ? ["Active", "Invited", "Performed", "Starred"]
+                      : ["Active", "Invited", "Performed"]),
+                ),
+              ];
+            },
+            physics: const ClampingScrollPhysics(),
+            body: TabBarView(
+              children: [
+                Center(
+                  child: QuestsList(
+                    QuestItemPriorityType.Active,
+                    myQuests?.active,
+                    hasCreateButton: role == UserRole.Employer,
                   ),
                 ),
+
+                Center(
+                  child: QuestsList(
+                    QuestItemPriorityType.Invited,
+                    myQuests?.invited,
+                  ),
+                ),
+                // Center(
+                //   child: QuestsList(
+                //     QuestItemPriorityType.Requested,
+                //     myQuests?.requested,
+                //   ),
+                // ),
+                Center(
+                  child: QuestsList(
+                    QuestItemPriorityType.Performed,
+                    myQuests?.performed,
+                  ),
+                ),
+                if (role == UserRole.Worker)
+                  Center(
+                    child: QuestsList(
+                      QuestItemPriorityType.Starred,
+                      myQuests?.starred,
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -83,7 +97,8 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
 }
 
 class _PersistentTabBar extends SliverPersistentHeaderDelegate {
-  const _PersistentTabBar();
+  final List<String> titles;
+  const _PersistentTabBar(this.titles);
 
   @override
   Widget build(
@@ -124,26 +139,12 @@ class _PersistentTabBar extends SliverPersistentHeaderDelegate {
             fontSize: 14,
           ),
           tabs: [
-            Text(
-              "Active",
-              maxLines: 1,
-              overflow: TextOverflow.fade,
-            ),
-            Text(
-              "Invited",
-              maxLines: 1,
-              overflow: TextOverflow.fade,
-            ),
-            Text(
-              "Performed",
-              maxLines: 1,
-              overflow: TextOverflow.fade,
-            ),
-            Text(
-              "Starred",
-              maxLines: 1,
-              overflow: TextOverflow.fade,
-            ),
+            for (final title in titles)
+              Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+              ),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:app/base_store/i_store.dart';
+import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -34,13 +35,16 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   int status = -1;
 
   @observable
-  List<BaseQuestResponse>? all;
+  List<BaseQuestResponse>? active;
 
   @observable
   List<BaseQuestResponse>? starred;
 
   @observable
   List<BaseQuestResponse>? performed;
+
+  @observable
+  List<BaseQuestResponse>? requested;
 
   @observable
   List<BaseQuestResponse>? invited;
@@ -52,51 +56,48 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   BaseQuestResponse? selectQuestInfo;
 
   @action
-  Future getQuests(String userId) async {
+  Future getQuests(String userId, UserRole role) async {
     try {
       this.onLoading();
+      if (role == UserRole.Employer) {
+        active = await _apiProvider.getEmployerQuests(userId);
 
-      all = await _apiProvider.getEmployerQuests(userId);
+        invited = await _apiProvider.getEmployerQuests(
+          userId,
+          invited: true,
+        );
 
-      starred = await _apiProvider.getEmployerQuests(
-        userId,
-        offset: this.offset,
-        limit: this.limit,
-        status: this.status,
-        invited: false,
-        performing: false,
-        priority: this.priority,
-        sort: this.sort,
-        starred: true,
-      );
+        performed = await _apiProvider.getEmployerQuests(
+          userId,
+          performing: true,
+        );
+      } else {
+        active = await _apiProvider.getQuests(
+          offset: this.offset,
+          limit: this.limit,
+          status: 1,
+        );
 
-      invited = await _apiProvider.getEmployerQuests(
-        userId,
-        offset: this.offset,
-        limit: this.limit,
-        status: this.status,
-        invited: true,
-        performing: false,
-        priority: this.priority,
-        sort: this.sort,
-        starred: false,
-      );
+        starred = await _apiProvider.getQuests(
+          offset: this.offset,
+          limit: this.limit,
+          starred: true,
+        );
 
-      performed = await _apiProvider.getEmployerQuests(
-        userId,
-        offset: this.offset,
-        limit: this.limit,
-        status: this.status,
-        invited: false,
-        performing: true,
-        priority: this.priority,
-        sort: this.sort,
-        starred: false,
-      );
-      print(all);
-      print(starred);
-      print(performed);
-      print(invited);
+        requested = []; //= await _apiProvider.responsesQuests();
+
+        invited = await _apiProvider.getQuests(
+          offset: this.offset,
+          limit: this.limit,
+          invited: true,
+        );
+
+        performed = await _apiProvider.getQuests(
+          offset: this.offset,
+          limit: this.limit,
+          performing: true,
+        );
+      }
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");

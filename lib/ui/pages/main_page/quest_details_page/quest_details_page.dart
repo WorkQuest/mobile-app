@@ -16,16 +16,8 @@ class QuestDetails extends StatefulWidget {
 
 class QuestDetailsState<T extends QuestDetails> extends State<T>
     with TickerProviderStateMixin {
-  AnimationController? controller;
   int selectedResponders = -1;
   bool sendRequestBodyHide = true;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = BottomSheet.createAnimationController(this);
-    controller!.duration = Duration(seconds: 1);
-  }
 
   @protected
   List<Widget>? actionAppBar() {
@@ -154,7 +146,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     "assets/marker.svg",
                     width: 22,
                     height: 29,
-                    color: priorityColors[widget.questInfo.priority],
+                    color: Constants.priorityColors[widget.questInfo.priority],
                   ),
                 ],
               ),
@@ -188,10 +180,3 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
     );
   }
 }
-
-const List<Color> priorityColors = [
-  Color.fromRGBO(34, 204, 20, 1),
-  Color.fromRGBO(34, 204, 20, 1),
-  Color.fromRGBO(232, 210, 13, 1),
-  Color.fromRGBO(223, 51, 51, 1),
-];

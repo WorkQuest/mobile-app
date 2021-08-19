@@ -44,6 +44,12 @@ class Constants {
     // "Portuguese": Locale('en', 'US'),
     // "Indonesian ": Locale('en', 'US'),
   };
+  static const List<Color> priorityColors = [
+    Color.fromRGBO(34, 204, 20, 1),
+    Color.fromRGBO(34, 204, 20, 1),
+    Color.fromRGBO(232, 210, 13, 1),
+    Color.fromRGBO(223, 51, 51, 1),
+  ];
   static const List<String> months = [
     'January',
     'February',

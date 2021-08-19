@@ -73,10 +73,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         starred: false,
       );
       this.onSuccess(true);
-      print("search word $searchWord");
-      print("search result $searchResultList");
     });
-    print("search word $searchWord");
   }
 
   @action
@@ -86,12 +83,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       final loadQuestsList = await _apiProvider.getQuests(
         offset: this.offset,
         limit: this.limit,
-        status: this.status,
-        invited: false,
-        performing: false,
-        priority: this.priority,
         sort: this.sort,
-        starred: false,
       );
       if (questsList != null) {
         this.questsList = [...this.questsList!, ...loadQuestsList];

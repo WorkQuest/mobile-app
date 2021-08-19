@@ -1,6 +1,7 @@
 enum QuestItemPriorityType {
   Active,
   Invited,
+  Requested,
   Performed,
   Starred,
 }

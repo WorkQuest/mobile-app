@@ -60,12 +60,20 @@ class _HttpClient implements IHttpClient {
     );
   }
 
+  @override
+  Future delete({required query, Map<String, dynamic>? data}) async {
+    return await _sendRequest(
+      _dio.delete(
+        query,
+        data: data,
+      ),
+    );
+  }
+
   Future _sendRequest(Future<Response> request) async {
     final Response response = await request.catchError((error) {
       if (error is DioError) {
-        throw RequestErrorModel.fromJson(
-            error.response!.data
-        );
+        throw RequestErrorModel.fromJson(error.response!.data);
       }
     });
     return response.data["result"];

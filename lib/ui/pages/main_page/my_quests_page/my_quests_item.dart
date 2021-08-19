@@ -5,7 +5,6 @@ import 'package:app/work_quest_app.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../enums.dart';
-import 'my_quest_details.dart';
 
 class MyQuestsItem extends StatelessWidget {
   const MyQuestsItem(this.questInfo,
@@ -18,11 +17,9 @@ class MyQuestsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Navigator.of(context, rootNavigator: true).pushNamed(
-          QuestDetails.routeName,
-          arguments: questInfo
-        );
+      onTap: () {
+        Navigator.of(context, rootNavigator: true)
+            .pushNamed(QuestDetails.routeName, arguments: questInfo);
       },
       child: Container(
         color: Colors.white,
@@ -163,6 +160,24 @@ class MyQuestsItem extends StatelessWidget {
             children: [
               Text(
                 "You invited",
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+        );
+        break;
+      case QuestItemPriorityType.Requested:
+        returnWidget = Container(
+          margin: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: Color(0xFFE8D20D),
+          ),
+          child: Row(
+            children: [
+              Text(
+                "You Requested",
                 style: TextStyle(color: Colors.white),
               ),
             ],

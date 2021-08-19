@@ -7,8 +7,6 @@ class BaseQuestResponse {
   BaseQuestResponse({
     required this.id,
     required this.userId,
-    // required this.assignedWorkerId,
-    //required this.assignedWorker,
     required this.medias,
     required this.user,
     required this.category,
@@ -20,14 +18,13 @@ class BaseQuestResponse {
     required this.price,
     required this.adType,
     required this.createdAt,
-    required this.updatedAt,
+    required this.star,
+    required this.response,
   });
 
   String id;
   String userId;
   String category;
-  // String assignedWorkerId;
-  // dynamic assignedWorker;
   List<Media> medias;
   User user;
   int status;
@@ -38,29 +35,47 @@ class BaseQuestResponse {
   String price;
   int adType;
   DateTime createdAt;
-  DateTime updatedAt;
+  bool star;
+  bool response;
 
-  factory BaseQuestResponse.fromJson(Map<String, dynamic> json) =>
-      BaseQuestResponse(
-        id: json["id"],
-        userId: json["userId"],
-        category: json["category"],
-        // assignedWorker: json["assignedWorker"],
-        //assignedWorkerId: json["assignedWorkerId"] == null ? " " : json["assignedWorkerId"],
-        medias: (json["medias"] as List<dynamic>)
-            .map((e) => Media.fromJson(e as Map<String, dynamic>))
-            .toList(),
-        user: User.fromJson(json["user"]),
-        status: json["status"],
-        priority: json["priority"],
-        location: Location.fromJson(json["location"]),
-        title: json["title"],
-        description: json["description"],
-        price: json["price"],
-        adType: json["adType"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
-      );
+  factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
+    return BaseQuestResponse(
+      id: json["id"],
+      userId: json["userId"],
+      category: json["category"],
+      medias: (json["medias"] as List<dynamic>)
+          .map((e) => Media.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      user: User.fromJson(json["user"]),
+      status: json["status"],
+      priority: json["priority"],
+      location: Location.fromJson(json["location"]),
+      title: json["title"],
+      description: json["description"],
+      price: json["price"],
+      adType: json["adType"],
+      createdAt: DateTime.parse(json["createdAt"]),
+      star: json["star"] == null ? false : true,
+      response: json["response"] == null ? false : true,
+    );
+  }
+
+  update(BaseQuestResponse updateQuest) {
+    this.id = updateQuest.id;
+    this.userId = updateQuest.userId;
+    this.category = updateQuest.category;
+    this.medias = updateQuest.medias;
+    this.user = updateQuest.user;
+    this.status = updateQuest.status;
+    this.priority = updateQuest.priority;
+    this.location = updateQuest.location;
+    this.title = updateQuest.title;
+    this.description = updateQuest.description;
+    this.price = updateQuest.price;
+    this.adType = updateQuest.adType;
+    this.createdAt = updateQuest.createdAt;
+    this.star = updateQuest.star;
+  }
 
   Map<String, dynamic> toJson() => {
         "userId": userId,
@@ -73,6 +88,5 @@ class BaseQuestResponse {
         "price": price,
         "adType": adType,
         "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
       };
 }
