@@ -30,8 +30,13 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
   String confirmNewPassword = '';
 
   @action
-  void changePrivacy(int value) {
-    privacy = value;
+  void changePrivacy(int? value) {
+    privacy = value!;
+  }
+
+  @action
+  void changeFilter(int? choice) {
+    filter = choice!;
   }
 
   @action
@@ -78,10 +83,5 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
     } catch (e) {
       this.onError(e.toString());
     }
-  }
-
-  @action
-  void changeFilter(int choice) {
-    filter = choice;
   }
 }

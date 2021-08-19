@@ -137,11 +137,22 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
       ActionController(name: '_SettingsPageStore');
 
   @override
-  void changePrivacy(int value) {
+  void changePrivacy(int? value) {
     final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
         name: '_SettingsPageStore.changePrivacy');
     try {
       return super.changePrivacy(value);
+    } finally {
+      _$_SettingsPageStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void changeFilter(int? choice) {
+    final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
+        name: '_SettingsPageStore.changeFilter');
+    try {
+      return super.changeFilter(choice);
     } finally {
       _$_SettingsPageStoreActionController.endAction(_$actionInfo);
     }
@@ -197,17 +208,6 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
         name: '_SettingsPageStore.setConfirmNewPassword');
     try {
       return super.setConfirmNewPassword(value);
-    } finally {
-      _$_SettingsPageStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void changeFilter(int choice) {
-    final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
-        name: '_SettingsPageStore.changeFilter');
-    try {
-      return super.changeFilter(choice);
     } finally {
       _$_SettingsPageStoreActionController.endAction(_$actionInfo);
     }
