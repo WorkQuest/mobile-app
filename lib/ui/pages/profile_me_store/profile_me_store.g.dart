@@ -16,6 +16,15 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
     return _$getProfileMeAsyncAction.run(() => super.getProfileMe());
   }
 
+  final _$changeProfileAsyncAction =
+      AsyncAction('_ProfileMeStore.changeProfile');
+
+  @override
+  Future changeProfile(ProfileMeResponse userData, {DrishyaEntity? media}) {
+    return _$changeProfileAsyncAction
+        .run(() => super.changeProfile(userData, media: media));
+  }
+
   @override
   String toString() {
     return '''
