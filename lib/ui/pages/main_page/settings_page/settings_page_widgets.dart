@@ -123,25 +123,22 @@ Widget settingsCard({
 
 ///Logout button
 Widget logOutButton(context) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-    child: OutlinedButton(
-      onPressed: () {
-        Navigator.of(context, rootNavigator: true)
-            .pushNamedAndRemoveUntil(SignInPage.routeName, (route) => false);
-        Storage.deleteAllFromSecureStorage();
-      },
-      child: Text(
-        "Logout",
-        style: TextStyle(
-          color: Color(0xFFDF3333),
-        ),
+  return OutlinedButton(
+    onPressed: () {
+      Navigator.of(context, rootNavigator: true)
+          .pushNamedAndRemoveUntil(SignInPage.routeName, (route) => false);
+      Storage.deleteAllFromSecureStorage();
+    },
+    child: Text(
+      "Logout",
+      style: TextStyle(
+        color: Color(0xFFDF3333),
       ),
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(
-          width: 1.0,
-          color: Color.fromRGBO(223, 51, 51, 0.1),
-        ),
+    ),
+    style: OutlinedButton.styleFrom(
+      side: BorderSide(
+        width: 1.0,
+        color: Color.fromRGBO(223, 51, 51, 0.1),
       ),
     ),
   );

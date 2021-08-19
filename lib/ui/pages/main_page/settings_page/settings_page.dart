@@ -47,7 +47,7 @@ class SettingsPage extends StatelessWidget {
               ),
             ),
             SliverPadding(
-              padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+              padding: EdgeInsets.all(16.0),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
@@ -162,13 +162,16 @@ class SettingsPage extends StatelessWidget {
                         ],
                       ),
                     ),
+                    ///Logout button
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    logOutButton(context),
                   ],
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: logOutButton(context),
-            ),
+
             SliverToBoxAdapter(
               child: Container(
                 height: 10.0,
@@ -176,6 +179,7 @@ class SettingsPage extends StatelessWidget {
                 color: Color(0xFFF7F8FA),
               ),
             ),
+
             SliverPadding(
               padding: EdgeInsets.all(16.0),
               sliver: SliverList(
