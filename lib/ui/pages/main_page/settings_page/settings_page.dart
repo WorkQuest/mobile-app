@@ -1,3 +1,4 @@
+import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_settings_page.dart';
@@ -107,7 +108,11 @@ class SettingsPage extends StatelessWidget {
                                     20.0,
                                   ),
                                   title: "SMS \nVerification",
-                                  onTap: () {},
+                                  onTap: () =>
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pushNamed(
+                                    SMSVerificationPage.routeName,
+                                  ),
                                 ),
                                 const SizedBox(
                                   width: 10.0,
@@ -162,6 +167,7 @@ class SettingsPage extends StatelessWidget {
                         ],
                       ),
                     ),
+
                     ///Logout button
                     const SizedBox(
                       height: 10.0,
@@ -171,7 +177,6 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
             ),
-
             SliverToBoxAdapter(
               child: Container(
                 height: 10.0,
@@ -179,7 +184,6 @@ class SettingsPage extends StatelessWidget {
                 color: Color(0xFFF7F8FA),
               ),
             ),
-
             SliverPadding(
               padding: EdgeInsets.all(16.0),
               sliver: SliverList(
