@@ -15,8 +15,6 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
   _SettingsPageStore(this.apiProvider);
 
   @observable
-  bool smsVerificationStatus = false;
-  @observable
   bool faStatus = false;
   @observable
   int privacy = 1;
@@ -37,11 +35,6 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
   @action
   void changeFilter(int? choice) {
     filter = choice!;
-  }
-
-  @action
-  void changeSmsVerification(bool value) {
-    smsVerificationStatus = value;
   }
 
   @action

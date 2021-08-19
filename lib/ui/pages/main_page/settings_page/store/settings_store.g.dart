@@ -17,23 +17,6 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
               name: '_SettingsPageStore.canSubmit'))
           .value;
 
-  final _$smsVerificationStatusAtom =
-      Atom(name: '_SettingsPageStore.smsVerificationStatus');
-
-  @override
-  bool get smsVerificationStatus {
-    _$smsVerificationStatusAtom.reportRead();
-    return super.smsVerificationStatus;
-  }
-
-  @override
-  set smsVerificationStatus(bool value) {
-    _$smsVerificationStatusAtom.reportWrite(value, super.smsVerificationStatus,
-        () {
-      super.smsVerificationStatus = value;
-    });
-  }
-
   final _$faStatusAtom = Atom(name: '_SettingsPageStore.faStatus');
 
   @override
@@ -159,17 +142,6 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
   }
 
   @override
-  void changeSmsVerification(bool value) {
-    final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
-        name: '_SettingsPageStore.changeSmsVerification');
-    try {
-      return super.changeSmsVerification(value);
-    } finally {
-      _$_SettingsPageStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void change2FAStatus(bool value) {
     final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
         name: '_SettingsPageStore.change2FAStatus');
@@ -216,7 +188,6 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
   @override
   String toString() {
     return '''
-smsVerificationStatus: ${smsVerificationStatus},
 faStatus: ${faStatus},
 privacy: ${privacy},
 filter: ${filter},
