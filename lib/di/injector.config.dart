@@ -20,23 +20,25 @@ import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i13;
 import '../ui/pages/main_page/quest_details_page/employer/store/employer_store.dart'
     as _i12;
 import '../ui/pages/main_page/quest_details_page/worker/store/worker_store.dart'
-    as _i23;
+    as _i24;
 import '../ui/pages/main_page/quest_page/quest_list/store/quests_store.dart'
     as _i15;
 import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
     as _i14;
 import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
     as _i16;
+import '../ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart'
+    as _i21;
 import '../ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart'
     as _i17;
 import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i18;
 import '../ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart'
     as _i11;
-import '../ui/pages/main_page/wallet_page/store/wallet_store.dart' as _i21;
+import '../ui/pages/main_page/wallet_page/store/wallet_store.dart' as _i22;
 import '../ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart'
-    as _i22;
-import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i24;
-import '../ui/pages/profile_me_store/profile_me_store.dart' as _i25;
+    as _i23;
+import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i25;
+import '../ui/pages/profile_me_store/profile_me_store.dart' as _i26;
 import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i19;
 import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
     as _i9;
@@ -87,16 +89,17 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i19.SignInStore(get<_i7.ApiProvider>()));
     gh.factory<_i20.SignUpStore>(
         () => _i20.SignUpStore(get<_i7.ApiProvider>()));
-    gh.factory<_i21.WalletStore>(
-        () => _i21.WalletStore(get<_i7.ApiProvider>()));
-    gh.factory<_i22.WithdrawPageStore>(
-        () => _i22.WithdrawPageStore(get<_i7.ApiProvider>()));
-    gh.factory<_i23.WorkerStore>(
-        () => _i23.WorkerStore(get<_i7.ApiProvider>()));
+    gh.factory<_i21.TwoFAStore>(() => _i21.TwoFAStore(get<_i7.ApiProvider>()));
+    gh.factory<_i22.WalletStore>(
+        () => _i22.WalletStore(get<_i7.ApiProvider>()));
+    gh.factory<_i23.WithdrawPageStore>(
+        () => _i23.WithdrawPageStore(get<_i7.ApiProvider>()));
+    gh.factory<_i24.WorkerStore>(
+        () => _i24.WorkerStore(get<_i7.ApiProvider>()));
     gh.singleton<_i7.ApiProvider>(_i7.ApiProvider(get<_i3.IHttpClient>()));
-    gh.singleton<_i24.PinCodeStore>(_i24.PinCodeStore(get<_i7.ApiProvider>()));
-    gh.singleton<_i25.ProfileMeStore>(
-        _i25.ProfileMeStore(get<_i7.ApiProvider>()));
+    gh.singleton<_i25.PinCodeStore>(_i25.PinCodeStore(get<_i7.ApiProvider>()));
+    gh.singleton<_i26.ProfileMeStore>(
+        _i26.ProfileMeStore(get<_i7.ApiProvider>()));
     return this;
   }
 }
