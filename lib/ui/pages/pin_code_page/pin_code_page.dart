@@ -12,7 +12,9 @@ import "package:provider/provider.dart";
 class PinCodePage extends StatefulWidget {
   static const String routeName = "/PinCode";
   final bool isRecheck;
+
   PinCodePage({this.isRecheck = false});
+
   @override
   State<StatefulWidget> createState() => _PinCodePageState();
 }
@@ -25,7 +27,9 @@ class _PinCodePageState extends State<PinCodePage>
   void initState() {
     context.read<PinCodeStore>().initPage();
     controller = AnimationController(
-        duration: const Duration(milliseconds: 300), vsync: this);
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
     super.initState();
   }
 
@@ -150,8 +154,10 @@ class PinCodeKeyboard extends StatelessWidget {
   final Function()? onTabSensor;
   final Function()? onTabRemove;
   final bool canBiometric;
+
   PinCodeKeyboard(this.onTabNumber,
       {this.onTabSensor, this.onTabRemove, this.canBiometric = false});
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -194,7 +200,9 @@ const TextStyle buttonText =
 class KeyboardButton extends StatelessWidget {
   final Widget child;
   final Function()? onTab;
+
   KeyboardButton(this.child, [this.onTab]);
+
   @override
   Widget build(BuildContext context) {
     return (TextButton(
