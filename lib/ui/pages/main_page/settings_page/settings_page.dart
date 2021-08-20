@@ -1,3 +1,6 @@
+import 'package:app/di/injector.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
@@ -89,7 +92,17 @@ class SettingsPage extends StatelessWidget {
                                   value: settingStore.faStatus,
                                 ),
                                 title: "2FA",
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .push(
+                                    MaterialPageRoute(
+                                      builder: (context) => Provider(
+                                        create: (context) => getIt.get<TwoFAStore>(),
+                                        child: TwoFAPage(),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
