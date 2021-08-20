@@ -12,15 +12,31 @@ mixin _$EmployerStore on _EmployerStore, Store {
   final _$respondedListAtom = Atom(name: '_EmployerStore.respondedList');
 
   @override
-  List<RespondedModel>? get respondedList {
+  List<RespondModel>? get respondedList {
     _$respondedListAtom.reportRead();
     return super.respondedList;
   }
 
   @override
-  set respondedList(List<RespondedModel>? value) {
+  set respondedList(List<RespondModel>? value) {
     _$respondedListAtom.reportWrite(value, super.respondedList, () {
       super.respondedList = value;
+    });
+  }
+
+  final _$selectedRespondersAtom =
+      Atom(name: '_EmployerStore.selectedResponders');
+
+  @override
+  String get selectedResponders {
+    _$selectedRespondersAtom.reportRead();
+    return super.selectedResponders;
+  }
+
+  @override
+  set selectedResponders(String value) {
+    _$selectedRespondersAtom.reportWrite(value, super.selectedResponders, () {
+      super.selectedResponders = value;
     });
   }
 
@@ -35,7 +51,8 @@ mixin _$EmployerStore on _EmployerStore, Store {
   @override
   String toString() {
     return '''
-respondedList: ${respondedList}
+respondedList: ${respondedList},
+selectedResponders: ${selectedResponders}
     ''';
   }
 }

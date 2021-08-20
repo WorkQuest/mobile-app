@@ -16,9 +16,6 @@ class QuestDetails extends StatefulWidget {
 
 class QuestDetailsState<T extends QuestDetails> extends State<T>
     with TickerProviderStateMixin {
-  int selectedResponders = -1;
-  bool sendRequestBodyHide = true;
-
   @protected
   List<Widget>? actionAppBar() {
     return null;
@@ -53,26 +50,34 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: Image.network(
-                    widget.questInfo.user.avatar.url,
-                    width: 30,
-                    height: 30,
-                    fit: BoxFit.cover,
-                  ),
+            Container(
+              alignment: Alignment.topLeft,
+              width: double.maxFinite,
+              child: Expanded(
+                child: Wrap(
+                  alignment: WrapAlignment.start,
+                  runAlignment: WrapAlignment.start,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.network(
+                        widget.questInfo.user.avatar.url,
+                        width: 30,
+                        height: 30,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(width: 10),
+                    PriorityView(widget.questInfo.priority),
+                  ],
                 ),
-                const SizedBox(width: 10),
-                Text(
-                  widget.questInfo.user.firstName +
-                      widget.questInfo.user.lastName,
-                  style: TextStyle(fontSize: 16),
-                ),
-                Spacer(),
-                PriorityView(widget.questInfo.priority),
-              ],
+              ),
             ),
             const SizedBox(height: 17),
             Row(
