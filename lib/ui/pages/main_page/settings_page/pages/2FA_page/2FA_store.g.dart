@@ -24,6 +24,23 @@ mixin _$TwoFAStore on _TwoFAStore, Store {
     });
   }
 
+  final _$googleAuthenticatorSecretCodeAtom =
+      Atom(name: '_TwoFAStore.googleAuthenticatorSecretCode');
+
+  @override
+  String get googleAuthenticatorSecretCode {
+    _$googleAuthenticatorSecretCodeAtom.reportRead();
+    return super.googleAuthenticatorSecretCode;
+  }
+
+  @override
+  set googleAuthenticatorSecretCode(String value) {
+    _$googleAuthenticatorSecretCodeAtom
+        .reportWrite(value, super.googleAuthenticatorSecretCode, () {
+      super.googleAuthenticatorSecretCode = value;
+    });
+  }
+
   final _$codeFromEmailAtom = Atom(name: '_TwoFAStore.codeFromEmail');
 
   @override
@@ -56,6 +73,27 @@ mixin _$TwoFAStore on _TwoFAStore, Store {
     });
   }
 
+  final _$enable2FAAsyncAction = AsyncAction('_TwoFAStore.enable2FA');
+
+  @override
+  Future<void> enable2FA() {
+    return _$enable2FAAsyncAction.run(() => super.enable2FA());
+  }
+
+  final _$disable2FAAsyncAction = AsyncAction('_TwoFAStore.disable2FA');
+
+  @override
+  Future<dynamic> disable2FA() {
+    return _$disable2FAAsyncAction.run(() => super.disable2FA());
+  }
+
+  final _$confirm2FAAsyncAction = AsyncAction('_TwoFAStore.confirm2FA');
+
+  @override
+  Future<dynamic> confirm2FA() {
+    return _$confirm2FAAsyncAction.run(() => super.confirm2FA());
+  }
+
   final _$_TwoFAStoreActionController = ActionController(name: '_TwoFAStore');
 
   @override
@@ -84,6 +122,7 @@ mixin _$TwoFAStore on _TwoFAStore, Store {
   String toString() {
     return '''
 index: ${index},
+googleAuthenticatorSecretCode: ${googleAuthenticatorSecretCode},
 codeFromEmail: ${codeFromEmail},
 codeFromAuthenticator: ${codeFromAuthenticator}
     ''';

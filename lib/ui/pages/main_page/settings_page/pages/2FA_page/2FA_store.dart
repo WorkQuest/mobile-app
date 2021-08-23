@@ -7,8 +7,7 @@ part '2FA_store.g.dart';
 
 @injectable
 @singleton
-class TwoFAStore extends _TwoFAStore
-    with _$TwoFAStore {
+class TwoFAStore extends _TwoFAStore with _$TwoFAStore {
   TwoFAStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
@@ -19,6 +18,9 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
 
   @observable
   int index = 0;
+
+  @observable
+  String googleAuthenticatorSecretCode = '';
 
   @observable
   String codeFromEmail = '';
@@ -33,19 +35,44 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
 
   @action
   void setCode(String value) {
-    codeFromEmail =value;
+    codeFromEmail = value;
   }
 
- /* @action
-  Future submitCode() async {
+  @action
+  Future<void> enable2FA() async {
     try {
       this.onLoading();
-      await apiProvider.submitCode(
-        confirmCode: code,
+      googleAuthenticatorSecretCode = await apiProvider.enable2FA();
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future disable2FA() async {
+    try {
+      this.onLoading();
+      await apiProvider.disable2FA(
+        totp: codeFromAuthenticator,
       );
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
     }
-  }*/
+  }
+
+  @action
+  Future confirm2FA() async {
+    try {
+      this.onLoading();
+      await apiProvider.confirmEnabling2FA(
+        confirmCode: codeFromEmail,
+        totp: codeFromAuthenticator,
+      );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
 }
