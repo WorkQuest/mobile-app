@@ -174,7 +174,9 @@ extension QuestService on ApiProvider {
   Future<bool> setStar({
     required String id,
   }) async {
-    final isSuccess = await _httpClient.post(query: '/v1/quest/$id/star');
+    final isSuccess = await _httpClient.post(
+      query: '/v1/quest/$id/star',
+    );
     return isSuccess == null;
   }
 
@@ -359,6 +361,7 @@ extension ChangePassword on ApiProvider {
   }
 }
 
+///SMSVerification
 extension SMSVerification on ApiProvider {
   Future<void> submitPhoneNumber({
     required String phoneNumber,
@@ -383,6 +386,7 @@ extension SMSVerification on ApiProvider {
   }
 }
 
+///Media Upload
 extension GetUploadLink on ApiProvider {
   Future<List<String>> uploadMedia({
     required List<DrishyaEntity> medias,
@@ -435,6 +439,7 @@ extension GetUploadLink on ApiProvider {
   }
 }
 
+///Chat Service
 extension ChatsService on ApiProvider {
   Future<List<ChatModel>> getChats() async {
     final responseData = await _httpClient.get(query: '/v1/user/me/chats');
@@ -473,5 +478,39 @@ extension ChatsService on ApiProvider {
       },
     );
     return responseData == null;
+  }
+}
+
+///Two FA
+extension TwoFA on ApiProvider {
+  Future<String> enable2FA() async {
+    final responseData = await _httpClient.post(
+      query: '/v1/totp/enable',
+    );
+    return responseData;
+  }
+
+  Future<void> disable2FA({
+    required String totp,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/totp/disable',
+      data: {
+        "totp": totp,
+      },
+    );
+  }
+
+  Future<void> confirmEnabling2FA({
+    required String confirmCode,
+    required String totp,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/totp/disable',
+      data: {
+        "confirmCode": confirmCode,
+        "totp": totp,
+      },
+    );
   }
 }
