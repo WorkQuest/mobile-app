@@ -18,7 +18,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
   _TwoFAStore(this.apiProvider);
 
   @observable
-  int index = 1;
+  int index = 0;
 
   @observable
   String codeFromEmail = '';
