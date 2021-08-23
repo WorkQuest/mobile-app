@@ -44,27 +44,29 @@ class WalletPage extends StatelessWidget {
                       ),
                     ),
                     Spacer(),
-                    InkWell(
-                      onTap: () => Clipboard.setData(
-                        new ClipboardData(
-                          text: "email",
-                        ),
-                      ).then((_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: Duration(seconds: 1),
-                            content: Text(
-                              "Wallet address copied to clipboard",
-                            ),
+                    Container(
+                      padding: const EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF7F8FA),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: InkWell(
+                        onTap: () => Clipboard.setData(
+                          new ClipboardData(
+                            text: "email",
                           ),
-                        );
-                      }),
-                      child: Container(
-                        padding: const EdgeInsets.all(7),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFF7F8FA),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
+                        ).then((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              duration: Duration(
+                                seconds: 1,
+                              ),
+                              content: Text(
+                                "Wallet address copied to clipboard",
+                              ),
+                            ),
+                          );
+                        }),
                         child: SvgPicture.asset("assets/copy_icon.svg"),
                       ),
                     ),
@@ -335,7 +337,6 @@ class WalletPage extends StatelessWidget {
               ),
             );
           }).then((value) => store.clearValues());
-
 }
 
 class Tx {
