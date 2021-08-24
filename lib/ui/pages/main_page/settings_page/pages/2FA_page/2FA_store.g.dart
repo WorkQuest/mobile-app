@@ -9,6 +9,13 @@ part of '2FA_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$TwoFAStore on _TwoFAStore, Store {
+  Computed<bool>? _$canFinishComputed;
+
+  @override
+  bool get canFinish => (_$canFinishComputed ??=
+          Computed<bool>(() => super.canFinish, name: '_TwoFAStore.canFinish'))
+      .value;
+
   final _$indexAtom = Atom(name: '_TwoFAStore.index');
 
   @override
@@ -109,8 +116,8 @@ mixin _$TwoFAStore on _TwoFAStore, Store {
 
   @override
   void setCodeFromEmail(String value) {
-    final _$actionInfo =
-        _$_TwoFAStoreActionController.startAction(name: '_TwoFAStore.setCode');
+    final _$actionInfo = _$_TwoFAStoreActionController.startAction(
+        name: '_TwoFAStore.setCodeFromEmail');
     try {
       return super.setCodeFromEmail(value);
     } finally {
@@ -124,7 +131,8 @@ mixin _$TwoFAStore on _TwoFAStore, Store {
 index: ${index},
 googleAuthenticatorSecretCode: ${googleAuthenticatorSecretCode},
 codeFromEmail: ${codeFromEmail},
-codeFromAuthenticator: ${codeFromAuthenticator}
+codeFromAuthenticator: ${codeFromAuthenticator},
+canFinish: ${canFinish}
     ''';
   }
 }

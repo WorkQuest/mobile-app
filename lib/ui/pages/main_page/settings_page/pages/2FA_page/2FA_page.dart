@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,9 +15,13 @@ import 'package:url_launcher/url_launcher.dart';
 final _spacer = Spacer();
 
 class TwoFAPage extends StatelessWidget {
+  static const String routeName = "/2FAPage";
+
   @override
   Widget build(BuildContext context) {
     final store = context.read<TwoFAStore>();
+    final settingStore = context.read<SettingsPageStore>();
+
     return ObserverListener<TwoFAStore>(
       onSuccess: () {},
       child: Observer(
@@ -234,6 +239,7 @@ class TwoFAPage extends StatelessWidget {
                             buttonRow(store,
                                 forward: "Finish",
                                 back: "Back",
+                                settingStore: settingStore,
                                 context: context),
                           ],
                         )
@@ -255,6 +261,7 @@ class TwoFAPage extends StatelessWidget {
   ///Bottom row buttons
   Widget buttonRow(
     TwoFAStore store, {
+    SettingsPageStore? settingStore,
     required String forward,
     required String back,
     required BuildContext context,
@@ -297,7 +304,7 @@ class TwoFAPage extends StatelessWidget {
                   ? () async {
                       if (store.index == 0) await store.enable2FA();
                       if (store.index < 3) store.index++;
-                      // if (store.index == 2)
+                      //if (store.index == 2)
                       //   await LaunchApp.openApp(
                       //     androidPackageName: 'com.google.android.apps.authenticator2',
                       //     iosUrlScheme: 'otpauth://',
@@ -309,6 +316,9 @@ class TwoFAPage extends StatelessWidget {
                   : store.canFinish
                       ? () async {
                           await store.confirm2FA();
+                          if (store.isSuccess) {
+                            Navigator.pop(context);
+                          }
                         }
                       : null,
               child: store.isLoading
