@@ -17,21 +17,6 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
               name: '_SettingsPageStore.canSubmit'))
           .value;
 
-  final _$faStatusAtom = Atom(name: '_SettingsPageStore.faStatus');
-
-  @override
-  bool get faStatus {
-    _$faStatusAtom.reportRead();
-    return super.faStatus;
-  }
-
-  @override
-  set faStatus(bool value) {
-    _$faStatusAtom.reportWrite(value, super.faStatus, () {
-      super.faStatus = value;
-    });
-  }
-
   final _$privacyAtom = Atom(name: '_SettingsPageStore.privacy');
 
   @override
@@ -142,17 +127,6 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
   }
 
   @override
-  void change2FAStatus(bool value) {
-    final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
-        name: '_SettingsPageStore.change2FAStatus');
-    try {
-      return super.change2FAStatus(value);
-    } finally {
-      _$_SettingsPageStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setPassword(String value) {
     final _$actionInfo = _$_SettingsPageStoreActionController.startAction(
         name: '_SettingsPageStore.setPassword');
@@ -188,7 +162,6 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
   @override
   String toString() {
     return '''
-faStatus: ${faStatus},
 privacy: ${privacy},
 filter: ${filter},
 password: ${password},

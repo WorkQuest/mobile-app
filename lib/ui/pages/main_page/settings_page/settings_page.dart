@@ -1,6 +1,4 @@
-import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
@@ -88,20 +86,13 @@ class SettingsPage extends StatelessWidget {
                               settingsCard(
                                 icon: CupertinoSwitch(
                                   activeColor: const Color(0xFF0083C7),
-                                  onChanged: settingStore.change2FAStatus,
-                                  value: settingStore.faStatus,
+                                  onChanged: (_) {},
+                                  value: userStore.twoFAStatus ?? false,
                                 ),
                                 title: "2FA",
                                 onTap: () {
                                   Navigator.of(context, rootNavigator: true)
-                                      .push(
-                                    MaterialPageRoute(
-                                      builder: (context) => Provider(
-                                        create: (context) => getIt.get<TwoFAStore>(),
-                                        child: TwoFAPage(),
-                                      ),
-                                    ),
-                                  );
+                                      .pushNamed(TwoFAPage.routeName);
                                 },
                               ),
                             ],
