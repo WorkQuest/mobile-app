@@ -155,8 +155,12 @@ class PinCodeKeyboard extends StatelessWidget {
   final Function()? onTabRemove;
   final bool canBiometric;
 
-  PinCodeKeyboard(this.onTabNumber,
-      {this.onTabSensor, this.onTabRemove, this.canBiometric = false});
+  PinCodeKeyboard(
+    this.onTabNumber, {
+    this.onTabSensor,
+    this.onTabRemove,
+    this.canBiometric = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +174,9 @@ class PinCodeKeyboard extends StatelessWidget {
       children: <Widget>[
         for (var i = 1; i < 10; i++)
           KeyboardButton(
-              Text(i.toString(), style: buttonText), () => onTabNumber(i)),
+            Text(i.toString(), style: buttonText),
+            () => onTabNumber(i),
+          ),
         KeyboardButton(
             SvgPicture.asset(
               "assets/biometric.svg",
@@ -180,7 +186,9 @@ class PinCodeKeyboard extends StatelessWidget {
             ),
             onTabSensor),
         KeyboardButton(
-            const Text("0", style: buttonText), () => onTabNumber(0)),
+          const Text("0", style: buttonText),
+          () => onTabNumber(0),
+        ),
         KeyboardButton(
             SvgPicture.asset(
               "assets/remove.svg",
@@ -194,8 +202,11 @@ class PinCodeKeyboard extends StatelessWidget {
   }
 }
 
-const TextStyle buttonText =
-    TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w400);
+const TextStyle buttonText = TextStyle(
+  fontSize: 20,
+  color: Colors.black,
+  fontWeight: FontWeight.w400,
+);
 
 class KeyboardButton extends StatelessWidget {
   final Widget child;
