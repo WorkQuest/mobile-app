@@ -7,6 +7,7 @@ Future dialog(
   BuildContext context, {
   required String title,
   required String message,
+  required Function() confirmAction,
   bool barrierDismissible = true,
 }) =>
     Platform.isIOS
@@ -24,6 +25,7 @@ Future dialog(
               actions: [
                 CupertinoDialogAction(
                   child: Text('Confirm'),
+                  onPressed: confirmAction,
                 ),
                 CupertinoDialogAction(
                   onPressed: () => Navigator.pop(context),
@@ -43,7 +45,7 @@ Future dialog(
               content: Container(),
               actions: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: confirmAction,
                   child: Text('Confirm'),
                 ),
                 TextButton(
