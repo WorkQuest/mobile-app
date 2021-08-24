@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
+import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +81,7 @@ class TwoFAPage extends StatelessWidget {
                             Text(
                               "Download and install the Google Authenticator app",
                             ),
-                            IconButton(
+                            CupertinoButton(
                               onPressed: () {
                                 try {
                                   Platform.isIOS
@@ -93,8 +94,7 @@ class TwoFAPage extends StatelessWidget {
                                   print(e);
                                 }
                               },
-                              iconSize: 150,
-                              icon: SvgPicture.asset(
+                              child: SvgPicture.asset(
                                 Platform.isIOS
                                     ? "assets/open_ios_appstore.svg"
                                     : "assets/open_google_play.svg",
@@ -104,11 +104,10 @@ class TwoFAPage extends StatelessWidget {
                               "Continue to next step if you already have Google Authenticator app",
                             ),
                             _spacer,
-                            buttonRow(
-                              store,
-                              forward: "Next",
-                              back: "Cancel",
-                            ),
+                            buttonRow(store,
+                                forward: "Next",
+                                back: "Cancel",
+                                context: context),
                           ],
                         ),
 
@@ -121,22 +120,31 @@ class TwoFAPage extends StatelessWidget {
                             const SizedBox(
                               height: 10.0,
                             ),
-                            Row(
-                              children: [
-                                SvgPicture.asset(
-                                    "assets/2FA_attention_icon.svg"),
-
-                                Text(
-                                  store.googleAuthenticatorSecretCode,
+                            Container(
+                              height: 50.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6.0),
+                                border: Border.all(
+                                  color: const Color(
+                                      0xFFF7F8FA), // red as border color
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.all(7),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F8FA),
-                                    borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15.0),
+                                    child: SvgPicture.asset(
+                                        "assets/2FA_attention_icon.svg"),
                                   ),
-                                  child: InkWell(
-                                    onTap: () => Clipboard.setData(
+                                  Expanded(
+                                    child: Text(
+                                      store.googleAuthenticatorSecretCode,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    splashRadius: 20.0,
+                                    onPressed: () => Clipboard.setData(
                                       new ClipboardData(
                                         text: "email",
                                       ),
@@ -151,18 +159,19 @@ class TwoFAPage extends StatelessWidget {
                                         ),
                                       );
                                     }),
-                                    child: SvgPicture.asset(
-                                        "assets/copy_icon.svg"),
+                                    icon: SvgPicture.asset(
+                                      "assets/copy_icon.svg",
+                                      color: Color(0xFFAAB0B9),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             _spacer,
-                            buttonRow(
-                              store,
-                              forward: "Next",
-                              back: "Cancel",
-                            ),
+                            buttonRow(store,
+                                forward: "Next",
+                                back: "Back",
+                                context: context),
                           ],
                         ),
 
@@ -177,11 +186,10 @@ class TwoFAPage extends StatelessWidget {
                               height: 10.0,
                             ),
                             _spacer,
-                            buttonRow(
-                              store,
-                              forward: "Open App",
-                              back: "Back",
-                            ),
+                            buttonRow(store,
+                                forward: "Open App",
+                                back: "Back",
+                                context: context),
                           ],
                         ),
 
@@ -198,8 +206,9 @@ class TwoFAPage extends StatelessWidget {
                               height: 5.0,
                             ),
                             TextFormField(
+                              onChanged: store.setCodeFromEmail,
                               decoration: InputDecoration(
-                                hintText: "5MYKZEJFNNXHYWXT",
+                                hintText: "*****",
                               ),
                             ),
                             const SizedBox(
@@ -213,19 +222,19 @@ class TwoFAPage extends StatelessWidget {
                             ),
                             Text("Code from Google Authenticator"),
                             TextFormField(
+                              onChanged: store.setCodeFromAuthenticator,
                               decoration: InputDecoration(
-                                hintText: "5MYKZEJFNNXHYWXT",
+                                hintText: "*****",
                               ),
                             ),
                             Text(
                               "Enter the 6-digit code from the Google Authenticator app.",
                             ),
                             _spacer,
-                            buttonRow(
-                              store,
-                              forward: "Finish",
-                              back: "Back",
-                            ),
+                            buttonRow(store,
+                                forward: "Finish",
+                                back: "Back",
+                                context: context),
                           ],
                         )
                       ],
@@ -248,6 +257,7 @@ class TwoFAPage extends StatelessWidget {
     TwoFAStore store, {
     required String forward,
     required String back,
+    required BuildContext context,
   }) =>
       Row(
         children: [
@@ -257,6 +267,12 @@ class TwoFAPage extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: () {
                   if (store.index > 0) store.index--;
+                  if (store.index == 0)
+                    dialog(
+                      context,
+                      title: "2FA Activation",
+                      message: "message",
+                    );
                 },
                 child: Text(back),
                 style: OutlinedButton.styleFrom(

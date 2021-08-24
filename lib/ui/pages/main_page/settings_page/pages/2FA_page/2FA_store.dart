@@ -34,7 +34,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
   }
 
   @action
-  void setCode(String value) {
+  void setCodeFromEmail(String value) {
     codeFromEmail = value;
   }
 

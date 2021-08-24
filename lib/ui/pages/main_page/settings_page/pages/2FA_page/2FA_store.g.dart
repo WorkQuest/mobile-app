@@ -108,11 +108,11 @@ mixin _$TwoFAStore on _TwoFAStore, Store {
   }
 
   @override
-  void setCode(String value) {
+  void setCodeFromEmail(String value) {
     final _$actionInfo =
         _$_TwoFAStoreActionController.startAction(name: '_TwoFAStore.setCode');
     try {
-      return super.setCode(value);
+      return super.setCodeFromEmail(value);
     } finally {
       _$_TwoFAStoreActionController.endAction(_$actionInfo);
     }
