@@ -324,7 +324,7 @@ class Routes {
           builder: (context) => MultiProvider(
             providers: [
               Provider(
-                create: (context) => getIt.get<SettingsPageStore>(),
+                create: (context) => getIt.get<ProfileMeStore>(),
               ),
               Provider(create: (context) => getIt.get<TwoFAStore>()),
             ],
