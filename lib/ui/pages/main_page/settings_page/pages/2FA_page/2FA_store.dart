@@ -54,6 +54,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
   Future disable2FA() async {
     try {
       this.onLoading();
+      ///TODO: activate requests
       // await apiProvider.disable2FA(
       //   totp: codeFromAuthenticator,
       // );
