@@ -21,6 +21,8 @@ import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
@@ -313,6 +315,22 @@ class Routes {
             textDirection: checkDirection(context),
             child: WebViewPage(
               settings.arguments.toString(),
+            ),
+          ),
+        );
+
+      case TwoFAPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SettingsPageStore>(),
+              ),
+              Provider(create: (context) => getIt.get<TwoFAStore>()),
+            ],
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: TwoFAPage(),
             ),
           ),
         );
