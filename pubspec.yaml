@@ -27,6 +27,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   easy_localization: ^3.0.0
+
   # Network modules
   dio: ^4.0.0
 
@@ -54,7 +55,9 @@ dependencies:
   webview_flutter: ^2.0.10
   flutter_countdown_timer: ^4.1.0
 
+  #url & app launcher
   url_launcher: ^6.0.9
+  external_app_launcher: ^0.0.1
 
   #Media and Files
   drishya_picker: ^1.0.2+1
