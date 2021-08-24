@@ -75,4 +75,10 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
+
+  @computed
+  bool get canFinish =>
+      index == 3 &&
+      codeFromEmail.isNotEmpty &&
+      codeFromAuthenticator.isNotEmpty;
 }

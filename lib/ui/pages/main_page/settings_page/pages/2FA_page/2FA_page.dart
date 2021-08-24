@@ -187,7 +187,7 @@ class TwoFAPage extends StatelessWidget {
                             ),
                             _spacer,
                             buttonRow(store,
-                                forward: "Open App",
+                                forward: "Next",
                                 back: "Back",
                                 context: context),
                           ],
@@ -266,13 +266,17 @@ class TwoFAPage extends StatelessWidget {
               height: 45.0,
               child: OutlinedButton(
                 onPressed: () {
-                  if (store.index > 0) store.index--;
                   if (store.index == 0)
                     dialog(
                       context,
                       title: "2FA Activation",
-                      message: "message",
+                      message:
+                          "Are you sure you want to cancel 2A activation ?",
+                      confirmAction: () {
+                        Navigator.popUntil(context, (route) => route.isFirst);
+                      },
                     );
+                  if (store.index > 0) store.index--;
                 },
                 child: Text(back),
                 style: OutlinedButton.styleFrom(
@@ -289,13 +293,24 @@ class TwoFAPage extends StatelessWidget {
           ),
           Expanded(
             child: ElevatedButton(
-              onPressed: () async {
-                if (store.index == 0) {
-                  await store.enable2FA();
-                }
-                if (store.index < 3) store.index++;
-                //print("${store.index}");
-              },
+              onPressed: store.index < 3
+                  ? () async {
+                      if (store.index == 0) await store.enable2FA();
+                      if (store.index < 3) store.index++;
+                      // if (store.index == 2)
+                      //   await LaunchApp.openApp(
+                      //     androidPackageName: 'com.google.android.apps.authenticator2',
+                      //     iosUrlScheme: 'otpauth://',
+                      //     appStoreLink:
+                      //         'itms-apps://itunes.apple.com/us/app/pulse-secure/id945832041',
+                      //     openStore: true
+                      // );
+                    }
+                  : store.canFinish
+                      ? () async {
+                          await store.confirm2FA();
+                        }
+                      : null,
               child: store.isLoading
                   ? Center(
                       child: PlatformActivityIndicator(),
