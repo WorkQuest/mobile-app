@@ -4,6 +4,7 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'profile_me_store.g.dart';
 
@@ -15,9 +16,14 @@ class ProfileMeStore extends _ProfileMeStore with _$ProfileMeStore {
 abstract class _ProfileMeStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _ProfileMeStore(this._apiProvider);
+  _ProfileMeStore(this._apiProvider){
+    get2FAStatus();
+  }
 
   ProfileMeResponse? userData;
+
+  @observable
+  bool? twoFAStatus;
 
   @action
   Future getProfileMe() async {
@@ -29,6 +35,13 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       print(trace);
       this.onError(e.toString());
     }
+  }
+
+  @action
+  Future<void> get2FAStatus() async {
+    await SharedPreferences.getInstance().then((value) {
+      twoFAStatus = value.getBool("2FAStatus") ?? false;
+    });
   }
 
   @action
