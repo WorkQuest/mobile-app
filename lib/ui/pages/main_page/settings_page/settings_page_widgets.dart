@@ -1,6 +1,7 @@
 import 'package:app/ui/pages/main_page/profile_reviews_page/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
+import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -125,9 +126,18 @@ Widget settingsCard({
 Widget logOutButton(context) {
   return OutlinedButton(
     onPressed: () {
-      Navigator.of(context, rootNavigator: true)
-          .pushNamedAndRemoveUntil(SignInPage.routeName, (route) => false);
-      Storage.deleteAllFromSecureStorage();
+      dialog(
+        context,
+        title: "Log Out",
+        message: "Are you sure you want to log out ?",
+        confirmAction: () {
+          Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+            SignInPage.routeName,
+            (route) => false,
+          );
+          Storage.deleteAllFromSecureStorage();
+        },
+      );
     },
     child: Text(
       "Logout",
