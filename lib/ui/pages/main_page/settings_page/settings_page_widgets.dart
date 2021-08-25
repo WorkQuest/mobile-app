@@ -83,14 +83,6 @@ class InstrumentCard extends StatelessWidget {
   }
 }
 
-// ///Settings Card
-// Widget settingsCard({
-//   required Widget icon,
-//   required String title,
-//   required void Function() onTap,
-// }) =>
-//     Container();
-
 class SettingsCard extends StatelessWidget {
   final Widget icon;
   final String title;
