@@ -10,13 +10,21 @@ import 'package:flutter_svg/svg.dart';
 import 'package:app/utils/storage.dart';
 
 ///Instrument Card
-Widget instrumentsCard(
-  context, {
-  required String urlArgument,
-  required String iconPath,
-  required String title,
-}) =>
-    CupertinoButton(
+
+class InstrumentCard extends StatelessWidget {
+  final String urlArgument;
+  final String iconPath;
+  final String title;
+
+  const InstrumentCard({
+    required this.urlArgument,
+    required this.iconPath,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
       onPressed: () {
         Navigator.of(context, rootNavigator: true).pushNamed(
           WebViewPage.routeName,
@@ -72,14 +80,31 @@ Widget instrumentsCard(
         ),
       ),
     );
+  }
+}
 
-///Settings Card
-Widget settingsCard({
-  required Widget icon,
-  required String title,
-  required void Function() onTap,
-}) =>
-    Expanded(
+// ///Settings Card
+// Widget settingsCard({
+//   required Widget icon,
+//   required String title,
+//   required void Function() onTap,
+// }) =>
+//     Container();
+
+class SettingsCard extends StatelessWidget {
+  final Widget icon;
+  final String title;
+  final void Function() onTap;
+
+  const SettingsCard({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
       child: SizedBox(
         height: 130.0,
         child: Material(
@@ -121,6 +146,8 @@ Widget settingsCard({
         ),
       ),
     );
+  }
+}
 
 ///Logout button
 Widget logOutButton(context) {

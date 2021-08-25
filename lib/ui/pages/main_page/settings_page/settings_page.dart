@@ -63,7 +63,7 @@ class SettingsPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               ///Change Password
-                              settingsCard(
+                               SettingsCard(
                                 icon: GradientIcon(
                                   SvgPicture.asset(
                                     "assets/settings_password_icon.svg",
@@ -83,7 +83,7 @@ class SettingsPage extends StatelessWidget {
                               ),
 
                               ///2FA
-                              settingsCard(
+                              SettingsCard(
                                 icon: CupertinoSwitch(
                                   activeColor: const Color(0xFF0083C7),
                                   onChanged: (_) {},
@@ -104,7 +104,7 @@ class SettingsPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 ///SMS Verification
-                                settingsCard(
+                                SettingsCard(
                                   icon: GradientIcon(
                                     SvgPicture.asset(
                                       "assets/settings_message_icon.svg",
@@ -115,15 +115,15 @@ class SettingsPage extends StatelessWidget {
                                   onTap: () =>
                                       Navigator.of(context, rootNavigator: true)
                                           .pushNamed(
-                                    SMSVerificationPage.routeName,
-                                  ),
+                                        SMSVerificationPage.routeName,
+                                      ),
                                 ),
                                 const SizedBox(
                                   width: 10.0,
                                 ),
 
                                 ///Change Role
-                                settingsCard(
+                                SettingsCard(
                                   icon: GradientIcon(
                                     SvgPicture.asset(
                                       "assets/settings_role_icon.svg",
@@ -143,7 +143,7 @@ class SettingsPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 ///Change Language
-                                settingsCard(
+                                SettingsCard(
                                   icon: GradientIcon(
                                     SvgPicture.asset(
                                       "assets/settings_language_icon.svg",
@@ -151,9 +151,9 @@ class SettingsPage extends StatelessWidget {
                                     20.0,
                                   ),
                                   title:
-                                      "Language \n${Constants.languageList.keys.firstWhere(
-                                    (k) =>
-                                        Constants.languageList[k] ==
+                                  "Language \n${Constants.languageList.keys.firstWhere(
+                                        (k) =>
+                                    Constants.languageList[k] ==
                                         context.locale,
                                   )}",
                                   onTap: () {
@@ -203,38 +203,32 @@ class SettingsPage extends StatelessWidget {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    instrumentsCard(
-                      context,
+                    const InstrumentCard(
                       urlArgument: "pension",
                       iconPath: "assets/settings_pension_icon.svg",
                       title: "Retirement program",
                     ),
-                    instrumentsCard(
-                      context,
+                    const InstrumentCard(
                       urlArgument: "referral",
                       iconPath: "assets/settings_referral_icon.svg",
                       title: "Referral Program",
                     ),
-                    instrumentsCard(
-                      context,
+                    const InstrumentCard(
                       urlArgument: "insuring",
                       iconPath: "assets/settings_p2p_icon.svg",
                       title: "P2P insurance",
                     ),
-                    instrumentsCard(
-                      context,
+                    const InstrumentCard(
                       urlArgument: "savings",
                       iconPath: "assets/setting_saving_product_icon.svg",
                       title: "Savings product",
                     ),
-                    instrumentsCard(
-                      context,
+                    const InstrumentCard(
                       urlArgument: "crediting",
                       iconPath: "assets/settings_wallet.svg",
                       title: "Lending",
                     ),
-                    instrumentsCard(
-                      context,
+                    const InstrumentCard(
                       urlArgument: "mining",
                       iconPath: "assets/setting_chart.svg",
                       title: "Liquidity mining",
