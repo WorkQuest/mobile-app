@@ -16,9 +16,11 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
   _ChatRoomStore(this._apiProvider);
 
-  int count = 0;
-  int offset = 0;
-  int limit = 10;
+  int _count = 0;
+  int _offset = 0;
+  int _limit = 20;
+
+  String _myId = "";
 
   @observable
   ChatModel? chat;
@@ -27,45 +29,55 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   bool isloadingMessages = false;
 
   @action
-  Future loadChat() async {
+  Future loadChat(String myId) async {
+    this._myId = myId;
     try {
+      isloadingMessages = true;
       this.onLoading();
       if (chat!.messages == null)
         chat!.messages = ObservableList<MessageModel>.of([]);
-      count = chat!.messages!.length + 1;
-      await getMessages();
+      _offset = chat!.messages!.length;
+      final responseData = await _apiProvider.getMessages(
+        chatId: chat!.id,
+        offset: 0,
+        limit: 1,
+      );
+      _count = responseData["count"];
+      isloadingMessages = false;
       this.onSuccess(true);
     } catch (e) {
+      isloadingMessages = false;
       this.onError(e.toString());
     }
   }
 
   getMessages() async {
-    if (chat!.messages!.length >= count) return;
+    if (chat!.messages!.length >= _count) return;
     isloadingMessages = true;
     final responseData = await _apiProvider.getMessages(
       chatId: chat!.id,
-      offset: offset,
-      limit: limit,
+      offset: _offset,
+      limit: _limit,
     );
-    count = responseData["count"];
-    if (count == 0) return;
-    if (chat!.messages!.length >= count) return;
-    offset = count - offset > limit
-        ? offset + limit
-        : offset == 0
-            ? count
-            : offset + (count % limit);
+    _count = responseData["count"];
+    // if (_count == 0) return;
+
+    // if (chat!.messages!.length >= _count) return;
+    // _offset = _count - _offset > _limit
+    //     ? _offset + _limit
+    //     : _offset == 0
+    //         ? _count
+    //         : _offset + (_count % _limit);
     chat!.messages!.insertAll(
       chat!.messages!.length,
-      ObservableList<MessageModel>.of(
-        List<MessageModel>.from(
-          responseData["messages"].map(
-            (x) => MessageModel.fromJson(x),
-          ),
+      List<MessageModel>.from(
+        responseData["messages"].map(
+          (x) => MessageModel.fromJson(x, this._myId),
         ),
       ),
     );
+    _offset = chat!.messages!.length;
+
     isloadingMessages = false;
   }
 

@@ -43,8 +43,8 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   final _$loadChatAsyncAction = AsyncAction('_ChatRoomStore.loadChat');
 
   @override
-  Future<dynamic> loadChat() {
-    return _$loadChatAsyncAction.run(() => super.loadChat());
+  Future<dynamic> loadChat(String myId) {
+    return _$loadChatAsyncAction.run(() => super.loadChat(myId));
   }
 
   final _$sendMessageAsyncAction = AsyncAction('_ChatRoomStore.sendMessage');

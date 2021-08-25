@@ -323,7 +323,8 @@ class Routes {
             create: (context) => getIt.get<ChatRoomStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ChatRoomPage(settings.arguments as ChatModel),
+              child: ChatRoomPage(settings.arguments as ChatModel,
+                  getIt.get<ProfileMeStore>().userData!.id),
             ),
           ),
         );

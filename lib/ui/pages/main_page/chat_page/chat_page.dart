@@ -15,12 +15,11 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  ChatStore? store;
+  late ChatStore store;
 
   @override
   void initState() {
     store = context.read<ChatStore>();
-    store!.loadChats();
     super.initState();
   }
 
@@ -47,20 +46,15 @@ class _ChatPageState extends State<ChatPage> {
           ];
         },
         body: RefreshIndicator(
-          onRefresh: () async {
-            return await store!.loadChats();
-          },
+          onRefresh: store.loadChats,
           child: ObserverListener<ChatStore>(
             onSuccess: () {},
             child: Observer(
-              builder: (_) => store!.isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : SingleChildScrollView(
-                      child: Column(
-                        children:
-                            store!.chats.map((e) => _chatItem(e)).toList(),
-                      ),
-                    ),
+              builder: (_) => SingleChildScrollView(
+                child: Column(
+                  children: store.chats.map((e) => _chatItem(e)).toList(),
+                ),
+              ),
             ),
           ),
         ),

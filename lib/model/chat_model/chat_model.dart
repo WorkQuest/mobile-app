@@ -21,12 +21,12 @@ class ChatModel {
 
   factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
         id: json["id"],
-        name: json["name"] ?? "TestGroup",
+        name: json["name"] ?? "",
         type: json["type"],
         lastMessage: json["lastMessage"] == null
             ? null
-            : MessageModel.fromJson(json["lastMessage"]),
-        otherMember: ChatUserModel.fromJson(json["otherMember"]["user"]),
+            : MessageModel.fromJson(json["lastMessage"], ""),
+        otherMember: ChatUserModel.fromJson(json["members"][0]),
         lastMessageDate: json["lastMessageDate"] == null
             ? null
             : DateTime.parse(json['lastMessageDate']),
