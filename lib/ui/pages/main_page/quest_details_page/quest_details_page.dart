@@ -2,14 +2,18 @@ import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:app/ui/widgets/priority_view.dart';
+import 'package:app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class QuestDetails extends StatefulWidget {
   static const String routeName = "/QuestDetails";
+
   const QuestDetails(this.questInfo);
+
   final BaseQuestResponse questInfo;
+
   @override
   QuestDetailsState createState() => QuestDetailsState();
 }
@@ -53,30 +57,28 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
             Container(
               alignment: Alignment.topLeft,
               width: double.maxFinite,
-              child: Expanded(
-                child: Wrap(
-                  alignment: WrapAlignment.start,
-                  runAlignment: WrapAlignment.start,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.network(
-                        widget.questInfo.user.avatar.url,
-                        width: 30,
-                        height: 30,
-                        fit: BoxFit.cover,
-                      ),
+              child: Wrap(
+                alignment: WrapAlignment.start,
+                runAlignment: WrapAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Image.network(
+                      widget.questInfo.user.avatar.url,
+                      width: 30,
+                      height: 30,
+                      fit: BoxFit.cover,
                     ),
-                    const SizedBox(width: 10),
-                    Text(
-                      "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(width: 10),
-                    PriorityView(widget.questInfo.priority),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(width: 10),
+                  PriorityView(widget.questInfo.priority),
+                ],
               ),
             ),
             const SizedBox(height: 17),
@@ -105,9 +107,13 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                 color: Color(0xFF1D2127),
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(
+              height: 15,
+            ),
             Text(widget.questInfo.description),
-            const SizedBox(height: 15),
+            const SizedBox(
+              height: 15,
+            ),
             if (widget.questInfo.medias.isNotEmpty) ...[
               const Text(
                 "Quest materials",
@@ -119,12 +125,11 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
               ImageViewerWidget(widget.questInfo.medias),
             ],
             Text(
-              (DateTime t) {
-                String h = t.hour < 10 ? '0${t.hour}' : t.hour.toString();
-                String m = t.minute < 10 ? '0${t.minute}' : t.minute.toString();
-                return "${t.day} ${Constants.months[t.month]} ${t.year}, $h:$m";
-              }(widget.questInfo.createdAt), // For convenience =D
-              style: TextStyle(color: Color(0xFFAAB0B9), fontSize: 12),
+              Utils.dateTimeFormatter(widget.questInfo.createdAt),
+              style: TextStyle(
+                color: Color(0xFFAAB0B9),
+                fontSize: 12,
+              ),
             ),
             const SizedBox(height: 10),
             Container(
