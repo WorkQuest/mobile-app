@@ -3,12 +3,14 @@ import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dar
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../enums.dart';
 
 class MyQuestsItem extends StatelessWidget {
-  const MyQuestsItem(this.questInfo,
-      {this.itemType = QuestItemPriorityType.Active, this.isExpanded = false});
+  const MyQuestsItem(
+    this.questInfo, {
+    this.itemType = QuestItemPriorityType.Active,
+    this.isExpanded = false,
+  });
 
   final BaseQuestResponse questInfo;
   final bool isExpanded;
@@ -18,8 +20,10 @@ class MyQuestsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context, rootNavigator: true)
-            .pushNamed(QuestDetails.routeName, arguments: questInfo);
+        Navigator.of(context, rootNavigator: true).pushNamed(
+          QuestDetails.routeName,
+          arguments: questInfo,
+        );
       },
       child: Container(
         color: Colors.white,
@@ -120,8 +124,13 @@ class MyQuestsItem extends StatelessWidget {
     switch (itemType) {
       case QuestItemPriorityType.Active:
         returnWidget = Container(
-          margin: const EdgeInsets.symmetric(vertical: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
+          margin: const EdgeInsets.symmetric(
+            vertical: 16,
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 7.5,
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             color: AppColors.green,
@@ -151,7 +160,10 @@ class MyQuestsItem extends StatelessWidget {
       case QuestItemPriorityType.Invited:
         returnWidget = Container(
           margin: const EdgeInsets.symmetric(vertical: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 7.5,
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             color: Color(0xFFE8D20D),
@@ -169,7 +181,10 @@ class MyQuestsItem extends StatelessWidget {
       case QuestItemPriorityType.Requested:
         returnWidget = Container(
           margin: const EdgeInsets.symmetric(vertical: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 7.5,
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             color: Color(0xFFE8D20D),
@@ -187,7 +202,10 @@ class MyQuestsItem extends StatelessWidget {
       case QuestItemPriorityType.Performed:
         returnWidget = Container(
           margin: const EdgeInsets.symmetric(vertical: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 7.5,
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             color: Color(0xFF0083C7),

@@ -122,7 +122,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                   ],
                 ),
                 title: widget._profileWidgets.appBarTitle(
-                  "${userStore.userData!.firstName} ${userStore.userData!.lastName ??" "}",
+                  "${userStore.userData!.firstName} ${userStore.userData!.lastName ?? " "}",
                 ),
               ),
             ),
@@ -155,7 +155,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                 ),
                               ),
                               (userStore.userData!.additionalInfo!.skills!
-                                          .isEmpty)
+                                      .isEmpty)
                                   ? Text(
                                       "No skills",
                                       style: _style.copyWith(
@@ -181,7 +181,8 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                 ),
                               ),
                               Text(
-                                userStore.userData?.additionalInfo?.description ??
+                                userStore.userData?.additionalInfo
+                                        ?.description ??
                                     "No description",
                               ),
 
@@ -199,8 +200,8 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                 ),
                               ),
 
-                              (userStore.userData!.additionalInfo!
-                                          .educations!.isNotEmpty)
+                              (userStore.userData!.additionalInfo!.educations!
+                                      .isNotEmpty)
                                   ? ListView.builder(
                                       padding: EdgeInsets.zero,
                                       shrinkWrap: true,
@@ -242,7 +243,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                               ),
 
                               (userStore.userData!.additionalInfo!
-                                          .workExperiences!.isNotEmpty)
+                                      .workExperiences!.isNotEmpty)
                                   ? ListView.builder(
                                       padding: EdgeInsets.zero,
                                       shrinkWrap: true,
@@ -255,20 +256,23 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                       itemBuilder: (_, index) {
                                         return experience(
                                             place: userStore
-                                                .userData!
-                                                .additionalInfo!
-                                                .workExperiences![index]
-                                                .place ?? " ",
+                                                    .userData!
+                                                    .additionalInfo!
+                                                    .workExperiences![index]
+                                                    .place ??
+                                                " ",
                                             from: userStore
-                                                .userData!
-                                                .additionalInfo!
-                                                .workExperiences![index]
-                                                .from ?? " ",
+                                                    .userData!
+                                                    .additionalInfo!
+                                                    .workExperiences![index]
+                                                    .from ??
+                                                " ",
                                             to: userStore
-                                                .userData!
-                                                .additionalInfo!
-                                                .workExperiences![index]
-                                                .to ?? " ");
+                                                    .userData!
+                                                    .additionalInfo!
+                                                    .workExperiences![index]
+                                                    .to ??
+                                                " ");
                                       })
                                   : Text(
                                       "No Information",
@@ -291,7 +295,8 @@ class _ProfileReviewsState extends State<ProfileReviews>
                             userStore.userData?.additionalInfo?.address ?? ' ',
                         number: userStore.userData?.phone ?? " ",
                         secondNumber: userStore
-                            .userData?.additionalInfo?.secondMobileNumber ?? "",
+                                .userData?.additionalInfo?.secondMobileNumber ??
+                            "",
                         email: userStore.userData?.email ?? " "),
                     rating(
                       completedQuests: "12",
@@ -517,11 +522,9 @@ class _ProfileReviewsState extends State<ProfileReviews>
               ),
             ],
           ),
-
           const SizedBox(
             height: 10.0,
           ),
-
           Row(
             children: [
               Icon(
@@ -541,7 +544,6 @@ class _ProfileReviewsState extends State<ProfileReviews>
               ),
             ],
           ),
-
           if (secondNumber.isNotEmpty)
             Column(
               children: [
@@ -560,11 +562,9 @@ class _ProfileReviewsState extends State<ProfileReviews>
                 ),
               ],
             ),
-
           const SizedBox(
             height: 10.0,
           ),
-
           Row(
             children: [
               Icon(

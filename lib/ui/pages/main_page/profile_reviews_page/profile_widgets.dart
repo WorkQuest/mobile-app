@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../../enums.dart';
 
 class ProfileWidgets {
