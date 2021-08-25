@@ -45,37 +45,33 @@ class MainPage extends StatelessWidget {
               .toList(),
         ),
         tabBuilder: (context, index) {
-          if (index == 0) {
-            return CupertinoTabView(
+          switch (index){
+            case 0 : return CupertinoTabView(
                 onGenerateRoute: Routes.generateRoute,
                 navigatorKey: firstTabNavKey,
                 builder: (context) {
                   return QuestPage();
                 });
-          } else if (index == 1) {
-            return CupertinoTabView(
+            case 1 : return CupertinoTabView(
               onGenerateRoute: Routes.generateRoute,
               navigatorKey: secondTabNavKey,
               builder: (context) {
                 return MyQuestsPage();
               },
             );
-          } else if (index == 2) {
-            return CupertinoTabView(
+            case 2: return CupertinoTabView(
               onGenerateRoute: Routes.generateRoute,
               navigatorKey: thirdTabNavKey,
               builder: (BuildContext context) => ChatPage(),
             );
-          } else if (index == 3) {
-            return CupertinoTabView(
+            case 3:return CupertinoTabView(
               onGenerateRoute: Routes.generateRoute,
               navigatorKey: forthTabNavKey,
               builder: (BuildContext context) {
                 return WalletPage();
               },
             );
-          } else {
-            return CupertinoTabView(
+            default:return CupertinoTabView(
               onGenerateRoute: Routes.generateRoute,
               navigatorKey: fiveTabNavKey,
               builder: (context) {
