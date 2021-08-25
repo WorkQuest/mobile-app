@@ -1,4 +1,5 @@
 import 'package:app/enums.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
@@ -37,6 +38,7 @@ class _QuestListState extends State<QuestList> {
     questsStore = context.read<QuestsStore>();
     profileMeStore = context.read<ProfileMeStore>();
     profileMeStore!.getProfileMe().then((value) {
+      context.read<ChatStore>().initialSetup(profileMeStore!.userData!.id);
       questsStore!.getQuests(profileMeStore!.userData!.id);
     });
     super.initState();
@@ -59,22 +61,13 @@ class _QuestListState extends State<QuestList> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             FloatingActionButton(
-                heroTag: "QuestListLeftActionButton",
-                onPressed: widget.changePage,
-                child: Icon(
-                  Icons.map_outlined,
-                  color: Colors.white,
-                )),
-            // FloatingActionButton(
-            //   onPressed: questsStore!.selectQuestInfo == null
-            //       ? _onMyLocationPressed
-            //       : () => questsStore!.selectQuestInfo = null,
-            //   child: Icon(
-            //     questsStore!.selectQuestInfo == null
-            //         ? Icons.location_on
-            //         : Icons.close,
-            //   ),
-            // ),
+              heroTag: "QuestListLeftActionButton",
+              onPressed: widget.changePage,
+              child: Icon(
+                Icons.map_outlined,
+                color: Colors.white,
+              ),
+            ),
           ],
         ),
       ),

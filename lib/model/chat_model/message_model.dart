@@ -21,12 +21,13 @@ class MessageModel {
     this.status = MessageStatus.None,
   });
 
-  factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
+  factory MessageModel.fromJson(Map<String, dynamic> json, String myId) =>
+      MessageModel(
         id: json["id"] ?? "",
         chatId: json["chatId"] ?? "",
         text: json["text"],
         senderUserId: json["senderUserId"],
-        isMy: true,
+        isMy: json["senderUserId"] == myId,
         updatedAt: DateTime.parse(json['updatedAt'] ?? json['createdAt'])
             .add(Duration(hours: 7)),
         createdAt: DateTime.parse(json['createdAt']).add(Duration(hours: 7)),
