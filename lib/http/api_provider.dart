@@ -7,7 +7,7 @@ import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/quest_map_point.dart';
-import 'package:app/model/responded_model.dart';
+import 'package:app/model/respond_model.dart';
 import 'package:dio/dio.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -216,14 +216,14 @@ extension QuestService on ApiProvider {
     }
   }
 
-  Future<List<RespondedModel>> responsesQuest(String id) async {
+  Future<List<RespondModel>> responsesQuest(String id) async {
     try {
       final responseData =
           await _httpClient.get(query: '/v1/quest/$id/responses');
 
-      return List<RespondedModel>.from(
+      return List<RespondModel>.from(
         responseData["responses"].map(
-          (x) => RespondedModel.fromJson(x),
+          (x) => RespondModel.fromJson(x),
         ),
       );
     } catch (e) {

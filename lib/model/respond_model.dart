@@ -1,6 +1,6 @@
 import 'package:app/model/user_model.dart';
 
-class RespondedModel {
+class RespondModel {
   String id;
   String workerId;
   String questId;
@@ -10,7 +10,7 @@ class RespondedModel {
   DateTime createdAt;
   User worker;
 
-  RespondedModel(
+  RespondModel(
       {required this.id,
       required this.createdAt,
       required this.message,
@@ -20,8 +20,8 @@ class RespondedModel {
       required this.worker,
       required this.workerId});
 
-  factory RespondedModel.fromJson(Map<String, dynamic> json) {
-    return RespondedModel(
+  factory RespondModel.fromJson(Map<String, dynamic> json) {
+    return RespondModel(
       id: json["id"],
       createdAt: DateTime.parse(json["createdAt"]),
       message: json["message"],
