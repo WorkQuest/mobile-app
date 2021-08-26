@@ -42,7 +42,7 @@ Future dialog(
                 borderRadius: BorderRadius.circular(10.0),
               ),
               title: Text(title),
-              content: Container(),
+              content: Text(message),
               actions: [
                 TextButton(
                   onPressed: confirmAction,
