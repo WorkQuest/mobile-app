@@ -1,5 +1,5 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
+import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/utils/validator.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import "package:provider/provider.dart";
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import '../../../../observer_consumer.dart';
+import '../../../../../observer_consumer.dart';
 
 class CreateQuestPage extends StatefulWidget {
   static const String routeName = '/createQuestPage';

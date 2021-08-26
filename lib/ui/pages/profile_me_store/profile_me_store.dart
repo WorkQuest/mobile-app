@@ -39,8 +39,8 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   @action
   Future<void> get2FAStatus() async {
-    await SharedPreferences.getInstance().then((value) {
-      twoFAStatus = value.getBool("2FAStatus") ?? false;
+    await SharedPreferences.getInstance().then((sharedPrefs) {
+      twoFAStatus = sharedPrefs.getBool("2FAStatus") ?? false;
     });
   }
 

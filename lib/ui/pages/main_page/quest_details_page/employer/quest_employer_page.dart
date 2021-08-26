@@ -1,8 +1,8 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
-import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';

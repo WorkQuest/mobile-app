@@ -1,8 +1,8 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
-import 'package:app/ui/pages/main_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
-import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';

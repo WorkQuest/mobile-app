@@ -1,103 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../../enums.dart';
 
-class ProfileWidgets {
+///Portfolio Widget
+class PortfolioWidget extends StatelessWidget {
+  const PortfolioWidget();
 
-  ///AppBar Title
-  Widget appBarTitle(String name) {
-    return Transform.translate(
-      offset: Offset(25.0, 0.0),
-      child: Stack(
-        children: [
-          // Positioned(
-          //   top: 0.0,
-          //   left: 0.0,
-          //   child: IconButton(
-          //     onPressed: () => Navigator.pop(context),
-          //     icon: Icon(
-          //       Icons.arrow_back_ios,
-          //     ),
-          //   ),
-          // ),
-          Positioned(
-            bottom: 18.0,
-            left: 0.0,
-            child: Text(
-              name,
-              style: TextStyle(
-                fontSize: 20.0,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          // Positioned(
-          //   bottom: 42.0,
-          //   left: 0.0,
-          //   child: AnimatedOpacity(
-          //     duration: Duration(seconds: 3),
-          //     opacity: 0.5,
-          //     child: Row(
-          //       children: [
-          //         Icon(
-          //           Icons.star,
-          //           color: Color(0xFFE8D20D),
-          //           size: 15.0,
-          //         ),
-          //         Icon(
-          //           Icons.star,
-          //           color: Color(0xFFE8D20D),
-          //           size: 15.0,
-          //         ),
-          //         Icon(
-          //           Icons.star,
-          //           color: Color(0xFFE8D20D),
-          //           size: 15.0,
-          //         ),
-          //         Icon(
-          //           Icons.star,
-          //           color: Color(0xFFE8D20D),
-          //           size: 15.0,
-          //         ),
-          //         Icon(
-          //           Icons.star,
-          //           color: Color(0xFFE9EDF2),
-          //           size: 15.0,
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          Positioned(
-            bottom: 0.0,
-            left: 0.0,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 5.0,
-                vertical: 2.0,
-              ),
-              decoration: BoxDecoration(
-                color: Color(0xFFF6CF00),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(3.0),
-                ),
-              ),
-              child: Text(
-                "HIGHER LEVEL",
-                style: TextStyle(
-                  fontSize: 8.0,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  ///Portfolio Widget
-  Widget portfolio() {
+  @override
+  Widget build(BuildContext context) {
     return InkWell(
       onTap: () {},
       child: Padding(
@@ -143,10 +52,24 @@ class ProfileWidgets {
       ),
     );
   }
+}
 
-  ///Reviews Widget
-  Widget reviews(
-      String name, UserRole userRole, String questTitle, String quest) {
+///Reviews Widget
+class ReviewsWidget extends StatelessWidget {
+  final String name;
+  final UserRole userRole;
+  final String questTitle;
+  final String quest;
+
+  const ReviewsWidget({
+    required this.name,
+    required this.userRole,
+    required this.questTitle,
+    required this.quest,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
         left: 16.0,
@@ -262,103 +185,195 @@ class ProfileWidgets {
       ),
     );
   }
+}
 
-  ///Quest Widget
-  Widget quest(
-      {required String title,
-      required String description,
-      required String price}) {
-    return Container(
-      color: Colors.white,
-      margin: const EdgeInsets.only(
-        top: 10,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.maxFinite,
-            margin: const EdgeInsets.symmetric(vertical: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
+///AppBar Title
+Widget appBarTitle(String name) {
+  return Transform.translate(
+    offset: Offset(25.0, 0.0),
+    child: Stack(
+      children: [
+        // Positioned(
+        //   top: 0.0,
+        //   left: 0.0,
+        //   child: IconButton(
+        //     onPressed: () => Navigator.pop(context),
+        //     icon: Icon(
+        //       Icons.arrow_back_ios,
+        //     ),
+        //   ),
+        // ),
+        Positioned(
+          bottom: 18.0,
+          left: 0.0,
+          child: Text(
+            name,
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        // Positioned(
+        //   bottom: 42.0,
+        //   left: 0.0,
+        //   child: AnimatedOpacity(
+        //     duration: Duration(seconds: 3),
+        //     opacity: 0.5,
+        //     child: Row(
+        //       children: [
+        //         Icon(
+        //           Icons.star,
+        //           color: Color(0xFFE8D20D),
+        //           size: 15.0,
+        //         ),
+        //         Icon(
+        //           Icons.star,
+        //           color: Color(0xFFE8D20D),
+        //           size: 15.0,
+        //         ),
+        //         Icon(
+        //           Icons.star,
+        //           color: Color(0xFFE8D20D),
+        //           size: 15.0,
+        //         ),
+        //         Icon(
+        //           Icons.star,
+        //           color: Color(0xFFE8D20D),
+        //           size: 15.0,
+        //         ),
+        //         Icon(
+        //           Icons.star,
+        //           color: Color(0xFFE9EDF2),
+        //           size: 15.0,
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+        Positioned(
+          bottom: 0.0,
+          left: 0.0,
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 5.0,
+              vertical: 2.0,
+            ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: Color(0xFF0083C7),
+              color: Color(0xFFF6CF00),
+              borderRadius: BorderRadius.all(
+                Radius.circular(3.0),
+              ),
             ),
             child: Text(
-              "Performed",
-              style: TextStyle(color: Colors.white),
+              "HIGHER LEVEL",
+              style: TextStyle(
+                fontSize: 8.0,
+                color: Colors.white,
+              ),
             ),
           ),
-          SizedBox(
-            height: 16,
+        ),
+      ],
+    ),
+  );
+}
+
+///Quest Widget
+Widget quest(
+    {required String title,
+    required String description,
+    required String price}) {
+  return Container(
+    color: Colors.white,
+    margin: const EdgeInsets.only(
+      top: 10,
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.maxFinite,
+          margin: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: Color(0xFF0083C7),
           ),
-          Text(
-            title,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Color(0xFF1D2127),
-              fontSize: 18,
+          child: Text(
+            "Performed",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        SizedBox(
+          height: 16,
+        ),
+        Text(
+          title,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: Color(0xFF1D2127),
+            fontSize: 18,
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          description,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: Color(0xFF4C5767),
+          ),
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Icon(
+              Icons.star_border_outlined,
+              color: Color(0xFFAAB0B9),
+              size: 19.0,
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            description,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: Color(0xFF4C5767),
+            Icon(
+              Icons.star_border_outlined,
+              color: Color(0xFFAAB0B9),
+              size: 19.0,
             ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Icon(
-                Icons.star_border_outlined,
-                color: Color(0xFFAAB0B9),
-                size: 19.0,
+            Icon(
+              Icons.star_border_outlined,
+              color: Color(0xFFAAB0B9),
+              size: 19.0,
+            ),
+            Icon(
+              Icons.star_border_outlined,
+              color: Color(0xFFAAB0B9),
+              size: 19.0,
+            ),
+            Icon(
+              Icons.star_border_outlined,
+              color: Color(0xFFAAB0B9),
+              size: 19.0,
+            ),
+            Expanded(
+              child: Text(
+                "$price WUSD",
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                    color: Color(0xFFAAB0B9),
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700),
               ),
-              Icon(
-                Icons.star_border_outlined,
-                color: Color(0xFFAAB0B9),
-                size: 19.0,
-              ),
-              Icon(
-                Icons.star_border_outlined,
-                color: Color(0xFFAAB0B9),
-                size: 19.0,
-              ),
-              Icon(
-                Icons.star_border_outlined,
-                color: Color(0xFFAAB0B9),
-                size: 19.0,
-              ),
-              Icon(
-                Icons.star_border_outlined,
-                color: Color(0xFFAAB0B9),
-                size: 19.0,
-              ),
-              Expanded(
-                child: Text(
-                  "$price WUSD",
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                      color: Color(0xFFAAB0B9),
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w700),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 15,
-          ),
-        ],
-      ),
-    );
-  }
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+      ],
+    ),
+  );
 }

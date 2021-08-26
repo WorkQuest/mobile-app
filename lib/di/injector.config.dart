@@ -14,13 +14,13 @@ import '../log_service.dart' as _i5;
 import '../ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart'
     as _i6;
 import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i24;
-import '../ui/pages/main_page/create_quest_page/store/create_quest_store.dart'
-    as _i9;
 import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i12;
 import '../ui/pages/main_page/quest_details_page/employer/store/employer_store.dart'
     as _i11;
 import '../ui/pages/main_page/quest_details_page/worker/store/worker_store.dart'
     as _i23;
+import '../ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart'
+    as _i9;
 import '../ui/pages/main_page/quest_page/quest_list/store/quests_store.dart'
     as _i14;
 import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'

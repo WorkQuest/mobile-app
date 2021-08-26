@@ -1,4 +1,4 @@
-import 'package:app/ui/pages/main_page/filter_quests_page/store/filter_quests_store.dart';
+import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';

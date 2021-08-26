@@ -10,7 +10,6 @@ import "package:provider/provider.dart";
 
 class ProfileReviews extends StatefulWidget {
   static const String routeName = "/profileReviewPage";
-  final ProfileWidgets _profileWidgets = ProfileWidgets();
 
   @override
   _ProfileReviewsState createState() => _ProfileReviewsState();
@@ -121,7 +120,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                     ),
                   ],
                 ),
-                title: widget._profileWidgets.appBarTitle(
+                title: appBarTitle(
                   "${userStore.userData!.firstName} ${userStore.userData!.lastName ?? " "}",
                 ),
               ),
@@ -346,20 +345,21 @@ class _ProfileReviewsState extends State<ProfileReviews>
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: Material(
-                color: Color(0xFFF7F8FA),
+                color: const Color(0xFFF7F8FA),
                 child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   //controller: _scrollController,
-                  padding: EdgeInsets.only(
+                  padding:const EdgeInsets.only(
                     top: 0.0,
                   ),
                   itemCount: 10,
                   itemBuilder: (context, index) {
-                    return widget._profileWidgets.reviews(
-                        "Edward cooper",
-                        UserRole.Worker,
-                        "SPA saloon design",
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum.");
+                    return const ReviewsWidget(
+                        name: "Edward cooper",
+                        userRole: UserRole.Worker,
+                        questTitle: "SPA saloon design",
+                        quest:
+                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum.");
                   },
                 ),
               ),
@@ -367,18 +367,18 @@ class _ProfileReviewsState extends State<ProfileReviews>
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: Material(
-                color: Color(0xFFF7F8FA),
+                color:const Color(0xFFF7F8FA),
                 child: ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics:const NeverScrollableScrollPhysics(),
                   //controller: _scrollController,
-                  padding: EdgeInsets.only(
+                  padding:const EdgeInsets.only(
                     top: 0.0,
                   ),
                   itemCount: 5,
                   itemBuilder: (context, index) {
                     return userStore.userData!.role == UserRole.Worker
-                        ? widget._profileWidgets.portfolio()
-                        : widget._profileWidgets.quest(
+                        ? const PortfolioWidget()
+                        : quest(
                             title: 'Paint the garage quickly',
                             description: "Paint the garage",
                             price: "1500");
