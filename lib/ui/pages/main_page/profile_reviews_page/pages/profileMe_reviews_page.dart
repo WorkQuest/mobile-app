@@ -16,7 +16,6 @@ class ProfileReviews extends StatefulWidget {
 }
 
 /// View Your own profile
-
 class _ProfileReviewsState extends State<ProfileReviews>
     with SingleTickerProviderStateMixin {
   final TextStyle _style = TextStyle(

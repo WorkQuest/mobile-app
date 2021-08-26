@@ -1,3 +1,4 @@
+import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_details_page.dart';
 import 'package:flutter/material.dart';
 import '../../../../enums.dart';
 
@@ -8,7 +9,13 @@ class PortfolioWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PortfolioDetails(),
+            ));
+      },
       child: Padding(
         padding: const EdgeInsets.only(
           left: 16.0,
@@ -193,16 +200,6 @@ Widget appBarTitle(String name) {
     offset: Offset(25.0, 0.0),
     child: Stack(
       children: [
-        // Positioned(
-        //   top: 0.0,
-        //   left: 0.0,
-        //   child: IconButton(
-        //     onPressed: () => Navigator.pop(context),
-        //     icon: Icon(
-        //       Icons.arrow_back_ios,
-        //     ),
-        //   ),
-        // ),
         Positioned(
           bottom: 18.0,
           left: 0.0,
