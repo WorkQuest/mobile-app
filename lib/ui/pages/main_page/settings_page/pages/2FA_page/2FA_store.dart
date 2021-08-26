@@ -79,7 +79,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
       //   totp: codeFromAuthenticator,
       // );
       await SharedPreferences.getInstance().then(
-        (value) => value.setBool(
+        (sharedPrefs) => sharedPrefs.setBool(
           "2FAStatus",
           true,
         ),
