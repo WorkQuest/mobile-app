@@ -1,5 +1,8 @@
-import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_details_page.dart';
+import 'package:app/di/injector.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/portfolio_details_page.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/portfolio_store.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 ///Portfolio Widget
 class PortfolioWidget extends StatelessWidget {
@@ -12,7 +15,10 @@ class PortfolioWidget extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PortfolioDetails(),
+              builder: (context) => Provider(
+                create: (context) => getIt.get<PortfolioStore>(),
+                child: PortfolioDetails(),
+              ),
             ));
       },
       child: Padding(
