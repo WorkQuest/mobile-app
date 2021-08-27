@@ -1,6 +1,5 @@
 import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_details_page.dart';
 import 'package:flutter/material.dart';
-import '../../../../enums.dart';
 
 ///Portfolio Widget
 class PortfolioWidget extends StatelessWidget {
@@ -64,7 +63,7 @@ class PortfolioWidget extends StatelessWidget {
 ///Reviews Widget
 class ReviewsWidget extends StatelessWidget {
   final String name;
-  final UserRole userRole;
+  final String userRole;
   final String questTitle;
   final String quest;
 
@@ -105,7 +104,7 @@ class ReviewsWidget extends StatelessWidget {
                 style: TextStyle(fontSize: 16.0),
               ),
               subtitle: Text(
-                userRole.toString(),
+                userRole,
                 style: TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
               ),
             ),
