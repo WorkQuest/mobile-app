@@ -54,10 +54,9 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
   Future disable2FA() async {
     try {
       this.onLoading();
-      ///TODO: activate requests
-      // await apiProvider.disable2FA(
-      //   totp: codeFromAuthenticator,
-      // );
+      await apiProvider.disable2FA(
+        totp: codeFromAuthenticator,
+      );
       await SharedPreferences.getInstance().then(
         (value) => value.setBool(
           "2FAStatus",
@@ -74,10 +73,10 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
   Future confirm2FA() async {
     try {
       this.onLoading();
-      // await apiProvider.confirmEnabling2FA(
-      //   confirmCode: codeFromEmail,
-      //   totp: codeFromAuthenticator,
-      // );
+      await apiProvider.confirmEnabling2FA(
+        confirmCode: codeFromEmail,
+        totp: codeFromAuthenticator,
+      );
       await SharedPreferences.getInstance().then(
         (sharedPrefs) => sharedPrefs.setBool(
           "2FAStatus",
