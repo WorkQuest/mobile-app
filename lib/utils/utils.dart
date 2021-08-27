@@ -5,13 +5,6 @@ import 'package:flutter/services.dart';
 import '../constants.dart';
 
 class Utils {
-  static String getUserRoleString(UserRole userRole) {
-    if (userRole == UserRole.Worker) {
-      return "Worker";
-    } else {
-      return "Employer";
-    }
-  }
 
   static String dateTimeFormatter(DateTime t) {
     String h = t.hour < 10 ? '0${t.hour}' : t.hour.toString();
