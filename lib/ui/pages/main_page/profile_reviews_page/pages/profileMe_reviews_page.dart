@@ -44,7 +44,10 @@ class _ProfileReviewsState extends State<ProfileReviews>
 
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        headerSliverBuilder: (
+          BuildContext context,
+          bool innerBoxIsScrolled,
+        ) {
           return <Widget>[
             SliverAppBar(
               backgroundColor: Color(0xFF0083C7),
@@ -348,14 +351,14 @@ class _ProfileReviewsState extends State<ProfileReviews>
                 child: ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   //controller: _scrollController,
-                  padding:const EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     top: 0.0,
                   ),
                   itemCount: 10,
                   itemBuilder: (context, index) {
-                    return const ReviewsWidget(
+                    return  ReviewsWidget(
                         name: "Edward cooper",
-                        userRole: UserRole.Worker,
+                        userRole: UserRole.Worker.toString().split(".").last,
                         questTitle: "SPA saloon design",
                         quest:
                             "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum.");
@@ -366,11 +369,11 @@ class _ProfileReviewsState extends State<ProfileReviews>
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: Material(
-                color:const Color(0xFFF7F8FA),
+                color: const Color(0xFFF7F8FA),
                 child: ListView.builder(
-                  physics:const NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   //controller: _scrollController,
-                  padding:const EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     top: 0.0,
                   ),
                   itemCount: 5,
@@ -507,15 +510,15 @@ class _ProfileReviewsState extends State<ProfileReviews>
               Icon(
                 Icons.location_pin,
                 size: 20.0,
-                color: Color(0xFF7C838D),
+                color:const Color(0xFF7C838D),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
                   location,
-                  style: TextStyle(
+                  style:const TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF7C838D),
+                    color: const Color(0xFF7C838D),
                   ),
                 ),
               ),
@@ -529,13 +532,13 @@ class _ProfileReviewsState extends State<ProfileReviews>
               Icon(
                 Icons.phone,
                 size: 20.0,
-                color: Color(0xFF7C838D),
+                color:const Color(0xFF7C838D),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
                   number,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: Color(0xFF7C838D),
                   ),
