@@ -53,7 +53,7 @@ class SettingsPage extends StatelessWidget {
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    myProfileImage(context, userStore),
+                    MyProfileImage(userStore),
                     Padding(
                       padding: const EdgeInsets.only(top: 15.0),
                       child: Column(
@@ -103,6 +103,7 @@ class SettingsPage extends StatelessWidget {
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+
                                 ///SMS Verification
                                 SettingsCard(
                                   icon: GradientIcon(

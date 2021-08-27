@@ -10,7 +10,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:app/utils/storage.dart';
 
 ///Instrument Card
-
 class InstrumentCard extends StatelessWidget {
   final String urlArgument;
   final String iconPath;
@@ -83,6 +82,7 @@ class InstrumentCard extends StatelessWidget {
   }
 }
 
+///Settings Card
 class SettingsCard extends StatelessWidget {
   final Widget icon;
   final String title;
@@ -173,50 +173,57 @@ Widget logOutButton(context) {
   );
 }
 
-///Image widget
-Widget myProfileImage(context, ProfileMeStore userStore) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.of(context, rootNavigator: true)
-          .pushNamed(ProfileReviews.routeName);
-    },
-    child: Container(
-      height: 150.0,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(
-            userStore.userData!.avatar!.url,
+///Profile Image Widget
+class MyProfileImage extends StatelessWidget {
+  final ProfileMeStore userStore;
+
+  const MyProfileImage(this.userStore);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context, rootNavigator: true)
+            .pushNamed(ProfileReviews.routeName);
+      },
+      child: Container(
+        height: 150.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(
+              userStore.userData!.avatar!.url,
+            ),
+            fit: BoxFit.cover,
           ),
-          fit: BoxFit.cover,
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(
+            6.0,
+          ),
         ),
-        color: Colors.blue,
-        borderRadius: BorderRadius.circular(
-          6.0,
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 16.0,
-            left: 16.0,
-            child: Text(
-              " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16.0,
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 16.0,
+              left: 16.0,
+              child: Text(
+                " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: 16.0,
-            right: 23.0,
-            child: Icon(
-              Icons.arrow_right_sharp,
-              color: Colors.white,
+            Positioned(
+              bottom: 16.0,
+              right: 23.0,
+              child: Icon(
+                Icons.arrow_right_sharp,
+                color: Colors.white,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
