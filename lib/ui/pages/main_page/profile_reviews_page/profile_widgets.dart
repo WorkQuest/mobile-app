@@ -32,12 +32,15 @@ class PortfolioWidget extends StatelessWidget {
           children: [
             Container(
               height: 230,
+              foregroundDecoration: BoxDecoration(
+                color: Colors.black38
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(
                   Radius.circular(6.0),
                 ),
                 image: DecorationImage(
-                  image: AssetImage("assets/profile_avatar_test.jpg"),
+                  image: AssetImage("assets/test_portfolio_page_image.png"),
                   fit: BoxFit.cover,
                 ),
               ),
