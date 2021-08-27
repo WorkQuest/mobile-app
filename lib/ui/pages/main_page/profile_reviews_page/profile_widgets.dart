@@ -2,6 +2,7 @@ import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/portfolio_store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 ///Portfolio Widget
@@ -65,6 +66,8 @@ class PortfolioWidget extends StatelessWidget {
     );
   }
 }
+
+
 
 ///Reviews Widget
 class ReviewsWidget extends StatelessWidget {
@@ -377,5 +380,376 @@ Widget quest(
         ),
       ],
     ),
+  );
+}
+
+///Quest Rating Widget
+///
+
+Widget rating({
+  required String completedQuests,
+  required String averageRating,
+  required String reviews,
+}) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 20.0),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            height: 140,
+            width: 161,
+            decoration: BoxDecoration(
+              color: Color(0xFFF7F8FA),
+              borderRadius: BorderRadius.all(
+                Radius.circular(6.0),
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Completed quests',
+                  style: TextStyle(fontSize: 16.0),
+                ),
+                Text(
+                  completedQuests,
+                  style: TextStyle(
+                    color: Color(0xFF00AA5B),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                  ),
+                ),
+                Text(
+                  'Show all',
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: Color(0xFF00AA5B),
+                    fontSize: 12.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            height: 140,
+            width: 161,
+            decoration: BoxDecoration(
+              color: Color(0xFFF7F8FA),
+              borderRadius: BorderRadius.all(
+                Radius.circular(6.0),
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Average rating',
+                  style: TextStyle(fontSize: 16.0),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      averageRating,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 23.0,
+                      ),
+                    ),
+                    Icon(
+                      Icons.star,
+                      color: Color(0xFFE8D20D),
+                      size: 19.0,
+                    ),
+                  ],
+                ),
+                Text(
+                  "From " + reviews + " reviews",
+                  style: TextStyle(
+                    color: Color(0xFFD8DFE3),
+                    fontSize: 12.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+///SocialMedia Accounts Widget
+///
+
+Widget socialAccounts() {
+  return Padding(
+    padding: const EdgeInsets.only(
+      top: 20.0,
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Flexible(
+          child: Container(
+            height: 50.0,
+            width: 74.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(6.0),
+              ),
+              color: Color(0xFFF7F8FA),
+            ),
+            child: IconButton(
+              onPressed: null,
+              icon: SvgPicture.asset(
+                "assets/facebook_icon.svg",
+              ),
+            ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            height: 50.0,
+            width: 74.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(
+                  6.0,
+                ),
+              ),
+              color: Color(0xFFF7F8FA),
+            ),
+            child: IconButton(
+              onPressed: null,
+              icon: SvgPicture.asset(
+                "assets/twitter_icon.svg",
+              ),
+            ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            height: 50.0,
+            width: 74.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(6.0),
+              ),
+              color: Color(0xFFF7F8FA),
+            ),
+            child: IconButton(
+              onPressed: null,
+              icon: SvgPicture.asset(
+                "assets/instagram.svg",
+              ),
+            ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            height: 50.0,
+            width: 74.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(6.0),
+              ),
+              color: Color(0xFFF7F8FA),
+            ),
+            child: IconButton(
+              onPressed: null,
+              icon: SvgPicture.asset(
+                "assets/linkedin_icon.svg",
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+///Contact Details Widget
+///
+
+Widget contactDetails({
+  required String location,
+  required String number,
+  required String email,
+  required String secondNumber,
+}) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 20.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.location_pin,
+              size: 20.0,
+              color:const Color(0xFF7C838D),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(
+                location,
+                style:const TextStyle(
+                  fontSize: 14,
+                  color: const Color(0xFF7C838D),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Row(
+          children: [
+            Icon(
+              Icons.phone,
+              size: 20.0,
+              color:const Color(0xFF7C838D),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(
+                number,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF7C838D),
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (secondNumber.isNotEmpty)
+          Column(
+            children: [
+              const SizedBox(
+                height: 10.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 27.0),
+                child: Text(
+                  secondNumber,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF7C838D),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Row(
+          children: [
+            Icon(
+              Icons.email,
+              size: 20.0,
+              color: Color(0xFF7C838D),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(
+                email,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF7C838D),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+///Skills widget
+
+Widget skills({required List<String> skills}) {
+  return Wrap(
+    direction: Axis.horizontal,
+    spacing: 9.0,
+    runSpacing: 0.0,
+    children: skills
+        .map(
+          (item) => new ActionChip(
+        padding: EdgeInsets.symmetric(
+          vertical: 8.0,
+          horizontal: 10.0,
+        ),
+        onPressed: () => null,
+        label: Text(
+          item,
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Color(0xFF0083C7),
+          ),
+        ),
+        backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
+      ),
+    )
+        .toList()
+      ..add(
+        ActionChip(
+          padding: EdgeInsets.symmetric(
+            vertical: 10.0,
+            horizontal: 10.0,
+          ),
+          onPressed: () {},
+          label: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Add",
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.white,
+                ),
+              ),
+              Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 20,
+              ),
+            ],
+          ),
+          backgroundColor: Color(0xFF0083C7),
+        ),
+      ),
+  );
+}
+
+Widget experience({
+  String? place,
+  String? from,
+  String? to,
+}) {
+  return Wrap(
+    children: [
+      Text(place!),
+      SizedBox(
+        width: 10,
+      ),
+      Text("${from!} - ${to!}",softWrap: true,),
+    ],
   );
 }
