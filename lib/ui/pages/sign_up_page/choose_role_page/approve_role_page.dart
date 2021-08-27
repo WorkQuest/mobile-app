@@ -1,8 +1,6 @@
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
-import 'package:app/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -34,7 +32,7 @@ class ApproveRolePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Your role is ${Utils.getUserRoleString(store.userRole)} right?",
+                  "Your role is ${store.userRole.toString().split(".").last} right?",
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
