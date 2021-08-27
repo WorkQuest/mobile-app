@@ -423,7 +423,10 @@ extension GetUploadLink on ApiProvider {
   }
 
   Future _uploadMedia(
-      String uploadLink, Uint8List? bytes, String contentType) async {
+    String uploadLink,
+    Uint8List? bytes,
+    String contentType,
+  ) async {
     await _dio.put(
       '$uploadLink',
       data: MultipartFile.fromBytes(bytes!).finalize(),
@@ -511,6 +514,48 @@ extension TwoFA on ApiProvider {
         "confirmCode": confirmCode,
         "totp": totp,
       },
+    );
+  }
+}
+
+///Portfolio
+extension Portfolio on ApiProvider {
+  Future<void> editPortfolio({
+    required String portfolioId,
+    required String title,
+    required String description,
+    required List<String> media,
+  }) async {
+    await _httpClient.put(
+      query: '/v1/portfolio/$portfolioId',
+      data: {"title": title, "description": description, "medias": media},
+    );
+  }
+
+  Future<void> addPortfolio({
+    required String title,
+    required String description,
+    required List<String> media,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/portfolio/add-case',
+      data: {"title": title, "description": description, "medias": media},
+    );
+  }
+
+  Future<void> deletePortfolio({
+    required String portfolioId,
+  }) async {
+    await _httpClient.delete(
+      query: '/v1/portfolio/$portfolioId',
+    );
+  }
+
+  Future<void> getPortfolio({
+    required String userId,
+  }) async {
+    await _httpClient.get(
+      query: '/v1/user/$userId/portfolio/cases',
     );
   }
 }
