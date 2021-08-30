@@ -3,16 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class ChangeLanguage extends StatefulWidget {
-  const ChangeLanguage({Key? key}) : super(key: key);
+class ChangeLanguagePage extends StatefulWidget {
+  const ChangeLanguagePage({Key? key}) : super(key: key);
 
-  //static const String routeName = "/changeLanguagePage";
+  static const String routeName = "/changeLanguagePage";
 
   @override
-  _ChangeLanguageState createState() => _ChangeLanguageState();
+  _ChangeLanguagePageState createState() => _ChangeLanguagePageState();
 }
 
-class _ChangeLanguageState extends State<ChangeLanguage> {
+class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
   late Locale currentLocale;
 
   @override
