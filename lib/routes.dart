@@ -7,6 +7,7 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/add_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/pages/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
@@ -25,6 +26,7 @@ import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dar
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
@@ -347,6 +349,20 @@ class Routes {
           ),
         );
 
+      case ChangeLanguagePage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Directionality(
+              textDirection: checkDirection(context),
+              child: ChangeLanguagePage()),
+        );
+
+      case AddPortfolioPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Directionality(
+              textDirection: checkDirection(context),
+              child: AddPortfolioPage()),
+        );
+
       default:
         return MaterialPageRoute(
           builder: (context) => Directionality(
@@ -357,3 +373,4 @@ class Routes {
     }
   }
 }
+//
