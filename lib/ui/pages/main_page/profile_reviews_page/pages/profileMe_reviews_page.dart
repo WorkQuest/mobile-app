@@ -1,5 +1,6 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/add_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/profile_widgets.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
@@ -40,7 +41,6 @@ class _ProfileReviewsState extends State<ProfileReviews>
   @override
   Widget build(BuildContext context) {
     final userStore = context.read<ProfileMeStore>();
-
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (
@@ -172,7 +172,6 @@ class _ProfileReviewsState extends State<ProfileReviews>
 
                               ///About Column
                               ///
-
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 10.0),
                                 child: Text(
@@ -343,7 +342,6 @@ class _ProfileReviewsState extends State<ProfileReviews>
         body: TabBarView(
           controller: this._tabController,
           children: <Widget>[
-
             ///Reviews Tab
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
@@ -357,12 +355,15 @@ class _ProfileReviewsState extends State<ProfileReviews>
                   ),
                   itemCount: 10,
                   itemBuilder: (context, index) {
-                    return  ReviewsWidget(
+                    return ReviewsWidget(
                         name: "Edward cooper",
                         userRole: UserRole.Worker.toString().split(".").last,
                         questTitle: "SPA saloon design",
                         quest:
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut aliquam, purus sit amet luctus venenatis, lectus magna fringilla urna, porttitor rhoncus dolor purus non enim praesent elementum.");
+                            "Lorem ipsum dolor sit amet, consectetur adipiscing "
+                            "elit ut aliquam, purus sit amet luctus venenatis, "
+                            "lectus magna fringilla urna, porttitor rhoncus "
+                            "dolor purus non enim praesent elementum.");
                   },
                 ),
               ),
@@ -373,21 +374,65 @@ class _ProfileReviewsState extends State<ProfileReviews>
               padding: const EdgeInsets.only(top: 16.0),
               child: Material(
                 color: const Color(0xFFF7F8FA),
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  //controller: _scrollController,
-                  padding: const EdgeInsets.only(
-                    top: 0.0,
-                  ),
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return userStore.userData!.role == UserRole.Worker
-                        ? const PortfolioWidget()
-                        : quest(
-                            title: 'Paint the garage quickly',
-                            description: "Paint the garage",
-                            price: "1500");
-                  },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ///Add new portfolio
+                    if (userStore.userData!.role == UserRole.Worker)
+                      Container(
+                        color: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0,
+                          vertical: 10.0,
+                        ),
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pushNamed(
+                            context,
+                            AddPortfolioPage.routeName,
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                              color: Colors.blueAccent.withOpacity(0.3),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10.0,
+                            ),
+                          ),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  "Add new",
+                                ),
+                                const SizedBox(
+                                  width: 5.0,
+                                ),
+                                const Icon(
+                                  Icons.add,
+                                ),
+                              ]),
+                        ),
+                      ),
+
+                    Expanded(
+                      child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        //controller: _scrollController,
+                        padding: const EdgeInsets.only(
+                          top: 0.0,
+                        ),
+                        itemCount: 5,
+                        itemBuilder: (context, index) {
+                          return userStore.userData!.role == UserRole.Worker
+                              ? const PortfolioWidget()
+                              : quest(
+                                  title: 'Paint the garage quickly',
+                                  description: "Paint the garage",
+                                  price: "1500");
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
