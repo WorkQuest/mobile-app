@@ -118,7 +118,11 @@ class WalletPage extends StatelessWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(
-                    left: 16, right: 16, top: 20, bottom: 16),
+                  left: 16,
+                  right: 16,
+                  top: 20,
+                  bottom: 16,
+                ),
                 child: Row(
                   children: [
                     Expanded(
@@ -209,7 +213,11 @@ class WalletPage extends StatelessWidget {
 
   Widget txItem(String time) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20, left: 16, right: 16),
+      padding: const EdgeInsets.only(
+        bottom: 20,
+        left: 16,
+        right: 16,
+      ),
       child: Row(
         children: [
           Container(
@@ -231,7 +239,9 @@ class WalletPage extends StatelessWidget {
               ),
               Text(
                 "14.01.20  14:34",
-                style: TextStyle(color: Color(0xFFAAB0B9)),
+                style: TextStyle(
+                  color: Color(0xFFAAB0B9),
+                ),
               )
             ],
           ),
@@ -299,7 +309,7 @@ class WalletPage extends StatelessWidget {
                     const SizedBox(
                       height: 15.0,
                     ),
-                    Text('Amount'),
+                    const Text('Amount'),
                     _divider,
                     TextFormField(
                       maxLines: 1,
@@ -329,7 +339,7 @@ class WalletPage extends StatelessWidget {
                                 fee: "0.15",
                               )
                           : null,
-                      child: Text("Transfer"),
+                      child: const Text("Transfer"),
                     ),
                     _divider,
                   ],
