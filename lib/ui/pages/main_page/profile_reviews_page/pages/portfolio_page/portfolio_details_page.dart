@@ -1,4 +1,4 @@
-import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/store/portfolio_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -6,12 +6,6 @@ import "package:provider/provider.dart";
 
 class PortfolioDetails extends StatelessWidget {
   PortfolioDetails({Key? key}) : super(key: key);
-
-  final List wid = [
-    Image.asset("assets/test_portfolio_page_image.png"),
-    Image.asset("assets/test_portfolio_page_image.png"),
-    Image.asset("assets/test_portfolio_page_image.png"),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +23,36 @@ class PortfolioDetails extends StatelessWidget {
                     Expanded(
                       child: Text("Portfolio"),
                     ),
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: null,
-                      icon: Icon(
-                        Icons.edit,
-                        color: Theme.of(context).iconTheme.color,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        20.0,
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.edit,
+                            color: Theme.of(context).iconTheme.color,
+                          ),
+                        ),
+                      ),
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        20.0,
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.delete_forever,
+                            color: Colors.redAccent,
+                          ),
+                        ),
                       ),
                     ),
                   ],
