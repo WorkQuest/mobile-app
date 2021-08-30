@@ -528,7 +528,11 @@ extension Portfolio on ApiProvider {
   }) async {
     await _httpClient.put(
       query: '/v1/portfolio/$portfolioId',
-      data: {"title": title, "description": description, "medias": media},
+      data: {
+        "title": title,
+        "description": description,
+        "medias": media,
+      },
     );
   }
 
@@ -539,7 +543,11 @@ extension Portfolio on ApiProvider {
   }) async {
     await _httpClient.post(
       query: '/v1/portfolio/add-case',
-      data: {"title": title, "description": description, "medias": media},
+      data: {
+        "title": title,
+        "description": description,
+        "medias": media,
+      },
     );
   }
 
