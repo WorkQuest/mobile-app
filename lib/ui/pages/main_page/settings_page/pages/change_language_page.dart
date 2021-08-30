@@ -24,13 +24,13 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CupertinoNavigationBar(
+        middle: Text(
+          "Language",
+        ),
+      ),
       body: CustomScrollView(
         slivers: [
-          CupertinoSliverNavigationBar(
-            largeTitle: Text(
-              "Language",
-            ),
-          ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) => RadioListTile(
@@ -50,7 +50,6 @@ class _ChangeLanguageState extends State<ChangeLanguage> {
                 ),
               ),
               childCount: Constants.languageList.length,
-              //ChangeLanguage.languageList.length),
             ),
           )
         ],
