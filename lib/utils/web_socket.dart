@@ -64,6 +64,7 @@ class WebSocket {
 
   void _onDone() {
     print("[WebSocket] Close chanel!!");
+    connect();
   }
 
   WebSocket._internal();
