@@ -7,6 +7,8 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
+import 'package:app/ui/pages/main_page/dispute_page/dispute_page.dart';
+import 'package:app/ui/pages/main_page/dispute_page/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
@@ -343,6 +345,17 @@ class Routes {
               textDirection: checkDirection(context),
               child: ChatRoomPage(settings.arguments as ChatModel,
                   getIt.get<ProfileMeStore>().userData!.id),
+            ),
+          ),
+        );
+
+      case DisputePage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<DisputeStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: DisputePage(),
             ),
           ),
         );

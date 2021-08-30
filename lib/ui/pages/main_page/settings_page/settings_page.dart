@@ -1,3 +1,4 @@
+import 'package:app/ui/pages/main_page/dispute_page/dispute_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
@@ -63,7 +64,7 @@ class SettingsPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               ///Change Password
-                               SettingsCard(
+                              SettingsCard(
                                 icon: GradientIcon(
                                   SvgPicture.asset(
                                     "assets/settings_password_icon.svg",
@@ -115,8 +116,8 @@ class SettingsPage extends StatelessWidget {
                                   onTap: () =>
                                       Navigator.of(context, rootNavigator: true)
                                           .pushNamed(
-                                        SMSVerificationPage.routeName,
-                                      ),
+                                    SMSVerificationPage.routeName,
+                                  ),
                                 ),
                                 const SizedBox(
                                   width: 10.0,
@@ -131,7 +132,12 @@ class SettingsPage extends StatelessWidget {
                                     20.0,
                                   ),
                                   title: "Change \nRole",
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pushNamed(
+                                      DisputePage.routeName,
+                                    );
+                                  },
                                 ),
                               ],
                             ),
@@ -151,9 +157,9 @@ class SettingsPage extends StatelessWidget {
                                     20.0,
                                   ),
                                   title:
-                                  "Language \n${Constants.languageList.keys.firstWhere(
-                                        (k) =>
-                                    Constants.languageList[k] ==
+                                      "Language \n${Constants.languageList.keys.firstWhere(
+                                    (k) =>
+                                        Constants.languageList[k] ==
                                         context.locale,
                                   )}",
                                   onTap: () {
