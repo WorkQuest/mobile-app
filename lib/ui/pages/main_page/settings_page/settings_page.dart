@@ -159,10 +159,8 @@ class SettingsPage extends StatelessWidget {
                                   )}",
                                   onTap: () {
                                     Navigator.of(context, rootNavigator: true)
-                                        .push(
-                                      MaterialPageRoute(
-                                        builder: (context) => ChangeLanguage(),
-                                      ),
+                                        .pushNamed(
+                                      ChangeLanguagePage.routeName
                                     );
                                   },
                                 ),
