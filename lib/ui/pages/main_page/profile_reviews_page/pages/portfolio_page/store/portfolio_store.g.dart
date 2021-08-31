@@ -24,15 +24,71 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
     });
   }
 
+  final _$titleAtom = Atom(name: '_PortfolioStore.title');
+
+  @override
+  String get title {
+    _$titleAtom.reportRead();
+    return super.title;
+  }
+
+  @override
+  set title(String value) {
+    _$titleAtom.reportWrite(value, super.title, () {
+      super.title = value;
+    });
+  }
+
+  final _$descriptionAtom = Atom(name: '_PortfolioStore.description');
+
+  @override
+  String get description {
+    _$descriptionAtom.reportRead();
+    return super.description;
+  }
+
+  @override
+  set description(String value) {
+    _$descriptionAtom.reportWrite(value, super.description, () {
+      super.description = value;
+    });
+  }
+
+  final _$mediaAtom = Atom(name: '_PortfolioStore.media');
+
+  @override
+  ObservableList<DrishyaEntity> get media {
+    _$mediaAtom.reportRead();
+    return super.media;
+  }
+
+  @override
+  set media(ObservableList<DrishyaEntity> value) {
+    _$mediaAtom.reportWrite(value, super.media, () {
+      super.media = value;
+    });
+  }
+
   final _$_PortfolioStoreActionController =
       ActionController(name: '_PortfolioStore');
 
   @override
-  void changePageNumber(int number) {
+  void changePageNumber(int value) {
     final _$actionInfo = _$_PortfolioStoreActionController.startAction(
         name: '_PortfolioStore.changePageNumber');
     try {
-      return super.changePageNumber(number);
+      return super.changePageNumber(value);
+    } finally {
+      _$_PortfolioStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeImage(int index) {
+    final _$actionInfo = _$_PortfolioStoreActionController.startAction(
+        name: '_PortfolioStore.removeImage');
+    try {
+      return super.removeImage(index);
     } finally {
       _$_PortfolioStoreActionController.endAction(_$actionInfo);
     }
@@ -41,7 +97,10 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
   @override
   String toString() {
     return '''
-pageNumber: ${pageNumber}
+pageNumber: ${pageNumber},
+title: ${title},
+description: ${description},
+media: ${media}
     ''';
   }
 }
