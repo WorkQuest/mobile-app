@@ -6,18 +6,9 @@ class QuestPageStore = QuestPageStoreBase with _$QuestPageStore;
 
 abstract class QuestPageStoreBase with Store {
   @observable
-  PageState selectPage = PageState.Map;
+  int pageIndex = 0;
 
-  @action
-  void changePage() {
-    if (selectPage == PageState.Map)
-      selectPage = PageState.List;
-    else
-      selectPage = PageState.Map;
-  }
-}
+  void setMapPage() => pageIndex = 0;
 
-enum PageState {
-  Map,
-  List,
+  void setQuestListPage() => pageIndex = 1;
 }

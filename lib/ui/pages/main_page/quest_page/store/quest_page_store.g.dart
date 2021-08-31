@@ -9,39 +9,25 @@ part of 'quest_page_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$QuestPageStore on QuestPageStoreBase, Store {
-  final _$selectPageAtom = Atom(name: 'QuestPageStoreBase.selectPage');
+  final _$pageIndexAtom = Atom(name: 'QuestPageStoreBase.pageIndex');
 
   @override
-  PageState get selectPage {
-    _$selectPageAtom.reportRead();
-    return super.selectPage;
+  int get pageIndex {
+    _$pageIndexAtom.reportRead();
+    return super.pageIndex;
   }
 
   @override
-  set selectPage(PageState value) {
-    _$selectPageAtom.reportWrite(value, super.selectPage, () {
-      super.selectPage = value;
+  set pageIndex(int value) {
+    _$pageIndexAtom.reportWrite(value, super.pageIndex, () {
+      super.pageIndex = value;
     });
-  }
-
-  final _$QuestPageStoreBaseActionController =
-      ActionController(name: 'QuestPageStoreBase');
-
-  @override
-  void changePage() {
-    final _$actionInfo = _$QuestPageStoreBaseActionController.startAction(
-        name: 'QuestPageStoreBase.changePage');
-    try {
-      return super.changePage();
-    } finally {
-      _$QuestPageStoreBaseActionController.endAction(_$actionInfo);
-    }
   }
 
   @override
   String toString() {
     return '''
-selectPage: ${selectPage}
+pageIndex: ${pageIndex}
     ''';
   }
 }

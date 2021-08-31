@@ -6,21 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 class QuestPage extends StatefulWidget {
+  const QuestPage({Key? key}) : super(key: key);
+
   @override
   _QuestPageState createState() => _QuestPageState();
 }
 
 class _QuestPageState extends State<QuestPage> {
-  QuestPageStore questPage = QuestPageStore();
+  final QuestPageStore questPage = QuestPageStore();
 
   @override
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => IndexedStack(
-        index: questPage.selectPage.index,
+        index: questPage.pageIndex,
         children: [
-          QuestMap(questPage.changePage),
-          QuestList(questPage.changePage),
+          QuestMap(questPage.setQuestListPage),
+          QuestList(questPage.setMapPage),
         ],
       ),
     );
