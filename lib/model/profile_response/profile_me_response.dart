@@ -2,7 +2,6 @@ import 'package:app/enums.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/avatar.dart';
 // import 'package:app/model/profile_response/rating_statistic.dart';
-// import 'package:app/model/profile_response/review.dart';
 
 class ProfileMeResponse {
   ProfileMeResponse({
@@ -16,7 +15,6 @@ class ProfileMeResponse {
     required this.additionalInfo,
     required this.role,
     required this.avatar,
-    // required this.reviews,
     // required this.ratingStatistic,
     // required this.createdAt,
     // required this.updatedAt,
@@ -49,7 +47,6 @@ class ProfileMeResponse {
           avatar: object.avatar,
         );
 
-  // List<Review>? reviews;
   //RatingStatistic? ratingStatistic;
   // DateTime createdAt;
   // DateTime updatedAt;
@@ -68,8 +65,6 @@ class ProfileMeResponse {
           : AdditionalInfo.fromJson(json["additionalInfo"]),
       role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
       avatar: Avatar.fromJson(json["avatar"]),
-      // reviews:
-      //     List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
       // ratingStatistic: RatingStatistic.fromJson(json["ratingStatistic"]),
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
@@ -87,7 +82,6 @@ class ProfileMeResponse {
         //"additionalInfo": additionalInfo!.toJson(),
         "role": role.toString().split(".").last,
         "avatar": avatar!.toJson(),
-        //"reviews": List<dynamic>.from(reviews!.map((x) => x.toJson())),
         // "ratingStatistic": ratingStatistic!.toJson(),
         // "createdAt": createdAt.toIso8601String(),
         // "updatedAt": updatedAt.toIso8601String(),
