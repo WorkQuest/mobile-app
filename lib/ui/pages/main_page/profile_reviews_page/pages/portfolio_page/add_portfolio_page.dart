@@ -20,8 +20,10 @@ class AddPortfolioPage extends StatelessWidget {
         child: CustomScrollView(
           slivers: [
             SliverPadding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 10.0,
+              ),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   const Text("Title"),
@@ -76,38 +78,5 @@ class AddPortfolioPage extends StatelessWidget {
       ),
     );
   }
-  //
-  // Widget bottomSheet(
-  //     CreateQuestStore store,
-  //     ) =>
-  //     InkWell(
-  //       onTap: () => showGallery(store),
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         children: [
-  //           Text(
-  //             'Upload images \n or videos',
-  //             textAlign: TextAlign.center,
-  //             style: TextStyle(
-  //               fontSize: 16,
-  //             ),
-  //           ),
-  //           SizedBox(
-  //             height: 12,
-  //           ),
-  //           Icon(
-  //             Icons.add_to_photos_outlined,
-  //             color: Colors.blueAccent,
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //
-  // Future showGallery(CreateQuestStore store) async {
-  //   final picked = await gallController.pick(
-  //     context,
-  //   );
-  //   store.media.addAll(picked);
-  // }
+
 }
