@@ -53,27 +53,61 @@ class AddPortfolioPage extends StatelessWidget {
             ),
             SliverFillRemaining(
               hasScrollBody: false,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                    width: 100,
-                    height: 20.0,
-                    color: Colors.blueAccent,
-                  ),
-                ],
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 15.0,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        child: Text("Save"),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             )
-            // SliverFillRemaining(
-            //   hasScrollBody: false,
-            //   child: Container(
-            //     height: 20.0,
-            //     color: Colors.blueAccent,
-            //   ),
-            // )
           ],
         ),
       ),
     );
   }
+  //
+  // Widget bottomSheet(
+  //     CreateQuestStore store,
+  //     ) =>
+  //     InkWell(
+  //       onTap: () => showGallery(store),
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         children: [
+  //           Text(
+  //             'Upload images \n or videos',
+  //             textAlign: TextAlign.center,
+  //             style: TextStyle(
+  //               fontSize: 16,
+  //             ),
+  //           ),
+  //           SizedBox(
+  //             height: 12,
+  //           ),
+  //           Icon(
+  //             Icons.add_to_photos_outlined,
+  //             color: Colors.blueAccent,
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //
+  // Future showGallery(CreateQuestStore store) async {
+  //   final picked = await gallController.pick(
+  //     context,
+  //   );
+  //   store.media.addAll(picked);
+  // }
 }
