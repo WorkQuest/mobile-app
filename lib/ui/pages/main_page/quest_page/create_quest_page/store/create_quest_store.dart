@@ -130,9 +130,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   void setDateTime(DateTime value) => runtimeValue = value;
 
   @action
-  void removeImage(int index) => media.removeAt(index);
-
-  @action
   void setAboutQuest(String value) => description = value;
 
   @action

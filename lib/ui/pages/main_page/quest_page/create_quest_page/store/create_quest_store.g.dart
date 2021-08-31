@@ -263,17 +263,6 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
-  void removeImage(int index) {
-    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
-        name: '_CreateQuestStore.removeImage');
-    try {
-      return super.removeImage(index);
-    } finally {
-      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setAboutQuest(String value) {
     final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
         name: '_CreateQuestStore.setAboutQuest');

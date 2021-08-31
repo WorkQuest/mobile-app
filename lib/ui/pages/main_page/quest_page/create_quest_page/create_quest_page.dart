@@ -1,9 +1,8 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
+import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/utils/validator.dart';
-import 'package:dotted_border/dotted_border.dart';
-import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +14,7 @@ import '../../../../../observer_consumer.dart';
 class CreateQuestPage extends StatefulWidget {
   static const String routeName = '/createQuestPage';
   final BaseQuestResponse? questInfo;
+
   CreateQuestPage({this.questInfo});
 
   @override
@@ -22,8 +22,6 @@ class CreateQuestPage extends StatefulWidget {
 }
 
 class _CreateQuestPageState extends State<CreateQuestPage> {
-  late final GalleryController gallController;
-  //final _formKey = GlobalKey<FormState>();
 
   void initState() {
     super.initState();
@@ -35,16 +33,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.description = widget.questInfo!.description;
       store.price = widget.questInfo!.price;
     }
-    gallController = GalleryController(
-      gallerySetting: const GallerySetting(
-        maximum: 20,
-        albumSubtitle: 'All',
-        requestType: RequestType.common,
-      ),
-      panelSetting: PanelSetting(
-          //topMargin: 100.0,
-          headerMaxHeight: 100.0),
-    );
   }
 
   Widget build(context) {
@@ -309,46 +297,14 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         ),
                       ),
                     ),
+                    ///Upload media
                     Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: DottedBorder(
-                        borderType: BorderType.RRect,
-                        strokeCap: StrokeCap.round,
-                        radius: Radius.circular(10),
-                        dashPattern: [
-                          6,
-                          6,
-                        ],
-                        color: Colors.grey,
-                        strokeWidth: 1.0,
-                        child: Container(
-                          height: 250,
-                          width: double.infinity,
-                          decoration: BoxDecoration(shape: BoxShape.circle),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                          ),
-                          child: Center(
-                              child: Observer(
-                            builder: (context) => store.media.isEmpty
-                                ? bottomSheet(store)
-                                : Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Expanded(
-                                          child: mediaView(store, context)),
-                                      IconButton(
-                                        onPressed: () => showGallery(store),
-                                        icon: Icon(
-                                          Icons.add_circle,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                          )),
+                        padding: const EdgeInsets.only(
+                          top: 20.0,
                         ),
-                      ),
-                    ),
+                        child: MediaUpload(
+                          media: store.media,
+                        )),
                     titledField(
                       "Price",
                       Container(
@@ -387,9 +343,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     // }
                                   }
                                 : null,
-                            // store.createQuest():null;
-                            // print(store.price);
-
                             child: store.isLoading
                                 ? PlatformActivityIndicator()
                                 : Text(
@@ -433,108 +386,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
         ],
       );
 
-  ///Displays Chosen Media Files
-  Widget mediaView(
-    CreateQuestStore store,
-    BuildContext context,
-  ) {
-    return Observer(
-      builder: (context) => ListView.separated(
-        padding: EdgeInsets.symmetric(vertical: 10.0),
-        itemCount: store.media.length,
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 10.0,
-        ),
-        itemBuilder: (context, index) {
-          return Container(
-            width: 150,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                // Media
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.memory(
-                    store.media[index].bytes,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-
-                Center(
-                  child: IconButton(
-                    onPressed: () => store.removeImage(index),
-                    icon: Icon(Icons.cancel_outlined),
-                    color: Colors.redAccent,
-                  ),
-                ),
-                // For video duration
-                if (store.media[index].entity.type == AssetType.video)
-                  Positioned(
-                    right: 4.0,
-                    bottom: 4.0,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0),
-                      child: Container(
-                        color: Colors.black.withOpacity(0.7),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6.0, vertical: 2.0),
-                        child: Text(
-                          store.media[index].entity.duration.formatedDuration,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 13.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget bottomSheet(
-    CreateQuestStore store,
-  ) =>
-      InkWell(
-        onTap: () => showGallery(store),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Upload images \n or videos',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Icon(
-              Icons.add_to_photos_outlined,
-              color: Colors.blueAccent,
-            ),
-          ],
-        ),
-      );
-
-  ///trigger gallery
-  Future showGallery(CreateQuestStore store) async {
-    final picked = await gallController.pick(
-      context,
-    );
-    store.media.addAll(picked);
-  }
-
   ///Show Modal Sheet Function
   modalBottomSheet(Widget child) => showModalBottomSheet(
       shape: RoundedRectangleBorder(
@@ -549,13 +400,4 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       builder: (context) {
         return child;
       });
-}
-
-extension on int {
-  String get formatedDuration {
-    final duration = Duration(seconds: this);
-    final min = duration.inMinutes.remainder(60).toString();
-    final sec = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
-    return '$min:$sec';
-  }
 }
