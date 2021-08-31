@@ -246,13 +246,17 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         category: categoryValue,
         priority: priorityList.indexOf(priority),
         location: location,
-        media: await apiProvider.uploadMedia(medias: media),
+        media: await apiProvider.uploadMedia(
+          medias: media,
+        ),
         title: questTitle,
         description: description,
         price: price,
         adType: adType,
       );
-      await apiProvider.createQuest(quest: questModel);
+      await apiProvider.createQuest(
+        quest: questModel,
+      );
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
