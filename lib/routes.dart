@@ -8,6 +8,7 @@ import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/add_portfolio_page.dart';
+import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_reviews_page/pages/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
@@ -358,9 +359,12 @@ class Routes {
 
       case AddPortfolioPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Directionality(
-              textDirection: checkDirection(context),
-              child: AddPortfolioPage()),
+          builder: (context) => Provider(
+            create: (context) => getIt.get<PortfolioStore>(),
+            child: Directionality(
+                textDirection: checkDirection(context),
+                child: AddPortfolioPage()),
+          ),
         );
 
       default:
