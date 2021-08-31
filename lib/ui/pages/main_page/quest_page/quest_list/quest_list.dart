@@ -1,7 +1,6 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
-import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
@@ -39,7 +38,9 @@ class _QuestListState extends State<QuestList> {
     questsStore = context.read<QuestsStore>();
     profileMeStore = context.read<ProfileMeStore>();
     profileMeStore!.getProfileMe().then((value) {
-      context.read<ChatStore>().initialSetup(profileMeStore!.userData!.id);
+      context.read<ChatStore>().initialSetup(
+            profileMeStore!.userData!.id,
+          );
       questsStore!.getQuests(profileMeStore!.userData!.id);
     });
     super.initState();
@@ -114,43 +115,33 @@ class _QuestListState extends State<QuestList> {
           delegate: SliverChildListDelegate(
             [
               const SizedBox(height: 20),
-              //if (profileMeStore!.userData!.role == UserRole.Employer)
-              _getDivider(),
+              //if (profileMeStore!.userData!.role == UserRole.Worker)
+                _getDivider(),
               Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: profileMeStore!.userData!.role == UserRole.Employer
-                    ? ElevatedButton(
-                        onPressed: () => Navigator.of(
-                          context,
-                          rootNavigator: true,
-                        ).pushNamed(
-                          CreateQuestPage.routeName,
-                        ),
-                        child: Text("Create a Quest"),
-                      )
-                    : OutlinedButton(
-                        onPressed: () => Navigator.push(
-                          context,
-                          // Сделано для отладки будет перенесена в routes.dart
-                          MaterialPageRoute(
-                            builder: (_) => FilterQuestsPage(),
-                          ),
-                        ),
-                        style: ButtonStyle(
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6.0),
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.filter_list),
-                            const Text("Filters"),
-                          ],
-                        ),
+                child: OutlinedButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    // Сделано для отладки будет перенесена в routes.dart
+                    MaterialPageRoute(
+                      builder: (_) => FilterQuestsPage(),
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6.0),
                       ),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.filter_list),
+                      const Text("Filters"),
+                    ],
+                  ),
+                ),
               ),
               _getDivider(),
               Observer(

@@ -9,7 +9,7 @@ import 'package:location/location.dart';
 import "package:provider/provider.dart";
 
 class QuestMap extends StatefulWidget {
-  final Function() changePage;
+  final void Function() changePage;
   QuestMap(this.changePage);
   @override
   _QuestMapState createState() => _QuestMapState();
