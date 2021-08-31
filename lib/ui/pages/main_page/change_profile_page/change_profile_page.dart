@@ -4,6 +4,7 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+
 // import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,7 @@ import "package:provider/provider.dart";
 
 class ChangeProfilePage extends StatefulWidget {
   static const String routeName = "/ChangeProfilePage";
+
   @override
   _ChangeProfilePageState createState() => _ChangeProfilePageState();
 }
@@ -20,6 +22,7 @@ class ChangeProfilePage extends StatefulWidget {
 class _ChangeProfilePageState extends State<ChangeProfilePage> {
   ProfileMeStore? profile;
   late ChangeProfileStore pageStore;
+
   // SkillSpecializationController? _controller;
   late final GalleryController gallController;
 
@@ -27,7 +30,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   void initState() {
     // _controller = SkillSpecializationController();
     profile = context.read<ProfileMeStore>();
-    pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
+    pageStore = ChangeProfileStore(
+      ProfileMeResponse.clone(profile!.userData!),
+    );
     gallController = GalleryController(
       gallerySetting: const GallerySetting(
         maximum: 1,
