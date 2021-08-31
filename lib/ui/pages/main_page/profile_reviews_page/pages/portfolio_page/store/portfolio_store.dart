@@ -12,9 +12,9 @@ class PortfolioStore extends _PortfolioStore with _$PortfolioStore {
 }
 
 abstract class _PortfolioStore extends IStore<bool> with Store {
-  final ApiProvider apiProvider;
+  final ApiProvider _apiProvider;
 
-  _PortfolioStore(this.apiProvider);
+  _PortfolioStore(this._apiProvider);
 
   @observable
   int pageNumber = 0;
@@ -31,13 +31,65 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   @action
   void changePageNumber(int value) => pageNumber = value;
 
-  void setTitle(String value)=> title = value;
+  void setTitle(String value) => title = value;
 
-  void setDescription(String value)=> description = value;
-
-
+  void setDescription(String value) => description = value;
 
   @action
-  void removeImage(int index) => media.removeAt(index);
+  Future<void> createPortfolio() async {
+    try {
+      this.onLoading();
+      await _apiProvider.addPortfolio(
+        title: title,
+        description: description,
+        media: await _apiProvider.uploadMedia(
+          medias: media,
+        ),
+      );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
 
+  Future<void> editPortfolio() async {
+    try {
+      this.onLoading();
+      await _apiProvider.editPortfolio(
+        portfolioId: '',
+        title: title,
+        description: description,
+        media: await _apiProvider.uploadMedia(
+          medias: media,
+        ),
+      );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  Future<void> deletePortfolio() async {
+    try {
+      this.onLoading();
+      await _apiProvider.deletePortfolio(
+        portfolioId: "",
+      );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  Future<void> getPortfolio() async {
+    try {
+      this.onLoading();
+      await _apiProvider.deletePortfolio(
+        portfolioId: "",
+      );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
 }

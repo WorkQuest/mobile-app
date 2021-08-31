@@ -69,6 +69,14 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
     });
   }
 
+  final _$createPortfolioAsyncAction =
+      AsyncAction('_PortfolioStore.createPortfolio');
+
+  @override
+  Future<void> createPortfolio() {
+    return _$createPortfolioAsyncAction.run(() => super.createPortfolio());
+  }
+
   final _$_PortfolioStoreActionController =
       ActionController(name: '_PortfolioStore');
 
@@ -78,17 +86,6 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
         name: '_PortfolioStore.changePageNumber');
     try {
       return super.changePageNumber(value);
-    } finally {
-      _$_PortfolioStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void removeImage(int index) {
-    final _$actionInfo = _$_PortfolioStoreActionController.startAction(
-        name: '_PortfolioStore.removeImage');
-    try {
-      return super.removeImage(index);
     } finally {
       _$_PortfolioStoreActionController.endAction(_$actionInfo);
     }
