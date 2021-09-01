@@ -43,9 +43,10 @@ class _ProfileReviewsState extends State<ProfileReviews>
     );
     userStore = context.read<ProfileMeStore>();
     portfolioStore = context.read<PortfolioStore>();
-    portfolioStore!.getPortfolio(
-      userId: userStore!.userData!.id,
-    );
+    if (userStore!.userData!.role == UserRole.Worker)
+      portfolioStore!.getPortfolio(
+        userId: userStore!.userData!.id,
+      );
   }
 
   @override
@@ -426,28 +427,44 @@ class _ProfileReviewsState extends State<ProfileReviews>
 
                     Expanded(
                       child: Observer(
-                        builder: (_) => ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: const EdgeInsets.only(
-                            top: 0.0,
-                          ),
-                          itemCount: portfolioStore!.portfolioList.length,
-                          itemBuilder: (context, index) {
-                            return userStore.userData!.role == UserRole.Worker
-                                ? PortfolioWidget(
-                                    index: index,
-                                    imageUrl: portfolioStore!
-                                        .portfolioList[index].medias.first.url,
-                                    title: portfolioStore!
-                                        .portfolioList[index].title,
-                                  )
-                                : quest(
-                                    title: 'Paint the garage quickly',
-                                    description: "Paint the garage",
-                                    price: "1500",
-                                  );
-                          },
-                        ),
+                        builder: (_) => userStore.userData!.role ==
+                                UserRole.Worker
+                            ? Center(
+                                child: portfolioStore!.portfolioList.isEmpty
+                                    ? Text("You do not have any  Portfolio")
+                                    : ListView.builder(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        padding: const EdgeInsets.only(
+                                          top: 0.0,
+                                        ),
+                                        itemCount: portfolioStore!
+                                            .portfolioList.length,
+                                        itemBuilder: (context, index) =>
+                                            PortfolioWidget(
+                                          index: index,
+                                          imageUrl: portfolioStore!
+                                              .portfolioList[index]
+                                              .medias
+                                              .first
+                                              .url,
+                                          title: portfolioStore!
+                                              .portfolioList[index].title,
+                                        ),
+                                      ),
+                              )
+                            : ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: const EdgeInsets.only(
+                                  top: 0.0,
+                                ),
+                                itemCount: 5,
+                                itemBuilder: (context, index) => quest(
+                                  title: 'Paint the garage quickly',
+                                  description: "Paint the garage",
+                                  price: "1500",
+                                ),
+                              ),
                       ),
                     ),
                   ],
