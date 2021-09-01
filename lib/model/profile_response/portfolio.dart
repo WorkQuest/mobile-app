@@ -1,5 +1,5 @@
-class Portfolio {
-  Portfolio({
+class PortfolioModel {
+  PortfolioModel({
     required this.id,
     required this.userId,
     required this.title,
@@ -19,10 +19,10 @@ class Portfolio {
   List<Media> medias;
   User user;
 
-  factory Portfolio.fromJson(
+  factory PortfolioModel.fromJson(
     Map<String, dynamic> json,
   ) =>
-      Portfolio(
+      PortfolioModel(
         id: json["id"],
         userId: json["userId"],
         title: json["title"] ?? "No title",
