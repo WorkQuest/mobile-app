@@ -34,9 +34,9 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
 
   @action
   void changePageNumber(int value) => pageNumber = value;
-
+  @action
   void setTitle(String value) => title = value;
-
+  @action
   void setDescription(String value) => description = value;
 
   @action
@@ -55,7 +55,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
-
+  @action
   Future<void> editPortfolio() async {
     try {
       this.onLoading();
@@ -73,13 +73,14 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
     }
   }
 
+  @action
   Future<void> deletePortfolio({
     required String portfolioId,
   }) async {
     try {
       this.onLoading();
       await _apiProvider.deletePortfolio(
-        portfolioId: "",
+        portfolioId: portfolioId,
       );
       this.onSuccess(true);
     } catch (e) {
@@ -87,12 +88,13 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
     }
   }
 
+  @action
   Future<void> getPortfolio({
     required String userId,
   }) async {
     try {
       this.onLoading();
-      portfolioList.addAll(
+      portfolioList = ObservableList.of(
         await _apiProvider.getPortfolio(
           userId: userId,
         ),
@@ -102,4 +104,6 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
+  @computed
+  bool get canSubmit => title.isNotEmpty && description.isNotEmpty;
 }

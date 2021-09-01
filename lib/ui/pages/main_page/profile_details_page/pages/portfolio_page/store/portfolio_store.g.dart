@@ -9,6 +9,14 @@ part of 'portfolio_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$PortfolioStore on _PortfolioStore, Store {
+  Computed<bool>? _$canSubmitComputed;
+
+  @override
+  bool get canSubmit =>
+      (_$canSubmitComputed ??= Computed<bool>(() => super.canSubmit,
+              name: '_PortfolioStore.canSubmit'))
+          .value;
+
   final _$pageNumberAtom = Atom(name: '_PortfolioStore.pageNumber');
 
   @override
@@ -92,6 +100,31 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
     return _$createPortfolioAsyncAction.run(() => super.createPortfolio());
   }
 
+  final _$editPortfolioAsyncAction =
+      AsyncAction('_PortfolioStore.editPortfolio');
+
+  @override
+  Future<void> editPortfolio() {
+    return _$editPortfolioAsyncAction.run(() => super.editPortfolio());
+  }
+
+  final _$deletePortfolioAsyncAction =
+      AsyncAction('_PortfolioStore.deletePortfolio');
+
+  @override
+  Future<void> deletePortfolio({required String portfolioId}) {
+    return _$deletePortfolioAsyncAction
+        .run(() => super.deletePortfolio(portfolioId: portfolioId));
+  }
+
+  final _$getPortfolioAsyncAction = AsyncAction('_PortfolioStore.getPortfolio');
+
+  @override
+  Future<void> getPortfolio({required String userId}) {
+    return _$getPortfolioAsyncAction
+        .run(() => super.getPortfolio(userId: userId));
+  }
+
   final _$_PortfolioStoreActionController =
       ActionController(name: '_PortfolioStore');
 
@@ -107,13 +140,36 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
   }
 
   @override
+  void setTitle(String value) {
+    final _$actionInfo = _$_PortfolioStoreActionController.startAction(
+        name: '_PortfolioStore.setTitle');
+    try {
+      return super.setTitle(value);
+    } finally {
+      _$_PortfolioStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setDescription(String value) {
+    final _$actionInfo = _$_PortfolioStoreActionController.startAction(
+        name: '_PortfolioStore.setDescription');
+    try {
+      return super.setDescription(value);
+    } finally {
+      _$_PortfolioStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 pageNumber: ${pageNumber},
 title: ${title},
 description: ${description},
 portfolioList: ${portfolioList},
-media: ${media}
+media: ${media},
+canSubmit: ${canSubmit}
     ''';
   }
 }

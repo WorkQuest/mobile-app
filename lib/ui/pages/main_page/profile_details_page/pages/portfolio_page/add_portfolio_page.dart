@@ -1,5 +1,7 @@
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
+import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -74,9 +76,18 @@ class AddPortfolioPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: Text("Save"),
+                        child: ObserverListener<PortfolioStore>(
+                          onSuccess: () => Navigator.pop(context),
+                          child: ElevatedButton(
+                            onPressed: store.canSubmit
+                                ? () async {
+                                    store.createPortfolio();
+                                  }
+                                : null,
+                            child: store.isLoading
+                                ? PlatformActivityIndicator()
+                                : Text("Save"),
+                          ),
                         ),
                       ),
                     ],
