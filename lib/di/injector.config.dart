@@ -15,7 +15,7 @@ import '../ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dar
     as _i6;
 import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i25;
 import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i12;
-import '../ui/pages/main_page/profile_reviews_page/pages/portfolio_page/store/portfolio_store.dart'
+import '../ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart'
     as _i13;
 import '../ui/pages/main_page/quest_details_page/employer/store/employer_store.dart'
     as _i11;
