@@ -8,6 +8,7 @@ import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/add_portfolio_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/pages/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
@@ -70,7 +71,9 @@ class Routes {
           builder: (context) => Provider(
             create: (context) => getIt.get<SignInStore>(),
             child: Directionality(
-                textDirection: checkDirection(context), child: SignInPage()),
+              textDirection: checkDirection(context),
+              child: SignInPage(),
+            ),
           ),
         );
 
@@ -79,7 +82,9 @@ class Routes {
           builder: (context) => Provider(
             create: (context) => getIt.get<SignUpStore>(),
             child: Directionality(
-                textDirection: checkDirection(context), child: SignUpPage()),
+              textDirection: checkDirection(context),
+              child: SignUpPage(),
+            ),
           ),
         );
 
@@ -88,7 +93,9 @@ class Routes {
           builder: (context) => Provider(
             create: (context) => getIt.get<PinCodeStore>(),
             child: Directionality(
-                textDirection: checkDirection(context), child: PinCodePage()),
+              textDirection: checkDirection(context),
+              child: PinCodePage(),
+            ),
           ),
         );
 
@@ -135,7 +142,9 @@ class Routes {
               ),
             ],
             child: Directionality(
-                textDirection: checkDirection(context), child: MainPage()),
+              textDirection: checkDirection(context),
+              child: MainPage(),
+            ),
           ),
         );
 
@@ -367,6 +376,19 @@ class Routes {
             child: Directionality(
                 textDirection: checkDirection(context),
                 child: AddPortfolioPage()),
+          ),
+        );
+
+      case PortfolioDetails.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<PortfolioStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: PortfolioDetails(
+                index: settings.arguments as int,
+              ),
+            ),
           ),
         );
 
