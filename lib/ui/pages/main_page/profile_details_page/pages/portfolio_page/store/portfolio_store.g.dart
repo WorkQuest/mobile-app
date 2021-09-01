@@ -54,6 +54,21 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
     });
   }
 
+  final _$portfolioListAtom = Atom(name: '_PortfolioStore.portfolioList');
+
+  @override
+  ObservableList<PortfolioModel> get portfolioList {
+    _$portfolioListAtom.reportRead();
+    return super.portfolioList;
+  }
+
+  @override
+  set portfolioList(ObservableList<PortfolioModel> value) {
+    _$portfolioListAtom.reportWrite(value, super.portfolioList, () {
+      super.portfolioList = value;
+    });
+  }
+
   final _$mediaAtom = Atom(name: '_PortfolioStore.media');
 
   @override
@@ -97,6 +112,7 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
 pageNumber: ${pageNumber},
 title: ${title},
 description: ${description},
+portfolioList: ${portfolioList},
 media: ${media}
     ''';
   }

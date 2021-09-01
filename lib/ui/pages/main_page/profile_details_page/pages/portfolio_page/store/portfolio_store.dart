@@ -1,4 +1,5 @@
 import 'package:app/http/api_provider.dart';
+import 'package:app/model/profile_response/portfolio.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
@@ -6,7 +7,7 @@ import 'package:mobx/mobx.dart';
 
 part 'portfolio_store.g.dart';
 
-@injectable
+@singleton
 class PortfolioStore extends _PortfolioStore with _$PortfolioStore {
   PortfolioStore(ApiProvider apiProvider) : super(apiProvider);
 }
@@ -24,6 +25,9 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
 
   @observable
   String description = '';
+
+  @observable
+  ObservableList<PortfolioModel> portfolioList = ObservableList();
 
   @observable
   ObservableList<DrishyaEntity> media = ObservableList();
@@ -69,7 +73,9 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> deletePortfolio() async {
+  Future<void> deletePortfolio({
+    required String portfolioId,
+  }) async {
     try {
       this.onLoading();
       await _apiProvider.deletePortfolio(
@@ -86,8 +92,10 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      await _apiProvider.getPortfolio(
-        userId: userId,
+      portfolioList.addAll(
+        await _apiProvider.getPortfolio(
+          userId: userId,
+        ),
       );
       this.onSuccess(true);
     } catch (e) {
