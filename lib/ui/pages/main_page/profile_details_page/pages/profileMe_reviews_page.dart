@@ -7,6 +7,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 
 class ProfileReviews extends StatefulWidget {
@@ -30,7 +31,9 @@ class _ProfileReviewsState extends State<ProfileReviews>
   );
 
   late TabController _tabController;
+
   ProfileMeStore? userStore;
+  PortfolioStore? portfolioStore;
 
   void initState() {
     super.initState();
@@ -39,10 +42,10 @@ class _ProfileReviewsState extends State<ProfileReviews>
       length: 2,
     );
     userStore = context.read<ProfileMeStore>();
-    print("iddddd${userStore!.userData!.id}");
-    context.read<PortfolioStore>().getPortfolio(
-          userId: userStore!.userData!.id,
-        );
+    portfolioStore = context.read<PortfolioStore>();
+    portfolioStore!.getPortfolio(
+      userId: userStore!.userData!.id,
+    );
   }
 
   @override
@@ -422,21 +425,29 @@ class _ProfileReviewsState extends State<ProfileReviews>
                       ),
 
                     Expanded(
-                      child: ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        //controller: _scrollController,
-                        padding: const EdgeInsets.only(
-                          top: 0.0,
+                      child: Observer(
+                        builder: (_) => ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.only(
+                            top: 0.0,
+                          ),
+                          itemCount: portfolioStore!.portfolioList.length,
+                          itemBuilder: (context, index) {
+                            return userStore.userData!.role == UserRole.Worker
+                                ? PortfolioWidget(
+                                    index: index,
+                                    imageUrl: portfolioStore!
+                                        .portfolioList[index].medias.first.url,
+                                    title: portfolioStore!
+                                        .portfolioList[index].title,
+                                  )
+                                : quest(
+                                    title: 'Paint the garage quickly',
+                                    description: "Paint the garage",
+                                    price: "1500",
+                                  );
+                          },
                         ),
-                        itemCount: 5,
-                        itemBuilder: (context, index) {
-                          return userStore.userData!.role == UserRole.Worker
-                              ? const PortfolioWidget()
-                              : quest(
-                                  title: 'Paint the garage quickly',
-                                  description: "Paint the garage",
-                                  price: "1500");
-                        },
                       ),
                     ),
                   ],
