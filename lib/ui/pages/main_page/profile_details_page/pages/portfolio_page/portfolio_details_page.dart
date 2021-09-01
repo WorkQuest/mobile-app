@@ -5,16 +5,18 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 
 class PortfolioDetails extends StatelessWidget {
-  PortfolioDetails({Key? key}) : super(key: key);
+  final int index;
+  static const String routeName = "/portfolioDetails";
+
+  const PortfolioDetails({required this.index});
 
   @override
   Widget build(BuildContext context) {
     final portfolioStore = context.read<PortfolioStore>();
-
-    return Observer(
-      builder: (_) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SafeArea(
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Observer(
+        builder: (_) => SafeArea(
           child: CustomScrollView(
             slivers: [
               CupertinoSliverNavigationBar(
@@ -66,20 +68,13 @@ class PortfolioDetails extends StatelessWidget {
                   height: 300,
                   child: PageView(
                     onPageChanged: portfolioStore.changePageNumber,
-                    children: [
-                      Image.asset(
-                        "assets/test_portfolio_page_image.png",
-                        fit: BoxFit.cover,
-                      ),
-                      Image.asset(
-                        "assets/test_portfolio_page_image.png",
-                        fit: BoxFit.cover,
-                      ),
-                      Image.asset(
-                        "assets/test_portfolio_page_image.png",
-                        fit: BoxFit.cover,
-                      ),
-                    ],
+                    children: portfolioStore.portfolioList[index].medias
+                        .map(
+                          (e) => Image.network(
+                            e.url,
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
               ),
@@ -96,7 +91,8 @@ class PortfolioDetails extends StatelessWidget {
                       child: ListView.builder(
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
-                        itemCount: 3,
+                        itemCount:
+                            portfolioStore.portfolioList[index].medias.length,
                         itemBuilder: (_, index) => Observer(
                           builder: (_) => index == portfolioStore.pageNumber
                               ? _indicator(true, context)
@@ -105,7 +101,7 @@ class PortfolioDetails extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Lorem ipsum dolor sit amet, consectetur",
+                      portfolioStore.portfolioList[index].title,
                       style: const TextStyle(
                         fontSize: 23,
                         fontWeight: FontWeight.w500,
@@ -115,13 +111,7 @@ class PortfolioDetails extends StatelessWidget {
                       height: 10.0,
                     ),
                     Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit ut "
-                      "aliquam, purus sit amet luctus venenatis, lectus magna "
-                      "fringilla urna, porttitor rhoncus dolor purus non enim "
-                      "praesent elementum facilisis leo, vel fringilla est"
-                      " ullamcorper eget nulla facilisi etiam dignissim diam "
-                      "quis enim lobortis scelerisque fermentum dui faucibus "
-                      "in ornare quam viverra",
+                      portfolioStore.portfolioList[index].description,
                       // style: const TextStyle(
                       //   fontSize: 23,
                       //   fontWeight: FontWeight.w500,
