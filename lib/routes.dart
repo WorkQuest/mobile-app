@@ -7,9 +7,9 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/add_portfolio_page.dart';
-import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/store/portfolio_store.dart';
-import 'package:app/ui/pages/main_page/profile_reviews_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/add_portfolio_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/pages/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/quest_employer_page.dart';
@@ -198,6 +198,9 @@ class Routes {
             providers: [
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<PortfolioStore>(),
               ),
             ],
             child: Directionality(
