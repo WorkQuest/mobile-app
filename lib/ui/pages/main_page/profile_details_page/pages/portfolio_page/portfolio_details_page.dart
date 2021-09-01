@@ -49,7 +49,12 @@ class PortfolioDetails extends StatelessWidget {
                         color: Colors.transparent,
                         child: IconButton(
                           padding: EdgeInsets.zero,
-                          onPressed: () {},
+                          onPressed: () async {
+                            await portfolioStore.deletePortfolio(
+                              portfolioId:
+                                  portfolioStore.portfolioList[index].id,
+                            );
+                          },
                           icon: Icon(
                             Icons.delete_forever,
                             color: Colors.redAccent,
