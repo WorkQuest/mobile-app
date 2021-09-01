@@ -1,76 +1,85 @@
-import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/portfolio_details_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 
 ///Portfolio Widget
 class PortfolioWidget extends StatelessWidget {
-  const PortfolioWidget();
+  final String title;
+  final String imageUrl;
+  final int index;
+
+  const PortfolioWidget({
+    required this.title,
+    required this.index,
+    required this.imageUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
+    return Observer(
+      builder: (_) => InkWell(
+        onTap: () {
+          Navigator.pushNamed(
             context,
-            MaterialPageRoute(
-              builder: (context) => Provider(
-                create: (context) => getIt.get<PortfolioStore>(),
-                child: PortfolioDetails(),
-              ),
-            ));
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          top: 10.0,
-        ),
-        child: Stack(
-          children: [
-            Container(
-              height: 230,
-              foregroundDecoration: BoxDecoration(
-                color: Colors.black38
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(6.0),
+            PortfolioDetails.routeName,
+            arguments: index,
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            top: 10.0,
+          ),
+          child: Stack(
+            children: [
+              Container(
+                height: 230,
+                width: double.maxFinite,
+                foregroundDecoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(6.0),
+                  ),
+                  color: Colors.black38,
                 ),
-                image: DecorationImage(
-                  image: AssetImage("assets/test_portfolio_page_image.png"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 15.0,
-              left: 21.0,
-              right: 55.0,
-              child: Text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing  elit ut aliquam ",
-                style: TextStyle(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(
+                      imageUrl,
+                    ),
+                  ),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(6.0),
+                  ),
                 ),
               ),
-            ),
-            Positioned(
+              Positioned(
                 bottom: 15.0,
-                right: 21.0,
-                child: Icon(
-                  Icons.arrow_right_sharp,
-                  color: Colors.white,
-                )),
-          ],
+                left: 21.0,
+                right: 55.0,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Positioned(
+                  bottom: 15.0,
+                  right: 21.0,
+                  child: Icon(
+                    Icons.arrow_right_sharp,
+                    color: Colors.white,
+                  )),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-
 
 ///Reviews Widget
 class ReviewsWidget extends StatelessWidget {
@@ -604,13 +613,13 @@ Widget contactDetails({
             Icon(
               Icons.location_pin,
               size: 20.0,
-              color:const Color(0xFF7C838D),
+              color: const Color(0xFF7C838D),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: Text(
                 location,
-                style:const TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   color: const Color(0xFF7C838D),
                 ),
@@ -626,7 +635,7 @@ Widget contactDetails({
             Icon(
               Icons.phone,
               size: 20.0,
-              color:const Color(0xFF7C838D),
+              color: const Color(0xFF7C838D),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
@@ -695,49 +704,49 @@ Widget skills({required List<String> skills}) {
     children: skills
         .map(
           (item) => new ActionChip(
-        padding: EdgeInsets.symmetric(
-          vertical: 8.0,
-          horizontal: 10.0,
-        ),
-        onPressed: () => null,
-        label: Text(
-          item,
-          style: TextStyle(
-            fontSize: 16.0,
-            color: Color(0xFF0083C7),
+            padding: EdgeInsets.symmetric(
+              vertical: 8.0,
+              horizontal: 10.0,
+            ),
+            onPressed: () => null,
+            label: Text(
+              item,
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Color(0xFF0083C7),
+              ),
+            ),
+            backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
           ),
-        ),
-        backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
-      ),
-    )
+        )
         .toList()
-      ..add(
-        ActionChip(
-          padding: EdgeInsets.symmetric(
-            vertical: 10.0,
-            horizontal: 10.0,
-          ),
-          onPressed: () {},
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Add",
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.white,
-                ),
+          ..add(
+            ActionChip(
+              padding: EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 10.0,
               ),
-              Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 20,
+              onPressed: () {},
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Add",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ],
               ),
-            ],
+              backgroundColor: Color(0xFF0083C7),
+            ),
           ),
-          backgroundColor: Color(0xFF0083C7),
-        ),
-      ),
   );
 }
 
@@ -752,7 +761,10 @@ Widget experience({
       SizedBox(
         width: 10,
       ),
-      Text("${from!} - ${to!}",softWrap: true,),
+      Text(
+        "${from!} - ${to!}",
+        softWrap: true,
+      ),
     ],
   );
 }
