@@ -34,6 +34,7 @@ class _QuestListState extends State<QuestList> {
 
   @override
   void initState() {
+    super.initState();
     controller = ScrollController()..addListener(_scrollListener);
     questsStore = context.read<QuestsStore>();
     profileMeStore = context.read<ProfileMeStore>();
@@ -43,7 +44,6 @@ class _QuestListState extends State<QuestList> {
           );
       questsStore!.getQuests(profileMeStore!.userData!.id);
     });
-    super.initState();
   }
 
   @override
