@@ -4,6 +4,7 @@ import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
+import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/quest_map_point.dart';
@@ -218,9 +219,9 @@ extension QuestService on ApiProvider {
 
   Future<List<RespondModel>> responsesQuest(String id) async {
     try {
-      final responseData =
-          await _httpClient.get(query: '/v1/quest/$id/responses');
-
+      final responseData = await _httpClient.get(
+        query: '/v1/quest/$id/responses',
+      );
       return List<RespondModel>.from(
         responseData["responses"].map(
           (x) => RespondModel.fromJson(x),
@@ -559,11 +560,16 @@ extension Portfolio on ApiProvider {
     );
   }
 
-  Future<void> getPortfolio({
+  Future<List<PortfolioModel>> getPortfolio({
     required String userId,
   }) async {
-    await _httpClient.get(
+    final responseData = await _httpClient.get(
       query: '/v1/user/$userId/portfolio/cases',
+    );
+    return List<PortfolioModel>.from(
+      responseData.map(
+        (x) => PortfolioModel.fromJson(x),
+      ),
     );
   }
 }
