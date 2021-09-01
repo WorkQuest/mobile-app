@@ -1,7 +1,8 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
-import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/add_portfolio_page.dart';
-import 'package:app/ui/pages/main_page/profile_reviews_page/profile_widgets.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/add_portfolio_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/profile_widgets.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,6 +30,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
   );
 
   late TabController _tabController;
+  ProfileMeStore? userStore;
 
   void initState() {
     super.initState();
@@ -36,6 +38,11 @@ class _ProfileReviewsState extends State<ProfileReviews>
       vsync: this,
       length: 2,
     );
+    userStore = context.read<ProfileMeStore>();
+    print("iddddd${userStore!.userData!.id}");
+    context.read<PortfolioStore>().getPortfolio(
+          userId: userStore!.userData!.id,
+        );
   }
 
   @override

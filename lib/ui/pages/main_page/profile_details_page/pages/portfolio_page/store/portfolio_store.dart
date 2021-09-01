@@ -81,11 +81,13 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getPortfolio() async {
+  Future<void> getPortfolio({
+    required String userId,
+  }) async {
     try {
       this.onLoading();
-      await _apiProvider.deletePortfolio(
-        portfolioId: "",
+      await _apiProvider.getPortfolio(
+        userId: userId,
       );
       this.onSuccess(true);
     } catch (e) {

@@ -1,4 +1,4 @@
-import 'package:app/ui/pages/main_page/profile_reviews_page/pages/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
