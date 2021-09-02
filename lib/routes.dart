@@ -369,13 +369,16 @@ class Routes {
               child: ChangeLanguagePage()),
         );
 
-      case AddPortfolioPage.routeName:
+      case CreatePortfolioPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<PortfolioStore>(),
             child: Directionality(
-                textDirection: checkDirection(context),
-                child: AddPortfolioPage()),
+              textDirection: checkDirection(context),
+              child: CreatePortfolioPage(
+                allowEdit: settings.arguments as bool,
+              ),
+            ),
           ),
         );
 
