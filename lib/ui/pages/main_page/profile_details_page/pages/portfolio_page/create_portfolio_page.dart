@@ -11,7 +11,13 @@ final _spacer = const SizedBox(
   height: 10.0,
 );
 
-class AddPortfolioPage extends StatelessWidget {
+class CreatePortfolioPage extends StatelessWidget {
+  final bool allowEdit;
+
+  CreatePortfolioPage({
+    required this.allowEdit,
+  });
+
   static const String routeName = "/addPortfolioPage";
 
   @override
@@ -19,8 +25,8 @@ class AddPortfolioPage extends StatelessWidget {
     final store = context.read<PortfolioStore>();
     return Scaffold(
       appBar: CupertinoNavigationBar(
-        middle: const Text(
-          "Add Portfolio",
+        middle: Text(
+          allowEdit ? "Edit Portfolio" : "Add Portfolio",
         ),
       ),
       body: Observer(
@@ -37,6 +43,9 @@ class AddPortfolioPage extends StatelessWidget {
                     const Text("Title"),
                     _spacer,
                     TextFormField(
+                      initialValue: allowEdit
+                          ? store.portfolioList[store.portfolioIndex].title
+                          : "",
                       onChanged: store.setTitle,
                     ),
                     const SizedBox(
@@ -45,6 +54,10 @@ class AddPortfolioPage extends StatelessWidget {
                     const Text("Description"),
                     _spacer,
                     TextFormField(
+                      initialValue: allowEdit
+                          ? store
+                              .portfolioList[store.portfolioIndex].description
+                          : "",
                       //initialValue: store.description,
                       onChanged: store.setDescription,
                       keyboardType: TextInputType.multiline,
@@ -81,7 +94,13 @@ class AddPortfolioPage extends StatelessWidget {
                           child: ElevatedButton(
                             onPressed: store.canSubmit
                                 ? () async {
-                                    store.createPortfolio();
+                                    allowEdit
+                                        ? store.editPortfolio(
+                                            portfolioId: store
+                                                .portfolioList[
+                                                    store.portfolioIndex]
+                                                .id)
+                                        : store.createPortfolio();
                                   }
                                 : null,
                             child: store.isLoading
