@@ -17,6 +17,8 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
 
   _PortfolioStore(this._apiProvider);
 
+  int portfolioIndex = -1;
+
   @observable
   int pageNumber = 0;
 
@@ -34,10 +36,16 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
 
   @action
   void changePageNumber(int value) => pageNumber = value;
+
   @action
   void setTitle(String value) => title = value;
+
   @action
-  void setDescription(String value) => description = value;
+  void setDescription(String value) {
+    description = value;
+    print(value);
+    print(description);
+  }
 
   @action
   Future<void> createPortfolio() async {
@@ -55,12 +63,15 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
+
   @action
-  Future<void> editPortfolio() async {
+  Future<void> editPortfolio({
+    required String portfolioId,
+  }) async {
     try {
       this.onLoading();
       await _apiProvider.editPortfolio(
-        portfolioId: '',
+        portfolioId: portfolioId,
         title: title,
         description: description,
         media: await _apiProvider.uploadMedia(
@@ -104,6 +115,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
+
   @computed
   bool get canSubmit => title.isNotEmpty && description.isNotEmpty;
 }

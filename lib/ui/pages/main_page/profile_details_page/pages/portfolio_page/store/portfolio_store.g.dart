@@ -104,8 +104,9 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
       AsyncAction('_PortfolioStore.editPortfolio');
 
   @override
-  Future<void> editPortfolio() {
-    return _$editPortfolioAsyncAction.run(() => super.editPortfolio());
+  Future<void> editPortfolio({required String portfolioId}) {
+    return _$editPortfolioAsyncAction
+        .run(() => super.editPortfolio(portfolioId: portfolioId));
   }
 
   final _$deletePortfolioAsyncAction =
