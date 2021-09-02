@@ -1,8 +1,11 @@
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+
+import 'create_portfolio_page.dart';
 
 class PortfolioDetails extends StatelessWidget {
   final int index;
@@ -33,7 +36,14 @@ class PortfolioDetails extends StatelessWidget {
                         color: Colors.transparent,
                         child: IconButton(
                           padding: EdgeInsets.zero,
-                          onPressed: () {},
+                          onPressed: () async {
+                            await successAlert(
+                              context,
+                              "Success Message",
+                            );
+                            Navigator.of(context, rootNavigator: false)
+                                .popAndPushNamed(AddPortfolioPage.routeName);
+                          },
                           icon: Icon(
                             Icons.edit,
                             color: Theme.of(context).iconTheme.color,
@@ -148,7 +158,9 @@ class PortfolioDetails extends StatelessWidget {
           boxShadow: [
             isActive
                 ? BoxShadow(
-                    color: Theme.of(context).primaryColor.withOpacity(0.72),
+                    color: Theme.of(context).primaryColor.withOpacity(
+                          0.72,
+                        ),
                     blurRadius: 4.0,
                     spreadRadius: 1.0,
                     offset: Offset(
