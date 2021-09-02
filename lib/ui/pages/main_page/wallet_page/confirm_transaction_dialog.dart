@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 
 final TextStyle valueTextStyle = TextStyle(
   fontSize: 15.0,
@@ -33,11 +34,11 @@ Future confirmTransaction(
               ),
               actions: [
                 CupertinoDialogAction(
-                  child: Text('Confirm'),
+                  child: Text('meta.confirm'.tr()),
                 ),
                 CupertinoDialogAction(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('Cancel'),
+                  child: Text('meta.cancel'.tr()),
                 ),
               ],
             ),
@@ -59,11 +60,11 @@ Future confirmTransaction(
               actions: [
                 TextButton(
                   onPressed: () {},
-                  child: Text('Confirm'),
+                  child: Text('meta.confirm'.tr()),
                 ),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('Cancel'),
+                  child: Text('meta.cancel'.tr()),
                 ),
               ],
             ),
@@ -98,7 +99,7 @@ Widget content({
             height: 10.0,
           ),
           Text(
-            "Amount",
+            "modals.amount".tr(),
             style: titleTextStyle,
           ),
           Text(

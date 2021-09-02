@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 final _divider = const SizedBox(
   height: 15.0,
@@ -38,7 +39,7 @@ class RaiseViews extends StatelessWidget {
                 child: Text("Skip"),
               ),
               largeTitle: Text(
-                "Raise Views",
+                "raising-views.raisingViews".tr(),
               ),
             ),
             SliverPadding(
@@ -51,7 +52,7 @@ class RaiseViews extends StatelessWidget {
                   [
                     ///Period
                     Text(
-                      "Choose Period",
+                      "raising-views.choosePeriod".tr(),
                       style: TextStyle(
                         fontSize: 17.0,
                         fontWeight: FontWeight.w500,
@@ -83,7 +84,7 @@ class RaiseViews extends StatelessWidget {
                     ),
 
                     Text(
-                      "Choose Level",
+                      "raising-views.chooseLevel".tr(),
                       style: TextStyle(
                         fontSize: 17.0,
                         fontWeight: FontWeight.w500,

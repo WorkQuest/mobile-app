@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 class ProfileReviews extends StatefulWidget {
   static const String routeName = "/profileReviewPage";
@@ -193,7 +194,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 10.0),
                                 child: Text(
-                                  "Education",
+                                  "settings.educations".tr(),
                                   style: _style.copyWith(
                                     fontSize: 14,
                                   ),
@@ -235,7 +236,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 10.0),
                                 child: Text(
-                                  "Work Experience",
+                                  "settings.workExp".tr(),
                                   style: _style.copyWith(
                                     fontSize: 14,
                                   ),
@@ -322,15 +323,15 @@ class _ProfileReviewsState extends State<ProfileReviews>
                   tabs: <Widget>[
                     Tab(
                       child: Text(
-                        "Reviews",
+                        "profile.reviews".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
                     Tab(
                       child: Text(
                         userStore.userData!.role == UserRole.Worker
-                            ? "Portfolio"
-                            : "Quests",
+                            ? "profile.portfolio".tr()
+                            : "profile.sidebar.quests".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
@@ -704,7 +705,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                     ),
                   ),
                   Text(
-                    'Show all',
+                    'workers.showAll'.tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
                       color: Color(0xFF00AA5B),
@@ -731,7 +732,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Average rating',
+                    'workers.averageRating'.tr(),
                     style: TextStyle(fontSize: 16.0),
                   ),
                   Row(
@@ -752,7 +753,11 @@ class _ProfileReviewsState extends State<ProfileReviews>
                     ],
                   ),
                   Text(
-                    "From " + reviews + " reviews",
+                    "workers.from".tr() +
+                        " " +
+                        reviews +
+                        " " +
+                        "workers.reviews".tr(),
                     style: TextStyle(
                       color: Color(0xFFD8DFE3),
                       fontSize: 12.0,

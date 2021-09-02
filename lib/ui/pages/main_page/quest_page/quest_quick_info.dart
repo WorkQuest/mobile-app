@@ -3,6 +3,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dar
 import 'package:app/ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 class QuestQuickInfo extends StatefulWidget {
   QuestQuickInfo();
@@ -47,7 +48,7 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
           ),
           Spacer(),
           button(
-            title: "View all",
+            title: "workers.showAll".tr(),
             onPressed: () {},
           ),
         ],

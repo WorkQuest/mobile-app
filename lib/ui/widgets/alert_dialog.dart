@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
 
@@ -24,12 +25,12 @@ Future dialog(
               content: Text(message),
               actions: [
                 CupertinoDialogAction(
-                  child: Text('Confirm'),
+                  child: Text('meta.confirm'.tr()),
                   onPressed: confirmAction,
                 ),
                 CupertinoDialogAction(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('Cancel'),
+                  child: Text('meta.cancel'.tr()),
                 ),
               ],
             ),
@@ -46,11 +47,11 @@ Future dialog(
               actions: [
                 TextButton(
                   onPressed: confirmAction,
-                  child: Text('Confirm'),
+                  child: Text('meta.confirm'.tr()),
                 ),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('Cancel'),
+                  child: Text('meta.cancel'.tr()),
                 ),
               ],
             ),

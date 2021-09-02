@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 class ChangeProfilePage extends StatefulWidget {
   static const String routeName = "/ChangeProfilePage";
@@ -64,7 +65,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         ),
         centerTitle: true,
         actions: [
-          TextButton(onPressed: onSave, child: const Text("Save")),
+          TextButton(onPressed: onSave, child: Text("settings.save".tr())),
         ],
       ),
       body: ObserverListener<ProfileMeStore>(
@@ -85,35 +86,35 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         children: [
           changeImage(),
           inputBody(
-            title: "First name",
+            title: "labels.firstName".tr(),
             initialValue: pageStore.userData.firstName,
             onChanged: (text) => pageStore.userData.firstName = text,
           ),
           inputBody(
-            title: "Last name",
+            title: "labels.lastName".tr(),
             initialValue: pageStore.userData.lastName ?? "",
             onChanged: (text) => pageStore.userData.lastName = text,
           ),
           inputBody(
-            title: "Address",
+            title: "modals.address".tr(),
             initialValue: pageStore.userData.additionalInfo!.address ?? "",
             onChanged: (text) =>
                 pageStore.userData.additionalInfo!.address = text,
           ),
           inputBody(
-            title: "Phone",
+            title: "modals.phoneNumber".tr(),
             initialValue:
                 pageStore.userData.additionalInfo?.secondMobileNumber ?? "",
             onChanged: (text) =>
                 pageStore.userData.additionalInfo?.secondMobileNumber = text,
           ),
           inputBody(
-            title: "Email",
+            title: "signUp.email".tr(),
             initialValue: pageStore.userData.email ?? "",
             onChanged: (text) => pageStore.userData.email,
           ),
           inputBody(
-              title: "Title",
+              title: "modals.title".tr(),
               initialValue:
                   pageStore.userData.additionalInfo!.description ?? "",
               onChanged: (text) =>
@@ -124,14 +125,14 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           // ),
           // const SizedBox(height: 20),
           inputBody(
-            title: "Twitter",
+            title: "settings.twitterUsername".tr(),
             initialValue:
                 pageStore.userData.additionalInfo!.socialNetwork?.twitter ?? "",
             onChanged: (text) => pageStore
                 .userData.additionalInfo!.socialNetwork?.twitter = text,
           ),
           inputBody(
-            title: "Facebook",
+            title: "settings.facebookUsername".tr(),
             initialValue:
                 pageStore.userData.additionalInfo!.socialNetwork?.facebook ??
                     "",
@@ -139,7 +140,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 .userData.additionalInfo!.socialNetwork?.facebook = text,
           ),
           inputBody(
-            title: "LinkedIn",
+            title: "settings.linkedInUsername".tr(),
             initialValue:
                 pageStore.userData.additionalInfo!.socialNetwork?.linkedin ??
                     "",
@@ -147,7 +148,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 .userData.additionalInfo!.socialNetwork?.linkedin = text,
           ),
           inputBody(
-            title: "Instagram",
+            title: "settings.instagramUsername".tr(),
             initialValue:
                 pageStore.userData.additionalInfo!.socialNetwork?.instagram ??
                     "",
@@ -262,7 +263,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 content: Text("There are unsaved changes"),
                 actions: [
                   CupertinoDialogAction(
-                    child: Text("OK"),
+                    child: Text("meta.ok".tr()),
                     onPressed: Navigator.of(context).pop,
                   ),
                   CupertinoDialogAction(
@@ -270,7 +271,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     onPressed: onBack,
                   ),
                   CupertinoDialogAction(
-                    child: Text("Save"),
+                    child: Text("settings.save".tr()),
                     onPressed: onSave,
                   )
                 ],
@@ -280,7 +281,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 content: Text("There are unsaved changes"),
                 actions: [
                   TextButton(
-                    child: Text("OK"),
+                    child: Text("meta.ok".tr()),
                     onPressed: Navigator.of(context).pop,
                   ),
                   TextButton(
@@ -288,7 +289,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     onPressed: onBack,
                   ),
                   TextButton(
-                    child: Text("Save"),
+                    child: Text("settings.save".tr()),
                     onPressed: () {
                       Navigator.of(context).pop();
                       onSave();

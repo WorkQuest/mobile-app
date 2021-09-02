@@ -16,7 +16,6 @@ import '../ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dar
 import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i25;
 import '../ui/pages/main_page/create_quest_page/store/create_quest_store.dart'
     as _i10;
-import '../ui/pages/main_page/dispute_page/store/dispute_store.dart' as _i3;
 import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i13;
 import '../ui/pages/main_page/quest_details_page/employer/store/employer_store.dart'
     as _i12;
@@ -30,6 +29,8 @@ import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
     as _i16;
 import '../ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart'
     as _i21;
+import '../ui/pages/main_page/settings_page/pages/dispute_page/store/dispute_store.dart'
+    as _i3;
 import '../ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart'
     as _i17;
 import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i18;

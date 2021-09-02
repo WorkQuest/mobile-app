@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 class UserProfileReviews extends StatefulWidget {
   static const String routeName = "/profileReviewPage";
@@ -116,11 +117,12 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
                     )),
                     socialAccounts(),
                     contactDetails(
-                        location: userStore.userData?.additionalInfo?.address ?? " ",
-                        number: userStore
-                            .userData?.phone ?? " ",
+                        location:
+                            userStore.userData?.additionalInfo?.address ?? " ",
+                        number: userStore.userData?.phone ?? " ",
                         secondNumber: userStore
-                            .userData?.additionalInfo?.secondMobileNumber ?? " ",
+                                .userData?.additionalInfo?.secondMobileNumber ??
+                            " ",
                         email: userStore.userData?.email ?? " "),
                     if (userStore.userData?.role == UserRole.Worker)
                       skills([
@@ -156,13 +158,13 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
                   tabs: <Widget>[
                     Tab(
                       child: Text(
-                        "Reviews",
+                        "profile.reviews".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
                     Tab(
                       child: Text(
-                        "Portfolio",
+                        "profiles.portfolio".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
@@ -225,7 +227,7 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
         ),
         child: TextButton(
           child: Text(
-            "Send a request",
+            "modals.SendARequest".tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: 16.0,
@@ -352,7 +354,7 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
     required String location,
     required String number,
     required String email,
-     String? secondNumber,
+    String? secondNumber,
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0),
@@ -502,7 +504,7 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "Add",
+                            "settings.add".tr(),
                             style: TextStyle(
                               fontSize: 16.0,
                               color: Colors.white,
@@ -555,7 +557,7 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Completed quests',
+                    'quests.completedQuests'.tr(),
                     style: TextStyle(fontSize: 16.0),
                   ),
                   Text(
@@ -567,7 +569,7 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
                     ),
                   ),
                   Text(
-                    'Show all',
+                    'workers.showAll'.tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
                       color: Color(0xFF00AA5B),
@@ -594,7 +596,7 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Average rating',
+                    'workers.averageRating'.tr(),
                     style: TextStyle(fontSize: 16.0),
                   ),
                   Row(
@@ -615,7 +617,11 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
                     ],
                   ),
                   Text(
-                    "From " + reviews + " reviews",
+                    "workers.from".tr() +
+                        " " +
+                        reviews +
+                        " " +
+                        "workers.reviews",
                     style: TextStyle(
                       color: Color(0xFFD8DFE3),
                       fontSize: 12.0,
@@ -720,7 +726,7 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
                 text: TextSpan(
                   children: [
                     TextSpan(
-                        text: "Quest    ",
+                        text: "profile.quests".tr() + "    ",
                         style: TextStyle(
                           color: Colors.black,
                         )),
@@ -820,9 +826,9 @@ class _UserProfileReviewsState extends State<UserProfileReviews>
             bottom: 18.0,
             left: 0.0,
             child: Text(
-              userStore.userData?.firstName ?? " " +
-                  "  " +
-                  userStore.userData?.lastName ?? " ",
+              userStore.userData?.firstName ??
+                  " " + "  " + userStore.userData?.lastName ??
+                  " ",
               style: TextStyle(
                 fontSize: 20.0,
                 color: Colors.white,

@@ -1,8 +1,8 @@
-import 'package:app/ui/pages/main_page/dispute_page/dispute_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/dispute_page/dispute_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
@@ -33,7 +33,9 @@ class SettingsPage extends StatelessWidget {
             CupertinoSliverNavigationBar(
               largeTitle: Row(
                 children: [
-                  Expanded(child: const Text("Profile")),
+                  Expanded(
+                    child: Text("ui.profile.myProfile".tr()),
+                  ),
                   InkWell(
                     onTap: () =>
                         Navigator.of(context, rootNavigator: true).push(
@@ -71,7 +73,7 @@ class SettingsPage extends StatelessWidget {
                                   ),
                                   20.0,
                                 ),
-                                title: "Change\nPassword",
+                                title: "settings.changePass".tr(),
                                 onTap: () {
                                   Navigator.of(context, rootNavigator: true)
                                       .pushNamed(
@@ -90,7 +92,7 @@ class SettingsPage extends StatelessWidget {
                                   onChanged: (_) {},
                                   value: userStore.twoFAStatus ?? false,
                                 ),
-                                title: "2FA",
+                                title: "settings.2FA".tr(),
                                 onTap: () {
                                   Navigator.of(context, rootNavigator: true)
                                       .pushNamed(TwoFAPage.routeName);
@@ -112,7 +114,7 @@ class SettingsPage extends StatelessWidget {
                                     ),
                                     20.0,
                                   ),
-                                  title: "SMS \nVerification",
+                                  title: "settings.smsVerification2".tr(),
                                   onTap: () =>
                                       Navigator.of(context, rootNavigator: true)
                                           .pushNamed(
@@ -131,7 +133,7 @@ class SettingsPage extends StatelessWidget {
                                     ),
                                     20.0,
                                   ),
-                                  title: "Change \nRole",
+                                  title: "settings.changeRole".tr(),
                                   onTap: () {
                                     Navigator.of(context, rootNavigator: true)
                                         .pushNamed(
@@ -200,7 +202,7 @@ class SettingsPage extends StatelessWidget {
                 delegate: SliverChildListDelegate(
                   [
                     Text(
-                      "Instruments",
+                      "settings.instruments".tr(),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16.0,
@@ -209,35 +211,35 @@ class SettingsPage extends StatelessWidget {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    const InstrumentCard(
+                    InstrumentCard(
                       urlArgument: "pension",
                       iconPath: "assets/settings_pension_icon.svg",
-                      title: "Retirement program",
+                      title: "ui.menu.pension.title".tr(),
                     ),
-                    const InstrumentCard(
+                    InstrumentCard(
                       urlArgument: "referral",
                       iconPath: "assets/settings_referral_icon.svg",
-                      title: "Referral Program",
+                      title: "ui.menu.referral.title".tr(),
                     ),
-                    const InstrumentCard(
+                    InstrumentCard(
                       urlArgument: "insuring",
                       iconPath: "assets/settings_p2p_icon.svg",
-                      title: "P2P insurance",
+                      title: "ui.menu.p2p.title".tr(),
                     ),
-                    const InstrumentCard(
+                    InstrumentCard(
                       urlArgument: "savings",
                       iconPath: "assets/setting_saving_product_icon.svg",
-                      title: "Savings product",
+                      title: "ui.menu.savings.title".tr(),
                     ),
-                    const InstrumentCard(
+                    InstrumentCard(
                       urlArgument: "crediting",
                       iconPath: "assets/settings_wallet.svg",
-                      title: "Lending",
+                      title: "crediting.lending".tr(),
                     ),
-                    const InstrumentCard(
+                    InstrumentCard(
                       urlArgument: "mining",
                       iconPath: "assets/setting_chart.svg",
-                      title: "Liquidity mining",
+                      title: "settings.liquidityMining".tr(),
                     ),
                   ],
                 ),

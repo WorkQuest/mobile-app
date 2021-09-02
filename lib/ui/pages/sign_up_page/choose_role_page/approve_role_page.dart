@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ApproveRolePage extends StatelessWidget {
   final store;
@@ -22,7 +23,7 @@ class ApproveRolePage extends StatelessWidget {
     print('store: ${this.store.userRole}');
     return Scaffold(
       appBar: CupertinoNavigationBar(
-        previousPageTitle: "  back",
+        previousPageTitle: "  " + "meta.back".tr(),
         border: Border.fromBorderSide(BorderSide.none),
       ),
       body: Observer(
@@ -54,7 +55,7 @@ class ApproveRolePage extends StatelessWidget {
                   title: checkBoxText(
                     ctx,
                     urlLink: "docs/privacy.pdf",
-                    title: 'Privacy policy',
+                    title: 'privacy.privacyLink'.tr(),
                   ),
                 ),
                 CheckboxListTile(
@@ -65,7 +66,7 @@ class ApproveRolePage extends StatelessWidget {
                   title: checkBoxText(
                     ctx,
                     urlLink: "docs/terms.pdf",
-                    title: 'Terms & Conditions',
+                    title: 'privacy.termsLink'.tr(),
                   ),
                 ),
                 CheckboxListTile(
@@ -76,7 +77,7 @@ class ApproveRolePage extends StatelessWidget {
                   title: checkBoxText(
                     ctx,
                     urlLink: "docs/aml.pdf",
-                    title: "AML & CTF Policy",
+                    title: 'privacy.amlLink'.tr(),
                   ),
                 ),
                 Spacer(),
@@ -91,7 +92,7 @@ class ApproveRolePage extends StatelessWidget {
                     child: store.isLoading
                         ? PlatformActivityIndicator()
                         : Text(
-                            "I agree",
+                            "privacy.agree".tr(),
                           ),
                   ),
                 ),
@@ -112,7 +113,7 @@ class ApproveRolePage extends StatelessWidget {
     return Row(
       children: [
         Text(
-          'I agree with ',
+          'privacy.agree'.tr() + ' ',
           style: TextStyle(
             fontSize: 16.0,
             color: Color(0xFF1D2127),
@@ -148,7 +149,7 @@ class ApproveRolePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Worker",
+                  "role.worker".tr(),
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -158,7 +159,7 @@ class ApproveRolePage extends StatelessWidget {
                   height: 12,
                 ),
                 Text(
-                  "I want to search a tasks and working on freelance",
+                  "role.workerWant".tr(),
                   style: TextStyle(color: Colors.white),
                 ),
               ],
@@ -183,7 +184,7 @@ class ApproveRolePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Employer",
+                  "role.employer".tr(),
                   style: TextStyle(
                       color: Color(0xFF1D2127),
                       fontSize: 20,
@@ -193,7 +194,7 @@ class ApproveRolePage extends StatelessWidget {
                   height: 12,
                 ),
                 Text(
-                  "I want to make a tasks and looking for a workers",
+                  "role.employerWant".tr(),
                   style: TextStyle(color: Color(0xFF1D2127)),
                 ),
               ],

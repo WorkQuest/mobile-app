@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 final _divider = const SizedBox(
   height: 5.0,
@@ -43,7 +44,7 @@ class _DepositPageState extends State<DepositPage>
       resizeToAvoidBottomInset: false,
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
-        middle: Text("Deposit"),
+        middle: Text("wallet.deposit".tr()),
       ),
       body: CustomScrollView(
         physics: NeverScrollableScrollPhysics(),
@@ -64,13 +65,13 @@ class _DepositPageState extends State<DepositPage>
                   tabs: <Widget>[
                     Tab(
                       child: Text(
-                        "Wallet address",
+                        "wallet.cryptoWallet".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
                     Tab(
                       child: Text(
-                        "Bank card",
+                        "wallet.bankCard".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
@@ -89,7 +90,7 @@ class _DepositPageState extends State<DepositPage>
 
                 ///Card Transfer
                 BankCardTransaction(
-                  transaction: "Deposit",
+                  transaction: "wallet.deposit".tr(),
                 ),
               ],
             ),
@@ -143,7 +144,7 @@ class _DepositPageState extends State<DepositPage>
                     height: 43.0,
                     child: OutlinedButton(
                       onPressed: () {},
-                      child: Text("Share"),
+                      child: Text("sharing.share".tr()),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(
                           width: 2.0,
@@ -158,9 +159,11 @@ class _DepositPageState extends State<DepositPage>
                 ),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () =>
-                        Clipboard.setData(new ClipboardData(text: "wallet Address"))
-                            .then((_) {
+                    onPressed: () => Clipboard.setData(
+                      new ClipboardData(
+                        text: "wallet.toThisAddress".tr(),
+                      ),
+                    ).then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           duration: Duration(seconds: 1),
@@ -181,5 +184,4 @@ class _DepositPageState extends State<DepositPage>
           ],
         ),
       );
-
 }

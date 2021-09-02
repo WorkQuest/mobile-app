@@ -1,8 +1,9 @@
-import 'package:app/ui/pages/main_page/dispute_page/store/dispute_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/dispute_page/store/dispute_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 class DisputePage extends StatefulWidget {
   static const String routeName = '/disputePage';
@@ -22,7 +23,7 @@ class _DisputePageState extends State<DisputePage> {
     return Scaffold(
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
-        middle: Text("Begin Dispute"),
+        middle: Text("modals.openADispute".tr()),
       ),
       body: CustomScrollView(
         slivers: [
@@ -107,7 +108,7 @@ class _DisputePageState extends State<DisputePage> {
                     ),
                   ),
                   titledField(
-                    "Description",
+                    "modals.description".tr(),
                     Container(
                       height: 200,
                       padding: EdgeInsets.symmetric(horizontal: 15),
@@ -125,10 +126,16 @@ class _DisputePageState extends State<DisputePage> {
                           textAlignVertical: TextAlignVertical.top,
                           expands: true,
                           decoration: InputDecoration(
-                            hintText: "Description",
+                            hintText: "modals.description".tr(),
                           ),
                         ),
                       ),
+                    ),
+                  ),
+                  Observer(
+                    builder: (_) => ElevatedButton(
+                      onPressed: store.isButtonEnable ? () {} : null,
+                      child: Text("modals.openADispute".tr()),
                     ),
                   ),
                 ],

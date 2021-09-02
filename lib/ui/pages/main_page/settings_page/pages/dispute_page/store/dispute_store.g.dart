@@ -9,6 +9,14 @@ part of 'dispute_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$DisputeStore on _DisputeStore, Store {
+  Computed<bool>? _$isButtonEnableComputed;
+
+  @override
+  bool get isButtonEnable =>
+      (_$isButtonEnableComputed ??= Computed<bool>(() => super.isButtonEnable,
+              name: '_DisputeStore.isButtonEnable'))
+          .value;
+
   final _$themeAtom = Atom(name: '_DisputeStore.theme');
 
   @override
@@ -84,7 +92,8 @@ mixin _$DisputeStore on _DisputeStore, Store {
     return '''
 theme: ${theme},
 themeValue: ${themeValue},
-description: ${description}
+description: ${description},
+isButtonEnable: ${isButtonEnable}
     ''';
   }
 }

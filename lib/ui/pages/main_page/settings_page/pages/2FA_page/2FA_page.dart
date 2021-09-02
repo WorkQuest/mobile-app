@@ -11,6 +11,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
 import 'package:url_launcher/url_launcher.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 final _spacer = Spacer();
 
@@ -28,7 +29,7 @@ class TwoFAPage extends StatelessWidget {
         builder: (_) => Scaffold(
           appBar: CupertinoNavigationBar(
             automaticallyImplyLeading: true,
-            middle: Text("2FA"),
+            middle: Text("settings.2FA".tr()),
           ),
           body: SafeArea(
             child: Padding(
@@ -74,7 +75,7 @@ class TwoFAPage extends StatelessWidget {
                           height: 10.0,
                         ),
                         Text(
-                          "Step ${store.index + 1}",
+                          "modals.step".tr() + " ${store.index + 1}",
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 23.0,
@@ -92,7 +93,7 @@ class TwoFAPage extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "Download and install the Google Authenticator app",
+                                    "modals.installGoogleAuth".tr(),
                                   ),
                                   CupertinoButton(
                                     onPressed: () {
@@ -118,8 +119,8 @@ class TwoFAPage extends StatelessWidget {
                                   ),
                                   _spacer,
                                   buttonRow(store,
-                                      forward: "Next",
-                                      back: "Cancel",
+                                      forward: "meta.next".tr(),
+                                      back: "meta.cancel".tr(),
                                       context: context),
                                 ],
                               ),
@@ -127,9 +128,7 @@ class TwoFAPage extends StatelessWidget {
                               ///Step 2
                               Column(
                                 children: [
-                                  Text("Please keep this key on paper."
-                                      " This key will allow you to restore your "
-                                      "Google Authenticator in case of phone loss."),
+                                  Text("modals.pleaseSaveThisKey".tr()),
                                   const SizedBox(
                                     height: 10.0,
                                   ),
@@ -182,8 +181,8 @@ class TwoFAPage extends StatelessWidget {
                                   ),
                                   _spacer,
                                   buttonRow(store,
-                                      forward: "Next",
-                                      back: "Back",
+                                      forward: "meta.next".tr(),
+                                      back: "meta.back".tr(),
                                       context: context),
                                 ],
                               ),
@@ -194,14 +193,15 @@ class TwoFAPage extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                      "Open the Google Authenticator app and paste your secret code"),
+                                    "securityCheck.confCodeDesc".tr(),
+                                  ),
                                   const SizedBox(
                                     height: 10.0,
                                   ),
                                   _spacer,
                                   buttonRow(store,
-                                      forward: "Next",
-                                      back: "Back",
+                                      forward: "meta.next".tr(),
+                                      back: "meta.back".tr(),
                                       context: context),
                                 ],
                               ),
@@ -210,7 +210,9 @@ class TwoFAPage extends StatelessWidget {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Enable Google Authenticator"),
+                                  Text(
+                                    "settings.enableTwoStepAuth".tr(),
+                                  ),
                                   const SizedBox(
                                     height: 25.0,
                                   ),
@@ -233,7 +235,9 @@ class TwoFAPage extends StatelessWidget {
                                   const SizedBox(
                                     height: 20.0,
                                   ),
-                                  Text("Code from Google Authenticator"),
+                                  Text(
+                                    "modals.googleConfCode".tr(),
+                                  ),
                                   TextFormField(
                                     onChanged: store.setCodeFromAuthenticator,
                                     decoration: InputDecoration(
@@ -241,13 +245,13 @@ class TwoFAPage extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    "Enter the 6-digit code from the Google Authenticator app.",
+                                    "modals.enterCode".tr(),
                                   ),
                                   _spacer,
                                   buttonRow(
                                     store,
                                     forward: "Finish",
-                                    back: "Back",
+                                    back: "meta.back".tr(),
                                     userStore: userStore,
                                     context: context,
                                   ),
@@ -277,7 +281,7 @@ class TwoFAPage extends StatelessWidget {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Enter code from Google Authenticator app to disable 2FA"),
+          Text("modals.enterCode".tr()),
           const SizedBox(
             height: 10.0,
           ),
@@ -297,7 +301,7 @@ class TwoFAPage extends StatelessWidget {
             child: store.isLoading
                 ? PlatformActivityIndicator()
                 : Text(
-                    "Submit",
+                    "meta,submit".tr(),
                   ),
           )
         ],

@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 final List<Tx> txsList =
     List.generate(10, (index) => Tx(summa: 100, time: DateTime.now()));
@@ -27,7 +28,7 @@ class WalletPage extends StatelessWidget {
           slivers: [
             CupertinoSliverNavigationBar(
               largeTitle: Text(
-                "Wallet",
+                "ui.wallet".tr(),
               ),
               automaticallyImplyLeading: false,
             ),
@@ -88,7 +89,7 @@ class WalletPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Balance",
+                        "wallet.balance".tr(),
                         style: TextStyle(fontSize: 16),
                       ),
                       const SizedBox(
@@ -129,7 +130,9 @@ class WalletPage extends StatelessWidget {
                             context,
                             walletStore,
                           ),
-                          child: Text("Transfer"),
+                          child: Text(
+                            "wallet.transfer".tr(),
+                          ),
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(
                               width: 1.0,
@@ -150,7 +153,9 @@ class WalletPage extends StatelessWidget {
                             Navigator.of(context, rootNavigator: true)
                                 .pushNamed(DepositPage.routeName);
                           },
-                          child: Text("Deposit"),
+                          child: Text(
+                            "wallet.deposit".tr(),
+                          ),
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(
                               width: 1.0,
@@ -171,7 +176,9 @@ class WalletPage extends StatelessWidget {
                             Navigator.of(context, rootNavigator: true)
                                 .pushNamed(WithdrawPage.routeName);
                           },
-                          child: Text("Withdraw"),
+                          child: Text(
+                            "wallet.withdraw".tr(),
+                          ),
                         ),
                       ),
                     )
@@ -190,7 +197,7 @@ class WalletPage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(
-                  "Transaction",
+                  "mining.transactions".tr(),
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -225,7 +232,9 @@ class WalletPage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Send"),
+              Text(
+                "wallet.send".tr(),
+              ),
               const SizedBox(
                 height: 4,
               ),
@@ -299,7 +308,9 @@ class WalletPage extends StatelessWidget {
                     const SizedBox(
                       height: 15.0,
                     ),
-                    Text('Amount'),
+                    Text(
+                      'modals.amount'.tr(),
+                    ),
                     _divider,
                     TextFormField(
                       maxLines: 1,
@@ -323,13 +334,13 @@ class WalletPage extends StatelessWidget {
                       onPressed: store.canSubmit
                           ? () => confirmTransaction(
                                 context,
-                                transaction: "Transfer",
+                                transaction: "wallet.transfer".tr(),
                                 address: store.getAddress(),
                                 amount: store.getAmount(),
                                 fee: "0.15",
                               )
                           : null,
-                      child: Text("Transfer"),
+                      child: Text("wallet.transfer".tr()),
                     ),
                     _divider,
                   ],

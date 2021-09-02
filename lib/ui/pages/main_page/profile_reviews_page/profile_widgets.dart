@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../enums.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProfileWidgets {
 
@@ -233,7 +234,7 @@ class ProfileWidgets {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                        text: "Quest    ",
+                        text: "quests.quests".tr() + "    ",
                         style: TextStyle(
                           color: Colors.black,
                         )),
@@ -286,7 +287,7 @@ class ProfileWidgets {
               color: Color(0xFF0083C7),
             ),
             child: Text(
-              "Performed",
+              "quests.performed".tr(),
               style: TextStyle(color: Colors.white),
             ),
           ),

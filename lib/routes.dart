@@ -7,8 +7,6 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/create_quest_page/store/create_quest_store.dart';
-import 'package:app/ui/pages/main_page/dispute_page/dispute_page.dart';
-import 'package:app/ui/pages/main_page/dispute_page/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
@@ -28,6 +26,8 @@ import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.da
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/dispute_page/dispute_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/dispute_page/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';

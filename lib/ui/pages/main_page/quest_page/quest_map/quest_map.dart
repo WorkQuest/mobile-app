@@ -7,6 +7,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 class QuestMap extends StatefulWidget {
   final Function() changePage;
@@ -129,7 +130,7 @@ class _QuestMapState extends State<QuestMap> {
                 onPressed: Navigator.of(context).pop,
               ),
               CupertinoDialogAction(
-                child: Text("Settings"),
+                child: Text("ui.profile.settings".tr()),
                 onPressed: () {},
               ),
             ],

@@ -25,6 +25,9 @@ abstract class _DisputeStore with Store {
   @observable
   String description = '';
 
+  @computed
+  bool get isButtonEnable => themeValue.isNotEmpty && description.isNotEmpty;
+
   @action
   void setDescription(String value) => description = value;
 
@@ -46,7 +49,8 @@ abstract class _DisputeStore with Store {
             "Inconsistencies in the requirements for the description of the quest";
         break;
       case "The quest is completed but the employee / employer has not confirmed its completion":
-        themeValue = "The quest is completed but the employee / employer has not confirmed its completion";
+        themeValue =
+            "The quest is completed but the employee / employer has not confirmed its completion";
         break;
       case "Another reason":
         themeValue = "Another reason";

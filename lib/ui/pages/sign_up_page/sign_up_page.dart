@@ -35,7 +35,7 @@ class SignUpPage extends StatelessWidget {
 
     return Scaffold(
       appBar: CupertinoNavigationBar(
-        previousPageTitle: "back",
+        previousPageTitle: "  " + "signUp.back".tr(),
         border: Border.fromBorderSide(BorderSide.none),
       ),
       body: SingleChildScrollView(
@@ -53,7 +53,7 @@ class SignUpPage extends StatelessWidget {
                 Padding(
                   padding: _padding.copyWith(top: 40.0),
                   child: Text(
-                    "auth.signIn.signUp".tr(),
+                    "signUp.title".tr(),
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w700,
@@ -70,7 +70,7 @@ class SignUpPage extends StatelessWidget {
                         "assets/user.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      hintText: "auth.signUp.firstName".tr(),
+                      hintText: "signUp.firstName".tr(),
                     ),
                   ),
                 ),
@@ -84,7 +84,7 @@ class SignUpPage extends StatelessWidget {
                         "assets/user.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      hintText: "auth.signUp.lastName".tr(),
+                      hintText: "signUp.lastName".tr(),
                     ),
                   ),
                 ),
@@ -105,7 +105,7 @@ class SignUpPage extends StatelessWidget {
                           color: Theme.of(context).iconTheme.color,
                         ),
                       ),
-                      hintText: "auth.signUp.email".tr(),
+                      hintText: "signUp.email".tr(),
                     ),
                   ),
                 ),
@@ -117,7 +117,7 @@ class SignUpPage extends StatelessWidget {
                     onChanged: store.setPassword,
                     decoration: InputDecoration(
                       prefixIconConstraints: _prefixConstraints,
-                      hintText: "auth.password".tr(),
+                      hintText: "signUp.password".tr(),
                       prefixIcon: SvgPicture.asset(
                         "assets/lock.svg",
                         color: Theme.of(context).iconTheme.color,
@@ -137,7 +137,7 @@ class SignUpPage extends StatelessWidget {
                         color: Theme.of(context).iconTheme.color,
                       ),
                       prefixIconConstraints: _prefixConstraints,
-                      hintText: "auth.signUp.repeatPassword".tr(),
+                      hintText: "signUp.confirmPassword".tr(),
                     ),
                   ),
                 ),
@@ -166,7 +166,7 @@ class SignUpPage extends StatelessWidget {
                           child: store.isLoading
                               ? PlatformActivityIndicator()
                               : Text(
-                                  "auth.signUp.createAccount".tr(),
+                                  "signUp.create".tr(),
                                 ),
                         );
                       },
@@ -182,7 +182,7 @@ class SignUpPage extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        "auth.signUp.alreadyHaveAccount".tr(),
+                        "signUp.haveAccount".tr(),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -193,7 +193,7 @@ class SignUpPage extends StatelessWidget {
                             Navigator.pop(context);
                           },
                           child: Text(
-                            "auth.signUp.signIn".tr(),
+                            "signUp.auth".tr(),
                             style: TextStyle(
                               color: Color(0xFF0083C7),
                             ),

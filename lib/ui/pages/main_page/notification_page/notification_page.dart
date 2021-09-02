@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class NotificationPage extends StatelessWidget {
   final List<String> item = List<String>.generate(10, (i) => 'Samantha Sparcs');
@@ -12,7 +13,7 @@ class NotificationPage extends StatelessWidget {
       slivers: [
         CupertinoSliverNavigationBar(
           largeTitle: Text(
-            "Notification",
+            "ui.notifications.title".tr(),
           ),
         ),
         SliverList(

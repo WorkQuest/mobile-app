@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'chat_room_page/chat_room_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage();
@@ -31,7 +32,7 @@ class _ChatPageState extends State<ChatPage> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             CupertinoSliverNavigationBar(
-              largeTitle: Text("Chat"),
+              largeTitle: Text("chat.chat".tr()),
               border: const Border.fromBorderSide(BorderSide.none),
               trailing: Container(
                 transform: Matrix4.translationValues(0, 50, 0),
@@ -107,7 +108,7 @@ class _ChatPageState extends State<ChatPage> {
                       const SizedBox(height: 5),
                       if (chatDetails.lastMessage != null)
                         Text(
-                          "You: ${chatDetails.lastMessage} " * 10,
+                          "chat.you:".tr() + " ${chatDetails.lastMessage} " * 10,
                           style: TextStyle(
                             fontSize: 14,
                             color: Color(0xFF7C838D),

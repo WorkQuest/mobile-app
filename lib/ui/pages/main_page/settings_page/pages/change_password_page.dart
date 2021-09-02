@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../../observer_consumer.dart';
 
@@ -23,7 +24,7 @@ class ChangePasswordPage extends StatelessWidget {
       builder: (_) => Scaffold(
         appBar: CupertinoNavigationBar(
           automaticallyImplyLeading: true,
-          middle: Text("Change Password"),
+          middle: Text("settings.changePass".tr()),
         ),
         body: CustomScrollView(
           slivers: [
@@ -32,20 +33,20 @@ class ChangePasswordPage extends StatelessWidget {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   titledTextField(
-                    title: "Old Password",
-                    hint: "Old Password",
+                    title: "modals.currentPassword".tr(),
+                    hint: "modals.currentPassword".tr(),
                     onChanged: settingsStore.setPassword,
                   ),
                   spacer,
                   titledTextField(
-                    title: "New Password",
-                    hint: "New Password",
+                    title: "modals.newPassword".tr(),
+                    hint: "modals.newPassword".tr(),
                     onChanged: settingsStore.setNewPassword,
                   ),
                   spacer,
                   titledTextField(
-                    title: "Confirm Password",
-                    hint: "Confirm new password",
+                    title: "modals.confirmNewPassword".tr(),
+                    hint: "modals.confirmNewPassword".tr(),
                     onChanged: settingsStore.setConfirmNewPassword,
                   ),
                   spacer,
@@ -65,7 +66,7 @@ class ChangePasswordPage extends StatelessWidget {
                                 : null,
                             child: settingsStore.isLoading
                                 ? PlatformActivityIndicator()
-                                : Text("Submit"),
+                                : Text("meta.submit".tr()),
                           );
                         },
                       ),

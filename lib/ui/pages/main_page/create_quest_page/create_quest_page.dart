@@ -11,10 +11,12 @@ import "package:provider/provider.dart";
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../../../observer_consumer.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CreateQuestPage extends StatefulWidget {
   static const String routeName = '/createQuestPage';
   final BaseQuestResponse? questInfo;
+
   CreateQuestPage({this.questInfo});
 
   @override
@@ -23,6 +25,7 @@ class CreateQuestPage extends StatefulWidget {
 
 class _CreateQuestPageState extends State<CreateQuestPage> {
   late final GalleryController gallController;
+
   //final _formKey = GlobalKey<FormState>();
 
   void initState() {
@@ -57,7 +60,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
           slivers: [
             CupertinoSliverNavigationBar(
               largeTitle: Text(
-                "${widget.questInfo == null ? "Create" : "Edit"} Quest",
+                widget.questInfo == null ? "quests.createAQuest".tr() : "Edit",
               ),
             ),
             SliverPadding(
@@ -71,7 +74,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                 delegate: SliverChildListDelegate(
                   [
                     titledField(
-                      "Priority",
+                      "settings.priority".tr(),
                       Container(
                         height: 50,
                         padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -102,7 +105,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 color: Colors.blueAccent,
                               ),
                               hint: Text(
-                                'Choose',
+                                'mining.choose'.tr(),
                                 maxLines: 1,
                                 style:
                                     TextStyle(fontSize: 16, color: Colors.grey),
@@ -113,7 +116,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       ),
                     ),
                     titledField(
-                      "Category",
+                      "quests.category".tr(),
                       Container(
                         height: 50,
                         padding: EdgeInsets.symmetric(horizontal: 15),
@@ -186,7 +189,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       ),
                     ),
                     titledField(
-                      "Address",
+                      "quests.address".tr(),
                       Container(
                         height: 50,
                         child: TextFormField(
@@ -215,7 +218,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               children: [
                                 Row(
                                   children: [
-                                    Text("Add Runtime"),
+                                    Text("quests.runtime".tr()),
                                     Checkbox(
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -228,7 +231,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 ),
                                 if (store.hasRuntime)
                                   titledField(
-                                    "Runtime",
+                                    "quests.runtime".tr(),
                                     Container(
                                       height: 50,
                                       padding: EdgeInsets.symmetric(
@@ -286,7 +289,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           initialValue: store.questTitle,
                           maxLines: 1,
                           decoration: InputDecoration(
-                            hintText: 'Title',
+                            hintText: 'modals.title'.tr(),
                           ),
                           style: TextStyle(
                             fontSize: 16,
@@ -350,7 +353,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       ),
                     ),
                     titledField(
-                      "Price",
+                      "quests.price".tr(),
                       Container(
                         height: 50,
                         child: TextFormField(
@@ -362,7 +365,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                           ],
                           decoration: InputDecoration(
-                            hintText: 'Price',
+                            hintText: 'quests.price'.tr(),
                           ),
                           style: TextStyle(
                             fontSize: 16,
@@ -393,7 +396,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             child: store.isLoading
                                 ? PlatformActivityIndicator()
                                 : Text(
-                                    'Create a quest',
+                                    'quests.createAQuest'.tr(),
                                     style: TextStyle(
                                       color: Colors.white,
                                     ),
@@ -510,7 +513,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Upload images \n or videos',
+              'quests.uploadQuestMaterials'.tr(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,

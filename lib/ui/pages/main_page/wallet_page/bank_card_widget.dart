@@ -1,6 +1,7 @@
 import 'package:app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 final _divider = const SizedBox(
   height: 5.0,
@@ -36,7 +37,7 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                   onPressed: () => bottomForm(
                     context,
                   ),
-                  child: Text("Add Card"),
+                  child: Text("wallet.addCard".tr()),
                 ),
               ],
             ),
@@ -110,7 +111,7 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                 });
               },
             ),
-            Text("Amount"),
+            Text("referral.tableHead.amount".tr()),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -247,10 +248,10 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                     ),
                     _divider,
                     titledTextBox(
-                      "Card HolderName",
+                      "modals.cardHolder".tr(),
                       TextFormField(
                         decoration: InputDecoration(
-                          hintText: "Name ",
+                          hintText: "labels.firstName".tr() + " ",
                         ),
                       ),
                     ),
@@ -260,7 +261,7 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                       children: [
                         Expanded(
                           child: titledTextBox(
-                            "Date",
+                            "modals.date".tr(),
                             TextFormField(
                               inputFormatters: [
                                 FilteringTextInputFormatter.allow(
@@ -301,7 +302,7 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                     _divider,
                     ElevatedButton(
                       onPressed: () {},
-                      child: Text("Add Card"),
+                      child: Text("modals.addCard".tr()),
                     ),
                     _divider,
                   ],

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 final _divider = const SizedBox(
   height: 5.0,
@@ -38,7 +39,7 @@ class _PaymentPageState extends State<PaymentPage>
     return Scaffold(
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
-        middle: Text("Payment"),
+        middle: Text("modals.payment".tr()),
       ),
       body: CustomScrollView(
         physics: NeverScrollableScrollPhysics(),
@@ -59,13 +60,13 @@ class _PaymentPageState extends State<PaymentPage>
                   tabs: <Widget>[
                     Tab(
                       child: Text(
-                        "Crypto address",
+                        "wallet.cryptoWallet".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
                     Tab(
                       child: Text(
-                        "Bank card",
+                        "wallet.bankCard".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
@@ -100,7 +101,7 @@ class _PaymentPageState extends State<PaymentPage>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Crypto address"),
+              Text("wallet.cryptoWallet".tr(),),
               _divider,
               ExpansionPanelList(
                 elevation: 0,
@@ -148,7 +149,7 @@ class _PaymentPageState extends State<PaymentPage>
               const SizedBox(
                 height: 15.0,
               ),
-              Text('Wallet'),
+              Text('wallet.wallet'.tr(),),
               _divider,
               ExpansionPanelList(
                 elevation: 0,

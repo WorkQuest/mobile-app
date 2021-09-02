@@ -6,6 +6,7 @@ import 'package:app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class QuestDetails extends StatefulWidget {
   static const String routeName = "/QuestDetails";
@@ -96,7 +97,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
               ],
             ),
             const SizedBox(height: 17),
-            tagItem("Painting works"),
+            tagItem("modals.paintingWork".tr()),
             inProgressBy(),
             const SizedBox(height: 15),
             Text(
@@ -115,8 +116,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
               height: 15,
             ),
             if (widget.questInfo.medias.isNotEmpty) ...[
-              const Text(
-                "Quest materials",
+              Text(
+                "quest.questMaterials".tr(),
                 style: TextStyle(
                     fontSize: 18,
                     color: Color(0xFF1D2127),
