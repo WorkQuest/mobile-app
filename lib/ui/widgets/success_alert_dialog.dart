@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-Future successAlert(BuildContext context) => showDialog(
+Future successAlert(BuildContext context, String message) => showDialog(
       context: context,
-      builder: (_) => FunkyOverlay(),
+      builder: (_) => FunkyOverlay(
+        messageText: message,
+      ),
     );
 
 class FunkyOverlay extends StatefulWidget {
+  final String messageText;
+
+  const FunkyOverlay({required this.messageText});
+
   @override
   State<StatefulWidget> createState() => FunkyOverlayState();
 }
@@ -22,7 +29,7 @@ class FunkyOverlayState extends State<FunkyOverlay>
     controller = AnimationController(
         vsync: this,
         duration: Duration(
-          milliseconds: 450,
+          milliseconds: 600,
         ));
     scaleAnimation = CurvedAnimation(
       parent: controller,
@@ -49,7 +56,25 @@ class FunkyOverlayState extends State<FunkyOverlay>
                     borderRadius: BorderRadius.circular(15.0))),
             child: Padding(
               padding: const EdgeInsets.all(50.0),
-              child: Text("Well hello there!"),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 60.0,
+                    width: 60.0,
+                    child:
+                       SvgPicture.asset(
+                        "assets/on_success_alert.svg",
+                      ),
+
+
+                  ),
+                  const SizedBox(
+                    height: 20.0 ,
+                  ),
+                  Text(widget.messageText),
+                ],
+              ),
             ),
           ),
         ),
