@@ -34,7 +34,11 @@ class WalletPage extends StatelessWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(
-                    left: 16, right: 16, top: 30, bottom: 20),
+                  left: 16,
+                  right: 16,
+                  top: 30,
+                  bottom: 20,
+                ),
                 child: Row(
                   children: [
                     Text(
