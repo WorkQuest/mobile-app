@@ -41,7 +41,7 @@ class PortfolioWidget extends StatelessWidget {
                   borderRadius: const BorderRadius.all(
                     Radius.circular(6.0),
                   ),
-                  color:  Colors.black38,
+                  color: Colors.black38,
                 ),
                 decoration: BoxDecoration(
                   image: DecorationImage(
@@ -51,7 +51,9 @@ class PortfolioWidget extends StatelessWidget {
                     ),
                   ),
                   borderRadius: const BorderRadius.all(
-                    Radius.circular(6.0),
+                    Radius.circular(
+                      6.0,
+                    ),
                   ),
                 ),
               ),
