@@ -1,6 +1,6 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/add_portfolio_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/profile_widgets.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
