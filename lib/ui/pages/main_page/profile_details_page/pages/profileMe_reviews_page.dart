@@ -399,7 +399,8 @@ class _ProfileReviewsState extends State<ProfileReviews>
                         child: OutlinedButton(
                           onPressed: () => Navigator.pushNamed(
                             context,
-                            AddPortfolioPage.routeName,
+                            CreatePortfolioPage.routeName,
+                            arguments: false,
                           ),
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(
