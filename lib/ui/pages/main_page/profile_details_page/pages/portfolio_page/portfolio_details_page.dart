@@ -1,5 +1,4 @@
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -37,12 +36,16 @@ class PortfolioDetails extends StatelessWidget {
                         child: IconButton(
                           padding: EdgeInsets.zero,
                           onPressed: () async {
-                            await successAlert(
-                              context,
-                              "Success Message",
-                            );
+                            // await successAlert(
+                            //   context,
+                            //   "Success Message",
+                            // );
+                            portfolioStore.portfolioIndex = index;
                             Navigator.of(context, rootNavigator: false)
-                                .popAndPushNamed(AddPortfolioPage.routeName);
+                                .popAndPushNamed(
+                              CreatePortfolioPage.routeName,
+                              arguments: true,
+                            );
                           },
                           icon: Icon(
                             Icons.edit,
