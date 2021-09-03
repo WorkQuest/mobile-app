@@ -46,7 +46,7 @@ void main() async {
         Locale('bn', 'BN'),
         Locale('fr', 'FR'),
         Locale('hi', 'HI'),
-        Locale('ad', 'ID'),
+        Locale('id', 'ID'),
         Locale('zh', 'ZH'),
       ],
 
