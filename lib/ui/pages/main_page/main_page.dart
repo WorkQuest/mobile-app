@@ -4,8 +4,6 @@ import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mobx/mobx.dart';
-
 import '../../../background_observer_page.dart';
 import '../../../routes.dart';
 import 'chat_page/chat_page.dart';
@@ -21,7 +19,7 @@ final fiveTabNavKey = GlobalKey<NavigatorState>();
 class MainPage extends StatelessWidget {
   static const String routeName = '/mainPage';
 
-  List<_TabBarIconData> _tabBarIconsData = [
+  final List<_TabBarIconData> _tabBarIconsData = [
     _TabBarIconData('assets/search.svg', 'quests.quests'.tr()),
     _TabBarIconData('assets/list.svg', 'quests.MyQuests'.tr()),
     _TabBarIconData('assets/message.svg', 'chat.chat'.tr()),
