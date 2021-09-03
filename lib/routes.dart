@@ -4,6 +4,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/dispute_page/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -30,8 +31,6 @@ import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/dispute_page/dispute_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/dispute_page/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
@@ -57,6 +56,7 @@ import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
 
 import 'di/injector.dart';
+import 'ui/pages/main_page/chat_page/dispute_page/dispute_page.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {

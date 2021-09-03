@@ -8,6 +8,8 @@ import "package:provider/provider.dart";
 import 'chat_room_page/chat_room_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import 'dispute_page/dispute_page.dart';
+
 class ChatPage extends StatefulWidget {
   const ChatPage();
 
@@ -32,17 +34,51 @@ class _ChatPageState extends State<ChatPage> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             CupertinoSliverNavigationBar(
-              largeTitle: Text("chat.chat".tr()),
-              border: const Border.fromBorderSide(BorderSide.none),
-              trailing: Container(
-                transform: Matrix4.translationValues(0, 50, 0),
-                child: InkWell(
-                  onTap: () {},
-                  child: Icon(
-                    Icons.more_vert,
+              largeTitle: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text("chat.chat".tr()),
                   ),
-                ),
+                  PopupMenuButton<String>(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                    ),
+                    itemBuilder: (BuildContext context) {
+                      return {'Starred message', 'Report', 'Create group chat'}
+                          .map((String choice) {
+                        return PopupMenuItem<String>(
+                          value: choice,
+                          enabled: false,
+                          child: TextButton(
+                            onPressed: () {
+                              switch (choice) {
+                                case "Starred message":
+                                  break;
+                                case "Report":
+                                  Navigator.pushNamed(
+                                      context, DisputePage.routeName,
+                                      arguments: store.selectedCategories[1]);
+                                  break;
+                                case "Create group chat":
+                                  break;
+                                default:
+                              }
+                            },
+                            child: Text(
+                              choice,
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList();
+                    },
+                  ),
+                ],
               ),
+              border: const Border.fromBorderSide(BorderSide.none),
             ),
           ];
         },
@@ -108,7 +144,8 @@ class _ChatPageState extends State<ChatPage> {
                       const SizedBox(height: 5),
                       if (chatDetails.lastMessage != null)
                         Text(
-                          "chat.you:".tr() + " ${chatDetails.lastMessage} " * 10,
+                          "chat.you:".tr() +
+                              " ${chatDetails.lastMessage} " * 10,
                           style: TextStyle(
                             fontSize: 14,
                             color: Color(0xFF7C838D),
