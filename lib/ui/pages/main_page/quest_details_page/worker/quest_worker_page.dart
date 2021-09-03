@@ -5,9 +5,11 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 class QuestWorker extends QuestDetails {
   final bool isMyQuest;
+
   QuestWorker(BaseQuestResponse questInfo, this.isMyQuest) : super(questInfo);
 
   @override
@@ -65,7 +67,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 ? Center(child: CircularProgressIndicator())
                 : TextButton(
                     onPressed: bottomForm,
-                    child: const Text("Send a request",
+                    child: Text("modals.requestSend".tr(),
                         style: TextStyle(color: Colors.white)),
                     style: ButtonStyle(
                       fixedSize:
@@ -127,7 +129,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 children: [
                   const SizedBox(height: 23),
                   Text(
-                    "Write a few words to the employer",
+                    "modals.reviewOnEmployer".tr(),
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 5),
@@ -154,7 +156,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Upload a images or videos"),
+                          Text(
+                            "modals.uploadAImages".tr(),
+                          ),
                           IconButton(
                               onPressed: () {}, icon: Icon(Icons.add_a_photo))
                         ],
@@ -167,7 +171,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       store.sendRespondOnQuest(textController.text);
                       Navigator.pop(context);
                     },
-                    child: const Text("Send a request",
+                    child: Text("modal.requestSend".tr(),
                         style: TextStyle(color: Colors.white)),
                     style: ButtonStyle(
                       fixedSize:

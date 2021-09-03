@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../observer_consumer.dart';
 
@@ -30,7 +31,7 @@ class ConfirmEmail extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CupertinoNavigationBar(
-        previousPageTitle: "  back",
+        previousPageTitle: "  " + "meta.back".tr(),
         border: Border.fromBorderSide(BorderSide.none),
       ),
       body: SafeArea(
@@ -55,7 +56,7 @@ class ConfirmEmail extends StatelessWidget {
                   height: 20,
                 ),
                 Text(
-                  "Code has been sent to your email",
+                  "registration.emailConfirm".tr(),
                   style: _style,
                 ),
                 _divider,
@@ -67,7 +68,7 @@ class ConfirmEmail extends StatelessWidget {
                 ),
                 _divider,
                 Text(
-                  "Check your email.",
+                  "registration.emailConfirmTitle".tr(),
                   style: _style,
                 ),
                 SizedBox(
@@ -75,7 +76,9 @@ class ConfirmEmail extends StatelessWidget {
                 ),
                 TextFormField(
                   onChanged: store.setCode,
-                  decoration: InputDecoration(hintText: "Code"),
+                  decoration: InputDecoration(
+                    hintText: "modals.emailVerificationCode".tr(),
+                  ),
                 ),
                 SizedBox(
                   height: 40.0,
@@ -97,7 +100,7 @@ class ConfirmEmail extends StatelessWidget {
                             : null,
                         child: store.isLoading
                             ? PlatformActivityIndicator()
-                            : Text("Submit"),
+                            : Text("meta.submit".tr()),
                       );
                     },
                   ),

@@ -4,6 +4,7 @@ import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:flutter/material.dart';
 import '../../../../enums.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class MyQuestsItem extends StatelessWidget {
   const MyQuestsItem(
@@ -138,12 +139,12 @@ class MyQuestsItem extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                "Active",
+                "quests.active".tr(),
                 style: TextStyle(color: Colors.white),
               ),
               Spacer(),
               Text(
-                "Runtime",
+                "quests.runtime".tr(),
                 style: TextStyle(color: Colors.white),
               ),
               SizedBox(
@@ -171,7 +172,7 @@ class MyQuestsItem extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                "You invited",
+                "quests.youInvited".tr(),
                 style: TextStyle(color: Colors.white),
               ),
             ],
@@ -213,7 +214,7 @@ class MyQuestsItem extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                "Performed",
+                "quests.performed".tr(),
                 style: TextStyle(color: Colors.white),
               ),
             ],

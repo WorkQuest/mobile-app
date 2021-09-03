@@ -2,6 +2,7 @@ import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProfileSettings extends StatelessWidget {
   final SettingsPageStore settingStore;
@@ -15,7 +16,7 @@ class ProfileSettings extends StatelessWidget {
         body: CustomScrollView(
           slivers: [
             CupertinoSliverNavigationBar(
-              largeTitle: const Text("Settings"),
+              largeTitle: Text("ui.profile.settings".tr()),
             ),
             SliverPadding(
               padding: EdgeInsets.all(10.0),
@@ -25,7 +26,7 @@ class ProfileSettings extends StatelessWidget {
                     _card(
                       [
                         Text(
-                          "Who can see my profile?",
+                          "settings.whoCanSee".tr(),
                           style: TextStyle(
                             fontSize: 16.0,
                           ),
@@ -33,19 +34,19 @@ class ProfileSettings extends StatelessWidget {
                         _radioTile(
                           value: 1,
                           groupValue: settingStore.privacy,
-                          title: "All registered users",
+                          title: "settings.allUsers".tr(),
                           onChanged: settingStore.changePrivacy,
                         ),
                         _radioTile(
                           value: 2,
                           groupValue: settingStore.privacy,
-                          title: "All people in internet",
+                          title: "settings.allInternet".tr(),
                           onChanged: settingStore.changePrivacy,
                         ),
                         _radioTile(
                           value: 3,
                           groupValue: settingStore.privacy,
-                          title: "Only when submitted work proposal",
+                          title: "settings.onlyWhenSubmittedWork".tr(),
                           onChanged: settingStore.changePrivacy,
                         ),
                       ],

@@ -30,6 +30,8 @@ import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/dispute_page/dispute_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/dispute_page/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
@@ -358,6 +360,17 @@ class Routes {
               textDirection: checkDirection(context),
               child: ChatRoomPage(settings.arguments as ChatModel,
                   getIt.get<ProfileMeStore>().userData!.id),
+            ),
+          ),
+        );
+
+      case DisputePage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<DisputeStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: DisputePage(),
             ),
           ),
         );

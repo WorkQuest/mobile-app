@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 import '../confirm_transaction_dialog.dart';
 
@@ -39,7 +40,7 @@ class _WithdrawPageState extends State<WithdrawPage>
     return Scaffold(
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
-        middle: Text("Withdraw"),
+        middle: Text("modals.withdraw".tr()),
       ),
       body: CustomScrollView(
         physics: NeverScrollableScrollPhysics(),
@@ -60,13 +61,13 @@ class _WithdrawPageState extends State<WithdrawPage>
                   tabs: <Widget>[
                     Tab(
                       child: Text(
-                        "Wallet address",
+                        "wallet.cryptoWallet".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
                     Tab(
                       child: Text(
-                        "Bank card",
+                        "wallet.bankCard".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
@@ -83,7 +84,7 @@ class _WithdrawPageState extends State<WithdrawPage>
                 walletTab(withdrawStore),
                 ///Card Transfer
                 BankCardTransaction(
-                  transaction: " Withdraw",
+                  transaction: " " + "modals.withdraw".tr(),
                 ),
               ],
             ),
@@ -111,7 +112,7 @@ class _WithdrawPageState extends State<WithdrawPage>
               const SizedBox(
                 height: 15.0,
               ),
-              Text('Amount'),
+              Text('modals.amount'.tr()),
               _divider,
               TextFormField(
                 onChanged: withdrawStore.setAmount,
@@ -134,13 +135,13 @@ class _WithdrawPageState extends State<WithdrawPage>
                 onPressed: withdrawStore.canSubmit
                     ? () => confirmTransaction(
                   context,
-                  transaction: "Withdraw",
+                  transaction: "modals.withdraw".tr(),
                   address: withdrawStore.getAddress(),
                   amount: withdrawStore.getAmount(),
                   fee: "0.15",
                 )
                     : null,
-                child: Text("Withdraw"),
+                child: Text("modals.withdraw".tr()),
               ),
               const SizedBox(
                 height: 20.0,

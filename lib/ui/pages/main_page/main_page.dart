@@ -9,6 +9,7 @@ import '../../../background_observer_page.dart';
 import '../../../routes.dart';
 import 'chat_page/chat_page.dart';
 import 'my_quests_page/my_quests_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 final firstTabNavKey = GlobalKey<NavigatorState>();
 final secondTabNavKey = GlobalKey<NavigatorState>();
@@ -16,12 +17,12 @@ final thirdTabNavKey = GlobalKey<NavigatorState>();
 final forthTabNavKey = GlobalKey<NavigatorState>();
 final fiveTabNavKey = GlobalKey<NavigatorState>();
 
-const _tabBarIconsData = [
-  const _TabBarIconData('assets/search.svg', 'Quest'),
-  const _TabBarIconData('assets/list.svg', 'My quests'),
-  const _TabBarIconData('assets/message.svg', 'Chat'),
-  const _TabBarIconData('assets/wallet_icon.svg', 'Wallet'),
-  const _TabBarIconData('assets/more.svg', 'More'),
+List<_TabBarIconData> _tabBarIconsData = [
+  _TabBarIconData('assets/search.svg', 'quests.quests'.tr()),
+  _TabBarIconData('assets/list.svg', 'quests.MyQuests'.tr()),
+  _TabBarIconData('assets/message.svg', 'chat.chat'.tr()),
+  _TabBarIconData('assets/wallet_icon.svg', 'wallet.wallet'.tr()),
+  _TabBarIconData('assets/more.svg', 'settings.more'.tr()),
 ];
 
 class MainPage extends StatelessWidget {
@@ -45,39 +46,44 @@ class MainPage extends StatelessWidget {
               .toList(),
         ),
         tabBuilder: (context, index) {
-          switch (index){
-            case 0 : return CupertinoTabView(
+          switch (index) {
+            case 0:
+              return CupertinoTabView(
+                  onGenerateRoute: Routes.generateRoute,
+                  navigatorKey: firstTabNavKey,
+                  builder: (context) {
+                    return QuestPage();
+                  });
+            case 1:
+              return CupertinoTabView(
                 onGenerateRoute: Routes.generateRoute,
-                navigatorKey: firstTabNavKey,
+                navigatorKey: secondTabNavKey,
                 builder: (context) {
-                  return QuestPage();
-                });
-            case 1 : return CupertinoTabView(
-              onGenerateRoute: Routes.generateRoute,
-              navigatorKey: secondTabNavKey,
-              builder: (context) {
-                return MyQuestsPage();
-              },
-            );
-            case 2: return CupertinoTabView(
-              onGenerateRoute: Routes.generateRoute,
-              navigatorKey: thirdTabNavKey,
-              builder: (BuildContext context) => ChatPage(),
-            );
-            case 3:return CupertinoTabView(
-              onGenerateRoute: Routes.generateRoute,
-              navigatorKey: forthTabNavKey,
-              builder: (BuildContext context) {
-                return WalletPage();
-              },
-            );
-            default:return CupertinoTabView(
-              onGenerateRoute: Routes.generateRoute,
-              navigatorKey: fiveTabNavKey,
-              builder: (context) {
-                return SettingsPage();
-              },
-            );
+                  return MyQuestsPage();
+                },
+              );
+            case 2:
+              return CupertinoTabView(
+                onGenerateRoute: Routes.generateRoute,
+                navigatorKey: thirdTabNavKey,
+                builder: (BuildContext context) => ChatPage(),
+              );
+            case 3:
+              return CupertinoTabView(
+                onGenerateRoute: Routes.generateRoute,
+                navigatorKey: forthTabNavKey,
+                builder: (BuildContext context) {
+                  return WalletPage();
+                },
+              );
+            default:
+              return CupertinoTabView(
+                onGenerateRoute: Routes.generateRoute,
+                navigatorKey: fiveTabNavKey,
+                builder: (context) {
+                  return SettingsPage();
+                },
+              );
           }
         },
       ),

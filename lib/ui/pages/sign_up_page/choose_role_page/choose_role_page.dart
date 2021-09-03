@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'approve_role_page.dart';
 
@@ -17,7 +18,7 @@ class ChooseRolePage extends StatelessWidget {
 
     return Scaffold(
       appBar: CupertinoNavigationBar(
-        previousPageTitle: "  back",
+        previousPageTitle: "  " + "meta.back".tr(),
         border: Border.fromBorderSide(BorderSide.none),
       ),
       body: SafeArea(
@@ -30,7 +31,7 @@ class ChooseRolePage extends StatelessWidget {
                 height: 20,
               ),
               Text(
-                "Choose your role",
+                "role.choose".tr(),
                 style: TextStyle(
                   color: Color(0xFF1D2127),
                   fontSize: 30,
@@ -85,7 +86,7 @@ class ChooseRolePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Worker",
+                      "role.worker".tr(),
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -95,7 +96,7 @@ class ChooseRolePage extends StatelessWidget {
                       height: 12,
                     ),
                     Text(
-                      "I want to search a tasks and working on freelance",
+                      "role.workerWant".tr(),
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -129,7 +130,7 @@ class ChooseRolePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Employer",
+                      "role.employer".tr(),
                       style: TextStyle(
                           color: Color(0xFF1D2127),
                           fontSize: 20,
@@ -139,7 +140,7 @@ class ChooseRolePage extends StatelessWidget {
                       height: 12,
                     ),
                     Text(
-                      "I want to make a tasks and looking for a workers",
+                      "role.employerWant".tr(),
                       style: TextStyle(color: Color(0xFF1D2127)),
                     ),
                   ],

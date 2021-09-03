@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 class QuestList extends StatefulWidget {
   final Function() changePage;
@@ -83,7 +84,7 @@ class _QuestListState extends State<QuestList> {
         CupertinoSliverNavigationBar(
           largeTitle: Row(
             children: [
-              Expanded(child: const Text("Quests")),
+              Expanded(child: Text("quests.quests".tr())),
               InkWell(
                 onTap: () => Navigator.of(
                   context,
@@ -138,7 +139,7 @@ class _QuestListState extends State<QuestList> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.filter_list),
-                      const Text("Filters"),
+                       Text("quests.filters.title".tr()),
                     ],
                   ),
                 ),

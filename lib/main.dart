@@ -42,7 +42,15 @@ void main() async {
         Locale('en', 'US'),
         Locale('ru', 'RU'),
         Locale('ar', 'SA'),
+        Locale('es', 'ES'),
+        Locale('bn', 'BN'),
+        Locale('fr', 'FR'),
+        Locale('hi', 'HI'),
+        Locale('ad', 'ID'),
+        Locale('zh', 'ZH'),
       ],
+
+      startLocale: Locale('es', 'ES'),
       path: 'assets/lang',
     ),
   );

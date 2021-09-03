@@ -5,7 +5,9 @@ import 'package:easy_localization/easy_localization.dart';
 
 class SkillSpecializationSelection extends StatefulWidget {
   final SkillSpecializationController? controller;
+
   SkillSpecializationSelection({this.controller});
+
   @override
   _SkillSpecializationSelectionState createState() =>
       _SkillSpecializationSelectionState();
@@ -31,7 +33,7 @@ class _SkillSpecializationSelectionState
             OutlinedButton(
               onPressed: store.deleteSpices,
               child: Text(
-                "Delete",
+                "settings.delete".tr(),
                 style: const TextStyle(
                   fontSize: 16,
                   color: Color(0xFFDF3333),
@@ -49,7 +51,7 @@ class _SkillSpecializationSelectionState
             OutlinedButton(
               onPressed: store.addSpices,
               child: Text(
-                "Add specialization",
+                "settings.addSpec".tr(),
                 style: const TextStyle(
                   fontSize: 16,
                   color: Color(0xFF0083C7),
@@ -72,7 +74,7 @@ class _SkillSpecializationSelectionState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Specialization ${count + 1}"),
+        Text("settings.Specialization".tr() + " ${count + 1}"),
         const SizedBox(height: 5),
         getSpecializationSelector(count),
         const SizedBox(height: 20),
@@ -89,10 +91,12 @@ class _SkillSpecializationSelectionState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Skill"),
+        Text(
+          "skills.title".tr(),
+        ),
         const SizedBox(height: 5),
         getSelectorButton<String>(
-            plaseholder: "Choose",
+            plaseholder: "mining.choose".tr(),
             data: list,
             builder: (item) =>
                 Center(child: new Text("filter.$title.arg.$item".tr())),
@@ -119,7 +123,7 @@ class _SkillSpecializationSelectionState
     return getSelectorButton<Specialization>(
         plaseholder: store.selectedSpices[count]?.header != null
             ? "filter.${store.selectedSpices[count]?.header}.title".tr()
-            : "Choose",
+            : "mining.choose".tr(),
         data: list,
         builder: (item) =>
             Center(child: new Text("filter.${item.header}.title".tr())),
@@ -240,6 +244,7 @@ class _SkillSpecializationSelectionState
 
 class SkillSpecializationController {
   SkillSpecializationStore? store;
+
   setStore(SkillSpecializationStore s) {
     store = s;
   }

@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import '../../../../enums.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class MyQuestsPage extends StatefulWidget {
   MyQuestsPage();
+
   @override
   _MyQuestsPageState createState() => _MyQuestsPageState();
 }
@@ -17,6 +19,7 @@ class MyQuestsPage extends StatefulWidget {
 class _MyQuestsPageState extends State<MyQuestsPage> {
   MyQuestStore? myQuests;
   late UserRole role;
+
   @override
   void initState() {
     myQuests = context.read<MyQuestStore>();
@@ -40,14 +43,23 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                 (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 CupertinoSliverNavigationBar(
-                  largeTitle: Text("My quests"),
+                  largeTitle: Text("quests.MyQuests".tr()),
                   border: const Border.fromBorderSide(BorderSide.none),
                 ),
                 SliverPersistentHeader(
                   pinned: true,
                   delegate: _PersistentTabBar(role == UserRole.Worker
-                      ? ["Active", "Invited", "Performed", "Starred"]
-                      : ["Active", "Invited", "Performed"]),
+                      ? [
+                          "quests.active".tr(),
+                          "quests.invited".tr(),
+                          "quests.performed".tr(),
+                          "Starred"
+                        ]
+                      : [
+                          "quests.active".tr(),
+                          "quests.invited".tr(),
+                          "quests.performed".tr()
+                        ]),
                 ),
               ];
             },
@@ -98,6 +110,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
 
 class _PersistentTabBar extends SliverPersistentHeaderDelegate {
   final List<String> titles;
+
   const _PersistentTabBar(this.titles);
 
   @override

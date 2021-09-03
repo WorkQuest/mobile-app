@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:app/utils/storage.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 ///Instrument Card
 class InstrumentCard extends StatelessWidget {
@@ -147,8 +148,8 @@ Widget logOutButton(context) {
     onPressed: () {
       dialog(
         context,
-        title: "Log Out",
-        message: "Are you sure you want to log out ?",
+        title: "ui.profile.logout".tr(),
+        message: "modals.areYouSure".tr(),
         confirmAction: () {
           Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
             SignInPage.routeName,
@@ -159,7 +160,7 @@ Widget logOutButton(context) {
       );
     },
     child: Text(
-      "Logout",
+      "ui.profile.logout".tr(),
       style: TextStyle(
         color: Color(0xFFDF3333),
       ),

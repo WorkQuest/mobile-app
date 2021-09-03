@@ -3,15 +3,15 @@ import 'dart:ui';
 class Constants {
   static const Map<String, Locale> languageList = {
     "English": Locale('en', 'US'),
-    // "Mandarin Chinese": Locale('en', 'US'),
-    // "Hindi": Locale('en', 'US'),
-    // "Spanish": Locale('en', 'US'),
-    // "French": Locale('en', 'US'),
+    "Mandarin Chinese": Locale('zh', 'ZH'),
+    "Hindi": Locale('hi', 'HI'),
+    "Spanish": Locale('es', 'ES'),
+    "French": Locale('fr', 'FR'),
     "Standard Arabic": Locale('ar', 'SA'),
-    //"Bengali": Locale('en', 'US'),
+    "Bengali": Locale('bn', 'BN'),
     "Russian": Locale('ru', 'RU'),
     // "Portuguese": Locale('en', 'US'),
-    // "Indonesian ": Locale('en', 'US'),
+    "Indonesian ": Locale('id', 'ID'),
   };
   static const List<Color> priorityColors = [
     Color.fromRGBO(34, 204, 20, 1),

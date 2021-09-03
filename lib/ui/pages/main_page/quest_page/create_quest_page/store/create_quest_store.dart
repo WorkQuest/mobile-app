@@ -5,6 +5,7 @@ import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 part 'create_quest_store.g.dart';
 
@@ -19,28 +20,28 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   _CreateQuestStore(this.apiProvider);
 
   final List<String> questCategoriesList = [
-    "Retail / sales / purchasing",
-    "Transport / logistics / Construction",
-    "Telecommunications / Communication",
-    "Bars / restaurants",
-    "Law and accounting",
-    "Personnel management / HR",
-    "Security / safety",
+    "filters.items.1.title".tr(),
+    "filters.items.22.title".tr(),
+    "filters.items.17.title".tr(),
+    "filters.items.2.title".tr(),
+    "filters.items.14.title".tr(),
+    "filters.items.18.title".tr(),
+    "filters.items.19.title".tr(),
     "Home staff",
-    "Beauty / fitness / sport",
-    "Tourism / Leisure / Entertainment",
-    "Education",
-    "Culture / Arts",
-    "Medicine / Pharmacy",
+    "filters.items.24.title".tr(),
+    "filters.items.7.title".tr(),
+    "filters.items.12.title".tr(),
+    "filters.items.20.title".tr(),
+    "filters.items.16.title".tr(),
     " IT / Telecom / Computers",
-    " Banking / Finance / Insurance",
+    "filters.items.23.title".tr(),
     "Real Estate",
-    "Marketing / Advertising",
-    "Design / layout design",
+    "filters.items.26.title".tr(),
+    "filters.items.13.title".tr(),
     "Interior and exterior design / 3D visualization",
-    "Production / energy",
-    "Agriculture / agribusiness / forestry",
-    "Secretariat / document management",
+    "filters.items.25.title".tr(),
+    "filters.items.29.title".tr(),
+    "filters.items.6.title".tr(),
     "Early career / Students",
     "Service and life",
     "Work abroad",
@@ -50,9 +51,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   final List<String> priorityList = [
     "Choose",
-    "Low",
-    "Normal",
-    "Urgent",
+    "quests.priority.low".tr(),
+    "quests.priority.normal".tr(),
+    "quests.priority.urgent".tr(),
   ];
 
   static const List<String> months = [

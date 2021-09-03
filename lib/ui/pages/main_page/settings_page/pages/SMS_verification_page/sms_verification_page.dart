@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 class SMSVerificationPage extends StatelessWidget {
   static const String routeName = "/smsVerificationPage";
@@ -18,7 +19,7 @@ class SMSVerificationPage extends StatelessWidget {
         builder: (_) => Scaffold(
           appBar: CupertinoNavigationBar(
             automaticallyImplyLeading: true,
-            middle: Text("SMS Verification"),
+            middle: Text("modals.smsVerification".tr()),
           ),
           body: SafeArea(
             child: Padding(
@@ -32,7 +33,7 @@ class SMSVerificationPage extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Phone"),
+                      Text("modals.phoneNumber".tr()),
                       const SizedBox(
                         height: 10.0,
                       ),
@@ -57,14 +58,14 @@ class SMSVerificationPage extends StatelessWidget {
                             ? Center(
                                 child: PlatformActivityIndicator(),
                               )
-                            : Text("Submit"),
+                            : Text("meta.submit".tr()),
                       ),
                     ],
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Code"),
+                      Text("modals.codeFromSMS".tr()),
                       const SizedBox(
                         height: 10.0,
                       ),
@@ -73,7 +74,7 @@ class SMSVerificationPage extends StatelessWidget {
                         onChanged: store.setCode,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
-                          hintText: "Code",
+                          hintText: "modals.codeFromSMS".tr(),
                         ),
                       ),
                       Spacer(),
@@ -81,7 +82,7 @@ class SMSVerificationPage extends StatelessWidget {
                         children: [
                           OutlinedButton(
                             onPressed: () => store.index = 0,
-                            child: Text("Back"),
+                            child: Text("meta.back".tr()),
                             style: OutlinedButton.styleFrom(
                               side: BorderSide(
                                 width: 1.0,
@@ -105,7 +106,7 @@ class SMSVerificationPage extends StatelessWidget {
                                   ? Center(
                                       child: PlatformActivityIndicator(),
                                     )
-                                  : Text("Send Code"),
+                                  : Text("meta.send".tr()),
                             ),
                           ),
                         ],

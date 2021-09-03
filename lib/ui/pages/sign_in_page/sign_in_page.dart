@@ -70,7 +70,7 @@ class SignInPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "auth.signIn.welcomeTo".tr(),
+                              "signIn.welcomeToWorkQuest".tr(),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 34,
@@ -79,7 +79,7 @@ class SignInPage extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(top: 10.0),
                               child: Text(
-                                "auth.signIn.pleaseSignIn".tr(),
+                                "signIn.pleaseSignIn".tr(),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -155,7 +155,7 @@ class SignInPage extends StatelessWidget {
                               child: signInStore.isLoading
                                   ? PlatformActivityIndicator()
                                   : Text(
-                                      "auth.signIn.login".tr(),
+                                      "signIn.login".tr(),
                                     ),
                             );
                           },
@@ -167,7 +167,7 @@ class SignInPage extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 20.0),
                     child: Center(
                       child: Text(
-                        "or",
+                        "signIn.or".tr(),
                         style: TextStyle(
                           color: Color(0xFFCBCED2),
                         ),
@@ -187,7 +187,7 @@ class SignInPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Text(
-                          "auth.signIn.doNotHaveAccount".tr(),
+                          "signIn.account".tr(),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),
@@ -197,7 +197,7 @@ class SignInPage extends StatelessWidget {
                                   context, SignUpPage.routeName);
                             },
                             child: Text(
-                              "auth.signIn.signUp".tr(),
+                              "signIn.signUp".tr(),
                               style: TextStyle(
                                 color: Color(0xFF0083C7),
                               ),
@@ -218,7 +218,7 @@ class SignInPage extends StatelessWidget {
                         GestureDetector(
                           onTap: onForgotPasswordClicked,
                           child: Text(
-                            "auth.signIn.forgotPassword".tr(),
+                            "signIn.forgotYourPass".tr(),
                             style: TextStyle(
                               color: Color(0xFF0083C7),
                             ),

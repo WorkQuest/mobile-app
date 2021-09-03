@@ -7,6 +7,7 @@ import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 class QuestEmployer extends QuestDetails {
   QuestEmployer(BaseQuestResponse questInfo) : super(questInfo);
@@ -48,7 +49,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           }
         },
         itemBuilder: (BuildContext context) {
-          return {'Raise views', 'Edit', 'Delete'}.map((String choice) {
+          return {
+            'quests.raiseViews'.tr(),
+            'registration.edit'.tr(),
+            'settings.delete'.tr()
+          }.map((String choice) {
             return PopupMenuItem<String>(
               value: choice,
               child: Text(choice),
@@ -78,7 +83,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "In progress by:",
+            "quests.inProgressBy".tr(),
             style: TextStyle(color: const Color(0xFF7C838D), fontSize: 12),
           ),
           const SizedBox(height: 10),
@@ -117,8 +122,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   children: [
                     const SizedBox(height: 20),
                     if (store.respondedList!.isNotEmpty)
-                      const Text(
-                        "Responded",
+                      Text(
+                        "btn.responded".tr(),
                         style: TextStyle(
                             fontSize: 18,
                             color: Color(0xFF1D2127),
@@ -266,7 +271,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               borderRadius: BorderRadius.circular(3),
             ),
             child: Text(
-              "HIGHER LEVEL",
+              "levels.higher".tr(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 12,
