@@ -137,7 +137,7 @@ class _QuestListState extends State<QuestList> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.filter_list),
-                              Text("quests.filters.title".tr()),
+                              Text("quests.filter.btn".tr()),
                             ],
                           ),
                         ),

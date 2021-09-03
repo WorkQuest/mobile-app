@@ -4,6 +4,7 @@ import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobx/mobx.dart';
 
 import '../../../background_observer_page.dart';
 import '../../../routes.dart';
@@ -17,16 +18,16 @@ final thirdTabNavKey = GlobalKey<NavigatorState>();
 final forthTabNavKey = GlobalKey<NavigatorState>();
 final fiveTabNavKey = GlobalKey<NavigatorState>();
 
-List<_TabBarIconData> _tabBarIconsData = [
-  _TabBarIconData('assets/search.svg', 'quests.quests'.tr()),
-  _TabBarIconData('assets/list.svg', 'quests.MyQuests'.tr()),
-  _TabBarIconData('assets/message.svg', 'chat.chat'.tr()),
-  _TabBarIconData('assets/wallet_icon.svg', 'wallet.wallet'.tr()),
-  _TabBarIconData('assets/more.svg', 'settings.more'.tr()),
-];
-
 class MainPage extends StatelessWidget {
   static const String routeName = '/mainPage';
+
+  List<_TabBarIconData> _tabBarIconsData = [
+    _TabBarIconData('assets/search.svg', 'quests.quests'.tr()),
+    _TabBarIconData('assets/list.svg', 'quests.MyQuests'.tr()),
+    _TabBarIconData('assets/message.svg', 'chat.chat'.tr()),
+    _TabBarIconData('assets/wallet_icon.svg', 'wallet.wallet'.tr()),
+    _TabBarIconData('assets/more.svg', 'settings.more'.tr()),
+  ];
 
   @override
   Widget build(BuildContext context) {

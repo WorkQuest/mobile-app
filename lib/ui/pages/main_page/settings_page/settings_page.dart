@@ -2,7 +2,6 @@ import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dar
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/dispute_page/dispute_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
@@ -134,12 +133,7 @@ class SettingsPage extends StatelessWidget {
                                     20.0,
                                   ),
                                   title: "settings.changeRole".tr(),
-                                  onTap: () {
-                                    Navigator.of(context, rootNavigator: true)
-                                        .pushNamed(
-                                      DisputePage.routeName,
-                                    );
-                                  },
+                                  onTap: () {},
                                 ),
                               ],
                             ),

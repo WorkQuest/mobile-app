@@ -17,6 +17,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
   String _myId = "";
+
   _ChatStore(this._apiProvider) {
     WebSocket().setListener(this._handle);
   }
@@ -32,6 +33,13 @@ abstract class _ChatStore extends IStore<bool> with Store {
           .insert(0, MessageModel.fromJson(json["message"]["message"], ""));
     }
   }
+
+  @observable
+  List<String> selectedCategories = [
+    'Starred message',
+    'Report',
+    'Create group chat'
+  ];
 
   @observable
   List<ChatModel> chats = [];

@@ -9,6 +9,21 @@ part of 'chat_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ChatStore on _ChatStore, Store {
+  final _$selectedCategoriesAtom = Atom(name: '_ChatStore.selectedCategories');
+
+  @override
+  List<String> get selectedCategories {
+    _$selectedCategoriesAtom.reportRead();
+    return super.selectedCategories;
+  }
+
+  @override
+  set selectedCategories(List<String> value) {
+    _$selectedCategoriesAtom.reportWrite(value, super.selectedCategories, () {
+      super.selectedCategories = value;
+    });
+  }
+
   final _$chatsAtom = Atom(name: '_ChatStore.chats');
 
   @override
@@ -34,6 +49,7 @@ mixin _$ChatStore on _ChatStore, Store {
   @override
   String toString() {
     return '''
+selectedCategories: ${selectedCategories},
 chats: ${chats}
     ''';
   }
