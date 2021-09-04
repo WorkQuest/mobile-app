@@ -16,8 +16,6 @@ class DisputePage extends StatefulWidget {
 }
 
 class _DisputePageState extends State<DisputePage> {
-  final _descriptionController = TextEditingController();
-
   @override
   Widget build(context) {
     final store = context.read<DisputeStore>();
@@ -45,7 +43,11 @@ class _DisputePageState extends State<DisputePage> {
                       padding: EdgeInsets.symmetric(horizontal: 15),
                       decoration: BoxDecoration(
                         color: Color(0xFFF7F8FA),
-                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                        borderRadius: BorderRadius.all(
+                          const Radius.circular(
+                            6.0,
+                          ),
+                        ),
                       ),
                       alignment: Alignment.centerLeft,
                       child: Observer(
@@ -56,7 +58,7 @@ class _DisputePageState extends State<DisputePage> {
                               expand: false,
                               builder: (context, scrollController) =>
                                   ListView.separated(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                   horizontal: 20.0,
                                   vertical: 15.0,
                                 ),
@@ -121,7 +123,6 @@ class _DisputePageState extends State<DisputePage> {
                       child: Observer(
                         builder: (_) => TextField(
                           onChanged: (text) => store.setDescription(text),
-                          controller: _descriptionController,
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
                           textAlignVertical: TextAlignVertical.top,
