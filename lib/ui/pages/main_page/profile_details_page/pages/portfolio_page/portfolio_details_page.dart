@@ -1,5 +1,4 @@
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -16,6 +15,7 @@ class PortfolioDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final portfolioStore = context.read<PortfolioStore>();
+    portfolioStore.pageNumber = 0;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Observer(
@@ -37,10 +37,6 @@ class PortfolioDetails extends StatelessWidget {
                         child: IconButton(
                           padding: EdgeInsets.zero,
                           onPressed: () async {
-                            await successAlert(
-                              context,
-                              "Success Message",
-                            );
                             portfolioStore.portfolioIndex = index;
                             Navigator.of(context, rootNavigator: false)
                                 .popAndPushNamed(
@@ -104,6 +100,7 @@ class PortfolioDetails extends StatelessWidget {
                 ),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
+                    ///Image position indicator
                     Container(
                       alignment: Alignment.center,
                       height: 50,
@@ -119,6 +116,8 @@ class PortfolioDetails extends StatelessWidget {
                         ),
                       ),
                     ),
+
+                    ///Portfolio Title
                     Text(
                       portfolioStore.portfolioList[index].title,
                       style: const TextStyle(
@@ -129,6 +128,8 @@ class PortfolioDetails extends StatelessWidget {
                     const SizedBox(
                       height: 10.0,
                     ),
+
+                    ///Portfolio Description
                     Text(
                       portfolioStore.portfolioList[index].description,
                       // style: const TextStyle(
