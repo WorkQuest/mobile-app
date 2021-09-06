@@ -1,4 +1,5 @@
 import 'package:app/constants.dart';
+import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -36,7 +37,7 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
               (context, index) => RadioListTile(
                 value: Constants.languageList.values.elementAt(index),
                 groupValue: currentLocale,
-                onChanged: (value) {
+                onChanged: (value) async {
                   context.setLocale(
                     Constants.languageList.values.elementAt(index),
                   );
@@ -44,6 +45,9 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
                     currentLocale =
                         Constants.languageList.values.elementAt(index);
                   });
+                  await successAlert(
+                      context, "Language changed successfully".tr());
+                  Navigator.pop(context);
                 },
                 title: Text(
                   Constants.languageList.keys.elementAt(index),

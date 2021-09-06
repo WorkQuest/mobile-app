@@ -2,10 +2,12 @@ import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
+import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 final _spacer = const SizedBox(
   height: 10.0,
@@ -51,7 +53,7 @@ class CreatePortfolioPage extends StatelessWidget {
                     const SizedBox(
                       height: 16.0,
                     ),
-                    const Text("Description"),
+                    Text("modals.description".tr()),
                     _spacer,
                     TextFormField(
                       initialValue: allowEdit
@@ -72,7 +74,7 @@ class CreatePortfolioPage extends StatelessWidget {
                     const SizedBox(
                       height: 16.0,
                     ),
-                    const Text("Files"),
+                    Text("uploader.files".tr()),
                     _spacer,
                     MediaUpload(media: store.media)
                   ]),
@@ -101,11 +103,16 @@ class CreatePortfolioPage extends StatelessWidget {
                                                     store.portfolioIndex]
                                                 .id)
                                         : store.createPortfolio();
+                                    if (store.isSuccess) {
+                                      await successAlert(
+                                          context, "Portfolio created".tr());
+                                      Navigator.pop(context);
+                                    }
                                   }
                                 : null,
                             child: store.isLoading
                                 ? PlatformActivityIndicator()
-                                : Text("Save"),
+                                : Text("meta.save".tr()),
                           ),
                         ),
                       ),

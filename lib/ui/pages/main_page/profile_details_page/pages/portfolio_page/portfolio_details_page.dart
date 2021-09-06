@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 import 'create_portfolio_page.dart';
 
@@ -25,7 +26,7 @@ class PortfolioDetails extends StatelessWidget {
                 largeTitle: Row(
                   children: [
                     Expanded(
-                      child: Text("Portfolio"),
+                      child: Text("profile.portfolio".tr()),
                     ),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(
@@ -135,7 +136,7 @@ class PortfolioDetails extends StatelessWidget {
                       //   fontWeight: FontWeight.w500,
                       // ),
                     ),
-                    Text("Skills"),
+                    Text("skills.title".tr()),
                   ]),
                 ),
               )

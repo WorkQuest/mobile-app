@@ -1,7 +1,9 @@
+
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
+import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,6 @@ class CreateQuestPage extends StatefulWidget {
 }
 
 class _CreateQuestPageState extends State<CreateQuestPage> {
-
   void initState() {
     super.initState();
     if (widget.questInfo != null) {
@@ -298,6 +299,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         ),
                       ),
                     ),
+
                     ///Upload media
                     Padding(
                         padding: const EdgeInsets.only(
@@ -337,8 +339,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         child: Observer(
                           builder: (context) => ElevatedButton(
                             onPressed: store.canCreateQuest
-                                ? () {
+                                ? () async {
                                     store.createQuest();
+                                    if (store.isSuccess) {
+                                      await successAlert(context,
+                                          "Quest created successfully".tr());
+                                      Navigator.pop(context);
+                                    }
                                     // if (_formKey.currentState!.validate()) {
                                     //   store.createQuest();
                                     // }

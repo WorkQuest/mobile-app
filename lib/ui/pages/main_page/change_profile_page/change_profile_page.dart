@@ -4,6 +4,7 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/success_alert_dialog.dart';
 
 // import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:drishya_picker/drishya_picker.dart';
@@ -252,9 +253,13 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     Navigator.of(context).pop();
   }
 
-  onSave() {
+  onSave() async {
     if (!profile!.isLoading)
       profile!.changeProfile(pageStore.userData, media: pageStore.media);
+    if (profile!.isSuccess) {
+      await successAlert(context, "Profile changed successfully".tr());
+      Navigator.pop(context);
+    }
   }
 
   showDialog() {

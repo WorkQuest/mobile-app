@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>596179477933-13ljbpa12dk4t3pim5jb44tu12g62vn6.apps.googleusercontent.com</string>
+	<string>607554822192-vmkvp6s1otk7kj3eilmsc154kjrdqu28.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.596179477933-13ljbpa12dk4t3pim5jb44tu12g62vn6</string>
+	<string>com.googleusercontent.apps.607554822192-vmkvp6s1otk7kj3eilmsc154kjrdqu28</string>
 	<key>API_KEY</key>
-	<string>AIzaSyA5NJPAFDcidPI6GfFnz6E7wGJOcI0CJu0</string>
+	<string>AIzaSyCy-wMRiCG_JKohMc7XORicNjActTf9SqM</string>
 	<key>GCM_SENDER_ID</key>
-	<string>596179477933</string>
+	<string>607554822192</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.company.workquestapp</string>
 	<key>PROJECT_ID</key>
-	<string>workquest-93d56</string>
+	<string>work-quest-app</string>
 	<key>STORAGE_BUCKET</key>
-	<string>workquest-93d56.appspot.com</string>
+	<string>work-quest-app.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:596179477933:ios:24dac159411248f66b6d24</string>
+	<string>1:607554822192:ios:b5ab66ba76d323ec8c4df5</string>
 </dict>
 </plist>

@@ -4,6 +4,7 @@ import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.da
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
+import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
 import 'package:url_launcher/url_launcher.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 final _spacer = Spacer();
 
@@ -29,7 +31,7 @@ class TwoFAPage extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           appBar: CupertinoNavigationBar(
             automaticallyImplyLeading: true,
-            middle: Text("2FA"),
+            middle: Text("settings.2FA".tr()),
           ),
           body: SafeArea(
             child: Padding(
@@ -75,7 +77,7 @@ class TwoFAPage extends StatelessWidget {
                           height: 10.0,
                         ),
                         Text(
-                          "Step ${store.index + 1}",
+                          "modals.step".tr() + " ${store.index + 1}",
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 23.0,
@@ -129,7 +131,7 @@ class TwoFAPage extends StatelessWidget {
             child: store.isLoading
                 ? PlatformActivityIndicator()
                 : Text(
-                    "Submit",
+                    "meta,submit".tr(),
                   ),
           )
         ],
@@ -232,7 +234,7 @@ class Confirm2FAPages extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Download and install the Google Authenticator app",
+              "modals.installGoogleAuth".tr(),
             ),
             CupertinoButton(
               onPressed: () {
@@ -256,16 +258,17 @@ class Confirm2FAPages extends StatelessWidget {
               "Continue to next step if you already have Google Authenticator app",
             ),
             _spacer,
-            buttonRow(store, forward: "Next", back: "Cancel", context: context),
+            buttonRow(store,
+                forward: "meta.next".tr(),
+                back: "meta.cancel".tr(),
+                context: context),
           ],
         ),
 
         ///Step 2
         Column(
           children: [
-            Text("Please keep this key on paper."
-                " This key will allow you to restore your "
-                "Google Authenticator in case of phone loss."),
+            Text("modals.pleaseSaveThisKey".tr()),
             const SizedBox(
               height: 10.0,
             ),
@@ -313,7 +316,10 @@ class Confirm2FAPages extends StatelessWidget {
               ),
             ),
             _spacer,
-            buttonRow(store, forward: "Next", back: "Back", context: context),
+            buttonRow(store,
+                forward: "meta.next".tr(),
+                back: "meta.back".tr(),
+                context: context),
           ],
         ),
 
@@ -323,12 +329,16 @@ class Confirm2FAPages extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-                "Open the Google Authenticator app and paste your secret code"),
+              "securityCheck.confCodeDesc".tr(),
+            ),
             const SizedBox(
               height: 10.0,
             ),
             _spacer,
-            buttonRow(store, forward: "Next", back: "Back", context: context),
+            buttonRow(store,
+                forward: "meta.next".tr(),
+                back: "meta.back".tr(),
+                context: context),
           ],
         ),
 
@@ -336,7 +346,9 @@ class Confirm2FAPages extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Enable Google Authenticator"),
+            Text(
+              "settings.enableTwoStepAuth".tr(),
+            ),
             const SizedBox(
               height: 25.0,
             ),
@@ -359,7 +371,9 @@ class Confirm2FAPages extends StatelessWidget {
             const SizedBox(
               height: 20.0,
             ),
-            Text("Code from Google Authenticator"),
+            Text(
+              "modals.googleConfCode".tr(),
+            ),
             TextFormField(
               onChanged: store.setCodeFromAuthenticator,
               decoration: InputDecoration(
@@ -373,7 +387,7 @@ class Confirm2FAPages extends StatelessWidget {
             buttonRow(
               store,
               forward: "Finish",
-              back: "Back",
+              back: "meta.back".tr(),
               userStore: userStore,
               context: context,
             ),
@@ -445,6 +459,7 @@ class Confirm2FAPages extends StatelessWidget {
                       ? () async {
                           await store.confirm2FA();
                           if (store.isSuccess) {
+                            await successAlert(context, "2FA enabled");
                             Navigator.pop(context);
                             await userStore!.get2FAStatus();
                           }
