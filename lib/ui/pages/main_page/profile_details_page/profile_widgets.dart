@@ -1,6 +1,5 @@
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/portfolio_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 
 ///Portfolio Widget
@@ -17,8 +16,7 @@ class PortfolioWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) => InkWell(
+    return InkWell(
         onTap: () {
           Navigator.pushNamed(
             context,
@@ -27,10 +25,9 @@ class PortfolioWidget extends StatelessWidget {
           );
         },
         child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-            top: 10.0,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 10.0
           ),
           child: Stack(
             children: [
@@ -78,8 +75,7 @@ class PortfolioWidget extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
