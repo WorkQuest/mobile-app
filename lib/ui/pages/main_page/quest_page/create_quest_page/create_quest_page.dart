@@ -23,7 +23,6 @@ class CreateQuestPage extends StatefulWidget {
 }
 
 class _CreateQuestPageState extends State<CreateQuestPage> {
-
   void initState() {
     super.initState();
     if (widget.questInfo != null) {
@@ -298,6 +297,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         ),
                       ),
                     ),
+
                     ///Upload media
                     Padding(
                         padding: const EdgeInsets.only(
