@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 part 'filter_quests_store.g.dart';
 
@@ -15,22 +16,35 @@ abstract class FilterQuestsStoreBase with Store {
   @observable
   List<FilterItem> filters = [];
 
+  @observable
+  List<String> sortBy = [
+    "filters.dd.1".tr(),
+    "filters.dd.2".tr(),
+    "filters.dd.3".tr(),
+    "filters.dd.4".tr(),
+    "filters.dd.5".tr(),
+    "filters.dd.6".tr(),
+    "filters.dd.7".tr(),
+  ];
+
   Future<Map<String, dynamic>> parseJsonFromAssets(String assetsPath) async {
     return jsonDecode(await rootBundle.loadString(assetsPath));
   }
 
   @action
   Future readFilters() async {
-    final json = await parseJsonFromAssets("assets/lang/en-US.json");
-    final filtersJson = json["filter"] as Map<String, dynamic>;
-    int i = 0;
+    final json = await parseJsonFromAssets("assets/lang/es-ES.json");
+    final filtersJson = json["filters"]["items"] as Map<String, dynamic>;
     filtersJson.forEach((key, value) {
       filters.add(FilterItem(
-          header: key,
-          list: (value["arg"] as Map<String, dynamic>).keys.toList(),
-          type: TypeFilter.values[i % 2]));
-      i++;
+          header: "items.$key",
+          list: (value["sub"] as Map<String, dynamic>).keys.toList(),
+          type: TypeFilter.Check));
     });
+    filters.insert(0, FilterItem(
+        header: "dd",
+        list: sortBy,
+        type: TypeFilter.Radio));
     isLoading = false;
   }
 }
@@ -39,8 +53,9 @@ class FilterItem {
   FilterItem({
     required this.list,
     required this.header,
-    this.type = TypeFilter.Radio,
+    this.type = TypeFilter.Check,
   });
+
   List<String> list;
   String header;
   TypeFilter type;

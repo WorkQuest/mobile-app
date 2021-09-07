@@ -39,6 +39,21 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     });
   }
 
+  final _$sortByAtom = Atom(name: 'FilterQuestsStoreBase.sortBy');
+
+  @override
+  List<String> get sortBy {
+    _$sortByAtom.reportRead();
+    return super.sortBy;
+  }
+
+  @override
+  set sortBy(List<String> value) {
+    _$sortByAtom.reportWrite(value, super.sortBy, () {
+      super.sortBy = value;
+    });
+  }
+
   final _$readFiltersAsyncAction =
       AsyncAction('FilterQuestsStoreBase.readFilters');
 
@@ -51,7 +66,8 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
   String toString() {
     return '''
 isLoading: ${isLoading},
-filters: ${filters}
+filters: ${filters},
+sortBy: ${sortBy}
     ''';
   }
 }

@@ -22,11 +22,23 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_sharp,
+        title: Text(
+          "Filters",
+          style: TextStyle(
+            fontSize: 17,
+            color: Color(0xFF1D2127),
           ),
-          onPressed: () => Navigator.of(context).pop(),
+        ),
+        centerTitle: true,
+        leading: Row(
+          children: [
+            IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios_sharp,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
         ),
       ),
       body: getBody(),
@@ -53,6 +65,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
 
 class ExpensionCell<T> extends StatefulWidget {
   final FilterItem filter;
+
   const ExpensionCell(this.filter);
 
   @override
@@ -62,6 +75,7 @@ class ExpensionCell<T> extends StatefulWidget {
 class _ExpensionCellState extends State<ExpensionCell> {
   List<bool> selected = [];
   String selectRadioValue = "";
+
   @override
   void initState() {
     setState(() {
@@ -72,13 +86,19 @@ class _ExpensionCellState extends State<ExpensionCell> {
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      title: Text("filter.${widget.filter.header}.title".tr()),
-      children: [
-        for (int i = 0; i < widget.filter.list.length; i++)
-          widget.filter.type == TypeFilter.Radio
-              ? getRadioButton(i)
-              : getCheckbox(i)
+    return Column(
+      children: <Widget>[
+        ExpansionTile(
+          title: widget.filter.type == TypeFilter.Check
+              ? Text("filters.${widget.filter.header}.title".tr())
+              : Text("Sort by"),
+          children: [
+            for (int i = 0; i < widget.filter.list.length; i++)
+              widget.filter.type == TypeFilter.Check
+                  ? getCheckbox(i)
+                  : getRadioButton(i)
+          ],
+        ),
       ],
     );
   }
@@ -99,7 +119,7 @@ class _ExpensionCellState extends State<ExpensionCell> {
           ),
           Expanded(
             child: Text(
-              "filter.${widget.filter.header}.arg.${widget.filter.list[index]}"
+              "filters.${widget.filter.header}.sub.${widget.filter.list[index]}"
                   .tr(),
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
@@ -114,7 +134,7 @@ class _ExpensionCellState extends State<ExpensionCell> {
   Widget getRadioButton(int index) {
     return RadioListTile<String>(
       title: Text(
-        "filter.${widget.filter.header}.arg.${widget.filter.list[index]}".tr(),
+        "filters.dd.${index + 1}".tr(),
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
         softWrap: false,
