@@ -29,24 +29,25 @@ class _SkillSpecializationSelectionState
       builder: (_) => Column(
         children: [
           for (int i = 0; i < store.numberOfSpices; i++) getSelector(i),
-          if (store.numberOfSpices != 0)
-            OutlinedButton(
-              onPressed: store.deleteSpices,
-              child: Text(
-                "settings.delete".tr(),
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFFDF3333),
+          if (store.selectedSkills.length != 0)
+            if (store.numberOfSpices != 0)
+              OutlinedButton(
+                onPressed: store.deleteSpices,
+                child: Text(
+                  "settings.delete".tr(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFFDF3333),
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  fixedSize: const Size.fromWidth(double.maxFinite),
+                  side: const BorderSide(
+                    width: 1.0,
+                    color: Color.fromRGBO(223, 51, 51, 0.1),
+                  ),
                 ),
               ),
-              style: OutlinedButton.styleFrom(
-                fixedSize: const Size.fromWidth(double.maxFinite),
-                side: const BorderSide(
-                  width: 1.0,
-                  color: Color.fromRGBO(223, 51, 51, 0.1),
-                ),
-              ),
-            ),
           if (store.numberOfSpices < 3)
             OutlinedButton(
               onPressed: store.addSpices,
@@ -74,7 +75,8 @@ class _SkillSpecializationSelectionState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("settings.Specialization".tr() + " ${count + 1}"),
+        SizedBox(height: 20),
+        Text("settings.specialization".tr() + " ${count + 1}"),
         const SizedBox(height: 5),
         getSpecializationSelector(count),
         const SizedBox(height: 20),
@@ -99,13 +101,13 @@ class _SkillSpecializationSelectionState
             plaseholder: "mining.choose".tr(),
             data: list,
             builder: (item) =>
-                Center(child: new Text("filter.$title.arg.$item".tr())),
+                Center(child: new Text("filters.items.$title.sub.$item".tr())),
             onSelect: (item) => store.selectedSkills[count]!.add(item)),
         const SizedBox(height: 10),
         Observer(
           builder: (_) => Wrap(
             children: store.selectedSkills[count]!
-                .map((str) => skillBody("filter.$title.arg.$str", () {
+                .map((str) => skillBody("filters.items.$title.sub.$str", () {
                       store.selectedSkills[count]!.remove(str);
                       setState(() {});
                     }))
@@ -122,11 +124,11 @@ class _SkillSpecializationSelectionState
         .toList();
     return getSelectorButton<Specialization>(
         plaseholder: store.selectedSpices[count]?.header != null
-            ? "filter.${store.selectedSpices[count]?.header}.title".tr()
+            ? "filters.items.${store.selectedSpices[count]?.header}.title".tr()
             : "mining.choose".tr(),
         data: list,
         builder: (item) =>
-            Center(child: new Text("filter.${item.header}.title".tr())),
+            Center(child: new Text("filters.items.${item.header}.title".tr())),
         onSelect: (item) {
           store.selectedSpices[count] = item;
           store.selectedSkills[count] = [];

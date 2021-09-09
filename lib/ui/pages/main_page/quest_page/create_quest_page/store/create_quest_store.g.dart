@@ -24,6 +24,36 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
               name: '_CreateQuestStore.canCreateQuest'))
           .value;
 
+  final _$employmentAtom = Atom(name: '_CreateQuestStore.employment');
+
+  @override
+  String get employment {
+    _$employmentAtom.reportRead();
+    return super.employment;
+  }
+
+  @override
+  set employment(String value) {
+    _$employmentAtom.reportWrite(value, super.employment, () {
+      super.employment = value;
+    });
+  }
+
+  final _$distantWorkAtom = Atom(name: '_CreateQuestStore.distantWork');
+
+  @override
+  String get distantWork {
+    _$distantWorkAtom.reportRead();
+    return super.distantWork;
+  }
+
+  @override
+  set distantWork(String value) {
+    _$distantWorkAtom.reportWrite(value, super.distantWork, () {
+      super.distantWork = value;
+    });
+  }
+
   final _$categoryAtom = Atom(name: '_CreateQuestStore.category');
 
   @override
@@ -307,8 +337,32 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
+  void changedEmployment(String selectedEmployment) {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.changedEmployment');
+    try {
+      return super.changedEmployment(selectedEmployment);
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void changedDistantWork(String selectedEmployment) {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.changedDistantWork');
+    try {
+      return super.changedDistantWork(selectedEmployment);
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
+employment: ${employment},
+distantWork: ${distantWork},
 category: ${category},
 categoryValue: ${categoryValue},
 priority: ${priority},

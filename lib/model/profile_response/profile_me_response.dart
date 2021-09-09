@@ -1,6 +1,7 @@
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/avatar.dart';
+import 'package:flutter/foundation.dart';
 // import 'package:app/model/profile_response/rating_statistic.dart';
 
 class ProfileMeResponse {
@@ -15,6 +16,7 @@ class ProfileMeResponse {
     required this.additionalInfo,
     required this.role,
     required this.avatar,
+    required this.skillFilters,
     // required this.ratingStatistic,
     // required this.createdAt,
     // required this.updatedAt,
@@ -30,6 +32,7 @@ class ProfileMeResponse {
   AdditionalInfo? additionalInfo;
   UserRole role;
   Avatar? avatar;
+  Map<String, List<String>> skillFilters;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(
@@ -45,6 +48,7 @@ class ProfileMeResponse {
               : null,
           role: object.role,
           avatar: object.avatar,
+          skillFilters: object.skillFilters,
         );
 
   //RatingStatistic? ratingStatistic;
@@ -52,6 +56,13 @@ class ProfileMeResponse {
   // DateTime updatedAt;
 
   factory ProfileMeResponse.fromJson(Map<String, dynamic> json) {
+    json.forEach((key, value) {
+      print("$key $value");
+    });
+    // Map<String,List<String>>   listSkills = {};
+    // json["skillFilters"].forEach((key, value) {
+    //   listSkills[key] =  List<String>.of(value.map((e)=>e as String)).toList();
+    // });
     return ProfileMeResponse(
       id: json["id"],
       avatarId: json["avatarId"] ?? "",
@@ -65,6 +76,7 @@ class ProfileMeResponse {
           : AdditionalInfo.fromJson(json["additionalInfo"]),
       role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
       avatar: Avatar.fromJson(json["avatar"]),
+      skillFilters: {},//listSkills,
       // ratingStatistic: RatingStatistic.fromJson(json["ratingStatistic"]),
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
@@ -82,8 +94,34 @@ class ProfileMeResponse {
         //"additionalInfo": additionalInfo!.toJson(),
         "role": role.toString().split(".").last,
         "avatar": avatar!.toJson(),
+        // "skillFilter": skillFilters.map((item) => item.toJson()),
         // "ratingStatistic": ratingStatistic!.toJson(),
         // "createdAt": createdAt.toIso8601String(),
         // "updatedAt": updatedAt.toIso8601String(),
+      };
+}
+
+class UserSkillFilters {
+  UserSkillFilters({required this.category, required this.skill});
+
+  String category;
+  String skill;
+
+  UserSkillFilters.clone(UserSkillFilters object)
+      : this(
+    category: object.category,
+    skill: object.skill,
+  );
+
+  factory UserSkillFilters.fromJson(Map<String, dynamic> json) {
+    return UserSkillFilters(
+      category: json["category"],
+      skill: json["skill"],
+    );
+  }
+
+  Map<String, String> toJson() => {
+        "category": category,
+        "skill": skill,
       };
 }

@@ -311,7 +311,9 @@ extension UserInfoService on ApiProvider {
               }
             ],
           if (userData.role == UserRole.Worker) "skills": [],
-        }
+        },
+        if (userData.role == UserRole.Worker)
+          "skillFilters": userData.skillFilters,
       };
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");
       final responseData =

@@ -5,6 +5,7 @@ import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 part 'profile_me_store.g.dart';
 
@@ -16,7 +17,7 @@ class ProfileMeStore extends _ProfileMeStore with _$ProfileMeStore {
 abstract class _ProfileMeStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _ProfileMeStore(this._apiProvider){
+  _ProfileMeStore(this._apiProvider) {
     get2FAStatus();
   }
 
@@ -24,6 +25,31 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   @observable
   bool? twoFAStatus;
+
+  @observable
+  String priority = "quests.priority.low".tr();
+
+  @observable
+  String distantWork = "Distant work";
+
+  final List<String> distantWorkList = [
+    "Distant work",
+    "Work in office",
+    "Both variant"
+  ];
+
+  final List<String> priorityList = [
+    "quests.priority.low".tr(),
+    "quests.priority.normal".tr(),
+    "quests.priority.urgent".tr(),
+  ];
+
+  @action
+  void changeDistantWork(String selectedDistantWork) =>
+      distantWork = selectedDistantWork;
+
+  @action
+  void changePriority(String selectedPriority) => priority = selectedPriority;
 
   @action
   Future getProfileMe() async {

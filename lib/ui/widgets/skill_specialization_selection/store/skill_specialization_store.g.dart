@@ -91,7 +91,7 @@ mixin _$SkillSpecializationStore on SkillSpecializationStoreBase, Store {
       AsyncAction('SkillSpecializationStoreBase.readSpecialization');
 
   @override
-  Future<dynamic> readSpecialization() {
+  Future<void> readSpecialization() {
     return _$readSpecializationAsyncAction
         .run(() => super.readSpecialization());
   }

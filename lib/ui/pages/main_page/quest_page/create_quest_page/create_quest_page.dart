@@ -1,8 +1,8 @@
-
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
+import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,6 +39,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
 
   Widget build(context) {
     final store = context.read<CreateQuestStore>();
+    SkillSpecializationController? _controller;
 
     return Form(
       //key: _formKey,
@@ -102,78 +103,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         ),
                       ),
                     ),
-                    titledField(
-                      "quests.category".tr(),
-                      Container(
-                        height: 50,
-                        padding: EdgeInsets.symmetric(horizontal: 15),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFF7F8FA),
-                          borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                        ),
-                        alignment: Alignment.centerLeft,
-                        child: Observer(
-                          builder: (_) => InkWell(
-                            onTap: () => modalBottomSheet(
-                              DraggableScrollableSheet(
-                                initialChildSize: 1.0,
-                                expand: false,
-                                builder: (context, scrollController) =>
-                                    ListView.separated(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 20.0,
-                                    vertical: 15.0,
-                                  ),
-                                  separatorBuilder: (context, index) =>
-                                      const Divider(
-                                    color: Colors.black12,
-                                    endIndent: 50.0,
-                                    indent: 50.0,
-                                  ),
-                                  controller: scrollController,
-                                  shrinkWrap: true,
-                                  itemCount: store.questCategoriesList.length,
-                                  itemBuilder: (context, index) => SizedBox(
-                                    height: 40.0,
-                                    width: double.maxFinite,
-                                    child: InkWell(
-                                      onTap: () {
-                                        store.changedCategory(
-                                            store.questCategoriesList[index]);
-                                        print("${store.category}");
-                                        Navigator.pop(context);
-                                      },
-                                      child: Center(
-                                        child: new Text(
-                                          store.questCategoriesList[index],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    store.category,
-                                    maxLines: 2,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.arrow_drop_down,
-                                  size: 30,
-                                  color: Colors.blueAccent,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                    SkillSpecializationSelection(
+                      controller: _controller,
                     ),
                     titledField(
                       "quests.address".tr(),
@@ -265,6 +196,91 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   ),
                               ],
                             )),
+
+                    titledField(
+                      "Employment",
+                      Container(
+                        height: 50,
+                        padding: EdgeInsets.symmetric(horizontal: 15.0),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFF7F8FA),
+                          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        child: Observer(
+                          builder: (_) => DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              isExpanded: true,
+                              value: store.employment,
+                              onChanged: (String? value) {
+                                store.changedEmployment(value!);
+                              },
+                              items: store.employmentList
+                                  .map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: new Text(value),
+                                );
+                              }).toList(),
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                size: 30,
+                                color: Colors.blueAccent,
+                              ),
+                              hint: Text(
+                                'mining.choose'.tr(),
+                                maxLines: 1,
+                                style:
+                                    TextStyle(fontSize: 16, color: Colors.grey),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    titledField(
+                      "Distant work",
+                      Container(
+                        height: 50,
+                        padding: EdgeInsets.symmetric(horizontal: 15.0),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFF7F8FA),
+                          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        child: Observer(
+                          builder: (_) => DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              isExpanded: true,
+                              value: store.distantWork,
+                              onChanged: (String? value) {
+                                store.changedDistantWork(value!);
+                              },
+                              items: store.distantWorkList
+                                  .map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: new Text(value),
+                                    );
+                                  }).toList(),
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                size: 30,
+                                color: Colors.blueAccent,
+                              ),
+                              hint: Text(
+                                'mining.choose'.tr(),
+                                maxLines: 1,
+                                style:
+                                TextStyle(fontSize: 16, color: Colors.grey),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     titledField(
                       "Quest Title",
                       Container(

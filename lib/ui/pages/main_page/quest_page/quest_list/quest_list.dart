@@ -117,7 +117,7 @@ class _QuestListState extends State<QuestList> {
             [
               const SizedBox(height: 20),
               //if (profileMeStore!.userData!.role == UserRole.Worker)
-                _getDivider(),
+              _getDivider(),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: OutlinedButton(
@@ -139,7 +139,7 @@ class _QuestListState extends State<QuestList> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.filter_list),
-                       Text("quests.filter.btn".tr()),
+                      Text("quests.filter.btn".tr()),
                     ],
                   ),
                 ),
@@ -168,8 +168,8 @@ class _QuestListState extends State<QuestList> {
                         },
                         padding: EdgeInsets.zero,
                         itemCount: questsStore!.searchWord.length > 2
-                            ? questsStore!.searchResultList!.length
-                            : questsStore!.questsList!.length,
+                            ? questsStore!.searchResultList?.length ?? 0
+                            : questsStore!.questsList?.length ?? 0,
                         itemBuilder: (_, index) {
                           return MyQuestsItem(
                             questsStore!.searchWord.length > 2

@@ -50,10 +50,21 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   ];
 
   final List<String> priorityList = [
-    "Choose",
     "quests.priority.low".tr(),
     "quests.priority.normal".tr(),
     "quests.priority.urgent".tr(),
+  ];
+
+  final List<String> employmentList = [
+    "Full time",
+    "Part time",
+    "Fixed term",
+  ];
+
+  final List<String> distantWorkList = [
+    "Distant work",
+    "Work in office",
+    "Both variant",
   ];
 
   static const List<String> months = [
@@ -74,13 +85,19 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   /// location, runtime, images and videos ,priority undone
 
   @observable
+  String employment = 'Full time';
+
+  @observable
+  String distantWork = 'Distant work';
+
+  @observable
   String category = 'Choose';
 
   @observable
   String categoryValue = 'other';
 
   @observable
-  String priority = 'Choose';
+  String priority = "quests.priority.low".tr();
 
   @observable
   bool hasRuntime = false;
@@ -227,9 +244,15 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   }
 
   @action
-  void changedPriority(String selectedPriority) {
-    priority = selectedPriority;
-  }
+  void changedPriority(String selectedPriority) => priority = selectedPriority;
+
+  @action
+  void changedEmployment(String selectedEmployment) =>
+      employment = selectedEmployment;
+
+  @action
+  void changedDistantWork(String selectedEmployment) =>
+      distantWork = selectedEmployment;
 
   @computed
   bool get canCreateQuest =>

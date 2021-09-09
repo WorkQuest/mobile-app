@@ -49,12 +49,12 @@ abstract class SkillSpecializationStoreBase with Store {
 
   @action
   Future readSpecialization() async {
-    final json = await parseJsonFromAssets("assets/lang/en-US.json");
-    final filtersJson = json["filter"] as Map<String, dynamic>;
+    final json = await parseJsonFromAssets("assets/lang/es-ES.json");
+    final filtersJson = json["filters"]["items"] as Map<String, dynamic>;
     filtersJson.forEach((key, value) {
       allSpices.add(Specialization(
         header: key,
-        list: (value["arg"] as Map<String, dynamic>).keys.toList(),
+        list: (value["sub"] as Map<String, dynamic>).keys.toList(),
       ));
     });
     isLoading = false;
