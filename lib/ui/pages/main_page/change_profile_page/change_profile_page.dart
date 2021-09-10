@@ -4,6 +4,8 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/knowledge_work_experience_selection/knowledge_selection.dart';
+import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 
 // import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
@@ -13,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+
+import '../../../../enums.dart';
 
 class ChangeProfilePage extends StatefulWidget {
   static const String routeName = "/ChangeProfilePage";
@@ -25,12 +29,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   ProfileMeStore? profile;
   late ChangeProfileStore pageStore;
 
-  // SkillSpecializationController? _controller;
+  SkillSpecializationController? _controller;
   late final GalleryController gallController;
 
   @override
   void initState() {
-    // _controller = SkillSpecializationController();
+    _controller = SkillSpecializationController();
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(
       ProfileMeResponse.clone(profile!.userData!),
@@ -126,10 +130,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               onChanged: (text) =>
                   pageStore.userData.additionalInfo!.description = text,
               maxLines: null),
-          // SkillSpecializationSelection(
-          //   controller: _controller,
-          // ),
-          // const SizedBox(height: 20),
+          if (pageStore.userData.role == UserRole.Worker)
+            SkillSpecializationSelection(
+              controller: _controller,
+            ),
           inputBody(
             title: "settings.twitterUsername".tr(),
             initialValue:
@@ -204,6 +208,31 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     );
   }
 
+  Widget fieldForWorker() {
+    return Column(
+      children: <Widget>[
+        dropDownMenu(
+          title: "settings.priority".tr(),
+          value: profile!.priority,
+          list: profile!.priorityList,
+          onChanged: (text) => profile!.changePriority(text!),
+        ),
+        inputBody(
+          title: "settings.costPerHour".tr(),
+          initialValue: "",
+          onChanged: (text) => text,
+        ),
+        dropDownMenu(
+          title: "settings.distantWork".tr(),
+          value: profile!.distantWork,
+          list: profile!.distantWorkList,
+          onChanged: (text) => profile!.changeDistantWork(text!),
+        ),
+        KnowledgeSelection()
+      ],
+    );
+  }
+
   Widget inputBody({
     required String title,
     required String initialValue,
@@ -241,6 +270,64 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     );
   }
 
+  Widget dropDownMenu({
+    required String title,
+    required String value,
+    required List<String> list,
+    required void Function(String?)? onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 10),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ),
+        Container(
+          height: 50,
+          padding: EdgeInsets.symmetric(horizontal: 15.0),
+          decoration: BoxDecoration(
+            color: Color(0xFFF7F8FA),
+            borderRadius: BorderRadius.all(Radius.circular(6.0)),
+          ),
+          alignment: Alignment.centerLeft,
+          child: Observer(
+            builder: (_) => DropdownButtonHideUnderline(
+              child: DropdownButton(
+                isExpanded: true,
+                value: value,
+                onChanged: onChanged,
+                items: list.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: new Text(value),
+                  );
+                }).toList(),
+                icon: Icon(
+                  Icons.arrow_drop_down,
+                  size: 30,
+                  color: Colors.blueAccent,
+                ),
+                hint: Text(
+                  title.tr(),
+                  maxLines: 1,
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
   Future showGallery() async {
     final picked = await gallController.pick(
       context,
@@ -255,7 +342,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
   onSave() async {
     if (!profile!.isLoading)
-      profile!.changeProfile(pageStore.userData, media: pageStore.media);
+      pageStore.userData.skillFilters =
+          _controller!.getSkillAndSpecialization();
+    profile!.changeProfile(pageStore.userData, media: pageStore.media);
     if (profile!.isSuccess) {
       await successAlert(context, "Profile changed successfully".tr());
       Navigator.pop(context);
@@ -310,4 +399,18 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       },
     );
   }
+
+  modalBottomSheet(Widget child) => showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(
+            20.0,
+          ),
+        ),
+      ),
+      context: context,
+      builder: (context) {
+        return child;
+      });
 }

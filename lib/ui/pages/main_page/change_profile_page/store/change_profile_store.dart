@@ -8,12 +8,13 @@ class ChangeProfileStore = ChangeProfileStoreBase with _$ChangeProfileStore;
 
 abstract class ChangeProfileStoreBase with Store {
   ChangeProfileStoreBase(this.userData);
+
   @observable
   ProfileMeResponse userData;
 
   @observable
   DrishyaEntity? media;
-  
+
   bool areThereAnyChanges(ProfileMeResponse? userData) {
     if (userData == null) return false;
 
@@ -48,5 +49,4 @@ abstract class ChangeProfileStoreBase with Store {
 
     return false;
   }
-
 }
