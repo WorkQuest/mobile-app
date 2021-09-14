@@ -187,7 +187,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                       fit: BoxFit.cover,
                     )
                   : Image.memory(
-                      pageStore.media!.bytes,
+                      pageStore.media!.thumbBytes,
                       height: 130,
                       width: 130,
                       fit: BoxFit.cover,

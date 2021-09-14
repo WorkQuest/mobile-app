@@ -54,6 +54,8 @@ dependencies:
   flutter_secure_storage: ^4.2.0
   webview_flutter: ^2.0.10
   flutter_countdown_timer: ^4.1.0
+  carousel_slider: ^4.0.0
+  dots_indicator: ^2.0.0
 
   #url & app launcher
   url_launcher: ^6.0.9

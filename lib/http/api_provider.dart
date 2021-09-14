@@ -405,7 +405,7 @@ extension GetUploadLink on ApiProvider {
         File? file = await media.entity.file;
         bytes = await file!.readAsBytes();
       } else
-        bytes = media.bytes;
+        bytes = media.thumbBytes;
 
       final response = await _httpClient.post(
         query: '/v1/storage/get-upload-link',
