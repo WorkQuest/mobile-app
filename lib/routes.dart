@@ -40,6 +40,8 @@ import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
+import 'package:app/ui/pages/start_page/start_page.dart';
+import 'package:app/ui/pages/start_page/store/start_store.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -75,6 +77,17 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: SignInPage(),
+            ),
+          ),
+        );
+
+      case StartPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<StartStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: StartPage(),
             ),
           ),
         );

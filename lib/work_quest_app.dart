@@ -1,6 +1,6 @@
 import 'package:app/routes.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
-import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
+import 'package:app/ui/pages/start_page/start_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -16,7 +16,7 @@ class WorkQuestApp extends StatelessWidget {
       theme: _theme,
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.generateRoute,
-      initialRoute: isToken ? PinCodePage.routeName : SignInPage.routeName,
+      initialRoute: isToken ? PinCodePage.routeName : StartPage.routeName,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
