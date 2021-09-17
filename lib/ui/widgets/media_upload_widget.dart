@@ -123,6 +123,7 @@ class _MediaUploadState extends State<MediaUpload> {
           return Container(
             width: 150,
             child: Stack(
+              clipBehavior: Clip.none,
               fit: StackFit.expand,
               children: [
                 // Media
@@ -134,13 +135,17 @@ class _MediaUploadState extends State<MediaUpload> {
                   ),
                 ),
 
-                Center(
+                Positioned(
+                  top: -15.0,
+                  right: -15.0,
                   child: IconButton(
                     onPressed: () => widget.media.removeAt(index),
-                    icon: Icon(Icons.cancel_outlined),
+                    icon: Icon(Icons.cancel),
+                    iconSize: 25.0,
                     color: Colors.redAccent,
                   ),
                 ),
+
                 // For video duration
                 if (widget.media[index].entity.type == AssetType.video)
                   Positioned(

@@ -4,7 +4,6 @@ import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.da
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +11,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
 import 'package:url_launcher/url_launcher.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 final _spacer = Spacer();
 
@@ -88,7 +86,9 @@ class TwoFAPage extends StatelessWidget {
                         ),
                         Expanded(
                           child: Confirm2FAPages(
-                              store: store, userStore: userStore),
+                            store: store,
+                            userStore: userStore,
+                          ),
                         ),
                         const SizedBox(
                           height: 10.0,
@@ -440,7 +440,8 @@ class Confirm2FAPages extends StatelessWidget {
           const SizedBox(
             width: 20.0,
           ),
-          Expanded(
+  Observer(
+  builder:(_)=>Expanded(
             child: ElevatedButton(
               onPressed: store.index < 3
                   ? () async {
@@ -472,6 +473,7 @@ class Confirm2FAPages extends StatelessWidget {
                   : Text(forward),
             ),
           ),
+  ),
         ],
       );
 }
