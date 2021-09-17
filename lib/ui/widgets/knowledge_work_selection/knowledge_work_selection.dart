@@ -11,7 +11,8 @@ class KnowledgeWorkSelection extends StatefulWidget {
   const KnowledgeWorkSelection({required this.title, required this.hintText});
 
   @override
-  _KnowledgeWorkSelection createState() => _KnowledgeWorkSelection(title, hintText);
+  _KnowledgeWorkSelection createState() =>
+      _KnowledgeWorkSelection(title, hintText);
 }
 
 class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
@@ -39,26 +40,27 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
           ...store.numberOfFiled
               .map((element) => addKnowledgeField(element, hintText))
               .toList(),
-          OutlinedButton(
-            onPressed: () {
-              if (store.numberOfFiled.last.fieldIsNotEmpty)
-                store.addField(KnowledgeWork());
-            },
-            child: Text(
-              "settings.add".tr(),
-              style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xFF0083C7),
+          if (store.numberOfFiled.length < 5)
+            OutlinedButton(
+              onPressed: () {
+                if (store.numberOfFiled.last.fieldIsNotEmpty)
+                  store.addField(KnowledgeWork());
+              },
+              child: Text(
+                "settings.add".tr(),
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFF0083C7),
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                fixedSize: const Size.fromWidth(double.maxFinite),
+                side: const BorderSide(
+                  width: 1.0,
+                  color: Color.fromRGBO(0, 131, 199, 0.1),
+                ),
               ),
             ),
-            style: OutlinedButton.styleFrom(
-              fixedSize: const Size.fromWidth(double.maxFinite),
-              side: const BorderSide(
-                width: 1.0,
-                color: Color.fromRGBO(0, 131, 199, 0.1),
-              ),
-            ),
-          ),
           const SizedBox(
             height: 20,
           ),
