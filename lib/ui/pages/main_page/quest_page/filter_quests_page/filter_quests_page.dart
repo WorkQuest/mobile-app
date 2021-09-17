@@ -1,7 +1,11 @@
+import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:mobx/mobx.dart';
+import "package:provider/provider.dart";
 
 class FilterQuestsPage extends StatefulWidget {
   const FilterQuestsPage({Key? key}) : super(key: key);
@@ -12,10 +16,12 @@ class FilterQuestsPage extends StatefulWidget {
 
 class _FilterQuestsPageState extends State<FilterQuestsPage> {
   final store = FilterQuestsStore();
+  ProfileMeStore? profile;
 
   @override
   void initState() {
     store.readFilters();
+    profile = context.read<ProfileMeStore>();
     super.initState();
   }
 
@@ -57,22 +63,139 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
               ))
           : ListView.builder(
               itemCount: store.filters.length,
-              itemBuilder: (context, index) =>
-                  ExpensionCell(store.filters[index]));
+              itemBuilder: (context, index) {
+                return store.filters[index].type == TypeFilter.Check
+                    ? ExpansionCell(store.filters[index])
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _radioButton(),
+                          profile!.userData!.role == UserRole.Worker
+                              ? Column(
+                                  children: [
+                                    _checkButton(
+                                      title: "Quests",
+                                      list: store.sortByQuest,
+                                      selected: store.selectQuest,
+                                      onChange: store.setSelectedQuest,
+                                    ),
+                                    _checkButton(
+                                      title: "Quests delivery time",
+                                      list: store.sortByQuestDelivery,
+                                      selected: store.selectQuestDelivery,
+                                      onChange: store.setSelectedQuestDelivery,
+                                    ),
+                                    _checkButton(
+                                      title: "Employment",
+                                      list: store.sortByEmployment,
+                                      selected: store.selectEmployment,
+                                      onChange: store.setSelectedEmployment,
+                                    ),
+                                  ],
+                                )
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _checkButton(
+                                      title: "Priority of the employee",
+                                      list: store.sortByPriority,
+                                      selected: store.selectPriority,
+                                      onChange: store.setSelectedPriority,
+                                    ),
+                                    _checkButton(
+                                      title: "Employee rating",
+                                      list: store.sortByEmployeeRating,
+                                      selected: store.selectEmployeeRating,
+                                      onChange: store.setSelectedEmployeeRating,
+                                    ),
+                                    _checkButton(
+                                      title: "Distant work",
+                                      list: store.sortByDistantWork,
+                                      selected: store.selectDistantWork,
+                                      onChange: store.setSelectedWork,
+                                    ),
+                                  ],
+                                ),
+                          Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text(
+                              "Specialization",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+              });
     });
   }
+
+  Widget _radioButton() => ExpansionTile(
+        title: Text("Sort by"),
+        children: [
+          for (int i = 0; i < store.sortBy.length; i++)
+            Observer(
+              builder: (_) => RadioListTile<String>(
+                title: Text(
+                  store.sortBy[i],
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  softWrap: false,
+                ),
+                value: store.sortBy[i],
+                groupValue: store.selectSortBy,
+                onChanged: store.setSortBy,
+              ),
+            )
+        ],
+      );
+
+  Widget _checkButton({
+    required title,
+    required List<String> list,
+    required ObservableList<bool> selected,
+    required Function onChange,
+  }) =>
+      ExpansionTile(
+        title: Text(title),
+        children: [
+          for (int i = 0; i < list.length; i++)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  Observer(
+                    builder: (_) => Checkbox(
+                        checkColor: Colors.white,
+                        value: selected[i],
+                        onChanged: (bool? value) => onChange(value, i)),
+                  ),
+                  Expanded(
+                    child: Text(
+                      list[i],
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      softWrap: false,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      );
 }
 
-class ExpensionCell<T> extends StatefulWidget {
+class ExpansionCell<T> extends StatefulWidget {
   final FilterItem filter;
 
-  const ExpensionCell(this.filter);
+  const ExpansionCell(this.filter);
 
   @override
-  State<ExpensionCell> createState() => _ExpensionCellState();
+  State<ExpansionCell> createState() => _ExpansionCellState();
 }
 
-class _ExpensionCellState extends State<ExpensionCell> {
+class _ExpansionCellState extends State<ExpansionCell> {
   List<bool> selected = [];
   String selectRadioValue = "";
 
@@ -89,21 +212,21 @@ class _ExpensionCellState extends State<ExpensionCell> {
     return Column(
       children: <Widget>[
         ExpansionTile(
-          title: widget.filter.type == TypeFilter.Check
-              ? Text("filters.${widget.filter.header}.title".tr())
-              : Text("Sort by"),
+          title: Text("filters.${widget.filter.header}.title".tr()),
           children: [
             for (int i = 0; i < widget.filter.list.length; i++)
-              widget.filter.type == TypeFilter.Check
-                  ? getCheckbox(i)
-                  : getRadioButton(i)
+              getCheckbox(
+                i,
+                "filters.${widget.filter.header}.sub.${widget.filter.list[i]}"
+                    .tr(),
+              ),
           ],
         ),
       ],
     );
   }
 
-  Widget getCheckbox(int index) {
+  Widget getCheckbox(int index, String text) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Row(
@@ -119,8 +242,7 @@ class _ExpensionCellState extends State<ExpensionCell> {
           ),
           Expanded(
             child: Text(
-              "filters.${widget.filter.header}.sub.${widget.filter.list[index]}"
-                  .tr(),
+              text,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               softWrap: false,
@@ -128,24 +250,6 @@ class _ExpensionCellState extends State<ExpensionCell> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget getRadioButton(int index) {
-    return RadioListTile<String>(
-      title: Text(
-        "filters.dd.${index + 1}".tr(),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 2,
-        softWrap: false,
-      ),
-      value: index.toString(),
-      groupValue: selectRadioValue,
-      onChanged: (_) {
-        setState(() {
-          selectRadioValue = index.toString();
-        });
-      },
     );
   }
 }
