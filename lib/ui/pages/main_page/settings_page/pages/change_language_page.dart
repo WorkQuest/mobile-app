@@ -45,8 +45,6 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
                     currentLocale =
                         Constants.languageList.values.elementAt(index);
                   });
-                  await successAlert(
-                      context, "Language changed successfully".tr());
                   Navigator.pop(context);
                 },
                 title: Text(

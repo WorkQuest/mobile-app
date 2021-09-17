@@ -54,6 +54,213 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     });
   }
 
+  final _$selectSortByAtom = Atom(name: 'FilterQuestsStoreBase.selectSortBy');
+
+  @override
+  String get selectSortBy {
+    _$selectSortByAtom.reportRead();
+    return super.selectSortBy;
+  }
+
+  @override
+  set selectSortBy(String value) {
+    _$selectSortByAtom.reportWrite(value, super.selectSortBy, () {
+      super.selectSortBy = value;
+    });
+  }
+
+  final _$sortByQuestAtom = Atom(name: 'FilterQuestsStoreBase.sortByQuest');
+
+  @override
+  List<String> get sortByQuest {
+    _$sortByQuestAtom.reportRead();
+    return super.sortByQuest;
+  }
+
+  @override
+  set sortByQuest(List<String> value) {
+    _$sortByQuestAtom.reportWrite(value, super.sortByQuest, () {
+      super.sortByQuest = value;
+    });
+  }
+
+  final _$selectQuestAtom = Atom(name: 'FilterQuestsStoreBase.selectQuest');
+
+  @override
+  ObservableList<bool> get selectQuest {
+    _$selectQuestAtom.reportRead();
+    return super.selectQuest;
+  }
+
+  @override
+  set selectQuest(ObservableList<bool> value) {
+    _$selectQuestAtom.reportWrite(value, super.selectQuest, () {
+      super.selectQuest = value;
+    });
+  }
+
+  final _$sortByQuestDeliveryAtom =
+      Atom(name: 'FilterQuestsStoreBase.sortByQuestDelivery');
+
+  @override
+  List<String> get sortByQuestDelivery {
+    _$sortByQuestDeliveryAtom.reportRead();
+    return super.sortByQuestDelivery;
+  }
+
+  @override
+  set sortByQuestDelivery(List<String> value) {
+    _$sortByQuestDeliveryAtom.reportWrite(value, super.sortByQuestDelivery, () {
+      super.sortByQuestDelivery = value;
+    });
+  }
+
+  final _$selectQuestDeliveryAtom =
+      Atom(name: 'FilterQuestsStoreBase.selectQuestDelivery');
+
+  @override
+  ObservableList<bool> get selectQuestDelivery {
+    _$selectQuestDeliveryAtom.reportRead();
+    return super.selectQuestDelivery;
+  }
+
+  @override
+  set selectQuestDelivery(ObservableList<bool> value) {
+    _$selectQuestDeliveryAtom.reportWrite(value, super.selectQuestDelivery, () {
+      super.selectQuestDelivery = value;
+    });
+  }
+
+  final _$sortByEmploymentAtom =
+      Atom(name: 'FilterQuestsStoreBase.sortByEmployment');
+
+  @override
+  ObservableList<String> get sortByEmployment {
+    _$sortByEmploymentAtom.reportRead();
+    return super.sortByEmployment;
+  }
+
+  @override
+  set sortByEmployment(ObservableList<String> value) {
+    _$sortByEmploymentAtom.reportWrite(value, super.sortByEmployment, () {
+      super.sortByEmployment = value;
+    });
+  }
+
+  final _$selectEmploymentAtom =
+      Atom(name: 'FilterQuestsStoreBase.selectEmployment');
+
+  @override
+  ObservableList<bool> get selectEmployment {
+    _$selectEmploymentAtom.reportRead();
+    return super.selectEmployment;
+  }
+
+  @override
+  set selectEmployment(ObservableList<bool> value) {
+    _$selectEmploymentAtom.reportWrite(value, super.selectEmployment, () {
+      super.selectEmployment = value;
+    });
+  }
+
+  final _$sortByPriorityAtom =
+      Atom(name: 'FilterQuestsStoreBase.sortByPriority');
+
+  @override
+  ObservableList<String> get sortByPriority {
+    _$sortByPriorityAtom.reportRead();
+    return super.sortByPriority;
+  }
+
+  @override
+  set sortByPriority(ObservableList<String> value) {
+    _$sortByPriorityAtom.reportWrite(value, super.sortByPriority, () {
+      super.sortByPriority = value;
+    });
+  }
+
+  final _$selectPriorityAtom =
+      Atom(name: 'FilterQuestsStoreBase.selectPriority');
+
+  @override
+  ObservableList<bool> get selectPriority {
+    _$selectPriorityAtom.reportRead();
+    return super.selectPriority;
+  }
+
+  @override
+  set selectPriority(ObservableList<bool> value) {
+    _$selectPriorityAtom.reportWrite(value, super.selectPriority, () {
+      super.selectPriority = value;
+    });
+  }
+
+  final _$sortByEmployeeRatingAtom =
+      Atom(name: 'FilterQuestsStoreBase.sortByEmployeeRating');
+
+  @override
+  ObservableList<String> get sortByEmployeeRating {
+    _$sortByEmployeeRatingAtom.reportRead();
+    return super.sortByEmployeeRating;
+  }
+
+  @override
+  set sortByEmployeeRating(ObservableList<String> value) {
+    _$sortByEmployeeRatingAtom.reportWrite(value, super.sortByEmployeeRating,
+        () {
+      super.sortByEmployeeRating = value;
+    });
+  }
+
+  final _$selectEmployeeRatingAtom =
+      Atom(name: 'FilterQuestsStoreBase.selectEmployeeRating');
+
+  @override
+  ObservableList<bool> get selectEmployeeRating {
+    _$selectEmployeeRatingAtom.reportRead();
+    return super.selectEmployeeRating;
+  }
+
+  @override
+  set selectEmployeeRating(ObservableList<bool> value) {
+    _$selectEmployeeRatingAtom.reportWrite(value, super.selectEmployeeRating,
+        () {
+      super.selectEmployeeRating = value;
+    });
+  }
+
+  final _$sortByDistantWorkAtom =
+      Atom(name: 'FilterQuestsStoreBase.sortByDistantWork');
+
+  @override
+  ObservableList<String> get sortByDistantWork {
+    _$sortByDistantWorkAtom.reportRead();
+    return super.sortByDistantWork;
+  }
+
+  @override
+  set sortByDistantWork(ObservableList<String> value) {
+    _$sortByDistantWorkAtom.reportWrite(value, super.sortByDistantWork, () {
+      super.sortByDistantWork = value;
+    });
+  }
+
+  final _$selectDistantWorkAtom =
+      Atom(name: 'FilterQuestsStoreBase.selectDistantWork');
+
+  @override
+  ObservableList<bool> get selectDistantWork {
+    _$selectDistantWorkAtom.reportRead();
+    return super.selectDistantWork;
+  }
+
+  @override
+  set selectDistantWork(ObservableList<bool> value) {
+    _$selectDistantWorkAtom.reportWrite(value, super.selectDistantWork, () {
+      super.selectDistantWork = value;
+    });
+  }
+
   final _$readFiltersAsyncAction =
       AsyncAction('FilterQuestsStoreBase.readFilters');
 
@@ -62,12 +269,105 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     return _$readFiltersAsyncAction.run(() => super.readFilters());
   }
 
+  final _$FilterQuestsStoreBaseActionController =
+      ActionController(name: 'FilterQuestsStoreBase');
+
+  @override
+  void setSelectedPriority(bool? value, int index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSelectedPriority');
+    try {
+      return super.setSelectedPriority(value, index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedEmployeeRating(bool? value, int index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSelectedEmployeeRating');
+    try {
+      return super.setSelectedEmployeeRating(value, index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedWork(bool? value, int index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSelectedWork');
+    try {
+      return super.setSelectedWork(value, index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedQuest(bool? value, int index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSelectedQuest');
+    try {
+      return super.setSelectedQuest(value, index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedQuestDelivery(bool? value, int index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSelectedQuestDelivery');
+    try {
+      return super.setSelectedQuestDelivery(value, index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedEmployment(bool? value, int index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSelectedEmployment');
+    try {
+      return super.setSelectedEmployment(value, index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSortBy(String? index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSortBy');
+    try {
+      return super.setSortBy(index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 isLoading: ${isLoading},
 filters: ${filters},
-sortBy: ${sortBy}
+sortBy: ${sortBy},
+selectSortBy: ${selectSortBy},
+sortByQuest: ${sortByQuest},
+selectQuest: ${selectQuest},
+sortByQuestDelivery: ${sortByQuestDelivery},
+selectQuestDelivery: ${selectQuestDelivery},
+sortByEmployment: ${sortByEmployment},
+selectEmployment: ${selectEmployment},
+sortByPriority: ${sortByPriority},
+selectPriority: ${selectPriority},
+sortByEmployeeRating: ${sortByEmployeeRating},
+selectEmployeeRating: ${selectEmployeeRating},
+sortByDistantWork: ${sortByDistantWork},
+selectDistantWork: ${selectDistantWork}
     ''';
   }
 }
