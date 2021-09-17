@@ -129,7 +129,7 @@ class _MediaUploadState extends State<MediaUpload> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
                   child: Image.memory(
-                    widget.media[index].bytes,
+                    widget.media[index].thumbBytes,
                     fit: BoxFit.cover,
                   ),
                 ),

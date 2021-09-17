@@ -65,7 +65,10 @@ class _QuestListState extends State<QuestList> {
           children: [
             FloatingActionButton(
               heroTag: "QuestListLeftActionButton",
-              onPressed: widget.changePage,
+              onPressed: () {
+                widget.changePage();
+                FocusScope.of(context).unfocus();
+              },
               child: Icon(
                 Icons.map_outlined,
                 color: Colors.white,

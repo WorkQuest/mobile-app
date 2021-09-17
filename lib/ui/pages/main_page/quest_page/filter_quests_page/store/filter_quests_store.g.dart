@@ -163,6 +163,104 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     });
   }
 
+  final _$sortByPriorityAtom =
+      Atom(name: 'FilterQuestsStoreBase.sortByPriority');
+
+  @override
+  ObservableList<String> get sortByPriority {
+    _$sortByPriorityAtom.reportRead();
+    return super.sortByPriority;
+  }
+
+  @override
+  set sortByPriority(ObservableList<String> value) {
+    _$sortByPriorityAtom.reportWrite(value, super.sortByPriority, () {
+      super.sortByPriority = value;
+    });
+  }
+
+  final _$selectPriorityAtom =
+      Atom(name: 'FilterQuestsStoreBase.selectPriority');
+
+  @override
+  ObservableList<bool> get selectPriority {
+    _$selectPriorityAtom.reportRead();
+    return super.selectPriority;
+  }
+
+  @override
+  set selectPriority(ObservableList<bool> value) {
+    _$selectPriorityAtom.reportWrite(value, super.selectPriority, () {
+      super.selectPriority = value;
+    });
+  }
+
+  final _$sortByEmployeeRatingAtom =
+      Atom(name: 'FilterQuestsStoreBase.sortByEmployeeRating');
+
+  @override
+  ObservableList<String> get sortByEmployeeRating {
+    _$sortByEmployeeRatingAtom.reportRead();
+    return super.sortByEmployeeRating;
+  }
+
+  @override
+  set sortByEmployeeRating(ObservableList<String> value) {
+    _$sortByEmployeeRatingAtom.reportWrite(value, super.sortByEmployeeRating,
+        () {
+      super.sortByEmployeeRating = value;
+    });
+  }
+
+  final _$selectEmployeeRatingAtom =
+      Atom(name: 'FilterQuestsStoreBase.selectEmployeeRating');
+
+  @override
+  ObservableList<bool> get selectEmployeeRating {
+    _$selectEmployeeRatingAtom.reportRead();
+    return super.selectEmployeeRating;
+  }
+
+  @override
+  set selectEmployeeRating(ObservableList<bool> value) {
+    _$selectEmployeeRatingAtom.reportWrite(value, super.selectEmployeeRating,
+        () {
+      super.selectEmployeeRating = value;
+    });
+  }
+
+  final _$sortByDistantWorkAtom =
+      Atom(name: 'FilterQuestsStoreBase.sortByDistantWork');
+
+  @override
+  ObservableList<String> get sortByDistantWork {
+    _$sortByDistantWorkAtom.reportRead();
+    return super.sortByDistantWork;
+  }
+
+  @override
+  set sortByDistantWork(ObservableList<String> value) {
+    _$sortByDistantWorkAtom.reportWrite(value, super.sortByDistantWork, () {
+      super.sortByDistantWork = value;
+    });
+  }
+
+  final _$selectDistantWorkAtom =
+      Atom(name: 'FilterQuestsStoreBase.selectDistantWork');
+
+  @override
+  ObservableList<bool> get selectDistantWork {
+    _$selectDistantWorkAtom.reportRead();
+    return super.selectDistantWork;
+  }
+
+  @override
+  set selectDistantWork(ObservableList<bool> value) {
+    _$selectDistantWorkAtom.reportWrite(value, super.selectDistantWork, () {
+      super.selectDistantWork = value;
+    });
+  }
+
   final _$readFiltersAsyncAction =
       AsyncAction('FilterQuestsStoreBase.readFilters');
 
@@ -173,6 +271,39 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
 
   final _$FilterQuestsStoreBaseActionController =
       ActionController(name: 'FilterQuestsStoreBase');
+
+  @override
+  void setSelectedPriority(bool? value, int index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSelectedPriority');
+    try {
+      return super.setSelectedPriority(value, index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedEmployeeRating(bool? value, int index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSelectedEmployeeRating');
+    try {
+      return super.setSelectedEmployeeRating(value, index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedWork(bool? value, int index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSelectedWork');
+    try {
+      return super.setSelectedWork(value, index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setSelectedQuest(bool? value, int index) {
@@ -230,7 +361,13 @@ selectQuest: ${selectQuest},
 sortByQuestDelivery: ${sortByQuestDelivery},
 selectQuestDelivery: ${selectQuestDelivery},
 sortByEmployment: ${sortByEmployment},
-selectEmployment: ${selectEmployment}
+selectEmployment: ${selectEmployment},
+sortByPriority: ${sortByPriority},
+selectPriority: ${selectPriority},
+sortByEmployeeRating: ${sortByEmployeeRating},
+selectEmployeeRating: ${selectEmployeeRating},
+sortByDistantWork: ${sortByDistantWork},
+selectDistantWork: ${selectDistantWork}
     ''';
   }
 }

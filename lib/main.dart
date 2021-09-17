@@ -32,25 +32,24 @@ void main() async {
   //_initialisePushNotification();
   injectDependencies(env: Environment.test);
   await Firebase.initializeApp().then(
-        (value) => _initialisePushNotification(),
+    (value) => _initialisePushNotification(),
   );
   await EasyLocalization.ensureInitialized();
   runApp(
     EasyLocalization(
       child: WorkQuestApp(await Storage.toLoginCheck()),
       supportedLocales: [
-        Locale('en', 'US'),
         Locale('ru', 'RU'),
         Locale('ar', 'SA'),
         Locale('es', 'ES'),
+        Locale('en', 'US'),
         Locale('bn', 'BN'),
         Locale('fr', 'FR'),
         Locale('hi', 'HI'),
         Locale('id', 'ID'),
         Locale('zh', 'ZH'),
       ],
-
-      startLocale: Locale('es', 'ES'),
+      startLocale: Locale('en', 'US'),
       path: 'assets/lang',
     ),
   );
@@ -58,7 +57,7 @@ void main() async {
 
 void _initialisePushNotification() {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-   PushNotificationService(
+  PushNotificationService(
     _firebaseMessaging,
     _channel,
     _flutterLocalNotificationsPlugin,
