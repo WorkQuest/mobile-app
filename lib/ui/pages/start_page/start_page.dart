@@ -58,6 +58,7 @@ class StartPage extends StatelessWidget {
                       ),
                     ],
                     options: CarouselOptions(
+                        enableInfiniteScroll: false,
                         height: mq.size.height * 0.85,
                         viewportFraction: 1.0,
                         onPageChanged: (index, reason) {
@@ -71,7 +72,9 @@ class StartPage extends StatelessWidget {
                     currentPos: store.currentPos,
                     store: store,
                     onPressedNext: () {
-                      carouselController.nextPage();
+                      store.currentPos < 2
+                          ? carouselController.nextPage()
+                          : Navigator.pushNamed(context, SignInPage.routeName);
                     },
                     onPressedSkip: () {
                       Navigator.pushNamed(context, SignInPage.routeName);
@@ -210,18 +213,6 @@ class StartPage extends StatelessWidget {
                 ),
               ),
             ),
-            // Container(
-            //   width: 10.0,
-            //   height: 10.0,
-            //   margin: EdgeInsets.symmetric(
-            //     vertical: 10.0,
-            //     horizontal: 2.0,
-            //   ),
-            //   decoration: BoxDecoration(
-            //     shape: BoxShape.circle,
-            //     color: Colors.white,
-            //   ),
-            // ),
             SizedBox(
               height: 45.0,
               width: 70.0,

@@ -4,11 +4,9 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
-import 'package:app/ui/widgets/knowledge_work_experience_selection/knowledge_selection.dart';
+import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
-
-// import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -130,10 +128,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               onChanged: (text) =>
                   pageStore.userData.additionalInfo!.description = text,
               maxLines: null),
-          if (pageStore.userData.role == UserRole.Worker)
-            SkillSpecializationSelection(
-              controller: _controller,
-            ),
+          if (pageStore.userData.role == UserRole.Worker) fieldForWorker(),
           inputBody(
             title: "settings.twitterUsername".tr(),
             initialValue:
@@ -211,6 +206,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   Widget fieldForWorker() {
     return Column(
       children: <Widget>[
+        SkillSpecializationSelection(controller: _controller),
         dropDownMenu(
           title: "settings.priority".tr(),
           value: profile!.priority,
@@ -228,7 +224,14 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           list: profile!.distantWorkList,
           onChanged: (text) => profile!.changeDistantWork(text!),
         ),
-        KnowledgeSelection()
+        KnowledgeWorkSelection(
+          title: "Knowledge",
+          hintText: "settings.education.educationalInstitution".tr(),
+        ),
+        KnowledgeWorkSelection(
+          title: "Work experience",
+          hintText: "Work place",
+        ),
       ],
     );
   }
