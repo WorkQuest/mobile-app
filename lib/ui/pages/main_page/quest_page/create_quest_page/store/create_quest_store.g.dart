@@ -42,15 +42,15 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   final _$distantWorkAtom = Atom(name: '_CreateQuestStore.distantWork');
 
   @override
-  String get distantWork {
+  String get workplace {
     _$distantWorkAtom.reportRead();
-    return super.distantWork;
+    return super.workplace;
   }
 
   @override
-  set distantWork(String value) {
-    _$distantWorkAtom.reportWrite(value, super.distantWork, () {
-      super.distantWork = value;
+  set workplace(String value) {
+    _$distantWorkAtom.reportWrite(value, super.workplace, () {
+      super.workplace = value;
     });
   }
 
@@ -362,7 +362,7 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   String toString() {
     return '''
 employment: ${employment},
-distantWork: ${distantWork},
+distantWork: ${workplace},
 category: ${category},
 categoryValue: ${categoryValue},
 priority: ${priority},

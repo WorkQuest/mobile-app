@@ -253,18 +253,18 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           builder: (_) => DropdownButtonHideUnderline(
                             child: DropdownButton(
                               isExpanded: true,
-                              value: store.distantWork,
+                              value: store.workplace,
                               onChanged: (String? value) {
                                 store.changedDistantWork(value!);
                               },
                               items: store.distantWorkList
                                   .map<DropdownMenuItem<String>>(
                                       (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: new Text(value),
-                                    );
-                                  }).toList(),
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: new Text(value),
+                                );
+                              }).toList(),
                               icon: Icon(
                                 Icons.arrow_drop_down,
                                 size: 30,
@@ -274,7 +274,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 'mining.choose'.tr(),
                                 maxLines: 1,
                                 style:
-                                TextStyle(fontSize: 16, color: Colors.grey),
+                                    TextStyle(fontSize: 16, color: Colors.grey),
                               ),
                             ),
                           ),
@@ -349,23 +349,15 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       height: 50.0,
                       margin: const EdgeInsets.symmetric(vertical: 30),
                       child: ObserverListener<CreateQuestStore>(
-                        onSuccess: () {
+                        onSuccess: () async {
                           Navigator.pop(context);
+                          await successAlert(
+                              context, "Quest created successfully".tr());
                         },
                         child: Observer(
                           builder: (context) => ElevatedButton(
                             onPressed: store.canCreateQuest
-                                ? () async {
-                                    store.createQuest();
-                                    if (store.isSuccess) {
-                                      await successAlert(context,
-                                          "Quest created successfully".tr());
-                                      Navigator.pop(context);
-                                    }
-                                    // if (_formKey.currentState!.validate()) {
-                                    //   store.createQuest();
-                                    // }
-                                  }
+                                ? () => store.createQuest()
                                 : null,
                             child: store.isLoading
                                 ? PlatformActivityIndicator()

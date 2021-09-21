@@ -223,7 +223,7 @@
     "amlLink": "AML and CTF Policy"
   },
   "layout": {
-    "create": "Create an offer",
+    "create": "Create an quest",
     "links": {
       "terms": "\t· Terms and conditions",
       "privacy": "\t· Privacy policy"
@@ -258,8 +258,8 @@
     "fromYou": "from your user",
     "reviews": "reviews",
     "reviewsBig": "Reviews",
-    "MyQuests": "My offers",
-    "activeQuest": "Active offer",
+    "MyQuests": "My Quest",
+    "activeQuest": "Active quests",
     "proposal": "Proposal",
     "category": "Select a category",
     "address": "Add address",
@@ -752,7 +752,8 @@
           "3": "Work abroad"
         }
       }
-    },
+    }
+  },
   "modals": {
     "chatCreate": {
       "title": "Create group chat",
@@ -996,23 +997,23 @@
   },
   "wallet": {
     "WUSD": "WUSD Wallet",
-    "cryptoWallet":"Cryptocurrency wallet",
-    "bankCard":"Bank card",
-    "send":"Send",
+    "cryptoWallet": "Cryptocurrency wallet",
+    "bankCard": "Bank card",
+    "send": "Send",
     "toThisAddress": "to this address",
-    "wallet":"Wallet",
+    "wallet": "Wallet",
     "balance": "Balance",
     "deposit": "Receive",
-    "withdraw":"Withdraw",
+    "withdraw": "Withdraw",
     "transfer": "Buy / send",
     "addCardProposal": "Add your own card for easy withdrawal",
     "addCard": "Add card",
     "table": {
       "trx": "Transactions",
-      "TxHash":"Transaction hash",
+      "TxHash": "Transaction hash",
       "status": "Status",
       "block": "Block",
-      "timestamp":"Timestamp",
+      "timestamp": "Timestamp",
       "transferred": "Tokens transferred",
       "value": "Quantity",
       "trxFee": "Transaction fee"
@@ -1024,8 +1025,8 @@
     "favoriteMessages": "Favorite messages",
     "Favorite chats": "Favorite chats",
     "createGroupChat": "Create group chat",
-    "favorite":"Add to favorites",
-    "messages":"Messages",
+    "favorite": "Add to favorites",
+    "messages": "Messages",
     "chat": "Chat",
     "quest": "Offer:",
     "you": "Your username:",
@@ -1036,7 +1037,7 @@
     "placeOfStudying": "Place of study",
     "specialization": "Specialization",
     "skillsInput": "Skills",
-    "priority":"Priority",
+    "priority": "Priority",
     "distantWork": "Remote work",
     "costPerHour": "Cost per hour",
     "description": "And you are beautiful",
@@ -1046,20 +1047,20 @@
     "delete": "Delete",
     "educations": "Education",
     "vacancy": "Vacancy",
-    "term":"Term",
+    "term": "Term",
     "getVerification": "Complete the verification",
-    "notVerified" :" Notverified",
-    "more":"More",
-    "employmentInfo":"Employment information",
+    "notVerified": " Notverified",
+    "more": "More",
+    "employmentInfo": "Employment information",
     "addSpec": "Add specialization",
     "removeSpec": "Remove specialization",
     "education": {
-      "from":"From",
+      "from": "From",
       "to": "To",
       "educationalInstitution": "Educational center"
     },
     "workExps": {
-      "from":"From",
+      "from": "From",
       "to": "To",
       "CompanyName": "Company name"
     },
@@ -1070,7 +1071,7 @@
     "addInfo": "You can add personal information, upload a profile picture and complete the know your customer  procedure to increase your rating. The rating depends on your profile data and your opinions.",
     "alsoRating": "The higher your ranking, the easier it will be to find you in searches.",
     "dontShow": "Do not show again",
-    "profileInfo":"Profile information",
+    "profileInfo": "Profile information",
     "nameInput": "Enter your name",
     "lastNameInput": "Enter your last name",
     "addressInput": "Enter your address",
@@ -1083,26 +1084,26 @@
     "save": "Save",
     "skills": "Skills:",
     "whoCanSee": "Who can see my profile?",
-    "allUsers":"All registered users",
+    "allUsers": "All registered users",
     "allInternet": "Internet users from all over the world",
     "onlyWhenSubmittedWork": "Only when sending job offers",
     "allRegistered": "All registered users",
     "changePass": "Change password",
     "change": "Change",
     "enableTwoStepAuth": "Enable two-step authentication",
-    "enable":"Enable",
+    "enable": "Enable",
     "smsVerification": "Profile verification by SMS",
     "company": "Enter the name of the company",
     "ceo": "Add a position",
     "filterAllEmployeeProfiles": "Filter all employee profiles",
     "website": "Specify the company's website",
     "changeRole": "Change role",
-    "2FA":"2FA",
-    "smsVerification2":"SMS Verification",
+    "2FA": "2FA",
+    "smsVerification2": "SMS Verification",
     "instruments": "Instruments",
-    "pensionProgram":"Pension program",
+    "pensionProgram": "Pension program",
     "referralProgram": "Recommendation program",
-    "p2pInsurance":"P2P Insurance",
+    "p2pInsurance": "P2P Insurance",
     "savingProduct": "Savings product",
     "crediting": "Credits",
     "liquidityMining": "Liquidity mining"
@@ -1123,8 +1124,8 @@
     "questSalary": "Offer salary:",
     "status": "Status:",
     "decision": "Decision",
-    "Dispute":"Dispute",
-    "pending":"Pending",
+    "Dispute": "Dispute",
+    "pending": "Pending",
     "chatHistory": "Chat history",
     "disputeTime": "Opening time of the dispute:"
   },
@@ -1133,11 +1134,11 @@
     "searchWorkers": "Search workers",
     "topWorkers": "Top employees",
     "price": "Price",
-    "addedTime":"Creation time",
+    "addedTime": "Creation time",
     "quests": "Offers",
     "urgent": "Select the level of urgency",
     "specialized": "Specialized",
-    "typeOfJob":"Job type",
+    "typeOfJob": "Job type",
     "specializations": "Specializations",
     "aboutMe": "Personal information",
     "giveAQuest": "Send an offer",
@@ -1147,16 +1148,16 @@
     "openedQuests": "Open offers",
     "showAll": "Show all",
     "AverageRating": "Average rating",
-    "from":"From",
+    "from": "From",
     "based": "Based",
-    "reviews":"reviews",
-    "portfolio":"Works",
+    "reviews": "reviews",
+    "portfolio": "Works",
     "showAllCases": "Show all cases"
   },
   "levels": {
     "reliableEmp": "EMP. RELIABLE",
     "checkedByTime": "EMP. VERIFY",
-    "disabled":"DISABLED",
+    "disabled": "DISABLED",
     "higher": "EMP. HIGHER LEVEL"
   },
   "referral": {
@@ -1178,11 +1179,11 @@
     "everyTimeYourFriends": "Every time your friends create an offer for the first time, you will receive a commission of up to $ 35 in real-time WQT!",
     "historyOfRewards": "Rewards history",
     "tableHead": {
-      "name":"Name",
+      "name": "Name",
       "userID": "Id. user",
-      "TxHash":"Transaction hash",
+      "TxHash": "Transaction hash",
       "time": "Time",
-      "amount":"Amount",
+      "amount": "Amount",
       "status": "Status"
     },
     "table": {
@@ -1194,23 +1195,23 @@
     }
   },
   "pension": {
-    "pensionSavingsBalance":"Pension savings balance",
+    "pensionSavingsBalance": "Pension savings balance",
     "retirementProgram": "Retirement program",
     "faq": "Frequently asked questions",
-    "pensionProgram":"Pension program",
+    "pensionProgram": "Pension program",
     "applyForAPension": "Apply for a pension",
     "applyForRetirement": "Apply for retirement",
     "annualPercent": "Annual percentage",
-    "optional":"Optional",
+    "optional": "Optional",
     "optionalFirstDeposit": "First deposit",
-    "term":"Term",
-    "castomizable":"Customizable",
-    "configurablePercentage":"Configurable percentage",
-    "depositsFromQuest":"Deposit offers",
+    "term": "Term",
+    "castomizable": "Customizable",
+    "configurablePercentage": "Configurable percentage",
+    "depositsFromQuest": "Deposit offers",
     "howToTakePart": "How to participate in the pension program?",
     "pensionPlanText": "A pension plan may allow a worker to contribute a portion of his or her current wage income to an investment plan to help fund his or her retirement.",
     "information": "Detailed information",
-    "download":"Download",
+    "download": "Download",
     "Pension balance": "Pension savings balance",
     "makeADeposit": "Make an income",
     "currentPercentFromAQuest": "Current percentage of an offer",
@@ -1218,10 +1219,10 @@
     "everyYear": "Annualized",
     "year": "annual",
     "timeRemainsUntilTheEndOfThePeriod": "Time remaining until the end of the period:",
-    "TransactionHistory":"Transaction history",
-    "withdraw":"Withdraw",
-    "prolong":"Prolong",
-    "templateText":"",
+    "TransactionHistory": "Transaction history",
+    "withdraw": "Withdraw",
+    "prolong": "Prolong",
+    "templateText": "",
     "table": {
       "userName": "John Doe",
       "userId": "455dad66544ss",
@@ -1234,7 +1235,7 @@
     "percentages": "{count} %",
     "years": "{count} years",
     "wusdCount": "{count} WUSD",
-    "plusPercents":" + {count}%",
+    "plusPercents": " + {count}%",
     "faq1": {
       "question": "What are the requirements to apply for a pension?",
       "answer": "You do not need to have worked for an employer for a specific number of years to be eligible for retirement benefits. Simply select the percentage of each offer you want to accumulate in your account. Your retirement benefit will increase as you accumulate funds. The additional percentage will be automatically increased by using funds in the loan program."
@@ -1281,11 +1282,11 @@
   "saving": {
     "withdrawModalBody": "The amount of blocked funds and accrued interest will be paid into your portfolio",
     "Workquest Savings": "WorkQuest Savings",
-    "lendAndEarn": "Lend & Earn" ,
+    "lendAndEarn": "Lend & Earn",
     "conditions": "Conditions",
     "maxMinSum": "Max sum./minute.",
     "depositsAndWithdrawal": "Deposits and withdrawals",
-    "term":"Term",
+    "term": "Term",
     "annualizedInterestRate": "Annualised interest rate",
     "openADeposit": "Open a deposit",
     "faq": "Frequently asked questions",
@@ -1314,11 +1315,11 @@
     "mb": "{count} MB",
     "percentages": "{count} %",
     "days": "{count} days",
-    "smallPlug":"??",
-    "possiblePlug":"possiblePlug",
+    "smallPlug": "??",
+    "possiblePlug": "possiblePlug",
     "yearPlug": "1 year",
     "wusdCount": "{count} WUSD",
-    "plusPercents":" + {count}%",
+    "plusPercents": " + {count}%",
     "table": {
       "userName": "John Doe",
       "userId": "455dad66544ss",
@@ -1329,237 +1330,237 @@
     "depositModalBody": "Your cryptocurrencies will be blocked for a specific period, and you will start earning interest.",
     "depositIsOpened": "Transfer confirmed",
     "deposit": "Deposit",
-    "withdraw":"Withdraw"
+    "withdraw": "Withdraw"
   },
   "mining": {
     "liquidityManning": "Liquidity mining",
     "liquidityMining": "Liquidity mining",
-    "templateText":"",
-    "pools":"Funds",
+    "templateText": "",
+    "pools": "Funds",
     "choose": "Choose",
     "information": "Information",
     "docName": "Some_document.PDF file",
-    "download":"Download",
+    "download": "Download",
     "tableHead": {
       "poolAddress": "Fund address",
       "assets": "Assets",
-      "sdsdsd":"sdsdsdsd",
+      "sdsdsd": "sdsdsdsd",
       "volume": "Volume"
     },
     "table": {
       "poolAddress": "0sjs3892 ... sd45",
-      "assets": "50% WUSD / 50% ETH" ,
-      "sdsdsd":"sdsdsdsd",
+      "assets": "50% WUSD / 50% ETH",
+      "sdsdsd": "sdsdsdsd",
       "volume": "4.5 mill. $"
     },
     "mb": "{count} MB",
-    "back":"Back",
+    "back": "Back",
     "wusdEthPool": "WUSD/ETH Fund",
     "dollarsCount": "{count}$",
     "addLiquidity": "Add liquidity",
     "removeLiquidity": "Withdraw liquidity",
-    "liquidity":"Liquidity",
+    "liquidity": "Liquidity",
     "volume24h": "Volume (24h)",
     "myPoolShare": "My participation in the fund",
     "liquidityPoolProviders": "Liquidity fund Providers",
     "liquidityProvidersEarn": "Liquidity fund providers shall receive a remuneration of 0,3% on all transactions in proportion to their share in the common fund. Rewards are added to the fund, accumulated in real time and can be claimed upon withdrawal of your liquidity.",
     "transactions": "Transactions"
   },
-    "crediting": {
-      "lending": "WorkQuest lending protocol",
-      "crediting": "Credits",
-      "templateText": "WorkQuest DeFi credit platform on the Work Net, with four exclusive money markets for volatile assets",
-      "marketSize":"Market size",
-      "deposit": "Deposit",
-      "percent": "Percent",
-      "dollarsCount": "{count}$",
-      "percentsCount": "{count} %",
-      "wantToTakeALoan": "Do you want to borrow?",
-      "borrow": "Borrow",
-      "information": "Information",
-      "openPositions": "Open positions",
-      "usdCount": "{count} USD",
-      "totalCollateralLocked": "Total guarantee blocked",
-      "wusdCount": "{count} WUSD",
-      "totalWusdDebt": "Total debt in WUSD",
-      "tableHead": {
-        "id": "Id.",
-        "currentRatio":"Current ratio",
-        "deposited": "Entered",
-        "availableToWithdraw": "Available for withdrawal",
-        "wusd":"WUSD"
-      },
-      "table": {
-        "reference": 565464,
-        "currentRatio": "500 %",
-        "deposited" :" 531 ETH",
-        "availableToWithdraw": "531 ETH",
-        "wusd": "532 WUSD",
-        "manage": "Manage"
-      },
-      "back":"Back",
-      "tempName": "Loan # 56546",
-      "liquidationPrice": "Liquidation price",
-      "collateralizationRatio": "Guarantee ratio",
-      "ethLocked": "ETH blocked",
-      "ethCount": "{count} ETH",
-      "ableToWithdraw": "You can withdraw",
-      "withdraw":"Withdraw",
-      "outstandingWusdDebt": "Outstanding debt in WUSD",
-      "availableToGenerate": "Available to generate",
-      "payback": "Amortization",
-      "generate": "Generate",
-      "history": "History",
-      "credTableHeader": {
-        "activity": "Activity",
-        "amount":"Amount",
-        "time": "Time",
-        "sender": "Sender",
-        "TxHash":"Transaction hash"
-      },
-      "credTable": {
-        "activity": "Amortized",
-        "amount": "100 WUSD",
-        "time": "June 12th. december 2021",
-        "sender": "dfgd6...fs65ds",
-        "TxHash": "dfgd6...fs65ds"
-      },
-      "faq1": "What are term savings? Are you committed to maintaining your cryptocurrencies?",
-      "faq2": "What will happen to my funds if I subscribe to a term savings product?",
-      "ans2": "On the day of the subscription, WorkQuest Savings will deduct the subscription funds from your WUSD portfolio.\n",
-      "faq3": "What will happen to my funds on the value date of a term savings product?",
-      "faq4": "What will happen to my funds on the amortization date of the term savings product?",
-      "faq5": "How is the average annual return calculated?",
-      "faq": "Frequently asked questions",
-      "lend":"Lend"
+  "crediting": {
+    "lending": "WorkQuest lending protocol",
+    "crediting": "Credits",
+    "templateText": "WorkQuest DeFi credit platform on the Work Net, with four exclusive money markets for volatile assets",
+    "marketSize": "Market size",
+    "deposit": "Deposit",
+    "percent": "Percent",
+    "dollarsCount": "{count}$",
+    "percentsCount": "{count} %",
+    "wantToTakeALoan": "Do you want to borrow?",
+    "borrow": "Borrow",
+    "information": "Information",
+    "openPositions": "Open positions",
+    "usdCount": "{count} USD",
+    "totalCollateralLocked": "Total guarantee blocked",
+    "wusdCount": "{count} WUSD",
+    "totalWusdDebt": "Total debt in WUSD",
+    "tableHead": {
+      "id": "Id.",
+      "currentRatio": "Current ratio",
+      "deposited": "Entered",
+      "availableToWithdraw": "Available for withdrawal",
+      "wusd": "WUSD"
     },
-    "insuring": {
-      "peerToPeerInsuring": "P2P Insurance",
-      "templateText":"",
-      "card1": {
-        "title": "Minimum protection",
-        "pointsText": {
-          "point1": "An annual contribution of 1000 WUSD; payment in the case of a covered event of 833.333333 WUSD."
-        }
-      },
-      "card2": {
-        "title": "Standard protection",
-        "pointsText": {
-          "point1": "Annual premium of 2000 WUSD; payment in the case of a covered event of 1666.6667 WUSD."
-        }
-      },
-      "card3": {
-        "title": "Maximum protection",
-        "pointsText": {
-          "point1": "An annual contribution of 3000 USD; payment in case of a covered event of 2500 WUSD."
-        }
-      },
-      "pointTemplate":"",
-      "buy":"Buy",
-      "information": "Information",
-      "docName": "Some_document.PDF file",
-      "mb": "{count} MB",
-      "minimalProtectionPlan": "Minimum protection plan",
-      "standardProtectionPlan": "Standard protection plan",
-      "maximumProtectionPlan": "Maximum protection plan",
-      "yourFundBalance": "Insurance fund balance",
-      "wusdCount": "{count} WUSD",
-      "dollarsCount": "{count}$",
-      "withdrawal":"Withdrawal",
-      "leaveFund": "Abandon fund",
-      "changePlan": "Change plan",
-      "fundParticipants": "Fund participants",
-      "userName": "Cody Fisher",
-      "voting":"Voting",
-      "noVoteAtTheMoment":"There are no votes currently",
-      "countPeoplesInChat": "{count} people in chat",
-      "writeSomething": "Write something",
-      "activeVoting": "Active voting",
-      "paymentOfInsurance": "{value}: insurance payment",
-      "youWillCertifyTheInsuredEvent" :"Will the covered event be certified?",
-      "studyTheInsuredEventThoroughly": "Carefully study the event covered",
-      "notAgree": "I disagree",
-      "Insurdevent": "Event covered",
-      "agree": "Accept",
-      "percentsCount": "{count} %",
-      "votesCount": "{count} votes",
-      "planPoints": {
-        "point1": "Annual fee: {count} WUSD",
-        "point2": "Payment in case a covered event occurs: {count} WUSD",
-        "point3":"Contract duration: {count} year",
-        "point4": "Number of fund participants: {count} people"
-      },
-      "faq1": {
-        "question": "What does P2P mean in insurance?",
-        "answer": "P2P (peer-to-peer) insurance is a product that allows a group of policyholders to pool their capital, organize themselves automatically and manage their own insurance"
-      },
-      "faq2": {
-        "question": "How do P2P insurance work?",
-        "answer": "Peer-to-peer (or P2P) insurance allows groups of people to provide insurance coverage to each other. Group fund members pool their money to insure the event of a risk affecting them. If a panel member suffers a covered loss, his or her claim will be paid directly from each member's contributed money fund."
-      },
-      "faq3": {
-        "question": "How does peer-to-peer insurance work?",
-        "answer":"Request a peer review. In a peer review, your guarantee fund will discuss with other fund members the purpose of the service or therapies that may be medically necessary. You can upload to the chat all the documents and medical assessments necessary to prove the legality of your case, and then create a vote so that foundation members can make a decision. If the majority of the fund votes in favor, you will receive the payment in your wallet."
-      },
-      "faq4": {
-        "question": "What happens to the fund if the covered event does not occur within one year?",
-        "answer": "At the end of the year, all users will receive notifications with a vote asking them to vote to expand the fund for another year, which will automatically double the fund and payments in the event of a covered event, or if the fund is divided among participants."
-      },
-      "faq5": {
-        "question": "Who is the administrator of the fund?",
-        "answer" :" To ensure that all participants in the fund do not waste time considering all events covered, the administrator may delegate their voting rights to the fund manager in exchange for a small commission"
-      },
-      "faq6": {
-        "question": "What is the standard size of a guarantee fund?",
-        "answer": "The funds are made up of 10 users, according to the level of protection selected"
-      },
-      "faq7": {
-        "question": "How is the amount of the guarantee fund payment calculated?",
-        "answer": "This is an example for calculating the first year fund: minimum protection - an annual premium of 1000 WUSD; payment in the case of a covered event of 833.333333 WUSD.\n10 fund members * 1000 USD / 12 months + 833.333333 WUSD.\nIn the event that the fund is continued for another year, the size of the fund and the insurance indemnity will be doubled."
-      },
-      "faq8": {
-        "question": "What is the security guarantee of withdrawals by a fund member?",
-        "answer": "All members of the fund shall hold the funds in a multi-firm portfolio, where all decisions are reached only by a majority vote."
+    "table": {
+      "reference": 565464,
+      "currentRatio": "500 %",
+      "deposited": " 531 ETH",
+      "availableToWithdraw": "531 ETH",
+      "wusd": "532 WUSD",
+      "manage": "Manage"
+    },
+    "back": "Back",
+    "tempName": "Loan # 56546",
+    "liquidationPrice": "Liquidation price",
+    "collateralizationRatio": "Guarantee ratio",
+    "ethLocked": "ETH blocked",
+    "ethCount": "{count} ETH",
+    "ableToWithdraw": "You can withdraw",
+    "withdraw": "Withdraw",
+    "outstandingWusdDebt": "Outstanding debt in WUSD",
+    "availableToGenerate": "Available to generate",
+    "payback": "Amortization",
+    "generate": "Generate",
+    "history": "History",
+    "credTableHeader": {
+      "activity": "Activity",
+      "amount": "Amount",
+      "time": "Time",
+      "sender": "Sender",
+      "TxHash": "Transaction hash"
+    },
+    "credTable": {
+      "activity": "Amortized",
+      "amount": "100 WUSD",
+      "time": "June 12th. december 2021",
+      "sender": "dfgd6...fs65ds",
+      "TxHash": "dfgd6...fs65ds"
+    },
+    "faq1": "What are term savings? Are you committed to maintaining your cryptocurrencies?",
+    "faq2": "What will happen to my funds if I subscribe to a term savings product?",
+    "ans2": "On the day of the subscription, WorkQuest Savings will deduct the subscription funds from your WUSD portfolio.\n",
+    "faq3": "What will happen to my funds on the value date of a term savings product?",
+    "faq4": "What will happen to my funds on the amortization date of the term savings product?",
+    "faq5": "How is the average annual return calculated?",
+    "faq": "Frequently asked questions",
+    "lend": "Lend"
+  },
+  "insuring": {
+    "peerToPeerInsuring": "P2P Insurance",
+    "templateText": "",
+    "card1": {
+      "title": "Minimum protection",
+      "pointsText": {
+        "point1": "An annual contribution of 1000 WUSD; payment in the case of a covered event of 833.333333 WUSD."
       }
     },
-    "errors": {
-      "incorrectPass": "Oops, there was a problem. Check the data and try again.",
-      "emptyData": {
-        "employer": {
-          "myQuests": {
-            "desc": "You have not created an offer yet",
-            "btnText": "Create an offer!"
-          },
-          "allQuests": {
-            "desc": "You have not created an offer yet",
-            "btnText": "Create an offer!"
-          }
+    "card2": {
+      "title": "Standard protection",
+      "pointsText": {
+        "point1": "Annual premium of 2000 WUSD; payment in the case of a covered event of 1666.6667 WUSD."
+      }
+    },
+    "card3": {
+      "title": "Maximum protection",
+      "pointsText": {
+        "point1": "An annual contribution of 3000 USD; payment in case of a covered event of 2500 WUSD."
+      }
+    },
+    "pointTemplate": "",
+    "buy": "Buy",
+    "information": "Information",
+    "docName": "Some_document.PDF file",
+    "mb": "{count} MB",
+    "minimalProtectionPlan": "Minimum protection plan",
+    "standardProtectionPlan": "Standard protection plan",
+    "maximumProtectionPlan": "Maximum protection plan",
+    "yourFundBalance": "Insurance fund balance",
+    "wusdCount": "{count} WUSD",
+    "dollarsCount": "{count}$",
+    "withdrawal": "Withdrawal",
+    "leaveFund": "Abandon fund",
+    "changePlan": "Change plan",
+    "fundParticipants": "Fund participants",
+    "userName": "Cody Fisher",
+    "voting": "Voting",
+    "noVoteAtTheMoment": "There are no votes currently",
+    "countPeoplesInChat": "{count} people in chat",
+    "writeSomething": "Write something",
+    "activeVoting": "Active voting",
+    "paymentOfInsurance": "{value}: insurance payment",
+    "youWillCertifyTheInsuredEvent": "Will the covered event be certified?",
+    "studyTheInsuredEventThoroughly": "Carefully study the event covered",
+    "notAgree": "I disagree",
+    "Insurdevent": "Event covered",
+    "agree": "Accept",
+    "percentsCount": "{count} %",
+    "votesCount": "{count} votes",
+    "planPoints": {
+      "point1": "Annual fee: {count} WUSD",
+      "point2": "Payment in case a covered event occurs: {count} WUSD",
+      "point3": "Contract duration: {count} year",
+      "point4": "Number of fund participants: {count} people"
+    },
+    "faq1": {
+      "question": "What does P2P mean in insurance?",
+      "answer": "P2P (peer-to-peer) insurance is a product that allows a group of policyholders to pool their capital, organize themselves automatically and manage their own insurance"
+    },
+    "faq2": {
+      "question": "How do P2P insurance work?",
+      "answer": "Peer-to-peer (or P2P) insurance allows groups of people to provide insurance coverage to each other. Group fund members pool their money to insure the event of a risk affecting them. If a panel member suffers a covered loss, his or her claim will be paid directly from each member's contributed money fund."
+    },
+    "faq3": {
+      "question": "How does peer-to-peer insurance work?",
+      "answer": "Request a peer review. In a peer review, your guarantee fund will discuss with other fund members the purpose of the service or therapies that may be medically necessary. You can upload to the chat all the documents and medical assessments necessary to prove the legality of your case, and then create a vote so that foundation members can make a decision. If the majority of the fund votes in favor, you will receive the payment in your wallet."
+    },
+    "faq4": {
+      "question": "What happens to the fund if the covered event does not occur within one year?",
+      "answer": "At the end of the year, all users will receive notifications with a vote asking them to vote to expand the fund for another year, which will automatically double the fund and payments in the event of a covered event, or if the fund is divided among participants."
+    },
+    "faq5": {
+      "question": "Who is the administrator of the fund?",
+      "answer": " To ensure that all participants in the fund do not waste time considering all events covered, the administrator may delegate their voting rights to the fund manager in exchange for a small commission"
+    },
+    "faq6": {
+      "question": "What is the standard size of a guarantee fund?",
+      "answer": "The funds are made up of 10 users, according to the level of protection selected"
+    },
+    "faq7": {
+      "question": "How is the amount of the guarantee fund payment calculated?",
+      "answer": "This is an example for calculating the first year fund: minimum protection - an annual premium of 1000 WUSD; payment in the case of a covered event of 833.333333 WUSD.\n10 fund members * 1000 USD / 12 months + 833.333333 WUSD.\nIn the event that the fund is continued for another year, the size of the fund and the insurance indemnity will be doubled."
+    },
+    "faq8": {
+      "question": "What is the security guarantee of withdrawals by a fund member?",
+      "answer": "All members of the fund shall hold the funds in a multi-firm portfolio, where all decisions are reached only by a majority vote."
+    }
+  },
+  "errors": {
+    "incorrectPass": "Oops, there was a problem. Check the data and try again.",
+    "emptyData": {
+      "employer": {
+        "myQuests": {
+          "desc": "You have not created an offer yet",
+          "btnText": "Create an offer!"
         },
-        "worker": {
-          "myQuests": {
-            "desc": "You have not completed the offers yet",
-            "btnText": "Create an offer!"
-          },
-          "allQuests": {
-            "desc": "You have not responded to any offers yet",
-            "btnText": "Respond to the offer!"
-          }
+        "allQuests": {
+          "desc": "You have not created an offer yet",
+          "btnText": "Create an offer!"
+        }
+      },
+      "worker": {
+        "myQuests": {
+          "desc": "You have not completed the offers yet",
+          "btnText": "Create an offer!"
+        },
+        "allQuests": {
+          "desc": "You have not responded to any offers yet",
+          "btnText": "Respond to the offer!"
         }
       }
-    },
-    "sharing": {
-      "title": "Share",
-      "socialText": "Share on social networks",
-      "share": "Share link"
-    },
-    "myQuests": {
-      "statuses": {
-        "all": "All offers",
-        "fav":"Add to favorites",
-        "requested":"Requested",
-        "completed": "Completed offers",
-        "active": "Active offers",
-        "invited": "Invitations to offers"
-      }
-    }}
+    }
+  },
+  "sharing": {
+    "title": "Share",
+    "socialText": "Share on social networks",
+    "share": "Share link"
+  },
+  "myQuests": {
+    "statuses": {
+      "all": "All offers",
+      "fav": "Add to favorites",
+      "requested": "Requested",
+      "completed": "Completed offers",
+      "active": "Active offers",
+      "invited": "Invitations to offers"
+    }
+  }
 }

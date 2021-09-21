@@ -225,7 +225,7 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         Spacer(),
-                        const Text("Version 1.0.13"),
+                        const Text("Version 1.0.24"),
                         const SizedBox(width: 15)
                       ],
                     ),

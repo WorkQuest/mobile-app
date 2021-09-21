@@ -10,7 +10,7 @@ class StartPage extends StatelessWidget {
 
   static const String routeName = '/startPage';
 
-  StartPage() : this.carouselController = new CarouselController();
+  StartPage(): this.carouselController = new CarouselController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,23 +42,20 @@ class StartPage extends StatelessWidget {
                   CarouselSlider(
                     items: <Widget>[
                       page(
-                        mq: mq,
                         image: "assets/start_page_1.png",
                         context: context,
                       ),
                       page(
-                        mq: mq,
                         image: "assets/start_page_2.png",
                         context: context,
                       ),
                       page(
-                        mq: mq,
                         image: "assets/start_page_3.png",
                         context: context,
                       ),
                     ],
                     options: CarouselOptions(
-                        enableInfiniteScroll: false,
+                        enableInfiniteScroll: true,
                         height: mq.size.height * 0.85,
                         viewportFraction: 1.0,
                         onPageChanged: (index, reason) {
@@ -73,7 +70,8 @@ class StartPage extends StatelessWidget {
                     store: store,
                     onPressedNext: () {
                       store.currentPos < 2
-                          ? carouselController.nextPage()
+                          ?
+                      carouselController.nextPage()
                           : Navigator.pushNamed(context, SignInPage.routeName);
                     },
                     onPressedSkip: () {
@@ -91,11 +89,10 @@ class StartPage extends StatelessWidget {
   }
 
   Widget page({
-    required MediaQueryData mq,
     required String image,
     required BuildContext context,
   }) =>
-      Stack(
+      Stack(fit: StackFit.expand,
         children: <Widget>[
           ShaderMask(
             shaderCallback: (rectangle) {
@@ -119,7 +116,7 @@ class StartPage extends StatelessWidget {
                 // image: AssetImage(
                 image,
                 // ),
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
           ),

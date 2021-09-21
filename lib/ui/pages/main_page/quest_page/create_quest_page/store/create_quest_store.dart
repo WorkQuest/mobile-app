@@ -87,8 +87,10 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @observable
   String employment = 'Full time';
 
+  String workplaceValue ="";
+
   @observable
-  String distantWork = 'Distant work';
+  String workplace = 'Work in office';
 
   @observable
   String category = 'Choose';
@@ -252,11 +254,23 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @action
   void changedDistantWork(String selectedEmployment) =>
-      distantWork = selectedEmployment;
+      workplace = selectedEmployment;
 
   @computed
   bool get canCreateQuest =>
       !isLoading && price.isNotEmpty && questTitle.isNotEmpty;
+
+  String getWorkplaceValue() {
+    switch(workplace) {
+      case "Distant work":
+        return workplaceValue ="distant";
+      case "Work in office":
+        return workplaceValue ="office";
+      case "Both variant":
+        return workplaceValue ="both";
+    }
+    return workplaceValue;
+  }
 
   @action
   Future createQuest() async {
@@ -268,6 +282,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
       );
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         category: categoryValue,
+        locationPlaceName: "Tomsk",
+        workplace: getWorkplaceValue(),
+        skillFilters: {},
         priority: priorityList.indexOf(priority),
         location: location,
         media: await apiProvider.uploadMedia(

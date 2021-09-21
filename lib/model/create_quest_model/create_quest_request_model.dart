@@ -6,14 +6,20 @@ class CreateQuestRequestModel {
   Location location;
   String title;
   String description;
+  String locationPlaceName;
+  String workplace;
   String price;
   List media;
+  Map skillFilters;
   int adType;
 
   CreateQuestRequestModel({
     required this.category,
-    required this.priority,
     required this.location,
+    required this.priority,
+    required this.skillFilters,
+    required this.locationPlaceName,
+    required this.workplace,
     required this.title,
     required this.media,
     required this.description,
@@ -25,8 +31,11 @@ class CreateQuestRequestModel {
     final Map<String, dynamic> questData = new Map<String, dynamic>();
     questData['category'] = this.category;
     questData['priority'] = this.priority;
+    questData['workplace'] = this.workplace;
+    questData['locationPlaceName'] = this.locationPlaceName;
     questData['location'] = this.location.toJson();
     questData['title'] = this.title;
+    questData['skillFilters'] = this.skillFilters;
     questData['medias'] = this.media;
     questData['description'] = this.description;
     questData['price'] = this.price;
