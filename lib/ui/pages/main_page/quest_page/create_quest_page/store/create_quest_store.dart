@@ -282,6 +282,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
       );
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         category: categoryValue,
+
         locationPlaceName: "Tomsk",
         workplace: getWorkplaceValue(),
         skillFilters: {},
