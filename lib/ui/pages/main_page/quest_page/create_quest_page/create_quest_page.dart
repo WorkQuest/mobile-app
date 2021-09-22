@@ -111,6 +111,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       Container(
                         height: 50,
                         child: TextFormField(
+                          onChanged: store.setLocationPlaceName,
                           maxLines: 1,
                           validator: Validators.emptyValidator,
                           decoration: InputDecoration(

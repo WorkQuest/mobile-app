@@ -10,7 +10,7 @@ class Constants {
     "Standard Arabic": Locale('ar', 'SA'),
     "Bengali": Locale('bn', 'BN'),
     "Russian": Locale('ru', 'RU'),
-    // "Portuguese": Locale('en', 'US'),
+    "Portuguese": Locale('pt', 'PT'),
     "Indonesian ": Locale('id', 'ID'),
   };
   static const List<Color> priorityColors = [

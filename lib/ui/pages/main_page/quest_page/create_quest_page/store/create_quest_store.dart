@@ -87,7 +87,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @observable
   String employment = 'Full time';
 
-  String workplaceValue ="";
+  String employmentValue = "";
+
+  String workplaceValue = "";
 
   @observable
   String workplace = 'Work in office';
@@ -133,6 +135,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @observable
   ObservableList<DrishyaEntity> media = ObservableList();
 
+  @observable
+  String locationPlaceName = '';
+
   /// change location data
 
   @action
@@ -148,6 +153,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @action
   void setDateTime(DateTime value) => runtimeValue = value;
+
+  @action
+  void setLocationPlaceName(String value) => locationPlaceName = value;
 
   @action
   void setAboutQuest(String value) => description = value;
@@ -258,18 +266,35 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @computed
   bool get canCreateQuest =>
-      !isLoading && price.isNotEmpty && questTitle.isNotEmpty;
+      !isLoading &&
+      price.isNotEmpty &&
+      questTitle.isNotEmpty &&
+      locationPlaceName.isNotEmpty &&
+      description.isNotEmpty &&
+      media.isNotEmpty;
 
   String getWorkplaceValue() {
-    switch(workplace) {
+    switch (workplace) {
       case "Distant work":
-        return workplaceValue ="distant";
+        return workplaceValue = "distant";
       case "Work in office":
-        return workplaceValue ="office";
+        return workplaceValue = "office";
       case "Both variant":
-        return workplaceValue ="both";
+        return workplaceValue = "both";
     }
     return workplaceValue;
+  }
+
+  String getEmploymentValue() {
+    switch (employment) {
+      case "Full time":
+        return employmentValue = "fullTime";
+      case "Part time":
+        return employmentValue = "partTime";
+      case "Fixed term":
+        return employmentValue = "fixedTerm";
+    }
+    return employmentValue;
   }
 
   @action
@@ -282,7 +307,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
       );
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         category: categoryValue,
-
+        employment: getEmploymentValue(),
         locationPlaceName: "Tomsk",
         workplace: getWorkplaceValue(),
         skillFilters: {},
