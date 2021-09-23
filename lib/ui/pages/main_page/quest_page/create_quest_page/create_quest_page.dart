@@ -8,6 +8,8 @@ import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:google_maps_webservice/places.dart';
 import "package:provider/provider.dart";
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -37,12 +39,22 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     }
   }
 
+  Future<Null> displayPrediction(Prediction p) async {
+    PlacesDetailsResponse detail =
+        await _places.getDetailsByPlaceId(p.placeId!);
+
+    double lat = detail.result.geometry!.location.lat;
+    double lng = detail.result.geometry!.location.lng;
+
+    print(lat);
+    print(lng);
+  }
+
   Widget build(context) {
     final store = context.read<CreateQuestStore>();
     SkillSpecializationController? _controller;
 
     return Form(
-      //key: _formKey,
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
@@ -111,7 +123,15 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       Container(
                         height: 50,
                         child: TextFormField(
+                          //onChanged: store.setLocationPlaceName,
                           maxLines: 1,
+                          onTap: () async {
+                            // show input autocomplete with selected mode
+                            // then get the Prediction selected
+                            Prediction? p = await PlacesAutocomplete.show(
+                                context: context, apiKey: kGoogleApiKey);
+                            displayPrediction(p!);
+                          },
                           validator: Validators.emptyValidator,
                           decoration: InputDecoration(
                             prefixIcon: IconButton(
