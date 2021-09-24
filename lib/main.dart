@@ -48,6 +48,7 @@ void main() async {
         Locale('hi', 'HI'),
         Locale('id', 'ID'),
         Locale('zh', 'ZH'),
+        Locale('pt', 'PT'),
       ],
       startLocale: Locale('en', 'US'),
       path: 'assets/lang',

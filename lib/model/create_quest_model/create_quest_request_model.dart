@@ -3,7 +3,7 @@ import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 class CreateQuestRequestModel {
   String category;
   int priority;
-  Location location;
+  LocationCode location;
   String title;
   String description;
   String locationPlaceName;
@@ -12,11 +12,13 @@ class CreateQuestRequestModel {
   List media;
   Map skillFilters;
   int adType;
+  String employment;
 
   CreateQuestRequestModel({
     required this.category,
     required this.location,
     required this.priority,
+    required this.employment,
     required this.skillFilters,
     required this.locationPlaceName,
     required this.workplace,
@@ -40,6 +42,7 @@ class CreateQuestRequestModel {
     questData['description'] = this.description;
     questData['price'] = this.price;
     questData['adType'] = this.adType;
+    questData['employment'] = this.employment;
     return questData;
   }
 }

@@ -29,7 +29,7 @@ class BaseQuestResponse {
   User user;
   int status;
   int priority;
-  Location location;
+  LocationCode location;
   String title;
   String description;
   String price;
@@ -49,7 +49,7 @@ class BaseQuestResponse {
       user: User.fromJson(json["user"]),
       status: json["status"],
       priority: json["priority"],
-      location: Location.fromJson(json["location"]),
+      location: LocationCode.fromJson(json["location"]),
       title: json["title"],
       description: json["description"],
       price: json["price"],

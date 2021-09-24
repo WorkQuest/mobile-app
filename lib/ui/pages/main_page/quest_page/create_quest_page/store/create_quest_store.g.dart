@@ -249,6 +249,38 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
+  final _$locationPlaceNameAtom =
+      Atom(name: '_CreateQuestStore.locationPlaceName');
+
+  @override
+  String get locationPlaceName {
+    _$locationPlaceNameAtom.reportRead();
+    return super.locationPlaceName;
+  }
+
+  @override
+  set locationPlaceName(String value) {
+    _$locationPlaceNameAtom.reportWrite(value, super.locationPlaceName, () {
+      super.locationPlaceName = value;
+    });
+  }
+
+  final _$getPredictionAsyncAction =
+      AsyncAction('_CreateQuestStore.getPrediction');
+
+  @override
+  Future<Null> getPrediction(BuildContext context) {
+    return _$getPredictionAsyncAction.run(() => super.getPrediction(context));
+  }
+
+  final _$displayPredictionAsyncAction =
+      AsyncAction('_CreateQuestStore.displayPrediction');
+
+  @override
+  Future<Null> displayPrediction(String? p) {
+    return _$displayPredictionAsyncAction.run(() => super.displayPrediction(p));
+  }
+
   final _$createQuestAsyncAction = AsyncAction('_CreateQuestStore.createQuest');
 
   @override
@@ -287,6 +319,17 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
         name: '_CreateQuestStore.setDateTime');
     try {
       return super.setDateTime(value);
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setLocationPlaceName(String value) {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.setLocationPlaceName');
+    try {
+      return super.setLocationPlaceName(value);
     } finally {
       _$_CreateQuestStoreActionController.endAction(_$actionInfo);
     }
@@ -376,6 +419,7 @@ description: ${description},
 price: ${price},
 adType: ${adType},
 media: ${media},
+locationPlaceName: ${locationPlaceName},
 dateString: ${dateString},
 canCreateQuest: ${canCreateQuest}
     ''';
