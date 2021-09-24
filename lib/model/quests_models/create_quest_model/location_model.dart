@@ -1,13 +1,13 @@
-class Location {
+class LocationCode {
   double longitude;
   double latitude;
 
-  Location({
+  LocationCode({
     required this.longitude,
     required this.latitude,
   });
 
-  factory Location.fromJson(Map<String, dynamic> json) => Location(
+  factory LocationCode.fromJson(Map<String, dynamic> json) => LocationCode(
         longitude: json['longitude'] == 0 ? 0.0 : json['longitude'],
         latitude: json['latitude'] == 0 ? 0.0 : json['longitude'],
       );

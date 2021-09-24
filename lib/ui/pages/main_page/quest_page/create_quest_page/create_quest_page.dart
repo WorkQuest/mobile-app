@@ -42,7 +42,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     SkillSpecializationController? _controller;
 
     return Form(
-      //key: _formKey,
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
@@ -108,25 +107,71 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                     ),
                     titledField(
                       "quests.address".tr(),
-                      Container(
-                        height: 50,
-                        child: TextFormField(
-                          onChanged: store.setLocationPlaceName,
-                          maxLines: 1,
-                          validator: Validators.emptyValidator,
-                          decoration: InputDecoration(
-                            prefixIcon: IconButton(
-                              onPressed: null,
-                              icon: Icon(
-                                Icons.map_outlined,
-                                color: Colors.blueAccent,
-                                size: 26.0,
+                      Observer(
+                        builder: (_) => GestureDetector(
+                          onTap: () {
+                            store.getPrediction(context);
+                          },
+                          child: Container(
+                            height: 50,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Color(0xFFF7F8FA),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(6.0),
+                                ),
                               ),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: 17,
+                                  ),
+                                  Icon(
+                                    Icons.map_outlined,
+                                    color: Colors.blueAccent,
+                                    size: 26.0,
+                                  ),
+                                  SizedBox(
+                                    width: 12,
+                                  ),
+                                  Flexible(
+                                    child: store.locationPlaceName.isEmpty
+                                        ? Text(
+                                            "Moscow, Lenina street, 3",
+                                            style: TextStyle(
+                                              color: Color(
+                                                0xFFD8DFE3,
+                                              ),
+                                            ),
+                                            overflow: TextOverflow.fade,
+                                          )
+                                        : Text(
+                                            store.locationPlaceName,
+                                            overflow: TextOverflow.fade,
+                                          ),
+                                  ),
+                                ],
+                              ),
+                              // maxLines: 1,
+                              // onTap: () {
+                              //   store.getPrediction(context);
+                              // },
+                              // validator: Validators.emptyValidator,
+                              // decoration: InputDecoration(
+                              //   prefixIcon: IconButton(
+                              //     onPressed: null,
+                              //     icon: Icon(
+                              //       Icons.map_outlined,
+                              //       color: Colors.blueAccent,
+                              //       size: 26.0,
+                              //     ),
+                              //   ),
+                              //   hintText: 'Moscow, Lenina street, 3',
+                              // ),
+                              // style: TextStyle(
+                              //   fontSize: 16,
+                              // ),
                             ),
-                            hintText: 'Moscow, Lenina street, 3',
-                          ),
-                          style: TextStyle(
-                            fontSize: 16,
                           ),
                         ),
                       ),

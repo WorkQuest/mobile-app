@@ -2,7 +2,7 @@ import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 
 class QuestMapPoint {
   int pointsCount;
-  Location location;
+  LocationCode location;
   TypeMarker type;
   String? questId;
   double? clusterRadius;
@@ -17,7 +17,7 @@ class QuestMapPoint {
   factory QuestMapPoint.fromJson(Map<String, dynamic> json) => QuestMapPoint(
       pointsCount: json['pointscount'],
       questId: json['questid'],
-      location: Location(
+      location: LocationCode(
         latitude: json['coordinates'][0] == 0 ? 0.0 : json['coordinates'][0],
         longitude: json['coordinates'][1] == 0 ? 0.0 : json['coordinates'][1],
       ),

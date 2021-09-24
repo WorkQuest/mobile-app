@@ -3,6 +3,9 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 import 'package:drishya_picker/drishya_picker.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -297,11 +300,36 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     return employmentValue;
   }
 
+  ///API_KEY HERE
+  GoogleMapsPlaces _places =
+      GoogleMapsPlaces(apiKey: "API_KEY");
+
+  @action
+  Future<Null> getPrediction(BuildContext context) async {
+    Prediction? p = await PlacesAutocomplete.show(
+      context: context,
+      ///API_KEY HERE
+      apiKey: "API_KEY",
+      mode: Mode.overlay,
+      logo: SizedBox(),
+      // Mode.fullscreen
+    );
+    locationPlaceName = p!.description!;
+    displayPrediction(p.placeId);
+  }
+
+  @action
+  Future<Null> displayPrediction(String? p) async {
+    PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p!);
+    latitude = detail.result.geometry!.location.lat;
+    longitude = detail.result.geometry!.location.lng;
+  }
+
   @action
   Future createQuest() async {
     try {
       this.onLoading();
-      final Location location = Location(
+      final LocationCode location = LocationCode(
         longitude: longitude,
         latitude: latitude,
       );

@@ -41,8 +41,8 @@ dependencies:
   firebase_core: ^1.5.0
 
   # DI.
-  get_it: ^6.1.1
-  injectable: ^1.2.2
+  get_it: ^7.2.0
+  injectable: ^1.5.0
   provider: ^5.0.0
 
   # Widgets.
@@ -50,6 +50,7 @@ dependencies:
   dotted_border: ^2.0.0
 
   google_maps_flutter: ^2.0.3
+  flutter_google_places_hoc081098: ^1.0.0-nullsafety.5
   location: ^4.1.1
   flutter_secure_storage: ^4.2.0
   webview_flutter: ^2.0.10
@@ -75,7 +76,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  build_runner:
+  build_runner: 1.12.2
 
   # Code generation for getIt
   injectable_generator:
