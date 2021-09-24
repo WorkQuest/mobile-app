@@ -55,6 +55,14 @@ mixin _$SignInStore on _SignInStore, Store {
         .run(() => super.signInWithUsername());
   }
 
+  final _$signInWithTwitterAsyncAction =
+      AsyncAction('_SignInStore.signInWithTwitter');
+
+  @override
+  Future<dynamic> signInWithTwitter() {
+    return _$signInWithTwitterAsyncAction.run(() => super.signInWithTwitter());
+  }
+
   final _$_SignInStoreActionController = ActionController(name: '_SignInStore');
 
   @override

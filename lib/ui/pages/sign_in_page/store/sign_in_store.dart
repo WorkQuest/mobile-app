@@ -41,13 +41,28 @@ abstract class _SignInStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       BearerToken bearerToken = await _apiProvider.login(
-          email: _username.trim(), password: _password);
+        email: _username.trim(),
+        password: _password,
+      );
       if (bearerToken.status == 0) {
         this.onError("unconfirmed");
         return;
       }
       Storage.writeRefreshToken(bearerToken.refresh);
       Storage.writeAccessToken(bearerToken.access);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future signInWithTwitter() async {
+    try {
+      this.onLoading();
+      print("called");
+      var page =await _apiProvider.loginWithGoogle();
+      return page;
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

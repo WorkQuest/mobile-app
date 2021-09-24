@@ -18,7 +18,6 @@ import 'package:injectable/injectable.dart';
 @singleton
 class ApiProvider {
   final IHttpClient _httpClient;
-
   ApiProvider(this._httpClient);
 }
 
@@ -63,6 +62,19 @@ extension LoginService on ApiProvider {
     );
     _httpClient.accessToken = bearerToken.access;
     return bearerToken;
+  }
+
+  Future loginWithGoogle() async {
+    //_httpClient.accessToken = refreshToken;
+    final responseData = await _httpClient.get(
+      query: '/v1/auth/login/google/token',
+    );
+    return responseData;
+    // BearerToken bearerToken = BearerToken.fromJson(
+    //   responseData,
+    // );
+    //_httpClient.accessToken = bearerToken.access;
+   // return bearerToken;
   }
 
   Future<BearerToken> refreshToken(String refreshToken) async {
@@ -574,4 +586,8 @@ extension Portfolio on ApiProvider {
       ),
     );
   }
+}
+
+extension RestorePassword on ApiProvider{
+
 }

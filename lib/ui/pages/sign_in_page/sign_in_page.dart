@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import "package:app/observer_consumer.dart";
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
@@ -8,9 +11,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:app/utils/validator.dart';
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import 'package:flutter/services.dart';
 import "package:flutter_mobx/flutter_mobx.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:provider/provider.dart";
+import 'package:webview_flutter/webview_flutter.dart';
 
 const double _horizontalConstraints = 44.0;
 const double _verticalConstraints = 24.0;
@@ -175,9 +180,12 @@ class SignInPage extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16, top: 20.0, right: 16),
-                    child: _iconsView(),
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      top: 20.0,
+                      right: 16,
+                    ),
+                    child: _iconsView(signInStore),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -239,11 +247,12 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  Widget _iconsView() {
+  Widget _iconsView(final SignInStore store) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _iconButton(
+          store.signInWithTwitter,
           "assets/google_icon.svg",
           "https://www.instagram.com/zuck/?hl=ru",
         ),
@@ -252,14 +261,17 @@ class SignInPage extends StatelessWidget {
         //   "https://www.instagram.com/zuck/?hl=ru",
         // ),
         _iconButton(
+          () {},
           "assets/twitter_icon.svg",
           "https://www.instagram.com/zuck/?hl=ru",
         ),
         _iconButton(
+          () {},
           "assets/facebook_icon.svg",
           "https://www.instagram.com/zuck/?hl=ru",
         ),
         _iconButton(
+          () {},
           "assets/linkedin_icon.svg",
           "https://www.instagram.com/zuck/?hl=ru",
         ),
@@ -267,16 +279,67 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  Widget _iconButton(String iconPath, String link, [Color? color]) {
+  Widget _iconButton(
+    Function onTap,
+    String iconPath,
+    String link, [
+    Color? color,
+  ]) {
     return CupertinoButton(
       color: Color(0xFFF7F8FA),
       padding: EdgeInsets.zero,
-      child: SvgPicture.asset(iconPath, color: color),
-      onPressed: () {},
+      child: SvgPicture.asset(
+        iconPath,
+        color: color,
+      ),
+      onPressed: () {}
+
+      // => Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (_) => SocialNetworkLogin(),
+      //   ),
+      // ),
     );
   }
 
   void onForgotPasswordClicked() {
     return;
+  }
+}
+
+class SocialNetworkLogin extends StatelessWidget {
+  SocialNetworkLogin({Key? key}) : super(key: key);
+
+  final Completer<WebViewController> _controller =
+      Completer<WebViewController>();
+
+  @override
+  Widget build(BuildContext context) {
+    return WebView(
+      initialUrl: '',
+      onWebViewCreated: (WebViewController webViewController) async {
+        _controller.complete(webViewController);
+        //_controller = webViewController;
+        await loadHtmlFromAssets(
+          'legal/privacy_policy.html',
+          _controller,
+        );
+      },
+    );
+  }
+
+  Future<void> loadHtmlFromAssets(
+    String filename,
+    controller,
+  ) async {
+    String fileText = await rootBundle.loadString(filename);
+    controller.loadUrl(
+      Uri.dataFromString(
+        fileText,
+        mimeType: 'text/html',
+        encoding: Encoding.getByName('utf-8'),
+      ).toString(),
+    );
   }
 }
