@@ -39,11 +39,43 @@ mixin _$ChangeProfileStore on ChangeProfileStoreBase, Store {
     });
   }
 
+  final _$addressAtom = Atom(name: 'ChangeProfileStoreBase.address');
+
+  @override
+  String get address {
+    _$addressAtom.reportRead();
+    return super.address;
+  }
+
+  @override
+  set address(String value) {
+    _$addressAtom.reportWrite(value, super.address, () {
+      super.address = value;
+    });
+  }
+
+  final _$getPredictionAsyncAction =
+      AsyncAction('ChangeProfileStoreBase.getPrediction');
+
+  @override
+  Future<Null> getPrediction(BuildContext context) {
+    return _$getPredictionAsyncAction.run(() => super.getPrediction(context));
+  }
+
+  final _$displayPredictionAsyncAction =
+      AsyncAction('ChangeProfileStoreBase.displayPrediction');
+
+  @override
+  Future<Null> displayPrediction(String? p) {
+    return _$displayPredictionAsyncAction.run(() => super.displayPrediction(p));
+  }
+
   @override
   String toString() {
     return '''
 userData: ${userData},
-media: ${media}
+media: ${media},
+address: ${address}
     ''';
   }
 }

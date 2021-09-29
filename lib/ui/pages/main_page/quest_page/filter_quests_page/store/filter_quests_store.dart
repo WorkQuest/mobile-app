@@ -88,38 +88,83 @@ abstract class FilterQuestsStoreBase with Store {
       ObservableList.of(List.generate(5, (index) => false));
 
   @observable
-  ObservableList<String> sortByDistantWork = ObservableList.of([
+  ObservableList<String> sortByWorkplace = ObservableList.of([
     "Select all",
     "Work in office",
     "Distant work",
   ]);
 
   @observable
-  ObservableList<bool> selectDistantWork =
-      ObservableList.of(List.generate(5, (index) => false));
+  ObservableList<bool> selectWorkplace =
+      ObservableList.of(List.generate(3, (index) => false));
 
   @action
-  void setSelectedPriority(bool? value, int index) =>
-      selectPriority[index] = value!;
+  void setSelectedWorkplace(bool? value, int index) {
+    if (index == 0) if (value == true)
+      for (int i = 0; i < selectWorkplace.length; i++)
+        selectWorkplace[i] = true;
+    else
+      for (int i = 0; i < selectWorkplace.length; i++)
+        selectWorkplace[i] = false;
+    else if (selectWorkplace[0] == true) selectWorkplace[0] = false;
+    selectWorkplace[index] = value ?? false;
+  }
 
   @action
-  void setSelectedEmployeeRating(bool? value, int index) =>
-      selectEmployeeRating[index] = value!;
+  void setSelectedPriority(bool? value, int index) {
+    if (index == 0) if (value == true)
+      for (int i = 0; i < selectPriority.length; i++) selectPriority[i] = true;
+    else
+      for (int i = 0; i < selectPriority.length; i++) selectPriority[i] = false;
+    else if (selectPriority[0] == true) selectPriority[0] = false;
+    selectPriority[index] = value ?? false;
+  }
 
   @action
-  void setSelectedWork(bool? value, int index) =>
-      selectDistantWork[index] = value!;
+  void setSelectedEmployeeRating(bool? value, int index) {
+    if (index == 0) if (value == true)
+      for (int i = 0; i < selectEmployeeRating.length; i++)
+        selectEmployeeRating[i] = true;
+    else
+      for (int i = 0; i < selectEmployeeRating.length; i++)
+        selectEmployeeRating[i] = false;
+    else if (selectEmployeeRating[0] == true) selectEmployeeRating[0] = false;
+    selectEmployeeRating[index] = value ?? false;
+  }
 
   @action
-  void setSelectedQuest(bool? value, int index) => selectQuest[index] = value!;
+  void setSelectedQuest(bool? value, int index) {
+    if (index == 0) if (value == true)
+      for (int i = 0; i < selectQuest.length; i++) selectQuest[i] = true;
+    else
+      for (int i = 0; i < selectQuest.length; i++) selectQuest[i] = false;
+    else if (selectQuest[0] == true) selectQuest[0] = false;
+    selectQuest[index] = value ?? false;
+  }
 
   @action
-  void setSelectedQuestDelivery(bool? value, int index) =>
-      selectQuestDelivery[index] = value!;
+  void setSelectedQuestDelivery(bool? value, int index) {
+    if (index == 0) if (value == true)
+      for (int i = 0; i < selectQuestDelivery.length; i++)
+        selectQuestDelivery[i] = true;
+    else
+      for (int i = 0; i < selectQuestDelivery.length; i++)
+        selectQuestDelivery[i] = false;
+    else if (selectQuestDelivery[0] == true) selectQuestDelivery[0] = false;
+    selectQuestDelivery[index] = value ?? false;
+  }
 
   @action
-  void setSelectedEmployment(bool? value, int index) =>
-      selectEmployment[index] = value!;
+  void setSelectedEmployment(bool? value, int index) {
+    if (index == 0) if (value == true)
+      for (int i = 0; i < selectEmployment.length; i++)
+        selectEmployment[i] = true;
+    else
+      for (int i = 0; i < selectEmployment.length; i++)
+        selectEmployment[i] = false;
+    else if (selectEmployment[0] == true) selectEmployment[0] = false;
+    selectEmployment[index] = value ?? false;
+  }
 
   @action
   void setSortBy(String? index) => selectSortBy = index!;

@@ -103,31 +103,22 @@ class _ProfileReviewsState extends State<ProfileReviews>
                       left: 50.0,
                       child: Row(
                         children: [
-                          Icon(
-                            Icons.star,
-                            color: Color(0xFFE8D20D),
-                            size: 20.0,
-                          ),
-                          Icon(
-                            Icons.star,
-                            color: Color(0xFFE8D20D),
-                            size: 20.0,
-                          ),
-                          Icon(
-                            Icons.star,
-                            color: Color(0xFFE8D20D),
-                            size: 20.0,
-                          ),
-                          Icon(
-                            Icons.star,
-                            color: Color(0xFFE8D20D),
-                            size: 20.0,
-                          ),
-                          Icon(
-                            Icons.star,
-                            color: Color(0xFFE9EDF2),
-                            size: 20.0,
-                          ),
+                          for (int i = 0;
+                              i < userStore.userData!.ratingStatistic;
+                              i++)
+                            Icon(
+                              Icons.star,
+                              color: Color(0xFFE8D20D),
+                              size: 20.0,
+                            ),
+                          for (int i = 0;
+                              i < 5 - userStore.userData!.ratingStatistic;
+                              i++)
+                            Icon(
+                              Icons.star,
+                              color: Color(0xFFE9EDF2),
+                              size: 20.0,
+                            ),
                         ],
                       ),
                     ),
@@ -304,7 +295,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                     contactDetails(
                         location:
                             userStore.userData?.additionalInfo?.address ?? ' ',
-                        number: userStore.userData?.phone ?? " ",
+                        number: userStore.userData?.phone ?? "",
                         secondNumber: userStore
                                 .userData?.additionalInfo?.secondMobileNumber ??
                             "",

@@ -103,11 +103,58 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
             initialValue: pageStore.userData.lastName ?? "",
             onChanged: (text) => pageStore.userData.lastName = text,
           ),
-          inputBody(
-            title: "modals.address".tr(),
-            initialValue: pageStore.userData.additionalInfo!.address ?? "",
-            onChanged: (text) =>
-                pageStore.userData.additionalInfo!.address = text,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "quests.address".tr(),
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              Observer(
+                builder: (_) => GestureDetector(
+                  onTap: () {
+                    pageStore.getPrediction(context);
+                  },
+                  child: Container(
+                    height: 50,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Color(0xFFF7F8FA),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(6.0),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Flexible(
+                            child: pageStore.address.isNotEmpty
+                                ? Text(
+                                    pageStore.address,
+                                    overflow: TextOverflow.fade,
+                                  )
+                                : SizedBox(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
           ),
           inputBody(
             title: "modals.phoneNumber".tr(),
@@ -344,6 +391,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   onSave() async {
+    profile!.userData!.additionalInfo!.address = pageStore.address;
     if (!profile!.isLoading)
       pageStore.userData.skillFilters =
           _controller!.getSkillAndSpecialization();

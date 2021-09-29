@@ -124,13 +124,16 @@ class _QuestListState extends State<QuestList> {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: OutlinedButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    // Сделано для отладки будет перенесена в routes.dart
-                    MaterialPageRoute(
-                      builder: (_) => FilterQuestsPage(),
-                    ),
-                  ),
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      // Сделано для отладки будет перенесена в routes.dart
+                      MaterialPageRoute(
+                        builder: (_) => FilterQuestsPage(),
+                      ),
+                    );
+                    questsStore!.getQuests(profileMeStore!.userData!.id);
+                  },
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(

@@ -1,7 +1,6 @@
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/avatar.dart';
-import 'package:flutter/foundation.dart';
 // import 'package:app/model/profile_response/rating_statistic.dart';
 
 class ProfileMeResponse {
@@ -17,7 +16,8 @@ class ProfileMeResponse {
     required this.role,
     required this.avatar,
     required this.skillFilters,
-    // required this.ratingStatistic,
+    required this.ratingStatistic,
+    required this.location,
     // required this.createdAt,
     // required this.updatedAt,
   });
@@ -33,6 +33,8 @@ class ProfileMeResponse {
   UserRole role;
   Avatar? avatar;
   Map<String, List<String>> skillFilters;
+  int ratingStatistic;
+  Location? location;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(
@@ -49,6 +51,9 @@ class ProfileMeResponse {
           role: object.role,
           avatar: object.avatar,
           skillFilters: object.skillFilters,
+          ratingStatistic: object.ratingStatistic,
+          location:
+              object.location != null ? Location.clone(object.location!) : null,
         );
 
   //RatingStatistic? ratingStatistic;
@@ -76,8 +81,12 @@ class ProfileMeResponse {
           : AdditionalInfo.fromJson(json["additionalInfo"]),
       role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
       avatar: Avatar.fromJson(json["avatar"]),
-      skillFilters: {},//listSkills,
-      // ratingStatistic: RatingStatistic.fromJson(json["ratingStatistic"]),
+      skillFilters: {},
+      //listSkills,
+      ratingStatistic:
+          json["ratingStatistic"] == null ? 0 : json["ratingStatistic"],
+      location:
+          json["location"] == null ? null : Location.fromJson(json["location"]),
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );
@@ -95,7 +104,8 @@ class ProfileMeResponse {
         "role": role.toString().split(".").last,
         "avatar": avatar!.toJson(),
         // "skillFilter": skillFilters.map((item) => item.toJson()),
-        // "ratingStatistic": ratingStatistic!.toJson(),
+        "ratingStatistic": ratingStatistic,
+        "location": location!.toJson(),
         // "createdAt": createdAt.toIso8601String(),
         // "updatedAt": updatedAt.toIso8601String(),
       };
@@ -109,9 +119,9 @@ class UserSkillFilters {
 
   UserSkillFilters.clone(UserSkillFilters object)
       : this(
-    category: object.category,
-    skill: object.skill,
-  );
+          category: object.category,
+          skill: object.skill,
+        );
 
   factory UserSkillFilters.fromJson(Map<String, dynamic> json) {
     return UserSkillFilters(
@@ -123,5 +133,27 @@ class UserSkillFilters {
   Map<String, String> toJson() => {
         "category": category,
         "skill": skill,
+      };
+}
+
+class Location {
+  Location({required this.longitude, required this.latitude});
+
+  double longitude;
+  double latitude;
+
+  Location.clone(Location object)
+      : this(longitude: object.longitude, latitude: object.latitude);
+
+  factory Location.fromJson(Map<String, dynamic> json) {
+    return Location(
+      latitude: json["latitude"],
+      longitude: json["longitude"],
+    );
+  }
+
+  Map<String, double> toJson() => {
+        "latitude": latitude,
+        "longitude": longitude,
       };
 }

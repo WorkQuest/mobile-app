@@ -47,6 +47,36 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$employmentAtom = Atom(name: '_QuestsStore.employment');
+
+  @override
+  String get employment {
+    _$employmentAtom.reportRead();
+    return super.employment;
+  }
+
+  @override
+  set employment(String value) {
+    _$employmentAtom.reportWrite(value, super.employment, () {
+      super.employment = value;
+    });
+  }
+
+  final _$workplaceAtom = Atom(name: '_QuestsStore.workplace');
+
+  @override
+  String get workplace {
+    _$workplaceAtom.reportRead();
+    return super.workplace;
+  }
+
+  @override
+  set workplace(String value) {
+    _$workplaceAtom.reportWrite(value, super.workplace, () {
+      super.workplace = value;
+    });
+  }
+
   final _$priorityAtom = Atom(name: '_QuestsStore.priority');
 
   @override
@@ -137,6 +167,36 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$employmentValueAtom = Atom(name: '_QuestsStore.employmentValue');
+
+  @override
+  String get employmentValue {
+    _$employmentValueAtom.reportRead();
+    return super.employmentValue;
+  }
+
+  @override
+  set employmentValue(String value) {
+    _$employmentValueAtom.reportWrite(value, super.employmentValue, () {
+      super.employmentValue = value;
+    });
+  }
+
+  final _$workplaceValueAtom = Atom(name: '_QuestsStore.workplaceValue');
+
+  @override
+  String get workplaceValue {
+    _$workplaceValueAtom.reportRead();
+    return super.workplaceValue;
+  }
+
+  @override
+  set workplaceValue(String value) {
+    _$workplaceValueAtom.reportWrite(value, super.workplaceValue, () {
+      super.workplaceValue = value;
+    });
+  }
+
   final _$getSearchedQuestsAsyncAction =
       AsyncAction('_QuestsStore.getSearchedQuests');
 
@@ -166,16 +226,42 @@ mixin _$QuestsStore on _QuestsStore, Store {
   }
 
   @override
+  String getEmploymentValue() {
+    final _$actionInfo = _$_QuestsStoreActionController.startAction(
+        name: '_QuestsStore.getEmploymentValue');
+    try {
+      return super.getEmploymentValue();
+    } finally {
+      _$_QuestsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String getWorkplaceValue() {
+    final _$actionInfo = _$_QuestsStoreActionController.startAction(
+        name: '_QuestsStore.getWorkplaceValue');
+    try {
+      return super.getWorkplaceValue();
+    } finally {
+      _$_QuestsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 searchWord: ${searchWord},
 sort: ${sort},
+employment: ${employment},
+workplace: ${workplace},
 priority: ${priority},
 offset: ${offset},
 limit: ${limit},
 status: ${status},
 questsList: ${questsList},
 searchResultList: ${searchResultList},
+employmentValue: ${employmentValue},
+workplaceValue: ${workplaceValue},
 emptySearch: ${emptySearch}
     ''';
   }
