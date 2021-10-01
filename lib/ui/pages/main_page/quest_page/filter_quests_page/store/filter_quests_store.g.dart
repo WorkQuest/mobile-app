@@ -9,6 +9,14 @@ part of 'filter_quests_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
+  Computed<bool>? _$allSelectedComputed;
+
+  @override
+  bool get allSelected =>
+      (_$allSelectedComputed ??= Computed<bool>(() => super.allSelected,
+              name: 'FilterQuestsStoreBase.allSelected'))
+          .value;
+
   final _$isLoadingAtom = Atom(name: 'FilterQuestsStoreBase.isLoading');
 
   @override
@@ -367,7 +375,8 @@ selectPriority: ${selectPriority},
 sortByEmployeeRating: ${sortByEmployeeRating},
 selectEmployeeRating: ${selectEmployeeRating},
 sortByWorkplace: ${sortByWorkplace},
-selectWorkplace: ${selectWorkplace}
+selectWorkplace: ${selectWorkplace},
+allSelected: ${allSelected}
     ''';
   }
 }

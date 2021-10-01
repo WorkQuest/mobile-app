@@ -202,31 +202,33 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                 ),
                               ),
 
-                              (userStore.userData!.additionalInfo!.educations!
+                              (userStore.userData!.additionalInfo!.educations
                                       .isNotEmpty)
                                   ? ListView.builder(
                                       padding: EdgeInsets.zero,
                                       shrinkWrap: true,
                                       physics: NeverScrollableScrollPhysics(),
                                       itemCount: userStore.userData!
-                                          .additionalInfo!.educations!.length,
+                                          .additionalInfo!.educations.length,
                                       itemBuilder: (_, index) {
                                         return experience(
                                             place: userStore
-                                                .userData!
-                                                .additionalInfo!
-                                                .educations![index]
-                                                .place,
+                                                        .userData!
+                                                        .additionalInfo!
+                                                        .educations[index]
+                                                    ["place"] ??
+                                                "--",
                                             from: userStore
-                                                .userData!
-                                                .additionalInfo!
-                                                .educations![index]
-                                                .from,
+                                                        .userData!
+                                                        .additionalInfo!
+                                                        .educations[index]
+                                                    ["from"] ??
+                                                "--",
                                             to: userStore
-                                                .userData!
-                                                .additionalInfo!
-                                                .educations![index]
-                                                .to);
+                                                    .userData!
+                                                    .additionalInfo!
+                                                    .educations[index]["to"] ??
+                                                "--");
                                       })
                                   : Text("No Information"),
 
@@ -245,7 +247,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                               ),
 
                               (userStore.userData!.additionalInfo!
-                                      .workExperiences!.isNotEmpty)
+                                      .workExperiences.isNotEmpty)
                                   ? ListView.builder(
                                       padding: EdgeInsets.zero,
                                       shrinkWrap: true,
@@ -253,28 +255,28 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                       itemCount: userStore
                                           .userData!
                                           .additionalInfo!
-                                          .workExperiences!
+                                          .workExperiences
                                           .length,
                                       itemBuilder: (_, index) {
                                         return experience(
                                             place: userStore
-                                                    .userData!
-                                                    .additionalInfo!
-                                                    .workExperiences![index]
-                                                    .place ??
-                                                " ",
+                                                        .userData!
+                                                        .additionalInfo!
+                                                        .workExperiences[index]
+                                                    ["place"] ??
+                                                "--",
                                             from: userStore
-                                                    .userData!
-                                                    .additionalInfo!
-                                                    .workExperiences![index]
-                                                    .from ??
-                                                " ",
+                                                        .userData!
+                                                        .additionalInfo!
+                                                        .workExperiences[index]
+                                                    ["from"] ??
+                                                "--",
                                             to: userStore
-                                                    .userData!
-                                                    .additionalInfo!
-                                                    .workExperiences![index]
-                                                    .to ??
-                                                " ");
+                                                        .userData!
+                                                        .additionalInfo!
+                                                        .workExperiences[index]
+                                                    ["to"] ??
+                                                "--");
                                       })
                                   : Text(
                                       "No Information",
@@ -295,7 +297,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                     contactDetails(
                         location:
                             userStore.userData?.additionalInfo?.address ?? ' ',
-                        number: userStore.userData?.phone ?? "",
+                        number: userStore.userData?.phone ?? " ",
                         secondNumber: userStore
                                 .userData?.additionalInfo?.secondMobileNumber ??
                             "",

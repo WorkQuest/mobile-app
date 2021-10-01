@@ -299,21 +299,9 @@ extension UserInfoService on ApiProvider {
                 ? userData.additionalInfo?.website
                 : null,
           if (userData.role == UserRole.Worker)
-            "educations": [
-              {
-                "from": DateTime.now().toString(),
-                "to": DateTime.now().toString(),
-                "place": DateTime.now().toString(),
-              }
-            ],
+            "educations": userData.additionalInfo!.educations,
           if (userData.role == UserRole.Worker)
-            "workExperiences": [
-              {
-                "from": DateTime.now().toString(),
-                "to": DateTime.now().toString(),
-                "place": DateTime.now().toString(),
-              }
-            ],
+            "workExperiences": userData.additionalInfo!.workExperiences,
           if (userData.role == UserRole.Worker) "skills": [],
         },
         if (userData.role == UserRole.Worker)

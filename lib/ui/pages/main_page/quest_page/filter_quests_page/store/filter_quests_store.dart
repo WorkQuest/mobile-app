@@ -154,16 +154,22 @@ abstract class FilterQuestsStoreBase with Store {
     selectQuestDelivery[index] = value ?? false;
   }
 
+  @computed
+  bool get allSelected  => false;
+
   @action
   void setSelectedEmployment(bool? value, int index) {
     if (index == 0) if (value == true)
-      for (int i = 0; i < selectEmployment.length; i++)
+      for (int i = 0; i < selectEmployment.length; i++) {
         selectEmployment[i] = true;
+        selectEmployment.reduce((p, e) => p && e);
+      }
     else
       for (int i = 0; i < selectEmployment.length; i++)
         selectEmployment[i] = false;
     else if (selectEmployment[0] == true) selectEmployment[0] = false;
     selectEmployment[index] = value ?? false;
+    selectEmployment[0]=selectEmployment.skip(1).reduce((p, e) => p && e);
   }
 
   @action

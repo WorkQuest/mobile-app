@@ -41,6 +41,8 @@ PODS:
     - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
+  - geocoding (1.0.5):
+    - Flutter
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps
@@ -101,6 +103,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - geocoding (from `.symlinks/plugins/geocoding/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - local_auth (from `.symlinks/plugins/local_auth/ios`)
   - location (from `.symlinks/plugins/location/ios`)
@@ -137,6 +140,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  geocoding:
+    :path: ".symlinks/plugins/geocoding/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   local_auth:
@@ -168,6 +173,7 @@ SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
+  geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
   google_maps_flutter: 279865bd07e2d8751f43a3bc64bac7f6075d0c93
   GoogleDataTransport: 85fd18ff3019bb85d3f2c551d04c481dedf71fc9
   GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac

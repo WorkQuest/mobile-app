@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_store.dart';
@@ -13,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
-
 import '../../../../enums.dart';
 
 class ChangeProfilePage extends StatefulWidget {
@@ -28,11 +26,18 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   late ChangeProfileStore pageStore;
 
   SkillSpecializationController? _controller;
+  KnowledgeWorkSelectionController? _controllerKnowledge;
+
+  KnowledgeWorkSelectionController? _controllerWork;
+
   late final GalleryController gallController;
 
   @override
   void initState() {
     _controller = SkillSpecializationController();
+    _controllerKnowledge = KnowledgeWorkSelectionController();
+    _controllerWork = KnowledgeWorkSelectionController();
+
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(
       ProfileMeResponse.clone(profile!.userData!),
@@ -143,7 +148,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                                     pageStore.address,
                                     overflow: TextOverflow.fade,
                                   )
-                                : SizedBox(),
+                                : Text(
+                                    pageStore
+                                            .userData.additionalInfo!.address ??
+                                        "",
+                                    overflow: TextOverflow.fade,
+                                  ),
                           ),
                         ],
                       ),
@@ -274,10 +284,14 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         KnowledgeWorkSelection(
           title: "Knowledge",
           hintText: "settings.education.educationalInstitution".tr(),
+          controller: _controllerKnowledge,
+          // onChanged: pageStore.addKnowledge,
         ),
         KnowledgeWorkSelection(
           title: "Work experience",
           hintText: "Work place",
+          controller: _controllerWork,
+          // onChanged: pageStore.addWorkExperience,
         ),
       ],
     );
@@ -391,11 +405,30 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   onSave() async {
-    profile!.userData!.additionalInfo!.address = pageStore.address;
+    pageStore.userData.additionalInfo?.educations.clear();
+    (_controllerKnowledge?.getAllKnowledge() ?? []).forEach((element) {
+      Map<String, String> item = {};
+      item["from"] = element.dateFrom;
+      item["to"] = element.dateTo;
+      item["place"] = element.place;
+      pageStore.userData.additionalInfo?.educations.add(item);
+    });
+    pageStore.userData.additionalInfo?.workExperiences.clear();
+    (_controllerKnowledge?.getAllKnowledge() ?? []).forEach((element) {
+      Map<String, String> item = {};
+      item["from"] = element.dateFrom;
+      item["to"] = element.dateTo;
+      item["place"] = element.place;
+      pageStore.userData.additionalInfo?.workExperiences.add(item);
+    });
+    pageStore.userData.additionalInfo!.address = pageStore.address;
     if (!profile!.isLoading)
       pageStore.userData.skillFilters =
           _controller!.getSkillAndSpecialization();
-    profile!.changeProfile(pageStore.userData, media: pageStore.media);
+    profile!.changeProfile(
+      pageStore.userData,
+      media: pageStore.media,
+    );
     if (profile!.isSuccess) {
       await successAlert(context, "Profile changed successfully".tr());
       Navigator.pop(context);

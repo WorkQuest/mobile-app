@@ -24,8 +24,8 @@ class KnowledgeWork {
   String id = DateTime.now().microsecond.toString();
   String dateFrom = '';
   String dateTo = '';
-  String institution = '';
+  String place = '';
 
   bool get fieldIsNotEmpty =>
-      dateFrom.isNotEmpty && dateTo.isNotEmpty && institution.isNotEmpty;
+      dateFrom.isNotEmpty && dateTo.isNotEmpty && place.isNotEmpty;
 }

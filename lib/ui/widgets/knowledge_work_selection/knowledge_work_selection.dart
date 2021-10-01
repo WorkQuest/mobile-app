@@ -7,20 +7,26 @@ import 'package:easy_localization/easy_localization.dart';
 class KnowledgeWorkSelection extends StatefulWidget {
   final String title;
   final String hintText;
+  final KnowledgeWorkSelectionController? controller;
 
-  const KnowledgeWorkSelection({required this.title, required this.hintText});
+  KnowledgeWorkSelection({
+    required this.title,
+    required this.hintText,
+    required this.controller,
+  });
 
   @override
-  _KnowledgeWorkSelection createState() =>
-      _KnowledgeWorkSelection(title, hintText);
+  _KnowledgeWorkSelection createState() => _KnowledgeWorkSelection();
 }
 
 class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
   final store = KnowledgeWorkStore();
-  final String title;
-  final String hintText;
 
-  _KnowledgeWorkSelection(this.title, this.hintText);
+  @override
+  void initState() {
+    if (widget.controller != null) widget.controller!.setStore(this.store);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +36,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
           Align(
             alignment: Alignment.topLeft,
             child: Text(
-              title,
+              widget.title,
               style: TextStyle(
                 fontSize: 16,
                 color: Color(0xFF1D2127),
@@ -38,13 +44,14 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
             ),
           ),
           ...store.numberOfFiled
-              .map((element) => addKnowledgeField(element, hintText))
+              .map((element) => addKnowledgeField(element, widget.hintText))
               .toList(),
-          if (store.numberOfFiled.length < 5)
+          if (store.numberOfFiled.length < 3)
             OutlinedButton(
               onPressed: () {
-                if (store.numberOfFiled.last.fieldIsNotEmpty)
+                if (store.numberOfFiled.last.fieldIsNotEmpty) {
                   store.addField(KnowledgeWork());
+                }
               },
               child: Text(
                 "settings.add".tr(),
@@ -127,8 +134,8 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: TextFormField(
-                    initialValue: kng.institution,
-                    onChanged: (text) => kng.institution = text,
+                    initialValue: kng.place,
+                    onChanged: (text) => kng.place = text,
                     decoration: InputDecoration(
                       hintText: hintText,
                       fillColor: Colors.white,
@@ -194,5 +201,17 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
         ],
       ),
     );
+  }
+}
+
+class KnowledgeWorkSelectionController {
+  KnowledgeWorkStore? store;
+
+  List<KnowledgeWork> getAllKnowledge() {
+    return store?.numberOfFiled ?? [];
+  }
+
+  void setStore(KnowledgeWorkStore store) {
+    this.store = store;
   }
 }

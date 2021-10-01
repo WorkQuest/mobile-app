@@ -23,7 +23,7 @@ abstract class ChangeProfileStoreBase with Store {
 
   ///API_KEY HERE
   GoogleMapsPlaces _places =
-      GoogleMapsPlaces(apiKey: "API_KEY HERE");
+      GoogleMapsPlaces(apiKey: "///API_KEY HERE");
 
   @action
   Future<Null> getPrediction(BuildContext context) async {
@@ -31,7 +31,7 @@ abstract class ChangeProfileStoreBase with Store {
       context: context,
 
       ///API_KEY HERE
-      apiKey: "API_KEY HERE",
+      apiKey: "///API_KEY HERE",
       mode: Mode.overlay,
       logo: SizedBox(),
       // Mode.fullscreen
@@ -79,6 +79,9 @@ abstract class ChangeProfileStoreBase with Store {
 
     if ((this.userData.additionalInfo?.socialNetwork?.twitter ?? "") !=
         (userData.additionalInfo?.socialNetwork?.twitter ?? "")) return true;
+
+    if ((this.userData.additionalInfo?.address ?? "") !=
+        (userData.additionalInfo?.address ?? "")) return true;
 
     if (media != null) return true;
 

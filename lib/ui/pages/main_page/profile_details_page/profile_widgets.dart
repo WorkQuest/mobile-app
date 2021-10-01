@@ -606,7 +606,7 @@ Widget contactDetails({
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
+        Wrap(
           children: [
             Icon(
               Icons.location_pin,
@@ -617,6 +617,7 @@ Widget contactDetails({
               padding: const EdgeInsets.only(left: 8.0),
               child: Text(
                 location,
+                overflow: TextOverflow.fade,
                 style: const TextStyle(
                   fontSize: 14,
                   color: const Color(0xFF7C838D),
