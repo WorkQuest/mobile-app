@@ -101,61 +101,80 @@ abstract class FilterQuestsStoreBase with Store {
   @action
   void setSelectedWorkplace(bool? value, int index) {
     if (index == 0) if (value == true)
-      for (int i = 0; i < selectWorkplace.length; i++)
+      for (int i = 0; i < selectWorkplace.length; i++) {
         selectWorkplace[i] = true;
+        selectWorkplace.reduce((p, e) => p && e);
+      }
     else
       for (int i = 0; i < selectWorkplace.length; i++)
         selectWorkplace[i] = false;
     else if (selectWorkplace[0] == true) selectWorkplace[0] = false;
     selectWorkplace[index] = value ?? false;
+    selectWorkplace[0] = selectWorkplace.skip(1).reduce((p, e) => p && e);
   }
 
   @action
   void setSelectedPriority(bool? value, int index) {
     if (index == 0) if (value == true)
-      for (int i = 0; i < selectPriority.length; i++) selectPriority[i] = true;
+      for (int i = 0; i < selectPriority.length; i++) {
+        selectPriority[i] = true;
+        selectPriority.reduce((p, e) => p && e);
+      }
     else
       for (int i = 0; i < selectPriority.length; i++) selectPriority[i] = false;
     else if (selectPriority[0] == true) selectPriority[0] = false;
     selectPriority[index] = value ?? false;
+    selectPriority[0] = selectPriority.skip(1).reduce((p, e) => p && e);
   }
 
   @action
   void setSelectedEmployeeRating(bool? value, int index) {
     if (index == 0) if (value == true)
-      for (int i = 0; i < selectEmployeeRating.length; i++)
+      for (int i = 0; i < selectEmployeeRating.length; i++) {
         selectEmployeeRating[i] = true;
+        selectEmployeeRating.reduce((p, e) => p && e);
+      }
     else
       for (int i = 0; i < selectEmployeeRating.length; i++)
         selectEmployeeRating[i] = false;
     else if (selectEmployeeRating[0] == true) selectEmployeeRating[0] = false;
     selectEmployeeRating[index] = value ?? false;
+    selectEmployeeRating[0] =
+        selectEmployeeRating.skip(1).reduce((p, e) => p && e);
   }
 
   @action
   void setSelectedQuest(bool? value, int index) {
     if (index == 0) if (value == true)
-      for (int i = 0; i < selectQuest.length; i++) selectQuest[i] = true;
+      for (int i = 0; i < selectQuest.length; i++) {
+        selectQuest[i] = true;
+        selectQuest.reduce((p, e) => p && e);
+      }
     else
       for (int i = 0; i < selectQuest.length; i++) selectQuest[i] = false;
     else if (selectQuest[0] == true) selectQuest[0] = false;
     selectQuest[index] = value ?? false;
+    selectQuest[0] = selectQuest.skip(1).reduce((p, e) => p && e);
   }
 
   @action
   void setSelectedQuestDelivery(bool? value, int index) {
     if (index == 0) if (value == true)
-      for (int i = 0; i < selectQuestDelivery.length; i++)
+      for (int i = 0; i < selectQuestDelivery.length; i++) {
         selectQuestDelivery[i] = true;
+        selectQuestDelivery.reduce((p, e) => p && e);
+      }
     else
       for (int i = 0; i < selectQuestDelivery.length; i++)
         selectQuestDelivery[i] = false;
     else if (selectQuestDelivery[0] == true) selectQuestDelivery[0] = false;
     selectQuestDelivery[index] = value ?? false;
+    selectQuestDelivery[0] =
+        selectQuestDelivery.skip(1).reduce((p, e) => p && e);
   }
 
   @computed
-  bool get allSelected  => false;
+  bool get allSelected => false;
 
   @action
   void setSelectedEmployment(bool? value, int index) {
@@ -169,7 +188,7 @@ abstract class FilterQuestsStoreBase with Store {
         selectEmployment[i] = false;
     else if (selectEmployment[0] == true) selectEmployment[0] = false;
     selectEmployment[index] = value ?? false;
-    selectEmployment[0]=selectEmployment.skip(1).reduce((p, e) => p && e);
+    selectEmployment[0] = selectEmployment.skip(1).reduce((p, e) => p && e);
   }
 
   @action

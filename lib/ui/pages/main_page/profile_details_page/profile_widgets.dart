@@ -17,65 +17,63 @@ class PortfolioWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            PortfolioDetails.routeName,
-            arguments: index,
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: 10.0
-          ),
-          child: Stack(
-            children: [
-              Container(
-                height: 230,
-                width: double.maxFinite,
-                foregroundDecoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(6.0),
-                  ),
-                  color: Colors.black38,
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          PortfolioDetails.routeName,
+          arguments: index,
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        child: Stack(
+          children: [
+            Container(
+              height: 230,
+              width: double.maxFinite,
+              foregroundDecoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(6.0),
                 ),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(
-                      imageUrl,
-                    ),
+                color: Colors.black38,
+              ),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                    imageUrl,
                   ),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(
-                      6.0,
-                    ),
+                ),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(
+                    6.0,
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 15.0,
-                left: 21.0,
-                right: 55.0,
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+            ),
+            Positioned(
+              bottom: 15.0,
+              left: 21.0,
+              right: 55.0,
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
                 ),
               ),
-              Positioned(
-                  bottom: 15.0,
-                  right: 21.0,
-                  child: Icon(
-                    Icons.arrow_right_sharp,
-                    color: Colors.white,
-                  )),
-            ],
-          ),
+            ),
+            Positioned(
+              bottom: 15.0,
+              right: 21.0,
+              child: Icon(
+                Icons.arrow_right_sharp,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 }
 
@@ -654,15 +652,24 @@ Widget contactDetails({
               const SizedBox(
                 height: 10.0,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 27.0),
-                child: Text(
-                  secondNumber,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF7C838D),
+              Row(
+                children: [
+                  Icon(
+                    Icons.phone,
+                    size: 20.0,
+                    color: const Color(0xFF7C838D),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      secondNumber,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF7C838D),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
