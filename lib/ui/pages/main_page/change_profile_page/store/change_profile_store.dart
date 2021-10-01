@@ -1,6 +1,9 @@
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:drishya_picker/drishya_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+import 'package:google_maps_webservice/places.dart';
 
 part 'change_profile_store.g.dart';
 
@@ -14,6 +17,38 @@ abstract class ChangeProfileStoreBase with Store {
 
   @observable
   DrishyaEntity? media;
+
+  @observable
+  String address = "";
+
+  ///API_KEY HERE
+  GoogleMapsPlaces _places =
+      GoogleMapsPlaces(apiKey: "///API_KEY HERE");
+
+  @action
+  Future<Null> getPrediction(BuildContext context) async {
+    Prediction? p = await PlacesAutocomplete.show(
+      context: context,
+
+      ///API_KEY HERE
+      apiKey: "///API_KEY HERE",
+      mode: Mode.overlay,
+      logo: SizedBox(),
+      // Mode.fullscreen
+    );
+    address = p!.description!;
+    displayPrediction(p.placeId);
+  }
+
+  @action
+  Future<Null> displayPrediction(String? p) async {
+    PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p!);
+    userData.location!.latitude = detail.result.geometry!.location.lat;
+    userData.location!.longitude = detail.result.geometry!.location.lng;
+
+    print(userData.location!.latitude);
+    print(userData.location!.longitude);
+  }
 
   bool areThereAnyChanges(ProfileMeResponse? userData) {
     if (userData == null) return false;
@@ -44,6 +79,9 @@ abstract class ChangeProfileStoreBase with Store {
 
     if ((this.userData.additionalInfo?.socialNetwork?.twitter ?? "") !=
         (userData.additionalInfo?.socialNetwork?.twitter ?? "")) return true;
+
+    if ((this.userData.additionalInfo?.address ?? "") !=
+        (userData.additionalInfo?.address ?? "")) return true;
 
     if (media != null) return true;
 

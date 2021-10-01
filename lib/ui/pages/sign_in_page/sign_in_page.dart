@@ -224,7 +224,9 @@ class SignInPage extends StatelessWidget {
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: onForgotPasswordClicked,
+                          onTap: () {
+                            onForgotPasswordClicked(context);
+                          },
                           child: Text(
                             "signIn.forgotYourPass".tr(),
                             style: TextStyle(
@@ -303,7 +305,7 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  void onForgotPasswordClicked() {
+  void onForgotPasswordClicked(BuildContext context) {
     return;
   }
 }

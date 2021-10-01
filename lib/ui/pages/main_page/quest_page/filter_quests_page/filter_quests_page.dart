@@ -1,5 +1,6 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -9,19 +10,22 @@ import "package:provider/provider.dart";
 
 class FilterQuestsPage extends StatefulWidget {
   const FilterQuestsPage({Key? key}) : super(key: key);
+  static const String routeName = '/filterQuestPage';
 
   @override
   State<FilterQuestsPage> createState() => _FilterQuestsPageState();
 }
 
 class _FilterQuestsPageState extends State<FilterQuestsPage> {
-  final store = FilterQuestsStore();
+  final storeFilter = FilterQuestsStore();
   ProfileMeStore? profile;
+  late final QuestsStore storeQuest;
 
   @override
   void initState() {
-    store.readFilters();
+    storeFilter.readFilters();
     profile = context.read<ProfileMeStore>();
+    storeQuest = context.read<QuestsStore>();
     super.initState();
   }
 
@@ -53,7 +57,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
 
   Widget getBody() {
     return Observer(builder: (_) {
-      return store.isLoading
+      return storeFilter.isLoading
           ? Center(
               heightFactor: double.maxFinite,
               child: SizedBox(
@@ -62,10 +66,10 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
                 height: 30,
               ))
           : ListView.builder(
-              itemCount: store.filters.length,
+              itemCount: storeFilter.filters.length,
               itemBuilder: (context, index) {
-                return store.filters[index].type == TypeFilter.Check
-                    ? ExpansionCell(store.filters[index])
+                return storeFilter.filters[index].type == TypeFilter.Check
+                    ? ExpansionCell(storeFilter.filters[index])
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -75,21 +79,44 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
                                   children: [
                                     _checkButton(
                                       title: "Quests",
-                                      list: store.sortByQuest,
-                                      selected: store.selectQuest,
-                                      onChange: store.setSelectedQuest,
+                                      list: storeFilter.sortByQuest,
+                                      selected: storeFilter.selectQuest,
+                                      onChange: storeFilter.setSelectedQuest,
                                     ),
                                     _checkButton(
                                       title: "Quests delivery time",
-                                      list: store.sortByQuestDelivery,
-                                      selected: store.selectQuestDelivery,
-                                      onChange: store.setSelectedQuestDelivery,
+                                      list: storeFilter.sortByQuestDelivery,
+                                      selected: storeFilter.selectQuestDelivery,
+                                      onChange:
+                                          storeFilter.setSelectedQuestDelivery,
                                     ),
                                     _checkButton(
                                       title: "Employment",
-                                      list: store.sortByEmployment,
-                                      selected: store.selectEmployment,
-                                      onChange: store.setSelectedEmployment,
+                                      list: storeFilter.sortByEmployment,
+                                      selected: storeFilter.selectEmployment,
+                                      onChange: (bool? value, int i) {
+                                        storeFilter.setSelectedEmployment(
+                                          value,
+                                          i,
+                                        );
+                                        storeQuest.employment =
+                                            storeFilter.sortByEmployment[i];
+                                        storeQuest.getEmploymentValue();
+                                      },
+                                    ),
+                                    _checkButton(
+                                      title: "Workplace",
+                                      list: storeFilter.sortByWorkplace,
+                                      selected: storeFilter.selectWorkplace,
+                                      onChange: (bool? value, int i) {
+                                        storeFilter.setSelectedWorkplace(
+                                          value,
+                                          i,
+                                        );
+                                        storeQuest.workplace =
+                                            storeFilter.sortByWorkplace[i];
+                                        storeQuest.getWorkplaceValue();
+                                      },
                                     ),
                                   ],
                                 )
@@ -98,21 +125,24 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
                                   children: [
                                     _checkButton(
                                       title: "Priority of the employee",
-                                      list: store.sortByPriority,
-                                      selected: store.selectPriority,
-                                      onChange: store.setSelectedPriority,
+                                      list: storeFilter.sortByPriority,
+                                      selected: storeFilter.selectPriority,
+                                      onChange: storeFilter.setSelectedPriority,
                                     ),
                                     _checkButton(
                                       title: "Employee rating",
-                                      list: store.sortByEmployeeRating,
-                                      selected: store.selectEmployeeRating,
-                                      onChange: store.setSelectedEmployeeRating,
+                                      list: storeFilter.sortByEmployeeRating,
+                                      selected:
+                                          storeFilter.selectEmployeeRating,
+                                      onChange:
+                                          storeFilter.setSelectedEmployeeRating,
                                     ),
                                     _checkButton(
-                                      title: "Distant work",
-                                      list: store.sortByDistantWork,
-                                      selected: store.selectDistantWork,
-                                      onChange: store.setSelectedWork,
+                                      title: "Workplace",
+                                      list: storeFilter.sortByWorkplace,
+                                      selected: storeFilter.selectWorkplace,
+                                      onChange:
+                                          storeFilter.setSelectedWorkplace,
                                     ),
                                   ],
                                 ),
@@ -134,18 +164,18 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
   Widget _radioButton() => ExpansionTile(
         title: Text("Sort by"),
         children: [
-          for (int i = 0; i < store.sortBy.length; i++)
+          for (int i = 0; i < storeFilter.sortBy.length; i++)
             Observer(
               builder: (_) => RadioListTile<String>(
                 title: Text(
-                  store.sortBy[i],
+                  storeFilter.sortBy[i],
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   softWrap: false,
                 ),
-                value: store.sortBy[i],
-                groupValue: store.selectSortBy,
-                onChanged: store.setSortBy,
+                value: storeFilter.sortBy[i],
+                groupValue: storeFilter.selectSortBy,
+                onChanged: storeFilter.setSortBy,
               ),
             )
         ],
@@ -167,9 +197,10 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
                 children: [
                   Observer(
                     builder: (_) => Checkbox(
-                        checkColor: Colors.white,
-                        value: selected[i],
-                        onChanged: (bool? value) => onChange(value, i)),
+                      checkColor: Colors.white,
+                      value: selected[i],
+                      onChanged: (bool? value) => onChange(value, i),
+                    ),
                   ),
                   Expanded(
                     child: Text(

@@ -72,6 +72,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   @action
   changeProfile(ProfileMeResponse userData, {DrishyaEntity? media}) async {
+    print("object${userData.additionalInfo!.address}");
     try {
       this.onLoading();
       if (media != null)

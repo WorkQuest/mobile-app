@@ -19,6 +19,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/worker/quest_worker_pa
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
+import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/payment_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
@@ -163,6 +164,22 @@ class Routes {
           ),
         );
 
+      case FilterQuestsPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => MultiProvider(
+            providers: [
+
+              Provider(
+                create: (context) => getIt.get<QuestsStore>(),
+              ),
+            ],
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: FilterQuestsPage(),
+            ),
+          ),
+        );
+
       case QuestDetails.routeName:
         return MaterialPageRoute(
           builder: (context) {
@@ -238,8 +255,9 @@ class Routes {
           builder: (context) => Provider(
             create: (context) => getIt.get<ChooseRoleStore>(),
             child: Directionality(
-                textDirection: checkDirection(context),
-                child: ConfirmEmail(settings.arguments)),
+              textDirection: checkDirection(context),
+              child: ConfirmEmail(settings.arguments as List<String>),
+            ),
           ),
         );
 

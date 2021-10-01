@@ -152,6 +152,8 @@ extension QuestService on ApiProvider {
   }
 
   Future<List<BaseQuestResponse>> getQuests({
+    String workplace = "",
+    String employment = "",
     int limit = 10,
     int offset = 0,
     String searchWord = "",
@@ -169,6 +171,8 @@ extension QuestService on ApiProvider {
         "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
         if (priority != null) "priority": priority,
+        if (workplace.isNotEmpty) "workplace": workplace,
+        if (employment.isNotEmpty) "employment": employment,
         if (status != null) "status": status,
         //"sort": sort,
         if (invited != null) "invited": invited,
@@ -307,25 +311,17 @@ extension UserInfoService on ApiProvider {
                 ? userData.additionalInfo?.website
                 : null,
           if (userData.role == UserRole.Worker)
-            "educations": [
-              {
-                "from": DateTime.now().toString(),
-                "to": DateTime.now().toString(),
-                "place": DateTime.now().toString(),
-              }
-            ],
+            "educations": userData.additionalInfo!.educations,
           if (userData.role == UserRole.Worker)
-            "workExperiences": [
-              {
-                "from": DateTime.now().toString(),
-                "to": DateTime.now().toString(),
-                "place": DateTime.now().toString(),
-              }
-            ],
+            "workExperiences": userData.additionalInfo!.workExperiences,
           if (userData.role == UserRole.Worker) "skills": [],
         },
         if (userData.role == UserRole.Worker)
           "skillFilters": userData.skillFilters,
+        "location": {
+          "longitude": userData.location!.longitude,
+          "latitude": userData.location!.latitude,
+        }
       };
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");
       final responseData =

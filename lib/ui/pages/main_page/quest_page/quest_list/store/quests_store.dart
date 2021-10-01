@@ -26,6 +26,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   String? sort = "";
 
   @observable
+  String employment = "";
+
+  @observable
+  String workplace = "";
+
+  @observable
   int priority = -1;
 
   @observable
@@ -42,6 +48,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @observable
   List<BaseQuestResponse>? searchResultList = [];
+
+  @observable
+  String employmentValue = "partTime";
+
+  @observable
+  String workplaceValue = "distant";
 
   Timer? debounce;
 
@@ -60,6 +72,36 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       searchWord.length > 2 && searchResultList!.isEmpty && !this.isLoading;
 
   @action
+  String getEmploymentValue() {
+    switch (employment) {
+      case "Select all":
+        return employmentValue = "selectAll";
+      case "Full-time":
+        return employmentValue = "fullTime";
+      case "Part-time":
+        return employmentValue = "partTime";
+      case "Fixed-term":
+        return employmentValue = "fixedTerm";
+      case "Contract":
+        return employmentValue = "contract";
+    }
+    return employmentValue;
+  }
+
+  @action
+  String getWorkplaceValue() {
+    switch (workplace) {
+      case "Select all":
+        return workplaceValue = "both";
+      case "Work in office":
+        return workplaceValue = "office";
+      case "Distant work":
+        return workplaceValue = "distant";
+    }
+    return workplaceValue;
+  }
+
+  @action
   Future getSearchedQuests() async {
     this.onLoading();
     debounce = Timer(const Duration(milliseconds: 300), () async {
@@ -75,6 +117,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       final loadQuestsList = await _apiProvider.getQuests(
+        /// employment: employmentValue,
+        /// workplace: workplaceValue,
         offset: this.offset,
         limit: this.limit,
         sort: this.sort,

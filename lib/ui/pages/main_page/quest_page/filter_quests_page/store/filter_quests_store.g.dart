@@ -9,6 +9,14 @@ part of 'filter_quests_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
+  Computed<bool>? _$allSelectedComputed;
+
+  @override
+  bool get allSelected =>
+      (_$allSelectedComputed ??= Computed<bool>(() => super.allSelected,
+              name: 'FilterQuestsStoreBase.allSelected'))
+          .value;
+
   final _$isLoadingAtom = Atom(name: 'FilterQuestsStoreBase.isLoading');
 
   @override
@@ -229,35 +237,35 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     });
   }
 
-  final _$sortByDistantWorkAtom =
-      Atom(name: 'FilterQuestsStoreBase.sortByDistantWork');
+  final _$sortByWorkplaceAtom =
+      Atom(name: 'FilterQuestsStoreBase.sortByWorkplace');
 
   @override
-  ObservableList<String> get sortByDistantWork {
-    _$sortByDistantWorkAtom.reportRead();
-    return super.sortByDistantWork;
+  ObservableList<String> get sortByWorkplace {
+    _$sortByWorkplaceAtom.reportRead();
+    return super.sortByWorkplace;
   }
 
   @override
-  set sortByDistantWork(ObservableList<String> value) {
-    _$sortByDistantWorkAtom.reportWrite(value, super.sortByDistantWork, () {
-      super.sortByDistantWork = value;
+  set sortByWorkplace(ObservableList<String> value) {
+    _$sortByWorkplaceAtom.reportWrite(value, super.sortByWorkplace, () {
+      super.sortByWorkplace = value;
     });
   }
 
-  final _$selectDistantWorkAtom =
-      Atom(name: 'FilterQuestsStoreBase.selectDistantWork');
+  final _$selectWorkplaceAtom =
+      Atom(name: 'FilterQuestsStoreBase.selectWorkplace');
 
   @override
-  ObservableList<bool> get selectDistantWork {
-    _$selectDistantWorkAtom.reportRead();
-    return super.selectDistantWork;
+  ObservableList<bool> get selectWorkplace {
+    _$selectWorkplaceAtom.reportRead();
+    return super.selectWorkplace;
   }
 
   @override
-  set selectDistantWork(ObservableList<bool> value) {
-    _$selectDistantWorkAtom.reportWrite(value, super.selectDistantWork, () {
-      super.selectDistantWork = value;
+  set selectWorkplace(ObservableList<bool> value) {
+    _$selectWorkplaceAtom.reportWrite(value, super.selectWorkplace, () {
+      super.selectWorkplace = value;
     });
   }
 
@@ -271,6 +279,17 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
 
   final _$FilterQuestsStoreBaseActionController =
       ActionController(name: 'FilterQuestsStoreBase');
+
+  @override
+  void setSelectedWorkplace(bool? value, int index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSelectedWorkplace');
+    try {
+      return super.setSelectedWorkplace(value, index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setSelectedPriority(bool? value, int index) {
@@ -289,17 +308,6 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
         name: 'FilterQuestsStoreBase.setSelectedEmployeeRating');
     try {
       return super.setSelectedEmployeeRating(value, index);
-    } finally {
-      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setSelectedWork(bool? value, int index) {
-    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
-        name: 'FilterQuestsStoreBase.setSelectedWork');
-    try {
-      return super.setSelectedWork(value, index);
     } finally {
       _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -366,8 +374,9 @@ sortByPriority: ${sortByPriority},
 selectPriority: ${selectPriority},
 sortByEmployeeRating: ${sortByEmployeeRating},
 selectEmployeeRating: ${selectEmployeeRating},
-sortByDistantWork: ${sortByDistantWork},
-selectDistantWork: ${selectDistantWork}
+sortByWorkplace: ${sortByWorkplace},
+selectWorkplace: ${selectWorkplace},
+allSelected: ${allSelected}
     ''';
   }
 }
