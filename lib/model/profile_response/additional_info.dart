@@ -55,21 +55,21 @@ class AdditionalInfo {
           : List<String>.from(
               json["skills"].map((x) => x),
             ),
-      educations: List<Map<String, String>>.from(json["educations"].map((item) {
+      educations: json["educations"] != null? List<Map<String, String>>.from(json["educations"].map((item) {
         Map<String, String> newItem = {};
         item.keys.forEach((element) {
           newItem[element] = item[element].toString();
         });
         return newItem;
-      })).toList(),
-      workExperiences:
+      })).toList():[],
+      workExperiences:json["educations"] !=null?
           List<Map<String, String>>.from(json["workExperiences"].map((item) {
         Map<String, String> newItem1 = {};
         item.keys.forEach((element) {
           newItem1[element] = item[element].toString();
         });
         return newItem1;
-      })).toList(),
+      })).toList():[],
       description: json["description"],
     );
   }

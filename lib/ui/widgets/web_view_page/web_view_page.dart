@@ -43,6 +43,7 @@ class _WebViewPageState extends State<WebViewPage> {
       body: Builder(builder: (BuildContext context) {
         return WebView(
           initialUrl: baseUrl + widget.inputUrlRoute,
+          userAgent: "random",
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             _controller.complete(webViewController);

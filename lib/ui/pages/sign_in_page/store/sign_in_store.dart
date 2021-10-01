@@ -56,16 +56,4 @@ abstract class _SignInStore extends IStore<bool> with Store {
     }
   }
 
-  @action
-  Future signInWithTwitter() async {
-    try {
-      this.onLoading();
-      print("called");
-      var page =await _apiProvider.loginWithGoogle();
-      return page;
-      this.onSuccess(true);
-    } catch (e) {
-      this.onError(e.toString());
-    }
-  }
 }

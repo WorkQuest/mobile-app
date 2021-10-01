@@ -270,11 +270,11 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @computed
   bool get canCreateQuest =>
       !isLoading &&
-      price.isNotEmpty &&
-      questTitle.isNotEmpty &&
-      locationPlaceName.isNotEmpty &&
-      description.isNotEmpty &&
-      media.isNotEmpty;
+          price.isNotEmpty &&
+          questTitle.isNotEmpty &&
+          locationPlaceName.isNotEmpty &&
+          description.isNotEmpty &&
+          media.isNotEmpty;
 
   String getWorkplaceValue() {
     switch (workplace) {
@@ -302,14 +302,14 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   ///API_KEY HERE
   GoogleMapsPlaces _places =
-      GoogleMapsPlaces(apiKey: "API_KEY");
+  GoogleMapsPlaces(apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU");
 
   @action
   Future<Null> getPrediction(BuildContext context) async {
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
       ///API_KEY HERE
-      apiKey: "API_KEY",
+      apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU",
       mode: Mode.overlay,
       logo: SizedBox(),
       // Mode.fullscreen

@@ -64,20 +64,10 @@ extension LoginService on ApiProvider {
     return bearerToken;
   }
 
-  Future loginWithGoogle() async {
-    //_httpClient.accessToken = refreshToken;
-    final responseData = await _httpClient.get(
-      query: '/v1/auth/login/google/token',
-    );
-    return responseData;
-    // BearerToken bearerToken = BearerToken.fromJson(
-    //   responseData,
-    // );
-    //_httpClient.accessToken = bearerToken.access;
-   // return bearerToken;
-  }
-
-  Future<BearerToken> refreshToken(String refreshToken) async {
+  Future<BearerToken> refreshToken(String refreshToken,) async {
+    print("oldtoken $refreshToken");
+    print("oldtoken $refreshToken");
+    print("new ${_httpClient.accessToken}");
     _httpClient.accessToken = refreshToken;
     final responseData = await _httpClient.post(
       query: '/v1/auth/refresh-tokens',
@@ -586,4 +576,27 @@ extension Portfolio on ApiProvider {
 
 extension RestorePassword on ApiProvider{
 
+  Future<void> sendCodeToEmail({
+    required String email,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/restore-password/send-code',
+      data: {
+        "email": email,
+      },
+    );
+  }
+
+  Future<void> setPassword({
+    required String newPassword,
+    required String token,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/restore-password/send-code',
+      data: {
+        "newPassword": newPassword,
+        "token": token,
+      },
+    );
+  }
 }

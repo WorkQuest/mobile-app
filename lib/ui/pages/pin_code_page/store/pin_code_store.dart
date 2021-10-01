@@ -87,6 +87,11 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
     }
   }
 
+  ///TODO:check why refresh token not working
+  ///TODO:clear password field on error password
+  ///
+
+
   changeState(StatePinCode state, {errorAnimation = false}) {
     statePin = state;
     if (errorAnimation)
@@ -119,6 +124,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         await Storage.writePinCode(pin);
       } else {
         if (await Storage.readPinCode() != pin) {
+          print("object");
           pin = "";
           attempts += 1;
           if (attempts >= 3) {
@@ -144,6 +150,13 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
 
       this.onSuccess(StatePinCode.Success);
     } catch (e) {
+      ///added this
+      attempts++;
+      if (attempts >= 3) {
+        await Storage.deleteAllFromSecureStorage();
+        this.onSuccess(StatePinCode.ToLogin);
+        return;
+      }
       this.onError(e.toString());
     }
   }

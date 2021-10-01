@@ -169,7 +169,12 @@ class _HttpClient implements IHttpClient {
     final responseData = await post(
       query: '/v1/auth/refresh-tokens',
     );
-    responseData["access"] = this.accessToken!;
+    this.accessToken = responseData["access"];
+    println("\n---------- DioInfo ----------"
+        "\n\info: TOKEN REFRESHED"
+        "\n--------------------------------\n");
+    Storage.writeRefreshToken(responseData["refresh"]);
+    Storage.writeAccessToken(responseData["access"]);
     this.tokenExpired = false;
   }
 }

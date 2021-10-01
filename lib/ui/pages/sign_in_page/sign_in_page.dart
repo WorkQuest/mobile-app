@@ -1,13 +1,15 @@
-import 'dart:async';
-import 'dart:convert';
-
+import 'package:app/di/injector.dart';
 import "package:app/observer_consumer.dart";
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
+import 'package:app/ui/pages/restore_password_page/restore_password_page.dart';
+import 'package:app/ui/pages/restore_password_page/send_code.dart';
+import 'package:app/ui/pages/restore_password_page/store.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import "package:app/ui/widgets/platform_activity_indicator.dart";
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:app/utils/validator.dart';
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
@@ -15,7 +17,6 @@ import 'package:flutter/services.dart';
 import "package:flutter_mobx/flutter_mobx.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:provider/provider.dart";
-import 'package:webview_flutter/webview_flutter.dart';
 
 const double _horizontalConstraints = 44.0;
 const double _verticalConstraints = 24.0;
@@ -185,7 +186,37 @@ class SignInPage extends StatelessWidget {
                       top: 20.0,
                       right: 16,
                     ),
-                    child: _iconsView(signInStore),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _iconButton(
+                          "assets/google_icon.svg",
+                          "google",
+                          context,
+                        ),
+                        // _iconButton(
+                        //   "assets/instagram.svg",
+                        //   "https://www.instagram.com/zuck/?hl=ru",
+                        // ),
+                        _iconButton(
+                          "assets/twitter_icon.svg",
+                          "twitter",
+                          context,
+                        ),
+                        _iconButton(
+                          "assets/facebook_icon.svg",
+                          "facebook",
+                          context,
+                        ),
+                        _iconButton(
+                          "assets/linkedin_icon.svg",
+                          "linkedin",
+                          context,
+                        ),
+                      ],
+                    ),
+
+                    //_iconsView(signInStore),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -224,9 +255,17 @@ class SignInPage extends StatelessWidget {
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            onForgotPasswordClicked(context);
-                          },
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Provider(
+                                create: (context) =>
+                                    getIt.get<RestorePasswordStore>(),
+                                child: SendEmail(),
+                              ),
+                            ),
+                            // MaterialPageRoute(builder: (_) => SendEmail()),
+                          ),
                           child: Text(
                             "signIn.forgotYourPass".tr(),
                             style: TextStyle(
@@ -235,7 +274,7 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         Spacer(),
-                        const Text("Version 1.0.24"),
+                        const Text("Version 1.0.26"),
                         const SizedBox(width: 15)
                       ],
                     ),
@@ -249,99 +288,92 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  Widget _iconsView(final SignInStore store) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _iconButton(
-          store.signInWithTwitter,
-          "assets/google_icon.svg",
-          "https://www.instagram.com/zuck/?hl=ru",
-        ),
-        // _iconButton(
-        //   "assets/instagram.svg",
-        //   "https://www.instagram.com/zuck/?hl=ru",
-        // ),
-        _iconButton(
-          () {},
-          "assets/twitter_icon.svg",
-          "https://www.instagram.com/zuck/?hl=ru",
-        ),
-        _iconButton(
-          () {},
-          "assets/facebook_icon.svg",
-          "https://www.instagram.com/zuck/?hl=ru",
-        ),
-        _iconButton(
-          () {},
-          "assets/linkedin_icon.svg",
-          "https://www.instagram.com/zuck/?hl=ru",
-        ),
-      ],
-    );
-  }
+  // Widget _iconsView(final SignInStore store) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       _iconButton(
+  //         store.signInWithTwitter(),
+  //         "assets/google_icon.svg",
+  //         "https://www.instagram.com/zuck/?hl=ru",
+  //       ),
+  //       // _iconButton(
+  //       //   "assets/instagram.svg",
+  //       //   "https://www.instagram.com/zuck/?hl=ru",
+  //       // ),
+  //       _iconButton(
+  //         () {},
+  //         "assets/twitter_icon.svg",
+  //         "https://www.instagram.com/zuck/?hl=ru",
+  //       ),
+  //       _iconButton(
+  //         () {},
+  //         "assets/facebook_icon.svg",
+  //         "https://www.instagram.com/zuck/?hl=ru",
+  //       ),
+  //       _iconButton(
+  //         () {},
+  //         "assets/linkedin_icon.svg",
+  //         "https://www.instagram.com/zuck/?hl=ru",
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _iconButton(
-    Function onTap,
     String iconPath,
-    String link, [
+    String link,
+    BuildContext context, [
     Color? color,
   ]) {
     return CupertinoButton(
-      color: Color(0xFFF7F8FA),
-      padding: EdgeInsets.zero,
-      child: SvgPicture.asset(
-        iconPath,
-        color: color,
-      ),
-      onPressed: () {}
+        color: Color(0xFFF7F8FA),
+        padding: EdgeInsets.zero,
+        child: SvgPicture.asset(
+          iconPath,
+          color: color,
+        ),
+        onPressed: () async => await launch(
+              'https://app-ver1.workquest.co/api/v1/auth/login/google/token',
+              customTabsOption: CustomTabsOption(
+                toolbarColor: Theme.of(context).primaryColor,
+                enableDefaultShare: true,
+                enableUrlBarHiding: true,
+                showPageTitle: true,
+                // animation: CustomTabsAnimation.slideIn(),
+                // // or user defined animation.
+                // animation: const CustomTabsAnimation(
+                //   startEnter: 'slide_up',
+                //   startExit: 'android:anim/fade_out',
+                //   endEnter: 'android:anim/fade_in',
+                //   endExit: 'slide_down',
+                // ),
+                extraCustomTabs: const <String>[
+                  // ref. https://play.google.com/store/apps/details?id=org.mozilla.firefox
+                  'org.mozilla.firefox',
+                  // ref. https://play.google.com/store/apps/details?id=com.microsoft.emmx
+                  'com.microsoft.emmx',
+                ],
+              ),
+              safariVCOption: SafariViewControllerOption(
+                preferredBarTintColor: Theme.of(context).primaryColor,
+                preferredControlTintColor: Colors.white,
+                barCollapsingEnabled: true,
+                entersReaderIfAvailable: false,
+                dismissButtonStyle:
+                    SafariViewControllerDismissButtonStyle.close,
+              ),
+            )
+        // } catch (e) {
+        // // An exception is thrown if browser app is not installed on Android device.
+        // debugPrint(e.toString());
+        // }
 
-      // => Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (_) => SocialNetworkLogin(),
-      //   ),
-      // ),
-    );
-  }
-
-  void onForgotPasswordClicked(BuildContext context) {
-    return;
-  }
-}
-
-class SocialNetworkLogin extends StatelessWidget {
-  SocialNetworkLogin({Key? key}) : super(key: key);
-
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
-
-  @override
-  Widget build(BuildContext context) {
-    return WebView(
-      initialUrl: '',
-      onWebViewCreated: (WebViewController webViewController) async {
-        _controller.complete(webViewController);
-        //_controller = webViewController;
-        await loadHtmlFromAssets(
-          'legal/privacy_policy.html',
-          _controller,
+        //     Navigator.pushNamed(
+        //   context,
+        //   WebViewPage.routeName,
+        //   arguments: "api/v1/auth/login/$link/token",
+        // ),
         );
-      },
-    );
-  }
-
-  Future<void> loadHtmlFromAssets(
-    String filename,
-    controller,
-  ) async {
-    String fileText = await rootBundle.loadString(filename);
-    controller.loadUrl(
-      Uri.dataFromString(
-        fileText,
-        mimeType: 'text/html',
-        encoding: Encoding.getByName('utf-8'),
-      ).toString(),
-    );
   }
 }
