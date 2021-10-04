@@ -1,6 +1,7 @@
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/portfolio_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 ///Portfolio Widget
 class PortfolioWidget extends StatelessWidget {
@@ -500,7 +501,12 @@ Widget rating({
 ///SocialMedia Accounts Widget
 ///
 
-Widget socialAccounts() {
+Widget socialAccounts({
+  required String? facebook,
+  required String? twitter,
+  required String? instagram,
+  required String? linkedin,
+}) {
   return Padding(
     padding: const EdgeInsets.only(
       top: 20.0,
@@ -521,7 +527,12 @@ Widget socialAccounts() {
               color: Color(0xFFF7F8FA),
             ),
             child: IconButton(
-              onPressed: null,
+              onPressed: facebook != null
+                  ? () {
+                      _launchSocial('fb://profile/$facebook',
+                          'https://www.facebook.com/$facebook');
+                    }
+                  : null,
               icon: SvgPicture.asset(
                 "assets/facebook_icon.svg",
               ),
@@ -541,7 +552,11 @@ Widget socialAccounts() {
               color: Color(0xFFF7F8FA),
             ),
             child: IconButton(
-              onPressed: null,
+              onPressed: twitter != null
+                  ? () {
+                      _launchSocial("", 'https://twitter.com/$twitter');
+                    }
+                  : null,
               icon: SvgPicture.asset(
                 "assets/twitter_icon.svg",
               ),
@@ -559,7 +574,11 @@ Widget socialAccounts() {
               color: Color(0xFFF7F8FA),
             ),
             child: IconButton(
-              onPressed: null,
+              onPressed: instagram != null
+                  ? () {
+                      _launchSocial("", 'https://www.instagram.com/$instagram');
+                    }
+                  : null,
               icon: SvgPicture.asset(
                 "assets/instagram.svg",
               ),
@@ -577,7 +596,11 @@ Widget socialAccounts() {
               color: Color(0xFFF7F8FA),
             ),
             child: IconButton(
-              onPressed: null,
+              onPressed: linkedin != null
+                  ? () {
+                      _launchSocial("", 'https://linkedin.com/$linkedin');
+                    }
+                  : null,
               icon: SvgPicture.asset(
                 "assets/linkedin_icon.svg",
               ),
@@ -587,6 +610,18 @@ Widget socialAccounts() {
       ],
     ),
   );
+}
+
+void _launchSocial(String url, String fallbackUrl) async {
+  try {
+    bool launched =
+        await launch(url, forceSafariVC: false, forceWebView: false);
+    if (!launched) {
+      await launch(fallbackUrl, forceSafariVC: false, forceWebView: false);
+    }
+  } catch (e) {
+    await launch(fallbackUrl, forceSafariVC: false, forceWebView: false);
+  }
 }
 
 ///Contact Details Widget

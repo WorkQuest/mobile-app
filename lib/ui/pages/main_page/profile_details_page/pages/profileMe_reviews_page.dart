@@ -291,7 +291,16 @@ class _ProfileReviewsState extends State<ProfileReviews>
 
                     ///Social Accounts
 
-                    socialAccounts(),
+                    socialAccounts(
+                      facebook: userStore
+                          .userData?.additionalInfo?.socialNetwork?.facebook,
+                      twitter: userStore
+                          .userData?.additionalInfo?.socialNetwork?.twitter,
+                      instagram: userStore
+                          .userData?.additionalInfo?.socialNetwork?.instagram,
+                      linkedin: userStore
+                          .userData?.additionalInfo?.socialNetwork?.linkedin,
+                    ),
 
                     ///Contact Details
                     contactDetails(
