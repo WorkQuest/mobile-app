@@ -1,7 +1,6 @@
 import 'package:app/di/injector.dart';
 import "package:app/observer_consumer.dart";
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
-import 'package:app/ui/pages/restore_password_page/restore_password_page.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import 'package:app/ui/pages/restore_password_page/store.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
@@ -334,7 +333,13 @@ class SignInPage extends StatelessWidget {
           color: color,
         ),
         onPressed: () async => await launch(
-              'https://app-ver1.workquest.co/api/v1/auth/login/google/token',
+              link == "google"
+                  ? 'https://app-ver1.workquest.co/api/v1/auth/login/google/token'
+                  : link == "twitter"
+                      ? 'https://app-ver1.workquest.co/api/v1/auth/login/twitter/token'
+                      : link == "facebook"
+                          ? 'https://app-ver1.workquest.co/api/v1/auth/login/facebook/token'
+                          : 'https://app-ver1.workquest.co/api/v1/auth/login/linkedin/token',
               customTabsOption: CustomTabsOption(
                 toolbarColor: Theme.of(context).primaryColor,
                 enableDefaultShare: true,
