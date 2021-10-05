@@ -89,7 +89,7 @@ class _MediaUploadState extends State<MediaUpload> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'Upload images \n or videos',
+              "uploader.uploadText",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,

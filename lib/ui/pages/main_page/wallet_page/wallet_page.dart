@@ -58,20 +58,22 @@ class WalletPage extends StatelessWidget {
                       child: InkWell(
                         onTap: () => Clipboard.setData(
                           new ClipboardData(
-                            text: "email",
+                            text: "label.email".tr(),
                           ),
-                        ).then((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              duration: Duration(
-                                seconds: 1,
+                        ).then(
+                          (_) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: Duration(
+                                  seconds: 1,
+                                ),
+                                content: Text(
+                                  "wallet.copy".tr(),
+                                ),
                               ),
-                              content: Text(
-                                "Wallet address copied to clipboard",
-                              ),
-                            ),
-                          );
-                        }),
+                            );
+                          },
+                        ),
                         child: SvgPicture.asset("assets/copy_icon.svg"),
                       ),
                     ),
@@ -102,9 +104,10 @@ class WalletPage extends StatelessWidget {
                       Text(
                         "1 600 WUSD",
                         style: TextStyle(
-                            color: Color(0xFF0083C7),
-                            fontSize: 25,
-                            fontWeight: FontWeight.w700),
+                          color: Color(0xFF0083C7),
+                          fontSize: 25,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       const SizedBox(
                         height: 15,
@@ -234,8 +237,9 @@ class WalletPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-                color: Color(0xFF00AA5B).withOpacity(0.1),
-                shape: BoxShape.circle),
+              color: Color(0xFF00AA5B).withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
             child: SvgPicture.asset("assets/send_tx_arrow_icon.svg"),
           ),
           const SizedBox(
@@ -279,8 +283,9 @@ class WalletPage extends StatelessWidget {
       showModalBottomSheet(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20.0),
-                topRight: Radius.circular(20.0)),
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
           ),
           context: context,
           isScrollControlled: true,
@@ -311,12 +316,14 @@ class WalletPage extends StatelessWidget {
                       ),
                     ),
                     _divider,
-                    Text("Recipient's address"),
+                    Text(
+                      "wallet.recipientsAddress".tr(),
+                    ),
                     _divider,
                     TextFormField(
                       onChanged: store.setRecipientAddress,
                       decoration: InputDecoration(
-                        hintText: "Enter Address",
+                        hintText: "wallet.enterAddress".tr(),
                       ),
                     ),
                     const SizedBox(
@@ -354,7 +361,9 @@ class WalletPage extends StatelessWidget {
                                 fee: "0.15",
                               )
                           : null,
-                      child: Text("wallet.transfer".tr()),
+                      child: Text(
+                        "wallet.transfer".tr(),
+                      ),
                     ),
                     _divider,
                   ],

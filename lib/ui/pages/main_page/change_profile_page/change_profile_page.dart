@@ -49,8 +49,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         requestType: RequestType.image,
       ),
       panelSetting: PanelSetting(
-          //topMargin: 100.0,
-          headerMaxHeight: 100.0),
+        //topMargin: 100.0,
+        headerMaxHeight: 100.0,
+      ),
     );
     super.initState();
   }
@@ -69,8 +70,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               showDialog();
           },
         ),
-        title: const Text(
-          "Change profile",
+        title: Text(
+          "settings.changeProfile".tr(),
           style: TextStyle(
             color: Colors.black,
             fontSize: 17,
@@ -78,14 +79,21 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         ),
         centerTitle: true,
         actions: [
-          TextButton(onPressed: onSave, child: Text("settings.save".tr())),
+          TextButton(
+            onPressed: onSave,
+            child: Text(
+              "settings.save".tr(),
+            ),
+          ),
         ],
       ),
       body: ObserverListener<ProfileMeStore>(
         onSuccess: () => Navigator.pop(context),
         child: Observer(
           builder: (_) => profile!.isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
               : getBody(),
         ),
       ),
@@ -358,7 +366,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           padding: EdgeInsets.symmetric(horizontal: 15.0),
           decoration: BoxDecoration(
             color: Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.all(Radius.circular(6.0)),
+            borderRadius: BorderRadius.all(
+              Radius.circular(6.0),
+            ),
           ),
           alignment: Alignment.centerLeft,
           child: Observer(
@@ -381,7 +391,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 hint: Text(
                   title.tr(),
                   maxLines: 1,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
                 ),
               ),
             ),
@@ -430,7 +443,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       media: pageStore.media,
     );
     if (profile!.isSuccess) {
-      await successAlert(context, "Profile changed successfully".tr());
+      await successAlert(
+        context,
+        "settings.profileChanged".tr(),
+      );
       Navigator.pop(context);
     }
   }
@@ -442,37 +458,57 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       builder: (_) {
         return Platform.isIOS
             ? CupertinoAlertDialog(
-                title: Text('Attention'),
-                content: Text("There are unsaved changes"),
+                title: Text(
+                  "modals.attention".tr(),
+                ),
+                content: Text(
+                  "modals.unsavedChanges".tr(),
+                ),
                 actions: [
                   CupertinoDialogAction(
-                    child: Text("meta.ok".tr()),
+                    child: Text(
+                      "meta.ok".tr(),
+                    ),
                     onPressed: Navigator.of(context).pop,
                   ),
                   CupertinoDialogAction(
-                    child: Text("Do not Save"),
+                    child: Text(
+                      "modals.dontSave".tr(),
+                    ),
                     onPressed: onBack,
                   ),
                   CupertinoDialogAction(
-                    child: Text("settings.save".tr()),
+                    child: Text(
+                      "settings.save".tr(),
+                    ),
                     onPressed: onSave,
                   )
                 ],
               )
             : AlertDialog(
-                title: Text('Error'),
-                content: Text("There are unsaved changes"),
+                title: Text(
+                  "modals.error".tr(),
+                ),
+                content: Text(
+                  "modals.dontSave".tr(),
+                ),
                 actions: [
                   TextButton(
-                    child: Text("meta.ok".tr()),
+                    child: Text(
+                      "meta.ok".tr(),
+                    ),
                     onPressed: Navigator.of(context).pop,
                   ),
                   TextButton(
-                    child: Text("Do not Save"),
+                    child: Text(
+                      "modals.dontSave".tr(),
+                    ),
                     onPressed: onBack,
                   ),
                   TextButton(
-                    child: Text("settings.save".tr()),
+                    child: Text(
+                      "settings.save".tr(),
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                       onSave();

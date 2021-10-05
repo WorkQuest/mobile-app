@@ -33,7 +33,9 @@ class ApproveRolePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Your role is ${store.userRole.toString().split(".").last} right?",
+                  "role.yourRole".tr() +
+                      " ${store.userRole.toString().split(".").last} " +
+                      "role.right".tr(),
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -94,7 +96,9 @@ class ApproveRolePage extends StatelessWidget {
                           ),
                   ),
                 ),
-                SizedBox(height: 15,),
+                SizedBox(
+                  height: 15,
+                ),
               ],
             ),
           );

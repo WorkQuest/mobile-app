@@ -82,6 +82,7 @@ class _WithdrawPageState extends State<WithdrawPage>
               children: [
                 ///Wallet Transfer
                 walletTab(withdrawStore),
+
                 ///Card Transfer
                 BankCardTransaction(
                   transaction: " " + "modals.withdraw".tr(),
@@ -97,16 +98,18 @@ class _WithdrawPageState extends State<WithdrawPage>
   Widget walletTab(WithdrawPageStore withdrawStore) => Padding(
         padding: const EdgeInsets.all(10.0),
         child: Observer(
-          builder:(context)=> Column(
+          builder: (context) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Recipient's address"),
+              Text(
+                "wallet.recipientsAddress".tr(),
+              ),
               _divider,
               TextFormField(
                 onChanged: withdrawStore.setRecipientAddress,
                 decoration: InputDecoration(
-                  hintText: "Enter Address",
+                  hintText: "wallet.enterAddress".tr(),
                 ),
               ),
               const SizedBox(
@@ -134,12 +137,12 @@ class _WithdrawPageState extends State<WithdrawPage>
               ElevatedButton(
                 onPressed: withdrawStore.canSubmit
                     ? () => confirmTransaction(
-                  context,
-                  transaction: "modals.withdraw".tr(),
-                  address: withdrawStore.getAddress(),
-                  amount: withdrawStore.getAmount(),
-                  fee: "0.15",
-                )
+                          context,
+                          transaction: "modals.withdraw".tr(),
+                          address: withdrawStore.getAddress(),
+                          amount: withdrawStore.getAmount(),
+                          fee: "0.15",
+                        )
                     : null,
                 child: Text("modals.withdraw".tr()),
               ),
@@ -150,5 +153,4 @@ class _WithdrawPageState extends State<WithdrawPage>
           ),
         ),
       );
-
 }

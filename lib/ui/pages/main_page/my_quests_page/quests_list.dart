@@ -20,12 +20,13 @@ class QuestsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: const Color(0xFFF7F8FA),
-        child: questsList == null
-            ? getLoadingBody()
-            : questsList!.isNotEmpty
-                ? getBody()
-                : getEmptyBody());
+      color: const Color(0xFFF7F8FA),
+      child: questsList == null
+          ? getLoadingBody()
+          : questsList!.isNotEmpty
+              ? getBody()
+              : getEmptyBody(),
+    );
   }
 
   Widget getBody() {
@@ -47,15 +48,19 @@ class QuestsList extends StatelessWidget {
                       Navigator.of(context, rootNavigator: true)
                           .pushNamed(CreateQuestPage.routeName);
                     },
-                    child: Text("Add new quest"),
+                    child: Text(
+                      "quests.addNewQuest".tr(),
+                    ),
                   ),
                 ),
               ],
             ),
           );
         }
-        return MyQuestsItem(questsList![(hasCreateButton) ? index - 1 : index],
-            itemType: questItemPriorityType);
+        return MyQuestsItem(
+          questsList![(hasCreateButton) ? index - 1 : index],
+          itemType: questItemPriorityType,
+        );
       },
     );
   }
@@ -74,7 +79,9 @@ class QuestsList extends StatelessWidget {
             height: 10.0,
           ),
           Text(
-            "You don't have any ${questItemPriorityType.toString().split(".").last} Quest yet",
+            "quests.youDontHaveAny".tr() +
+                " ${questItemPriorityType.toString().split(".").last} " +
+                "quests.questYet".tr(),
           ),
         ],
       ),

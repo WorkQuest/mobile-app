@@ -256,7 +256,7 @@ class Routes {
             create: (context) => getIt.get<ChooseRoleStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ConfirmEmail(settings.arguments as List<String>),
+              child: ConfirmEmail(settings.arguments.toString()),
             ),
           ),
         );

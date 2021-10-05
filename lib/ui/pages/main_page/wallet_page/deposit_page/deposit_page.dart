@@ -112,7 +112,9 @@ class _DepositPageState extends State<DepositPage>
               ),
             ),
             _divider,
-            Text('Scan QR Code or copy address to receive payments'),
+            Text(
+              "wallet.scanQr".tr(),
+            ),
             const SizedBox(
               height: 15.0,
             ),
@@ -168,12 +170,14 @@ class _DepositPageState extends State<DepositPage>
                         SnackBar(
                           duration: Duration(seconds: 1),
                           content: Text(
-                            "Wallet address copied to clipboard",
+                            "wallet.copy".tr(),
                           ),
                         ),
                       );
                     }),
-                    child: Text("Copy"),
+                    child: Text(
+                      "modals.copy".tr(),
+                    ),
                   ),
                 ),
               ],

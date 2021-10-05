@@ -47,7 +47,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
           slivers: [
             CupertinoSliverNavigationBar(
               largeTitle: Text(
-                widget.questInfo == null ? "quests.createAQuest".tr() : "Edit",
+                widget.questInfo == null
+                    ? "quests.createAQuest".tr()
+                    : "registration.edit".tr(),
               ),
             ),
             SliverPadding(
@@ -81,11 +83,11 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               items: store.priorityList
                                   .map<DropdownMenuItem<String>>(
                                       (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: new Text(value),
-                                    );
-                                  }).toList(),
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: new Text(value),
+                                );
+                              }).toList(),
                               icon: Icon(
                                 Icons.arrow_drop_down,
                                 size: 30,
@@ -95,7 +97,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 'mining.choose'.tr(),
                                 maxLines: 1,
                                 style:
-                                TextStyle(fontSize: 16, color: Colors.grey),
+                                    TextStyle(fontSize: 16, color: Colors.grey),
                               ),
                             ),
                           ),
@@ -137,18 +139,18 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   Flexible(
                                     child: store.locationPlaceName.isEmpty
                                         ? Text(
-                                      "Moscow, Lenina street, 3",
-                                      style: TextStyle(
-                                        color: Color(
-                                          0xFFD8DFE3,
-                                        ),
-                                      ),
-                                      overflow: TextOverflow.fade,
-                                    )
+                                            "Moscow, Lenina street, 3",
+                                            style: TextStyle(
+                                              color: Color(
+                                                0xFFD8DFE3,
+                                              ),
+                                            ),
+                                            overflow: TextOverflow.fade,
+                                          )
                                         : Text(
-                                      store.locationPlaceName,
-                                      overflow: TextOverflow.fade,
-                                    ),
+                                            store.locationPlaceName,
+                                            overflow: TextOverflow.fade,
+                                          ),
                                   ),
                                 ],
                               ),
@@ -178,73 +180,73 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                     ),
                     Observer(
                         builder: (context) => Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text("quests.runtime".tr()),
-                                Checkbox(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(6.0),
-                                  ),
-                                  value: store.hasRuntime,
-                                  onChanged: store.setRuntime,
-                                ),
-                              ],
-                            ),
-                            if (store.hasRuntime)
-                              titledField(
-                                "quests.runtime".tr(),
-                                Container(
-                                  height: 50,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF7F8FA),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(6.0)),
-                                  ),
-                                  alignment: Alignment.centerLeft,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Text(
-                                        store.dateString,
+                                Row(
+                                  children: [
+                                    Text("quests.runtime".tr()),
+                                    Checkbox(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(6.0),
                                       ),
-                                      Spacer(),
-                                      IconButton(
-                                        alignment:
-                                        AlignmentDirectional.centerEnd,
-                                        onPressed: () {
-                                          modalBottomSheet(
-                                            SizedBox(
-                                              height: 250,
-                                              child: CupertinoDatePicker(
-                                                mode:
-                                                CupertinoDatePickerMode
-                                                    .date,
-                                                minimumDate: DateTime.now(),
-                                                onDateTimeChanged:
-                                                store.setDateTime,
-                                              ),
+                                      value: store.hasRuntime,
+                                      onChanged: store.setRuntime,
+                                    ),
+                                  ],
+                                ),
+                                if (store.hasRuntime)
+                                  titledField(
+                                    "quests.runtime".tr(),
+                                    Container(
+                                      height: 50,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFF7F8FA),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(6.0)),
+                                      ),
+                                      alignment: Alignment.centerLeft,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Text(
+                                            store.dateString,
+                                          ),
+                                          Spacer(),
+                                          IconButton(
+                                            alignment:
+                                                AlignmentDirectional.centerEnd,
+                                            onPressed: () {
+                                              modalBottomSheet(
+                                                SizedBox(
+                                                  height: 250,
+                                                  child: CupertinoDatePicker(
+                                                    mode:
+                                                        CupertinoDatePickerMode
+                                                            .date,
+                                                    minimumDate: DateTime.now(),
+                                                    onDateTimeChanged:
+                                                        store.setDateTime,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            icon: Icon(
+                                              Icons.calendar_today,
                                             ),
-                                          );
-                                        },
-                                        icon: Icon(
-                                          Icons.calendar_today,
-                                        ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                          ],
-                        )),
+                              ],
+                            )),
 
                     titledField(
-                      "Employment",
+                      "employment.title".tr(),
                       Container(
                         height: 50,
                         padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -264,11 +266,11 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               items: store.employmentList
                                   .map<DropdownMenuItem<String>>(
                                       (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: new Text(value),
-                                    );
-                                  }).toList(),
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: new Text(value),
+                                );
+                              }).toList(),
                               icon: Icon(
                                 Icons.arrow_drop_down,
                                 size: 30,
@@ -278,7 +280,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 'mining.choose'.tr(),
                                 maxLines: 1,
                                 style:
-                                TextStyle(fontSize: 16, color: Colors.grey),
+                                    TextStyle(fontSize: 16, color: Colors.grey),
                               ),
                             ),
                           ),
@@ -286,7 +288,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       ),
                     ),
                     titledField(
-                      "Distant work",
+                      "quests.distantWork.title".tr(),
                       Container(
                         height: 50,
                         padding: EdgeInsets.symmetric(horizontal: 15.0),
@@ -306,11 +308,11 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               items: store.distantWorkList
                                   .map<DropdownMenuItem<String>>(
                                       (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: new Text(value),
-                                    );
-                                  }).toList(),
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: new Text(value),
+                                );
+                              }).toList(),
                               icon: Icon(
                                 Icons.arrow_drop_down,
                                 size: 30,
@@ -320,7 +322,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 'mining.choose'.tr(),
                                 maxLines: 1,
                                 style:
-                                TextStyle(fontSize: 16, color: Colors.grey),
+                                    TextStyle(fontSize: 16, color: Colors.grey),
                               ),
                             ),
                           ),
@@ -328,7 +330,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       ),
                     ),
                     titledField(
-                      "Quest Title",
+                      "quests.title".tr(),
                       Container(
                         height: 50,
                         alignment: Alignment.centerLeft,
@@ -347,14 +349,14 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       ),
                     ),
                     titledField(
-                      "About Quest",
+                      "quests.aboutQuest".tr(),
                       TextFormField(
                         initialValue: store.description,
                         onChanged: store.setAboutQuest,
                         keyboardType: TextInputType.multiline,
                         maxLines: 12,
                         decoration: InputDecoration(
-                          hintText: 'Quest text',
+                          hintText: 'quests.questText'.tr(),
                         ),
                         style: TextStyle(
                           fontSize: 16,
@@ -398,7 +400,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         onSuccess: () async {
                           Navigator.pop(context);
                           await successAlert(
-                              context, "Quest created successfully".tr());
+                              context, "quests.questCreated".tr());
                         },
                         child: Observer(
                           builder: (context) => ElevatedButton(
@@ -408,11 +410,11 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             child: store.isLoading
                                 ? PlatformActivityIndicator()
                                 : Text(
-                              'quests.createAQuest'.tr(),
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
+                                    'quests.createAQuest'.tr(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
@@ -428,9 +430,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   }
 
   Widget titledField(
-      String title,
-      Widget child,
-      ) =>
+    String title,
+    Widget child,
+  ) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

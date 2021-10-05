@@ -5,6 +5,7 @@ import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 part 'chat_store.g.dart';
 
@@ -36,9 +37,9 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   @observable
   List<String> selectedCategories = [
-    'Starred message',
-    'Report',
-    'Create group chat'
+    "chat.favoriteMessages".tr(),
+    "chat.openDispute".tr(),
+    "chat.createGroupChat".tr(),
   ];
 
   @observable

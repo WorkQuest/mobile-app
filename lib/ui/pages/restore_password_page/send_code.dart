@@ -8,7 +8,6 @@ import "package:provider/provider.dart";
 import '../../../observer_consumer.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-
 final spacer = const SizedBox(
   height: 20.0,
 );
@@ -24,7 +23,7 @@ class SendEmail extends StatelessWidget {
         slivers: [
           CupertinoSliverNavigationBar(
             largeTitle: Text(
-              "Enter Your Email",
+              "restore.enterEmail".tr(),
             ),
           ),
           SliverPadding(
@@ -33,48 +32,50 @@ class SendEmail extends StatelessWidget {
               vertical: 20.0,
             ),
             sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                Text(
-                  "A code will be sent to this email to help you restore your password.",
-                ),
-                spacer,
-                Observer(
-                  builder: (_) => TextFormField(
-                    onChanged: _store.setEmail,
-                    decoration: InputDecoration(
-                      hintText: 'email@yahoo.com',
+              delegate: SliverChildListDelegate(
+                [
+                  Text(
+                    "restore.code".tr(),
+                  ),
+                  spacer,
+                  Observer(
+                    builder: (_) => TextFormField(
+                      onChanged: _store.setEmail,
+                      decoration: InputDecoration(
+                        hintText: 'email@yahoo.com',
+                      ),
                     ),
                   ),
-                ),
-                spacer,
-                SizedBox(
-                  width: double.infinity,
-                  child: ObserverListener<RestorePasswordStore>(
-                    onSuccess: ()  {
-                       Navigator.of(
-                        context,
-                        rootNavigator: true,
-                      ).push(
-                        MaterialPageRoute(
-                          builder: (_) => RestorePasswordPage(_store),
-                        ),
-                      );
-                    },
-                    child: Observer(
-                      builder: (context) {
-                        return ElevatedButton(
-                          onPressed: _store.email.isNotEmpty
-                              ? _store.requestCode
-                              : null,
-                          child: _store.isLoading
-                              ? PlatformActivityIndicator()
-                              : Text("meta.submit".tr()),
+                  spacer,
+                  SizedBox(
+                    width: double.infinity,
+                    child: ObserverListener<RestorePasswordStore>(
+                      onSuccess: () {
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).push(
+                          MaterialPageRoute(
+                            builder: (_) => RestorePasswordPage(_store),
+                          ),
                         );
                       },
+                      child: Observer(
+                        builder: (context) {
+                          return ElevatedButton(
+                            onPressed: _store.email.isNotEmpty
+                                ? _store.requestCode
+                                : null,
+                            child: _store.isLoading
+                                ? PlatformActivityIndicator()
+                                : Text("meta.submit".tr()),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ]),
+                ],
+              ),
             ),
           ),
         ],

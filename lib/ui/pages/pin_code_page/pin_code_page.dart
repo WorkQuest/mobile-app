@@ -8,6 +8,7 @@ import "package:flutter/material.dart";
 import "package:flutter_mobx/flutter_mobx.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
+import 'package:easy_localization/easy_localization.dart';
 
 class PinCodePage extends StatefulWidget {
   static const String routeName = "/PinCode";
@@ -85,10 +86,10 @@ class _PinCodePageState extends State<PinCodePage>
                   children: [
                     Text(
                       pinCodeStore.statePin == StatePinCode.Create
-                          ? "Come up with a PIN-code"
+                          ? "pinCode.comeUp".tr()
                           : pinCodeStore.statePin == StatePinCode.Repeat
-                              ? "Repeat PIN-code"
-                              : "Please, write your PIN-code",
+                              ? "pinCode.repeat".tr()
+                              : "pinCode.writePinCode".tr(),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 40),

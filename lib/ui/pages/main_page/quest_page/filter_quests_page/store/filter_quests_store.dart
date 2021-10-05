@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 part 'filter_quests_store.g.dart';
 
@@ -17,10 +18,10 @@ abstract class FilterQuestsStoreBase with Store {
 
   @observable
   List<String> sortBy = [
-    "Added time ascending",
-    "Added time descending",
-    "Price ascending",
-    "Price descending",
+    "quests.filter.sortBy.addedTimeAscending".tr(),
+    "quests.filter.sortBy.addedTimeDescending".tr(),
+    "quests.filter.sortBy.priceAscending".tr(),
+    "quests.filter.sortBy.priceDescending".tr(),
   ];
 
   @observable
@@ -28,10 +29,10 @@ abstract class FilterQuestsStoreBase with Store {
 
   @observable
   List<String> sortByQuest = [
-    "Select all",
-    "Specialized quests (task that require specialized skills)",
-    "Permanent job (job search by categories)",
-    "Quests (all type of work)"
+    "quests.filter.sortByQuest.selectAll".tr(),
+    "quests.filter.sortByQuest.specializedQuests".tr(),
+    "quests.filter.sortByQuest.permanentJob".tr(),
+    "quests.filter.sortByQuest.quests".tr(),
   ];
 
   @observable
@@ -40,10 +41,10 @@ abstract class FilterQuestsStoreBase with Store {
 
   @observable
   List<String> sortByQuestDelivery = [
-    "Select all",
-    "Urgent",
-    "Short-term",
-    "Fixed delivery"
+    "quests.filter.sortByQuestDelivery.selectAll".tr(),
+    "quests.filter.sortByQuestDelivery.urgent".tr(),
+    "quests.filter.sortByQuestDelivery.shortTerm".tr(),
+    "quests.filter.sortByQuestDelivery.fixedDelivery".tr(),
   ];
 
   @observable
@@ -52,11 +53,11 @@ abstract class FilterQuestsStoreBase with Store {
 
   @observable
   ObservableList<String> sortByEmployment = ObservableList.of([
-    "Select all",
-    "Full-time",
-    "Part-time",
-    "Fixed term",
-    "Contract",
+    "quests.filter.sortByEmployment.selectAll",
+    "quests.filter.sortByEmployment.fullTime",
+    "quests.filter.sortByEmployment.partTime",
+    "quests.filter.sortByEmployment.fixedTerm",
+    "quests.filter.sortByEmployment.contract",
   ]);
 
   @observable
@@ -65,10 +66,10 @@ abstract class FilterQuestsStoreBase with Store {
 
   @observable
   ObservableList<String> sortByPriority = ObservableList.of([
-    "Select all",
-    "Urgent",
-    "Short-term",
-    "Fixed delivery",
+    "quests.filter.sortByQuestDelivery.selectAll".tr(),
+    "quests.filter.sortByQuestDelivery.urgent".tr(),
+    "quests.filter.sortByQuestDelivery.shortTerm".tr(),
+    "quests.filter.sortByQuestDelivery.fixedDelivery".tr(),
   ]);
 
   @observable
@@ -77,10 +78,10 @@ abstract class FilterQuestsStoreBase with Store {
 
   @observable
   ObservableList<String> sortByEmployeeRating = ObservableList.of([
-    "Select all",
-    "Verified employee",
-    "Reliable employee",
-    "A higher level of trust employee",
+    "quests.filter.sortByEmployeeRating.selectAll".tr(),
+    "quests.filter.sortByEmployeeRating.verifiedEmployee".tr(),
+    "quests.filter.sortByEmployeeRating.reliableEmployee".tr(),
+    "quests.filter.sortByEmployeeRating.aHigherLevelOfTrustEmployee".tr(),
   ]);
 
   @observable
@@ -89,9 +90,9 @@ abstract class FilterQuestsStoreBase with Store {
 
   @observable
   ObservableList<String> sortByWorkplace = ObservableList.of([
-    "Select all",
-    "Work in office",
-    "Distant work",
+    "quests.distantWork.distantWork".tr(),
+    "quests.distantWork.workInOffice".tr(),
+    "quests.distantWork.bothVariant".tr(),
   ]);
 
   @observable

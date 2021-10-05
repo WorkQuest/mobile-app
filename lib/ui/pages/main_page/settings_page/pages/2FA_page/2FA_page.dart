@@ -31,7 +31,9 @@ class TwoFAPage extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           appBar: CupertinoNavigationBar(
             automaticallyImplyLeading: true,
-            middle: Text("settings.2FA".tr()),
+            middle: Text(
+              "settings.2FA".tr(),
+            ),
           ),
           body: SafeArea(
             child: Padding(
@@ -113,7 +115,9 @@ class TwoFAPage extends StatelessWidget {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Enter code from Google Authenticator app to disable 2FA"),
+          Text(
+            "modals.enterCodeToDisable2Fa".tr(),
+          ),
           const SizedBox(
             height: 10.0,
           ),
@@ -157,9 +161,8 @@ class TwoFAPage extends StatelessWidget {
                   if (store.index == 0)
                     dialog(
                       context,
-                      title: "2FA Activation",
-                      message:
-                          "Are you sure you want to cancel 2A activation ?",
+                      title: "modals.2FaActivation".tr(),
+                      message: "modals.cancel2Fa".tr(),
                       confirmAction: () {
                         Navigator.popUntil(
                           context,
@@ -257,13 +260,15 @@ class Confirm2FAPages extends StatelessWidget {
               ),
             ),
             Text(
-              "Continue to next step if you already have Google Authenticator app",
+              "modals.continue2Fa".tr(),
             ),
             _spacer,
-            buttonRow(store,
-                forward: "meta.next".tr(),
-                back: "meta.cancel".tr(),
-                context: context),
+            buttonRow(
+              store,
+              forward: "meta.next".tr(),
+              back: "meta.cancel".tr(),
+              context: context,
+            ),
           ],
         ),
 
@@ -297,18 +302,20 @@ class Confirm2FAPages extends StatelessWidget {
                     splashRadius: 20.0,
                     onPressed: () => Clipboard.setData(
                       new ClipboardData(
-                        text: "email",
+                        text: "label.email".tr(),
                       ),
-                    ).then((_) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: Duration(seconds: 1),
-                          content: Text(
-                            "Code copied to clipboard",
+                    ).then(
+                      (_) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            duration: Duration(seconds: 1),
+                            content: Text(
+                              "modals.codeCopy".tr(),
+                            ),
                           ),
-                        ),
-                      );
-                    }),
+                        );
+                      },
+                    ),
                     icon: SvgPicture.asset(
                       "assets/copy_icon.svg",
                       color: Color(0xFFAAB0B9),
@@ -318,10 +325,12 @@ class Confirm2FAPages extends StatelessWidget {
               ),
             ),
             _spacer,
-            buttonRow(store,
-                forward: "meta.next".tr(),
-                back: "meta.back".tr(),
-                context: context),
+            buttonRow(
+              store,
+              forward: "meta.next".tr(),
+              back: "meta.back".tr(),
+              context: context,
+            ),
           ],
         ),
 
@@ -337,10 +346,12 @@ class Confirm2FAPages extends StatelessWidget {
               height: 10.0,
             ),
             _spacer,
-            buttonRow(store,
-                forward: "meta.next".tr(),
-                back: "meta.back".tr(),
-                context: context),
+            buttonRow(
+              store,
+              forward: "meta.next".tr(),
+              back: "meta.back".tr(),
+              context: context,
+            ),
           ],
         ),
 
@@ -354,7 +365,9 @@ class Confirm2FAPages extends StatelessWidget {
             const SizedBox(
               height: 25.0,
             ),
-            Text("Code from email"),
+            Text(
+              "modals.codeFromEmail".tr(),
+            ),
             const SizedBox(
               height: 5.0,
             ),
@@ -367,9 +380,7 @@ class Confirm2FAPages extends StatelessWidget {
             const SizedBox(
               height: 10.0,
             ),
-            Text(
-              "Enter the 6-digit code received at 1234***@gmail.com.",
-            ),
+            Text("modals.6-digitCode".tr() + " 1234***@gmail.com."),
             const SizedBox(
               height: 20.0,
             ),
@@ -383,12 +394,12 @@ class Confirm2FAPages extends StatelessWidget {
               ),
             ),
             Text(
-              "Enter the 6-digit code from the Google Authenticator app.",
+              "securityCheck.confCodeDesc".tr(),
             ),
             _spacer,
             buttonRow(
               store,
-              forward: "Finish",
+              forward: "meta.finish".tr(),
               back: "meta.back".tr(),
               userStore: userStore,
               context: context,
@@ -417,9 +428,8 @@ class Confirm2FAPages extends StatelessWidget {
                   if (store.index == 0)
                     dialog(
                       context,
-                      title: "2FA Activation",
-                      message:
-                          "Are you sure you want to cancel 2A activation ?",
+                      title: "modals.2FaActivation".tr(),
+                      message: "modals.cancel2Fa".tr(),
                       confirmAction: () {
                         Navigator.popUntil(
                           context,
@@ -462,7 +472,10 @@ class Confirm2FAPages extends StatelessWidget {
                         ? () async {
                             await store.confirm2FA();
                             if (store.isSuccess) {
-                              await successAlert(context, "2FA enabled");
+                              await successAlert(
+                                context,
+                                "settings.2FaEnabled".tr(),
+                              );
                               Navigator.pop(context);
                               await userStore!.get2FAStatus();
                             }

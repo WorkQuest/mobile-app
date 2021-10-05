@@ -30,12 +30,12 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   String priority = "quests.priority.low".tr();
 
   @observable
-  String distantWork = "Distant work";
+  String distantWork = "quests.distantWork.distantWork".tr();
 
   final List<String> distantWorkList = [
-    "Distant work",
-    "Work in office",
-    "Both variant"
+    "quests.distantWork.distantWork".tr(),
+    "quests.distantWork.workInOffice".tr(),
+    "quests.distantWork.bothVariant".tr()
   ];
 
   final List<String> priorityList = [

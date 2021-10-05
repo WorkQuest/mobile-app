@@ -1,4 +1,11 @@
 {
+  "startPage": {
+    "welcome": "welcome to",
+    "workQuest": "WorkQuest",
+    "title": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dictum est suspendisse orci nunc fringilla a morbi. Fusce pellentesque eu, amet a.",
+    "skip": "Skip",
+    "next": "Next"
+  },
   "invite": {
     "title": "Guest"
   },
@@ -61,7 +68,7 @@
     "size": "{_field_} field size must be less than {size} Kb",
     "decimal": "{_field_} field should contain only decimal values"
   },
-  "label": {
+  "labels": {
     "firstName": "Firstname",
     "lastName": "Last name",
     "email": "Email",
@@ -85,6 +92,7 @@
   "registration": {
     "edit": "Edit",
     "registration": "Registration",
+    "confirmYourEmail": "Confirm your email",
     "emailConfirm": "A message has been sent to your email address",
     "emailConfirmTitle": "Check your mailbox"
   },
@@ -103,8 +111,8 @@
     "active": "active proposals",
     "radius": "in your area",
     "lead": "Implementation time",
-    "Proposalallocation": "Proposal location \n based on your \n current location",
-    "ProposalStatus": "Status of the proposal",
+    "proposalLocation": "Proposal location \n based on your \n current location",
+    "proposalStatus": "Status of the proposal",
     "urgent": "URGENT",
     "details": "View details",
     "available": "Available",
@@ -147,7 +155,8 @@
     "connectSMSVer": "Connect SMS verification",
     "resendSMS": "Resend SMS",
     "disable": "Disable",
-    "remindLater": "Remind me later"
+    "remindLater": "Remind me later",
+    "finish": "Finish"
   },
   "priority": {
     "title": "Select priority",
@@ -156,8 +165,10 @@
     "normal": "Short term",
     "urgent": "Urgent"
   },
-  "Sign": {
+  "signIn": {
     "title": "Log in",
+    "username": "Username",
+    "password": "Password",
     "account": "don't have an account?",
     "regs": "Registration",
     "login": "Login",
@@ -166,11 +177,11 @@
     "or": "Or",
     "loginWith": "Log in with",
     "welcomeToWorkQuest": "We welcome you to WorkQuest",
-    "pleaseSignIn": "Log in",
+    "pleaseSignIn": "Please sign in",
     "workQuest": "WorkQuest",
     "makingMoneyIsFast": "WorkQuest:\n The decentralized labour market\n of the world",
     "dontHaveAnAccount": "Don't have an account?",
-    "Sign up": "Sign Up",
+    "signUp": "Sign Up",
     "forgotYourPass": "Forgot password?"
   },
   "signWorkQuest": {
@@ -179,13 +190,13 @@
     "daoUsername": "DAO username",
     "daoPass": "DAO Password"
   },
-  "SecurityCheck": {
+  "securityCheck": {
     "title": "Security check",
     "confCode": "Google confirmation code",
     "placeholder": "Placeholder",
     "confCodeDesc": "Enter the 6-digit code of the Google Authenticator app"
   },
-  "Sign up": {
+  "signUp": {
     "title": "Register",
     "haveAccount": "Already have an account?",
     "auth": "Authorisation",
@@ -203,6 +214,8 @@
   },
   "restore": {
     "title": "Reset password",
+    "enterEmail": "Enter Your Email",
+    "code": "A code will be sent to this email to help you restore your password.",
     "modal": "Password changed"
   },
   "role": {
@@ -212,7 +225,9 @@
     "choose": "Select your role",
     "employerWant": "I want to create a task and look for workers",
     "workerWant": "I want to look for tasks and work as a freelancer",
-    "chooseThis": "Select this role"
+    "chooseThis": "Select this role",
+    "yourRole": "Your role is",
+    "right": "right?"
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -221,6 +236,11 @@
     "privacyLink": "Privacy Policy",
     "termsLink": "Terms and conditions",
     "amlLink": "AML and CTF Policy"
+  },
+  "pinCode": {
+    "comeUp": "Come up with a PIN-code",
+    "repeat": "Repeat PIN-code",
+    "writePinCode": "Please, write your PIN-code"
   },
   "layout": {
     "create": "Create an quest",
@@ -233,6 +253,7 @@
     "title": "Skills"
   },
   "quests": {
+    "title": "Quest Title",
     "quests": "Offers",
     "urgent": "Urgent",
     "typeOfJob": "Job type",
@@ -242,6 +263,17 @@
       "workInOffice": "Work in the office",
       "bothVariant": "Both options"
     },
+    "employment": {
+      "title": "Employment",
+      "fullTime": "Full time",
+      "partTime": "Part time",
+      "fixedTerm": "Fixed term"
+    },
+    "addNewQuest": "Add new quest",
+    "youDontHaveAny": "You don't have any",
+    "questYet": "Quest yet",
+    "aboutQuest": "About Quest",
+    "questText": "Quest text",
     "hours": "hours",
     "invited": "Invited",
     "active": "Active",
@@ -254,7 +286,7 @@
     "searchQuests": "Search offers",
     "readCompletely": "Read all",
     "questBig": "Offer",
-    "fromBig": "De",
+    "fromBig": "From",
     "fromYou": "from your user",
     "reviews": "reviews",
     "reviewsBig": "Reviews",
@@ -264,11 +296,47 @@
     "category": "Select a category",
     "address": "Add address",
     "runtime": "Runtime (hours)",
+    "workplace": "Workplace",
     "uploadMaterials": "Upload documents to better describe the offer",
     "uploadQuestMaterials": "Add a detailed description",
     "price": "Price",
     "filter": {
-      "btn": "Filters"
+      "btn": "Filters",
+      "deliveryTime": "Quests delivery time",
+      "priorityOfTheEmployee":"Priority of the employee",
+      "employeeRating": "Employee rating",
+      "sortBy": {
+        "title": "Sort by",
+        "addedTimeAscending": "Added time ascending",
+        "addedTimeDescending": "Added time descending",
+        "priceAscending": "Price ascending",
+        "priceDescending": "Price descending"
+      },
+      "sortByQuest": {
+        "selectAll": "Select all",
+        "specializedQuests": "Specialized quests (task that require specialized skills)",
+        "permanentJob": "Permanent job (job search by categories)",
+        "quests": "Quests (all type of work)"
+      },
+      "sortByQuestDelivery": {
+        "selectAll": "Select all",
+        "urgent": "Urgent",
+        "shortTerm": "Short-term",
+        "fixedDelivery": "Fixed delivery"
+      },
+      "sortByEmployment": {
+        "selectAll": "Select all",
+        "fullTime": "Full-time",
+        "partTime": "Part-time",
+        "fixedTerm": "Fixed term",
+        "contract": "Contract"
+      },
+      "sortByEmployeeRating": {
+        "selectAll": "Select all",
+        "verifiedEmployee": "Verified employee",
+        "reliableEmployee": "Reliable employee",
+        "aHigherLevelOfTrustEmployee": "A higher level of trust employee"
+      }
     },
     "ads": {
       "promoteYourQuest": "Promote your offer",
@@ -286,13 +354,13 @@
     "oneTime": "Once",
     "fullTime": "Full time",
     "uploadAImagesOrVideos": "Upload images or videos",
-    "AverageRating": "Average rating",
+    "averageRating": "Average rating",
     "showAllActiveQuests": "Show all active offers",
     "performanceTimer": "Activate until:",
     "questAmount": "offers",
     "otherQuestsSpec": "Other offers by specialization",
     "questMaterials": "Additional documentation of the offer",
-    "SearchResults": "Search results",
+    "searchResults": "Search results",
     "type": "Type of work",
     "time": "Creation time",
     "priority": {
@@ -761,18 +829,31 @@
       "participants": "Participants",
       "chatName": "Chat name"
     },
+    "attention": "Attention",
+    "error": "Error",
+    "unsavedChanges":"There are unsaved changes",
+    "dontSave": "Do not Save",
+    "chooseCard": "Choose Card",
+    "copy": "Copy",
     "changePercentDesc": "A percentage of the offer amount that will be automatically credited to your pension account",
     "yourSkillsHaveBeenAdded": "Your abilities were correctly added.",
     "yourAccountVerified": "Your account has been successfully verified",
     "youCanUpdateThisInYourProfile": "You can easily update this information in your profile.",
     "disable2Fa": "Disable 2FA",
+    "enterCodeToDisable2Fa": "Enter code from Google Authenticator app to disable 2FA",
+    "2FaActivation": "2FA Activation",
+    "cancel2Fa": "Are you sure you want to cancel 2FA activation ?",
+    "continue2Fa": "Continue to next step if you already have Google Authenticator app",
+    "codeCopy": "Code copied to clipboard",
+    "codeFromEmail": "Code from email",
+    "6-digitCode": "Enter the 6-digit code received at",
     "yourLevelHasBeenRaised": "Your level increased",
     "payment": "Payment",
     "cardHolder": "Name of cardholder",
     "review": "Review",
     "haventSMS": "Did not receive the SMS message?",
     "SMSVerConnected": "SMS verification connected",
-    "PhoneNumber": "Phone number",
+    "phoneNumber": "Phone number",
     "enterPhone": "Enter phone number to confirm SMS verification",
     "enterSMSCode": "We have sent a verification code to your phone number. Type the code",
     "codeFromSMS": "SMS code",
@@ -786,7 +867,7 @@
     "success": "Correct operation",
     "yourRoleHasBeenChanged": "His role changed",
     "chooseSkills": "Select the necessary skills",
-    "SecurityCheck": "Security check",
+    "securityCheck": "Security check",
     "googleConfCode": "Google confirmation code",
     "enterCode": "Enter the 6-digit code of the Google Authenticator app",
     "warning": "Warning",
@@ -799,8 +880,8 @@
     "emailPlaceholder": "Enter the verification code by email",
     "googleVerificationCode": "Google verification code",
     "codePlaceholder": "Enter Google verification code",
-    "Apple Store": "Apple Store",
-    "Google Play": "Google Play",
+    "appleStore": "Apple Store",
+    "googlePlay": "Google Play",
     "useYourGoogleAuth": "Use the Google Authenticator app to scan the QR code.",
     "installGoogleAuth": "Install Google Authenticator app on your device",
     "ifYouCantScanBarcode": "If you cannot scan the QR code, manually enter the secret key.",
@@ -812,7 +893,7 @@
     "confirmNewPassword": "Confirm new password ",
     "change": "Change",
     "title": "Title",
-    "Bad service": "Bad service",
+    "badService": "Bad service",
     "otherReason": "Another reason",
     "reviewOnEmployer": "Opinion about the employer",
     "paintingWork": "Painting work",
@@ -885,11 +966,11 @@
     "amountOfEth": " Amount of ETH",
     "tip": "Suggestion:",
     "tipAbout": "When adding liquidity, you will receive tokens from the fund that represent your position. These tokens automatically generate rewards proportional to your participation in the fund, and can be redeemed at any time.",
-    "Byaddingliquidityyyouwillearn": "By adding liquidity, you will earn 0.3% of all trades in this pair, in proportion to your share in the fund. Rewards are added to the fund, accumulated in real time and can be claimed upon withdrawal of your liquidity.",
+    "byAddingLiquidityYouWillEarn": "By adding liquidity, you will earn 0.3% of all trades in this pair, in proportion to your share in the fund. Rewards are added to the fund, accumulated in real time and can be claimed upon withdrawal of your liquidity.",
     "amountEthPerWusd": "Amount of ETH per WUSD",
     "shareOfPool": "Participation in the fund",
     "removeLiquidity": "Withdraw liquidity",
-    "Withdrawal amount": "Withdrawal amount",
+    "withdrawalAmount": "Withdrawal amount",
     "exchangeRate": "Exchange rate",
     "tempForRemove": "1 ETH = ... WUSD",
     "currentPoolSize": "Current background size",
@@ -936,7 +1017,7 @@
     "quests": "Offers",
     "profile": {
       "addCase": "Add case",
-      "MyProfile": "My profile",
+      "myProfile": "My profile",
       "settings": "Settings",
       "disputes": "Disputes",
       "instruments": "Instruments",
@@ -995,6 +1076,20 @@
       }
     }
   },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
   "wallet": {
     "WUSD": "WUSD Wallet",
     "cryptoWallet": "Cryptocurrency wallet",
@@ -1008,6 +1103,11 @@
     "transfer": "Buy / send",
     "addCardProposal": "Add your own card for easy withdrawal",
     "addCard": "Add card",
+    "copy": "Wallet address copied to clipboard",
+    "recipientsAddress": "Recipient's address",
+    "enterAddress": "Enter address",
+    "scanQr": "Scan QR Code or copy address to receive payments",
+    "time": "Processing Time",
     "table": {
       "trx": "Transactions",
       "TxHash": "Transaction hash",
@@ -1023,7 +1123,7 @@
     "openDispute": "Open dispute",
     "approveQuest": "Approve offer",
     "favoriteMessages": "Favorite messages",
-    "Favorite chats": "Favorite chats",
+    "favoriteChats": "Favorite chats",
     "createGroupChat": "Create group chat",
     "favorite": "Add to favorites",
     "messages": "Messages",
@@ -1034,6 +1134,8 @@
     "writeYouMessage": "Write your message"
   },
   "settings": {
+    "profileChanged":"Profile changed successfully",
+    "changeProfile": "Change profile",
     "placeOfStudying": "Place of study",
     "specialization": "Specialization",
     "skillsInput": "Skills",
@@ -1087,11 +1189,17 @@
     "allUsers": "All registered users",
     "allInternet": "Internet users from all over the world",
     "onlyWhenSubmittedWork": "Only when sending job offers",
+    "filterProposals": "Filter all work proposals",
+    "urgentProposals": "Only urgent proposals",
+    "implementation": "Only implementation",
+    "readyForExecution": "Only ready for execution",
+    "registeredUsers": "All registered users",
     "allRegistered": "All registered users",
     "changePass": "Change password",
     "change": "Change",
     "enableTwoStepAuth": "Enable two-step authentication",
     "enable": "Enable",
+    "2FaEnabled": "2FA enabled",
     "smsVerification": "Profile verification by SMS",
     "company": "Enter the name of the company",
     "ceo": "Add a position",
@@ -1147,7 +1255,7 @@
     "completedQuests": "Completed offers",
     "openedQuests": "Open offers",
     "showAll": "Show all",
-    "AverageRating": "Average rating",
+    "averageRating": "Average rating",
     "from": "From",
     "based": "Based",
     "reviews": "reviews",
@@ -1175,13 +1283,13 @@
     "registerAndGenerate": "Register and generate referral links with a commission recovery rate.",
     "inviteFriends": "Invite friends",
     "inviteYourFriends": "Invite your friends to sign up via the referral link and get rewarded when they complete their first offer.",
-    "EarnCrypto": "Earn Cryptocurrencies",
+    "earnCrypto": "Earn Cryptocurrencies",
     "everyTimeYourFriends": "Every time your friends create an offer for the first time, you will receive a commission of up to $ 35 in real-time WQT!",
     "historyOfRewards": "Rewards history",
     "tableHead": {
       "name": "Name",
       "userID": "Id. user",
-      "TxHash": "Transaction hash",
+      "txHash": "Transaction hash",
       "time": "Time",
       "amount": "Amount",
       "status": "Status"
@@ -1189,7 +1297,7 @@
     "table": {
       "userName": "John Doe",
       "userId": "455dad66544ss",
-      "TxHash": "sf998s...ss877d",
+      "txHash": "sf998s...ss877d",
       "time": "Feb.1 december 2021",
       "status": "Correct operation"
     }
@@ -1219,14 +1327,14 @@
     "everyYear": "Annualized",
     "year": "annual",
     "timeRemainsUntilTheEndOfThePeriod": "Time remaining until the end of the period:",
-    "TransactionHistory": "Transaction history",
+    "transactionHistory": "Transaction history",
     "withdraw": "Withdraw",
     "prolong": "Prolong",
     "templateText": "",
     "table": {
       "userName": "John Doe",
       "userId": "455dad66544ss",
-      "TxHash": "sf998s...ss877d",
+      "txHash": "sf998s...ss877d",
       "time": "Feb.1 december 2021",
       "status": "Correct operation"
     },
@@ -1281,7 +1389,7 @@
   },
   "saving": {
     "withdrawModalBody": "The amount of blocked funds and accrued interest will be paid into your portfolio",
-    "Workquest Savings": "WorkQuest Savings",
+    "workQuestSavings": "WorkQuest Savings",
     "lendAndEarn": "Lend & Earn",
     "conditions": "Conditions",
     "maxMinSum": "Max sum./minute.",
@@ -1323,7 +1431,7 @@
     "table": {
       "userName": "John Doe",
       "userId": "455dad66544ss",
-      "TxHash": "sf998s...ss877d",
+      "txHash": "sf998s...ss877d",
       "time": "Feb.1 december 2021",
       "status": "Correct operation"
     },
@@ -1344,13 +1452,13 @@
     "tableHead": {
       "poolAddress": "Fund address",
       "assets": "Assets",
-      "sdsdsd": "sdsdsdsd",
+      "sdsdsdsd": "sdsdsdsd",
       "volume": "Volume"
     },
     "table": {
       "poolAddress": "0sjs3892 ... sd45",
       "assets": "50% WUSD / 50% ETH",
-      "sdsdsd": "sdsdsdsd",
+      "sdsdsdsd": "sdsdsdsd",
       "volume": "4.5 mill. $"
     },
     "mb": "{count} MB",
@@ -1416,14 +1524,14 @@
       "amount": "Amount",
       "time": "Time",
       "sender": "Sender",
-      "TxHash": "Transaction hash"
+      "txHash": "Transaction hash"
     },
     "credTable": {
       "activity": "Amortized",
       "amount": "100 WUSD",
       "time": "June 12th. december 2021",
       "sender": "dfgd6...fs65ds",
-      "TxHash": "dfgd6...fs65ds"
+      "txHash": "dfgd6...fs65ds"
     },
     "faq1": "What are term savings? Are you committed to maintaining your cryptocurrencies?",
     "faq2": "What will happen to my funds if I subscribe to a term savings product?",
@@ -1480,7 +1588,7 @@
     "youWillCertifyTheInsuredEvent": "Will the covered event be certified?",
     "studyTheInsuredEventThoroughly": "Carefully study the event covered",
     "notAgree": "I disagree",
-    "Insurdevent": "Event covered",
+    "insuredEvent": "Event covered",
     "agree": "Accept",
     "percentsCount": "{count} %",
     "votesCount": "{count} votes",

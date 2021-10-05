@@ -16,7 +16,9 @@ class ProfileSettings extends StatelessWidget {
         body: CustomScrollView(
           slivers: [
             CupertinoSliverNavigationBar(
-              largeTitle: Text("ui.profile.settings".tr()),
+              largeTitle: Text(
+                "ui.profile.settings".tr(),
+              ),
             ),
             SliverPadding(
               padding: EdgeInsets.all(10.0),
@@ -56,7 +58,7 @@ class ProfileSettings extends StatelessWidget {
                       child: _card(
                         [
                           Text(
-                            "Filter all work proposals",
+                            "settings.filterProposals".tr(),
                             style: TextStyle(
                               fontSize: 16.0,
                             ),
@@ -64,25 +66,25 @@ class ProfileSettings extends StatelessWidget {
                           _radioTile(
                             value: 1,
                             groupValue: settingStore.filter,
-                            title: "Only urgent proposals",
+                            title: "settings.urgentProposals".tr(),
                             onChanged: settingStore.changeFilter,
                           ),
                           _radioTile(
                             value: 2,
                             groupValue: settingStore.filter,
-                            title: "Only implementation",
+                            title: "settings.implementation".tr(),
                             onChanged: settingStore.changeFilter,
                           ),
                           _radioTile(
                             value: 3,
                             groupValue: settingStore.filter,
-                            title: "Only ready for execution",
+                            title: "settings.readyForExecution".tr(),
                             onChanged: settingStore.changeFilter,
                           ),
                           _radioTile(
                             value: 4,
                             groupValue: settingStore.filter,
-                            title: "All registered users",
+                            title: "settings.registeredUsers".tr(),
                             onChanged: settingStore.changeFilter,
                           ),
                         ],

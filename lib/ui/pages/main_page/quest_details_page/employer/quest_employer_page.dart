@@ -29,19 +29,30 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   @override
   List<Widget>? actionAppBar() {
     return <Widget>[
-      IconButton(icon: Icon(Icons.share_outlined), onPressed: () {}),
+      IconButton(
+        icon: Icon(Icons.share_outlined),
+        onPressed: () {},
+      ),
       PopupMenuButton<String>(
         elevation: 10,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6.0),
+        ),
         onSelected: (value) {
           switch (value) {
             case "Raise views":
-              Navigator.pushNamed(context, RaiseViews.routeName,
-                  arguments: widget.questInfo);
+              Navigator.pushNamed(
+                context,
+                RaiseViews.routeName,
+                arguments: widget.questInfo,
+              );
               break;
             case "Edit":
-              Navigator.pushNamed(context, CreateQuestPage.routeName,
-                  arguments: widget.questInfo);
+              Navigator.pushNamed(
+                context,
+                CreateQuestPage.routeName,
+                arguments: widget.questInfo,
+              );
               break;
             case "Delete":
               break;
@@ -84,13 +95,18 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         children: [
           Text(
             "quests.inProgressBy".tr(),
-            style: TextStyle(color: const Color(0xFF7C838D), fontSize: 12),
+            style: TextStyle(
+              color: const Color(0xFF7C838D),
+              fontSize: 12,
+            ),
           ),
           const SizedBox(height: 10),
           Row(
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(15)),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(15),
+                ),
                 child: Image.asset(
                   "assets/profile_avatar_test.jpg",
                   fit: BoxFit.fitHeight,
@@ -101,8 +117,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               const SizedBox(width: 10),
               Text(
                 "Rosalia Vans",
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               const SizedBox(width: 10),
             ],
@@ -115,7 +133,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   Widget respondedList() {
     return Observer(
       builder: (_) => (store.respondedList == null)
-          ? Center(child: CircularProgressIndicator())
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
           : store.respondedList!.isNotEmpty
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,9 +145,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       Text(
                         "btn.responded".tr(),
                         style: TextStyle(
-                            fontSize: 18,
-                            color: Color(0xFF1D2127),
-                            fontWeight: FontWeight.w500),
+                          fontSize: 18,
+                          color: Color(0xFF1D2127),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     if (store.respondedList!.isNotEmpty)
                       for (final respond in store.respondedList ?? [])
@@ -164,9 +185,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       child: Text(
                         "Choose a worker",
                         style: TextStyle(
-                            color: store.selectedResponders.isEmpty
-                                ? Colors.grey
-                                : Colors.white),
+                          color: store.selectedResponders.isEmpty
+                              ? Colors.grey
+                              : Colors.white,
+                        ),
                       ),
                       style: ButtonStyle(
                         backgroundColor:
@@ -183,7 +205,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           },
                         ),
                         fixedSize: MaterialStateProperty.all(
-                            Size(double.maxFinite, 43)),
+                          Size(double.maxFinite, 43),
+                        ),
                       ),
                     )
                   ],
@@ -234,7 +257,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             GestureDetector(
               child: Text(
                 "Show more",
-                style: TextStyle(color: Color(0xFF0083C7)),
+                style: TextStyle(
+                  color: Color(0xFF0083C7),
+                ),
               ),
               onTap: () => showMore(respond),
             )
@@ -247,7 +272,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   List<Widget> respondedUser(RespondModel respond) {
     return [
       ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(25)),
+        borderRadius: BorderRadius.all(
+          Radius.circular(25),
+        ),
         child: Image.network(
           respond.worker.avatar.url,
           fit: BoxFit.cover,
@@ -261,7 +288,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         children: [
           Text(
             "${respond.worker.firstName} ${respond.worker.lastName}",
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           Container(
             margin: const EdgeInsets.only(top: 5),
@@ -289,7 +319,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(6.0), topRight: Radius.circular(6.0)),
+          topLeft: Radius.circular(6.0),
+          topRight: Radius.circular(6.0),
+        ),
       ),
       backgroundColor: Colors.white,
       builder: (BuildContext context) {
@@ -301,7 +333,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           ),
           child: Column(
             children: <Widget>[
-              Row(children: respondedUser(respond)),
+              Row(
+                children: respondedUser(respond),
+              ),
               const SizedBox(height: 15),
               Expanded(
                 child: ListView(

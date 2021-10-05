@@ -30,14 +30,16 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
             Row(
               children: [
                 Text(
-                  "Choose Card",
+                  "modals.chooseCard".tr(),
                 ),
                 Spacer(),
                 TextButton(
                   onPressed: () => bottomForm(
                     context,
                   ),
-                  child: Text("wallet.addCard".tr()),
+                  child: Text(
+                    "wallet.addCard".tr(),
+                  ),
                 ),
               ],
             ),
@@ -50,8 +52,10 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                       height: 50.0,
                       child: ListTile(
                         title: Text(
-                          'Choose Card ',
-                          style: TextStyle(color: Colors.black),
+                          "modals.chooseCard".tr(),
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     );
@@ -61,7 +65,9 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                       RadioListTile(
                         title: Text(
                           'Card 1',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
                         ),
                         onChanged: (value) {
                           setState(() {
@@ -74,7 +80,9 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                       RadioListTile(
                         title: Text(
                           'Card 2',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
                         ),
                         onChanged: (value) {
                           setState(() {
@@ -88,7 +96,9 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                         toggleable: true,
                         title: Text(
                           'Card 3',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
                         ),
                         onChanged: (value) {
                           setState(() {
@@ -111,7 +121,9 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                 });
               },
             ),
-            Text("referral.tableHead.amount".tr()),
+            Text(
+              "referral.tableHead.amount".tr(),
+            ),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -143,7 +155,7 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
             ),
             _divider,
             titledTextBox(
-              "Total Fee",
+              "wallet.table.trxFrr".tr(),
               Container(
                 alignment: Alignment.centerLeft,
                 decoration: BoxDecoration(
@@ -163,7 +175,7 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
               height: 20.0,
             ),
             titledTextBox(
-              "Processing Time",
+              "wallet.time".tr(),
               Container(
                 alignment: Alignment.centerLeft,
                 decoration: BoxDecoration(
@@ -197,119 +209,124 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
     BuildContext context,
   ) =>
       showModalBottomSheet(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20.0),
-                topRight: Radius.circular(20.0)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
           ),
-          context: context,
-          isScrollControlled: true,
-          builder: (BuildContext context) {
-            return SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: 16.0,
-                  right: 16.0,
-                  top: 10.0,
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        height: 5.0,
-                        width: 70.0,
-                        decoration: BoxDecoration(
-                          color: Colors.black12,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    _divider,
-                    Text(
-                      "Card ",
-                    ),
-                    _divider,
-                    TextFormField(
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                        LengthLimitingTextInputFormatter(16),
-                        new CardNumberInputFormatter(),
-                      ],
-                      decoration: InputDecoration(
-                        hintText: "0000  0000  0000  0000",
-                      ),
-                    ),
-                    _divider,
-                    titledTextBox(
-                      "modals.cardHolder".tr(),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: "labels.firstName".tr() + " ",
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(
-                          child: titledTextBox(
-                            "modals.date".tr(),
-                            TextFormField(
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9]')),
-                                LengthLimitingTextInputFormatter(4),
-                                new CardDateInputFormatter(),
-                              ],
-                              maxLines: 1,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                hintText: "02/24",
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10.0,
-                        ),
-                        Expanded(
-                          child: titledTextBox(
-                            "CVV",
-                            TextFormField(
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'[0-9]')),
-                                LengthLimitingTextInputFormatter(3),
-                              ],
-                              maxLines: 1,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                hintText: "242",
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    _divider,
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: Text("modals.addCard".tr()),
-                    ),
-                    _divider,
-                  ],
-                ),
+        ),
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                top: 10.0,
+                bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
-            );
-          });
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      height: 5.0,
+                      width: 70.0,
+                      decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  _divider,
+                  Text(
+                    "wallet.bankCard".tr(),
+                  ),
+                  _divider,
+                  TextFormField(
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      LengthLimitingTextInputFormatter(16),
+                      new CardNumberInputFormatter(),
+                    ],
+                    decoration: InputDecoration(
+                      hintText: "0000  0000  0000  0000",
+                    ),
+                  ),
+                  _divider,
+                  titledTextBox(
+                    "modals.cardHolder".tr(),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        hintText: "labels.firstName".tr() + " ",
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: titledTextBox(
+                          "modals.date".tr(),
+                          TextFormField(
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                              LengthLimitingTextInputFormatter(4),
+                              new CardDateInputFormatter(),
+                            ],
+                            maxLines: 1,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: "02/24",
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10.0,
+                      ),
+                      Expanded(
+                        child: titledTextBox(
+                          "modals.cvv".tr(),
+                          TextFormField(
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'[0-9]'),
+                              ),
+                              LengthLimitingTextInputFormatter(3),
+                            ],
+                            maxLines: 1,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: "242",
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  _divider,
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      "modals.addCard".tr(),
+                    ),
+                  ),
+                  _divider,
+                ],
+              ),
+            ),
+          );
+        },
+      );
 
   Widget titledTextBox(String title, Widget textField) => Column(
         mainAxisSize: MainAxisSize.min,

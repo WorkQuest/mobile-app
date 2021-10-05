@@ -45,7 +45,7 @@ class ConfirmEmail extends StatelessWidget {
                   height: 20,
                 ),
                 Text(
-                  "Confirm your email",
+                  "registration.confirmYourEmail".tr(),
                   style: TextStyle(
                     color: Color(0xFF1D2127),
                     fontSize: 30,

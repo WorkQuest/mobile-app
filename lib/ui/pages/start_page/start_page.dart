@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class StartPage extends StatelessWidget {
   final CarouselController carouselController;
 
   static const String routeName = '/startPage';
 
-  StartPage(): this.carouselController = new CarouselController();
+  StartPage() : this.carouselController = new CarouselController();
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +65,11 @@ class StartPage extends StatelessWidget {
                     carouselController: carouselController,
                   ),
                   buttonRow(
-                    next: "Next",
-                    skip: "Skip",
                     currentPos: store.currentPos,
                     store: store,
                     onPressedNext: () {
                       store.currentPos < 2
-                          ?
-                      carouselController.nextPage()
+                          ? carouselController.nextPage()
                           : Navigator.pushNamed(context, SignInPage.routeName);
                     },
                     onPressedSkip: () {
@@ -92,7 +90,8 @@ class StartPage extends StatelessWidget {
     required String image,
     required BuildContext context,
   }) =>
-      Stack(fit: StackFit.expand,
+      Stack(
+        fit: StackFit.expand,
         children: <Widget>[
           ShaderMask(
             shaderCallback: (rectangle) {
@@ -113,9 +112,7 @@ class StartPage extends StatelessWidget {
             child: Container(
               height: double.infinity,
               child: Image.asset(
-                // image: AssetImage(
                 image,
-                // ),
                 fit: BoxFit.cover,
               ),
             ),
@@ -127,14 +124,14 @@ class StartPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "welcome to",
+                  "startPage.welcome".tr(),
                   style: TextStyle(
                     fontSize: 16.0,
                     color: Colors.white,
                   ),
                 ),
                 Text(
-                  "WorkQuest",
+                  "startPage.workQuest".tr(),
                   style: TextStyle(
                       fontSize: 34.0,
                       color: Colors.white,
@@ -143,10 +140,7 @@ class StartPage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(top: 15),
                   child: Text(
-                    "Lorem ipsum dolor sit amet, consectetur "
-                    "adipiscing elit. Dictum est suspendisse orci "
-                    "nunc fringilla a morbi. Fusce pellentesque eu, "
-                    "amet a.",
+                    "startPage.title".tr(),
                     style: TextStyle(
                       fontSize: 16.0,
                       color: Colors.white,
@@ -157,12 +151,9 @@ class StartPage extends StatelessWidget {
             ),
           ),
         ],
-        // ),
       );
 
   Widget buttonRow({
-    required String next,
-    required String skip,
     required int currentPos,
     required StartStore store,
     required void onPressedSkip()?,
@@ -181,7 +172,7 @@ class StartPage extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: onPressedSkip,
                 child: Text(
-                  skip,
+                  "startPage.skip".tr(),
                   style: TextStyle(
                     color: Colors.white,
                   ),
@@ -216,7 +207,7 @@ class StartPage extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: onPressedNext,
                 child: Text(
-                  next,
+                  "startPage.next".tr(),
                   style: TextStyle(
                     color: Colors.white,
                   ),

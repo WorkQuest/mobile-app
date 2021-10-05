@@ -87,7 +87,11 @@ class _QuestListState extends State<QuestList> {
         CupertinoSliverNavigationBar(
           largeTitle: Row(
             children: [
-              Expanded(child: Text("quests.quests".tr())),
+              Expanded(
+                child: Text(
+                  "quests.quests".tr(),
+                ),
+              ),
               InkWell(
                 onTap: () => Navigator.of(
                   context,
@@ -111,7 +115,7 @@ class _QuestListState extends State<QuestList> {
                 Icons.search,
                 size: 25.0,
               ),
-              hintText: "City / Street / Place",
+              hintText: "quests.ui.search".tr(),
             ),
           ),
         ),

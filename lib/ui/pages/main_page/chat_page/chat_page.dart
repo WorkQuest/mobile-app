@@ -45,25 +45,22 @@ class _ChatPageState extends State<ChatPage> {
                       borderRadius: BorderRadius.circular(6.0),
                     ),
                     itemBuilder: (BuildContext context) {
-                      return {'Starred message', 'Report', 'Create group chat'}
-                          .map((String choice) {
+                      return {
+                        "chat.favoriteMessages".tr(),
+                        "chat.openDispute".tr(),
+                        "chat.createGroupChat".tr()
+                      }.map((String choice) {
                         return PopupMenuItem<String>(
                           value: choice,
                           enabled: false,
                           child: TextButton(
                             onPressed: () {
-                              switch (choice) {
-                                case "Starred message":
-                                  break;
-                                case "Report":
-                                  Navigator.pushNamed(
-                                      context, DisputePage.routeName,
-                                      arguments: store.selectedCategories[1]);
-                                  break;
-                                case "Create group chat":
-                                  break;
-                                default:
-                              }
+                              if (choice == "chat.favoriteMessages".tr()) {
+                              } else if (choice == "chat.openDispute".tr()) {
+                                Navigator.pushNamed(
+                                    context, DisputePage.routeName,
+                                    arguments: store.selectedCategories[1]);
+                              } else {}
                             },
                             child: Text(
                               choice,

@@ -33,7 +33,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Filters",
+          "quests.filter.btn".tr(),
           style: TextStyle(
             fontSize: 17,
             color: Color(0xFF1D2127),
@@ -78,20 +78,20 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
                               ? Column(
                                   children: [
                                     _checkButton(
-                                      title: "Quests",
+                                      title: "quests.quests".tr(),
                                       list: storeFilter.sortByQuest,
                                       selected: storeFilter.selectQuest,
                                       onChange: storeFilter.setSelectedQuest,
                                     ),
                                     _checkButton(
-                                      title: "Quests delivery time",
+                                      title: "quests.quests.deliveryTime".tr(),
                                       list: storeFilter.sortByQuestDelivery,
                                       selected: storeFilter.selectQuestDelivery,
                                       onChange:
                                           storeFilter.setSelectedQuestDelivery,
                                     ),
                                     _checkButton(
-                                      title: "Employment",
+                                      title: "quests.employment.title".tr(),
                                       list: storeFilter.sortByEmployment,
                                       selected: storeFilter.selectEmployment,
                                       onChange: (bool? value, int i) {
@@ -105,7 +105,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
                                       },
                                     ),
                                     _checkButton(
-                                      title: "Workplace",
+                                      title: "quests.workplace".tr(),
                                       list: storeFilter.sortByWorkplace,
                                       selected: storeFilter.selectWorkplace,
                                       onChange: (bool? value, int i) {
@@ -124,13 +124,16 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     _checkButton(
-                                      title: "Priority of the employee",
+                                      title:
+                                          "quests.filter.priorityOfTheEmployee"
+                                              .tr(),
                                       list: storeFilter.sortByPriority,
                                       selected: storeFilter.selectPriority,
                                       onChange: storeFilter.setSelectedPriority,
                                     ),
                                     _checkButton(
-                                      title: "Employee rating",
+                                      title:
+                                          "quests.filter.employeeRating".tr(),
                                       list: storeFilter.sortByEmployeeRating,
                                       selected:
                                           storeFilter.selectEmployeeRating,
@@ -138,7 +141,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
                                           storeFilter.setSelectedEmployeeRating,
                                     ),
                                     _checkButton(
-                                      title: "Workplace",
+                                      title: "quests.workplace".tr(),
                                       list: storeFilter.sortByWorkplace,
                                       selected: storeFilter.selectWorkplace,
                                       onChange:
@@ -149,7 +152,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
                           Padding(
                             padding: EdgeInsets.all(16.0),
                             child: Text(
-                              "Specialization",
+                              "filters.dd.1".tr(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -162,7 +165,9 @@ class _FilterQuestsPageState extends State<FilterQuestsPage> {
   }
 
   Widget _radioButton() => ExpansionTile(
-        title: Text("Sort by"),
+        title: Text(
+          "quests.filter.sortBy.title".tr(),
+        ),
         children: [
           for (int i = 0; i < storeFilter.sortBy.length; i++)
             Observer(

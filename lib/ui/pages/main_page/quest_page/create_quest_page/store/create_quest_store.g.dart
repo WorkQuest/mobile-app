@@ -358,17 +358,6 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
-  void changedCategory(String selectedCategory) {
-    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
-        name: '_CreateQuestStore.changedCategory');
-    try {
-      return super.changedCategory(selectedCategory);
-    } finally {
-      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void changedPriority(String selectedPriority) {
     final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
         name: '_CreateQuestStore.changedPriority');

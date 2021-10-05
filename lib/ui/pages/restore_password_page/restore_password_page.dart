@@ -43,7 +43,7 @@ class RestorePasswordPage extends StatelessWidget {
           slivers: [
             CupertinoSliverNavigationBar(
               largeTitle: Text(
-                "Restore Password",
+                "restore.title".tr(),
               ),
             ),
             SliverPadding(
