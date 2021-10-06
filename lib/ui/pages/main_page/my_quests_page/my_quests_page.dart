@@ -43,7 +43,9 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                 (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 CupertinoSliverNavigationBar(
-                  largeTitle: Text("quests.MyQuests".tr()),
+                  largeTitle: Text(
+                    "quests.MyQuests".tr(),
+                  ),
                   border: const Border.fromBorderSide(BorderSide.none),
                 ),
                 SliverPersistentHeader(
@@ -53,12 +55,12 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                           "quests.active".tr(),
                           "quests.invited".tr(),
                           "quests.performed".tr(),
-                          "Starred"
+                          "quests.starred".tr(),
                         ]
                       : [
                           "quests.active".tr(),
                           "quests.invited".tr(),
-                          "quests.performed".tr()
+                          "quests.performed".tr(),
                         ]),
                 ),
               ];

@@ -1,8 +1,10 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:flutter/material.dart';
+import "package:provider/provider.dart";
 import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -20,11 +22,19 @@ class MyQuestsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context, rootNavigator: true).pushNamed(
+      onTap: () async {
+        bool buff = questInfo.star;
+        await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
           arguments: questInfo,
         );
+        if (buff != questInfo.star) {
+          if (questInfo.star == false) {
+            context.read<MyQuestStore>().starred!.remove(questInfo);
+          } else {
+            context.read<MyQuestStore>().starred!.add(questInfo);
+          }
+        }
       },
       child: Container(
         color: Colors.white,

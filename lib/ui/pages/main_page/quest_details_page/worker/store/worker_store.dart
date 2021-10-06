@@ -13,27 +13,29 @@ class WorkerStore extends _WorkerStore with _$WorkerStore {
 
 abstract class _WorkerStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
+
   _WorkerStore(this._apiProvider);
 
-  @observable
-  BaseQuestResponse? quest;
+  Observable<BaseQuestResponse?> quest = Observable(null);
 
   _getQuest() async {
-    quest = await _apiProvider.getQuest(id: quest!.id);
+    final newQuest = await _apiProvider.getQuest(id: quest.value!.id);
+    quest.value!.update(newQuest);
+    quest.reportChanged();
   }
 
   onStar() async {
-    if (quest!.star)
-      await _apiProvider.removeStar(id: quest!.id);
-    else
-      await _apiProvider.setStar(id: quest!.id);
+    if (quest.value!.star) {
+      await _apiProvider.removeStar(id: quest.value!.id);
+    } else
+      await _apiProvider.setStar(id: quest.value!.id);
     await _getQuest();
   }
 
   sendRespondOnQuest(String message) async {
     try {
       this.onLoading();
-      await _apiProvider.respondOnQuest(id: quest!.id, message: message);
+      await _apiProvider.respondOnQuest(id: quest.value!.id, message: message);
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");

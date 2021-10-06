@@ -92,12 +92,16 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                 const SizedBox(width: 9),
                 Text(
                   "150 from you",
-                  style: TextStyle(color: Color(0xFF7C838D)),
+                  style: TextStyle(
+                    color: Color(0xFF7C838D),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 17),
-            tagItem("modals.paintingWork".tr()),
+            tagItem(
+              "modals.paintingWork".tr(),
+            ),
             inProgressBy(),
             const SizedBox(height: 15),
             Text(
@@ -117,11 +121,12 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
             ),
             if (widget.questInfo.medias.isNotEmpty) ...[
               Text(
-                "quest.questMaterials".tr(),
+                "quests.questMaterials".tr(),
                 style: TextStyle(
-                    fontSize: 18,
-                    color: Color(0xFF1D2127),
-                    fontWeight: FontWeight.w500),
+                  fontSize: 18,
+                  color: Color(0xFF1D2127),
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               ImageViewerWidget(widget.questInfo.medias),
             ],
@@ -147,8 +152,10 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     zoomGesturesEnabled: false,
                     initialCameraPosition: CameraPosition(
                       bearing: 0,
-                      target: LatLng(widget.questInfo.location.latitude,
-                          widget.questInfo.location.longitude),
+                      target: LatLng(
+                        widget.questInfo.location.latitude,
+                        widget.questInfo.location.longitude,
+                      ),
                       zoom: 15.0,
                     ),
                     myLocationButtonEnabled: false,

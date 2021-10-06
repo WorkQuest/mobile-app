@@ -149,7 +149,9 @@ class _QuestListState extends State<QuestList> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.filter_list),
-                      Text("quests.filter.btn".tr()),
+                      Text(
+                        "quests.filter.btn".tr(),
+                      ),
                     ],
                   ),
                 ),
@@ -164,7 +166,7 @@ class _QuestListState extends State<QuestList> {
                               "assets/empty_quest_icon.svg",
                             ),
                             Text(
-                              "No Quest Found",
+                              "quest.noQuest".tr(),
                             ),
                           ],
                         ),
@@ -195,7 +197,9 @@ class _QuestListState extends State<QuestList> {
         SliverToBoxAdapter(
           child: Observer(
             builder: (_) => questsStore!.isLoading
-                ? Center(child: PlatformActivityIndicator())
+                ? Center(
+                    child: PlatformActivityIndicator(),
+                  )
                 : const SizedBox(),
           ),
         ),

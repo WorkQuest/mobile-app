@@ -255,8 +255,10 @@
   "quests": {
     "title": "Quest Title",
     "quests": "Offers",
+    "starred": "Starred",
     "urgent": "Urgent",
     "typeOfJob": "Job type",
+    "noQuest": "No Quest Found",
     "distantWork": {
       "title": "Remote work",
       "distantWork": "Remote work",

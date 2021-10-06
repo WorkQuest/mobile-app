@@ -168,7 +168,6 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
             providers: [
-
               Provider(
                 create: (context) => getIt.get<QuestsStore>(),
               ),
@@ -187,21 +186,23 @@ class Routes {
             final quest = settings.arguments as BaseQuestResponse;
             if (role == UserRole.Employer)
               return Provider(
-                  create: (context) => getIt.get<EmployerStore>(),
-                  child: Directionality(
-                    textDirection: checkDirection(context),
-                    child: QuestEmployer(quest),
-                  ));
+                create: (context) => getIt.get<EmployerStore>(),
+                child: Directionality(
+                  textDirection: checkDirection(context),
+                  child: QuestEmployer(quest),
+                ),
+              );
             else {
               return Provider(
-                  create: (context) => getIt.get<WorkerStore>(),
-                  child: Directionality(
-                    textDirection: checkDirection(context),
-                    child: QuestWorker(
-                        quest,
-                        getIt.get<ProfileMeStore>().userData!.id ==
-                            quest.userId),
-                  ));
+                create: (context) => getIt.get<WorkerStore>(),
+                child: Directionality(
+                  textDirection: checkDirection(context),
+                  child: QuestWorker(
+                    quest,
+                    getIt.get<ProfileMeStore>().userData!.id == quest.userId,
+                  ),
+                ),
+              );
             }
           },
         );

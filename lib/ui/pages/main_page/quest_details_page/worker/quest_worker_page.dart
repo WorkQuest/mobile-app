@@ -24,7 +24,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   @override
   void initState() {
     store = context.read<WorkerStore>();
-    store.quest = widget.questInfo;
+    store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
     super.initState();
@@ -36,8 +36,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       Observer(
         builder: (_) => IconButton(
           icon: Icon(
-            store.quest!.star ? Icons.star : Icons.star_border,
-            color: store.quest!.star ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
+            store.quest.value!.star ? Icons.star : Icons.star_border,
+            color: store.quest.value!.star ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
           ),
           onPressed: store.onStar,
         ),
@@ -62,16 +62,21 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 20),
-          if (!store.quest!.response)
+          if (!store.quest.value!.response)
             store.isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
                 : TextButton(
                     onPressed: bottomForm,
-                    child: Text("modals.requestSend".tr(),
-                        style: TextStyle(color: Colors.white)),
+                    child: Text(
+                      "modals.requestSend".tr(),
+                      style: TextStyle(color: Colors.white),
+                    ),
                     style: ButtonStyle(
-                      fixedSize:
-                          MaterialStateProperty.all(Size(double.maxFinite, 43)),
+                      fixedSize: MaterialStateProperty.all(
+                        Size(double.maxFinite, 43),
+                      ),
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
@@ -94,7 +99,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     return showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(6.0), topRight: Radius.circular(6.0)),
+          topLeft: Radius.circular(6.0),
+          topRight: Radius.circular(6.0),
+        ),
       ),
       context: context,
       backgroundColor: Colors.white,
@@ -103,10 +110,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 10.0,
-              bottom: MediaQuery.of(context).viewInsets.bottom),
+            left: 16.0,
+            right: 16.0,
+            top: 10.0,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -130,7 +138,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   const SizedBox(height: 23),
                   Text(
                     "modals.reviewOnEmployer".tr(),
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   const SizedBox(height: 5),
                   TextField(
@@ -160,7 +171,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                             "modals.uploadAImages".tr(),
                           ),
                           IconButton(
-                              onPressed: () {}, icon: Icon(Icons.add_a_photo))
+                            onPressed: () {},
+                            icon: Icon(Icons.add_a_photo),
+                          ),
                         ],
                       ),
                     ),
@@ -171,11 +184,14 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       store.sendRespondOnQuest(textController.text);
                       Navigator.pop(context);
                     },
-                    child: Text("modal.requestSend".tr(),
-                        style: TextStyle(color: Colors.white)),
+                    child: Text(
+                      "modal.requestSend".tr(),
+                      style: TextStyle(color: Colors.white),
+                    ),
                     style: ButtonStyle(
-                      fixedSize:
-                          MaterialStateProperty.all(Size(double.maxFinite, 43)),
+                      fixedSize: MaterialStateProperty.all(
+                        Size(double.maxFinite, 43),
+                      ),
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
@@ -202,7 +218,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   void dispose() {
-    widget.questInfo.update(store.quest!);
+    // widget.questInfo.update(store.quest.value!);
     super.dispose();
   }
 }
