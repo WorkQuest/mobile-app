@@ -32,6 +32,39 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     await _getQuest();
   }
 
+  sendAcceptOnQuest() async {
+    try {
+      this.onLoading();
+      await _apiProvider.acceptOnQuest(questId: quest.value!.id);
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("getQuests error: $e\n$trace");
+      this.onError(e.toString());
+    }
+  }
+
+  sendRejectOnQuest() async {
+    try {
+      this.onLoading();
+      await _apiProvider.rejectOnQuest(questId: quest.value!.id);
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("getQuests error: $e\n$trace");
+      this.onError(e.toString());
+    }
+  }
+
+  sendCompleteWork() async {
+    try {
+      this.onLoading();
+      await _apiProvider.completeWork(questId: quest.value!.id);
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("getQuests error: $e\n$trace");
+      this.onError(e.toString());
+    }
+  }
+
   sendRespondOnQuest(String message) async {
     try {
       this.onLoading();

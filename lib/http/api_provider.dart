@@ -18,6 +18,7 @@ import 'package:injectable/injectable.dart';
 @singleton
 class ApiProvider {
   final IHttpClient _httpClient;
+
   ApiProvider(this._httpClient);
 }
 
@@ -64,7 +65,9 @@ extension LoginService on ApiProvider {
     return bearerToken;
   }
 
-  Future<BearerToken> refreshToken(String refreshToken,) async {
+  Future<BearerToken> refreshToken(
+    String refreshToken,
+  ) async {
     print("oldtoken $refreshToken");
     print("oldtoken $refreshToken");
     print("new ${_httpClient.accessToken}");
@@ -105,25 +108,37 @@ extension QuestService on ApiProvider {
     );
   }
 
-  Future<List<BaseQuestResponse>> getEmployerQuests(
-    String userId, {
+  Future<List<BaseQuestResponse>> getEmployerQuests({
+    String userId = "",
+    String workplace = "",
+    String employment = "",
     int limit = 10,
     int offset = 0,
-    String? searchWord,
-    int priority = -1,
-    int status = -1,
+    String searchWord = "",
+    int? priority,
+    int? status,
     String? sort,
-    bool invited = false,
-    bool performing = false,
-    bool starred = false,
+    bool? invited,
+    bool? performing,
+    bool? starred,
   }) async {
     try {
-      final responseData = await _httpClient
-          .get(query: "/v1/employer/$userId/quests", queryParameters: {
-        if (invited) "invited": invited.toString(),
-        if (performing) "performing": performing.toString(),
-        if (starred) "starred": starred.toString(),
-      });
+      final responseData = await _httpClient.get(
+        query: "/v1/employer/$userId/quests",
+        queryParameters: {
+          "offset": offset,
+          "limit": limit,
+          if (searchWord.isNotEmpty) "q": searchWord,
+          if (priority != null) "priority": priority,
+          if (workplace.isNotEmpty) "workplace": workplace,
+          if (employment.isNotEmpty) "employment": employment,
+          if (status != null) "status": status,
+          //"sort": sort,
+          if (invited != null) "invited": invited,
+          if (performing != null) "performing": performing,
+          if (starred != null) "starred": starred,
+        },
+      );
       return List<BaseQuestResponse>.from(
         responseData["quests"].map(
           (x) => BaseQuestResponse.fromJson(x),
@@ -220,6 +235,84 @@ extension QuestService on ApiProvider {
       );
     } catch (e) {
       return [];
+    }
+  }
+
+  Future<bool> startQuest({
+    required String questId,
+    required String userId,
+  }) async {
+    try {
+      final body = {
+        "assignedWorkerId": userId,
+      };
+      final responseData = await _httpClient.post(
+        query: '/v1/quest/$questId/start',
+        data: body,
+      );
+      return responseData == null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> acceptCompletedWork({
+    required String questId,
+  }) async {
+    try {
+      final responseData = await _httpClient.post(
+          query: '/v1/quest/$questId/accept-completed-work');
+      return responseData == null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> rejectCompletedWork({
+    required String questId,
+  }) async {
+    try {
+      final responseData = await _httpClient.post(
+          query: '/v1/quest/$questId/reject-completed-work');
+      return responseData == null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> acceptOnQuest({
+    required String questId,
+  }) async {
+    try {
+      final responseData =
+          await _httpClient.post(query: '/v1/quest/$questId/accept-work');
+      return responseData == null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> rejectOnQuest({
+    required String questId,
+  }) async {
+    try {
+      final responseData =
+          await _httpClient.post(query: '/v1/quest/$questId/reject-work');
+      return responseData == null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> completeWork({
+    required String questId,
+  }) async {
+    try {
+      final responseData =
+          await _httpClient.post(query: '/v1/quest/$questId/complete-work');
+      return responseData == null;
+    } catch (e) {
+      return false;
     }
   }
 
@@ -574,8 +667,7 @@ extension Portfolio on ApiProvider {
   }
 }
 
-extension RestorePassword on ApiProvider{
-
+extension RestorePassword on ApiProvider {
   Future<void> sendCodeToEmail({
     required String email,
   }) async {

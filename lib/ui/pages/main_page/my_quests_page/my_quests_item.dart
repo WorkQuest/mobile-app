@@ -23,16 +23,59 @@ class MyQuestsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        bool buff = questInfo.star;
+        int oldStatus = questInfo.status;
+        bool oldStar = questInfo.star;
         await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
           arguments: questInfo,
         );
-        if (buff != questInfo.star) {
+        if (oldStar != questInfo.star) {
           if (questInfo.star == false) {
             context.read<MyQuestStore>().starred!.remove(questInfo);
           } else {
             context.read<MyQuestStore>().starred!.add(questInfo);
+          }
+        }
+        if (oldStatus != questInfo.status) {
+          switch (oldStatus) {
+            case 0:
+              context.read<MyQuestStore>().invited!.remove(questInfo);
+              return;
+            case 1:
+              context.read<MyQuestStore>().active!.remove(questInfo);
+              return;
+            case 3:
+              context.read<MyQuestStore>().active!.remove(questInfo);
+              return;
+            case 4:
+              context.read<MyQuestStore>().invited!.remove(questInfo);
+              return;
+            case 5:
+              context.read<MyQuestStore>().active!.remove(questInfo);
+              return;
+            case 6:
+              context.read<MyQuestStore>().performed!.remove(questInfo);
+              return;
+          }
+          switch (questInfo.status) {
+            case 0:
+              context.read<MyQuestStore>().invited!.add(questInfo);
+              return;
+            case 1:
+              context.read<MyQuestStore>().active!.add(questInfo);
+              return;
+            case 3:
+              context.read<MyQuestStore>().active!.add(questInfo);
+              return;
+            case 4:
+              context.read<MyQuestStore>().invited!.add(questInfo);
+              return;
+            case 5:
+              context.read<MyQuestStore>().active!.add(questInfo);
+              return;
+            case 6:
+              context.read<MyQuestStore>().performed!.add(questInfo);
+              return;
           }
         }
       },
@@ -134,39 +177,59 @@ class MyQuestsItem extends StatelessWidget {
     Widget returnWidget = Container();
     switch (itemType) {
       case QuestItemPriorityType.Active:
-        returnWidget = Container(
-          margin: const EdgeInsets.symmetric(
-            vertical: 16,
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 7.5,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: AppColors.green,
-          ),
-          child: Row(
-            children: [
-              Text(
-                "quests.active".tr(),
-                style: TextStyle(color: Colors.white),
-              ),
-              Spacer(),
-              Text(
-                "quests.runtime".tr(),
-                style: TextStyle(color: Colors.white),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                "14:10:23",
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
-        );
+        if (questInfo.status == 3) {
+          returnWidget = Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 16,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 7.5,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: Colors.red,
+            ),
+            child: Text(
+              "quests.disputeQuest".tr(),
+              style: TextStyle(color: Colors.white),
+            ),
+          );
+        } else {
+          returnWidget = Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 16,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 7.5,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: AppColors.green,
+            ),
+            child: Row(
+              children: [
+                Text(
+                  "quests.active".tr(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                Spacer(),
+                Text(
+                  "quests.runtime".tr(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  "14:10:23",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          );
+        }
         break;
       case QuestItemPriorityType.Invited:
         returnWidget = Container(
@@ -203,7 +266,7 @@ class MyQuestsItem extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                "You Requested",
+                "quests.youRequested".tr(),
                 style: TextStyle(color: Colors.white),
               ),
             ],
@@ -211,25 +274,47 @@ class MyQuestsItem extends StatelessWidget {
         );
         break;
       case QuestItemPriorityType.Performed:
-        returnWidget = Container(
-          margin: const EdgeInsets.symmetric(vertical: 16),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 7.5,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: Color(0xFF0083C7),
-          ),
-          child: Row(
-            children: [
-              Text(
-                "quests.performed".tr(),
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
-        );
+        if (questInfo.status == 5) {
+          returnWidget = Container(
+            margin: const EdgeInsets.symmetric(vertical: 16),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 7.5,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: Color(0xFF0083C7),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  "quests.waitConfirm".tr(),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          );
+        } else {
+          returnWidget = Container(
+            margin: const EdgeInsets.symmetric(vertical: 16),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 7.5,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: Color(0xFF0083C7),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  "quests.performed".tr(),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          );
+        }
         break;
       case QuestItemPriorityType.Starred:
         returnWidget = SizedBox(

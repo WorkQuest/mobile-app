@@ -14,6 +14,7 @@ class EmployerStore extends _EmployerStore with _$EmployerStore {
 
 abstract class _EmployerStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
+
   _EmployerStore(this._apiProvider);
 
   @observable
@@ -25,5 +26,48 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   @action
   getRespondedList(String id) async {
     respondedList = await _apiProvider.responsesQuest(id);
+  }
+
+  @action
+  startQuest({
+    required String questId,
+    required String userId,
+  }) async {
+    try {
+      this.onLoading();
+      await _apiProvider.startQuest(questId: questId, userId: userId);
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("accept error: $e\n$trace");
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  acceptCompletedWork({
+    required String questId,
+  }) async {
+    try {
+      this.onLoading();
+      await _apiProvider.acceptCompletedWork(questId: questId);
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("accept error: $e\n$trace");
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  rejectCompletedWork({
+    required String questId,
+  }) async {
+    try {
+      this.onLoading();
+      await _apiProvider.rejectCompletedWork(questId: questId);
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("accept error: $e\n$trace");
+      this.onError(e.toString());
+    }
   }
 }

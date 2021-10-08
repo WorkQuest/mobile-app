@@ -37,7 +37,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         builder: (_) => IconButton(
           icon: Icon(
             store.quest.value!.star ? Icons.star : Icons.star_border,
-            color: store.quest.value!.star ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
+            color:
+                store.quest.value!.star ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
           ),
           onPressed: store.onStar,
         ),
@@ -57,9 +58,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             "${widget.questInfo.price} WUSD",
             textAlign: TextAlign.end,
             style: const TextStyle(
-                color: Color(0xFF00AA5B),
-                fontSize: 18.0,
-                fontWeight: FontWeight.w700),
+              color: Color(0xFF00AA5B),
+              fontSize: 18.0,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: 20),
           if (!store.quest.value!.response)
@@ -68,9 +70,75 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     child: CircularProgressIndicator(),
                   )
                 : TextButton(
-                    onPressed: bottomForm,
+                    onPressed: () {
+                      bottomForm(
+                        child: bottomRespond(),
+                      );
+                    },
                     child: Text(
                       "modals.requestSend".tr(),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.all(
+                        Size(double.maxFinite, 43),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed))
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
+                          return const Color(0xFF0083C7);
+                        },
+                      ),
+                    ),
+                  ),
+          if (store.quest.value!.status == 4)
+            store.isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : TextButton(
+                    onPressed: () {
+                      bottomForm(
+                        child: bottomAcceptReject(),
+                      );
+                    },
+                    child: Text(
+                      "quests.answerOnQuest.title".tr(),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.all(
+                        Size(double.maxFinite, 43),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed))
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
+                          return const Color(0xFF0083C7);
+                        },
+                      ),
+                    ),
+                  ),
+          if (store.quest.value!.status == 1)
+            store.isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : TextButton(
+                    onPressed: () {
+                      bottomForm(
+                        child: bottomComplete(),
+                      );
+                    },
+                    child: Text(
+                      "quests.completeTheQuest".tr(),
                       style: TextStyle(color: Colors.white),
                     ),
                     style: ButtonStyle(
@@ -94,8 +162,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     );
   }
 
-  bottomForm() {
-    TextEditingController textController = TextEditingController();
+  bottomForm({
+    required Widget child,
+  }) {
     return showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -132,87 +201,214 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   ),
                 ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 23),
-                  Text(
-                    "modals.reviewOnEmployer".tr(),
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  TextField(
-                    controller: textController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 6,
-                    decoration: InputDecoration(
-                      hintText: 'Hello...',
-                    ),
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  DottedBorder(
-                    padding: EdgeInsets.all(0),
-                    color: Color(0xFFe9edf2),
-                    strokeWidth: 3.0,
-                    child: Container(
-                      height: 66,
-                      padding: EdgeInsets.only(left: 20, right: 10),
-                      color: Color(0xFFf7f8fa),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "modals.uploadAImages".tr(),
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.add_a_photo),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  TextButton(
-                    onPressed: () {
-                      store.sendRespondOnQuest(textController.text);
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      "modal.requestSend".tr(),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.all(
-                        Size(double.maxFinite, 43),
-                      ),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed))
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.5);
-                          return const Color(0xFF0083C7);
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                ],
-              ),
+              child,
             ],
           ),
         );
       },
     ).whenComplete(
       () => controller = BottomSheet.createAnimationController(this),
+    );
+  }
+
+  bottomRespond() {
+    TextEditingController textController = TextEditingController();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: Container(
+            height: 5.0,
+            width: 70.0,
+            decoration: BoxDecoration(
+              color: Colors.black12,
+              borderRadius: BorderRadius.all(
+                Radius.circular(15.0),
+              ),
+            ),
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 23),
+            Text(
+              "modals.reviewOnEmployer".tr(),
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 5),
+            TextField(
+              controller: textController,
+              keyboardType: TextInputType.multiline,
+              maxLines: 6,
+              decoration: InputDecoration(
+                hintText: "modals.hello".tr(),
+              ),
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 15),
+            DottedBorder(
+              padding: EdgeInsets.all(0),
+              color: Color(0xFFe9edf2),
+              strokeWidth: 3.0,
+              child: Container(
+                height: 66,
+                padding: EdgeInsets.only(left: 20, right: 10),
+                color: Color(0xFFf7f8fa),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "modals.uploadAImages".tr(),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.add_a_photo),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 15),
+            TextButton(
+              onPressed: () {
+                store.sendRespondOnQuest(textController.text);
+                Navigator.pop(context);
+              },
+              child: Text(
+                "modals.requestSend".tr(),
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ButtonStyle(
+                fixedSize: MaterialStateProperty.all(
+                  Size(double.maxFinite, 43),
+                ),
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.pressed))
+                      return Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.5);
+                    return const Color(0xFF0083C7);
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 15),
+          ],
+        ),
+      ],
+    );
+  }
+
+  bottomAcceptReject() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const SizedBox(height: 23),
+        Text(
+          "quests.answerOnQuest.title".tr(),
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 15),
+        TextButton(
+          onPressed: () {
+            store.sendAcceptOnQuest();
+            Navigator.pop(context);
+          },
+          child: Text(
+            "quests.answerOnQuest.accept".tr(),
+            style: TextStyle(color: Colors.white),
+          ),
+          style: ButtonStyle(
+            fixedSize: MaterialStateProperty.all(
+              Size(double.maxFinite, 43),
+            ),
+            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+                if (states.contains(MaterialState.pressed))
+                  return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                return const Color(0xFF0083C7);
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 15),
+        TextButton(
+          onPressed: () {
+            store.sendRejectOnQuest();
+            Navigator.pop(context);
+          },
+          child: Text(
+            "quests.answerOnQuest.reject".tr(),
+            style: TextStyle(color: Colors.white),
+          ),
+          style: ButtonStyle(
+            fixedSize: MaterialStateProperty.all(
+              Size(double.maxFinite, 43),
+            ),
+            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+                if (states.contains(MaterialState.pressed))
+                  return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                return const Color(0xFF0083C7);
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 15),
+      ],
+    );
+  }
+
+  bottomComplete() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const SizedBox(height: 23),
+        Text(
+          "quests.areYouSureTheQuestIsComplete".tr(),
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 15),
+        TextButton(
+          onPressed: () {
+            store.sendCompleteWork();
+            Navigator.pop(context);
+          },
+          child: Text(
+            "quests.completeTheQuest".tr(),
+            style: TextStyle(color: Colors.white),
+          ),
+          style: ButtonStyle(
+            fixedSize: MaterialStateProperty.all(
+              Size(double.maxFinite, 43),
+            ),
+            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+                if (states.contains(MaterialState.pressed))
+                  return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                return const Color(0xFF0083C7);
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 15),
+      ],
     );
   }
 

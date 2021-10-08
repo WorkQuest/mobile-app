@@ -19,10 +19,14 @@ class QuestEmployer extends QuestDetails {
 class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   late EmployerStore store;
 
+  AnimationController? controller;
+
   @override
   void initState() {
     store = context.read<EmployerStore>();
     store.getRespondedList(widget.questInfo.id);
+    controller = BottomSheet.createAnimationController(this);
+    controller!.duration = Duration(seconds: 1);
     super.initState();
   }
 
@@ -136,82 +140,225 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : store.respondedList!.isNotEmpty
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    if (store.respondedList!.isNotEmpty)
-                      Text(
-                        "btn.responded".tr(),
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Color(0xFF1D2127),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    if (store.respondedList!.isNotEmpty)
-                      for (final respond in store.respondedList ?? [])
-                        selectableMember(respond),
-                    // const SizedBox(height: 10),
-                    // const Text(
-                    //   "You invited",
-                    //   style: TextStyle(
-                    //       fontSize: 18,
-                    //       color: Color(0xFF1D2127),
-                    //       fontWeight: FontWeight.w500),
-                    // ),
-                    // for (var i = 0; i < 3; i++)
-                    //   selectableMember(
-                    //     RespondModel(
-                    //       createdAt: DateTime.now(),
-                    //       id: "user$i",
-                    //       type: 1,
-                    //       status: 1,
-                    //       message: "",
-                    //       questId: "",
-                    //       workerId: "",
-                    //       worker: User(
-                    //           id: "id",
-                    //           firstName: "firstName $i",
-                    //           lastName: "lastName $i",
-                    //           avatar: Avatar.fromJson(null)),
-                    //     ),
-                    //   ),
-                    const SizedBox(height: 15),
-                    TextButton(
-                      onPressed:
-                          store.selectedResponders.isEmpty ? null : () {},
-                      child: Text(
-                        "Choose a worker",
-                        style: TextStyle(
-                          color: store.selectedResponders.isEmpty
-                              ? Colors.grey
-                              : Colors.white,
-                        ),
-                      ),
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.disabled))
-                              return const Color(0xFFF7F8FA);
-                            if (states.contains(MaterialState.pressed))
-                              return Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.5);
-                            return const Color(0xFF0083C7);
-                          },
-                        ),
-                        fixedSize: MaterialStateProperty.all(
-                          Size(double.maxFinite, 43),
-                        ),
-                      ),
-                    )
-                  ],
+          : widget.questInfo.status == 5
+              ? TextButton(
+                  onPressed: () {
+                    bottomForm();
+                  },
+                  child: Text(
+                    "quests.answerOnQuest.title".tr(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ButtonStyle(
+                    fixedSize: MaterialStateProperty.all(
+                      Size(double.maxFinite, 43),
+                    ),
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.pressed))
+                          return Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.5);
+                        return const Color(0xFF0083C7);
+                      },
+                    ),
+                  ),
                 )
-              : const SizedBox(),
+              : (store.respondedList!.isNotEmpty &&
+                      (widget.questInfo.status == 0 ||
+                          widget.questInfo.status == 1))
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        if (store.respondedList!.isNotEmpty)
+                          Text(
+                            "btn.responded".tr(),
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFF1D2127),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        if (store.respondedList!.isNotEmpty)
+                          for (final respond in store.respondedList ?? [])
+                            selectableMember(respond),
+                        // const SizedBox(height: 10),
+                        // const Text(
+                        //   "You invited",
+                        //   style: TextStyle(
+                        //       fontSize: 18,
+                        //       color: Color(0xFF1D2127),
+                        //       fontWeight: FontWeight.w500),
+                        // ),
+                        // for (var i = 0; i < 3; i++)
+                        //   selectableMember(
+                        //     RespondModel(
+                        //       createdAt: DateTime.now(),
+                        //       id: "user$i",
+                        //       type: 1,
+                        //       status: 1,
+                        //       message: "",
+                        //       questId: "",
+                        //       workerId: "",
+                        //       worker: User(
+                        //           id: "id",
+                        //           firstName: "firstName $i",
+                        //           lastName: "lastName $i",
+                        //           avatar: Avatar.fromJson(null)),
+                        //     ),
+                        //   ),
+                        const SizedBox(height: 15),
+                        TextButton(
+                          onPressed: store.selectedResponders.isEmpty
+                              ? null
+                              : () {
+                                  store.startQuest(
+                                    userId: store.selectedResponders,
+                                    questId: widget.questInfo.id,
+                                  );
+                                },
+                          child: Text(
+                            "quests.chooseWorker".tr(),
+                            style: TextStyle(
+                              color: store.selectedResponders.isEmpty
+                                  ? Colors.grey
+                                  : Colors.white,
+                            ),
+                          ),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.disabled))
+                                  return const Color(0xFFF7F8FA);
+                                if (states.contains(MaterialState.pressed))
+                                  return Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.5);
+                                return const Color(0xFF0083C7);
+                              },
+                            ),
+                            fixedSize: MaterialStateProperty.all(
+                              Size(double.maxFinite, 43),
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                  : const SizedBox(),
+    );
+  }
+
+  bottomForm() {
+    return showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(6.0),
+          topRight: Radius.circular(6.0),
+        ),
+      ),
+      context: context,
+      backgroundColor: Colors.white,
+      //transitionAnimationController: controller,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            top: 10.0,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  height: 5.0,
+                  width: 70.0,
+                  decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15.0),
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 23),
+                  Text(
+                    "quests.answerOnQuest.title".tr(),
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextButton(
+                    onPressed: () {
+                      store.acceptCompletedWork(questId: widget.questInfo.id);
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "quests.answerOnQuest.acceptCompleted".tr(),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.all(
+                        Size(double.maxFinite, 43),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed))
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
+                          return const Color(0xFF0083C7);
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextButton(
+                    onPressed: () {
+                      store.rejectCompletedWork(questId: widget.questInfo.id);
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "quests.answerOnQuest.rejectCompleted".tr(),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.all(
+                        Size(double.maxFinite, 43),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed))
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
+                          return const Color(0xFF0083C7);
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -237,7 +384,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 child: Radio(
                   toggleable: true,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  value: respond.id,
+                  value: respond.workerId,
                   groupValue: store.selectedResponders,
                   onChanged: (String? id) =>
                       store.selectedResponders = id ?? "",

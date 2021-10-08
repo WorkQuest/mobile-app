@@ -60,21 +60,22 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       if (role == UserRole.Employer) {
-        active = await _apiProvider.getEmployerQuests(userId);
+        active = await _apiProvider.getEmployerQuests(userId: userId);
 
         invited = await _apiProvider.getEmployerQuests(
-          userId,
-          invited: true,
+          userId: userId,
+          status: 4,
         );
 
         performed = await _apiProvider.getEmployerQuests(
-          userId,
-          performing: true,
+          userId: userId,
+          status: 6,
         );
       } else {
         active = await _apiProvider.getQuests(
           offset: this.offset,
           limit: this.limit,
+          performing: true,
           status: 1,
         );
 
@@ -89,13 +90,15 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         invited = await _apiProvider.getQuests(
           offset: this.offset,
           limit: this.limit,
-          invited: true,
+          performing: true,
+          status: 4,
         );
 
         performed = await _apiProvider.getQuests(
           offset: this.offset,
           limit: this.limit,
           performing: true,
+          status: 6,
         );
       }
       this.onSuccess(true);

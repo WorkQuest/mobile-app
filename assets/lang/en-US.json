@@ -265,6 +265,7 @@
       "workInOffice": "Work in the office",
       "bothVariant": "Both options"
     },
+    "chooseWorker": "Choose a worker",
     "employment": {
       "title": "Employment",
       "fullTime": "Full time",
@@ -275,12 +276,17 @@
     "youDontHaveAny": "You don't have any",
     "questYet": "Quest yet",
     "aboutQuest": "About Quest",
+    "disputeQuest": "Dispute quest",
+    "waitConfirm": "Wait confirm",
     "questText": "Quest text",
     "hours": "hours",
     "invited": "Invited",
     "active": "Active",
     "performed": "Completed",
+    "areYouSureTheQuestIsComplete": "Are you sure the quest is complete?",
+    "completeTheQuest": "Complete the quest",
     "requested": "Requested",
+    "youRequested": "You requested",
     "youInvited": "You invited",
     "inProgressBy": "Ongoing by:",
     "showAllCases": "Show all cases",
@@ -301,6 +307,13 @@
     "workplace": "Workplace",
     "uploadMaterials": "Upload documents to better describe the offer",
     "uploadQuestMaterials": "Add a detailed description",
+    "answerOnQuest": {
+      "title": "Answer on quest",
+      "accept": "Accept quest",
+      "reject": "Reject quest",
+      "acceptCompleted": "Accept completed quest",
+      "rejectCompleted": "Reject completed quest"
+    },
     "price": "Price",
     "filter": {
       "btn": "Filters",

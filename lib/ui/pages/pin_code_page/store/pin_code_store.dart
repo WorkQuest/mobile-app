@@ -15,7 +15,9 @@ class PinCodeStore extends _PinCodeStore with _$PinCodeStore {
 
 abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   final ApiProvider _apiProvider;
+
   _PinCodeStore(this._apiProvider);
+
   @action
   initPage() {
     attempts = 0;
@@ -91,7 +93,6 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   ///TODO:clear password field on error password
   ///
 
-
   changeState(StatePinCode state, {errorAnimation = false}) {
     statePin = state;
     if (errorAnimation)
@@ -150,9 +151,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
 
       this.onSuccess(StatePinCode.Success);
     } catch (e) {
-      ///added this
-      attempts++;
-      if (attempts >= 3) {
+      if (e.toString() == "Token invalid") {
         await Storage.deleteAllFromSecureStorage();
         this.onSuccess(StatePinCode.ToLogin);
         return;

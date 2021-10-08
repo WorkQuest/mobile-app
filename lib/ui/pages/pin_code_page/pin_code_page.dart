@@ -101,8 +101,9 @@ class _PinCodePageState extends State<PinCodePage>
                               return Container(
                                 margin: EdgeInsets.symmetric(horizontal: 24.0),
                                 padding: EdgeInsets.only(
-                                    left: offsetAnimation.value + 24.0,
-                                    right: 24.0 - offsetAnimation.value),
+                                  left: offsetAnimation.value + 24.0,
+                                  right: 24.0 - offsetAnimation.value,
+                                ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -112,7 +113,8 @@ class _PinCodePageState extends State<PinCodePage>
                                           height: 10,
                                           width: 10,
                                           margin: const EdgeInsets.symmetric(
-                                              horizontal: 7.5),
+                                            horizontal: 7.5,
+                                          ),
                                           decoration: BoxDecoration(
                                             color: !offsetAnimation.isDismissed
                                                 ? Colors.red
@@ -120,7 +122,8 @@ class _PinCodePageState extends State<PinCodePage>
                                                     ? Color(0xFF0083C7)
                                                     : Color(0xFFE9EDF2),
                                             borderRadius: BorderRadius.all(
-                                                Radius.circular(5.0)),
+                                              Radius.circular(5.0),
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -166,40 +169,49 @@ class PinCodeKeyboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: GridView.count(
-      padding: const EdgeInsets.only(top: 40),
-      crossAxisCount: 3,
-      primary: false,
-      crossAxisSpacing: 30,
-      mainAxisSpacing: 30,
-      children: <Widget>[
-        for (var i = 1; i < 10; i++)
+      child: GridView.count(
+        padding: const EdgeInsets.only(top: 40),
+        crossAxisCount: 3,
+        primary: false,
+        crossAxisSpacing: 30,
+        mainAxisSpacing: 30,
+        children: <Widget>[
+          for (var i = 1; i < 10; i++)
+            KeyboardButton(
+              Text(
+                i.toString(),
+                style: buttonText,
+              ),
+              () => onTabNumber(i),
+            ),
           KeyboardButton(
-            Text(i.toString(), style: buttonText),
-            () => onTabNumber(i),
-          ),
-        KeyboardButton(
             SvgPicture.asset(
               "assets/biometric.svg",
               width: 20,
               height: 20,
               color: canBiometric ? Color(0xFF0083C7) : Colors.grey[500],
             ),
-            onTabSensor),
-        KeyboardButton(
-          const Text("0", style: buttonText),
-          () => onTabNumber(0),
-        ),
-        KeyboardButton(
+            onTabSensor,
+          ),
+          KeyboardButton(
+            const Text(
+              "0",
+              style: buttonText,
+            ),
+            () => onTabNumber(0),
+          ),
+          KeyboardButton(
             SvgPicture.asset(
               "assets/remove.svg",
               width: 20,
               height: 12,
               color: Color(0xFF0083C7),
             ),
-            onTabRemove),
-      ],
-    ));
+            onTabRemove,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -217,7 +229,7 @@ class KeyboardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (TextButton(
+    return TextButton(
       onPressed: onTab,
       child: child,
       style: ButtonStyle(
@@ -229,6 +241,6 @@ class KeyboardButton extends StatelessWidget {
           },
         ),
       ),
-    ));
+    );
   }
 }
