@@ -5,14 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
-class QuestPage extends StatefulWidget {
-  const QuestPage({Key? key}) : super(key: key);
 
-  @override
-  _QuestPageState createState() => _QuestPageState();
-}
-
-class _QuestPageState extends State<QuestPage> {
+class QuestPage extends StatelessWidget{
   final QuestPageStore questPage = QuestPageStore();
 
   @override

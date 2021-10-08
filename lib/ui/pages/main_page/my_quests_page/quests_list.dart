@@ -89,6 +89,8 @@ class QuestsList extends StatelessWidget {
   }
 
   Widget getLoadingBody() {
-    return Center(child: CircularProgressIndicator());
+    return Center(
+      child: CircularProgressIndicator(),
+    );
   }
 }

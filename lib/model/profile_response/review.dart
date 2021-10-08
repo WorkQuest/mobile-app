@@ -7,7 +7,7 @@ class Review {
     required this.message,
     required this.mark,
     required this.createdAt,
-    required this.updatedAt,
+    //required this.updatedAt,
   });
 
   String reviewId;
@@ -17,7 +17,7 @@ class Review {
   String message;
   int mark;
   DateTime createdAt;
-  DateTime updatedAt;
+  //DateTime updatedAt;
 
   factory Review.fromJson(Map<String, dynamic> json) => Review(
     reviewId: json["reviewId"],
@@ -27,7 +27,7 @@ class Review {
     message: json["message"],
     mark: json["mark"],
     createdAt: DateTime.parse(json["createdAt"]),
-    updatedAt: DateTime.parse(json["updatedAt"]),
+    //updatedAt: DateTime.parse(json["updatedAt"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -38,6 +38,6 @@ class Review {
     "message": message,
     "mark": mark,
     "createdAt": createdAt.toIso8601String(),
-    "updatedAt": updatedAt.toIso8601String(),
+    //"updatedAt": updatedAt.toIso8601String(),
   };
 }

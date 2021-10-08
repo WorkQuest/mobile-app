@@ -8,7 +8,6 @@ import 'package:mobx/mobx.dart';
 
 part 'my_quest_store.g.dart';
 
-@injectable
 @singleton
 class MyQuestStore extends _MyQuestStore with _$MyQuestStore {
   MyQuestStore(ApiProvider apiProvider) : super(apiProvider);

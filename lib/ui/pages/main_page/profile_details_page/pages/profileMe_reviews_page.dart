@@ -1,5 +1,7 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/profile_widgets.dart';
@@ -35,6 +37,8 @@ class _ProfileReviewsState extends State<ProfileReviews>
 
   ProfileMeStore? userStore;
   PortfolioStore? portfolioStore;
+  MyQuestStore? myQuests;
+  late UserRole role;
 
   void initState() {
     super.initState();
@@ -44,15 +48,30 @@ class _ProfileReviewsState extends State<ProfileReviews>
     );
     userStore = context.read<ProfileMeStore>();
     portfolioStore = context.read<PortfolioStore>();
+    myQuests = context.read<MyQuestStore>();
+    role = userStore!.userData?.role ?? UserRole.Employer;
+
+    userStore!.getProfileMe().then((value) {
+      setState(() => role = userStore!.userData!.role);
+      myQuests!.getQuests(
+        userStore!.userData!.id,
+        role,
+      );
+    });
+
     if (userStore!.userData!.role == UserRole.Worker)
       portfolioStore!.getPortfolio(
         userId: userStore!.userData!.id,
       );
+    portfolioStore!.getReviews(
+      userId: userStore!.userData!.id,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final userStore = context.read<ProfileMeStore>();
+
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (
@@ -361,25 +380,32 @@ class _ProfileReviewsState extends State<ProfileReviews>
               padding: const EdgeInsets.only(top: 16.0),
               child: Material(
                 color: const Color(0xFFF7F8FA),
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  //controller: _scrollController,
-                  padding: const EdgeInsets.only(
-                    top: 0.0,
-                  ),
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return ReviewsWidget(
-                        name: "Edward cooper",
-                        userRole: UserRole.Worker.toString().split(".").last,
-                        questTitle: "SPA saloon design",
-                        quest:
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing "
-                            "elit ut aliquam, purus sit amet luctus venenatis, "
-                            "lectus magna fringilla urna, porttitor rhoncus "
-                            "dolor purus non enim praesent elementum.");
-                  },
-                ),
+                child: portfolioStore!.reviewsList.isNotEmpty
+                    ? ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        //controller: _scrollController,
+                        padding: const EdgeInsets.only(
+                          top: 0.0,
+                        ),
+                        itemCount: portfolioStore!.reviewsList.length,
+                        itemBuilder: (context, index) {
+                          return ReviewsWidget(
+                              name: "Edward cooper",
+                              userRole:
+                                  UserRole.Worker.toString().split(".").last,
+                              questTitle: "SPA saloon design",
+                              quest:
+                                  "Lorem ipsum dolor sit amet, consectetur adipiscing "
+                                  "elit ut aliquam, purus sit amet luctus venenatis, "
+                                  "lectus magna fringilla urna, porttitor rhoncus "
+                                  "dolor purus non enim praesent elementum.");
+                        },
+                      )
+                    : Center(
+                        child: Text(
+                          "You have no reviews yet",
+                        ),
+                      ),
               ),
             ),
 
@@ -431,44 +457,38 @@ class _ProfileReviewsState extends State<ProfileReviews>
 
                     Expanded(
                       child: Observer(
-                        builder: (_) => userStore.userData!.role ==
-                                UserRole.Worker
-                            ? Center(
-                                child: portfolioStore!.portfolioList.isEmpty
-                                    ? Text("You do not have any  Portfolio")
-                                    : ListView.builder(
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        padding: const EdgeInsets.only(
-                                          top: 0.0,
-                                        ),
-                                        itemCount: portfolioStore!
-                                            .portfolioList.length,
-                                        itemBuilder: (context, index) =>
-                                            PortfolioWidget(
-                                          index: index,
-                                          imageUrl: portfolioStore!
-                                              .portfolioList[index]
-                                              .medias
-                                              .first
-                                              .url,
-                                          title: portfolioStore!
-                                              .portfolioList[index].title,
-                                        ),
-                                      ),
-                              )
-                            : ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(
-                                  top: 0.0,
-                                ),
-                                itemCount: 5,
-                                itemBuilder: (context, index) => quest(
-                                  title: 'Paint the garage quickly',
-                                  description: "Paint the garage",
-                                  price: "1500",
-                                ),
-                              ),
+                        builder: (_) =>
+                            userStore.userData!.role == UserRole.Worker
+                                ? Center(
+                                    child: portfolioStore!.portfolioList.isEmpty
+                                        ? Text("You do not have any  Portfolio")
+                                        : ListView.builder(
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            padding: const EdgeInsets.only(
+                                              top: 0.0,
+                                            ),
+                                            itemCount: portfolioStore!
+                                                .portfolioList.length,
+                                            itemBuilder: (context, index) =>
+                                                PortfolioWidget(
+                                              index: index,
+                                              imageUrl: portfolioStore!
+                                                  .portfolioList[index]
+                                                  .medias
+                                                  .first
+                                                  .url,
+                                              title: portfolioStore!
+                                                  .portfolioList[index].title,
+                                            ),
+                                          ),
+                                  )
+                                : Center(
+                                    child: QuestsList(
+                                      QuestItemPriorityType.Performed,
+                                      myQuests?.performed,
+                                    ),
+                                  ),
                       ),
                     ),
                   ],

@@ -6,6 +6,7 @@ import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
+import 'package:app/model/profile_response/review.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/quest_map_point.dart';
 import 'package:app/model/respond_model.dart';
@@ -689,6 +690,36 @@ extension RestorePassword on ApiProvider {
         "newPassword": newPassword,
         "token": token,
       },
+    );
+  }
+}
+
+extension Reviews on ApiProvider {
+  Future<void> sendReview({
+    required String questId,
+    required String message,
+    required int mark,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/review/send',
+      data: {
+        "questId": questId,
+        "message": message,
+        "mark": mark,
+      },
+    );
+  }
+
+  Future<List<Review>> getReviews({
+    required String userId,
+  }) async {
+    final response = await _httpClient.get(
+      query: '/v1/user/$userId/reviews',
+    );
+    return List<Review>.from(
+      response.map(
+            (review) => Review.fromJson(review),
+      ),
     );
   }
 }

@@ -36,6 +36,8 @@ class MyQuestsItem extends StatelessWidget {
             context.read<MyQuestStore>().starred!.add(questInfo);
           }
         }
+
+        //TODO:Check and correct
         if (oldStatus != questInfo.status) {
           switch (oldStatus) {
             case 0:
@@ -244,6 +246,7 @@ class MyQuestsItem extends StatelessWidget {
           ),
           child: Row(
             children: [
+              ///Invied here
               Text(
                 "quests.youInvited".tr(),
                 style: TextStyle(color: Colors.white),

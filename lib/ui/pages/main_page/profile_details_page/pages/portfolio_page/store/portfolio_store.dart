@@ -1,5 +1,6 @@
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/portfolio.dart';
+import 'package:app/model/profile_response/review.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
@@ -30,6 +31,9 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
 
   @observable
   ObservableList<PortfolioModel> portfolioList = ObservableList();
+
+  @observable
+  ObservableList<Review> reviewsList = ObservableList();
 
   @observable
   ObservableList<DrishyaEntity> media = ObservableList();
@@ -113,6 +117,25 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future<void> getReviews({
+    required String userId,
+  }) async {
+    try {
+      this.onLoading();
+      reviewsList = ObservableList.of(
+        await _apiProvider.getReviews(
+          userId: userId,
+        ),
+      );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(
+        e.toString(),
+      );
     }
   }
 

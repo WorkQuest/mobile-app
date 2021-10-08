@@ -242,6 +242,9 @@ class Routes {
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
               Provider(
+                create: (context) => getIt.get<MyQuestStore>(),
+              ),
+              Provider(
                 create: (context) => getIt.get<PortfolioStore>(),
               ),
             ],
