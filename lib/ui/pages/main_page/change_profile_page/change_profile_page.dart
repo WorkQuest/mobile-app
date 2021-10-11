@@ -27,9 +27,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
   SkillSpecializationController? _controller;
   KnowledgeWorkSelectionController? _controllerKnowledge;
-
   KnowledgeWorkSelectionController? _controllerWork;
-
   late final GalleryController gallController;
 
   @override
@@ -37,7 +35,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     _controller = SkillSpecializationController();
     _controllerKnowledge = KnowledgeWorkSelectionController();
     _controllerWork = KnowledgeWorkSelectionController();
-
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(
       ProfileMeResponse.clone(profile!.userData!),
@@ -293,13 +290,13 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           title: "Knowledge",
           hintText: "settings.education.educationalInstitution".tr(),
           controller: _controllerKnowledge,
-          // onChanged: pageStore.addKnowledge,
+          data: pageStore.userData.additionalInfo?.educations,
         ),
         KnowledgeWorkSelection(
           title: "Work experience",
           hintText: "Work place",
           controller: _controllerWork,
-          // onChanged: pageStore.addWorkExperience,
+          data: pageStore.userData.additionalInfo?.workExperiences,
         ),
       ],
     );
@@ -371,30 +368,28 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
             ),
           ),
           alignment: Alignment.centerLeft,
-          child: Observer(
-            builder: (_) => DropdownButtonHideUnderline(
-              child: DropdownButton(
-                isExpanded: true,
-                value: value,
-                onChanged: onChanged,
-                items: list.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: new Text(value),
-                  );
-                }).toList(),
-                icon: Icon(
-                  Icons.arrow_drop_down,
-                  size: 30,
-                  color: Colors.blueAccent,
-                ),
-                hint: Text(
-                  title.tr(),
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton(
+              isExpanded: true,
+              value: value,
+              onChanged: onChanged,
+              items: list.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: new Text(value),
+                );
+              }).toList(),
+              icon: Icon(
+                Icons.arrow_drop_down,
+                size: 30,
+                color: Colors.blueAccent,
+              ),
+              hint: Text(
+                title.tr(),
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
                 ),
               ),
             ),
@@ -418,22 +413,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   onSave() async {
-    pageStore.userData.additionalInfo?.educations.clear();
-    (_controllerKnowledge?.getAllKnowledge() ?? []).forEach((element) {
-      Map<String, String> item = {};
-      item["from"] = element.dateFrom;
-      item["to"] = element.dateTo;
-      item["place"] = element.place;
-      pageStore.userData.additionalInfo?.educations.add(item);
-    });
-    pageStore.userData.additionalInfo?.workExperiences.clear();
-    (_controllerKnowledge?.getAllKnowledge() ?? []).forEach((element) {
-      Map<String, String> item = {};
-      item["from"] = element.dateFrom;
-      item["to"] = element.dateTo;
-      item["place"] = element.place;
-      pageStore.userData.additionalInfo?.workExperiences.add(item);
-    });
+    pageStore.userData.additionalInfo?.educations =
+        _controllerKnowledge!.getListMap();
+    pageStore.userData.additionalInfo?.workExperiences =
+        _controllerWork!.getListMap();
     pageStore.userData.additionalInfo!.address = pageStore.address;
     if (!profile!.isLoading)
       pageStore.userData.skillFilters =

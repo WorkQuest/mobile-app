@@ -80,8 +80,11 @@ abstract class ChangeProfileStoreBase with Store {
     if ((this.userData.additionalInfo?.socialNetwork?.twitter ?? "") !=
         (userData.additionalInfo?.socialNetwork?.twitter ?? "")) return true;
 
-    if ((this.userData.additionalInfo?.address ?? "") !=
-        (userData.additionalInfo?.address ?? "")) return true;
+    if ((this.userData.additionalInfo?.workExperiences ?? "") !=
+        (userData.additionalInfo?.workExperiences ?? "")) return true;
+
+    if ((this.userData.additionalInfo?.educations ?? "") !=
+        (userData.additionalInfo?.educations ?? "")) return true;
 
     if (media != null) return true;
 

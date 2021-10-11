@@ -246,9 +246,16 @@ class _SkillSpecializationSelectionState
 
 class SkillSpecializationController {
   SkillSpecializationStore? store;
+  final  Map<String, List<String>>? initialValue;
+
+  SkillSpecializationController({this.initialValue});
+
 
   setStore(SkillSpecializationStore s) {
     store = s;
+    if(this.initialValue!=null){
+      // store.selectedSkills
+    }
   }
 
   Map<String, List<String>> getSkillAndSpecialization() {

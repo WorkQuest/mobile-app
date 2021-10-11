@@ -317,6 +317,18 @@ extension QuestService on ApiProvider {
     }
   }
 
+  Future<bool> deleteQuest({
+    required String questId,
+  }) async {
+    try {
+      final responseData =
+          await _httpClient.post(query: '/v1/quest/$questId');
+      return responseData == null;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<List<RespondModel>> responsesQuest(String id) async {
     try {
       final responseData = await _httpClient.get(
@@ -400,11 +412,10 @@ extension UserInfoService on ApiProvider {
             "workExperiences": userData.additionalInfo!.workExperiences,
           if (userData.role == UserRole.Worker) "skills": [],
         },
-        if (userData.role == UserRole.Worker)
-          "skillFilters": userData.skillFilters,
+        "skillFilters": userData.skillFilters,
         "location": {
-          "longitude": userData.location!.longitude,
-          "latitude": userData.location!.latitude,
+          "longitude": userData.location?.longitude ?? 0,
+          "latitude": userData.location?.latitude ?? 0,
         }
       };
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");

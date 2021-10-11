@@ -25,12 +25,16 @@ Future dialog(
               content: Text(message),
               actions: [
                 CupertinoDialogAction(
-                  child: Text('meta.confirm'.tr()),
+                  child: Text(
+                    'meta.confirm'.tr(),
+                  ),
                   onPressed: confirmAction,
                 ),
                 CupertinoDialogAction(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('meta.cancel'.tr()),
+                  child: Text(
+                    'meta.cancel'.tr(),
+                  ),
                 ),
               ],
             ),
@@ -47,11 +51,15 @@ Future dialog(
               actions: [
                 TextButton(
                   onPressed: confirmAction,
-                  child: Text('meta.confirm'.tr()),
+                  child: Text(
+                    'meta.confirm'.tr(),
+                  ),
                 ),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text('meta.cancel'.tr()),
+                  child: Text(
+                    'meta.cancel'.tr(),
+                  ),
                 ),
               ],
             ),

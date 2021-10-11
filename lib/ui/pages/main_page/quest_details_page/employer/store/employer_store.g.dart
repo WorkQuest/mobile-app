@@ -74,6 +74,14 @@ mixin _$EmployerStore on _EmployerStore, Store {
         .run(() => super.rejectCompletedWork(questId: questId));
   }
 
+  final _$deleteQuestAsyncAction = AsyncAction('_EmployerStore.deleteQuest');
+
+  @override
+  Future deleteQuest({required String questId}) {
+    return _$deleteQuestAsyncAction
+        .run(() => super.deleteQuest(questId: questId));
+  }
+
   @override
   String toString() {
     return '''

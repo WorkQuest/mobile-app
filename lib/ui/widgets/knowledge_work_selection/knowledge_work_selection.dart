@@ -8,11 +8,13 @@ class KnowledgeWorkSelection extends StatefulWidget {
   final String title;
   final String hintText;
   final KnowledgeWorkSelectionController? controller;
+  final List<Map<String, String>>? data;
 
   KnowledgeWorkSelection({
     required this.title,
     required this.hintText,
     required this.controller,
+    required this.data,
   });
 
   @override
@@ -24,7 +26,11 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
 
   @override
   void initState() {
-    if (widget.controller != null) widget.controller!.setStore(this.store);
+    if (widget.controller != null)
+      widget.controller!.setStore(
+        this.store,
+        this.widget.data,
+      );
     super.initState();
   }
 
@@ -49,8 +55,9 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
           if (store.numberOfFiled.length < 3)
             OutlinedButton(
               onPressed: () {
-                if (store.numberOfFiled.last.fieldIsNotEmpty) {
-                  store.addField(KnowledgeWork());
+                if (widget
+                    .controller!.store!.numberOfFiled.last.fieldIsNotEmpty) {
+                  widget.controller!.store!.addField(KnowledgeWork());
                 }
               },
               child: Text(
@@ -100,7 +107,8 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     dateField(
-                      initialValue: kng.dateFrom,
+                      initialValue:
+                          widget.controller!.store!.numberOfFiled.last.dateFrom,
                       date: "settings.education.from".tr(),
                       onChanged: (text) => kng.dateFrom = text,
                     ),
@@ -115,9 +123,14 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                       ),
                     ),
                     dateField(
-                      initialValue: kng.dateTo,
+                      initialValue:
+                          widget.controller!.store!.numberOfFiled.last.dateTo,
                       date: "settings.education.to".tr(),
-                      onChanged: (text) => kng.dateTo = text,
+                      onChanged: (text) {
+                        print(
+                            "Date to ${widget.controller!.store!.numberOfFiled.last.dateTo}");
+                        kng.dateTo = text;
+                      },
                     ),
                   ],
                 ),
@@ -134,7 +147,8 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: TextFormField(
-                    initialValue: kng.place,
+                    initialValue:
+                        widget.controller!.store!.numberOfFiled.last.place,
                     onChanged: (text) => kng.place = text,
                     decoration: InputDecoration(
                       hintText: hintText,
@@ -206,12 +220,38 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
 
 class KnowledgeWorkSelectionController {
   KnowledgeWorkStore? store;
+  List<Map<String, String>>? initialValue;
 
-  List<KnowledgeWork> getAllKnowledge() {
-    return store?.numberOfFiled ?? [];
+  KnowledgeWorkSelectionController({this.initialValue});
+
+  void setStore(
+      KnowledgeWorkStore store, List<Map<String, String>>? initialValue) {
+    this.store = store;
+    if (initialValue != null) {
+      store.numberOfFiled.clear();
+      initialValue.forEach((item) {
+        store.numberOfFiled.add(KnowledgeWork(
+          dateFrom: item["from"] ?? "",
+          dateTo: item["to"] ?? "",
+          place: item["place"] ?? "",
+        ));
+      });
+    }
   }
 
-  void setStore(KnowledgeWorkStore store) {
-    this.store = store;
+  // List<KnowledgeWork> getAllKnowledge() {
+  //   return store?.numberOfFiled ?? [];
+  // }
+
+  List<Map<String, String>> getListMap() {
+    List<Map<String, String>> listMap = [];
+    (store?.numberOfFiled ?? []).forEach((element) {
+      Map<String, String> item = {};
+      item["from"] = element.dateFrom;
+      item["to"] = element.dateTo;
+      item["place"] = element.place;
+      listMap.add(item);
+    });
+    return listMap;
   }
 }

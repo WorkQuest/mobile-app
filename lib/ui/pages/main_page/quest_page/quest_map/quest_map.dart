@@ -11,7 +11,9 @@ import 'package:easy_localization/easy_localization.dart';
 
 class QuestMap extends StatefulWidget {
   final void Function() changePage;
+
   QuestMap(this.changePage);
+
   @override
   _QuestMapState createState() => _QuestMapState();
 }
@@ -48,12 +50,14 @@ class _QuestMapState extends State<QuestMap> {
                     onCameraMove: (CameraPosition position) {
                       if (mapStore?.debounce != null)
                         mapStore!.debounce!.cancel();
-                      mapStore!.debounce =
-                          Timer(const Duration(milliseconds: 50), () async {
-                        LatLngBounds bounds =
-                            await _controller.getVisibleRegion();
-                        mapStore!.getQuests(bounds);
-                      });
+                      mapStore!.debounce = Timer(
+                        const Duration(milliseconds: 50),
+                        () async {
+                          LatLngBounds bounds =
+                              await _controller.getVisibleRegion();
+                          mapStore!.getQuests(bounds);
+                        },
+                      );
                     },
                     mapType: MapType.normal,
                     rotateGesturesEnabled: false,
@@ -120,17 +124,23 @@ class _QuestMapState extends State<QuestMap> {
         context: context,
         builder: (context) {
           return CupertinoAlertDialog(
-            title: Text("Access to geolocation is prohibited"),
+            title: Text(
+              "quests.access".tr(),
+            ),
             content: Text(
-              "Please open settings and allow WorkQuest to use your location",
+              "quests.openSettings".tr(),
             ),
             actions: [
               CupertinoDialogAction(
-                child: Text("Close"),
+                child: Text(
+                  "meta.close".tr(),
+                ),
                 onPressed: Navigator.of(context).pop,
               ),
               CupertinoDialogAction(
-                child: Text("ui.profile.settings".tr()),
+                child: Text(
+                  "ui.profile.settings".tr(),
+                ),
                 onPressed: () {},
               ),
             ],

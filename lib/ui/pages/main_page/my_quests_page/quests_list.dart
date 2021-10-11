@@ -19,13 +19,15 @@ class QuestsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFF7F8FA),
-      child: questsList == null
-          ? getLoadingBody()
-          : questsList!.isNotEmpty
-              ? getBody()
-              : getEmptyBody(),
+    return Flexible(
+      child: Container(
+        color: const Color(0xFFF7F8FA),
+        child: questsList == null
+            ? getLoadingBody()
+            : questsList!.isNotEmpty
+                ? getBody()
+                : getEmptyBody(context),
+      ),
     );
   }
 
@@ -65,23 +67,42 @@ class QuestsList extends StatelessWidget {
     );
   }
 
-  Widget getEmptyBody() {
+  Widget getEmptyBody(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SvgPicture.asset(
-            "assets/empty_quest_icon.svg",
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Text(
-            "quests.youDontHaveAny".tr() +
-                " ${questItemPriorityType.toString().split(".").last} " +
-                "quests.questYet".tr(),
+          if (hasCreateButton)
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true)
+                      .pushNamed(CreateQuestPage.routeName);
+                },
+                child: Text(
+                  "quests.addNewQuest".tr(),
+                ),
+              ),
+            ),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  "assets/empty_quest_icon.svg",
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  "quests.youDontHaveAny".tr() +
+                      " ${questItemPriorityType.toString().split(".").last} " +
+                      "quests.questYet".tr(),
+                ),
+              ],
+            ),
           ),
         ],
       ),

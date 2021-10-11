@@ -27,22 +27,22 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   bool? twoFAStatus;
 
   @observable
-  String priority = "quests.priority.low".tr();
+  String priority = "Low".tr();
 
   @observable
-  String distantWork = "quests.distantWork.distantWork".tr();
+  String distantWork = "Remote work".tr();
 
-  final List<String> distantWorkList = [
-    "quests.distantWork.distantWork".tr(),
-    "quests.distantWork.workInOffice".tr(),
-    "quests.distantWork.bothVariant".tr()
-  ];
+  ObservableList<String> distantWorkList = ObservableList.of([
+    "Remote work".tr(),
+    "Work in the office".tr(),
+    "Both options".tr()]
+  );
 
-  final List<String> priorityList = [
-    "quests.priority.low".tr(),
-    "quests.priority.normal".tr(),
-    "quests.priority.urgent".tr(),
-  ];
+  ObservableList<String> priorityList = ObservableList.of([
+    "Low".tr(),
+    "Normal".tr(),
+    "Urgent".tr(),
+  ]);
 
   @action
   void changeDistantWork(String selectedDistantWork) =>

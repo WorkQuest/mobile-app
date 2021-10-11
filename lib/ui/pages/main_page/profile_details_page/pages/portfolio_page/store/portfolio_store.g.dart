@@ -77,6 +77,21 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
     });
   }
 
+  final _$reviewsListAtom = Atom(name: '_PortfolioStore.reviewsList');
+
+  @override
+  ObservableList<Review> get reviewsList {
+    _$reviewsListAtom.reportRead();
+    return super.reviewsList;
+  }
+
+  @override
+  set reviewsList(ObservableList<Review> value) {
+    _$reviewsListAtom.reportWrite(value, super.reviewsList, () {
+      super.reviewsList = value;
+    });
+  }
+
   final _$mediaAtom = Atom(name: '_PortfolioStore.media');
 
   @override
@@ -126,6 +141,13 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
         .run(() => super.getPortfolio(userId: userId));
   }
 
+  final _$getReviewsAsyncAction = AsyncAction('_PortfolioStore.getReviews');
+
+  @override
+  Future<void> getReviews({required String userId}) {
+    return _$getReviewsAsyncAction.run(() => super.getReviews(userId: userId));
+  }
+
   final _$_PortfolioStoreActionController =
       ActionController(name: '_PortfolioStore');
 
@@ -169,6 +191,7 @@ pageNumber: ${pageNumber},
 title: ${title},
 description: ${description},
 portfolioList: ${portfolioList},
+reviewsList: ${reviewsList},
 media: ${media},
 canSubmit: ${canSubmit}
     ''';

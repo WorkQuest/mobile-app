@@ -2,6 +2,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 ///Portfolio Widget
 class PortfolioWidget extends StatelessWidget {
@@ -287,6 +288,106 @@ Widget appBarTitle(String name) {
               ),
             ),
           ),
+        ),
+      ],
+    ),
+  );
+}
+
+///Quest Widget
+Widget quest({
+  required String title,
+  required String description,
+  required String price,
+}) {
+  return Container(
+    color: Colors.white,
+    margin: const EdgeInsets.only(
+      top: 10,
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.maxFinite,
+          margin: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7.5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: Color(0xFF0083C7),
+          ),
+          child: Text(
+            "Performed",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        SizedBox(
+          height: 16,
+        ),
+        Text(
+          title,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: Color(0xFF1D2127),
+            fontSize: 18,
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          description,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: Color(0xFF4C5767),
+          ),
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Icon(
+              Icons.star_border_outlined,
+              color: Color(0xFFAAB0B9),
+              size: 19.0,
+            ),
+            Icon(
+              Icons.star_border_outlined,
+              color: Color(0xFFAAB0B9),
+              size: 19.0,
+            ),
+            Icon(
+              Icons.star_border_outlined,
+              color: Color(0xFFAAB0B9),
+              size: 19.0,
+            ),
+            Icon(
+              Icons.star_border_outlined,
+              color: Color(0xFFAAB0B9),
+              size: 19.0,
+            ),
+            Icon(
+              Icons.star_border_outlined,
+              color: Color(0xFFAAB0B9),
+              size: 19.0,
+            ),
+            Expanded(
+              child: Text(
+                "$price WUSD",
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                    color: Color(0xFFAAB0B9),
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 15,
         ),
       ],
     ),
@@ -638,12 +739,12 @@ Widget contactDetails({
 
 ///Skills widget
 
-Widget skills({required List<String> skills}) {
+Widget skills({required List<String>? skills}) {
   return Wrap(
     direction: Axis.horizontal,
     spacing: 9.0,
     runSpacing: 0.0,
-    children: skills
+    children: skills!
         .map(
           (item) => new ActionChip(
             padding: EdgeInsets.symmetric(
@@ -673,7 +774,7 @@ Widget skills({required List<String> skills}) {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "Add",
+                    "settings.add".tr(),
                     style: TextStyle(
                       fontSize: 16.0,
                       color: Colors.white,

@@ -1,5 +1,6 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
+import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
@@ -406,7 +407,14 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           builder: (context) => ElevatedButton(
                             onPressed: store.canCreateQuest
                                 ? () => store.createQuest()
-                                : null,
+                                : () => dialog(
+                                      context,
+                                      confirmAction: () {
+                                        Navigator.pop(context);
+                                      },
+                                      message: 'All fields are required',
+                                      title: 'Alert',
+                                    ),
                             child: store.isLoading
                                 ? PlatformActivityIndicator()
                                 : Text(

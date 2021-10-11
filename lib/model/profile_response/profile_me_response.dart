@@ -137,7 +137,10 @@ class UserSkillFilters {
 }
 
 class Location {
-  Location({required this.longitude, required this.latitude});
+  Location({
+    required this.longitude,
+    required this.latitude,
+  });
 
   double longitude;
   double latitude;
@@ -147,8 +150,8 @@ class Location {
 
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
-      latitude: json["latitude"],
-      longitude: json["longitude"],
+      latitude: json["latitude"] == 0 ? 0.0 : json["latitude"],
+      longitude: json["longitude"] == 0 ? 0.0 : json["longitude"],
     );
   }
 

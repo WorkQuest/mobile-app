@@ -23,204 +23,201 @@ class WalletPage extends StatelessWidget {
   Widget build(context) {
     final walletStore = context.read<WalletStore>();
     return Scaffold(
-      body: Observer(
-        builder: (context) => CustomScrollView(
-          slivers: [
-            CupertinoSliverNavigationBar(
-              largeTitle: Text(
-                "ui.wallet".tr(),
-              ),
-              automaticallyImplyLeading: false,
+      body: CustomScrollView(
+        slivers: [
+          CupertinoSliverNavigationBar(
+            largeTitle: Text(
+              "ui.wallet".tr(),
             ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 30,
-                  bottom: 20,
+            automaticallyImplyLeading: false,
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 30,
+                bottom: 20,
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    "0xu383d7g...dq9w",
+                    style: TextStyle(
+                      color: Color(0xFF7C838D),
+                    ),
+                  ),
+                  Spacer(),
+                  Container(
+                    padding: const EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF7F8FA),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: InkWell(
+                      onTap: () => Clipboard.setData(
+                        new ClipboardData(
+                          text: "label.email".tr(),
+                        ),
+                      ).then(
+                        (_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              duration: Duration(
+                                seconds: 1,
+                              ),
+                              content: Text(
+                                "wallet.copy".tr(),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      child: SvgPicture.asset("assets/copy_icon.svg"),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  color: Color(0xFFF7F8FA),
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "0xu383d7g...dq9w",
+                      "wallet.balance".tr(),
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      "1 600 WUSD",
                       style: TextStyle(
-                        color: Color(0xFF7C838D),
-                      ),
-                    ),
-                    Spacer(),
-                    Container(
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        color: Color(0xFFF7F8FA),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: InkWell(
-                        onTap: () => Clipboard.setData(
-                          new ClipboardData(
-                            text: "label.email".tr(),
-                          ),
-                        ).then(
-                          (_) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                duration: Duration(
-                                  seconds: 1,
-                                ),
-                                content: Text(
-                                  "wallet.copy".tr(),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        child: SvgPicture.asset("assets/copy_icon.svg"),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: Color(0xFFF7F8FA),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "wallet.balance".tr(),
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Text(
-                        "1 600 WUSD",
-                        style: TextStyle(
-                          color: Color(0xFF0083C7),
-                          fontSize: 25,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Text(
-                        "\$ 120.34",
-                        style: TextStyle(
-                          color: Color(0xFFAAB0B9),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 20,
-                  bottom: 16,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 46,
-                        child: OutlinedButton(
-                          onPressed: () => bottomForm(
-                            context,
-                            walletStore,
-                          ),
-                          child: Text(
-                            "wallet.transfer".tr(),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(
-                              width: 1.0,
-                              color: Color(0xFF0083C7).withOpacity(0.1),
-                            ),
-                          ),
-                        ),
+                        color: Color(0xFF0083C7),
+                        fontSize: 25,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(
-                      width: 10.0,
+                      height: 15,
                     ),
-                    Expanded(
-                      child: SizedBox(
-                        height: 46,
-                        child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.of(context, rootNavigator: true)
-                                .pushNamed(DepositPage.routeName);
-                          },
-                          child: Text(
-                            "wallet.deposit".tr(),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(
-                              width: 1.0,
-                              color: Color(0xFF0083C7).withOpacity(0.1),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10.0,
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        height: 46,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context, rootNavigator: true)
-                                .pushNamed(WithdrawPage.routeName);
-                          },
-                          child: Text(
-                            "wallet.withdraw".tr(),
-                          ),
-                        ),
+                    Text(
+                      "\$ 120.34",
+                      style: TextStyle(
+                        color: Color(0xFFAAB0B9),
                       ),
                     )
                   ],
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: Container(
-                height: 6,
-                width: MediaQuery.of(context).size.width,
-                color: Color(0xFFF7F8FA),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 20,
+                bottom: 16,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 46,
+                      child: OutlinedButton(
+                        onPressed: () => bottomForm(
+                          context,
+                          walletStore,
+                        ),
+                        child: Text(
+                          "wallet.transfer".tr(),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            width: 1.0,
+                            color: Color(0xFF0083C7).withOpacity(0.1),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      height: 46,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true)
+                              .pushNamed(DepositPage.routeName);
+                        },
+                        child: Text(
+                          "wallet.deposit".tr(),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            width: 1.0,
+                            color: Color(0xFF0083C7).withOpacity(0.1),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      height: 46,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true)
+                              .pushNamed(WithdrawPage.routeName);
+                        },
+                        child: Text(
+                          "wallet.withdraw".tr(),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  "mining.transactions".tr(),
-                  style: TextStyle(fontSize: 16),
-                ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 6,
+              width: MediaQuery.of(context).size.width,
+              color: Color(0xFFF7F8FA),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                "mining.transactions".tr(),
+                style: TextStyle(fontSize: 16),
               ),
             ),
-            SliverToBoxAdapter(
-              child: Column(
-                children:
-                    txsList.map((e) => txItem(e.time.toString())).toList(),
-              ),
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: txsList.map((e) => txItem(e.time.toString())).toList(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -138,6 +138,7 @@
     "ok": "OK",
     "send": "Send",
     "save": "Save",
+    "close": "Close",
     "reset": "Reset",
     "fromYou": "close to your location",
     "details": "Ver detalles",
@@ -386,11 +387,14 @@
     },
     "ui": {
       "showMap": "Show map",
-      "search": "City, street and place"
+      "search": "City, street and place",
+      "access": "Access to geolocation is prohibited",
+      "openSettings": "Please open settings and allow WorkQuest to use your location"
     },
     "worker": "Worker",
     "raiseViews": "Increase views",
     "deleteQuest": "Delete offer",
+    "deleteQuestMessage": "Are you sure you want to delete quest?",
     "approve": "Approve",
     "startQuest": "Start offer"
   },

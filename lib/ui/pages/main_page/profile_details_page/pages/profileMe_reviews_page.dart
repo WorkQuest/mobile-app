@@ -176,7 +176,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                   style: _style,
                                 ),
                               ),
-                              (userStore.userData!.additionalInfo!.skills!
+                              (userStore.userData!.skillFilters
                                       .isEmpty)
                                   ? Text(
                                       "No skills",
@@ -187,7 +187,7 @@ class _ProfileReviewsState extends State<ProfileReviews>
                                     )
                                   : skills(
                                       skills: userStore
-                                          .userData!.additionalInfo!.skills!,
+                                          .userData!.additionalInfo!.skills,
                                     ),
 
                               _spacer,
