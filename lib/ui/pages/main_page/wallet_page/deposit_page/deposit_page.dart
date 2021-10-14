@@ -1,12 +1,11 @@
 import 'package:app/ui/pages/main_page/wallet_page/bank_card_widget.dart';
-import 'package:app/ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
-import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+import 'package:share/share.dart';
 
 final _divider = const SizedBox(
   height: 5.0,
@@ -39,7 +38,6 @@ class _DepositPageState extends State<DepositPage>
 
   @override
   Widget build(BuildContext context) {
-    final depositStore = context.read<DepositStore>();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CupertinoNavigationBar(
@@ -101,7 +99,7 @@ class _DepositPageState extends State<DepositPage>
   }
 
   Widget walletTab() => Padding(
-        padding: EdgeInsets.all(10.0),
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 25.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -114,9 +112,12 @@ class _DepositPageState extends State<DepositPage>
             _divider,
             Text(
               "wallet.scanQr".tr(),
+              style: TextStyle(
+                color: Color(0xFF7C838D),
+              ),
             ),
             const SizedBox(
-              height: 15.0,
+              height: 10.0,
             ),
             Container(
               alignment: Alignment.centerLeft,
@@ -145,8 +146,11 @@ class _DepositPageState extends State<DepositPage>
                   child: SizedBox(
                     height: 43.0,
                     child: OutlinedButton(
-                      onPressed: () {},
-                      child: Text("sharing.share".tr()),
+                      onPressed: () => Share.share(
+                          "http://en.m.wikipedia.org"),
+                      child: Text(
+                        "sharing.title".tr(),
+                      ),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(
                           width: 2.0,
@@ -163,7 +167,7 @@ class _DepositPageState extends State<DepositPage>
                   child: ElevatedButton(
                     onPressed: () => Clipboard.setData(
                       new ClipboardData(
-                        text: "wallet.toThisAddress".tr(),
+                        text: "0xu383d7g...dq9w",
                       ),
                     ).then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(

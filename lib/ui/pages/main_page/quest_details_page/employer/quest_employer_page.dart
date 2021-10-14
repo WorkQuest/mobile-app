@@ -5,6 +5,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dar
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
+import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -66,6 +67,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 message: "quests.deleteQuestMessage".tr(),
                 confirmAction: () {
                   store.deleteQuest(questId: widget.questInfo.id);
+                  Navigator.pop(context);
                   Navigator.pop(context);
                 },
               );
@@ -228,6 +230,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                     userId: store.selectedResponders,
                                     questId: widget.questInfo.id,
                                   );
+                                  successAlert(
+                                    context,
+                                    "quests.workerInvited".tr(),
+                                  );
+                                  Navigator.pop(context);
                                 },
                           child: Text(
                             "quests.chooseWorker".tr(),

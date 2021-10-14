@@ -21,6 +21,9 @@ abstract class _SMSVerificationStore extends IStore<bool> with Store {
   int index = 0;
 
   @observable
+  bool validate = true;
+
+  @observable
   String phone = '+';
 
   @observable
@@ -48,8 +51,10 @@ abstract class _SMSVerificationStore extends IStore<bool> with Store {
         phoneNumber: phone,
       );
       this.onSuccess(true);
+      validate = true;
     } catch (e) {
       this.onError(e.toString());
+      validate = false;
     }
   }
 

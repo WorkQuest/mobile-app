@@ -35,9 +35,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   ];
 
   final List<String> distantWorkList = [
-    "quests.distantWork.distantWork".tr(),
-    "quests.distantWork.workInOffice".tr(),
-    "quests.distantWork.bothVariant".tr(),
+    "Distant work",
+    "Work in the office",
+    "Both options".tr(),
   ];
 
   static List<String> months = [
@@ -58,14 +58,16 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   /// location, runtime, images and videos ,priority undone
 
   @observable
-  String employment = "quests.employment.fullTime".tr();
-
-  String employmentValue = "";
-
-  String workplaceValue = "";
+  String employment = "Full time";
 
   @observable
-  String workplace = "quests.distantWork.distantWork".tr();
+  String employmentValue = "fullTime";
+
+  @observable
+  String workplaceValue = "distant";
+
+  @observable
+  String workplace = "Distant work";
 
   @observable
   String category = 'Choose';
@@ -128,9 +130,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   void setDateTime(DateTime value) => runtimeValue = value;
 
   @action
-  void setLocationPlaceName(String value) => locationPlaceName = value;
-
-  @action
   void setAboutQuest(String value) => description = value;
 
   @action
@@ -155,6 +154,20 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
           locationPlaceName.isNotEmpty &&
           description.isNotEmpty &&
           media.isNotEmpty;
+
+  @action
+  void emptyField() {
+    List<String> fields = [];
+    if (price.isEmpty)
+      fields.add("price");
+    if (questTitle.isEmpty)
+      fields.add("quest title");
+    if (locationPlaceName.isEmpty)
+      fields.add("address");
+    if (media.isEmpty)
+      fields.add("media");
+    onError("These fields are empty $fields");
+  }
 
   String getWorkplaceValue() {
     switch (workplace) {
@@ -216,7 +229,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         category: categoryValue,
         employment: getEmploymentValue(),
-        locationPlaceName: "Tomsk",
+        locationPlaceName: locationPlaceName,
         workplace: getWorkplaceValue(),
         skillFilters: {},
         priority: priorityList.indexOf(priority),

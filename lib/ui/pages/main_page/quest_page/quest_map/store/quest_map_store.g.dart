@@ -114,6 +114,31 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
+  final _$addressAtom = Atom(name: '_QuestMapStore.address');
+
+  @override
+  String get address {
+    _$addressAtom.reportRead();
+    return super.address;
+  }
+
+  @override
+  set address(String value) {
+    _$addressAtom.reportWrite(value, super.address, () {
+      super.address = value;
+    });
+  }
+
+  final _$getPredictionAsyncAction =
+      AsyncAction('_QuestMapStore.getPrediction');
+
+  @override
+  Future<Null> getPrediction(
+      BuildContext context, CameraPosition _initialCameraPosition) {
+    return _$getPredictionAsyncAction
+        .run(() => super.getPrediction(context, _initialCameraPosition));
+  }
+
   final _$getQuestsAsyncAction = AsyncAction('_QuestMapStore.getQuests');
 
   @override
@@ -162,7 +187,8 @@ bufferQuests: ${bufferQuests},
 points: ${points},
 markers: ${markers},
 debounce: ${debounce},
-markerLoader: ${markerLoader}
+markerLoader: ${markerLoader},
+address: ${address}
     ''';
   }
 }

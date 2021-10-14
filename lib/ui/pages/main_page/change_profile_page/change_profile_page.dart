@@ -107,11 +107,13 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
             title: "labels.firstName".tr(),
             initialValue: pageStore.userData.firstName,
             onChanged: (text) => pageStore.userData.firstName = text,
+            validator: null,
           ),
           inputBody(
             title: "labels.lastName".tr(),
             initialValue: pageStore.userData.lastName ?? "",
             onChanged: (text) => pageStore.userData.lastName = text,
+            validator: null,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -177,19 +179,22 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 pageStore.userData.additionalInfo?.secondMobileNumber ?? "",
             onChanged: (text) =>
                 pageStore.userData.additionalInfo?.secondMobileNumber = text,
+            validator: null,
           ),
           inputBody(
             title: "signUp.email".tr(),
             initialValue: pageStore.userData.email ?? "",
             onChanged: (text) => pageStore.userData.email,
+            validator: null,
           ),
           inputBody(
-              title: "modals.title".tr(),
-              initialValue:
-                  pageStore.userData.additionalInfo!.description ?? "",
-              onChanged: (text) =>
-                  pageStore.userData.additionalInfo!.description = text,
-              maxLines: null),
+            title: "modals.title".tr(),
+            initialValue: pageStore.userData.additionalInfo!.description ?? "",
+            onChanged: (text) =>
+                pageStore.userData.additionalInfo!.description = text,
+            maxLines: null,
+            validator: null,
+          ),
           if (pageStore.userData.role == UserRole.Worker) fieldForWorker(),
           inputBody(
             title: "settings.twitterUsername".tr(),
@@ -197,6 +202,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 pageStore.userData.additionalInfo!.socialNetwork?.twitter ?? "",
             onChanged: (text) => pageStore
                 .userData.additionalInfo!.socialNetwork?.twitter = text,
+            validator: null,
           ),
           inputBody(
             title: "settings.facebookUsername".tr(),
@@ -205,6 +211,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     "",
             onChanged: (text) => pageStore
                 .userData.additionalInfo!.socialNetwork?.facebook = text,
+            validator: null,
           ),
           inputBody(
             title: "settings.linkedInUsername".tr(),
@@ -213,6 +220,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     "",
             onChanged: (text) => pageStore
                 .userData.additionalInfo!.socialNetwork?.linkedin = text,
+            validator: null,
           ),
           inputBody(
             title: "settings.instagramUsername".tr(),
@@ -221,6 +229,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     "",
             onChanged: (text) => pageStore
                 .userData.additionalInfo!.socialNetwork?.instagram = text,
+            validator: null,
           ),
           const SizedBox(height: 20),
         ],
@@ -279,6 +288,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           title: "settings.costPerHour".tr(),
           initialValue: "",
           onChanged: (text) => text,
+          validator: null,
         ),
         dropDownMenu(
           title: "settings.distantWork".tr(),
@@ -306,6 +316,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     required String title,
     required String initialValue,
     required void Function(String)? onChanged,
+    required String Function(String?)? validator,
     int? maxLines = 1,
   }) {
     return Column(
@@ -317,6 +328,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           initialValue: initialValue,
           maxLines: maxLines,
           onChanged: onChanged,
+          validator: validator,
           decoration: InputDecoration(
             fillColor: Colors.white,
             focusedBorder: OutlineInputBorder(

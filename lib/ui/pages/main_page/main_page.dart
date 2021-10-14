@@ -20,11 +20,26 @@ class MainPage extends StatelessWidget {
   static const String routeName = '/mainPage';
 
   final List<_TabBarIconData> _tabBarIconsData = [
-    _TabBarIconData('assets/search.svg', 'quests.quests'.tr()),
-    _TabBarIconData('assets/list.svg', 'quests.MyQuests'.tr()),
-    _TabBarIconData('assets/message.svg', 'chat.chat'.tr()),
-    _TabBarIconData('assets/wallet_icon.svg', 'wallet.wallet'.tr()),
-    _TabBarIconData('assets/more.svg', 'settings.more'.tr()),
+    _TabBarIconData(
+      'assets/list_alt.svg',
+      'quests.quests'.tr(),
+    ),
+    _TabBarIconData(
+      'assets/list.svg',
+      'quests.MyQuests'.tr(),
+    ),
+    _TabBarIconData(
+      'assets/message.svg',
+      'chat.chat'.tr(),
+    ),
+    _TabBarIconData(
+      'assets/wallet_icon.svg',
+      'wallet.wallet'.tr(),
+    ),
+    _TabBarIconData(
+      'assets/more.svg',
+      'settings.more'.tr(),
+    ),
   ];
 
   @override

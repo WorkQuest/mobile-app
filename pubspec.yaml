@@ -58,6 +58,8 @@ dependencies:
   flutter_countdown_timer: ^4.1.0
   carousel_slider: ^4.0.0
   dots_indicator: ^2.0.0
+  share: ^2.0.4
+  mask_text_input_formatter: ^2.0.0
 
   #url & app launcher
   url_launcher: ^6.0.9

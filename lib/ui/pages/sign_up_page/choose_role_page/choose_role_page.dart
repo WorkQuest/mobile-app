@@ -42,7 +42,7 @@ class ChooseRolePage extends StatelessWidget {
                 height: 20,
               ),
               Expanded(
-                child: getEmployerCard(context,store),
+                child: getEmployerCard(context, store),
               ),
               SizedBox(
                 height: 0,
@@ -67,11 +67,7 @@ class ChooseRolePage extends StatelessWidget {
             e.toString();
             trace.toString();
           }
-          Navigator.pushNamed(
-            ctx,
-            ApproveRolePage.routeName,
-            arguments: store
-          );
+          Navigator.pushNamed(ctx, ApproveRolePage.routeName, arguments: store);
         },
         child: Center(
           child: Stack(
@@ -88,9 +84,10 @@ class ChooseRolePage extends StatelessWidget {
                     Text(
                       "role.worker".tr(),
                       style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600),
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     SizedBox(
                       height: 12,
@@ -110,46 +107,52 @@ class ChooseRolePage extends StatelessWidget {
   }
 
   Widget getEmployerCard(BuildContext ctx, var store) {
-    return Observer(builder: (ctx) {
-      return GestureDetector(
-        onTap: () {
-          ctx.read<ChooseRoleStore>().setUserRole(UserRole.Employer);
-          print('${ctx.read<ChooseRoleStore>().userRole}');
-          Navigator.pushNamed(ctx, ApproveRolePage.routeName, arguments: store);
-        },
-        child: Center(
-          child: Stack(
-            children: [
-              Image.asset(
-                "assets/employer.jpg",
-              ),
-              Container(
-                margin: const EdgeInsets.only(left: 20, top: 20),
-                width: 146,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "role.employer".tr(),
-                      style: TextStyle(
+    return Observer(
+      builder: (ctx) {
+        return GestureDetector(
+          onTap: () {
+            ctx.read<ChooseRoleStore>().setUserRole(UserRole.Employer);
+            print('${ctx.read<ChooseRoleStore>().userRole}');
+            Navigator.pushNamed(ctx, ApproveRolePage.routeName,
+                arguments: store);
+          },
+          child: Center(
+            child: Stack(
+              children: [
+                Image.asset(
+                  "assets/employer.jpg",
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 20, top: 20),
+                  width: 146,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "role.employer".tr(),
+                        style: TextStyle(
                           color: Color(0xFF1D2127),
                           fontSize: 20,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Text(
-                      "role.employerWant".tr(),
-                      style: TextStyle(color: Color(0xFF1D2127)),
-                    ),
-                  ],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      Text(
+                        "role.employerWant".tr(),
+                        style: TextStyle(
+                          color: Color(0xFF1D2127),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }

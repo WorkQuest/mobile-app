@@ -132,6 +132,10 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                     decoration: InputDecoration(
                       hintText: "0 WDX",
                     ),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
                   ),
                 ),
                 Text("   =   "),
@@ -278,7 +282,8 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
                           TextFormField(
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9]')),
+                                RegExp(r'[0-9]'),
+                              ),
                               LengthLimitingTextInputFormatter(4),
                               new CardDateInputFormatter(),
                             ],

@@ -4,6 +4,7 @@ import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
@@ -40,7 +41,9 @@ class _WithdrawPageState extends State<WithdrawPage>
     return Scaffold(
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
-        middle: Text("modals.withdraw".tr()),
+        middle: Text(
+          "modals.withdraw".tr(),
+        ),
       ),
       body: CustomScrollView(
         physics: NeverScrollableScrollPhysics(),
@@ -96,14 +99,18 @@ class _WithdrawPageState extends State<WithdrawPage>
   }
 
   Widget walletTab(WithdrawPageStore withdrawStore) => Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.only(
+          left: 16.0,
+          right: 16.0,
+          top: 30,
+        ),
         child: Observer(
           builder: (context) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "wallet.recipientsAddress".tr(),
+                "wallet.cryptoWallet".tr(),
               ),
               _divider,
               TextFormField(
@@ -120,6 +127,10 @@ class _WithdrawPageState extends State<WithdrawPage>
               TextFormField(
                 onChanged: withdrawStore.setAmount,
                 keyboardType: TextInputType.number,
+                initialValue: "1234",
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                ],
                 decoration: InputDecoration(
                   hintText: "0 WDX",
                   suffixIcon: TextButton(
@@ -144,7 +155,9 @@ class _WithdrawPageState extends State<WithdrawPage>
                           fee: "0.15",
                         )
                     : null,
-                child: Text("modals.withdraw".tr()),
+                child: Text(
+                  "modals.withdraw".tr(),
+                ),
               ),
               const SizedBox(
                 height: 20.0,

@@ -22,7 +22,9 @@ class _DisputePageState extends State<DisputePage> {
     return Scaffold(
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
-        middle: Text("modals.openADispute".tr()),
+        middle: Text(
+          "modals.openADispute".tr(),
+        ),
       ),
       body: CustomScrollView(
         slivers: [
@@ -37,7 +39,7 @@ class _DisputePageState extends State<DisputePage> {
               delegate: SliverChildListDelegate(
                 [
                   titledField(
-                    "Dispute Theme",
+                    "modals.disputeTheme".tr(),
                     Container(
                       height: 50,
                       padding: EdgeInsets.symmetric(horizontal: 15),
@@ -78,7 +80,6 @@ class _DisputePageState extends State<DisputePage> {
                                     onTap: () {
                                       store.changeTheme(
                                           store.disputeCategoriesList[index]);
-                                      print("${store.theme}");
                                       Navigator.pop(context);
                                     },
                                     child: Center(
@@ -117,19 +118,19 @@ class _DisputePageState extends State<DisputePage> {
                       padding: EdgeInsets.symmetric(horizontal: 15),
                       decoration: BoxDecoration(
                         color: Color(0xFFF7F8FA),
-                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(6.0),
+                        ),
                       ),
                       alignment: Alignment.centerLeft,
-                      child: Observer(
-                        builder: (_) => TextField(
-                          onChanged: (text) => store.setDescription(text),
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          textAlignVertical: TextAlignVertical.top,
-                          expands: true,
-                          decoration: InputDecoration(
-                            hintText: "modals.description".tr(),
-                          ),
+                      child: TextField(
+                        onChanged: (text) => store.setDescription(text),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        textAlignVertical: TextAlignVertical.top,
+                        expands: true,
+                        decoration: InputDecoration(
+                          hintText: "modals.description".tr(),
                         ),
                       ),
                     ),
@@ -137,7 +138,9 @@ class _DisputePageState extends State<DisputePage> {
                   Observer(
                     builder: (_) => ElevatedButton(
                       onPressed: store.isButtonEnable ? () {} : null,
-                      child: Text("modals.openADispute".tr()),
+                      child: Text(
+                        "modals.openADispute".tr(),
+                      ),
                     ),
                   ),
                 ],

@@ -33,18 +33,18 @@ mixin _$WithdrawPageStore on _WithdrawPageStore, Store {
     });
   }
 
-  final _$_amountAtom = Atom(name: '_WithdrawPageStore._amount');
+  final _$amountAtom = Atom(name: '_WithdrawPageStore.amount');
 
   @override
-  String get _amount {
-    _$_amountAtom.reportRead();
-    return super._amount;
+  String get amount {
+    _$amountAtom.reportRead();
+    return super.amount;
   }
 
   @override
-  set _amount(String value) {
-    _$_amountAtom.reportWrite(value, super._amount, () {
-      super._amount = value;
+  set amount(String value) {
+    _$amountAtom.reportWrite(value, super.amount, () {
+      super.amount = value;
     });
   }
 
@@ -98,6 +98,7 @@ mixin _$WithdrawPageStore on _WithdrawPageStore, Store {
   @override
   String toString() {
     return '''
+amount: ${amount},
 canSubmit: ${canSubmit}
     ''';
   }

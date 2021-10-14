@@ -57,7 +57,7 @@ class WalletPage extends StatelessWidget {
                     child: InkWell(
                       onTap: () => Clipboard.setData(
                         new ClipboardData(
-                          text: "label.email".tr(),
+                          text: "0xu383d7g...dq9w",
                         ),
                       ).then(
                         (_) {
@@ -246,7 +246,7 @@ class WalletPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "wallet.send".tr(),
+                "wallet.receive".tr(),
               ),
               const SizedBox(
                 height: 4,
@@ -333,11 +333,16 @@ class WalletPage extends StatelessWidget {
                     TextFormField(
                       maxLines: 1,
                       keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
                       onChanged: store.setAmount,
                       decoration: InputDecoration(
                         hintText: "0 WDX",
                         suffixIcon: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            store.amount = "1600";
+                          },
                           child: Text(
                             "Max",
                             style: TextStyle(

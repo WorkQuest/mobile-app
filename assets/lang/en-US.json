@@ -37,6 +37,7 @@
   },
   "uploader": {
     "uploadText": "Upload images or videos",
+    "uploadImage": "Upload images",
     "upload": "Upload",
     "files": "files"
   },
@@ -69,7 +70,7 @@
     "decimal": "{_field_} field should contain only decimal values"
   },
   "labels": {
-    "firstName": "Firstname",
+    "firstName": "First name",
     "lastName": "Last name",
     "email": "Email",
     "password": "Enter password"
@@ -93,8 +94,8 @@
     "edit": "Edit",
     "registration": "Registration",
     "confirmYourEmail": "Confirm your email",
-    "emailConfirm": "A message has been sent to your email address",
-    "emailConfirmTitle": "Check your mailbox"
+    "emailConfirm": "Code has been sent on your email",
+    "emailConfirmTitle": "Check your email."
   },
   "login": {
     "signIn": "Login",
@@ -167,7 +168,7 @@
     "urgent": "Urgent"
   },
   "signIn": {
-    "title": "Log in",
+    "title": "Sign in",
     "username": "Username",
     "password": "Password",
     "account": "don't have an account?",
@@ -221,11 +222,11 @@
   },
   "role": {
     "employer": "Employer",
-    "worker": "Employee",
+    "worker": "Worker",
     "enter": "Enter",
-    "choose": "Select your role",
-    "employerWant": "I want to create a task and look for workers",
-    "workerWant": "I want to look for tasks and work as a freelancer",
+    "choose": "Choose your role",
+    "employerWant": "I want to make a tasks and looking for a workers",
+    "workerWant": "I want to search a tasks and working on freelance",
     "chooseThis": "Select this role",
     "yourRole": "Your role is",
     "right": "right?"
@@ -255,14 +256,14 @@
   },
   "quests": {
     "title": "Quest Title",
-    "quests": "Offers",
+    "quests": "Quests",
     "starred": "Starred",
     "urgent": "Urgent",
     "typeOfJob": "Job type",
-    "noQuest": "No Quest Found",
+    "noQuest": "Quest not found",
     "distantWork": {
-      "title": "Remote work",
-      "distantWork": "Remote work",
+      "title": "Distant work",
+      "distantWork": "Distant work",
       "workInOffice": "Work in the office",
       "bothVariant": "Both options"
     },
@@ -289,12 +290,14 @@
     "requested": "Requested",
     "youRequested": "You requested",
     "youInvited": "You invited",
+    "youAreInvited": "You are invited",
+    "workerInvited": "Worker invited",
     "inProgressBy": "Ongoing by:",
     "showAllCases": "Show all cases",
     "portfolio": "Works",
-    "searchQuests": "Search offers",
+    "searchQuests": "Search quests",
     "readCompletely": "Read all",
-    "questBig": "Offer",
+    "questBig": "Quest",
     "fromBig": "From",
     "fromYou": "from your user",
     "reviews": "reviews",
@@ -303,17 +306,22 @@
     "activeQuest": "Active quests",
     "proposal": "Proposal",
     "category": "Select a category",
-    "address": "Add address",
+    "address": "Address",
     "runtime": "Runtime (hours)",
     "workplace": "Workplace",
-    "uploadMaterials": "Upload documents to better describe the offer",
+    "uploadMaterials": "Upload documents to better describe the quest",
     "uploadQuestMaterials": "Add a detailed description",
     "answerOnQuest": {
       "title": "Answer on quest",
       "accept": "Accept quest",
+      "questAccepted": "Quest accepted",
       "reject": "Reject quest",
+      "questRejected": "Quest rejected",
+      "questCompleted": "Quest completed",
       "acceptCompleted": "Accept completed quest",
-      "rejectCompleted": "Reject completed quest"
+      "completedQuestAccepted": "Completed quest accepted",
+      "rejectCompleted": "Reject completed quest",
+      "completedQuestRejected": "Completed quest rejected"
     },
     "price": "Price",
     "filter": {
@@ -355,7 +363,7 @@
       }
     },
     "ads": {
-      "promoteYourQuest": "Promote your offer",
+      "promoteYourQuest": "Promote your quest",
       "publishForFree": "Publish for free",
       "boostYourPublications": "Improve your publication",
       "costPerClick": "Cost per click"
@@ -364,18 +372,18 @@
     "city": "City",
     "period": "Period of time",
     "EstimatedPayment": "Estimated payment:",
-    "createAQuest": "Create an offer",
-    "activeQuests": "Active offers",
-    "completedQuests": "Completed offers",
+    "createAQuest": "Create a quest",
+    "activeQuests": "Active quests",
+    "completedQuests": "Completed quests",
     "oneTime": "Once",
     "fullTime": "Full time",
     "uploadAImagesOrVideos": "Upload images or videos",
     "averageRating": "Average rating",
-    "showAllActiveQuests": "Show all active offers",
+    "showAllActiveQuests": "Show all active quests",
     "performanceTimer": "Activate until:",
-    "questAmount": "offers",
-    "otherQuestsSpec": "Other offers by specialization",
-    "questMaterials": "Additional documentation of the offer",
+    "questAmount": "quests",
+    "otherQuestsSpec": "Other quests by specialization",
+    "questMaterials": "Additional documentation of the quest",
     "searchResults": "Search results",
     "type": "Type of work",
     "time": "Creation time",
@@ -387,21 +395,21 @@
     },
     "ui": {
       "showMap": "Show map",
-      "search": "City, street and place",
+      "search": "City / Street / Place",
       "access": "Access to geolocation is prohibited",
       "openSettings": "Please open settings and allow WorkQuest to use your location"
     },
     "worker": "Worker",
     "raiseViews": "Increase views",
-    "deleteQuest": "Delete offer",
+    "deleteQuest": "Delete quest",
     "deleteQuestMessage": "Are you sure you want to delete quest?",
     "approve": "Approve",
-    "startQuest": "Start offer"
+    "startQuest": "Start quest"
   },
   "filters": {
     "dd": {
       "1": "Specialization",
-      "2": "Offers",
+      "2": "Quests",
       "3": "Urgent",
       "4": "Type of work",
       "5": "All priorities",
@@ -416,7 +424,7 @@
     },
     "items": {
       "1": {
-        "title": "Distribution, sales and purchases",
+        "title": "Retail, Sales & Purchasing",
         "sub": {
           "1": "Self-service stores",
           "2": "Specialist distributors",
@@ -433,7 +441,7 @@
         }
       },
       "2": {
-        "title": "Bar and restaurant staff",
+        "title": "Bars & Restaurants Staff",
         "sub": {
           "1": "Ethnic food",
           "2": "Fast food",
@@ -461,7 +469,7 @@
         }
       },
       "4": {
-        "title": "IT / networks",
+        "title": " IT / Networking",
         "sub": {
           "1": "Database administration",
           "2": "ERP / CRM Software",
@@ -471,7 +479,7 @@
         }
       },
       "5": {
-        "title": "Engineering and architecture",
+        "title": "Engineering & Architecture",
         "sub": {
           "1": "3D Modeling and CAD",
           "2": "Architecture",
@@ -484,7 +492,7 @@
         }
       },
       "6": {
-        "title": "Secretariat, correspondence and records management",
+        "title": "Secretariat, Correspondence & Records Management",
         "sub": {
           "1": "Property records: deeds and liquidations",
           "2": "Accounting documents: rents, vouchers, valuations and valuations",
@@ -499,7 +507,7 @@
         }
       },
       "7": {
-        "title": "Tourism, leisure and entertainment",
+        "title": "Tourism, Leisure & Entertainment",
         "sub": {
           "1": "Amusement park auxiliary",
           "2": "Concierge",
@@ -514,7 +522,7 @@
         }
       },
       "8": {
-        "title": "Accounting and consulting",
+        "title": "Accounting & Consulting ",
         "sub": {
           "1": "Accounting",
           "2": "Financial planning",
@@ -524,7 +532,7 @@
         }
       },
       "9": {
-        "title": "Administrative assistant",
+        "title": "Admin Support",
         "sub": {
           "1": "Data entry",
           "2": "Another role of administrative assistant",
@@ -543,7 +551,7 @@
         }
       },
       "11": {
-        "title": "Analysis and data science",
+        "title": "Data Science & Analytics",
         "sub": {
           "1": "A/B Testing",
           "2": "Data management and mining",
@@ -577,7 +585,7 @@
         }
       },
       "14": {
-        "title": "Legal and legal assistance",
+        "title": "Law & Legal Support",
         "sub": {
           "1": "Contract laws",
           "2": "Corporate laws",
@@ -599,7 +607,7 @@
         }
       },
       "16": {
-        "title": "Medicine and pharmacy",
+        "title": "Medicine & Pharmacy",
         "sub": {
           "1": "Retail pharmacy",
           "2": "Hospital pharmacy",
@@ -625,7 +633,7 @@
         }
       },
       "18": {
-        "title": "Personnel and human resources management",
+        "title": "Personnel Management & HR",
         "sub": {
           "1": "Human resources planning",
           "2": "Recruitment",
@@ -658,7 +666,7 @@
         }
       },
       "20": {
-        "title": "Art and culture",
+        "title": "Culture & Arts",
         "sub": {
           "1": "Actor",
           "2": "Community arts worker",
@@ -682,7 +690,7 @@
         }
       },
       "21": {
-        "title": "Software, mobile and web development",
+        "title": "Web, Mobile & Software Development",
         "sub": {
           "1": "Desktop software development",
           "2": "E-commerce development",
@@ -698,7 +706,7 @@
         }
       },
       "22": {
-        "title": "Transport and logistics",
+        "title": "Transport & Logistics",
         "sub": {
           "1": "Administration",
           "2": "Inventory planning",
@@ -711,7 +719,7 @@
         }
       },
       "23": {
-        "title": "Banking, finance and insurance",
+        "title": "Banking, Finance & Insurance",
         "sub": {
           "1": "Financial services sector",
           "2": "Financial planning",
@@ -725,7 +733,7 @@
         }
       },
       "24": {
-        "title": "Beauty, fitness and sport",
+        "title": "Beauty, Fitness & Sport ",
         "sub": {
           "1": "Athletic trainer",
           "2": "Exercise physiologist",
@@ -739,7 +747,7 @@
         }
       },
       "25": {
-        "title": "Creative production",
+        "title": "Creative Production",
         "sub": {
           "1": "Art and illustration",
           "2": "Music and audio production",
@@ -778,7 +786,7 @@
         }
       },
       "28": {
-        "title": "Real estate",
+        "title": "Real Estate",
         "sub": {
           "1": "Residential real estate",
           "2": "New construction and second hand",
@@ -789,7 +797,7 @@
         }
       },
       "29": {
-        "title": "Agriculture and agricultural trade",
+        "title": "Agriculture & Agribusiness",
         "sub": {
           "1": "Crops",
           "2": "Livestock (both production and animal health)",
@@ -809,7 +817,7 @@
         }
       },
       "31": {
-        "title": "Students and internships",
+        "title": "Early Career & Students",
         "sub": {
           "1": "Messenger",
           "2": "Waiter",
@@ -848,13 +856,16 @@
       "participants": "Participants",
       "chatName": "Chat name"
     },
+    "code": "Code",
     "attention": "Attention",
     "error": "Error",
     "unsavedChanges":"There are unsaved changes",
     "dontSave": "Do not Save",
     "chooseCard": "Choose Card",
     "copy": "Copy",
-    "changePercentDesc": "A percentage of the offer amount that will be automatically credited to your pension account",
+    "alert": "Alert",
+    "fieldRequired": "All fields are required",
+    "changePercentDesc": "A percentage of the quest amount that will be automatically credited to your pension account",
     "yourSkillsHaveBeenAdded": "Your abilities were correctly added.",
     "yourAccountVerified": "Your account has been successfully verified",
     "youCanUpdateThisInYourProfile": "You can easily update this information in your profile.",
@@ -872,7 +883,7 @@
     "review": "Review",
     "haventSMS": "Did not receive the SMS message?",
     "SMSVerConnected": "SMS verification connected",
-    "phoneNumber": "Phone number",
+    "phoneNumber": "Phone",
     "enterPhone": "Enter phone number to confirm SMS verification",
     "enterSMSCode": "We have sent a verification code to your phone number. Type the code",
     "codeFromSMS": "SMS code",
@@ -922,7 +933,8 @@
     "uploadAImages": "Upload images or videos",
     "description": "Description",
     "addCase": "Add case",
-    "openADispute": "Open a dispute",
+    "openADispute": "Begin Dispute",
+    "disputeTheme": "Dispute Theme",
     "reason": "Reason",
     "lorem": "",
     "withdraw": "Withdrawal",
@@ -936,11 +948,11 @@
     "noticeDesc": "For your safety, the WorkQuest team asks you not to make any contact or send messages outside of the WorkQuest platform. Any contact or conversation outside the platform can cause problems when trying to resolve controversial situations.",
     "toAddress": "For",
     "fromAddress": "De",
-    "welcomeToWorkQuest": "We welcome you to WorkQuest",
+    "welcomeToWorkQuest": "Welcome to\nWorkQuest",
     "pleaseTellUsAboutSkills": "Indicate below what your skills are. This will improve your ranking on the platform and allow other users to find your account more easily.",
     "amount": "Amount",
     "messageSend": "Message sent",
-    "questAgreed": "Agreed offer",
+    "questAgreed": "Agreed quest",
     "requestSend": " Request sent",
     "sendARequest": "Send a request",
     "message": "Message",
@@ -958,17 +970,17 @@
     "addAnotherCard": "Add another card",
     "addCard": "Add card",
     "inviteSend": "Invitation sent",
-    "questCreated": "Offer created",
+    "questCreated": "Quest created",
     "invitation": "Invitation",
-    "chooseQuest": "Select offer",
+    "chooseQuest": "Select quest",
     "raiseViews": "Increase views",
     "priceOfAClick": "One click price",
     "city": "City",
     "period": "Period",
     "thanks": "Thank you",
     "couple": "A couple of words",
-    "depositPercentFromAQuest": "Deposit percentage of an offer",
-    "depositRetirementModalTitle": "Select a percentage of the offer amount to make an automatic deposit",
+    "depositPercentFromAQuest": "Deposit percentage of an quest",
+    "depositRetirementModalTitle": "Select a percentage of the quest amount to make an automatic deposit",
     "depositRetirementModalPrecentPlaceholder": "0 %, select a percentage",
     "depositRetirementModalAmountPlaceholder": "0 WUSD, type the amount",
     "firstDepositAmount": "First deposit amount*",
@@ -1032,8 +1044,8 @@
     "jobQuestors": "Job seekers",
     "workers": "Workers",
     "wallet": "Wallet",
-    "myQuests": "My offers",
-    "quests": "Offers",
+    "myQuests": "My quests",
+    "quests": "Quests",
     "profile": {
       "addCase": "Add case",
       "myProfile": "My profile",
@@ -1057,16 +1069,16 @@
     },
     "notifications": {
       "title": "Notifications",
-      "invite": "Invites you to complete the offer"
+      "invite": "Invites you to complete the quest"
     },
     "menu": {
       "pension": {
         "title": "Retirement program",
-        "desc": "You can select a percentage of each completed offer that will subsequently be automatically credited to your pension account, or you can simply enter the amount you prefer. Group funds are invested on behalf of the employee, and gains on investments generate income for the worker upon retirement."
+        "desc": "You can select a percentage of each completed quest that will subsequently be automatically credited to your pension account, or you can simply enter the amount you prefer. Group funds are invested on behalf of the employee, and gains on investments generate income for the worker upon retirement."
       },
       "referral": {
         "title": "Program of recommendations",
-        "desc": "Refer and Earn is a program that allows you to earn rewards for each friend you refer, become a customer, and subsequently complete an offer. Friends you've recommended also save by getting a free registration."
+        "desc": "Refer and Earn is a program that allows you to earn rewards for each friend you refer, become a customer, and subsequently complete an quest. Friends you've recommended also save by getting a free registration."
       },
       "p2p": {
         "title": "P2P Insurance",
@@ -1091,7 +1103,8 @@
     },
     "buttons": {
       "errors": {
-        "manySpec": "You can only add 3 specializations"
+        "manySpec": "You can only add 3 specializations",
+        "manySkill": "You can only add 5 skills"
       }
     }
   },
@@ -1111,21 +1124,23 @@
   },
   "wallet": {
     "WUSD": "WUSD Wallet",
-    "cryptoWallet": "Cryptocurrency wallet",
+    "cryptoWallet": "Wallet address",
     "bankCard": "Bank card",
     "send": "Send",
+    "receive": "Receive",
     "toThisAddress": "to this address",
     "wallet": "Wallet",
     "balance": "Balance",
-    "deposit": "Receive",
+    "deposit": "Deposit",
     "withdraw": "Withdraw",
-    "transfer": "Buy / send",
+    "transfer": "Transfer",
     "addCardProposal": "Add your own card for easy withdrawal",
     "addCard": "Add card",
+    "addCartToContinue": "You have to add your card to continue",
     "copy": "Wallet address copied to clipboard",
     "recipientsAddress": "Recipient's address",
     "enterAddress": "Enter address",
-    "scanQr": "Scan QR Code or copy address to receive payments",
+    "scanQr": "Scan QR Code or copy address to receive payment",
     "time": "Processing Time",
     "table": {
       "trx": "Transactions",
@@ -1140,16 +1155,16 @@
   },
   "chat": {
     "openDispute": "Open dispute",
-    "approveQuest": "Approve offer",
+    "approveQuest": "Approve quest",
     "favoriteMessages": "Favorite messages",
     "favoriteChats": "Favorite chats",
     "createGroupChat": "Create group chat",
     "favorite": "Add to favorites",
     "messages": "Messages",
     "chat": "Chat",
-    "quest": "Offer:",
+    "quest": "Quest:",
     "you": "Your username:",
-    "invitedYou": "invited you to an offer",
+    "invitedYou": "invited you to an quest",
     "writeYouMessage": "Write your message"
   },
   "settings": {
@@ -1159,7 +1174,7 @@
     "specialization": "Specialization",
     "skillsInput": "Skills",
     "priority": "Priority",
-    "distantWork": "Remote work",
+    "distantWork": "Distant work",
     "costPerHour": "Cost per hour",
     "description": "And you are beautiful",
     "imgLoaded": "Image loaded correctly",
@@ -1186,9 +1201,9 @@
       "CompanyName": "Company name"
     },
     "settings": "Settings",
-    "urgentJobOffers": "Urgent job offers",
-    "shortTermJobOffers": "Short term job offers",
-    "fixedDeliveryJobOffers": "Job offers by work and service",
+    "urgentJobOffers": "Urgent job quests",
+    "shortTermJobOffers": "Short term job quests",
+    "fixedDeliveryJobOffers": "Job quests by work and service",
     "addInfo": "You can add personal information, upload a profile picture and complete the know your customer  procedure to increase your rating. The rating depends on your profile data and your opinions.",
     "alsoRating": "The higher your ranking, the easier it will be to find you in searches.",
     "dontShow": "Do not show again",
@@ -1198,16 +1213,16 @@
     "addressInput": "Enter your address",
     "telInput": "Enter your phone number",
     "userDesc": "Add a short description about yourself",
-    "instagramUsername": "Instagram username",
-    "twitterUsername": "Twitter username",
-    "linkedInUsername": "LinkedIn username",
-    "facebookUsername": "Facebook username",
+    "instagramUsername": "Instagram",
+    "twitterUsername": "Twitter",
+    "linkedInUsername": "LinkedIn",
+    "facebookUsername": "Facebook",
     "save": "Save",
     "skills": "Skills:",
     "whoCanSee": "Who can see my profile?",
     "allUsers": "All registered users",
-    "allInternet": "Internet users from all over the world",
-    "onlyWhenSubmittedWork": "Only when sending job offers",
+    "allInternet": "All people in internet",
+    "onlyWhenSubmittedWork": "Only when submitted work proposal",
     "filterProposals": "Filter all work proposals",
     "urgentProposals": "Only urgent proposals",
     "implementation": "Only implementation",
@@ -1246,9 +1261,9 @@
   "dispute": {
     "disputes": "Disputes",
     "dispute": "Number of disputes:",
-    "quest": "Offer:",
+    "quest": "Quest:",
     "employer": "Employer:",
-    "questSalary": "Offer salary:",
+    "questSalary": "Quest salary:",
     "status": "Status:",
     "decision": "Decision",
     "Dispute": "Dispute",
@@ -1257,22 +1272,22 @@
     "disputeTime": "Opening time of the dispute:"
   },
   "workers": {
-    "searchQuests": "Search offers",
+    "searchQuests": "Search quests",
     "searchWorkers": "Search workers",
     "topWorkers": "Top employees",
     "price": "Price",
     "addedTime": "Creation time",
-    "quests": "Offers",
+    "quests": "Quests",
     "urgent": "Select the level of urgency",
     "specialized": "Specialized",
     "typeOfJob": "Job type",
     "specializations": "Specializations",
     "aboutMe": "Personal information",
-    "giveAQuest": "Send an offer",
+    "giveAQuest": "Send an quest",
     "inviteQuestor": "Invite plaintiff",
     "skills": "Skills",
-    "completedQuests": "Completed offers",
-    "openedQuests": "Open offers",
+    "completedQuests": "Completed quests",
+    "openedQuests": "Open quests",
     "showAll": "Show all",
     "averageRating": "Average rating",
     "from": "From",
@@ -1290,7 +1305,7 @@
   "referral": {
     "inviteFriendsHead": "Invite your friends.",
     "earnCryptoTogether": "Earn cryptocurrencies together",
-    "headerSubtitle": "Earn up to $ 35 in WQT every time your friends sign up and create their first offer on the WorkQuest platform.",
+    "headerSubtitle": "Earn up to $ 35 in WQT every time your friends sign up and create their first quest on the WorkQuest platform.",
     "referralReward": "Referral Reward",
     "wqtCount": "{count} WQT",
     "lastRefReward": "Last recommendation Reward",
@@ -1301,9 +1316,9 @@
     "getLink": "Get link",
     "registerAndGenerate": "Register and generate referral links with a commission recovery rate.",
     "inviteFriends": "Invite friends",
-    "inviteYourFriends": "Invite your friends to sign up via the referral link and get rewarded when they complete their first offer.",
+    "inviteYourFriends": "Invite your friends to sign up via the referral link and get rewarded when they complete their first quest.",
     "earnCrypto": "Earn Cryptocurrencies",
-    "everyTimeYourFriends": "Every time your friends create an offer for the first time, you will receive a commission of up to $ 35 in real-time WQT!",
+    "everyTimeYourFriends": "Every time your friends create an quest for the first time, you will receive a commission of up to $ 35 in real-time WQT!",
     "historyOfRewards": "Rewards history",
     "tableHead": {
       "name": "Name",
@@ -1334,14 +1349,14 @@
     "term": "Term",
     "castomizable": "Customizable",
     "configurablePercentage": "Configurable percentage",
-    "depositsFromQuest": "Deposit offers",
+    "depositsFromQuest": "Deposit quests",
     "howToTakePart": "How to participate in the pension program?",
     "pensionPlanText": "A pension plan may allow a worker to contribute a portion of his or her current wage income to an investment plan to help fund his or her retirement.",
     "information": "Detailed information",
     "download": "Download",
     "Pension balance": "Pension savings balance",
     "makeADeposit": "Make an income",
-    "currentPercentFromAQuest": "Current percentage of an offer",
+    "currentPercentFromAQuest": "Current percentage of an quest",
     "changePercent": "Change percentage",
     "everyYear": "Annualized",
     "year": "annual",
@@ -1365,7 +1380,7 @@
     "plusPercents": " + {count}%",
     "faq1": {
       "question": "What are the requirements to apply for a pension?",
-      "answer": "You do not need to have worked for an employer for a specific number of years to be eligible for retirement benefits. Simply select the percentage of each offer you want to accumulate in your account. Your retirement benefit will increase as you accumulate funds. The additional percentage will be automatically increased by using funds in the loan program."
+      "answer": "You do not need to have worked for an employer for a specific number of years to be eligible for retirement benefits. Simply select the percentage of each quest you want to accumulate in your account. Your retirement benefit will increase as you accumulate funds. The additional percentage will be automatically increased by using funds in the loan program."
     },
     "faq2": {
       "question": "How is the additional percentage calculated?",
@@ -1373,7 +1388,7 @@
     },
     "faq3": {
       "question": "How do pension plans work?",
-      "answer": "You do not need to have worked for an employer for a specific number of years to be eligible for retirement benefits. Simply select the percentage of each offer you want to accumulate in your account. Your retirement benefit will increase as you accumulate funds. The additional percentage will be automatically increased by using funds in the loan program."
+      "answer": "You do not need to have worked for an employer for a specific number of years to be eligible for retirement benefits. Simply select the percentage of each quest you want to accumulate in your account. Your retirement benefit will increase as you accumulate funds. The additional percentage will be automatically increased by using funds in the loan program."
     },
     "faq4": {
       "question": "How many years do you need to work to be able to collect the pension plan?",
@@ -1655,22 +1670,22 @@
     "emptyData": {
       "employer": {
         "myQuests": {
-          "desc": "You have not created an offer yet",
-          "btnText": "Create an offer!"
+          "desc": "You have not created an quest yet",
+          "btnText": "Create an quest!"
         },
         "allQuests": {
-          "desc": "You have not created an offer yet",
-          "btnText": "Create an offer!"
+          "desc": "You have not created an quest yet",
+          "btnText": "Create an quest!"
         }
       },
       "worker": {
         "myQuests": {
-          "desc": "You have not completed the offers yet",
-          "btnText": "Create an offer!"
+          "desc": "You have not completed the quests yet",
+          "btnText": "Create an quest!"
         },
         "allQuests": {
-          "desc": "You have not responded to any offers yet",
-          "btnText": "Respond to the offer!"
+          "desc": "You have not responded to any quests yet",
+          "btnText": "Respond to the quest!"
         }
       }
     }
@@ -1682,12 +1697,12 @@
   },
   "myQuests": {
     "statuses": {
-      "all": "All offers",
+      "all": "All quests",
       "fav": "Add to favorites",
       "requested": "Requested",
-      "completed": "Completed offers",
-      "active": "Active offers",
-      "invited": "Invitations to offers"
+      "completed": "Completed quests",
+      "active": "Active quests",
+      "invited": "Invitations to quests"
     }
   }
 }

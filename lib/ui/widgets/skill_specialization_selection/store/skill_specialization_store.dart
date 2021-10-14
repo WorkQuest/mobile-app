@@ -21,6 +21,9 @@ abstract class SkillSpecializationStoreBase with Store {
   bool isLoading = true;
 
   @observable
+  bool countSkills = true;
+
+  @observable
   List<Specialization> allSpices = [];
 
   @observable

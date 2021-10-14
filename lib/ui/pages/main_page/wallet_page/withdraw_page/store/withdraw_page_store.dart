@@ -18,7 +18,7 @@ abstract class _WithdrawPageStore extends IStore<bool> with Store {
   @observable
   String _recipientAddress = '';
   @observable
-  String _amount = '';
+  String amount = '';
 
   @action
   void setRecipientAddress(String value) {
@@ -27,16 +27,16 @@ abstract class _WithdrawPageStore extends IStore<bool> with Store {
 
   @action
   void setAmount(String value) {
-    _amount = value;
+    amount = value;
   }
 
   @action
-  String getAmount() => _amount;
+  String getAmount() => amount;
 
   @action
   String getAddress() => _recipientAddress;
 
   @computed
   bool get canSubmit =>
-      !isLoading && _recipientAddress.isNotEmpty && _amount.isNotEmpty;
+      !isLoading && _recipientAddress.isNotEmpty && amount.isNotEmpty;
 }

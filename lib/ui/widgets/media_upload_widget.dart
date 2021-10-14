@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class MediaUpload extends StatefulWidget {
   final ObservableList<DrishyaEntity> media;
@@ -23,11 +24,12 @@ class _MediaUploadState extends State<MediaUpload> {
       gallerySetting: const GallerySetting(
         maximum: 20,
         albumSubtitle: 'All',
-        requestType: RequestType.common,
+        requestType: RequestType.image,
       ),
       panelSetting: PanelSetting(
-          //topMargin: 100.0,
-          headerMaxHeight: 100.0),
+        //topMargin: 100.0,
+        headerMaxHeight: 100.0,
+      ),
     );
     super.initState();
   }
@@ -52,27 +54,30 @@ class _MediaUploadState extends State<MediaUpload> {
           horizontal: 10,
         ),
         child: Center(
-            child: Observer(
-          builder: (context) => widget.media.isEmpty
-              ? galleryView()
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(child: mediaView(context)),
-                    IconButton(
-                      onPressed: () async {
-                        final picked = await gallController.pick(
-                          context,
-                        );
-                        widget.media.addAll(picked);
-                      },
-                      icon: Icon(
-                        Icons.add_circle,
+          child: Observer(
+            builder: (context) => widget.media.isEmpty
+                ? galleryView()
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: mediaView(context),
                       ),
-                    ),
-                  ],
-                ),
-        )),
+                      IconButton(
+                        onPressed: () async {
+                          final picked = await gallController.pick(
+                            context,
+                          );
+                          widget.media.addAll(picked);
+                        },
+                        icon: Icon(
+                          Icons.add_circle,
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+        ),
       ),
     );
   }
@@ -89,7 +94,7 @@ class _MediaUploadState extends State<MediaUpload> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "uploader.uploadText",
+              "uploader.uploadImage".tr(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -156,7 +161,9 @@ class _MediaUploadState extends State<MediaUpload> {
                       child: Container(
                         color: Colors.black.withOpacity(0.7),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 6.0, vertical: 2.0),
+                          horizontal: 6.0,
+                          vertical: 2.0,
+                        ),
                         child: Text(
                           widget.media[index].entity.duration.formattedDuration,
                           textAlign: TextAlign.center,
