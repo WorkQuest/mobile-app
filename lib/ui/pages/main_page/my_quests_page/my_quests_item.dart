@@ -1,6 +1,7 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +30,25 @@ class MyQuestsItem extends StatelessWidget {
           QuestDetails.routeName,
           arguments: questInfo,
         );
+
+        //TODO:Check and correct
         if (oldStar != questInfo.star) {
           if (questInfo.star == false) {
             context.read<MyQuestStore>().starred!.remove(questInfo);
+            context.read<MyQuestStore>().active!.remove(questInfo);
+            context.read<MyQuestStore>().active!.add(questInfo);
+            context.read<MyQuestStore>().invited!.remove(questInfo);
+            context.read<MyQuestStore>().invited!.add(questInfo);
+            context.read<MyQuestStore>().performed!.remove(questInfo);
+            context.read<MyQuestStore>().performed!.add(questInfo);
           } else {
             context.read<MyQuestStore>().starred!.add(questInfo);
+            context.read<MyQuestStore>().active!.remove(questInfo);
+            context.read<MyQuestStore>().active!.add(questInfo);
+            context.read<MyQuestStore>().invited!.remove(questInfo);
+            context.read<MyQuestStore>().invited!.add(questInfo);
+            context.read<MyQuestStore>().performed!.remove(questInfo);
+            context.read<MyQuestStore>().performed!.add(questInfo);
           }
         }
 
@@ -114,24 +129,30 @@ class MyQuestsItem extends StatelessWidget {
             SizedBox(
               height: 17.5,
             ),
-            Row(
-              children: [
-                Icon(
-                  Icons.location_on_rounded,
-                  color: Color(0xFF7C838D),
-                ),
-                SizedBox(
-                  width: 9,
-                ),
-                Text(
-                  "150 from you",
-                  style: TextStyle(color: Color(0xFF7C838D)),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 16,
-            ),
+            if (questInfo.userId !=
+                    context.read<ProfileMeStore>().userData!.id &&
+                questInfo.status != 5 &&
+                questInfo.status != 6)
+              Row(
+                children: [
+                  Icon(
+                    Icons.location_on_rounded,
+                    color: Color(0xFF7C838D),
+                  ),
+                  SizedBox(
+                    width: 9,
+                  ),
+                  Text(
+                    "150 from you",
+                    style: TextStyle(
+                      color: Color(0xFF7C838D),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                ],
+              ),
             Text(
               questInfo.title,
               overflow: TextOverflow.ellipsis,
@@ -160,15 +181,14 @@ class MyQuestsItem extends StatelessWidget {
                 Text(
                   questInfo.price + "  WUSD",
                   style: TextStyle(
-                      color: Color(0xFF00AA5B),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
+                    color: Color(0xFF00AA5B),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
-            SizedBox(
-              height: 15,
-            ),
+            SizedBox(height: 15),
           ],
         ),
       ),
@@ -246,7 +266,8 @@ class MyQuestsItem extends StatelessWidget {
           ),
           child: Row(
             children: [
-              ///Invied here
+              ///Invited here
+
               Text(
                 "quests.youInvited".tr(),
                 style: TextStyle(color: Colors.white),

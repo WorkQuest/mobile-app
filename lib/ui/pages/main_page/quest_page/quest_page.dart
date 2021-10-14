@@ -5,8 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
+class QuestPage extends StatefulWidget {
 
-class QuestPage extends StatelessWidget{
+  @override
+  _QuestPageState createState() => _QuestPageState();
+}
+
+class _QuestPageState extends State<QuestPage> {
   final QuestPageStore questPage = QuestPageStore();
 
   @override
@@ -20,5 +25,23 @@ class QuestPage extends StatelessWidget{
         ],
       ),
     );
+
   }
 }
+
+// class QuestPage extends StatelessWidget{
+//   final QuestPageStore questPage = QuestPageStore();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Observer(
+//       builder: (_) => IndexedStack(
+//         index: questPage.pageIndex,
+//         children: [
+//           QuestMap(questPage.setQuestListPage),
+//           QuestList(questPage.setMapPage),
+//         ],
+//       ),
+//     );
+//   }
+// }

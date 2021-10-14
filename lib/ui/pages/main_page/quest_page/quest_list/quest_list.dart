@@ -107,22 +107,61 @@ class _QuestListState extends State<QuestList> {
         ),
         SliverAppBar(
           pinned: true,
-          title: TextFormField(
-            maxLines: 1,
-            onChanged: questsStore!.setSearchWord,
-            decoration: InputDecoration(
-              prefixIcon: const Icon(
-                Icons.search,
-                size: 25.0,
+          title: GestureDetector(
+            onTap: () {
+              questsStore!.getPrediction(context);
+            },
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                color: Color(0xFFF7F8FA),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(6.0),
+                ),
               ),
-              hintText: "quests.ui.search".tr(),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 16,
+                  ),
+                  Icon(
+                    Icons.search,
+                    size: 25.0,
+                  ),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  Flexible(
+                    child: questsStore!.locationPlaceName.isEmpty
+                        ? Text(
+                            "quests.ui.search".tr(),
+                            style: TextStyle(
+                              color: Color(
+                                0xFFD8DFE3,
+                              ),
+                              fontSize: 16,
+                            ),
+                            overflow: TextOverflow.fade,
+                          )
+                        : Text(
+                            questsStore!.locationPlaceName,
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(
+                              color: Color(0xFF1D2127),
+                              fontSize: 16,
+                              height: 1,
+                            ),
+                          ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
         SliverList(
           delegate: SliverChildListDelegate(
             [
-              const SizedBox(height: 20),
+              const SizedBox(height: 8),
               //if (profileMeStore!.userData!.role == UserRole.Worker)
               _getDivider(),
               Padding(
@@ -148,7 +187,10 @@ class _QuestListState extends State<QuestList> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.filter_list),
+                      SvgPicture.asset("assets/filter.svg"),
+                      SizedBox(
+                        width: 13,
+                      ),
                       Text(
                         "quests.filter.btn".tr(),
                       ),

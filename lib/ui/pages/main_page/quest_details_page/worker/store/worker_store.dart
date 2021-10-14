@@ -1,6 +1,7 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -13,6 +14,15 @@ class WorkerStore extends _WorkerStore with _$WorkerStore {
 
 abstract class _WorkerStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
+
+  @observable
+  ObservableList<DrishyaEntity> media = ObservableList();
+
+  @observable
+  String opinion = "";
+
+  @action
+  void setOpinion(String value) => opinion = value;
 
   _WorkerStore(this._apiProvider);
 

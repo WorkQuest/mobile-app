@@ -18,27 +18,27 @@ abstract class _WalletStore extends IStore<bool> with Store {
   @observable
   String _recipientAddress = '';
   @observable
-  String _amount = '';
+  String amount = '';
 
   @action
   void setRecipientAddress(String value) => _recipientAddress = value;
 
   @action
-  void setAmount(String value) => _amount = value;
+  void setAmount(String value) => amount = value;
 
   @action
-  String getAmount() => _amount;
+  String getAmount() => amount;
 
   @action
   String getAddress() => _recipientAddress;
 
   @action
   void clearValues() {
-    _amount = "";
+    amount = "";
     _recipientAddress = "";
   }
 
   @computed
   bool get canSubmit =>
-      !isLoading && _recipientAddress.isNotEmpty && _amount.isNotEmpty;
+      !isLoading && _recipientAddress.isNotEmpty && amount.isNotEmpty;
 }

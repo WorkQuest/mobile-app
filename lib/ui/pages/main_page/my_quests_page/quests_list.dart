@@ -19,15 +19,13 @@ class QuestsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: Container(
-        color: const Color(0xFFF7F8FA),
-        child: questsList == null
-            ? getLoadingBody()
-            : questsList!.isNotEmpty
-                ? getBody()
-                : getEmptyBody(context),
-      ),
+    return Container(
+      color: const Color(0xFFF7F8FA),
+      child: questsList == null
+          ? getLoadingBody()
+          : questsList!.isNotEmpty
+              ? getBody()
+              : getEmptyBody(context),
     );
   }
 

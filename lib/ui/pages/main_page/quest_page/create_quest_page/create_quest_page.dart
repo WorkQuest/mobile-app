@@ -1,6 +1,5 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
-import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
@@ -25,7 +24,7 @@ class CreateQuestPage extends StatefulWidget {
   _CreateQuestPageState createState() => _CreateQuestPageState();
 }
 
-class _CreateQuestPageState extends State<CreateQuestPage> {
+class _CreateQuestPageState extends State<CreateQuestPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     if (widget.questInfo != null) {
@@ -39,6 +38,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   }
 
   Widget build(context) {
+    super.build(context);
     final store = context.read<CreateQuestStore>();
     SkillSpecializationController? _controller;
 
@@ -70,7 +70,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         padding: EdgeInsets.symmetric(horizontal: 15.0),
                         decoration: BoxDecoration(
                           color: Color(0xFFF7F8FA),
-                          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(6.0),
+                          ),
                         ),
                         alignment: Alignment.centerLeft,
                         child: Observer(
@@ -97,8 +99,10 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               hint: Text(
                                 'mining.choose'.tr(),
                                 maxLines: 1,
-                                style:
-                                    TextStyle(fontSize: 16, color: Colors.grey),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
                           ),
@@ -117,63 +121,42 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           },
                           child: Container(
                             height: 50,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Color(0xFFF7F8FA),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(6.0),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF7F8FA),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(6.0),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 17,
                                 ),
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 17,
-                                  ),
-                                  Icon(
-                                    Icons.map_outlined,
-                                    color: Colors.blueAccent,
-                                    size: 26.0,
-                                  ),
-                                  SizedBox(
-                                    width: 12,
-                                  ),
-                                  Flexible(
-                                    child: store.locationPlaceName.isEmpty
-                                        ? Text(
-                                            "Moscow, Lenina street, 3",
-                                            style: TextStyle(
-                                              color: Color(
-                                                0xFFD8DFE3,
-                                              ),
+                                Icon(
+                                  Icons.map_outlined,
+                                  color: Colors.blueAccent,
+                                  size: 26.0,
+                                ),
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                Flexible(
+                                  child: store.locationPlaceName.isEmpty
+                                      ? Text(
+                                          "Moscow, Lenina street, 3",
+                                          style: TextStyle(
+                                            color: Color(
+                                              0xFFD8DFE3,
                                             ),
-                                            overflow: TextOverflow.fade,
-                                          )
-                                        : Text(
-                                            store.locationPlaceName,
-                                            overflow: TextOverflow.fade,
                                           ),
-                                  ),
-                                ],
-                              ),
-                              // maxLines: 1,
-                              // onTap: () {
-                              //   store.getPrediction(context);
-                              // },
-                              // validator: Validators.emptyValidator,
-                              // decoration: InputDecoration(
-                              //   prefixIcon: IconButton(
-                              //     onPressed: null,
-                              //     icon: Icon(
-                              //       Icons.map_outlined,
-                              //       color: Colors.blueAccent,
-                              //       size: 26.0,
-                              //     ),
-                              //   ),
-                              //   hintText: 'Moscow, Lenina street, 3',
-                              // ),
-                              // style: TextStyle(
-                              //   fontSize: 16,
-                              // ),
+                                          overflow: TextOverflow.fade,
+                                        )
+                                      : Text(
+                                          store.locationPlaceName,
+                                          overflow: TextOverflow.fade,
+                                        ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -185,7 +168,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               children: [
                                 Row(
                                   children: [
-                                    Text("quests.runtime".tr()),
+                                    Text(
+                                      "quests.runtime".tr(),
+                                    ),
                                     Checkbox(
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -207,7 +192,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       decoration: BoxDecoration(
                                         color: Color(0xFFF7F8FA),
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(6.0)),
+                                          Radius.circular(6.0),
+                                        ),
                                       ),
                                       alignment: Alignment.centerLeft,
                                       child: Row(
@@ -247,13 +233,15 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             )),
 
                     titledField(
-                      "employment.title".tr(),
+                      "quests.employment.title".tr(),
                       Container(
                         height: 50,
                         padding: EdgeInsets.symmetric(horizontal: 15.0),
                         decoration: BoxDecoration(
                           color: Color(0xFFF7F8FA),
-                          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(6.0),
+                          ),
                         ),
                         alignment: Alignment.centerLeft,
                         child: Observer(
@@ -280,8 +268,10 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               hint: Text(
                                 'mining.choose'.tr(),
                                 maxLines: 1,
-                                style:
-                                    TextStyle(fontSize: 16, color: Colors.grey),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
                           ),
@@ -295,7 +285,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         padding: EdgeInsets.symmetric(horizontal: 15.0),
                         decoration: BoxDecoration(
                           color: Color(0xFFF7F8FA),
-                          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(6.0),
+                          ),
                         ),
                         alignment: Alignment.centerLeft,
                         child: Observer(
@@ -322,8 +314,10 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               hint: Text(
                                 'mining.choose'.tr(),
                                 maxLines: 1,
-                                style:
-                                    TextStyle(fontSize: 16, color: Colors.grey),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
                           ),
@@ -367,12 +361,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
 
                     ///Upload media
                     Padding(
-                        padding: const EdgeInsets.only(
-                          top: 20.0,
-                        ),
-                        child: MediaUpload(
-                          media: store.media,
-                        )),
+                      padding: const EdgeInsets.only(
+                        top: 20.0,
+                      ),
+                      child: MediaUpload(
+                        media: store.media,
+                      ),
+                    ),
                     titledField(
                       "quests.price".tr(),
                       Container(
@@ -383,7 +378,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           initialValue: store.price,
                           validator: Validators.emptyValidator,
                           inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                            FilteringTextInputFormatter.allow(
+                              RegExp(r'[0-9]'),
+                            ),
                           ],
                           decoration: InputDecoration(
                             hintText: 'quests.price'.tr(),
@@ -401,20 +398,15 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         onSuccess: () async {
                           Navigator.pop(context);
                           await successAlert(
-                              context, "quests.questCreated".tr());
+                            context,
+                            "quests.questCreated".tr(),
+                          );
                         },
                         child: Observer(
                           builder: (context) => ElevatedButton(
                             onPressed: store.canCreateQuest
                                 ? () => store.createQuest()
-                                : () => dialog(
-                                      context,
-                                      confirmAction: () {
-                                        Navigator.pop(context);
-                                      },
-                                      message: 'All fields are required',
-                                      title: 'Alert',
-                                    ),
+                                : () => store.emptyField(),
                             child: store.isLoading
                                 ? PlatformActivityIndicator()
                                 : Text(
@@ -472,4 +464,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       builder: (context) {
         return child;
       });
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

@@ -77,6 +77,7 @@ class _QuestMapState extends State<QuestMap> {
                     },
                   ),
                   QuestQuickInfo(),
+                  searchBar(),
                 ],
               ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
@@ -115,6 +116,62 @@ class _QuestMapState extends State<QuestMap> {
       ),
     );
   }
+
+  Widget searchBar() => Padding(
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 54),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Observer(
+              builder: (_) => GestureDetector(
+                onTap: () {
+                  mapStore!.getPrediction(context, _initialCameraPosition!);
+                },
+                child: Container(
+                  height: 60,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF7F8FA),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(6.0),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Icon(
+                          Icons.search,
+                          size: 25.0,
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Flexible(
+                          child: mapStore!.address.isNotEmpty
+                              ? Text(
+                                  mapStore!.address,
+                                  overflow: TextOverflow.fade,
+                                )
+                              : Text(
+                                  "quests.ui.search".tr(),
+                                  overflow: TextOverflow.fade,
+                                  style: TextStyle(
+                                    color: Color(0xFFD8DFE3),
+                                    fontSize: 16,
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 
   Future<void> _getCurrentLocation() async {
     final _permissionGranted = await _location.requestPermission();

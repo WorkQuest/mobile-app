@@ -354,15 +354,15 @@ class _ProfileReviewsState extends State<ProfileReviews>
                   tabs: <Widget>[
                     Tab(
                       child: Text(
-                        "profile.reviews".tr(),
+                        "workers.reviews".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
                     Tab(
                       child: Text(
                         userStore.userData!.role == UserRole.Worker
-                            ? "profile.portfolio".tr()
-                            : "profile.sidebar.quests".tr(),
+                            ? "profiler.portfolio".tr()
+                            : "profiler.sidebar.quests".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),

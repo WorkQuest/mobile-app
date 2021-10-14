@@ -77,7 +77,7 @@ class ConfirmEmail extends StatelessWidget {
                 TextFormField(
                   onChanged: store.setCode,
                   decoration: InputDecoration(
-                    hintText: "modals.emailVerificationCode".tr(),
+                    hintText: "modals.code".tr(),
                   ),
                 ),
                 SizedBox(

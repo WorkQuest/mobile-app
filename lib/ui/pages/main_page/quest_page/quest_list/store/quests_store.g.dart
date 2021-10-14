@@ -197,6 +197,66 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$latitudeAtom = Atom(name: '_QuestsStore.latitude');
+
+  @override
+  double get latitude {
+    _$latitudeAtom.reportRead();
+    return super.latitude;
+  }
+
+  @override
+  set latitude(double value) {
+    _$latitudeAtom.reportWrite(value, super.latitude, () {
+      super.latitude = value;
+    });
+  }
+
+  final _$longitudeAtom = Atom(name: '_QuestsStore.longitude');
+
+  @override
+  double get longitude {
+    _$longitudeAtom.reportRead();
+    return super.longitude;
+  }
+
+  @override
+  set longitude(double value) {
+    _$longitudeAtom.reportWrite(value, super.longitude, () {
+      super.longitude = value;
+    });
+  }
+
+  final _$locationPlaceNameAtom = Atom(name: '_QuestsStore.locationPlaceName');
+
+  @override
+  String get locationPlaceName {
+    _$locationPlaceNameAtom.reportRead();
+    return super.locationPlaceName;
+  }
+
+  @override
+  set locationPlaceName(String value) {
+    _$locationPlaceNameAtom.reportWrite(value, super.locationPlaceName, () {
+      super.locationPlaceName = value;
+    });
+  }
+
+  final _$getPredictionAsyncAction = AsyncAction('_QuestsStore.getPrediction');
+
+  @override
+  Future<Null> getPrediction(BuildContext context) {
+    return _$getPredictionAsyncAction.run(() => super.getPrediction(context));
+  }
+
+  final _$displayPredictionAsyncAction =
+      AsyncAction('_QuestsStore.displayPrediction');
+
+  @override
+  Future<Null> displayPrediction(String? p) {
+    return _$displayPredictionAsyncAction.run(() => super.displayPrediction(p));
+  }
+
   final _$getSearchedQuestsAsyncAction =
       AsyncAction('_QuestsStore.getSearchedQuests');
 
@@ -262,6 +322,9 @@ questsList: ${questsList},
 searchResultList: ${searchResultList},
 employmentValue: ${employmentValue},
 workplaceValue: ${workplaceValue},
+latitude: ${latitude},
+longitude: ${longitude},
+locationPlaceName: ${locationPlaceName},
 emptySearch: ${emptySearch}
     ''';
   }

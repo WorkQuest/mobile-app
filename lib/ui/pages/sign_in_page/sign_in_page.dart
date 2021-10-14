@@ -75,7 +75,7 @@ class SignInPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "signIn.welcomeToWorkQuest".tr(),
+                              "modals.welcomeToWorkQuest".tr(),
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 34,
@@ -225,7 +225,7 @@ class SignInPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Text(
-                          "signIn.account".tr(),
+                          "signIn.dontHaveAnAccount".tr(),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10.0),

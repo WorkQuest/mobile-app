@@ -52,7 +52,7 @@ class SignUpPage extends StatelessWidget {
                 Padding(
                   padding: _padding.copyWith(top: 40.0),
                   child: Text(
-                    "signUp.title".tr(),
+                    "signIn.signUp".tr(),
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w700,
@@ -69,7 +69,7 @@ class SignUpPage extends StatelessWidget {
                         "assets/user.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      hintText: "signUp.firstName".tr(),
+                      hintText: "labels.firstName".tr(),
                     ),
                   ),
                 ),
@@ -83,7 +83,7 @@ class SignUpPage extends StatelessWidget {
                         "assets/user.svg",
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      hintText: "signUp.lastName".tr(),
+                      hintText: "labels.lastName".tr(),
                     ),
                   ),
                 ),
@@ -192,7 +192,7 @@ class SignUpPage extends StatelessWidget {
                             Navigator.pop(context);
                           },
                           child: Text(
-                            "signUp.auth".tr(),
+                            "signIn.title".tr(),
                             style: TextStyle(
                               color: Color(0xFF0083C7),
                             ),

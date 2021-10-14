@@ -9,6 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 part 'quest_map_store.g.dart';
 
@@ -44,6 +47,40 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   @observable
   MarkerLoader? markerLoader;
 
+  @observable
+  String address = "";
+
+  ///API_KEY HERE
+  GoogleMapsPlaces _places =
+      GoogleMapsPlaces(apiKey: "API_KEY HERE");
+
+  @action
+  Future<Null> getPrediction(
+    BuildContext context,
+    CameraPosition _initialCameraPosition,
+  ) async {
+    Prediction? p = await PlacesAutocomplete.show(
+      context: context,
+
+      ///API_KEY HERE
+      apiKey: "API_KEY HERE",
+      mode: Mode.overlay,
+      logo: SizedBox(),
+      hint: "quests.ui.search".tr(),
+    );
+    address = p!.description!;
+    PlacesDetailsResponse detail =
+        await _places.getDetailsByPlaceId(p.placeId!);
+    _initialCameraPosition = CameraPosition(
+      bearing: 0,
+      target: LatLng(
+        detail.result.geometry!.location.lat,
+        detail.result.geometry!.location.lng,
+      ),
+      zoom: 17.0,
+    );
+  }
+
   @action
   Future getQuests(LatLngBounds bounds) async {
     try {
@@ -69,10 +106,12 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
           icon: item.type == TypeMarker.Cluster
               ? await markerLoader!.getCluster(item.pointsCount)
               : markerLoader!.icons[1],
-          markerId: MarkerId(item.questId == null
-              ? item.location.latitude.toString() +
-                  item.location.longitude.toString()
-              : item.questId!),
+          markerId: MarkerId(
+            item.questId == null
+                ? item.location.latitude.toString() +
+                    item.location.longitude.toString()
+                : item.questId!,
+          ),
           position: LatLng(item.location.longitude, item.location.latitude),
         ),
       );

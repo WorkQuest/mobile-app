@@ -1,7 +1,8 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
-import 'package:dotted_border/dotted_border.dart';
+import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -18,6 +19,7 @@ class QuestWorker extends QuestDetails {
 
 class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   late WorkerStore store;
+  late final GalleryController gallController;
 
   AnimationController? controller;
 
@@ -27,6 +29,16 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
+    gallController = GalleryController(
+      gallerySetting: const GallerySetting(
+        maximum: 20,
+        albumSubtitle: 'All',
+        requestType: RequestType.common,
+      ),
+      panelSetting: PanelSetting(
+          //topMargin: 100.0,
+          headerMaxHeight: 100.0),
+    );
     super.initState();
   }
 
@@ -64,37 +76,43 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             ),
           ),
           const SizedBox(height: 20),
-          if (!store.quest.value!.response)
-            store.isLoading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : TextButton(
-                    onPressed: () {
-                      bottomForm(
-                        child: bottomRespond(),
-                      );
-                    },
-                    child: Text(
-                      "modals.requestSend".tr(),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.all(
-                        Size(double.maxFinite, 43),
-                      ),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed))
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.5);
-                          return const Color(0xFF0083C7);
-                        },
-                      ),
-                    ),
-                  ),
+          Observer(
+            builder: (_) => !store.quest.value!.response
+                ? store.isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : !store.quest.value!.response
+                        ? TextButton(
+                            onPressed: () {
+                              bottomForm(
+                                child: bottomRespond(),
+                              );
+                            },
+                            child: Text(
+                              "modals.sendARequest".tr(),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            style: ButtonStyle(
+                              fixedSize: MaterialStateProperty.all(
+                                Size(double.maxFinite, 43),
+                              ),
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.pressed))
+                                    return Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(0.5);
+                                  return const Color(0xFF0083C7);
+                                },
+                              ),
+                            ),
+                          )
+                        : SizedBox()
+                : SizedBox(),
+          ),
           if (store.quest.value!.status == 4)
             store.isLoading
                 ? Center(
@@ -212,7 +230,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   }
 
   bottomRespond() {
-    TextEditingController textController = TextEditingController();
+    //TextEditingController textController = TextEditingController();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -243,7 +261,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             ),
             const SizedBox(height: 5),
             TextField(
-              controller: textController,
+              //controller: textController,
+              onChanged: store.setOpinion,
               keyboardType: TextInputType.multiline,
               maxLines: 6,
               decoration: InputDecoration(
@@ -254,51 +273,38 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               ),
             ),
             const SizedBox(height: 15),
-            DottedBorder(
-              padding: EdgeInsets.all(0),
-              color: Color(0xFFe9edf2),
-              strokeWidth: 3.0,
-              child: Container(
-                height: 66,
-                padding: EdgeInsets.only(left: 20, right: 10),
-                color: Color(0xFFf7f8fa),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "modals.uploadAImages".tr(),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.add_a_photo),
-                    ),
-                  ],
+            Observer(
+              builder: (_) => TextButton(
+                onPressed: store.opinion != ""
+                    ? () {
+                        store.sendRespondOnQuest(store.opinion);
+                        store.quest.value!.response = true;
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        successAlert(
+                          context,
+                          "modals.requestSend".tr(),
+                        );
+                      }
+                    : null,
+                child: Text(
+                  "modals.sendARequest".tr(),
+                  style: TextStyle(color: Colors.white),
                 ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            TextButton(
-              onPressed: () {
-                store.sendRespondOnQuest(textController.text);
-                Navigator.pop(context);
-              },
-              child: Text(
-                "modals.requestSend".tr(),
-                style: TextStyle(color: Colors.white),
-              ),
-              style: ButtonStyle(
-                fixedSize: MaterialStateProperty.all(
-                  Size(double.maxFinite, 43),
-                ),
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.pressed))
-                      return Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.5);
-                    return const Color(0xFF0083C7);
-                  },
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(
+                    Size(double.maxFinite, 43),
+                  ),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed))
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
+                      return const Color(0xFF0083C7);
+                    },
+                  ),
                 ),
               ),
             ),
@@ -326,6 +332,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           onPressed: () {
             store.sendAcceptOnQuest();
             Navigator.pop(context);
+            Navigator.pop(context);
+            successAlert(
+              context,
+              "quests.answerOnQuest.questAccepted".tr(),
+            );
           },
           child: Text(
             "quests.answerOnQuest.accept".tr(),
@@ -349,6 +360,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           onPressed: () {
             store.sendRejectOnQuest();
             Navigator.pop(context);
+            Navigator.pop(context);
+            successAlert(
+              context,
+              "quests.answerOnQuest.questRejected".tr(),
+            );
           },
           child: Text(
             "quests.answerOnQuest.reject".tr(),
@@ -389,6 +405,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           onPressed: () {
             store.sendCompleteWork();
             Navigator.pop(context);
+            Navigator.pop(context);
+            successAlert(
+              context,
+              "quests.answerOnQuest.questCompleted".tr(),
+            );
           },
           child: Text(
             "quests.completeTheQuest".tr(),

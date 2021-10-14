@@ -54,21 +54,29 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
   @computed
   bool get canSubmit =>
       !isLoading &&
-      password.isNotEmpty &&
-      newPassword.isNotEmpty &&
-      confirmNewPassword.isNotEmpty;
+          password.isNotEmpty &&
+          newPassword.isNotEmpty &&
+          confirmNewPassword.isNotEmpty;
 
   @action
   Future changePassword() async {
-    try {
-      this.onLoading();
-      await apiProvider.changePassword(
-        oldPassword: password,
-        newPassword: newPassword,
-      );
-      this.onSuccess(true);
-    } catch (e) {
-      this.onError(e.toString());
+    if (newPassword == confirmNewPassword) {
+      if (newPassword.length >= 8) {
+        try {
+          this.onLoading();
+          await apiProvider.changePassword(
+            oldPassword: password,
+            newPassword: newPassword,
+          );
+          this.onSuccess(true);
+        } catch (e) {
+          this.onError(e.toString());
+        }
+      } else {
+        this.onError("Password must be at least 8 characters long");
+      }
+    } else {
+      this.onError("Password mismatch");
     }
   }
 }

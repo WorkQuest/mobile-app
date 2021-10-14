@@ -14,8 +14,9 @@ class SkillSpecializationSelection extends StatefulWidget {
 }
 
 class _SkillSpecializationSelectionState
-    extends State<SkillSpecializationSelection> {
+    extends State<SkillSpecializationSelection> with AutomaticKeepAliveClientMixin {
   final store = SkillSpecializationStore();
+  final maxLength = 5;
 
   @override
   void initState() {
@@ -25,6 +26,7 @@ class _SkillSpecializationSelectionState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Observer(
       builder: (_) => Column(
         children: [
@@ -98,11 +100,33 @@ class _SkillSpecializationSelectionState
         ),
         const SizedBox(height: 5),
         getSelectorButton<String>(
-            plaseholder: "mining.choose".tr(),
-            data: list,
-            builder: (item) =>
-                Center(child: new Text("filters.items.$title.sub.$item".tr())),
-            onSelect: (item) => store.selectedSkills[count]!.add(item)),
+          placeholder: "mining.choose".tr(),
+          data: list,
+          builder: (item) => Center(
+            child: new Text(
+              "filters.items.$title.sub.$item".tr(),
+            ),
+          ),
+          onSelect: (store.selectedSkills[count]?.length ?? 0) == maxLength
+              ? (item) {
+                  store.countSkills = false;
+                }
+              : (item) {
+                  if ((store.selectedSkills[count]?.length ?? 0) < maxLength) {
+                    store.selectedSkills[count]!.add(item);
+                    store.countSkills = true;
+                  }
+                },
+        ),
+        if (store.countSkills == false &&
+            (store.selectedSkills[count]?.length ?? 0) == maxLength)
+          Text(
+            "ui.buttons.errors.manySkill".tr(),
+            style: TextStyle(
+              color: Color(0xFFf36262),
+              fontSize: 16,
+            ),
+          ),
         const SizedBox(height: 10),
         Observer(
           builder: (_) => Wrap(
@@ -123,12 +147,15 @@ class _SkillSpecializationSelectionState
         .where((element) => !store.selectedSpices.values.contains(element))
         .toList();
     return getSelectorButton<Specialization>(
-        plaseholder: store.selectedSpices[count]?.header != null
+        placeholder: store.selectedSpices[count]?.header != null
             ? "filters.items.${store.selectedSpices[count]?.header}.title".tr()
             : "mining.choose".tr(),
         data: list,
-        builder: (item) =>
-            Center(child: new Text("filters.items.${item.header}.title".tr())),
+        builder: (item) => Center(
+              child: new Text(
+                "filters.items.${item.header}.title".tr(),
+              ),
+            ),
         onSelect: (item) {
           store.selectedSpices[count] = item;
           store.selectedSkills[count] = [];
@@ -139,13 +166,18 @@ class _SkillSpecializationSelectionState
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: ActionChip(
-          label: Row(mainAxisSize: MainAxisSize.min, children: [
+        label: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
             ConstrainedBox(
               constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width - 100),
+                maxWidth: MediaQuery.of(context).size.width - 100,
+              ),
               child: Text(
                 title.tr(),
-                style: const TextStyle(color: const Color(0xFF0083C7)),
+                style: const TextStyle(
+                  color: const Color(0xFF0083C7),
+                ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 softWrap: false,
@@ -155,14 +187,16 @@ class _SkillSpecializationSelectionState
               Icons.close,
               size: 20,
             ),
-          ]),
-          backgroundColor: const Color.fromRGBO(0, 131, 199, 0.1),
-          onPressed: onRemove),
+          ],
+        ),
+        backgroundColor: const Color.fromRGBO(0, 131, 199, 0.1),
+        onPressed: onRemove,
+      ),
     );
   }
 
   Widget getSelectorButton<T>({
-    required String plaseholder,
+    required String placeholder,
     required List<T> data,
     required Widget Function(T) builder,
     required void Function(T) onSelect,
@@ -172,7 +206,9 @@ class _SkillSpecializationSelectionState
       padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: const BoxDecoration(
         color: Color(0xFFF7F8FA),
-        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+        borderRadius: BorderRadius.all(
+          Radius.circular(6.0),
+        ),
       ),
       alignment: Alignment.centerLeft,
       child: InkWell(
@@ -180,6 +216,7 @@ class _SkillSpecializationSelectionState
             DraggableScrollableSheet(
               initialChildSize: 0.9,
               builder: (context, scrollController) => ListView.separated(
+                addAutomaticKeepAlives: true,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20.0,
                   vertical: 15.0,
@@ -211,7 +248,7 @@ class _SkillSpecializationSelectionState
           children: [
             Expanded(
               child: Text(
-                plaseholder,
+                placeholder,
                 maxLines: 2,
                 style: TextStyle(
                   fontSize: 16,
@@ -242,18 +279,21 @@ class _SkillSpecializationSelectionState
           builder: (context) {
             return child;
           });
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class SkillSpecializationController {
   SkillSpecializationStore? store;
-  final  Map<String, List<String>>? initialValue;
+  final Map<String, List<String>>? initialValue;
 
   SkillSpecializationController({this.initialValue});
 
-
   setStore(SkillSpecializationStore s) {
     store = s;
-    if(this.initialValue!=null){
+    if (this.initialValue != null) {
       // store.selectedSkills
     }
   }

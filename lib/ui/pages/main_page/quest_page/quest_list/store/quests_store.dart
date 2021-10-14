@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+import 'package:google_maps_webservice/places.dart';
 
 part 'quests_store.g.dart';
 
@@ -55,7 +58,41 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @observable
   String workplaceValue = "distant";
 
+  @observable
+  double latitude = 0.0;
+
+  @observable
+  double longitude = 0.0;
+
   Timer? debounce;
+
+  @observable
+  String locationPlaceName = '';
+
+  ///API_KEY HERE
+  GoogleMapsPlaces _places =
+  GoogleMapsPlaces(apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU");
+
+  @action
+  Future<Null> getPrediction(BuildContext context) async {
+    Prediction? p = await PlacesAutocomplete.show(
+      context: context,
+      ///API_KEY HERE
+      apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU",
+      mode: Mode.overlay,
+      logo: SizedBox(),
+      // Mode.fullscreen
+    );
+    locationPlaceName = p!.description!;
+    displayPrediction(p.placeId);
+  }
+
+  @action
+  Future<Null> displayPrediction(String? p) async {
+    PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p!);
+    latitude = detail.result.geometry!.location.lat;
+    longitude = detail.result.geometry!.location.lng;
+  }
 
   @action
   void setSearchWord(String value) {

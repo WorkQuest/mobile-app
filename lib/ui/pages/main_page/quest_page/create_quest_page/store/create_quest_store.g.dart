@@ -39,6 +39,36 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
+  final _$employmentValueAtom = Atom(name: '_CreateQuestStore.employmentValue');
+
+  @override
+  String get employmentValue {
+    _$employmentValueAtom.reportRead();
+    return super.employmentValue;
+  }
+
+  @override
+  set employmentValue(String value) {
+    _$employmentValueAtom.reportWrite(value, super.employmentValue, () {
+      super.employmentValue = value;
+    });
+  }
+
+  final _$workplaceValueAtom = Atom(name: '_CreateQuestStore.workplaceValue');
+
+  @override
+  String get workplaceValue {
+    _$workplaceValueAtom.reportRead();
+    return super.workplaceValue;
+  }
+
+  @override
+  set workplaceValue(String value) {
+    _$workplaceValueAtom.reportWrite(value, super.workplaceValue, () {
+      super.workplaceValue = value;
+    });
+  }
+
   final _$workplaceAtom = Atom(name: '_CreateQuestStore.workplace');
 
   @override
@@ -325,17 +355,6 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
-  void setLocationPlaceName(String value) {
-    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
-        name: '_CreateQuestStore.setLocationPlaceName');
-    try {
-      return super.setLocationPlaceName(value);
-    } finally {
-      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setAboutQuest(String value) {
     final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
         name: '_CreateQuestStore.setAboutQuest');
@@ -391,9 +410,22 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
+  void emptyField() {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.emptyField');
+    try {
+      return super.emptyField();
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 employment: ${employment},
+employmentValue: ${employmentValue},
+workplaceValue: ${workplaceValue},
 workplace: ${workplace},
 category: ${category},
 categoryValue: ${categoryValue},

@@ -53,11 +53,11 @@ abstract class FilterQuestsStoreBase with Store {
 
   @observable
   ObservableList<String> sortByEmployment = ObservableList.of([
-    "quests.filter.sortByEmployment.selectAll",
-    "quests.filter.sortByEmployment.fullTime",
-    "quests.filter.sortByEmployment.partTime",
-    "quests.filter.sortByEmployment.fixedTerm",
-    "quests.filter.sortByEmployment.contract",
+    "quests.filter.sortByEmployment.selectAll".tr(),
+    "quests.filter.sortByEmployment.fullTime".tr(),
+    "quests.filter.sortByEmployment.partTime".tr(),
+    "quests.filter.sortByEmployment.fixedTerm".tr(),
+    "quests.filter.sortByEmployment.contract".tr(),
   ]);
 
   @observable
