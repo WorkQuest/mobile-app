@@ -24,6 +24,21 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
     });
   }
 
+  final _$validateAtom = Atom(name: '_SMSVerificationStore.validate');
+
+  @override
+  bool get validate {
+    _$validateAtom.reportRead();
+    return super.validate;
+  }
+
+  @override
+  set validate(bool value) {
+    _$validateAtom.reportWrite(value, super.validate, () {
+      super.validate = value;
+    });
+  }
+
   final _$phoneAtom = Atom(name: '_SMSVerificationStore.phone');
 
   @override
@@ -99,6 +114,7 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
   String toString() {
     return '''
 index: ${index},
+validate: ${validate},
 phone: ${phone},
 code: ${code}
     ''';

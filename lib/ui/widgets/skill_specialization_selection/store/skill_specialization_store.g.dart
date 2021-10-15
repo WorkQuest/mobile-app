@@ -40,6 +40,22 @@ mixin _$SkillSpecializationStore on SkillSpecializationStoreBase, Store {
     });
   }
 
+  final _$countSkillsAtom =
+      Atom(name: 'SkillSpecializationStoreBase.countSkills');
+
+  @override
+  bool get countSkills {
+    _$countSkillsAtom.reportRead();
+    return super.countSkills;
+  }
+
+  @override
+  set countSkills(bool value) {
+    _$countSkillsAtom.reportWrite(value, super.countSkills, () {
+      super.countSkills = value;
+    });
+  }
+
   final _$allSpicesAtom = Atom(name: 'SkillSpecializationStoreBase.allSpices');
 
   @override
@@ -126,6 +142,7 @@ mixin _$SkillSpecializationStore on SkillSpecializationStoreBase, Store {
     return '''
 numberOfSpices: ${numberOfSpices},
 isLoading: ${isLoading},
+countSkills: ${countSkills},
 allSpices: ${allSpices},
 selectedSpices: ${selectedSpices},
 selectedSkills: ${selectedSkills}

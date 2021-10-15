@@ -7,6 +7,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewPage extends StatefulWidget {
   final String inputUrlRoute;
+
   const WebViewPage(this.inputUrlRoute);
 
   static const String routeName = "/webViewPage";
@@ -183,7 +184,8 @@ class NavigationControls extends StatelessWidget {
                         // ignore: deprecated_member_use
                         Scaffold.of(context).showSnackBar(
                           const SnackBar(
-                              content: Text("No forward history item")),
+                            content: Text("No forward history item"),
+                          ),
                         );
                         return;
                       }

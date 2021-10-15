@@ -1,4 +1,6 @@
+import 'package:app/model/profile_response/social_network.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/portfolio_details_page.dart';
+import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -229,43 +231,6 @@ Widget appBarTitle(String name) {
             ),
           ),
         ),
-        // Positioned(
-        //   bottom: 42.0,
-        //   left: 0.0,
-        //   child: AnimatedOpacity(
-        //     duration: Duration(seconds: 3),
-        //     opacity: 0.5,
-        //     child: Row(
-        //       children: [
-        //         Icon(
-        //           Icons.star,
-        //           color: Color(0xFFE8D20D),
-        //           size: 15.0,
-        //         ),
-        //         Icon(
-        //           Icons.star,
-        //           color: Color(0xFFE8D20D),
-        //           size: 15.0,
-        //         ),
-        //         Icon(
-        //           Icons.star,
-        //           color: Color(0xFFE8D20D),
-        //           size: 15.0,
-        //         ),
-        //         Icon(
-        //           Icons.star,
-        //           color: Color(0xFFE8D20D),
-        //           size: 15.0,
-        //         ),
-        //         Icon(
-        //           Icons.star,
-        //           color: Color(0xFFE9EDF2),
-        //           size: 15.0,
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
         Positioned(
           bottom: 0.0,
           left: 0.0,
@@ -503,12 +468,11 @@ Widget rating({
 ///SocialMedia Accounts Widget
 ///
 
-Widget socialAccounts({
-  required String? facebook,
-  required String? twitter,
-  required String? instagram,
-  required String? linkedin,
-}) {
+Widget socialAccounts({SocialNetwork? socialNetwork}) {
+  final facebook = socialNetwork?.facebook;
+  final instagram = socialNetwork?.instagram;
+  final twitter = socialNetwork?.twitter;
+  final linkedin = socialNetwork?.linkedin;
   return Padding(
     padding: const EdgeInsets.only(
       top: 20.0,
@@ -529,7 +493,7 @@ Widget socialAccounts({
               color: Color(0xFFF7F8FA),
             ),
             child: IconButton(
-              onPressed: facebook != null
+              onPressed:facebook != null
                   ? () {
                       _launchSocial('fb://profile/$facebook',
                           'https://www.facebook.com/$facebook');
@@ -581,8 +545,11 @@ Widget socialAccounts({
                       _launchSocial("", 'https://www.instagram.com/$instagram');
                     }
                   : null,
-              icon: SvgPicture.asset(
-                "assets/instagram.svg",
+              icon: GradientIconInstagram(
+                SvgPicture.asset(
+                  "assets/instagram.svg",
+                ),
+                20.0,
               ),
             ),
           ),
@@ -616,13 +583,24 @@ Widget socialAccounts({
 
 void _launchSocial(String url, String fallbackUrl) async {
   try {
-    bool launched =
-        await launch(url, forceSafariVC: false, forceWebView: false);
+    bool launched = await launch(
+      url,
+      forceSafariVC: false,
+      forceWebView: false,
+    );
     if (!launched) {
-      await launch(fallbackUrl, forceSafariVC: false, forceWebView: false);
+      await launch(
+        fallbackUrl,
+        forceSafariVC: false,
+        forceWebView: false,
+      );
     }
   } catch (e) {
-    await launch(fallbackUrl, forceSafariVC: false, forceWebView: false);
+    await launch(
+      fallbackUrl,
+      forceSafariVC: false,
+      forceWebView: false,
+    );
   }
 }
 

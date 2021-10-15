@@ -235,19 +235,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Align(
-          alignment: Alignment.center,
-          child: Container(
-            height: 5.0,
-            width: 70.0,
-            decoration: BoxDecoration(
-              color: Colors.black12,
-              borderRadius: BorderRadius.all(
-                Radius.circular(15.0),
-              ),
-            ),
-          ),
-        ),
+
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
