@@ -6,6 +6,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/utils/validator.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,11 @@ class ChangeProfilePage extends StatefulWidget {
   _ChangeProfilePageState createState() => _ChangeProfilePageState();
 }
 
-class _ChangeProfilePageState extends State<ChangeProfilePage> {
+class _ChangeProfilePageState extends State<ChangeProfilePage>
+    with AutomaticKeepAliveClientMixin {
   ProfileMeStore? profile;
   late ChangeProfileStore pageStore;
+  final _formKey = GlobalKey<FormState>();
 
   SkillSpecializationController? _controller;
   KnowledgeWorkSelectionController? _controllerKnowledge;
@@ -55,7 +58,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
+      key: _formKey,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
@@ -100,139 +105,138 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   Widget getBody() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ListView(
-        children: [
-          changeImage(),
-          inputBody(
-            title: "labels.firstName".tr(),
-            initialValue: pageStore.userData.firstName,
-            onChanged: (text) => pageStore.userData.firstName = text,
-            validator: null,
-          ),
-          inputBody(
-            title: "labels.lastName".tr(),
-            initialValue: pageStore.userData.lastName ?? "",
-            onChanged: (text) => pageStore.userData.lastName = text,
-            validator: null,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "quests.address".tr(),
-                  style: TextStyle(
-                    fontSize: 16,
+      child: Form(
+        child: ListView(
+          addAutomaticKeepAlives: true,
+          children: [
+            changeImage(),
+            inputBody(
+              title: "labels.firstName".tr(),
+              initialValue: pageStore.userData.firstName,
+              onChanged: (text) => pageStore.userData.firstName = text,
+              validator: Validators.firstNameValidator,
+            ),
+            inputBody(
+              title: "labels.lastName".tr(),
+              initialValue: pageStore.userData.lastName ?? "",
+              onChanged: (text) => pageStore.userData.lastName = text,
+              validator: Validators.lastNameValidator,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "quests.address".tr(),
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
                   ),
                 ),
-              ),
-              Observer(
-                builder: (_) => GestureDetector(
-                  onTap: () {
-                    pageStore.getPrediction(context);
-                  },
-                  child: Container(
-                    height: 50,
+                Observer(
+                  builder: (_) => GestureDetector(
+                    onTap: () {
+                      pageStore.getPrediction(context);
+                    },
                     child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0xFFF7F8FA),
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(6.0),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 15,
+                      height: 50,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Color(0xFFF7F8FA),
+                            width: 2,
                           ),
-                          Flexible(
-                            child: pageStore.address.isNotEmpty
-                                ? Text(
-                                    pageStore.address,
-                                    overflow: TextOverflow.fade,
-                                  )
-                                : Text(
-                                    pageStore
-                                            .userData.additionalInfo!.address ??
-                                        "",
-                                    overflow: TextOverflow.fade,
-                                  ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(6.0),
                           ),
-                        ],
+                        ),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Flexible(
+                              child: Text(
+                                pageStore.userData.additionalInfo!.address ??
+                                    "",
+                                overflow: TextOverflow.fade,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          inputBody(
-            title: "modals.phoneNumber".tr(),
-            initialValue:
-                pageStore.userData.additionalInfo?.secondMobileNumber ?? "",
-            onChanged: (text) =>
-                pageStore.userData.additionalInfo?.secondMobileNumber = text,
-            validator: null,
-          ),
-          inputBody(
-            title: "signUp.email".tr(),
-            initialValue: pageStore.userData.email ?? "",
-            onChanged: (text) => pageStore.userData.email,
-            validator: null,
-          ),
-          inputBody(
-            title: "modals.title".tr(),
-            initialValue: pageStore.userData.additionalInfo!.description ?? "",
-            onChanged: (text) =>
-                pageStore.userData.additionalInfo!.description = text,
-            maxLines: null,
-            validator: null,
-          ),
-          if (pageStore.userData.role == UserRole.Worker) fieldForWorker(),
-          inputBody(
-            title: "settings.twitterUsername".tr(),
-            initialValue:
-                pageStore.userData.additionalInfo!.socialNetwork?.twitter ?? "",
-            onChanged: (text) => pageStore
-                .userData.additionalInfo!.socialNetwork?.twitter = text,
-            validator: null,
-          ),
-          inputBody(
-            title: "settings.facebookUsername".tr(),
-            initialValue:
-                pageStore.userData.additionalInfo!.socialNetwork?.facebook ??
-                    "",
-            onChanged: (text) => pageStore
-                .userData.additionalInfo!.socialNetwork?.facebook = text,
-            validator: null,
-          ),
-          inputBody(
-            title: "settings.linkedInUsername".tr(),
-            initialValue:
-                pageStore.userData.additionalInfo!.socialNetwork?.linkedin ??
-                    "",
-            onChanged: (text) => pageStore
-                .userData.additionalInfo!.socialNetwork?.linkedin = text,
-            validator: null,
-          ),
-          inputBody(
-            title: "settings.instagramUsername".tr(),
-            initialValue:
-                pageStore.userData.additionalInfo!.socialNetwork?.instagram ??
-                    "",
-            onChanged: (text) => pageStore
-                .userData.additionalInfo!.socialNetwork?.instagram = text,
-            validator: null,
-          ),
-          const SizedBox(height: 20),
-        ],
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            inputBody(
+              title: "modals.phoneNumber".tr(),
+              initialValue:
+                  pageStore.userData.additionalInfo?.secondMobileNumber ?? "",
+              onChanged: (text) =>
+                  pageStore.userData.additionalInfo?.secondMobileNumber = text,
+              validator: Validators.phoneNumberValidator,
+            ),
+            inputBody(
+              title: "signUp.email".tr(),
+              initialValue: pageStore.userData.email ?? "",
+              onChanged: (text) => pageStore.userData.email,
+              validator: Validators.emailValidator,
+            ),
+            inputBody(
+              title: "modals.title".tr(),
+              initialValue:
+                  pageStore.userData.additionalInfo!.description ?? "",
+              onChanged: (text) =>
+                  pageStore.userData.additionalInfo!.description = text,
+              maxLines: null,
+              validator: Validators.descriptionValidator,
+            ),
+            if (pageStore.userData.role == UserRole.Worker) fieldForWorker(),
+            inputBody(
+              title: "settings.twitterUsername".tr(),
+              initialValue:
+                  pageStore.userData.additionalInfo!.socialNetwork?.twitter ??
+                      "",
+              onChanged: (text) => pageStore
+                  .userData.additionalInfo!.socialNetwork?.twitter = text,
+              validator: Validators.nicknameTwitterValidator,
+            ),
+            inputBody(
+              title: "settings.facebookUsername".tr(),
+              initialValue:
+                  pageStore.userData.additionalInfo!.socialNetwork?.facebook ??
+                      "",
+              onChanged: (text) => pageStore
+                  .userData.additionalInfo!.socialNetwork?.facebook = text,
+              validator: Validators.nicknameFacebookValidator,
+            ),
+            inputBody(
+              title: "settings.linkedInUsername".tr(),
+              initialValue:
+                  pageStore.userData.additionalInfo!.socialNetwork?.linkedin ??
+                      "",
+              onChanged: (text) => pageStore
+                  .userData.additionalInfo!.socialNetwork?.linkedin = text,
+              validator: Validators.nicknameLinkedInValidator,
+            ),
+            inputBody(
+              title: "settings.instagramUsername".tr(),
+              initialValue:
+                  pageStore.userData.additionalInfo!.socialNetwork?.instagram ??
+                      "",
+              onChanged: (text) => pageStore
+                  .userData.additionalInfo!.socialNetwork?.instagram = text,
+              validator: Validators.nicknameLinkedInValidator,
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
@@ -288,7 +292,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           title: "settings.costPerHour".tr(),
           initialValue: "",
           onChanged: (text) => text,
-          validator: null,
+          validator: Validators.nicknameTwitterValidator,
         ),
         dropDownMenu(
           title: "settings.distantWork".tr(),
@@ -316,7 +320,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     required String title,
     required String initialValue,
     required void Function(String)? onChanged,
-    required String Function(String?)? validator,
+    required String? Function(String?) validator,
     int? maxLines = 1,
   }) {
     return Column(
@@ -425,24 +429,26 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   onSave() async {
-    pageStore.userData.additionalInfo?.educations =
-        _controllerKnowledge!.getListMap();
-    pageStore.userData.additionalInfo?.workExperiences =
-        _controllerWork!.getListMap();
-    pageStore.userData.additionalInfo!.address = pageStore.address;
-    if (!profile!.isLoading)
-      pageStore.userData.skillFilters =
-          _controller!.getSkillAndSpecialization();
-    profile!.changeProfile(
-      pageStore.userData,
-      media: pageStore.media,
-    );
-    if (profile!.isSuccess) {
-      await successAlert(
-        context,
-        "settings.profileChanged".tr(),
+    if (_formKey.currentState?.validate() ?? false) {
+      pageStore.userData.additionalInfo?.educations =
+          _controllerKnowledge!.getListMap();
+      pageStore.userData.additionalInfo?.workExperiences =
+          _controllerWork!.getListMap();
+      pageStore.userData.additionalInfo!.address = pageStore.address;
+      if (!profile!.isLoading)
+        pageStore.userData.skillFilters =
+            _controller!.getSkillAndSpecialization();
+      profile!.changeProfile(
+        pageStore.userData,
+        media: pageStore.media,
       );
-      Navigator.pop(context);
+      if (profile!.isSuccess) {
+        await successAlert(
+          context,
+          "settings.profileChanged".tr(),
+        );
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -528,4 +534,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       builder: (context) {
         return child;
       });
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
