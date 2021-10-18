@@ -12,6 +12,8 @@ import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/creat
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_employer.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_worker.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/quest_employer_page.dart';
@@ -69,6 +71,7 @@ class Routes {
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    final role = getIt.get<ProfileMeStore>().userData?.role;
     switch (settings.name) {
       case SignInPage.routeName:
         return MaterialPageRoute(
@@ -163,6 +166,34 @@ class Routes {
           ),
         );
 
+      case QuestDetails.routeName:
+        return MaterialPageRoute(
+          builder: (context) {
+            final role = getIt.get<ProfileMeStore>().userData?.role;
+            final quest = settings.arguments as BaseQuestResponse;
+            if (role == UserRole.Employer)
+              return Provider(
+                create: (context) => getIt.get<EmployerStore>(),
+                child: Directionality(
+                  textDirection: checkDirection(context),
+                  child: QuestEmployer(quest),
+                ),
+              );
+            else {
+              return Provider(
+                create: (context) => getIt.get<WorkerStore>(),
+                child: Directionality(
+                  textDirection: checkDirection(context),
+                  child: QuestWorker(
+                    quest,
+                    getIt.get<ProfileMeStore>().userData!.id == quest.userId,
+                  ),
+                ),
+              );
+            }
+          },
+        );
+
       case FilterQuestsPage.routeName:
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
@@ -177,8 +208,6 @@ class Routes {
             ),
           ),
         );
-
-
 
       case ChooseRolePage.routeName:
         return MaterialPageRoute(
@@ -222,8 +251,10 @@ class Routes {
               ),
             ],
             child: Directionality(
-                textDirection: checkDirection(context),
-                child: ProfileReviews()),
+              textDirection: checkDirection(context),
+              child:
+                  role == UserRole.Worker ? WorkerProfile() : EmployerProfile(),
+            ),
           ),
         );
 
@@ -424,14 +455,9 @@ class Routes {
           ),
         );
     }
-
-  }
-  generateRouteEmplouer(settings){
-
-
-  }
-  generateRouteWorker(settings){
-
   }
 
+  generateRouteEmplouer(settings) {}
+
+  generateRouteWorker(settings) {}
 }
