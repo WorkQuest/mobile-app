@@ -134,9 +134,9 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
 
   @override
   Future<Null> getPrediction(
-      BuildContext context, CameraPosition _initialCameraPosition) {
+      BuildContext context, GoogleMapController controller) {
     return _$getPredictionAsyncAction
-        .run(() => super.getPrediction(context, _initialCameraPosition));
+        .run(() => super.getPrediction(context, controller));
   }
 
   final _$getQuestsAsyncAction = AsyncAction('_QuestMapStore.getQuests');

@@ -275,7 +275,7 @@ class Confirm2FAPages extends StatelessWidget {
         ///Step 2
         Column(
           children: [
-            Text("modals.pleaseSaveThisKey".tr()),
+            Text("modals.pleaseSaveThisKey".tr(),),
             const SizedBox(
               height: 10.0,
             ),
@@ -302,7 +302,7 @@ class Confirm2FAPages extends StatelessWidget {
                     splashRadius: 20.0,
                     onPressed: () => Clipboard.setData(
                       new ClipboardData(
-                        text: "label.email".tr(),
+                        text: store.googleAuthenticatorSecretCode,
                       ),
                     ).then(
                       (_) {

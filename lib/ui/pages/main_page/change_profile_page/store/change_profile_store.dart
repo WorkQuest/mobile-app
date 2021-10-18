@@ -19,11 +19,10 @@ abstract class ChangeProfileStoreBase with Store {
   DrishyaEntity? media;
 
   @observable
-  String address = "";
+  late String address = userData.additionalInfo?.address ?? "";
 
   ///API_KEY HERE
-  GoogleMapsPlaces _places =
-      GoogleMapsPlaces(apiKey: "///API_KEY HERE");
+  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: "///API_KEY HERE");
 
   @action
   Future<Null> getPrediction(BuildContext context) async {
@@ -45,9 +44,6 @@ abstract class ChangeProfileStoreBase with Store {
     PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p!);
     userData.location!.latitude = detail.result.geometry!.location.lat;
     userData.location!.longitude = detail.result.geometry!.location.lng;
-
-    print(userData.location!.latitude);
-    print(userData.location!.longitude);
   }
 
   bool areThereAnyChanges(ProfileMeResponse? userData) {

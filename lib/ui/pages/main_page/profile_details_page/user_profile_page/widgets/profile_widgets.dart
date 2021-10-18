@@ -493,15 +493,19 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
               color: Color(0xFFF7F8FA),
             ),
             child: IconButton(
-              onPressed:facebook != null
+              onPressed: facebook != null
                   ? () {
                       _launchSocial('fb://profile/$facebook',
                           'https://www.facebook.com/$facebook');
                     }
                   : null,
-              icon: SvgPicture.asset(
-                "assets/facebook_icon.svg",
-              ),
+              icon: facebook != null
+                  ? SvgPicture.asset(
+                      "assets/facebook_icon.svg",
+                    )
+                  : SvgPicture.asset(
+                      "assets/facebook_icon_disabled.svg",
+                    ),
             ),
           ),
         ),
@@ -523,9 +527,13 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
                       _launchSocial("", 'https://twitter.com/$twitter');
                     }
                   : null,
-              icon: SvgPicture.asset(
-                "assets/twitter_icon.svg",
-              ),
+              icon: twitter != null
+                  ? SvgPicture.asset(
+                      "assets/twitter_icon.svg",
+                    )
+                  : SvgPicture.asset(
+                      "assets/twitter_icon_disabled.svg",
+                    ),
             ),
           ),
         ),
@@ -545,12 +553,16 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
                       _launchSocial("", 'https://www.instagram.com/$instagram');
                     }
                   : null,
-              icon: GradientIconInstagram(
-                SvgPicture.asset(
-                  "assets/instagram.svg",
-                ),
-                20.0,
-              ),
+              icon: instagram != null
+                  ? GradientIconInstagram(
+                      SvgPicture.asset(
+                        "assets/instagram.svg",
+                      ),
+                      20.0,
+                    )
+                  : SvgPicture.asset(
+                      "assets/instagram_disabled.svg",
+                    ),
             ),
           ),
         ),
@@ -570,9 +582,13 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
                       _launchSocial("", 'https://linkedin.com/$linkedin');
                     }
                   : null,
-              icon: SvgPicture.asset(
-                "assets/linkedin_icon.svg",
-              ),
+              icon: linkedin != null
+                  ? SvgPicture.asset(
+                      "assets/linkedin_icon.svg",
+                    )
+                  : SvgPicture.asset(
+                      "assets/linkedin_icon_disabled.svg",
+                    ),
             ),
           ),
         ),
@@ -619,48 +635,55 @@ Widget contactDetails({
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Wrap(
+        Row(
           children: [
             Icon(
               Icons.location_pin,
               size: 20.0,
               color: const Color(0xFF7C838D),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                location,
-                overflow: TextOverflow.fade,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: const Color(0xFF7C838D),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  location,
+                  overflow: TextOverflow.fade,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: const Color(0xFF7C838D),
+                  ),
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(
-          height: 10.0,
-        ),
-        Row(
-          children: [
-            Icon(
-              Icons.phone,
-              size: 20.0,
-              color: const Color(0xFF7C838D),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                number,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF7C838D),
-                ),
+        if (number.isNotEmpty)
+          Column(
+            children: [
+              const SizedBox(
+                height: 10.0,
               ),
-            ),
-          ],
-        ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.phone,
+                    size: 20.0,
+                    color: const Color(0xFF7C838D),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      number,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF7C838D),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         if (secondNumber.isNotEmpty)
           Column(
             children: [
@@ -698,13 +721,16 @@ Widget contactDetails({
               size: 20.0,
               color: Color(0xFF7C838D),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                email,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF7C838D),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  email,
+                  overflow: TextOverflow.fade,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF7C838D),
+                  ),
                 ),
               ),
             ),

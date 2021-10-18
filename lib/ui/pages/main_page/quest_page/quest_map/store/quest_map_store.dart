@@ -52,33 +52,35 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
 
   ///API_KEY HERE
   GoogleMapsPlaces _places =
-      GoogleMapsPlaces(apiKey: "API_KEY HERE");
+      GoogleMapsPlaces(apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU");
 
   @action
   Future<Null> getPrediction(
     BuildContext context,
-    CameraPosition _initialCameraPosition,
+    GoogleMapController controller,
   ) async {
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
 
       ///API_KEY HERE
-      apiKey: "API_KEY HERE",
+      apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU",
       mode: Mode.overlay,
       logo: SizedBox(),
       hint: "quests.ui.search".tr(),
     );
-    address = p!.description!;
-    PlacesDetailsResponse detail =
-        await _places.getDetailsByPlaceId(p.placeId!);
-    _initialCameraPosition = CameraPosition(
-      bearing: 0,
-      target: LatLng(
-        detail.result.geometry!.location.lat,
-        detail.result.geometry!.location.lng,
-      ),
-      zoom: 17.0,
-    );
+    if (p != null) {
+      address = p.description!;
+      PlacesDetailsResponse detail =
+          await _places.getDetailsByPlaceId(p.placeId!);
+      controller.moveCamera(
+        CameraUpdate.newLatLng(
+          LatLng(
+            detail.result.geometry!.location.lat,
+            detail.result.geometry!.location.lng,
+          ),
+        ),
+      );
+    }
   }
 
   @action

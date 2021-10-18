@@ -26,10 +26,12 @@ class PortfolioModel {
         id: json["id"],
         userId: json["userId"],
         title: json["title"] ?? "No title",
-        description: json["description"] ?? "No title" ,
+        description: json["description"] ?? "No title",
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
-        medias:json["medias"]==null?[]: List<Media>.from(json["medias"].map((x) => Media.fromJson(x))),
+        medias: json["medias"] == null
+            ? []
+            : List<Media>.from(json["medias"].map((x) => Media.fromJson(x))),
         user: User.fromJson(json["user"]),
       );
 
@@ -86,7 +88,15 @@ class User {
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        avatar: Media.fromJson(json["avatar"]),
+        avatar: Media.fromJson(
+          json["avatar"] ??
+              {
+                "id": "",
+                "url":
+                    "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                "contentType": "",
+              },
+        ),
       );
 
   Map<String, dynamic> toJson() => {

@@ -24,7 +24,8 @@ class CreateQuestPage extends StatefulWidget {
   _CreateQuestPageState createState() => _CreateQuestPageState();
 }
 
-class _CreateQuestPageState extends State<CreateQuestPage> with AutomaticKeepAliveClientMixin {
+class _CreateQuestPageState extends State<CreateQuestPage>
+    with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     if (widget.questInfo != null) {
@@ -85,12 +86,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> with AutomaticKeepAli
                               },
                               items: store.priorityList
                                   .map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: new Text(value),
-                                );
-                              }).toList(),
+                                (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: new Text(value),
+                                  );
+                                },
+                              ).toList(),
                               icon: Icon(
                                 Icons.arrow_drop_down,
                                 size: 30,
@@ -163,74 +165,72 @@ class _CreateQuestPageState extends State<CreateQuestPage> with AutomaticKeepAli
                       ),
                     ),
                     Observer(
-                        builder: (context) => Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
+                      builder: (context) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "quests.runtime".tr(),
+                              ),
+                              Checkbox(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6.0),
+                                ),
+                                value: store.hasRuntime,
+                                onChanged: store.setRuntime,
+                              ),
+                            ],
+                          ),
+                          if (store.hasRuntime)
+                            titledField(
+                              "quests.runtime".tr(),
+                              Container(
+                                height: 50,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFF7F8FA),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(6.0),
+                                  ),
+                                ),
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Text(
-                                      "quests.runtime".tr(),
+                                      store.dateString,
                                     ),
-                                    Checkbox(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(6.0),
+                                    Spacer(),
+                                    IconButton(
+                                      alignment: AlignmentDirectional.centerEnd,
+                                      onPressed: () {
+                                        modalBottomSheet(
+                                          SizedBox(
+                                            height: 250,
+                                            child: CupertinoDatePicker(
+                                              mode:
+                                                  CupertinoDatePickerMode.date,
+                                              minimumDate: DateTime.now(),
+                                              onDateTimeChanged:
+                                                  store.setDateTime,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      icon: Icon(
+                                        Icons.calendar_today,
                                       ),
-                                      value: store.hasRuntime,
-                                      onChanged: store.setRuntime,
                                     ),
                                   ],
                                 ),
-                                if (store.hasRuntime)
-                                  titledField(
-                                    "quests.runtime".tr(),
-                                    Container(
-                                      height: 50,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFF7F8FA),
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(6.0),
-                                        ),
-                                      ),
-                                      alignment: Alignment.centerLeft,
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Text(
-                                            store.dateString,
-                                          ),
-                                          Spacer(),
-                                          IconButton(
-                                            alignment:
-                                                AlignmentDirectional.centerEnd,
-                                            onPressed: () {
-                                              modalBottomSheet(
-                                                SizedBox(
-                                                  height: 250,
-                                                  child: CupertinoDatePicker(
-                                                    mode:
-                                                        CupertinoDatePickerMode
-                                                            .date,
-                                                    minimumDate: DateTime.now(),
-                                                    onDateTimeChanged:
-                                                        store.setDateTime,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            icon: Icon(
-                                              Icons.calendar_today,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            )),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
 
                     titledField(
                       "quests.employment.title".tr(),

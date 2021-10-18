@@ -102,7 +102,6 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: workerWidgets(),
                     ),
-                    Text("Employee Details Text"),
 
                     ///Social Accounts
                     socialAccounts(

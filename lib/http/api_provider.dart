@@ -668,14 +668,21 @@ extension Portfolio on ApiProvider {
   Future<List<PortfolioModel>> getPortfolio({
     required String userId,
   }) async {
-    final responseData = await _httpClient.get(
-      query: '/v1/user/$userId/portfolio/cases',
-    );
-    return List<PortfolioModel>.from(
-      responseData.map(
-        (x) => PortfolioModel.fromJson(x),
-      ),
-    );
+    try {
+      final responseData = await _httpClient.get(
+        query: '/v1/user/$userId/portfolio/cases',
+      );
+      print("TAG$responseData");
+      return List<PortfolioModel>.from(
+        responseData.map(
+          (x) => PortfolioModel.fromJson(x),
+        ),
+      );
+    }  catch (e,stack) {
+      print("ERROR $e");
+      print("ERROR $stack");
+      return [];
+    }
   }
 }
 

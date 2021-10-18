@@ -125,7 +125,8 @@ class _QuestMapState extends State<QuestMap> {
             Observer(
               builder: (_) => GestureDetector(
                 onTap: () {
-                  mapStore!.getPrediction(context, _initialCameraPosition!);
+                  mapStore!.getPrediction(context, _controller);
+
                 },
                 child: Container(
                   height: 60,
