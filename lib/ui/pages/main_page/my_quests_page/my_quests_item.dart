@@ -10,8 +10,7 @@ import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class MyQuestsItem extends StatelessWidget {
-  const MyQuestsItem(
-    this.questInfo, {
+  const MyQuestsItem(this.questInfo, {
     this.itemType = QuestItemPriorityType.Active,
     this.isExpanded = false,
   });
@@ -34,21 +33,63 @@ class MyQuestsItem extends StatelessWidget {
         //TODO:Check and correct
         if (oldStar != questInfo.star) {
           if (questInfo.star == false) {
-            context.read<MyQuestStore>().starred!.remove(questInfo);
-            context.read<MyQuestStore>().active!.remove(questInfo);
-            context.read<MyQuestStore>().active!.add(questInfo);
-            context.read<MyQuestStore>().invited!.remove(questInfo);
-            context.read<MyQuestStore>().invited!.add(questInfo);
-            context.read<MyQuestStore>().performed!.remove(questInfo);
-            context.read<MyQuestStore>().performed!.add(questInfo);
+            context
+                .read<MyQuestStore>()
+                .starred!
+                .remove(questInfo);
+            context
+                .read<MyQuestStore>()
+                .active!
+                .remove(questInfo);
+            context
+                .read<MyQuestStore>()
+                .active!
+                .add(questInfo);
+            context
+                .read<MyQuestStore>()
+                .invited!
+                .remove(questInfo);
+            context
+                .read<MyQuestStore>()
+                .invited!
+                .add(questInfo);
+            context
+                .read<MyQuestStore>()
+                .performed!
+                .remove(questInfo);
+            context
+                .read<MyQuestStore>()
+                .performed!
+                .add(questInfo);
           } else {
-            context.read<MyQuestStore>().starred!.add(questInfo);
-            context.read<MyQuestStore>().active!.remove(questInfo);
-            context.read<MyQuestStore>().active!.add(questInfo);
-            context.read<MyQuestStore>().invited!.remove(questInfo);
-            context.read<MyQuestStore>().invited!.add(questInfo);
-            context.read<MyQuestStore>().performed!.remove(questInfo);
-            context.read<MyQuestStore>().performed!.add(questInfo);
+            context
+                .read<MyQuestStore>()
+                .starred!
+                .add(questInfo);
+            context
+                .read<MyQuestStore>()
+                .active!
+                .remove(questInfo);
+            context
+                .read<MyQuestStore>()
+                .active!
+                .add(questInfo);
+            context
+                .read<MyQuestStore>()
+                .invited!
+                .remove(questInfo);
+            context
+                .read<MyQuestStore>()
+                .invited!
+                .add(questInfo);
+            context
+                .read<MyQuestStore>()
+                .performed!
+                .remove(questInfo);
+            context
+                .read<MyQuestStore>()
+                .performed!
+                .add(questInfo);
           }
         }
 
@@ -56,42 +97,78 @@ class MyQuestsItem extends StatelessWidget {
         if (oldStatus != questInfo.status) {
           switch (oldStatus) {
             case 0:
-              context.read<MyQuestStore>().invited!.remove(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .invited!
+                  .remove(questInfo);
               return;
             case 1:
-              context.read<MyQuestStore>().active!.remove(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .active!
+                  .remove(questInfo);
               return;
             case 3:
-              context.read<MyQuestStore>().active!.remove(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .active!
+                  .remove(questInfo);
               return;
             case 4:
-              context.read<MyQuestStore>().invited!.remove(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .invited!
+                  .remove(questInfo);
               return;
             case 5:
-              context.read<MyQuestStore>().active!.remove(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .active!
+                  .remove(questInfo);
               return;
             case 6:
-              context.read<MyQuestStore>().performed!.remove(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .performed!
+                  .remove(questInfo);
               return;
           }
           switch (questInfo.status) {
             case 0:
-              context.read<MyQuestStore>().invited!.add(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .invited!
+                  .add(questInfo);
               return;
             case 1:
-              context.read<MyQuestStore>().active!.add(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .active!
+                  .add(questInfo);
               return;
             case 3:
-              context.read<MyQuestStore>().active!.add(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .active!
+                  .add(questInfo);
               return;
             case 4:
-              context.read<MyQuestStore>().invited!.add(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .invited!
+                  .add(questInfo);
               return;
             case 5:
-              context.read<MyQuestStore>().active!.add(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .active!
+                  .add(questInfo);
               return;
             case 6:
-              context.read<MyQuestStore>().performed!.add(questInfo);
+              context
+                  .read<MyQuestStore>()
+                  .performed!
+                  .add(questInfo);
               return;
           }
         }
@@ -130,7 +207,10 @@ class MyQuestsItem extends StatelessWidget {
               height: 17.5,
             ),
             if (questInfo.userId !=
-                    context.read<ProfileMeStore>().userData!.id &&
+                context
+                    .read<ProfileMeStore>()
+                    .userData!
+                    .id &&
                 questInfo.status != 5 &&
                 questInfo.status != 6)
               Row(
@@ -266,10 +346,11 @@ class MyQuestsItem extends StatelessWidget {
           ),
           child: Row(
             children: [
+
               ///Invited here
 
               Text(
-                "quests.youInvited".tr(),
+                "quests.youInvited".tr() ,
                 style: TextStyle(color: Colors.white),
               ),
             ],

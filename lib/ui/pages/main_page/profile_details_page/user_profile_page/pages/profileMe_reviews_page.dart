@@ -1,14 +1,14 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/profile_widgets.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
-import '../profile_page_extensions.dart';
+import '../widgets/profile_page_extensions.dart';
 
 class ProfileReviews extends StatefulWidget {
   static const String routeName = "/profileReviewPage";
@@ -18,7 +18,7 @@ class ProfileReviews extends StatefulWidget {
 }
 
 /// View Your own profile
-class ProfileReviewsState extends State<ProfileReviews>
+class ProfileReviewsState<T extends StatefulWidget> extends State<T>
     with SingleTickerProviderStateMixin {
   final TextStyle style = TextStyle(
     color: Colors.black,
@@ -65,6 +65,15 @@ class ProfileReviewsState extends State<ProfileReviews>
     );
   }
 
+  @protected
+  List<Widget> workerWidgets() => [];
+
+  @protected
+  Widget questPortfolio() => SizedBox.shrink();
+
+  @protected
+  String tabTitle = "";
+
   @override
   Widget build(BuildContext context) {
     final userStore = context.read<ProfileMeStore>();
@@ -88,13 +97,12 @@ class ProfileReviewsState extends State<ProfileReviews>
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    userStore.userData!.role == UserRole.Worker
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: workerWidgets(),
-                          )
-                        : Text("Employee Details"),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: workerWidgets(),
+                    ),
+                    Text("Employee Details Text"),
 
                     ///Social Accounts
                     socialAccounts(
@@ -104,13 +112,14 @@ class ProfileReviewsState extends State<ProfileReviews>
 
                     ///Contact Details
                     contactDetails(
-                        location:
-                            userStore.userData?.additionalInfo?.address ?? ' ',
-                        number: userStore.userData?.phone ?? " ",
-                        secondNumber: userStore
-                                .userData?.additionalInfo?.secondMobileNumber ??
-                            "",
-                        email: userStore.userData?.email ?? " "),
+                      location:
+                          userStore.userData?.additionalInfo?.address ?? ' ',
+                      number: userStore.userData?.phone ?? " ",
+                      secondNumber: userStore
+                              .userData?.additionalInfo?.secondMobileNumber ??
+                          "",
+                      email: userStore.userData?.email ?? " ",
+                    ),
                     rating(
                       completedQuests: "12",
                       averageRating: "4.5",
@@ -141,9 +150,7 @@ class ProfileReviewsState extends State<ProfileReviews>
                     ),
                     Tab(
                       child: Text(
-                        userStore.userData!.role == UserRole.Worker
-                            ? "profiler.portfolio".tr()
-                            : "profiler.sidebar.quests".tr(),
+                        tabTitle,
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
@@ -160,7 +167,13 @@ class ProfileReviewsState extends State<ProfileReviews>
             reviewsTab(),
 
             ///Portfolio and Quests
-            questPortfolio()
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Material(
+                color: const Color(0xFFF7F8FA),
+                child: questPortfolio(),
+              ),
+            ),
           ],
         ),
       ),

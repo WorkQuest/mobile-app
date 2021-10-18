@@ -1,5 +1,5 @@
 import 'package:app/model/profile_response/social_network.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/portfolio_details_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';

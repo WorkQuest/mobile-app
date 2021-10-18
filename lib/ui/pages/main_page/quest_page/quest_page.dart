@@ -28,20 +28,3 @@ class _QuestPageState extends State<QuestPage> {
 
   }
 }
-
-// class QuestPage extends StatelessWidget{
-//   final QuestPageStore questPage = QuestPageStore();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Observer(
-//       builder: (_) => IndexedStack(
-//         index: questPage.pageIndex,
-//         children: [
-//           QuestMap(questPage.setQuestListPage),
-//           QuestList(questPage.setMapPage),
-//         ],
-//       ),
-//     );
-//   }
-// }

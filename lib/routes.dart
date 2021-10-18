@@ -8,10 +8,10 @@ import 'package:app/ui/pages/main_page/chat_page/dispute_page/store/dispute_stor
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/create_portfolio_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/portfolio_details_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/pages/portfolio_page/store/portfolio_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/quest_employer_page.dart';
@@ -57,7 +57,6 @@ import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
-
 import 'di/injector.dart';
 import 'ui/pages/main_page/chat_page/dispute_page/dispute_page.dart';
 
@@ -179,33 +178,7 @@ class Routes {
           ),
         );
 
-      case QuestDetails.routeName:
-        return MaterialPageRoute(
-          builder: (context) {
-            final role = getIt.get<ProfileMeStore>().userData?.role;
-            final quest = settings.arguments as BaseQuestResponse;
-            if (role == UserRole.Employer)
-              return Provider(
-                create: (context) => getIt.get<EmployerStore>(),
-                child: Directionality(
-                  textDirection: checkDirection(context),
-                  child: QuestEmployer(quest),
-                ),
-              );
-            else {
-              return Provider(
-                create: (context) => getIt.get<WorkerStore>(),
-                child: Directionality(
-                  textDirection: checkDirection(context),
-                  child: QuestWorker(
-                    quest,
-                    getIt.get<ProfileMeStore>().userData!.id == quest.userId,
-                  ),
-                ),
-              );
-            }
-          },
-        );
+
 
       case ChooseRolePage.routeName:
         return MaterialPageRoute(
@@ -451,6 +424,14 @@ class Routes {
           ),
         );
     }
+
   }
+  generateRouteEmplouer(settings){
+
+
+  }
+  generateRouteWorker(settings){
+
+  }
+
 }
-//
