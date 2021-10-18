@@ -52,7 +52,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
 
   ///API_KEY HERE
   GoogleMapsPlaces _places =
-      GoogleMapsPlaces(apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU");
+      GoogleMapsPlaces(apiKey: "API_KEY HERE");
 
   @action
   Future<Null> getPrediction(
@@ -63,7 +63,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
       context: context,
 
       ///API_KEY HERE
-      apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU",
+      apiKey: "API_KEY HERE",
       mode: Mode.overlay,
       logo: SizedBox(),
       hint: "quests.ui.search".tr(),
