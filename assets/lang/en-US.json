@@ -861,6 +861,7 @@
     },
     "code": "Code",
     "attention": "Attention",
+    "goBack": "If you go back, you won't be able to continue.",
     "error": "Error",
     "unsavedChanges":"There are unsaved changes",
     "dontSave": "Do not Save",

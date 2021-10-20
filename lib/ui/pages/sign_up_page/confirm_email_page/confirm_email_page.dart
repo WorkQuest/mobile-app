@@ -1,5 +1,6 @@
 import 'package:app/ui/pages/sign_up_page/choose_role_page/choose_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
+import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,112 +29,134 @@ class ConfirmEmail extends StatelessWidget {
   Widget build(BuildContext context) {
     final store = context.read<ChooseRoleStore>();
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: CupertinoNavigationBar(
-        previousPageTitle: "  " + "meta.back".tr(),
-        border: Border.fromBorderSide(BorderSide.none),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Observer(builder: (context) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "registration.confirmYourEmail".tr(),
-                  style: TextStyle(
-                    color: Color(0xFF1D2127),
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "registration.emailConfirm".tr(),
-                  style: _style,
-                ),
-                _divider,
-                Text(
-                  "$email",
-                  style: _style.copyWith(
-                    color: Colors.blue,
-                  ),
-                ),
-                _divider,
-                Text(
-                  "registration.emailConfirmTitle".tr(),
-                  style: _style,
-                ),
-                SizedBox(
-                  height: 40.0,
-                ),
-                TextFormField(
-                  onChanged: store.setCode,
-                  decoration: InputDecoration(
-                    hintText: "modals.code".tr(),
-                  ),
-                ),
-                SizedBox(
-                  height: 40.0,
-                ),
-                ObserverListener<ChooseRoleStore>(
-                  onSuccess: () {
-                    Navigator.pushNamed(
-                      context,
-                      ChooseRolePage.routeName,
-                    );
-                  },
-                  child: Observer(
-                    builder: (context) {
-                      return ElevatedButton(
-                        onPressed: store.canSubmitCode
-                            ? () async {
-                                await store.confirmEmail();
-                              }
-                            : null,
-                        child: store.isLoading
-                            ? PlatformActivityIndicator()
-                            : Text("meta.submit".tr()),
-                      );
-                    },
-                  ),
-                ),
-                Spacer(),
-                Padding(
-                  padding: EdgeInsets.only(left: 16.0, bottom: 20.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Didn't get code?",
-                        style: _style,
+    return WillPopScope(
+      onWillPop: () async {
+        return alertDialog(context);
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: CupertinoNavigationBar(
+          previousPageTitle: "  " + "meta.back".tr(),
+          border: Border.fromBorderSide(BorderSide.none),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Observer(
+              builder: (context) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "registration.confirmYourEmail".tr(),
+                      style: TextStyle(
+                        color: Color(0xFF1D2127),
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(
-                        width: 10,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "registration.emailConfirm".tr(),
+                      style: _style,
+                    ),
+                    _divider,
+                    Text(
+                      "$email",
+                      style: _style.copyWith(
+                        color: Colors.blue,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
+                    ),
+                    _divider,
+                    Text(
+                      "registration.emailConfirmTitle".tr(),
+                      style: _style,
+                    ),
+                    SizedBox(
+                      height: 40.0,
+                    ),
+                    TextFormField(
+                      onChanged: store.setCode,
+                      decoration: InputDecoration(
+                        hintText: "modals.code".tr(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 40.0,
+                    ),
+                    ObserverListener<ChooseRoleStore>(
+                      onSuccess: () {
+                        Navigator.pushNamed(
+                          context,
+                          ChooseRolePage.routeName,
+                        );
+                      },
+                      child: Observer(
+                        builder: (context) {
+                          return ElevatedButton(
+                            onPressed: store.canSubmitCode
+                                ? () async {
+                                    await store.confirmEmail();
+                                  }
+                                : null,
+                            child: store.isLoading
+                                ? PlatformActivityIndicator()
+                                : Text(
+                                    "meta.submit".tr(),
+                                  ),
+                          );
                         },
-                        child: Text(
-                          "Change Email",
-                          style: _style.copyWith(color: Colors.blue),
-                        ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          }),
+                    ),
+                    Spacer(),
+                    Padding(
+                      padding: EdgeInsets.only(left: 16.0, bottom: 20.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Didn't get code?",
+                            style: _style,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              "Change Email",
+                              style: _style.copyWith(color: Colors.blue),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  Future<bool> alertDialog(BuildContext context) async {
+    dialog(
+      context,
+      title: "modals.attention".tr(),
+      message: "modals.goBack".tr(),
+      confirmAction: () {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      },
+    );
+    return true;
   }
 }
