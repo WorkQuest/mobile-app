@@ -28,6 +28,7 @@ class _QuestListState extends State<QuestList> {
   QuestsStore? questsStore;
 
   ProfileMeStore? profileMeStore;
+  Future<dynamic>? refreshQuest;
 
   final QuestItemPriorityType questItemPriorityType =
       QuestItemPriorityType.Starred;
@@ -43,7 +44,7 @@ class _QuestListState extends State<QuestList> {
       context.read<ChatStore>().initialSetup(
             profileMeStore!.userData!.id,
           );
-      questsStore!.getQuests(profileMeStore!.userData!.id);
+      refreshQuest = questsStore!.getQuests(profileMeStore!.userData!.id);
     });
   }
 
@@ -81,171 +82,179 @@ class _QuestListState extends State<QuestList> {
   }
 
   Widget getBody() {
-    return CustomScrollView(
-      controller: controller,
-      slivers: [
-        CupertinoSliverNavigationBar(
-          largeTitle: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "quests.quests".tr(),
+    return RefreshIndicator(
+      onRefresh: () async {
+        return await refreshQuest;
+      },
+      displacement: 100,
+       edgeOffset: 300,
+      child: CustomScrollView(
+        controller: controller,
+        physics: AlwaysScrollableScrollPhysics(),
+        slivers: [
+          CupertinoSliverNavigationBar(
+            largeTitle: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    "quests.quests".tr(),
+                  ),
                 ),
-              ),
-              InkWell(
-                onTap: () => Navigator.of(
-                  context,
-                  rootNavigator: true,
-                ).pushNamed(
-                  NotificationPage.routeName,
+                InkWell(
+                  onTap: () => Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).pushNamed(
+                    NotificationPage.routeName,
+                  ),
+                  child: const Icon(Icons.notifications_none_outlined),
                 ),
-                child: const Icon(Icons.notifications_none_outlined),
-              ),
-              const SizedBox(width: 20.0)
-            ],
+                const SizedBox(width: 20.0)
+              ],
+            ),
           ),
-        ),
-        SliverAppBar(
-          pinned: true,
-          title: GestureDetector(
-            onTap: () {
-              questsStore!.getPrediction(context);
-            },
-            child: Container(
-              height: 50,
-              decoration: BoxDecoration(
-                color: Color(0xFFF7F8FA),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(6.0),
+          SliverAppBar(
+            pinned: true,
+            title: GestureDetector(
+              onTap: () {
+                questsStore!.getPrediction(context);
+              },
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Color(0xFFF7F8FA),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(6.0),
+                  ),
                 ),
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 16,
-                  ),
-                  Icon(
-                    Icons.search,
-                    size: 25.0,
-                  ),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  Flexible(
-                    child: questsStore!.locationPlaceName.isEmpty
-                        ? Text(
-                            "quests.ui.search".tr(),
-                            style: TextStyle(
-                              color: Color(
-                                0xFFD8DFE3,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 16,
+                    ),
+                    Icon(
+                      Icons.search,
+                      size: 25.0,
+                    ),
+                    SizedBox(
+                      width: 16,
+                    ),
+                    Flexible(
+                      child: questsStore!.locationPlaceName.isEmpty
+                          ? Text(
+                              "quests.ui.search".tr(),
+                              style: TextStyle(
+                                color: Color(
+                                  0xFFD8DFE3,
+                                ),
+                                fontSize: 16,
                               ),
-                              fontSize: 16,
+                              overflow: TextOverflow.fade,
+                            )
+                          : Text(
+                              questsStore!.locationPlaceName,
+                              overflow: TextOverflow.fade,
+                              style: TextStyle(
+                                color: Color(0xFF1D2127),
+                                fontSize: 16,
+                                height: 1,
+                              ),
                             ),
-                            overflow: TextOverflow.fade,
-                          )
-                        : Text(
-                            questsStore!.locationPlaceName,
-                            overflow: TextOverflow.fade,
-                            style: TextStyle(
-                              color: Color(0xFF1D2127),
-                              fontSize: 16,
-                              height: 1,
-                            ),
-                          ),
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              const SizedBox(height: 8),
-              //if (profileMeStore!.userData!.role == UserRole.Worker)
-              _getDivider(),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: OutlinedButton(
-                  onPressed: () async {
-                    await Navigator.push(
-                      context,
-                      // Сделано для отладки будет перенесена в routes.dart
-                      MaterialPageRoute(
-                        builder: (_) => FilterQuestsPage(),
-                      ),
-                    );
-                    questsStore!.getQuests(profileMeStore!.userData!.id);
-                  },
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6.0),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                const SizedBox(height: 8),
+                //if (profileMeStore!.userData!.role == UserRole.Worker)
+                _getDivider(),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: OutlinedButton(
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        // Сделано для отладки будет перенесена в routes.dart
+                        MaterialPageRoute(
+                          builder: (_) => FilterQuestsPage(),
+                        ),
+                      );
+                      questsStore!.getQuests(profileMeStore!.userData!.id);
+                    },
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6.0),
+                        ),
                       ),
                     ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset("assets/filter.svg"),
-                      SizedBox(
-                        width: 13,
-                      ),
-                      Text(
-                        "quests.filter.btn".tr(),
-                      ),
-                    ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset("assets/filter.svg"),
+                        SizedBox(
+                          width: 13,
+                        ),
+                        Text(
+                          "quests.filter.btn".tr(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              _getDivider(),
-              Observer(
-                builder: (_) => questsStore!.emptySearch
-                    ? Center(
-                        child: Column(
-                          children: [
-                            SvgPicture.asset(
-                              "assets/empty_quest_icon.svg",
-                            ),
-                            Text(
-                              "quest.noQuest".tr(),
-                            ),
-                          ],
-                        ),
-                      )
-                    : ListView.separated(
-                        key: scrollKey,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        separatorBuilder: (context, index) {
-                          return _getDivider();
-                        },
-                        padding: EdgeInsets.zero,
-                        itemCount: questsStore!.searchWord.length > 2
-                            ? questsStore!.searchResultList?.length ?? 0
-                            : questsStore!.questsList?.length ?? 0,
-                        itemBuilder: (_, index) {
-                          return MyQuestsItem(
-                            questsStore!.searchWord.length > 2
-                                ? questsStore!.searchResultList![index]
-                                : questsStore!.questsList![index],
-                            itemType: this.questItemPriorityType,
-                          );
-                        }),
-              ),
-            ],
+                _getDivider(),
+                Observer(
+                  builder: (_) => questsStore!.emptySearch
+                      ? Center(
+                          child: Column(
+                            children: [
+                              SvgPicture.asset(
+                                "assets/empty_quest_icon.svg",
+                              ),
+                              Text(
+                                "quest.noQuest".tr(),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.separated(
+                          key: scrollKey,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          separatorBuilder: (context, index) {
+                            return _getDivider();
+                          },
+                          padding: EdgeInsets.zero,
+                          itemCount: questsStore!.searchWord.length > 2
+                              ? questsStore!.searchResultList?.length ?? 0
+                              : questsStore!.questsList?.length ?? 0,
+                          itemBuilder: (_, index) {
+                            return MyQuestsItem(
+                              questsStore!.searchWord.length > 2
+                                  ? questsStore!.searchResultList![index]
+                                  : questsStore!.questsList![index],
+                              itemType: this.questItemPriorityType,
+                            );
+                          }),
+                ),
+              ],
+            ),
           ),
-        ),
-        SliverToBoxAdapter(
-          child: Observer(
-            builder: (_) => questsStore!.isLoading
-                ? Center(
-                    child: PlatformActivityIndicator(),
-                  )
-                : const SizedBox(),
+          SliverToBoxAdapter(
+            child: Observer(
+              builder: (_) => questsStore!.isLoading
+                  ? Center(
+                      child: PlatformActivityIndicator(),
+                    )
+                  : const SizedBox(),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
