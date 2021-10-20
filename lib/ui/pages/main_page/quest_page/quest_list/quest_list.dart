@@ -86,8 +86,8 @@ class _QuestListState extends State<QuestList> {
       onRefresh: () async {
         return await refreshQuest;
       },
-      displacement: 100,
-       edgeOffset: 300,
+      displacement: 50,
+      edgeOffset: 300,
       child: CustomScrollView(
         controller: controller,
         physics: AlwaysScrollableScrollPhysics(),
