@@ -24,7 +24,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
     pin = "";
     newPinCode = "";
     canCheckBiometrics = false;
-    statePin = StatePinCode.Check;
+    statePin = StatePinCode.NaN;
     Storage.readPinCode().then((value) async {
       var auth = LocalAuthentication();
       if (value == null) {
@@ -161,4 +161,4 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   }
 }
 
-enum StatePinCode { Create, Repeat, Check, ToLogin, Success }
+enum StatePinCode { Create, Repeat, Check, ToLogin, Success, NaN }

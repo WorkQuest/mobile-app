@@ -82,68 +82,79 @@ class _PinCodePageState extends State<PinCodePage>
             padding: const EdgeInsets.fromLTRB(59.0, 114.0, 59.0, 0.0),
             child: Observer(
               builder: (_) {
-                return Column(
-                  children: [
-                    Text(
-                      pinCodeStore.statePin == StatePinCode.Create
-                          ? "pinCode.comeUp".tr()
-                          : pinCodeStore.statePin == StatePinCode.Repeat
-                              ? "pinCode.repeat".tr()
-                              : "pinCode.writePinCode".tr(),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 40),
-                    pinCodeStore.isLoading
-                        ? PlatformActivityIndicator()
-                        : AnimatedBuilder(
-                            animation: offsetAnimation,
-                            builder: (buildContext, child) {
-                              return Container(
-                                margin: EdgeInsets.symmetric(horizontal: 24.0),
-                                padding: EdgeInsets.only(
-                                  left: offsetAnimation.value + 24.0,
-                                  right: 24.0 - offsetAnimation.value,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    for (int i = 1; i < 5; i++)
-                                      Observer(
-                                        builder: (_) => Container(
-                                          height: 10,
-                                          width: 10,
-                                          margin: const EdgeInsets.symmetric(
-                                            horizontal: 7.5,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: !offsetAnimation.isDismissed
-                                                ? Colors.red
-                                                : pinCodeStore.pin.length >= i
-                                                    ? Color(0xFF0083C7)
-                                                    : Color(0xFFE9EDF2),
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(5.0),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              );
-                            },
+                return pinCodeStore.statePin == StatePinCode.NaN
+                    ? Center(
+                        child: PlatformActivityIndicator(),
+                      )
+                    : Column(
+                        children: [
+                          Text(
+                            pinCodeStore.statePin == StatePinCode.Create
+                                ? "pinCode.comeUp".tr()
+                                : pinCodeStore.statePin == StatePinCode.Repeat
+                                    ? "pinCode.repeat".tr()
+                                    : "pinCode.writePinCode".tr(),
+                            textAlign: TextAlign.center,
                           ),
-                    PinCodeKeyboard(
-                      pinCodeStore.inputPin,
-                      onTabRemove: pinCodeStore.popPin,
-                      onTabSensor:
-                          (pinCodeStore.statePin == StatePinCode.Check &&
-                                  pinCodeStore.canCheckBiometrics)
-                              ? pinCodeStore.biometricScan
-                              : null,
-                      canBiometric: pinCodeStore.canCheckBiometrics,
-                    ),
-                  ],
-                );
+                          const SizedBox(height: 40),
+                          pinCodeStore.isLoading
+                              ? PlatformActivityIndicator()
+                              : AnimatedBuilder(
+                                  animation: offsetAnimation,
+                                  builder: (buildContext, child) {
+                                    return Container(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 24.0),
+                                      padding: EdgeInsets.only(
+                                        left: offsetAnimation.value + 24.0,
+                                        right: 24.0 - offsetAnimation.value,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          for (int i = 1; i < 5; i++)
+                                            Observer(
+                                              builder: (_) => Container(
+                                                height: 10,
+                                                width: 10,
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 7.5,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: !offsetAnimation
+                                                          .isDismissed
+                                                      ? Colors.red
+                                                      : pinCodeStore
+                                                                  .pin.length >=
+                                                              i
+                                                          ? Color(0xFF0083C7)
+                                                          : Color(0xFFE9EDF2),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(5.0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                          PinCodeKeyboard(
+                            pinCodeStore.inputPin,
+                            onTabRemove: pinCodeStore.popPin,
+                            onTabSensor:
+                                (pinCodeStore.statePin == StatePinCode.Check &&
+                                        pinCodeStore.canCheckBiometrics)
+                                    ? pinCodeStore.biometricScan
+                                    : null,
+                            canBiometric: pinCodeStore.canCheckBiometrics,
+                          ),
+                        ],
+                      );
               },
             ),
           ),
