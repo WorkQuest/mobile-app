@@ -46,7 +46,7 @@ class _WebViewPageState extends State<WebViewPage> {
           initialUrl: baseUrl + widget.inputUrlRoute,
           userAgent: "random",
           javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (WebViewController webViewController) {
+          onWebViewCreated: (WebViewController webViewController)async {
             _controller.complete(webViewController);
           },
           onProgress: (int progress) {
@@ -60,7 +60,7 @@ class _WebViewPageState extends State<WebViewPage> {
             print('allowing navigation to $request');
             return NavigationDecision.navigate;
           },
-          onPageStarted: (String url) {
+          onPageStarted: (String url) async{
             print('Page started loading: $url');
           },
           onPageFinished: (String url) async {
@@ -70,7 +70,7 @@ class _WebViewPageState extends State<WebViewPage> {
             _controller.future.then((value) => value.evaluateJavascript(
                 """localStorage.setItem("accessToken","${accessToken ?? ''}");
                 localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
-          },
+            },
           gestureNavigationEnabled: true,
         );
       }),
@@ -167,7 +167,9 @@ class NavigationControls extends StatelessWidget {
                       } else {
                         // ignore: deprecated_member_use
                         Scaffold.of(context).showSnackBar(
-                          const SnackBar(content: Text("No back history item")),
+                          const SnackBar(
+                            content: Text("No back history item"),
+                          ),
                         );
                         return;
                       }

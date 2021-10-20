@@ -13,6 +13,8 @@ final spacer = const SizedBox(
 );
 
 class SendEmail extends StatelessWidget {
+
+  static const String routeName = "/sendEmail";
   const SendEmail();
 
   @override
@@ -22,6 +24,7 @@ class SendEmail extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           CupertinoSliverNavigationBar(
+            heroTag: "restoreNavbar",
             largeTitle: Text(
               "restore.enterEmail".tr(),
             ),
@@ -51,10 +54,8 @@ class SendEmail extends StatelessWidget {
                     width: double.infinity,
                     child: ObserverListener<RestorePasswordStore>(
                       onSuccess: () {
-                        Navigator.of(
+                        Navigator.push(
                           context,
-                          rootNavigator: true,
-                        ).push(
                           MaterialPageRoute(
                             builder: (_) => RestorePasswordPage(_store),
                           ),
@@ -68,7 +69,9 @@ class SendEmail extends StatelessWidget {
                                 : null,
                             child: _store.isLoading
                                 ? PlatformActivityIndicator()
-                                : Text("meta.submit".tr()),
+                                : Text(
+                                    "meta.submit".tr(),
+                                  ),
                           );
                         },
                       ),

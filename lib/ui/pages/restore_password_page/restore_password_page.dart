@@ -78,7 +78,7 @@ class RestorePasswordPage extends StatelessWidget {
                           onPressed:() async =>
                               _store.canSubmit ? await  _store.restorePassword().then((value) {
                                 Navigator.pop(context);
-                                Navigator.pop(context);
+                                //Navigator.pop(context);
                               }) : null,
                           child: _store.isLoading
                               ? PlatformActivityIndicator()

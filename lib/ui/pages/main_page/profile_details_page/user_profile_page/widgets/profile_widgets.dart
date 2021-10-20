@@ -499,13 +499,10 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
                           'https://www.facebook.com/$facebook');
                     }
                   : null,
-              icon: facebook != null
-                  ? SvgPicture.asset(
-                      "assets/facebook_icon.svg",
-                    )
-                  : SvgPicture.asset(
-                      "assets/facebook_icon_disabled.svg",
-                    ),
+              icon: SvgPicture.asset(
+                "assets/facebook_icon_disabled.svg",
+                color: facebook != null ? Color(0xFF3B67D7) : null,
+              ),
             ),
           ),
         ),
@@ -527,13 +524,10 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
                       _launchSocial("", 'https://twitter.com/$twitter');
                     }
                   : null,
-              icon: twitter != null
-                  ? SvgPicture.asset(
-                      "assets/twitter_icon.svg",
-                    )
-                  : SvgPicture.asset(
-                      "assets/twitter_icon_disabled.svg",
-                    ),
+              icon: SvgPicture.asset(
+                "assets/twitter_icon_disabled.svg",
+                color: twitter != null ? Color(0xFF24CAFF) : null,
+              ),
             ),
           ),
         ),
@@ -550,7 +544,10 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
             child: IconButton(
               onPressed: instagram != null
                   ? () {
-                      _launchSocial("", 'https://www.instagram.com/$instagram');
+                      _launchSocial(
+                        "",
+                        'https://www.instagram.com/$instagram',
+                      );
                     }
                   : null,
               icon: instagram != null
@@ -582,12 +579,10 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
                       _launchSocial("", 'https://linkedin.com/$linkedin');
                     }
                   : null,
-              icon: linkedin != null
-                  ? SvgPicture.asset(
-                      "assets/linkedin_icon.svg",
-                    )
-                  : SvgPicture.asset(
+              icon:
+                   SvgPicture.asset(
                       "assets/linkedin_icon_disabled.svg",
+                     color: twitter != null ? Color(0xFF0A7EEA) : null,
                     ),
             ),
           ),

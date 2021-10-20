@@ -234,6 +234,16 @@ class SettingsPage extends StatelessWidget {
                       iconPath: "assets/setting_chart.svg",
                       title: "settings.liquidityMining".tr(),
                     ),
+                    InstrumentCard(
+                      urlArgument: "crosschain",
+                      iconPath: "assets/work_quest_icon.svg",
+                      title: "WorkQuest Bridge",
+                    ),
+                    InstrumentCard(
+                      urlArgument: "staking",
+                      iconPath: "assets/work_quest_icon.svg",
+                      title: "WorkQuest Staking",
+                    ),
                   ],
                 ),
               ),

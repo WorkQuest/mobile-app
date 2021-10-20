@@ -1,8 +1,6 @@
-import 'package:app/di/injector.dart';
 import "package:app/observer_consumer.dart";
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
-import 'package:app/ui/pages/restore_password_page/store.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
@@ -254,16 +252,9 @@ class SignInPage extends StatelessWidget {
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () => Navigator.push(
+                          onTap: () => Navigator.pushNamed(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => Provider(
-                                create: (context) =>
-                                    getIt.get<RestorePasswordStore>(),
-                                child: SendEmail(),
-                              ),
-                            ),
-                            // MaterialPageRoute(builder: (_) => SendEmail()),
+                            SendEmail.routeName,
                           ),
                           child: Text(
                             "signIn.forgotYourPass".tr(),
