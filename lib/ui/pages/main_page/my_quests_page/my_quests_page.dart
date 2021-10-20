@@ -19,6 +19,7 @@ class MyQuestsPage extends StatefulWidget {
 class _MyQuestsPageState extends State<MyQuestsPage> {
   MyQuestStore? myQuests;
   late UserRole role;
+  late String userID;
 
   @override
   void initState() {
@@ -27,10 +28,8 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
     role = profileMeStore.userData?.role ?? UserRole.Employer;
     profileMeStore.getProfileMe().then((value) {
       setState(() => role = profileMeStore.userData!.role);
-      myQuests!.getQuests(
-        profileMeStore.userData!.id,
-        role,
-      );
+      userID = profileMeStore.userData!.id;
+      myQuests!.getQuests(userID, role);
     });
     super.initState();
   }
@@ -75,22 +74,26 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                   child: QuestsList(
                     QuestItemPriorityType.Active,
                     myQuests?.active,
-                    hasCreateButton: role == UserRole.Employer,
+                    onCreate: role == UserRole.Employer
+                        ? (statusCreate) {
+                            if (statusCreate) myQuests!.getQuests(userID, role);
+                          }
+                        : null,
                   ),
                 ),
-
-                Center(
-                  child: QuestsList(
-                    QuestItemPriorityType.Invited,
-                    myQuests?.invited,
-                  ),
-                ),
-                // Center(
-                //   child: QuestsList(
-                //     QuestItemPriorityType.Requested,
-                //     myQuests?.requested,
-                //   ),
-                // ),
+                role == UserRole.Worker
+                    ? Center(
+                        child: QuestsList(
+                          QuestItemPriorityType.Invited,
+                          myQuests?.invited,
+                        ),
+                      )
+                    : Center(
+                        child: QuestsList(
+                          QuestItemPriorityType.Requested,
+                          myQuests?.requested,
+                        ),
+                      ),
                 Center(
                   child: QuestsList(
                     QuestItemPriorityType.Performed,

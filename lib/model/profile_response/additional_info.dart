@@ -1,18 +1,20 @@
 import 'package:app/model/profile_response/social_network.dart';
 
+import 'avatar.dart';
+
 class AdditionalInfo {
-  AdditionalInfo({
-    required this.secondMobileNumber,
-    required this.address,
-    required this.socialNetwork,
-    required this.description,
-    required this.company,
-    required this.ceo,
-    required this.website,
-    required this.skills,
-    required this.educations,
-    required this.workExperiences,
-  });
+  AdditionalInfo(
+      {required this.secondMobileNumber,
+      required this.address,
+      required this.socialNetwork,
+      required this.description,
+      required this.company,
+      required this.ceo,
+      required this.website,
+      required this.skills,
+      required this.educations,
+      required this.workExperiences,
+      required this.avatar});
 
   String? secondMobileNumber;
   String? address;
@@ -24,6 +26,7 @@ class AdditionalInfo {
   List<String>? skills;
   List<Map<String, String>> educations = [];
   List<Map<String, String>> workExperiences = [];
+  Avatar avatar;
 
   AdditionalInfo.clone(AdditionalInfo object)
       : this(
@@ -38,7 +41,8 @@ class AdditionalInfo {
             website: object.website,
             skills: object.skills,
             educations: object.educations,
-            workExperiences: object.workExperiences);
+            workExperiences: object.workExperiences,
+            avatar: object.avatar);
 
   factory AdditionalInfo.fromJson(Map<String, dynamic> json) {
     return AdditionalInfo(
@@ -55,22 +59,34 @@ class AdditionalInfo {
           : List<String>.from(
               json["skills"].map((x) => x),
             ),
-      educations: json["educations"] != null? List<Map<String, String>>.from(json["educations"].map((item) {
-        Map<String, String> newItem = {};
-        item.keys.forEach((element) {
-          newItem[element] = item[element].toString();
-        });
-        return newItem;
-      })).toList():[],
-      workExperiences:json["educations"] !=null?
-          List<Map<String, String>>.from(json["workExperiences"].map((item) {
-        Map<String, String> newItem1 = {};
-        item.keys.forEach((element) {
-          newItem1[element] = item[element].toString();
-        });
-        return newItem1;
-      })).toList():[],
+      educations: json["educations"] != null
+          ? List<Map<String, String>>.from(json["educations"].map((item) {
+              Map<String, String> newItem = {};
+              item.keys.forEach((element) {
+                newItem[element] = item[element].toString();
+              });
+              return newItem;
+            })).toList()
+          : [],
+      workExperiences: json["educations"] != null
+          ? List<Map<String, String>>.from(json["workExperiences"].map((item) {
+              Map<String, String> newItem1 = {};
+              item.keys.forEach((element) {
+                newItem1[element] = item[element].toString();
+              });
+              return newItem1;
+            })).toList()
+          : [],
       description: json["description"],
+      avatar: Avatar.fromJson(
+        json["avatar"] ??
+            {
+              "id": "",
+              "url":
+                  "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+              "contentType": "",
+            },
+      ),
     );
   }
 

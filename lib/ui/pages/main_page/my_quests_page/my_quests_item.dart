@@ -10,7 +10,8 @@ import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class MyQuestsItem extends StatelessWidget {
-  const MyQuestsItem(this.questInfo, {
+  const MyQuestsItem(
+    this.questInfo, {
     this.itemType = QuestItemPriorityType.Active,
     this.isExpanded = false,
   });
@@ -101,37 +102,38 @@ class MyQuestsItem extends StatelessWidget {
                   .read<MyQuestStore>()
                   .invited!
                   .remove(questInfo);
-              return;
+              break;
             case 1:
-              context
-                  .read<MyQuestStore>()
-                  .active!
-                  .remove(questInfo);
-              return;
+              if (questInfo.status == 2 || questInfo.status == 6)
+                context
+                    .read<MyQuestStore>()
+                    .active!
+                    .remove(questInfo);
+              break;
             case 3:
               context
                   .read<MyQuestStore>()
                   .active!
                   .remove(questInfo);
-              return;
+              break;
             case 4:
               context
                   .read<MyQuestStore>()
                   .invited!
                   .remove(questInfo);
-              return;
+              break;
             case 5:
               context
                   .read<MyQuestStore>()
                   .active!
                   .remove(questInfo);
-              return;
+              break;
             case 6:
               context
                   .read<MyQuestStore>()
                   .performed!
                   .remove(questInfo);
-              return;
+              break;
           }
           switch (questInfo.status) {
             case 0:
@@ -139,37 +141,37 @@ class MyQuestsItem extends StatelessWidget {
                   .read<MyQuestStore>()
                   .invited!
                   .add(questInfo);
-              return;
+              break;
             case 1:
               context
                   .read<MyQuestStore>()
                   .active!
                   .add(questInfo);
-              return;
+              break;
             case 3:
               context
                   .read<MyQuestStore>()
                   .active!
                   .add(questInfo);
-              return;
+              break;
             case 4:
               context
                   .read<MyQuestStore>()
                   .invited!
                   .add(questInfo);
-              return;
+              break;
             case 5:
               context
                   .read<MyQuestStore>()
                   .active!
                   .add(questInfo);
-              return;
+              break;
             case 6:
               context
                   .read<MyQuestStore>()
                   .performed!
                   .add(questInfo);
-              return;
+              break;
           }
         }
       },
@@ -182,7 +184,7 @@ class MyQuestsItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (!isExpanded) getQuestHeader(itemType),
+            if (!isExpanded) getQuestHeader(itemType, context),
             Row(
               children: [
                 ClipRRect(
@@ -207,26 +209,27 @@ class MyQuestsItem extends StatelessWidget {
               height: 17.5,
             ),
             if (questInfo.userId !=
-                context
-                    .read<ProfileMeStore>()
-                    .userData!
-                    .id &&
+                    context.read<ProfileMeStore>().userData!.id &&
                 questInfo.status != 5 &&
                 questInfo.status != 6)
-              Row(
+              Column(
                 children: [
-                  Icon(
-                    Icons.location_on_rounded,
-                    color: Color(0xFF7C838D),
-                  ),
-                  SizedBox(
-                    width: 9,
-                  ),
-                  Text(
-                    "150 from you",
-                    style: TextStyle(
-                      color: Color(0xFF7C838D),
-                    ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on_rounded,
+                        color: Color(0xFF7C838D),
+                      ),
+                      SizedBox(
+                        width: 9,
+                      ),
+                      Text(
+                        "150 from you",
+                        style: TextStyle(
+                          color: Color(0xFF7C838D),
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: 16,
@@ -275,7 +278,7 @@ class MyQuestsItem extends StatelessWidget {
     );
   }
 
-  Widget getQuestHeader(QuestItemPriorityType itemType) {
+  Widget getQuestHeader(QuestItemPriorityType itemType, BuildContext context) {
     Widget returnWidget = Container();
     switch (itemType) {
       case QuestItemPriorityType.Active:
@@ -342,15 +345,12 @@ class MyQuestsItem extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
-            color: Color(0xFFE8D20D),
+            color: Color(0xFFE8D20D)
           ),
           child: Row(
             children: [
-
-              ///Invited here
-
               Text(
-                "quests.youInvited".tr() ,
+                "quests.youInvited".tr(),
                 style: TextStyle(color: Colors.white),
               ),
             ],
@@ -366,15 +366,13 @@ class MyQuestsItem extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
-            color: Color(0xFFE8D20D),
+            color: Color(0xFFF7F8FA),
           ),
-          child: Row(
-            children: [
-              Text(
-                "quests.youRequested".tr(),
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
+          child: Text(
+            "myQuests.Request".tr(),
+            style: TextStyle(
+              color: Color(0xFFAAB0B9),
+            ),
           ),
         );
         break;

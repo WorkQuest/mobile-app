@@ -34,19 +34,19 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   int status = -1;
 
   @observable
-  List<BaseQuestResponse>? active;
+  ObservableList<BaseQuestResponse>? active;
 
   @observable
-  List<BaseQuestResponse>? starred;
+  ObservableList<BaseQuestResponse>? starred;
 
   @observable
-  List<BaseQuestResponse>? performed;
+  ObservableList<BaseQuestResponse>? performed;
 
   @observable
-  List<BaseQuestResponse>? requested;
+  ObservableList<BaseQuestResponse>? requested;
 
   @observable
-  List<BaseQuestResponse>? invited;
+  ObservableList<BaseQuestResponse>? invited;
 
   @observable
   List<BitmapDescriptor> iconsMarker = [];
@@ -59,45 +59,62 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       if (role == UserRole.Employer) {
-        active = await _apiProvider.getEmployerQuests(userId: userId);
-
-        invited = await _apiProvider.getEmployerQuests(
-          userId: userId,
-          status: 4,
+        active = ObservableList.of(
+          await _apiProvider.getEmployerQuests(userId: userId),
         );
 
-        performed = await _apiProvider.getEmployerQuests(
-          userId: userId,
-          status: 6,
+        invited = ObservableList.of(
+          await _apiProvider.getEmployerQuests(
+            userId: userId,
+            status: 4,
+          ),
+        );
+
+        //TODO: REMADE THIS REQUEST
+        requested = ObservableList.of(
+          await _apiProvider.responsesQuests(),
+        );
+
+        performed = ObservableList.of(
+          await _apiProvider.getEmployerQuests(
+            userId: userId,
+            status: 6,
+          ),
         );
       } else {
-        active = await _apiProvider.getQuests(
-          offset: this.offset,
-          limit: this.limit,
-          performing: true,
-          status: 1,
+        active = ObservableList.of(
+          await _apiProvider.getQuests(
+            offset: this.offset,
+            limit: this.limit,
+            performing: true,
+            status: 1,
+          ),
         );
 
-        starred = await _apiProvider.getQuests(
-          offset: this.offset,
-          limit: this.limit,
-          starred: true,
+        starred = ObservableList.of(
+          await _apiProvider.getQuests(
+            offset: this.offset,
+            limit: this.limit,
+            starred: true,
+          ),
         );
 
-        requested = []; //= await _apiProvider.responsesQuests();
-
-        invited = await _apiProvider.getQuests(
-          offset: this.offset,
-          limit: this.limit,
-          performing: true,
-          status: 4,
+        invited = ObservableList.of(
+          await _apiProvider.getQuests(
+            offset: this.offset,
+            limit: this.limit,
+            performing: true,
+            status: 4,
+          ),
         );
 
-        performed = await _apiProvider.getQuests(
-          offset: this.offset,
-          limit: this.limit,
-          performing: true,
-          status: 6,
+        performed = ObservableList.of(
+          await _apiProvider.getQuests(
+            offset: this.offset,
+            limit: this.limit,
+            performing: true,
+            status: 6,
+          ),
         );
       }
       this.onSuccess(true);

@@ -1,5 +1,6 @@
 import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/utils/utils.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
+import "package:provider/provider.dart";
 
 class QuestDetails extends StatefulWidget {
   static const String routeName = "/QuestDetails";
@@ -21,9 +23,17 @@ class QuestDetails extends StatefulWidget {
 
 class QuestDetailsState<T extends QuestDetails> extends State<T>
     with TickerProviderStateMixin {
+  ProfileMeStore? profile;
+
   @protected
   List<Widget>? actionAppBar() {
     return null;
+  }
+
+  @override
+  void initState() {
+    profile = context.read<ProfileMeStore>();
+    super.initState();
   }
 
   @protected
@@ -55,54 +65,65 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              alignment: Alignment.topLeft,
-              width: double.maxFinite,
-              child: Wrap(
-                alignment: WrapAlignment.start,
-                runAlignment: WrapAlignment.start,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Image.network(
-                      widget.questInfo.user.avatar.url,
-                      width: 30,
-                      height: 30,
-                      fit: BoxFit.cover,
+            widget.questInfo.userId == profile!.userData!.id
+                ? Text(
+                    "quests.yourQuest".tr(),
+                  )
+                : Container(
+                    alignment: Alignment.topLeft,
+                    width: double.maxFinite,
+                    child: Wrap(
+                      alignment: WrapAlignment.start,
+                      runAlignment: WrapAlignment.start,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Image.network(
+                            widget.questInfo.user.avatar.url,
+                            width: 30,
+                            height: 30,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(width: 10),
+                        PriorityView(widget.questInfo.priority),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Text(
-                    "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
-                    style: TextStyle(fontSize: 16),
+            if (widget.questInfo.userId != profile!.userData!.id)
+              Column(
+                children: [
+                  const SizedBox(height: 17),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on_rounded,
+                        color: Color(0xFF7C838D),
+                      ),
+                      const SizedBox(width: 9),
+                      Text(
+                        "150 from you",
+                        style: TextStyle(
+                          color: Color(0xFF7C838D),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  PriorityView(widget.questInfo.priority),
                 ],
               ),
-            ),
-            const SizedBox(height: 17),
-            Row(
-              children: [
-                Icon(
-                  Icons.location_on_rounded,
-                  color: Color(0xFF7C838D),
-                ),
-                const SizedBox(width: 9),
-                Text(
-                  "150 from you",
-                  style: TextStyle(
-                    color: Color(0xFF7C838D),
-                  ),
-                ),
-              ],
-            ),
             const SizedBox(height: 17),
             tagItem(
               "modals.paintingWork".tr(),
             ),
-            inProgressBy(),
+            if (widget.questInfo.assignedWorker != null &&
+                (widget.questInfo.status == 1 || widget.questInfo.status == 5))
+              inProgressBy(),
             const SizedBox(height: 15),
             Text(
               widget.questInfo.title,

@@ -11,7 +11,10 @@ import 'package:easy_localization/easy_localization.dart';
 class QuestWorker extends QuestDetails {
   final bool isMyQuest;
 
-  QuestWorker(BaseQuestResponse questInfo, this.isMyQuest) : super(questInfo);
+  QuestWorker(
+    BaseQuestResponse questInfo,
+    this.isMyQuest,
+  ) : super(questInfo);
 
   @override
   _QuestWorkerState createState() => _QuestWorkerState();
@@ -230,12 +233,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   }
 
   bottomRespond() {
-    //TextEditingController textController = TextEditingController();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -249,7 +250,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             ),
             const SizedBox(height: 5),
             TextField(
-              //controller: textController,
               onChanged: store.setOpinion,
               keyboardType: TextInputType.multiline,
               maxLines: 6,
@@ -319,6 +319,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         TextButton(
           onPressed: () {
             store.sendAcceptOnQuest();
+            store.quest.value!.status = 1;
             Navigator.pop(context);
             Navigator.pop(context);
             successAlert(
@@ -392,6 +393,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         TextButton(
           onPressed: () {
             store.sendCompleteWork();
+            store.quest.value!.status = 5;
             Navigator.pop(context);
             Navigator.pop(context);
             successAlert(

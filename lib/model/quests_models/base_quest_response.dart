@@ -2,6 +2,7 @@ import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 
 import '../user_model.dart';
+import 'assigned_worker.dart';
 
 class BaseQuestResponse {
   BaseQuestResponse({
@@ -20,6 +21,8 @@ class BaseQuestResponse {
     required this.createdAt,
     required this.star,
     required this.response,
+    required this.locationPlaceName,
+    required this.assignedWorker,
   });
 
   String id;
@@ -30,6 +33,7 @@ class BaseQuestResponse {
   int status;
   int priority;
   LocationCode location;
+  String locationPlaceName;
   String title;
   String description;
   String price;
@@ -37,6 +41,7 @@ class BaseQuestResponse {
   DateTime createdAt;
   bool star;
   bool response;
+  AssignedWorker? assignedWorker;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(
@@ -50,6 +55,7 @@ class BaseQuestResponse {
       status: json["status"],
       priority: json["priority"],
       location: LocationCode.fromJson(json["location"]),
+      locationPlaceName: json["locationPlaceName"],
       title: json["title"],
       description: json["description"],
       price: json["price"],
@@ -57,6 +63,9 @@ class BaseQuestResponse {
       createdAt: DateTime.parse(json["createdAt"]),
       star: json["star"] == null ? false : true,
       response: json["response"] == null ? false : true,
+      assignedWorker: json["assignedWorker"] == null
+          ? null
+          : AssignedWorker.fromJson(json["assignedWorker"]),
     );
   }
 

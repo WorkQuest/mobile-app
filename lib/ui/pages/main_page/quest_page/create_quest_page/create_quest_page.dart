@@ -26,6 +26,8 @@ class CreateQuestPage extends StatefulWidget {
 
 class _CreateQuestPageState extends State<CreateQuestPage>
     with AutomaticKeepAliveClientMixin {
+  final _formKey = GlobalKey<FormState>();
+
   void initState() {
     super.initState();
     if (widget.questInfo != null) {
@@ -35,6 +37,7 @@ class _CreateQuestPageState extends State<CreateQuestPage>
       store.questTitle = widget.questInfo!.title;
       store.description = widget.questInfo!.description;
       store.price = widget.questInfo!.price;
+      store.locationPlaceName = widget.questInfo!.locationPlaceName;
     }
   }
 
@@ -44,6 +47,7 @@ class _CreateQuestPageState extends State<CreateQuestPage>
     SkillSpecializationController? _controller;
 
     return Form(
+      key: _formKey,
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
@@ -348,6 +352,7 @@ class _CreateQuestPageState extends State<CreateQuestPage>
                       TextFormField(
                         initialValue: store.description,
                         onChanged: store.setAboutQuest,
+                        validator: Validators.emptyValidator,
                         keyboardType: TextInputType.multiline,
                         maxLines: 12,
                         decoration: InputDecoration(
@@ -396,16 +401,19 @@ class _CreateQuestPageState extends State<CreateQuestPage>
                       margin: const EdgeInsets.symmetric(vertical: 30),
                       child: ObserverListener<CreateQuestStore>(
                         onSuccess: () async {
-                          Navigator.pop(context);
+                          Navigator.pop(context, true);
                           await successAlert(
                             context,
-                            "quests.questCreated".tr(),
+                            "modals.questCreated".tr(),
                           );
                         },
                         child: Observer(
                           builder: (context) => ElevatedButton(
                             onPressed: store.canCreateQuest
-                                ? () => store.createQuest()
+                                ? () async {
+                                    if (_formKey.currentState?.validate() ??
+                                        false) store.createQuest();
+                                  }
                                 : () => store.emptyField(),
                             child: store.isLoading
                                 ? PlatformActivityIndicator()

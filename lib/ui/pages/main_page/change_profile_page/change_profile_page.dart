@@ -60,7 +60,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      key: _formKey,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
@@ -106,6 +105,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Form(
+        key: _formKey,
         child: ListView(
           addAutomaticKeepAlives: true,
           children: [

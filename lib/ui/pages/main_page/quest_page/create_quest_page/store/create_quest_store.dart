@@ -1,5 +1,6 @@
 import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
+import 'package:app/keys.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 import 'package:drishya_picker/drishya_picker.dart';
@@ -30,8 +31,8 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   final List<String> employmentList = [
     "quests.employment.fullTime".tr(),
-    "quests.employment.partTime",
-    "quests.employment.fixedTerm",
+    "quests.employment.partTime".tr(),
+    "quests.employment.fixedTerm".tr(),
   ];
 
   final List<String> distantWorkList = [
@@ -149,24 +150,15 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @computed
   bool get canCreateQuest =>
       !isLoading &&
-          price.isNotEmpty &&
-          questTitle.isNotEmpty &&
           locationPlaceName.isNotEmpty &&
-          description.isNotEmpty &&
           media.isNotEmpty;
 
   @action
   void emptyField() {
-    List<String> fields = [];
-    if (price.isEmpty)
-      fields.add("price");
-    if (questTitle.isEmpty)
-      fields.add("quest title");
     if (locationPlaceName.isEmpty)
-      fields.add("address");
+      onError("Address is empty");
     if (media.isEmpty)
-      fields.add("media");
-    onError("These fields are empty $fields");
+      onError("Media is empty");
   }
 
   String getWorkplaceValue() {
@@ -193,16 +185,14 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     return employmentValue;
   }
 
-  ///API_KEY HERE
   GoogleMapsPlaces _places =
-  GoogleMapsPlaces(apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU");
+  GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
   Future<Null> getPrediction(BuildContext context) async {
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
-      ///API_KEY HERE
-      apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU",
+      apiKey: Keys.googleKey,
       mode: Mode.overlay,
       logo: SizedBox(),
       // Mode.fullscreen

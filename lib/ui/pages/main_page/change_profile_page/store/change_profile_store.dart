@@ -1,3 +1,4 @@
+import 'package:app/keys.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,16 +22,13 @@ abstract class ChangeProfileStoreBase with Store {
   @observable
   late String address = userData.additionalInfo?.address ?? "";
 
-  ///API_KEY HERE
-  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: "///API_KEY HERE");
+  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
   Future<Null> getPrediction(BuildContext context) async {
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
-
-      ///API_KEY HERE
-      apiKey: "///API_KEY HERE",
+      apiKey: Keys.googleKey,
       mode: Mode.overlay,
       logo: SizedBox(),
       // Mode.fullscreen

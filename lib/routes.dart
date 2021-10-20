@@ -172,16 +172,30 @@ class Routes {
             final role = getIt.get<ProfileMeStore>().userData?.role;
             final quest = settings.arguments as BaseQuestResponse;
             if (role == UserRole.Employer)
-              return Provider(
-                create: (context) => getIt.get<EmployerStore>(),
+              return MultiProvider(
+                providers: [
+                  Provider(
+                    create: (context) => getIt.get<EmployerStore>(),
+                  ),
+                  Provider(
+                    create: (context) => getIt.get<ProfileMeStore>(),
+                  ),
+                ],
                 child: Directionality(
                   textDirection: checkDirection(context),
                   child: QuestEmployer(quest),
                 ),
               );
             else {
-              return Provider(
-                create: (context) => getIt.get<WorkerStore>(),
+              return MultiProvider(
+                providers: [
+                  Provider(
+                    create: (context) => getIt.get<WorkerStore>(),
+                  ),
+                  Provider(
+                    create: (context) => getIt.get<ProfileMeStore>(),
+                  ),
+                ],
                 child: Directionality(
                   textDirection: checkDirection(context),
                   child: QuestWorker(
@@ -299,13 +313,14 @@ class Routes {
         );
 
       case CreateQuestPage.routeName:
-        return MaterialPageRoute(
+        return MaterialPageRoute<bool>(
           builder: (context) => Provider(
             create: (context) => getIt.get<CreateQuestStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: CreateQuestPage(
-                  questInfo: settings.arguments as BaseQuestResponse?),
+                questInfo: settings.arguments as BaseQuestResponse?,
+              ),
             ),
           ),
         );

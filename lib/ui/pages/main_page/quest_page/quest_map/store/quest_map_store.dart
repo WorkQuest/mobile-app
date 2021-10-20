@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/keys.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/quest_map_point.dart';
 import 'package:app/utils/marker_louder_for_map.dart';
@@ -50,9 +51,8 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   @observable
   String address = "";
 
-  ///API_KEY HERE
   GoogleMapsPlaces _places =
-      GoogleMapsPlaces(apiKey: "API_KEY HERE");
+      GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
   Future<Null> getPrediction(
@@ -61,9 +61,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   ) async {
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
-
-      ///API_KEY HERE
-      apiKey: "API_KEY HERE",
+      apiKey: Keys.googleKey,
       mode: Mode.overlay,
       logo: SizedBox(),
       hint: "quests.ui.search".tr(),

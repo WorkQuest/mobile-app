@@ -1,4 +1,4 @@
- import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+import 'package:share/share.dart';
 
 class QuestEmployer extends QuestDetails {
   QuestEmployer(BaseQuestResponse questInfo) : super(questInfo);
@@ -37,7 +38,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     return <Widget>[
       IconButton(
         icon: Icon(Icons.share_outlined),
-        onPressed: () {},
+        onPressed: () {
+          Share.share("http://en.m.wikipedia.org");
+        },
       ),
       PopupMenuButton<String>(
         elevation: 10,
@@ -123,16 +126,17 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 borderRadius: const BorderRadius.all(
                   Radius.circular(15),
                 ),
-                child: Image.asset(
-                  "assets/profile_avatar_test.jpg",
-                  fit: BoxFit.fitHeight,
-                  height: 30,
+                child: Image.network(
+                  widget.questInfo.assignedWorker!.additionalInfo.avatar.url,
                   width: 30,
+                  height: 30,
+                  fit: BoxFit.fitHeight,
                 ),
               ),
               const SizedBox(width: 10),
               Text(
-                "Rosalia Vans",
+                "${widget.questInfo.assignedWorker!.firstName} " +
+                    "${widget.questInfo.assignedWorker!.lastName}",
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
@@ -230,11 +234,12 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                     userId: store.selectedResponders,
                                     questId: widget.questInfo.id,
                                   );
+                                  widget.questInfo.status = 4;
+                                  Navigator.pop(context);
                                   successAlert(
                                     context,
                                     "quests.workerInvited".tr(),
                                   );
-                                  Navigator.pop(context);
                                 },
                           child: Text(
                             "quests.chooseWorker".tr(),
@@ -321,6 +326,12 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   TextButton(
                     onPressed: () {
                       store.acceptCompletedWork(questId: widget.questInfo.id);
+                      widget.questInfo.status = 6;
+                      successAlert(
+                        context,
+                        "quests.answerOnQuest.questCompleted".tr(),
+                      );
+                      Navigator.pop(context);
                       Navigator.pop(context);
                     },
                     child: Text(
@@ -347,6 +358,12 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   TextButton(
                     onPressed: () {
                       store.rejectCompletedWork(questId: widget.questInfo.id);
+                      widget.questInfo.status = 4;
+                      successAlert(
+                        context,
+                        "quests.answerOnQuest.rejectCompletedQuest".tr(),
+                      );
+                      Navigator.pop(context);
                       Navigator.pop(context);
                     },
                     child: Text(

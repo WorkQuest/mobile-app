@@ -261,6 +261,7 @@
     "urgent": "Urgent",
     "typeOfJob": "Job type",
     "noQuest": "Quest not found",
+    "yourQuest": "Your quest",
     "distantWork": {
       "title": "Distant work",
       "distantWork": "Distant work",
@@ -292,7 +293,7 @@
     "youInvited": "You invited",
     "youAreInvited": "You are invited",
     "workerInvited": "Worker invited",
-    "inProgressBy": "Ongoing by:",
+    "inProgressBy": "In progress by:",
     "showAllCases": "Show all cases",
     "portfolio": "Works",
     "searchQuests": "Search quests",
@@ -302,6 +303,7 @@
     "fromYou": "from your user",
     "reviews": "reviews",
     "reviewsBig": "Reviews",
+    "addReview": "Add review",
     "MyQuests": "My Quest",
     "activeQuest": "Active quests",
     "proposal": "Proposal",
@@ -321,7 +323,8 @@
       "acceptCompleted": "Accept completed quest",
       "completedQuestAccepted": "Completed quest accepted",
       "rejectCompleted": "Reject completed quest",
-      "completedQuestRejected": "Completed quest rejected"
+      "completedQuestRejected": "Completed quest rejected",
+      "rejectCompletedQuest": "The quest went to the dispute"
     },
     "price": "Price",
     "filter": {
@@ -1692,14 +1695,17 @@
   },
   "sharing": {
     "title": "Share",
-    "socialText": "Share on social networks",
-    "share": "Share link"
+    "sharing": "Sharing",
+    "socialText": "Share in socials",
+    "share": "Share link",
+    "copy": "Link copied to clipboard"
   },
   "myQuests": {
     "statuses": {
       "all": "All quests",
       "fav": "Add to favorites",
       "requested": "Requested",
+      "request": "Request",
       "completed": "Completed quests",
       "active": "Active quests",
       "invited": "Invitations to quests"

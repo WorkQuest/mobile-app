@@ -143,7 +143,7 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
                   tabs: <Widget>[
                     Tab(
                       child: Text(
-                        "workers.reviews".tr(),
+                        "profiler.reviews".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),

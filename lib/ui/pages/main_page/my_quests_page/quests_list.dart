@@ -11,12 +11,12 @@ import 'my_quests_item.dart';
 class QuestsList extends StatelessWidget {
   final QuestItemPriorityType questItemPriorityType;
 
+  final Function(bool)? onCreate;
+
   final List<BaseQuestResponse>? questsList;
 
-  final bool hasCreateButton;
-
   const QuestsList(this.questItemPriorityType, this.questsList,
-      {this.hasCreateButton = false});
+      {this.onCreate});
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +32,10 @@ class QuestsList extends StatelessWidget {
 
   Widget getBody() {
     return ListView.builder(
-      itemCount: hasCreateButton ? questsList!.length + 1 : questsList!.length,
+      itemCount: onCreate!=null ? questsList!.length + 1 : questsList!.length,
       padding: EdgeInsets.zero,
       itemBuilder: (BuildContext context, index) {
-        if (hasCreateButton) if (index == 0) {
+        if (onCreate!=null) if (index == 0) {
           return Container(
             margin: EdgeInsets.only(top: 10.0),
             color: Colors.white,
@@ -45,9 +45,11 @@ class QuestsList extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed(CreateQuestPage.routeName);
+                    onPressed: () async {
+                      bool? status = await Navigator.of(context, rootNavigator: true)
+                          .pushNamed<bool>(CreateQuestPage.routeName);
+                      print("status  $status");
+                        onCreate!(status??false);
                     },
                     child: Text(
                       "quests.addNewQuest".tr(),
@@ -59,7 +61,7 @@ class QuestsList extends StatelessWidget {
           );
         }
         return MyQuestsItem(
-          questsList![(hasCreateButton) ? index - 1 : index],
+          questsList![(onCreate!=null) ? index - 1 : index],
           itemType: questItemPriorityType,
         );
       },
@@ -70,7 +72,7 @@ class QuestsList extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          if (hasCreateButton)
+          if (onCreate!=null)
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: ElevatedButton(

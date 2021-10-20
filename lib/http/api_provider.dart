@@ -322,7 +322,7 @@ extension QuestService on ApiProvider {
   }) async {
     try {
       final responseData =
-          await _httpClient.post(query: '/v1/quest/$questId');
+          await _httpClient.delete(query: '/v1/quest/$questId');
       return responseData == null;
     } catch (e) {
       return false;
