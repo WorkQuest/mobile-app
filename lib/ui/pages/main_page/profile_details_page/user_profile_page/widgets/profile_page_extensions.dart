@@ -52,7 +52,7 @@ extension CustomAppBar on ProfileReviewsState {
                 child: Row(
                   children: [
                     for (int i = 0;
-                        i < userStore!.userData!.ratingStatistic;
+                        i < 0;//userStore!.userData!.ratingStatistic!.averageMark;
                         i++)
                       Icon(
                         Icons.star,
@@ -60,7 +60,8 @@ extension CustomAppBar on ProfileReviewsState {
                         size: 20.0,
                       ),
                     for (int i = 0;
-                        i < 5 - userStore!.userData!.ratingStatistic;
+                        i <
+                            5 - 0;//userStore!.userData!.ratingStatistic!.averageMark;
                         i++)
                       Icon(
                         Icons.star,
@@ -84,31 +85,52 @@ extension ReviewsTab on ProfileReviewsState {
         padding: const EdgeInsets.only(top: 16.0),
         child: Material(
           color: const Color(0xFFF7F8FA),
-          child: portfolioStore!.reviewsList.isNotEmpty
-              ? ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  //controller: _scrollController,
-                  padding: const EdgeInsets.only(
-                    top: 0.0,
-                  ),
-                  itemCount: portfolioStore!.reviewsList.length,
-                  itemBuilder: (context, index) {
-                    return ReviewsWidget(
-                        name: "Edward cooper",
-                        userRole: UserRole.Worker.toString().split(".").last,
-                        questTitle: "SPA saloon design",
-                        quest:
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing "
-                            "elit ut aliquam, purus sit amet luctus venenatis, "
-                            "lectus magna fringilla urna, porttitor rhoncus "
-                            "dolor purus non enim praesent elementum.");
-                  },
-                )
-              : Center(
-                  child: Text(
-                    "You have no reviews yet",
-                  ),
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              top: 20.0,
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
                 ),
+                portfolioStore!.reviewsList.isNotEmpty
+                    ? ListView.separated(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        separatorBuilder: (context, index) {
+                          return SizedBox(
+                            height: 20,
+                          );
+                        },
+                        padding: EdgeInsets.zero,
+                        itemCount: portfolioStore!.reviewsList.length,
+                        itemBuilder: (context, index) {
+                          return ReviewsWidget(
+                            name: "Edward cooper",
+                            userRole:
+                                UserRole.Worker.toString().split(".").last,
+                            questTitle: "SPA saloon design",
+                            quest:
+                                "Lorem ipsum dolor sit amet, consectetur adipiscing "
+                                "elit ut aliquam, purus sit amet luctus venenatis, "
+                                "lectus magna fringilla urna, porttitor rhoncus "
+                                "dolor purus non enim praesent elementum.",
+                          );
+                        },
+                      )
+                    : Expanded(
+                        child: Center(
+                          child: Text(
+                            "You have no reviews yet",
+                          ),
+                        ),
+                      ),
+              ],
+            ),
+          ),
         ),
       );
 }

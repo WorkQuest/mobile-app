@@ -3,6 +3,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/keys.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
+import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
@@ -109,7 +110,10 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   int adType = 0;
 
   @observable
-  ObservableList<DrishyaEntity> media = ObservableList();
+  ObservableList<DrishyaEntity> mediaDrishya = ObservableList();
+
+  @observable
+  ObservableList<Media> mediaURL = ObservableList();
 
   @observable
   String locationPlaceName = '';
@@ -151,13 +155,13 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   bool get canCreateQuest =>
       !isLoading &&
           locationPlaceName.isNotEmpty &&
-          media.isNotEmpty;
+          mediaDrishya.isNotEmpty;
 
   @action
   void emptyField() {
     if (locationPlaceName.isEmpty)
       onError("Address is empty");
-    if (media.isEmpty)
+    if (mediaDrishya.isEmpty)
       onError("Media is empty");
   }
 
@@ -225,7 +229,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         priority: priorityList.indexOf(priority),
         location: location,
         media: await apiProvider.uploadMedia(
-          medias: media,
+          medias: mediaDrishya,
         ),
         title: questTitle,
         description: description,

@@ -370,7 +370,8 @@ class _CreateQuestPageState extends State<CreateQuestPage>
                         top: 20.0,
                       ),
                       child: MediaUpload(
-                        media: store.media,
+                        mediaDrishya: store.mediaDrishya,
+                        mediaURL: widget.questInfo?.medias ?? [],
                       ),
                     ),
                     titledField(
@@ -428,6 +429,8 @@ class _CreateQuestPageState extends State<CreateQuestPage>
                       ),
                     ),
                   ],
+                  addAutomaticKeepAlives: true,
+                  addRepaintBoundaries: true,
                 ),
               ),
             )

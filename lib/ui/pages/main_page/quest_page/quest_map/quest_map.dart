@@ -183,7 +183,7 @@ class _QuestMapState extends State<QuestMap> {
         builder: (context) {
           return CupertinoAlertDialog(
             title: Text(
-              "quests.access".tr(),
+              "quests.ui.access".tr(),
             ),
             content: Text(
               "quests.openSettings".tr(),

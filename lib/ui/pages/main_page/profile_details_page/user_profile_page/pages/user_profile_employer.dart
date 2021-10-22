@@ -19,4 +19,11 @@ class _EmployerProfileState extends ProfileReviewsState<ProfileReviews> {
         QuestItemPriorityType.Performed,
         myQuests?.performed,
       );
+
+  List<Widget> employerWidgets() => [
+//_____________About______________/
+    Text(
+      userStore!.userData?.additionalInfo?.description ?? "No description",
+    ),
+  ];
 }

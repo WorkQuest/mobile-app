@@ -48,7 +48,6 @@ class QuestsList extends StatelessWidget {
                     onPressed: () async {
                       bool? status = await Navigator.of(context, rootNavigator: true)
                           .pushNamed<bool>(CreateQuestPage.routeName);
-                      print("status  $status");
                         onCreate!(status??false);
                     },
                     child: Text(

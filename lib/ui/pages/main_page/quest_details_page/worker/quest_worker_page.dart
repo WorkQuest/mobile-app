@@ -1,8 +1,9 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
-import 'package:drishya_picker/drishya_picker.dart';
+// import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -22,7 +23,7 @@ class QuestWorker extends QuestDetails {
 
 class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   late WorkerStore store;
-  late final GalleryController gallController;
+  // late final GalleryController gallController;
 
   AnimationController? controller;
 
@@ -32,16 +33,16 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
-    gallController = GalleryController(
-      gallerySetting: const GallerySetting(
-        maximum: 20,
-        albumSubtitle: 'All',
-        requestType: RequestType.common,
-      ),
-      panelSetting: PanelSetting(
-          //topMargin: 100.0,
-          headerMaxHeight: 100.0),
-    );
+    // gallController = GalleryController(
+    //   gallerySetting: const GallerySetting(
+    //     maximum: 20,
+    //     albumSubtitle: 'All',
+    //     requestType: RequestType.common,
+    //   ),
+    //   panelSetting: PanelSetting(
+    //       //topMargin: 100.0,
+    //       headerMaxHeight: 100.0),
+    // );
     super.initState();
   }
 
@@ -160,6 +161,39 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     },
                     child: Text(
                       "quests.completeTheQuest".tr(),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.all(
+                        Size(double.maxFinite, 43),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed))
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
+                          return const Color(0xFF0083C7);
+                        },
+                      ),
+                    ),
+                  ),
+          if (store.quest.value!.status == 6)
+            store.isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        CreateReviewPage.routeName,
+                        arguments: store.quest.value!.id,
+                      );
+                    },
+                    child: Text(
+                      "quests.addReview".tr(),
                       style: TextStyle(color: Colors.white),
                     ),
                     style: ButtonStyle(

@@ -90,9 +90,9 @@ abstract class FilterQuestsStoreBase with Store {
 
   @observable
   ObservableList<String> sortByWorkplace = ObservableList.of([
+    "quests.distantWork.bothVariant".tr(),
     "quests.distantWork.distantWork".tr(),
     "quests.distantWork.workInOffice".tr(),
-    "quests.distantWork.bothVariant".tr(),
   ]);
 
   @observable

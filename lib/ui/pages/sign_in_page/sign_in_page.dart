@@ -77,6 +77,7 @@ class SignInPage extends StatelessWidget {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 34,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                             Padding(

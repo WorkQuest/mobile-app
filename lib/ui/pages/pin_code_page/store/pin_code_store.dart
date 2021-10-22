@@ -30,6 +30,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       if (value == null) {
         statePin = StatePinCode.Create;
       } else {
+        statePin = StatePinCode.Check;
         canCheckBiometrics = await auth.canCheckBiometrics;
         if (canCheckBiometrics) {
           bool didAuthenticate = await auth.authenticate(

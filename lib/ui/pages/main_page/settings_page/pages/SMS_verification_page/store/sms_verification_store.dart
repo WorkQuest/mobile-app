@@ -24,17 +24,14 @@ abstract class _SMSVerificationStore extends IStore<bool> with Store {
   bool validate = true;
 
   @observable
-  String phone = '+';
+  String phone = '';
 
   @observable
   String code = '';
 
   @action
   void setPhone(String value) {
-    if(value.startsWith("+")){
-      phone = value.trim();
-    }
-    else  phone = "+"+value.trim();
+    phone = "+" + value.trim();
     //value.startsWith("+") ? phone = value.trim() : phone = "+"+value.trim();
   }
 

@@ -267,15 +267,15 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   final _$mediaAtom = Atom(name: '_CreateQuestStore.media');
 
   @override
-  ObservableList<DrishyaEntity> get media {
+  ObservableList<DrishyaEntity> get mediaDrishya {
     _$mediaAtom.reportRead();
-    return super.media;
+    return super.mediaDrishya;
   }
 
   @override
-  set media(ObservableList<DrishyaEntity> value) {
-    _$mediaAtom.reportWrite(value, super.media, () {
-      super.media = value;
+  set mediaDrishya(ObservableList<DrishyaEntity> value) {
+    _$mediaAtom.reportWrite(value, super.mediaDrishya, () {
+      super.mediaDrishya = value;
     });
   }
 
@@ -439,7 +439,7 @@ questTitle: ${questTitle},
 description: ${description},
 price: ${price},
 adType: ${adType},
-media: ${media},
+media: ${mediaDrishya},
 locationPlaceName: ${locationPlaceName},
 dateString: ${dateString},
 canCreateQuest: ${canCreateQuest}

@@ -17,83 +17,88 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
   final String tabTitle = "profiler.portfolio".tr();
 
   Widget questPortfolio() => Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      ///Add new portfolio
-      Container(
-        color: Colors.white,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10.0,
-          vertical: 10.0,
-        ),
-        child: OutlinedButton(
-          onPressed: () => Navigator.pushNamed(
-            context,
-            CreatePortfolioPage.routeName,
-            arguments: false,
-          ),
-          style: OutlinedButton.styleFrom(
-            side: BorderSide(
-              color: Colors.blueAccent.withOpacity(0.3),
-            ),
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ///Add new portfolio
+          Container(
+            color: Colors.white,
             padding: const EdgeInsets.symmetric(
+              horizontal: 10.0,
               vertical: 10.0,
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Add new",
+            child: OutlinedButton(
+              onPressed: () => Navigator.pushNamed(
+                context,
+                CreatePortfolioPage.routeName,
+                arguments: false,
               ),
-              const SizedBox(
-                width: 5.0,
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(
+                  color: Colors.blueAccent.withOpacity(0.3),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10.0,
+                ),
               ),
-              const Icon(
-                Icons.add,
-              ),
-            ],
-          ),
-        ),
-      ),
-
-      Expanded(
-        child: Observer(
-          builder: (_) => Center(
-            child: portfolioStore!.portfolioList.isEmpty
-                ? Text("You do not have any  Portfolio")
-                : ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.only(
-                      top: 0.0,
-                    ),
-                    itemCount: portfolioStore!.portfolioList.length,
-                    itemBuilder: (context, index) => PortfolioWidget(
-                      index: index,
-                      imageUrl: portfolioStore!
-                          .portfolioList[index].medias.first.url,
-                      title: portfolioStore!.portfolioList[index].title,
-                    ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Add new",
                   ),
+                  const SizedBox(
+                    width: 5.0,
+                  ),
+                  const Icon(
+                    Icons.add,
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    ],
-  );
+
+          Expanded(
+            child: Observer(
+              builder: (_) => Center(
+                child: portfolioStore!.portfolioList.isEmpty
+                    ? Text(
+                        "profiler.dontHavePortfolio".tr(),
+                      )
+                    : ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.only(
+                          top: 0.0,
+                        ),
+                        itemCount: portfolioStore!.portfolioList.length,
+                        itemBuilder: (context, index) => PortfolioWidget(
+                          index: index,
+                          imageUrl: portfolioStore!
+                                  .portfolioList[index].medias.isEmpty
+                              ? "https://app-ver1.workquest.co/_nuxt/img/logo.1baae1e.svg"
+                              : portfolioStore!
+                                  .portfolioList[index].medias.first.url,
+                          title: portfolioStore!.portfolioList[index].title,
+                        ),
+                      ),
+              ),
+            ),
+          ),
+        ],
+      );
 
   List<Widget> workerWidgets() => [
 //_____________Skills______________/
         Padding(
           padding: const EdgeInsets.only(bottom: 5.0),
           child: Text(
-            'Your Skills',
+            "skills.yourSkills".tr(),
             textAlign: TextAlign.start,
             style: style,
           ),
         ),
         (userStore!.userData!.skillFilters.isEmpty)
             ? Text(
-                "No skills",
+                "skills.noSkills".tr(),
                 style: style.copyWith(
                   color: Color(0xFF7C838D),
                   fontWeight: FontWeight.normal,
@@ -181,5 +186,13 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
                   fontWeight: FontWeight.normal,
                 ),
               ),
+      ];
+
+  List<Widget> rateWidgets() => [
+        rating(
+          completedQuests: "12",
+          averageRating: "4.5",
+          reviews: "23",
+        ),
       ];
 }

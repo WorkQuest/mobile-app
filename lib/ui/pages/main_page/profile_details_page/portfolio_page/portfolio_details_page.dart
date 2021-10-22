@@ -27,7 +27,9 @@ class PortfolioDetails extends StatelessWidget {
                 largeTitle: Row(
                   children: [
                     Expanded(
-                      child: Text("profile.portfolio".tr()),
+                      child: Text(
+                        "profiler.portfolio".tr(),
+                      ),
                     ),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(
@@ -65,6 +67,7 @@ class PortfolioDetails extends StatelessWidget {
                               portfolioId:
                                   portfolioStore.portfolioList[index].id,
                             );
+                            Navigator.pop(context);
                           },
                           icon: Icon(
                             Icons.delete_forever,
@@ -88,6 +91,7 @@ class PortfolioDetails extends StatelessWidget {
                         .map(
                           (e) => Image.network(
                             e.url,
+                            fit: BoxFit.fitHeight,
                           ),
                         )
                         .toList(),

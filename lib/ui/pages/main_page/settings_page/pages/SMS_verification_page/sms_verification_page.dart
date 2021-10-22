@@ -1,6 +1,7 @@
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
+import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,19 +47,37 @@ class SMSVerificationPage extends StatelessWidget {
                       const SizedBox(
                         height: 10.0,
                       ),
-                      TextFormField(
-                        maxLines: 1,
-                        initialValue: store.phone,
-                        onChanged: store.setPhone,
-                        keyboardType: TextInputType.phone,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.allow(
-                            RegExp(r'[0-9+]'),
-                          ),
-                          LengthLimitingTextInputFormatter(14),
-                        ],
-                        decoration: InputDecoration(
-                          hintText: "+7 *** *** ** **",
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFFF7F8FA),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            Text("+"),
+                            Expanded(
+                              child: TextFormField(
+                                maxLines: 1,
+                                validator: Validators.phoneNumberValidator,
+                                onChanged: store.setPhone,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'[0-9]'),
+                                  ),
+                                  LengthLimitingTextInputFormatter(13),
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: "International format",
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Spacer(),

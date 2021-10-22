@@ -327,12 +327,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     onPressed: () {
                       store.acceptCompletedWork(questId: widget.questInfo.id);
                       widget.questInfo.status = 6;
+                      Navigator.pop(context);
                       successAlert(
                         context,
                         "quests.answerOnQuest.questCompleted".tr(),
                       );
-                      Navigator.pop(context);
-                      Navigator.pop(context);
                     },
                     child: Text(
                       "quests.answerOnQuest.acceptCompleted".tr(),
@@ -359,12 +358,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     onPressed: () {
                       store.rejectCompletedWork(questId: widget.questInfo.id);
                       widget.questInfo.status = 4;
+                      Navigator.pop(context);
                       successAlert(
                         context,
                         "quests.answerOnQuest.rejectCompletedQuest".tr(),
                       );
-                      Navigator.pop(context);
-                      Navigator.pop(context);
                     },
                     child: Text(
                       "quests.answerOnQuest.rejectCompleted".tr(),

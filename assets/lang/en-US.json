@@ -126,6 +126,7 @@
     "quests": "Quests",
     "reviews": "Reviews",
     "portfolio": "Portfolio",
+    "dontHavePortfolio": "You do not have any  Portfolio",
     "sidebar": {
       "filter": "Filter All quests",
       "choose": "(Choose a simple category or specialized)",
@@ -184,7 +185,7 @@
     "makingMoneyIsFast": "WorkQuest:\n The decentralized labour market\n of the world",
     "dontHaveAnAccount": "Don't have an account?",
     "signUp": "Sign Up",
-    "forgotYourPass": "Forgot password?"
+    "forgotYourPass": "Forgot your password?"
   },
   "signWorkQuest": {
     "title": "WorkQuest social Network",
@@ -252,7 +253,9 @@
     }
   },
   "skills": {
-    "title": "Skills"
+    "title": "Skills",
+    "yourSkills": "Your Skills",
+    "noSkills": "No skills"
   },
   "quests": {
     "title": "Quest Title",
@@ -304,6 +307,7 @@
     "reviews": "reviews",
     "reviewsBig": "Reviews",
     "addReview": "Add review",
+    "addNewReview": "Add new review",
     "MyQuests": "My Quest",
     "activeQuest": "Active quests",
     "proposal": "Proposal",

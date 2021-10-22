@@ -11,6 +11,8 @@ import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart'
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_employer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_worker.dart';
@@ -122,8 +124,7 @@ class Routes {
       case SendEmail.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
-            create: (context) =>
-                getIt.get<RestorePasswordStore>(),
+            create: (context) => getIt.get<RestorePasswordStore>(),
             child: SendEmail(),
           ),
         );
@@ -325,8 +326,15 @@ class Routes {
 
       case CreateQuestPage.routeName:
         return MaterialPageRoute<bool>(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<CreateQuestStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<CreateQuestStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<QuestsStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: CreateQuestPage(
@@ -436,6 +444,19 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: DisputePage(),
+            ),
+          ),
+        );
+
+      case CreateReviewPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<CreateReviewStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: CreateReviewPage(
+                questId: settings.arguments as String,
+              ),
             ),
           ),
         );

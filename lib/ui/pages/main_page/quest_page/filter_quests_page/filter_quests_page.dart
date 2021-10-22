@@ -89,7 +89,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                       ),
                                       _checkButton(
                                         title:
-                                            "quests.quests.deliveryTime".tr(),
+                                            "quests.filter.deliveryTime".tr(),
                                         list: storeFilter.sortByQuestDelivery,
                                         selected:
                                             storeFilter.selectQuestDelivery,

@@ -69,6 +69,9 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
   List<Widget> workerWidgets() => [];
 
   @protected
+  List<Widget> employerWidgets() => [];
+
+  @protected
   Widget questPortfolio() => SizedBox.shrink();
 
   @protected
@@ -100,7 +103,9 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: workerWidgets(),
+                      children: userStore.userData!.role == UserRole.Worker
+                          ? workerWidgets()
+                          : employerWidgets(),
                     ),
 
                     ///Social Accounts
@@ -118,11 +123,6 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
                               .userData?.additionalInfo?.secondMobileNumber ??
                           "",
                       email: userStore.userData?.email ?? " ",
-                    ),
-                    rating(
-                      completedQuests: "12",
-                      averageRating: "4.5",
-                      reviews: "23",
                     ),
                     spacer,
                   ],

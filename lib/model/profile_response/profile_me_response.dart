@@ -33,7 +33,7 @@ class ProfileMeResponse {
   UserRole role;
   Avatar? avatar;
   Map<String, List<String>> skillFilters;
-  int ratingStatistic;
+  RatingStatistic? ratingStatistic;
   Location? location;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
@@ -51,7 +51,9 @@ class ProfileMeResponse {
           role: object.role,
           avatar: object.avatar,
           skillFilters: object.skillFilters,
-          ratingStatistic: object.ratingStatistic,
+          ratingStatistic: object.ratingStatistic != null
+              ? RatingStatistic.clone(object.ratingStatistic!)
+              : null,
           location:
               object.location != null ? Location.clone(object.location!) : null,
         );
@@ -62,7 +64,11 @@ class ProfileMeResponse {
 
   factory ProfileMeResponse.fromJson(Map<String, dynamic> json) {
     json.forEach((key, value) {
-      print("$key $value");
+      print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      json.forEach((key, value) {
+        print("key $key value $value");
+      });
+      print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     });
     // Map<String,List<String>>   listSkills = {};
     // json["skillFilters"].forEach((key, value) {
@@ -83,8 +89,9 @@ class ProfileMeResponse {
       avatar: Avatar.fromJson(json["avatar"]),
       skillFilters: {},
       //listSkills,
-      ratingStatistic:
-          json["ratingStatistic"] == null ? 0 : json["ratingStatistic"],
+      ratingStatistic: json["ratingStatistic"] == null
+          ? null
+          : RatingStatistic.fromJson(json["ratingStatistic"]),
       location:
           json["location"] == null ? null : Location.fromJson(json["location"]),
       // createdAt: DateTime.parse(json["createdAt"]),
@@ -104,7 +111,7 @@ class ProfileMeResponse {
         "role": role.toString().split(".").last,
         "avatar": avatar!.toJson(),
         // "skillFilter": skillFilters.map((item) => item.toJson()),
-        "ratingStatistic": ratingStatistic,
+        "ratingStatistic": ratingStatistic!.toJson(),
         "location": location!.toJson(),
         // "createdAt": createdAt.toIso8601String(),
         // "updatedAt": updatedAt.toIso8601String(),
@@ -158,5 +165,53 @@ class Location {
   Map<String, double> toJson() => {
         "latitude": latitude,
         "longitude": longitude,
+      };
+}
+
+class RatingStatistic {
+  RatingStatistic({
+    required this.id,
+    required this.userId,
+    required this.reviewCount,
+    required this.averageMark,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  String id;
+  String userId;
+  int reviewCount;
+  double averageMark;
+  String createdAt;
+  String updatedAt;
+
+  RatingStatistic.clone(RatingStatistic object)
+      : this(
+          id: object.id,
+          userId: object.userId,
+          reviewCount: object.reviewCount,
+          averageMark: object.averageMark,
+          createdAt: object.createdAt,
+          updatedAt: object.updatedAt,
+        );
+
+  factory RatingStatistic.fromJson(Map<String, dynamic> json) {
+    return RatingStatistic(
+      id: json["id"],
+      userId: json["userId"],
+      reviewCount: json["reviewCount"],
+      averageMark: json["averageMark"] ?? 0.0,
+      createdAt: json["createdAt"],
+      updatedAt: json["updatedAt"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "userId": userId,
+        "reviewCount": reviewCount,
+        "averageMark": averageMark,
+        "createdAt": createdAt,
+        "updatedAt": updatedAt,
       };
 }

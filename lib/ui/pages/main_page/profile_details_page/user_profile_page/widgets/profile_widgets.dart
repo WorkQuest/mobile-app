@@ -98,11 +98,11 @@ class ReviewsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
-        top: 10.0,
-      ),
+      // margin: EdgeInsets.only(
+      //   left: 16.0,
+      //   right: 16.0,
+      //   top: 10.0,
+      // ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(

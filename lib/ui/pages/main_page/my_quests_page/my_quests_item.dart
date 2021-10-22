@@ -104,7 +104,10 @@ class MyQuestsItem extends StatelessWidget {
                   .remove(questInfo);
               break;
             case 1:
-              if (questInfo.status == 2 || questInfo.status == 6)
+              if (questInfo.status == 2
+                  || questInfo.status == 6
+                  || questInfo.status == 5
+                  || questInfo.status == 4)
                 context
                     .read<MyQuestStore>()
                     .active!

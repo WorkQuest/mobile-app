@@ -26,6 +26,11 @@ class CreatePortfolioPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final store = context.read<PortfolioStore>();
+    if (allowEdit) {
+      store.title = store.portfolioList[store.portfolioIndex].title;
+      store.description = store.portfolioList[store.portfolioIndex].description;
+      //store.media = store.portfolioList[store.portfolioIndex].medias;
+    }
     return Scaffold(
       appBar: CupertinoNavigationBar(
         middle: Text(
@@ -42,112 +47,123 @@ class CreatePortfolioPage extends StatelessWidget {
                   vertical: 10.0,
                 ),
                 sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    ///media view on edit portfolio
-                    if(allowEdit)
-                    SizedBox(
-                      height:150.0,
-                      child: ListView.separated(
-                        separatorBuilder: (_,index)=>SizedBox(
-                          width: 10.0,
-                        ),
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount:store.portfolioList[store.portfolioIndex]
-                            .medias.length,
-                        itemBuilder: (_, index) => SizedBox(
-                          width: 120.0,
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            fit: StackFit.expand,
-                            children: [
-                              // Media
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: Image.network(
-                                  store.portfolioList[store.portfolioIndex]
-                                      .medias[index].url,
-                                  fit: BoxFit.cover,
-                                ),
+                  delegate: SliverChildListDelegate(
+                    [
+                      ///media view on edit portfolio
+                      if (allowEdit)
+                        SizedBox(
+                          height: 150.0,
+                          child: ListView.separated(
+                            separatorBuilder: (_, index) => SizedBox(
+                              width: 10.0,
+                            ),
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: store.portfolioList[store.portfolioIndex]
+                                .medias.length,
+                            itemBuilder: (_, index) => SizedBox(
+                              width: 120.0,
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                fit: StackFit.expand,
+                                children: [
+                                  // Media
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Image.network(
+                                      store.portfolioList[store.portfolioIndex]
+                                          .medias[index].url,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: -15.0,
+                                    right: -15.0,
+                                    child: IconButton(
+                                      onPressed: () => store
+                                          .portfolioList[store.portfolioIndex]
+                                          .medias
+                                          .removeAt(index),
+                                      //widget.media.removeAt(index),
+                                      icon: Icon(Icons.cancel),
+                                      color: Colors.redAccent,
+                                    ),
+                                  ),
+                                  // For video duration
+                                  // if (widget.media[index].entity.type == AssetType.video)
+                                  //   Positioned(
+                                  //     right: 4.0,
+                                  //     bottom: 4.0,
+                                  //     child: ClipRRect(
+                                  //       borderRadius: BorderRadius.circular(20.0),
+                                  //       child: Container(
+                                  //         color: Colors.black.withOpacity(0.7),
+                                  //         padding: const EdgeInsets.symmetric(
+                                  //             horizontal: 6.0, vertical: 2.0),
+                                  //         child: Text(
+                                  //           widget.media[index].entity.duration.formattedDuration,
+                                  //           textAlign: TextAlign.center,
+                                  //           style: const TextStyle(
+                                  //             fontSize: 13.0,
+                                  //             color: Colors.white,
+                                  //             fontWeight: FontWeight.w700,
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                ],
                               ),
-                              Positioned(
-                                top: -15.0,
-                                 right: -15.0,
-                                child: IconButton(
-                                  onPressed: () => store.portfolioList[store.portfolioIndex]
-                                      .medias.removeAt(index),
-                                  //widget.media.removeAt(index),
-                                  icon: Icon(Icons.cancel),
-                                  color: Colors.redAccent,
-                                ),
-                              ),
-                              // For video duration
-                              // if (widget.media[index].entity.type == AssetType.video)
-                              //   Positioned(
-                              //     right: 4.0,
-                              //     bottom: 4.0,
-                              //     child: ClipRRect(
-                              //       borderRadius: BorderRadius.circular(20.0),
-                              //       child: Container(
-                              //         color: Colors.black.withOpacity(0.7),
-                              //         padding: const EdgeInsets.symmetric(
-                              //             horizontal: 6.0, vertical: 2.0),
-                              //         child: Text(
-                              //           widget.media[index].entity.duration.formattedDuration,
-                              //           textAlign: TextAlign.center,
-                              //           style: const TextStyle(
-                              //             fontSize: 13.0,
-                              //             color: Colors.white,
-                              //             fontWeight: FontWeight.w700,
-                              //           ),
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                            ],
+                            ),
                           ),
                         ),
+                      _spacer,
+                      Text(
+                        "modals.title".tr(),
                       ),
-                    ),
-                    _spacer,
-                    const Text("Title"),
-                    _spacer,
-                    TextFormField(
-                      initialValue: allowEdit
-                          ? store.portfolioList[store.portfolioIndex].title
-                          : "",
-                      onChanged: store.setTitle,
-                    ),
-                    const SizedBox(
-                      height: 16.0,
-                    ),
-                    Text("modals.description".tr()),
-                    _spacer,
-                    TextFormField(
-                      initialValue: allowEdit
-                          ? store
-                              .portfolioList[store.portfolioIndex].description
-                          : "",
-                      //initialValue: store.description,
-                      onChanged: store.setDescription,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 12,
-                      decoration: const InputDecoration(
-                        hintText: 'Quest text',
+                      _spacer,
+                      TextFormField(
+                        initialValue: allowEdit
+                            ? store.portfolioList[store.portfolioIndex].title
+                            : "",
+                        onChanged: store.setTitle,
                       ),
-                      style: const TextStyle(
-                        fontSize: 16,
+                      const SizedBox(
+                        height: 16.0,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 16.0,
-                    ),
-                    Text("uploader.files".tr()),
-                    _spacer,
-                    MediaUpload(
-                      media: store.media,
-                    )
-                  ]),
+                      Text(
+                        "modals.description".tr(),
+                      ),
+                      _spacer,
+                      TextFormField(
+                        initialValue: allowEdit
+                            ? store
+                                .portfolioList[store.portfolioIndex].description
+                            : "",
+                        //initialValue: store.description,
+                        onChanged: store.setDescription,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 12,
+                        decoration: const InputDecoration(
+                          hintText: 'Quest text',
+                        ),
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 16.0,
+                      ),
+                      Text(
+                        "uploader.files".tr(),
+                      ),
+                      _spacer,
+                      MediaUpload(
+                        mediaDrishya: store.media,
+                        mediaURL: store.portfolioList[store.portfolioIndex].medias,
+                      )
+                    ],
+                  ),
                 ),
               ),
               SliverFillRemaining(

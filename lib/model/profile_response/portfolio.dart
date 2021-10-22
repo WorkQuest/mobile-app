@@ -1,3 +1,5 @@
+import 'package:app/model/quests_models/create_quest_model/media_model.dart';
+
 class PortfolioModel {
   PortfolioModel({
     required this.id,
@@ -21,54 +23,38 @@ class PortfolioModel {
 
   factory PortfolioModel.fromJson(
     Map<String, dynamic> json,
-  ) =>
-      PortfolioModel(
-        id: json["id"],
-        userId: json["userId"],
-        title: json["title"] ?? "No title",
-        description: json["description"] ?? "No title",
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
-        medias: json["medias"] == null
-            ? []
-            : List<Media>.from(json["medias"].map((x) => Media.fromJson(x))),
-        user: User.fromJson(json["user"]),
-      );
+  ) {
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    json.forEach((key, value) {
+      print("key $key value $value");
+    });
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    return PortfolioModel(
+      id: json["id"],
+      userId: json["userId"],
+      title: json["title"] ?? "No title",
+      description: json["description"] ?? "No title",
+      createdAt: DateTime.parse(json["createdAt"]),
+      updatedAt: DateTime.parse(json["updatedAt"]),
+      medias: json["medias"] == null
+          ? []
+          : List<Media>.from(json["medias"].map((x) => Media.fromJson(x))),
+      user: User.fromJson(json["user"]),
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "userId": userId,
-        "title": title,
-        "description": description,
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
-        "medias": List<dynamic>.from(medias.map((x) => x.toJson())),
-        "user": user.toJson(),
-      };
-}
+    Map<String, dynamic> toJson() =>
+        {
+          "id": id,
+          "userId": userId,
+          "title": title,
+          "description": description,
+          "createdAt": createdAt.toIso8601String(),
+          "updatedAt": updatedAt.toIso8601String(),
+          "medias": List<dynamic>.from(medias.map((x) => x.toJson())),
+          "user": user.toJson(),
+        };
 
-class Media {
-  Media({
-    required this.id,
-    required this.url,
-    required this.contentType,
-  });
-
-  String id;
-  String url;
-  String contentType;
-
-  factory Media.fromJson(Map<String, dynamic> json) => Media(
-        id: json["id"],
-        url: json["url"],
-        contentType: json["contentType"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "url": url,
-        "contentType": contentType,
-      };
 }
 
 class User {

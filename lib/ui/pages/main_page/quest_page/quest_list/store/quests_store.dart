@@ -11,7 +11,6 @@ import 'package:google_maps_webservice/places.dart';
 
 part 'quests_store.g.dart';
 
-@injectable
 @singleton
 class QuestsStore extends _QuestsStore with _$QuestsStore {
   QuestsStore(ApiProvider apiProvider) : super(apiProvider);
