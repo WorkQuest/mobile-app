@@ -2,8 +2,8 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/keys.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
-import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
@@ -113,7 +113,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   ObservableList<DrishyaEntity> mediaDrishya = ObservableList();
 
   @observable
-  ObservableList<Media> mediaURL = ObservableList();
+  List<String> mediaIds = [];
 
   @observable
   String locationPlaceName = '';
@@ -153,16 +153,18 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @computed
   bool get canCreateQuest =>
+      !isLoading && locationPlaceName.isNotEmpty && mediaDrishya.isNotEmpty;
+
+  @computed
+  bool get canSubmitEditQuest =>
       !isLoading &&
-          locationPlaceName.isNotEmpty &&
-          mediaDrishya.isNotEmpty;
+      locationPlaceName.isNotEmpty &&
+      (mediaIds.isNotEmpty || mediaDrishya.isNotEmpty);
 
   @action
   void emptyField() {
-    if (locationPlaceName.isEmpty)
-      onError("Address is empty");
-    if (mediaDrishya.isEmpty)
-      onError("Media is empty");
+    if (locationPlaceName.isEmpty) onError("Address is empty");
+    if (mediaDrishya.isEmpty) onError("Media is empty");
   }
 
   String getWorkplaceValue() {
@@ -189,8 +191,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     return employmentValue;
   }
 
-  GoogleMapsPlaces _places =
-  GoogleMapsPlaces(apiKey: Keys.googleKey);
+  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
   Future<Null> getPrediction(BuildContext context) async {
@@ -212,8 +213,17 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     longitude = detail.result.geometry!.location.lng;
   }
 
+  Future<BaseQuestResponse> getQuest(String questId) async {
+    return await apiProvider.getQuest(
+      id: questId,
+    );
+  }
+
   @action
-  Future createQuest() async {
+  Future<void> createQuest({
+    bool isEdit = false,
+    String questId = "",
+  }) async {
     try {
       this.onLoading();
       final LocationCode location = LocationCode(
@@ -228,17 +238,23 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         skillFilters: {},
         priority: priorityList.indexOf(priority),
         location: location,
-        media: await apiProvider.uploadMedia(
-          medias: mediaDrishya,
-        ),
+        media: mediaIds +
+            await apiProvider.uploadMedia(
+              medias: mediaDrishya,
+            ),
         title: questTitle,
         description: description,
         price: price,
         adType: adType,
       );
-      await apiProvider.createQuest(
-        quest: questModel,
-      );
+      isEdit
+          ? await apiProvider.editQuest(
+              quest: questModel,
+              questId: questId,
+            )
+          : await apiProvider.createQuest(
+              quest: questModel,
+            );
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

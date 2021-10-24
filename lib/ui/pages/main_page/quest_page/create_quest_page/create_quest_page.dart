@@ -1,4 +1,6 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
@@ -12,6 +14,7 @@ import "package:provider/provider.dart";
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../../../../../enums.dart';
 import '../../../../../observer_consumer.dart';
 
 class CreateQuestPage extends StatefulWidget {
@@ -24,13 +27,15 @@ class CreateQuestPage extends StatefulWidget {
   _CreateQuestPageState createState() => _CreateQuestPageState();
 }
 
-class _CreateQuestPageState extends State<CreateQuestPage>
-    with AutomaticKeepAliveClientMixin {
+class _CreateQuestPageState extends State<CreateQuestPage> {
   final _formKey = GlobalKey<FormState>();
+
+  bool isEdit = false;
 
   void initState() {
     super.initState();
     if (widget.questInfo != null) {
+      this.isEdit = true;
       final store = context.read<CreateQuestStore>();
       store.priority = store.priorityList[widget.questInfo!.priority];
       store.category = widget.questInfo!.category;
@@ -38,24 +43,24 @@ class _CreateQuestPageState extends State<CreateQuestPage>
       store.description = widget.questInfo!.description;
       store.price = widget.questInfo!.price;
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
+      store.mediaIds = widget.questInfo!.medias.map((e) => e.id).toList();
     }
   }
 
   Widget build(context) {
-    super.build(context);
     final store = context.read<CreateQuestStore>();
     SkillSpecializationController? _controller;
+    final questStore = context.read<MyQuestStore>();
 
     return Form(
       key: _formKey,
       child: Scaffold(
         body: CustomScrollView(
+          cacheExtent: 1000,
           slivers: [
             CupertinoSliverNavigationBar(
               largeTitle: Text(
-                widget.questInfo == null
-                    ? "quests.createAQuest".tr()
-                    : "registration.edit".tr(),
+                isEdit ? "registration.edit".tr() : "quests.createAQuest".tr(),
               ),
             ),
             SliverPadding(
@@ -402,24 +407,55 @@ class _CreateQuestPageState extends State<CreateQuestPage>
                       margin: const EdgeInsets.symmetric(vertical: 30),
                       child: ObserverListener<CreateQuestStore>(
                         onSuccess: () async {
+
+                          ///review
+                          await questStore.getQuests(
+                            widget.questInfo!.userId,
+                            UserRole.Employer,
+                          );
                           Navigator.pop(context, true);
+                          if (isEdit) {
+                            final updatedQuest =
+                                await store.getQuest(widget.questInfo!.id);
+                            Navigator.pushReplacementNamed(
+                              context,
+                              QuestDetails.routeName,
+                              arguments: updatedQuest,
+                            );
+                          }
                           await successAlert(
                             context,
-                            "modals.questCreated".tr(),
+                            isEdit
+                                ? "Quest Successfully Edited"
+                                : "modals.questCreated".tr(),
                           );
                         },
                         child: Observer(
                           builder: (context) => ElevatedButton(
-                            onPressed: store.canCreateQuest
-                                ? () async {
-                                    if (_formKey.currentState?.validate() ??
-                                        false) store.createQuest();
-                                  }
-                                : () => store.emptyField(),
+                            onPressed: () async {
+                              if (isEdit) {
+                                if (store.canSubmitEditQuest) {
+                                  if (_formKey.currentState?.validate() ??
+                                      false)
+                                    await store.createQuest(
+                                      isEdit: true,
+                                      questId: widget.questInfo!.id,
+                                    );
+                                }
+                                print("edit");
+                              } else if (store.canCreateQuest) {
+                                if (_formKey.currentState?.validate() ?? false)
+                                  await store.createQuest();
+                                print("create");
+                              } else
+                                store.emptyField();
+                            },
                             child: store.isLoading
                                 ? PlatformActivityIndicator()
                                 : Text(
-                                    'quests.createAQuest'.tr(),
+                                    isEdit
+                                        ? "Edit Quest"
+                                        : 'quests.createAQuest'.tr(),
                                     style: TextStyle(
                                       color: Colors.white,
                                     ),
@@ -429,8 +465,6 @@ class _CreateQuestPageState extends State<CreateQuestPage>
                       ),
                     ),
                   ],
-                  addAutomaticKeepAlives: true,
-                  addRepaintBoundaries: true,
                 ),
               ),
             )
@@ -475,8 +509,4 @@ class _CreateQuestPageState extends State<CreateQuestPage>
       builder: (context) {
         return child;
       });
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }

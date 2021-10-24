@@ -1,5 +1,6 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
@@ -21,15 +22,19 @@ class QuestEmployer extends QuestDetails {
 
 class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   late EmployerStore store;
+  late MyQuestStore questStore;
 
   AnimationController? controller;
 
   @override
   void initState() {
     store = context.read<EmployerStore>();
+    questStore = context.read<MyQuestStore>();
     store.getRespondedList(widget.questInfo.id);
     controller = BottomSheet.createAnimationController(this);
-    controller!.duration = Duration(seconds: 1);
+    controller!.duration = Duration(
+      milliseconds: 500,
+    );
     super.initState();
   }
 
@@ -47,7 +52,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(6.0),
         ),
-        onSelected: (value) {
+        onSelected: (value) async {
           switch (value) {
             case "Raise views":
               Navigator.pushNamed(
@@ -57,7 +62,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               );
               break;
             case "Edit":
-              Navigator.pushNamed(
+               Navigator.pushNamed(
                 context,
                 CreateQuestPage.routeName,
                 arguments: widget.questInfo,
@@ -69,7 +74,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 title: "quests.deleteQuest".tr(),
                 message: "quests.deleteQuestMessage".tr(),
                 confirmAction: () {
-                  store.deleteQuest(questId: widget.questInfo.id);
+                  store.deleteQuest(questId: widget.questInfo.id).then(
+                        (value) => questStore.active!.remove(
+                          widget.questInfo,
+                        ),
+                      );
                   Navigator.pop(context);
                   Navigator.pop(context);
                 },

@@ -192,6 +192,9 @@ class Routes {
                   Provider(
                     create: (context) => getIt.get<ProfileMeStore>(),
                   ),
+                  Provider(
+                    create: (context) => getIt.get<MyQuestStore>(),
+                  ),
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),
@@ -330,6 +333,9 @@ class Routes {
             providers: [
               Provider(
                 create: (context) => getIt.get<CreateQuestStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<MyQuestStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<QuestsStore>(),

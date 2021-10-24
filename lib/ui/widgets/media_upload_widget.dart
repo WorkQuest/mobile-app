@@ -134,29 +134,37 @@ class _MediaUploadState extends State<MediaUpload> {
   }
 
   Widget dataURL(Media media) {
-    return Container(
-      width: 150,
-      child: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
-        children: [
-          // Media
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Image.network(media.url,fit: BoxFit.cover,),
-          ),
-
-          Positioned(
-            top: -15.0,
-            right: -15.0,
-            child: IconButton(
-              onPressed: () => widget.mediaURL.remove(media),
-              icon: Icon(Icons.cancel),
-              iconSize: 25.0,
-              color: Colors.redAccent,
+    return Padding(
+      padding: const EdgeInsets.only(
+        right: 10.0,
+      ),
+      child: Container(
+        width: 150,
+        child: Stack(
+          clipBehavior: Clip.none,
+          fit: StackFit.expand,
+          children: [
+            // Media
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.network(
+                media.url,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-        ],
+
+            Positioned(
+              top: -15.0,
+              right: -15.0,
+              child: IconButton(
+                onPressed: () => widget.mediaURL.remove(media),
+                icon: Icon(Icons.cancel),
+                iconSize: 25.0,
+                color: Colors.redAccent,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

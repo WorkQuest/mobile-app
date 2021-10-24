@@ -204,7 +204,10 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
 
   Widget tagItem(String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 7,
+        vertical: 5,
+      ),
       decoration: BoxDecoration(
         color: Color(0xFF0083C7).withOpacity(0.1),
         borderRadius: BorderRadius.circular(44),

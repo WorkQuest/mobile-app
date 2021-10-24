@@ -23,6 +23,13 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
       (_$canCreateQuestComputed ??= Computed<bool>(() => super.canCreateQuest,
               name: '_CreateQuestStore.canCreateQuest'))
           .value;
+  Computed<bool>? _$canSubmitEditQuestComputed;
+
+  @override
+  bool get canSubmitEditQuest => (_$canSubmitEditQuestComputed ??=
+          Computed<bool>(() => super.canSubmitEditQuest,
+              name: '_CreateQuestStore.canSubmitEditQuest'))
+      .value;
 
   final _$employmentAtom = Atom(name: '_CreateQuestStore.employment');
 
@@ -264,18 +271,33 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
-  final _$mediaAtom = Atom(name: '_CreateQuestStore.media');
+  final _$mediaDrishyaAtom = Atom(name: '_CreateQuestStore.mediaDrishya');
 
   @override
   ObservableList<DrishyaEntity> get mediaDrishya {
-    _$mediaAtom.reportRead();
+    _$mediaDrishyaAtom.reportRead();
     return super.mediaDrishya;
   }
 
   @override
   set mediaDrishya(ObservableList<DrishyaEntity> value) {
-    _$mediaAtom.reportWrite(value, super.mediaDrishya, () {
+    _$mediaDrishyaAtom.reportWrite(value, super.mediaDrishya, () {
       super.mediaDrishya = value;
+    });
+  }
+
+  final _$mediaIdsAtom = Atom(name: '_CreateQuestStore.mediaIds');
+
+  @override
+  List<String> get mediaIds {
+    _$mediaIdsAtom.reportRead();
+    return super.mediaIds;
+  }
+
+  @override
+  set mediaIds(List<String> value) {
+    _$mediaIdsAtom.reportWrite(value, super.mediaIds, () {
+      super.mediaIds = value;
     });
   }
 
@@ -314,8 +336,9 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   final _$createQuestAsyncAction = AsyncAction('_CreateQuestStore.createQuest');
 
   @override
-  Future<dynamic> createQuest() {
-    return _$createQuestAsyncAction.run(() => super.createQuest());
+  Future<void> createQuest({bool isEdit = false, String questId = ""}) {
+    return _$createQuestAsyncAction
+        .run(() => super.createQuest(isEdit: isEdit, questId: questId));
   }
 
   final _$_CreateQuestStoreActionController =
@@ -439,10 +462,12 @@ questTitle: ${questTitle},
 description: ${description},
 price: ${price},
 adType: ${adType},
-media: ${mediaDrishya},
+mediaDrishya: ${mediaDrishya},
+mediaIds: ${mediaIds},
 locationPlaceName: ${locationPlaceName},
 dateString: ${dateString},
-canCreateQuest: ${canCreateQuest}
+canCreateQuest: ${canCreateQuest},
+canSubmitEditQuest: ${canSubmitEditQuest}
     ''';
   }
 }

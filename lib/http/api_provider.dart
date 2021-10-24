@@ -69,9 +69,6 @@ extension LoginService on ApiProvider {
   Future<BearerToken> refreshToken(
     String refreshToken,
   ) async {
-    print("oldtoken $refreshToken");
-    print("oldtoken $refreshToken");
-    print("new ${_httpClient.accessToken}");
     _httpClient.accessToken = refreshToken;
     final responseData = await _httpClient.post(
       query: '/v1/auth/refresh-tokens',
@@ -90,6 +87,16 @@ extension QuestService on ApiProvider {
   }) async {
     await _httpClient.post(
       query: '/v1/quest/create',
+      data: quest.toJson(),
+    );
+  }
+
+  Future<void> editQuest({
+    required CreateQuestRequestModel quest,
+    required String questId,
+  }) async {
+    await _httpClient.put(
+      query: '/v1/quest/$questId',
       data: quest.toJson(),
     );
   }
