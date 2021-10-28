@@ -1,4 +1,5 @@
 import 'package:app/model/profile_response/social_network.dart';
+import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/material.dart';
@@ -579,11 +580,10 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
                       _launchSocial("", 'https://linkedin.com/$linkedin');
                     }
                   : null,
-              icon:
-                   SvgPicture.asset(
-                      "assets/linkedin_icon_disabled.svg",
-                     color: twitter != null ? Color(0xFF0A7EEA) : null,
-                    ),
+              icon: SvgPicture.asset(
+                "assets/linkedin_icon_disabled.svg",
+                color: twitter != null ? Color(0xFF0A7EEA) : null,
+              ),
             ),
           ),
         ),
@@ -738,7 +738,7 @@ Widget contactDetails({
 
 ///Skills widget
 
-Widget skills({required List<String>? skills}) {
+Widget skills({required List<String>? skills, required BuildContext context}) {
   return Wrap(
     direction: Axis.horizontal,
     spacing: 9.0,
@@ -768,7 +768,12 @@ Widget skills({required List<String>? skills}) {
                 vertical: 10.0,
                 horizontal: 10.0,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  ChangeProfilePage.routeName,
+                );
+              },
               label: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

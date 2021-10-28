@@ -118,8 +118,8 @@ extension QuestService on ApiProvider {
 
   Future<List<BaseQuestResponse>> getEmployerQuests({
     String userId = "",
-    String workplace = "",
-    String employment = "",
+    List<String>? workplace,
+    List<String>? employment,
     int limit = 10,
     int offset = 0,
     String searchWord = "",
@@ -138,8 +138,8 @@ extension QuestService on ApiProvider {
           "limit": limit,
           if (searchWord.isNotEmpty) "q": searchWord,
           if (priority != null) "priority": priority,
-          if (workplace.isNotEmpty) "workplace": workplace,
-          if (employment.isNotEmpty) "employment": employment,
+          if (workplace != null) "workplace": workplace,
+          if (employment != null) "employment": employment,
           if (status != null) "status": status,
           //"sort": sort,
           if (invited != null) "invited": invited,
@@ -165,8 +165,8 @@ extension QuestService on ApiProvider {
   }
 
   Future<List<BaseQuestResponse>> getQuests({
-    String workplace = "",
-    String employment = "",
+    List<String>? workplace,
+    List<String>? employment,
     int limit = 10,
     int offset = 0,
     String searchWord = "",
@@ -184,8 +184,8 @@ extension QuestService on ApiProvider {
         "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
         if (priority != null) "priority": priority,
-        if (workplace.isNotEmpty) "workplace": workplace,
-        if (employment.isNotEmpty) "employment": employment,
+        if (workplace != null)"workplace": workplace,
+        if (employment != null) "employment": employment,
         if (status != null) "status": status,
         //"sort": sort,
         if (invited != null) "invited": invited,
@@ -360,7 +360,10 @@ extension UserInfoService on ApiProvider {
     return ProfileMeResponse.fromJson(responseData);
   }
 
-  Future<ProfileMeResponse> changeProfileMe(ProfileMeResponse userData) async {
+  Future<ProfileMeResponse> changeProfileMe(
+    ProfileMeResponse userData,
+    UserRole role,
+  ) async {
     try {
       final body = {
         "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
@@ -419,15 +422,21 @@ extension UserInfoService on ApiProvider {
             "workExperiences": userData.additionalInfo!.workExperiences,
           if (userData.role == UserRole.Worker) "skills": [],
         },
-        "skillFilters": userData.skillFilters,
+        if (userData.role == UserRole.Worker)
+          "specializationKeys": userData.userSpecializations,
         "location": {
           "longitude": userData.location?.longitude ?? 0,
           "latitude": userData.location?.latitude ?? 0,
         }
       };
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");
-      final responseData =
-          await _httpClient.put(query: '/v1/profile/edit', data: body);
+      final responseData;
+      if (role == UserRole.Worker)
+        responseData =
+            await _httpClient.put(query: '/v1/worker/profile/edit', data: body);
+      else
+        responseData = await _httpClient.put(
+            query: '/v1/employer/profile/edit', data: body);
       return ProfileMeResponse.fromJson(responseData);
     } catch (e) {
       throw Exception(e.toString());
@@ -679,13 +688,12 @@ extension Portfolio on ApiProvider {
       final responseData = await _httpClient.get(
         query: '/v1/user/$userId/portfolio/cases',
       );
-      print("TAG$responseData");
       return List<PortfolioModel>.from(
         responseData.map(
           (x) => PortfolioModel.fromJson(x),
         ),
       );
-    }  catch (e,stack) {
+    } catch (e, stack) {
       print("ERROR $e");
       print("ERROR $stack");
       return [];
@@ -743,7 +751,7 @@ extension Reviews on ApiProvider {
     );
     return List<Review>.from(
       response.map(
-            (review) => Review.fromJson(review),
+        (review) => Review.fromJson(review),
       ),
     );
   }

@@ -15,15 +15,24 @@ class EmployerProfile extends ProfileReviews {
 class _EmployerProfileState extends ProfileReviewsState<ProfileReviews> {
   final String tabTitle = "profiler.sidebar.quests".tr();
 
-  Widget questPortfolio() => QuestsList(
-        QuestItemPriorityType.Performed,
-        myQuests?.performed,
-      );
+  List<Widget> questPortfolio() => [
+        SizedBox(
+          height: 20,
+        ),
+        myQuests?.performed != null
+            ? QuestsList(QuestItemPriorityType.Performed, myQuests?.performed)
+            : Center(
+                child: Text(
+                  "errors.emptyData.worker.myQuests.desc".tr(),
+                ),
+              ),
+      ];
 
   List<Widget> employerWidgets() => [
 //_____________About______________/
-    Text(
-      userStore!.userData?.additionalInfo?.description ?? "No description",
-    ),
-  ];
+        Text(
+          userStore!.userData?.additionalInfo?.description ??
+              "modals.noDescription".tr(),
+        ),
+      ];
 }

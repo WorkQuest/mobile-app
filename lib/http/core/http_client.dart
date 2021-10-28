@@ -11,11 +11,14 @@ import 'package:app/utils/storage.dart';
 class TestHttpClient extends _HttpClient {
   TestHttpClient()
       : super(
-          Dio(BaseOptions(
-              baseUrl: 'https://app-ver1.workquest.co/api',
+          Dio(
+            BaseOptions(
+              baseUrl: 'https://app.workquest.co/api',
               connectTimeout: 20000,
               receiveTimeout: 20000,
-              headers: {"content-type": "application/json"})),
+              headers: {"content-type": "application/json"},
+            ),
+          ),
         );
 
   @override

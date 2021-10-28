@@ -15,8 +15,10 @@ class QuestsList extends StatelessWidget {
 
   final List<BaseQuestResponse>? questsList;
 
+  final Future<dynamic>? update;
+
   const QuestsList(this.questItemPriorityType, this.questsList,
-      {this.onCreate});
+      {this.onCreate, this.update});
 
   @override
   Widget build(BuildContext context) {
@@ -31,39 +33,40 @@ class QuestsList extends StatelessWidget {
   }
 
   Widget getBody() {
-    return ListView.builder(
-      itemCount: onCreate!=null ? questsList!.length + 1 : questsList!.length,
-      padding: EdgeInsets.zero,
-      itemBuilder: (BuildContext context, index) {
-        if (onCreate!=null) if (index == 0) {
-          return Container(
-            margin: EdgeInsets.only(top: 10.0),
-            color: Colors.white,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      bool? status = await Navigator.of(context, rootNavigator: true)
-                          .pushNamed<bool>(CreateQuestPage.routeName);
-                        onCreate!(status??false);
-                    },
-                    child: Text(
-                      "quests.addNewQuest".tr(),
+    return
+      ListView.builder(
+        itemCount: onCreate!=null ? questsList!.length + 1 : questsList!.length,
+        padding: EdgeInsets.zero,
+        itemBuilder: (BuildContext context, index) {
+          if (onCreate!=null) if (index == 0) {
+            return Container(
+              margin: EdgeInsets.only(top: 10.0),
+              color: Colors.white,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        bool? status = await Navigator.of(context, rootNavigator: true)
+                            .pushNamed<bool>(CreateQuestPage.routeName);
+                          onCreate!(status??false);
+                      },
+                      child: Text(
+                        "quests.addNewQuest".tr(),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            );
+          }
+          return MyQuestsItem(
+            questsList![(onCreate!=null) ? index - 1 : index],
+            itemType: questItemPriorityType,
           );
-        }
-        return MyQuestsItem(
-          questsList![(onCreate!=null) ? index - 1 : index],
-          itemType: questItemPriorityType,
-        );
-      },
+        },
     );
   }
 

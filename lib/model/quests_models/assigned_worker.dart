@@ -9,11 +9,13 @@ class AssignedWorker {
 
   String firstName;
   String lastName;
-  AdditionalInfo additionalInfo;
+  AdditionalInfo? additionalInfo;
 
   factory AssignedWorker.fromJson(Map<String, dynamic> json) => AssignedWorker(
         firstName: json["firstName"],
         lastName: json["lastName"] ?? "",
-        additionalInfo: AdditionalInfo.fromJson(json["additionalInfo"]),
+        additionalInfo: json["additionalInfo"] == null
+            ? null
+            : AdditionalInfo.fromJson(json["additionalInfo"]),
       );
 }

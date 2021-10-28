@@ -44,7 +44,7 @@ class PortfolioDetails extends StatelessWidget {
                             Navigator.of(context, rootNavigator: false)
                                 .popAndPushNamed(
                               CreatePortfolioPage.routeName,
-                              arguments: true,
+                              arguments: true ,
                             );
                           },
                           icon: Icon(

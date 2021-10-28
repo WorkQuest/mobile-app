@@ -170,13 +170,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$employmentValueAtom = Atom(name: '_QuestsStore.employmentValue');
 
   @override
-  String get employmentValue {
+  List<String> get employmentValue {
     _$employmentValueAtom.reportRead();
     return super.employmentValue;
   }
 
   @override
-  set employmentValue(String value) {
+  set employmentValue(List<String> value) {
     _$employmentValueAtom.reportWrite(value, super.employmentValue, () {
       super.employmentValue = value;
     });
@@ -185,13 +185,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$workplaceValueAtom = Atom(name: '_QuestsStore.workplaceValue');
 
   @override
-  String get workplaceValue {
+  List<String> get workplaceValue {
     _$workplaceValueAtom.reportRead();
     return super.workplaceValue;
   }
 
   @override
-  set workplaceValue(String value) {
+  set workplaceValue(List<String> value) {
     _$workplaceValueAtom.reportWrite(value, super.workplaceValue, () {
       super.workplaceValue = value;
     });
@@ -286,7 +286,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
   }
 
   @override
-  String getEmploymentValue() {
+  List<String> getEmploymentValue() {
     final _$actionInfo = _$_QuestsStoreActionController.startAction(
         name: '_QuestsStore.getEmploymentValue');
     try {
@@ -297,7 +297,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
   }
 
   @override
-  String getWorkplaceValue() {
+  List<String> getWorkplaceValue() {
     final _$actionInfo = _$_QuestsStoreActionController.startAction(
         name: '_QuestsStore.getWorkplaceValue');
     try {

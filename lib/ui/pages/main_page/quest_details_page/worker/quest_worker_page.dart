@@ -3,6 +3,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
+
 // import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -23,7 +24,6 @@ class QuestWorker extends QuestDetails {
 
 class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   late WorkerStore store;
-  // late final GalleryController gallController;
 
   AnimationController? controller;
 
@@ -33,16 +33,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
-    // gallController = GalleryController(
-    //   gallerySetting: const GallerySetting(
-    //     maximum: 20,
-    //     albumSubtitle: 'All',
-    //     requestType: RequestType.common,
-    //   ),
-    //   panelSetting: PanelSetting(
-    //       //topMargin: 100.0,
-    //       headerMaxHeight: 100.0),
-    // );
     super.initState();
   }
 

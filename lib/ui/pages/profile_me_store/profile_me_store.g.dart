@@ -81,6 +81,17 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
       ActionController(name: '_ProfileMeStore');
 
   @override
+  List<String> parser(List<String> skills) {
+    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
+        name: '_ProfileMeStore.parser');
+    try {
+      return super.parser(skills);
+    } finally {
+      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void changeDistantWork(String selectedDistantWork) {
     final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
         name: '_ProfileMeStore.changeDistantWork');

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/keys.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
@@ -28,10 +29,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   String? sort = "";
 
   @observable
-  String employment = "";
+  String employment = "Select all";
 
   @observable
-  String workplace = "";
+  String workplace = "Select all";
 
   @observable
   int priority = -1;
@@ -52,10 +53,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   List<BaseQuestResponse>? searchResultList = [];
 
   @observable
-  String employmentValue = "partTime";
+  List<String> employmentValue = [];
 
   @observable
-  String workplaceValue = "distant";
+  List<String> workplaceValue = [];
 
   @observable
   double latitude = 0.0;
@@ -70,14 +71,14 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   ///API_KEY HERE
   GoogleMapsPlaces _places =
-  GoogleMapsPlaces(apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU");
+  GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
   Future<Null> getPrediction(BuildContext context) async {
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
       ///API_KEY HERE
-      apiKey: "AIzaSyAcSmI2VeNFNO9MdENuA4H9h9DviRKDZpU",
+      apiKey: Keys.googleKey,
       mode: Mode.overlay,
       logo: SizedBox(),
       // Mode.fullscreen
@@ -108,32 +109,47 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       searchWord.length > 2 && searchResultList!.isEmpty && !this.isLoading;
 
   @action
-  String getEmploymentValue() {
+  List<String> getEmploymentValue() {
     switch (employment) {
       case "Select all":
-        return employmentValue = "selectAll";
+        employmentValue.clear();
+        employmentValue.add("fullTime");
+        employmentValue.add("partTime");
+        employmentValue.add("fixedTerm");
+        employmentValue.add("contract");
+        return employmentValue;
       case "Full-time":
-        return employmentValue = "fullTime";
+        employmentValue.add("fullTime");
+        return employmentValue;
       case "Part-time":
-        return employmentValue = "partTime";
+        employmentValue.add("partTime");
+        return employmentValue;
       case "Fixed-term":
-        return employmentValue = "fixedTerm";
+        employmentValue.add("fixedTerm");
+        return employmentValue;
       case "Contract":
-        return employmentValue = "contract";
+        employmentValue.add("contract");
+        return employmentValue;
     }
+    print("employmentValue: $employmentValue");
     return employmentValue;
   }
 
   @action
-  String getWorkplaceValue() {
+  List<String> getWorkplaceValue() {
     switch (workplace) {
       case "Select all":
-        return workplaceValue = "both";
+        workplaceValue.clear();
+        workplaceValue.add("both");
+        return workplaceValue;
       case "Work in office":
-        return workplaceValue = "office";
+        workplaceValue.add("office");
+        return workplaceValue;
       case "Distant work":
-        return workplaceValue = "distant";
+        workplaceValue.add("distant");
+        return workplaceValue;
     }
+    print("workplaceValue: $workplaceValue");
     return workplaceValue;
   }
 
@@ -153,8 +169,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       final loadQuestsList = await _apiProvider.getQuests(
-        /// employment: employmentValue,
-        /// workplace: workplaceValue,
+        employment: employmentValue,
+        workplace: workplaceValue,
         offset: this.offset,
         limit: this.limit,
         sort: this.sort,

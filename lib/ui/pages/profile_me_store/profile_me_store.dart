@@ -32,17 +32,40 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   @observable
   String distantWork = "Remote work".tr();
 
-  ObservableList<String> distantWorkList = ObservableList.of([
-    "Remote work".tr(),
-    "Work in the office".tr(),
-    "Both options".tr()]
-  );
+  ObservableList<String> distantWorkList = ObservableList.of(
+      ["Remote work".tr(), "Work in the office".tr(), "Both options".tr()]);
 
   ObservableList<String> priorityList = ObservableList.of([
     "Low".tr(),
     "Normal".tr(),
     "Urgent".tr(),
   ]);
+
+  @action
+  List<String> parser(List<String> skills) {
+    List<String> result = [];
+    String spec;
+    String skill;
+    int j;
+    for (int i = 0; i < skills.length; i++) {
+      j = 1;
+      spec = "";
+      skill = "";
+      while (skills[i][j] != ".") {
+        spec += skills[i][j];
+        j++;
+      }
+      j++;
+      while (j < skills[i].length - 1) {
+        skill += skills[i][j];
+        j++;
+      }
+      result.add(
+        "filters.items.$spec.sub.$skill".tr(),
+      );
+    }
+    return result;
+  }
 
   @action
   void changeDistantWork(String selectedDistantWork) =>
@@ -72,13 +95,13 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   @action
   changeProfile(ProfileMeResponse userData, {DrishyaEntity? media}) async {
-    print("object${userData.additionalInfo!.address}");
     try {
       this.onLoading();
       if (media != null)
         userData.avatarId =
             (await _apiProvider.uploadMedia(medias: [media]))[0];
-      this.userData = await _apiProvider.changeProfileMe(userData);
+      this.userData =
+          await _apiProvider.changeProfileMe(userData, userData.role);
       this.onSuccess(true);
     } catch (e, trace) {
       print(trace);

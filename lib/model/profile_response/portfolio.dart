@@ -23,38 +23,30 @@ class PortfolioModel {
 
   factory PortfolioModel.fromJson(
     Map<String, dynamic> json,
-  ) {
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    json.forEach((key, value) {
-      print("key $key value $value");
-    });
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    return PortfolioModel(
-      id: json["id"],
-      userId: json["userId"],
-      title: json["title"] ?? "No title",
-      description: json["description"] ?? "No title",
-      createdAt: DateTime.parse(json["createdAt"]),
-      updatedAt: DateTime.parse(json["updatedAt"]),
-      medias: json["medias"] == null
-          ? []
-          : List<Media>.from(json["medias"].map((x) => Media.fromJson(x))),
-      user: User.fromJson(json["user"]),
-    );
-  }
+  ) =>
+      PortfolioModel(
+        id: json["id"],
+        userId: json["userId"],
+        title: json["title"] ?? "No title",
+        description: json["description"] ?? "No title",
+        createdAt: DateTime.parse(json["createdAt"]),
+        updatedAt: DateTime.parse(json["updatedAt"]),
+        medias: json["medias"] == null
+            ? []
+            : List<Media>.from(json["medias"].map((x) => Media.fromJson(x))),
+        user: User.fromJson(json["user"]),
+      );
 
-    Map<String, dynamic> toJson() =>
-        {
-          "id": id,
-          "userId": userId,
-          "title": title,
-          "description": description,
-          "createdAt": createdAt.toIso8601String(),
-          "updatedAt": updatedAt.toIso8601String(),
-          "medias": List<dynamic>.from(medias.map((x) => x.toJson())),
-          "user": user.toJson(),
-        };
-
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "userId": userId,
+        "title": title,
+        "description": description,
+        "createdAt": createdAt.toIso8601String(),
+        "updatedAt": updatedAt.toIso8601String(),
+        "medias": List<dynamic>.from(medias.map((x) => x.toJson())),
+        "user": user.toJson(),
+      };
 }
 
 class User {

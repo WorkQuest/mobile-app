@@ -44,62 +44,62 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share("http://en.m.wikipedia.org");
+          Share.share(
+              "https://app-ver1.workquest.co/quests/${widget.questInfo.id}");
         },
       ),
-      PopupMenuButton<String>(
-        elevation: 10,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6.0),
+      if (widget.questInfo.userId == profile!.userData!.id &&
+          (widget.questInfo.status == 0 || widget.questInfo.status == 4))
+        PopupMenuButton<String>(
+          elevation: 10,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6.0),
+          ),
+          onSelected: (value) async {
+            switch (value) {
+              case "Raise views":
+                Navigator.pushNamed(
+                  context,
+                  RaiseViews.routeName,
+                  arguments: widget.questInfo,
+                );
+                break;
+              case "Edit":
+                Navigator.pushNamed(
+                  context,
+                  CreateQuestPage.routeName,
+                  arguments: widget.questInfo,
+                );
+                break;
+              case "Delete":
+                dialog(
+                  context,
+                  title: "quests.deleteQuest".tr(),
+                  message: "quests.deleteQuestMessage".tr(),
+                  confirmAction: () {
+                    store.deleteQuest(questId: widget.questInfo.id);
+                    widget.questInfo.status = 2;
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                );
+                break;
+              default:
+            }
+          },
+          itemBuilder: (BuildContext context) {
+            return {
+              'quests.raiseViews'.tr(),
+              'registration.edit'.tr(),
+              'settings.delete'.tr()
+            }.map((String choice) {
+              return PopupMenuItem<String>(
+                value: choice,
+                child: Text(choice),
+              );
+            }).toList();
+          },
         ),
-        onSelected: (value) async {
-          switch (value) {
-            case "Raise views":
-              Navigator.pushNamed(
-                context,
-                RaiseViews.routeName,
-                arguments: widget.questInfo,
-              );
-              break;
-            case "Edit":
-               Navigator.pushNamed(
-                context,
-                CreateQuestPage.routeName,
-                arguments: widget.questInfo,
-              );
-              break;
-            case "Delete":
-              dialog(
-                context,
-                title: "quests.deleteQuest".tr(),
-                message: "quests.deleteQuestMessage".tr(),
-                confirmAction: () {
-                  store.deleteQuest(questId: widget.questInfo.id).then(
-                        (value) => questStore.active!.remove(
-                          widget.questInfo,
-                        ),
-                      );
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-              );
-              break;
-            default:
-          }
-        },
-        itemBuilder: (BuildContext context) {
-          return {
-            'quests.raiseViews'.tr(),
-            'registration.edit'.tr(),
-            'settings.delete'.tr()
-          }.map((String choice) {
-            return PopupMenuItem<String>(
-              value: choice,
-              child: Text(choice),
-            );
-          }).toList();
-        },
-      ),
     ];
   }
 
@@ -136,7 +136,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   Radius.circular(15),
                 ),
                 child: Image.network(
-                  widget.questInfo.assignedWorker!.additionalInfo.avatar.url,
+                  widget.questInfo.assignedWorker!.additionalInfo?.avatar.url ??
+                      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                   width: 30,
                   height: 30,
                   fit: BoxFit.fitHeight,
@@ -192,7 +193,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 )
               : (store.respondedList!.isNotEmpty &&
                       (widget.questInfo.status == 0 ||
-                          widget.questInfo.status == 1))
+                          widget.questInfo.status == 4))
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -337,6 +338,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       store.acceptCompletedWork(questId: widget.questInfo.id);
                       widget.questInfo.status = 6;
                       Navigator.pop(context);
+                      Navigator.pop(context);
                       successAlert(
                         context,
                         "quests.answerOnQuest.questCompleted".tr(),
@@ -367,6 +369,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     onPressed: () {
                       store.rejectCompletedWork(questId: widget.questInfo.id);
                       widget.questInfo.status = 4;
+                      Navigator.pop(context);
                       Navigator.pop(context);
                       successAlert(
                         context,

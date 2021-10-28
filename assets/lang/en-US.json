@@ -284,6 +284,7 @@
     "aboutQuest": "About Quest",
     "disputeQuest": "Dispute quest",
     "waitConfirm": "Wait confirm",
+    "employerConfirmationPending": "Employer confirmation pending",
     "questText": "Quest text",
     "hours": "hours",
     "invited": "Invited",
@@ -307,7 +308,10 @@
     "reviews": "reviews",
     "reviewsBig": "Reviews",
     "addReview": "Add review",
+    "addYourReview": "Add your review",
     "addNewReview": "Add new review",
+    "reviewSent": "Review sent",
+    "rateEmployer": "Rate this employer",
     "MyQuests": "My Quest",
     "activeQuest": "Active quests",
     "proposal": "Proposal",
@@ -334,7 +338,7 @@
     "filter": {
       "btn": "Filters",
       "deliveryTime": "Quests delivery time",
-      "priorityOfTheEmployee":"Priority of the employee",
+      "priorityOfTheEmployee": "Priority of the employee",
       "employeeRating": "Employee rating",
       "sortBy": {
         "title": "Sort by",
@@ -433,425 +437,425 @@
       "1": {
         "title": "Retail, Sales & Purchasing",
         "sub": {
-          "1": "Self-service stores",
-          "2": "Specialist distributors",
-          "3": "Clothing stores",
-          "4": "Car dealers",
-          "5": "Pharmacies",
-          "6": "Department stores",
-          "7": "Supermarkets and hypermarkets",
-          "8": "Multichannel stores",
-          "9": "Discount stores",
-          "10": "Direct sales catalogue and mail order companies",
-          "11": "Ecommerce stores",
-          "12": "Other distribution, sales and purchasing businesses"
+          "100": "Convenience Stores",
+          "101": "Grocery Stores",
+          "102": "Specialty retailers",
+          "103": "Clothing Stores",
+          "104": "Auto Retailers",
+          "105": "Home furnishing retailers",
+          "106": "Drug Stores",
+          "107": "Department Stores",
+          "108": "Super Markets and Hyper Markets",
+          "109": "Multichannel Stores",
+          "110": "Discount Stores",
+          "111": "Direct Sales Catalog and mail order companies",
+          "112": "E-commerce Stores",
+          "113": "Other Retail, Sales & Purchasing"
         }
       },
       "2": {
         "title": "Bars & Restaurants Staff",
         "sub": {
-          "1": "Ethnic food",
-          "2": "Fast food",
-          "3": "Quick casual",
-          "4": "Informal meals",
-          "5": "Top-of-the-range casual",
-          "6": "Family style",
-          "7": "Haute cuisine",
-          "8": "Small restaurants and bars",
-          "9": "Other bar and restaurant staff"
+          "200": "Ethnic food",
+          "201": "Fast food",
+          "202": "Fast casual",
+          "203": "Casual dining",
+          "204": "Premium casual",
+          "205": "Family style",
+          "206": "Fine dining",
+          "207": "Brasserie and bistro",
+          "208": "Other Bars & Restaurants Staff"
         }
       },
       "3": {
-        "title": "Domestic workers",
+        "title": "Accounting & Consulting ",
         "sub": {
-          "1": "Childcare",
-          "2": "Governess",
-          "3": "Tutors",
-          "4": "Cleaners",
-          "5": "Caretakers",
-          "6": "Cooks",
-          "7": "Gardeners",
-          "8": "Drivers",
-          "9": "Other domestic workers"
+          "300": "Accounting",
+          "301": "Financial planning",
+          "302": "Human resources",
+          "303": "Management consulting",
+          "304": "Other accounting and consulting positions"
         }
       },
       "4": {
-        "title": " IT / Networking",
+        "title": "Admin Support",
         "sub": {
-          "1": "Database administration",
-          "2": "ERP / CRM Software",
-          "3": "Information security",
-          "4": "Network and systems administration",
-          "5": "Other IT staff and networks"
+          "400": "Data entry",
+          "401": "Other Admin Support",
+          "402": "Personal / Virtual Assistance",
+          "403": "Project management",
+          "404": "Transcription",
+          "405": "Web Research",
+          "406": "Other Admin Support"
         }
       },
       "5": {
-        "title": "Engineering & Architecture",
+        "title": "Customer service",
         "sub": {
-          "1": "3D Modeling and CAD",
-          "2": "Architecture",
-          "3": "Chemical engineering",
-          "4": "Contract manufacturing",
-          "5": "Electrical engineering",
-          "6": "Mechanical engineering",
-          "7": "Physical sciences",
-          "8": "Other engineering personnel"
+          "500": "Customer service",
+          "501": "Technical Support"
         }
       },
       "6": {
-        "title": "Secretariat, Correspondence & Records Management",
+        "title": "Data Science & Analytics",
         "sub": {
-          "1": "Property records: deeds and liquidations",
-          "2": "Accounting documents: rents, vouchers, valuations and valuations",
-          "3": "Legal documents",
-          "4": "Inventories",
-          "5": "Correspondence",
-          "6": "Attached documentation",
-          "7": "Feudal documents: judicial records, charters, censuses, etc.",
-          "8": "Personal and political documents",
-          "9": "Maps and plans",
-          "10": "Other secretarial, correspondence and records management posts"
+          "600": "Data Extraction / ETL",
+          "601": "A / B Testing",
+          "602": "Data Mining & Management",
+          "603": "Data Visualization",
+          "604": "Machine Learning",
+          "605": "Quantitative analysis",
+          "606": "Other Data Science & Analytics"
         }
       },
       "7": {
-        "title": "Tourism, Leisure & Entertainment",
+        "title": "Personnel Management & HR",
         "sub": {
-          "1": "Amusement park auxiliary",
-          "2": "Concierge",
-          "3": "Cruise director",
-          "4": "Content manager",
-          "5": "Casino dealers",
-          "6": "Lifeguard",
-          "7": "Information clerk",
-          "8": "Auxiliary leisure and free time",
-          "9": "Tour guide",
-          "10": "Other tourism, leisure and entertainment stands"
+          "700": "Human Resource Planning",
+          "701": "Recruitment and Selection",
+          "702": "Performance Management",
+          "703": "Learning and Development",
+          "704": "Career Planning",
+          "705": "Function Evaluation",
+          "706": "Rewards",
+          "707": "Industrial Relations",
+          "708": "Employee Participation and Communication",
+          "709": "Health and Safety",
+          "710": "Personal well-being",
+          "711": "Administrative Responsibilities",
+          "712": "Other Personnel Management & HR"
         }
       },
       "8": {
-        "title": "Accounting & Consulting ",
+        "title": "Security",
         "sub": {
-          "1": "Accounting",
-          "2": "Financial planning",
-          "3": "Human resources",
-          "4": "Management consulting",
-          "5": "Other accounting and consulting positions"
+          "800": "Risk manager",
+          "801": "Systems, Network & Web Penetration Tester",
+          "802": "Network Security Engineer",
+          "803": "Network Security Administrator",
+          "804": "Cyber Crime Investigatorr",
+          "805": "Information Security Analyst",
+          "806": "Security Analyst",
+          "807": "Security Manager",
+          "808": "Security Guard",
+          "809": "Other Security "
         }
       },
       "9": {
-        "title": "Admin Support",
+        "title": "Domestic workers",
         "sub": {
-          "1": "Data entry",
-          "2": "Another role of administrative assistant",
-          "3": "Personal/virtual assistance",
-          "4": "Project management",
-          "5": "Transcription",
-          "6": "Web Research",
-          "7": "Another role of administrative assistant"
+          "900": "Babysitting",
+          "901": "Governess",
+          "902": "Tutors",
+          "903": "Housekeepers",
+          "904": "Caregivers",
+          "905": "Cooks",
+          "906": "Gardeners",
+          "907": "Drivers",
+          "908": "Other domestic workers"
         }
       },
       "10": {
-        "title": "Customer service",
+        "title": "Beauty, Fitness & Sport ",
         "sub": {
-          "1": "Customer service",
-          "2": "Technical assistance"
+          "1000": "Athletic Trainer",
+          "1001": "Exercise Physiologist",
+          "1002": "Fitness Trainer",
+          "1003": "Massage Therapist",
+          "1004": "Occupational Therapist",
+          "1005": "Physical Therapist",
+          "1006": "Recreational Therapist",
+          "1007": "Beauty salon",
+          "1008": "Other Beauty, Fitness & Sport "
         }
       },
       "11": {
-        "title": "Data Science & Analytics",
+        "title": "Education",
         "sub": {
-          "1": "A/B Testing",
-          "2": "Data management and mining",
-          "3": "Data visualization",
-          "4": "Machine learning",
-          "5": "Quantitative analysis",
-          "6": "Other data science and analysis positions"
+          "1100": "Teaching",
+          "1101": "Education Administration",
+          "1102": "School Counseling",
+          "1103": "School Social Work",
+          "1104": "Teaching Lanquages",
+          "1105": "Other Education"
         }
       },
       "12": {
-        "title": "Education",
+        "title": "Culture & Arts",
         "sub": {
-          "1": "Teaching",
-          "2": "Educational administration",
-          "3": "School counseling",
-          "4": "School social assistance",
-          "5": "Language teaching",
-          "6": "Other education positions"
+          "1200": "Actor",
+          "1201": "Community Arts Worker",
+          "1202": "Choreographer",
+          "1203": "Dancer",
+          "1204": "Dramatherapist",
+          "1205": "Music Producer",
+          "1206": "Music Therapist",
+          "1207": "Theatre Director",
+          "1208": "Multimedia Specialist ",
+          "1209": "Systems Designer",
+          "1210": "Product Designer",
+          "1211": "Curator",
+          "1212": "Art Director",
+          "1213": "Museum Director",
+          "1214": "Art Teacher",
+          "1215": "Art Therapist",
+          "1216": "Medical Illustrator",
+          "1217": "Film Director",
+          "1218": "Other Culture & Arts"
         }
       },
       "13": {
-        "title": "Design",
+        "title": "IT / networks",
         "sub": {
-          "1": "Layout",
-          "2": "Branding",
-          "3": "Games and virtual/augmented reality",
-          "4": "Graphic, editorial and presentation design",
-          "5": "Product design",
-          "6": "Interior and exterior design",
-          "7": "Another design role"
+          "1300": "Database Administration",
+          "1301": "ERP / CRM Software",
+          "1302": "Information Security",
+          "1303": "Network & System Administration",
+          "1304": "Other IT & Networking"
         }
       },
       "14": {
-        "title": "Law & Legal Support",
+        "title": "Design",
         "sub": {
-          "1": "Contract laws",
-          "2": "Corporate laws",
-          "3": "Intellectual property laws",
-          "4": "Legal aid services",
-          "5": "Other legal and legal aid positions"
+          "1400": "Layout Design",
+          "1401": "Branding",
+          "1402": "Gaming & AR / VR",
+          "1403": "Graphic, Editorial & Presentation Design",
+          "1404": "Product Design",
+          "1405": "Interior & Exterior Design",
+          "1406": "Other Design"
         }
       },
       "15": {
-        "title": "Writing",
+        "title": "Creative Production",
         "sub": {
-          "1": "Content writing and advertising texts",
-          "2": "Creative writing",
-          "3": "Revision of spelling, grammar and style",
-          "4": "Writing requests for grants / grants",
-          "5": "Resumes and cover letters",
-          "6": "Drafting of technical texts",
-          "7": "Other writing roles"
+          "1700": "Art & Illustration",
+          "1701": "Audio & Music Production",
+          "1702": "Performing Arts",
+          "1703": "Photography",
+          "1704": "Video & Animation",
+          "1705": "Voice Talent",
+          "1706": "3D Visualization",
+          "1707": "Other Creative Production"
         }
       },
       "16": {
-        "title": "Medicine & Pharmacy",
+        "title": "Engineering & Architecture",
         "sub": {
-          "1": "Retail pharmacy",
-          "2": "Hospital pharmacy",
-          "3": "Drug distribution centre",
-          "4": "Home care services pharmacy and palliative care centers",
-          "5": "Pharmacological informatics",
-          "6": "Outpatient pharmacy",
-          "7": "Pharmacists",
-          "8": "Other medical and pharmacy posts"
+          "1600": "3D Modeling & CAD",
+          "1601": "Architecture",
+          "1602": "Chemical Engineering",
+          "1603": "Civil & Structural Engineering",
+          "1604": "Contract Manufacturing",
+          "1605": "Electrical Engineering",
+          "1606": "Mechanical Engineering",
+          "1607": "Physical Sciences",
+          "1608": "Other Engineering"
         }
       },
       "17": {
-        "title": "Telecommunications",
+        "title": "Law & Legal Support",
         "sub": {
-          "1": "Telecommunications system administrators",
-          "2": "Line installers",
-          "3": "Customer service Representative",
-          "4": "Computer software engineers",
-          "5": "Computer programmers",
-          "6": "Professional associations",
-          "7": "Related certification bodies",
-          "8": "Other telecommunications stations"
+          "1700": "Contract Law",
+          "1701": "Corporate Law",
+          "1702": "Intellectual Property Law",
+          "1703": "Paralegal Services",
+          "1704": "Other Law & Legal Support"
         }
       },
       "18": {
-        "title": "Personnel Management & HR",
+        "title": "Marketing and sales",
         "sub": {
-          "1": "Human resources planning",
-          "2": "Recruitment",
-          "3": "Performance management",
-          "4": "Learning and development",
-          "5": "Career guidance",
-          "6": "Function evaluation",
-          "7": "Incentives",
-          "8": "Industrial relations",
-          "9": "Employee engagement and communication",
-          "10": "Health and safety",
-          "11": "Personal well-being",
-          "12": " Administrative responsibilities",
-          "13": "Other human resources and personnel administration"
+          "1800": "Display Advertising",
+          "1801": "Email & Marketing Automation",
+          "1802": "Lead Generation",
+          "1803": "Market & Customer Research",
+          "1804": "Marketing Strategy",
+          "1805": "Public Relations",
+          "1806": "SEM - Search Engine Marketing",
+          "1807": "SEO - Search Engine Optimization",
+          "1808": "SMM - Social Media Marketing",
+          "1809": "Other Sales & Marketing"
         }
       },
       "19": {
-        "title": "Security",
+        "title": "Translation",
         "sub": {
-          "1": "Risk manager",
-          "2": "Systems, network and web penetration evaluator",
-          "3": "Network security engineer",
-          "4": "Network security manager",
-          "5": "Computer crime investigator",
-          "6": "Information security analyst",
-          "7": "Security analyst",
-          "8": "Security manager",
-          "9": "Security guard",
-          "10": "Other security posts"
+          "1900": "General Translation",
+          "1901": "Legal Translation",
+          "1902": "Medical Translation",
+          "1903": "Technical Translation",
+          "1904": "Other Translation"
         }
       },
       "20": {
-        "title": "Culture & Arts",
+        "title": "Real Estate",
         "sub": {
-          "1": "Actor",
-          "2": "Community arts worker",
-          "3": "Choreographer",
-          "4": "Dancer",
-          "5": "Dramaterapeuta",
-          "6": "Music producer",
-          "7": "Music therapist",
-          "8": "Theatre director",
-          "9": "Multimedia specialist",
-          "10": "Systems designer",
-          "11": "Product designer",
-          "12": "Content Manager",
-          "13": "Artistic director",
-          "14": "Museum Director",
-          "15": "Art teacher",
-          "16": "Art therapist",
-          "17": "Medical illustrator",
-          "18": "Film director",
-          "19": "Other art and culture stands"
+          "2000": "Residential Real Estate",
+          "2001": "New Construction & Resale Homes",
+          "2002": "Commercial Real Estate",
+          "2003": "Industrial Real Estate",
+          "2004": "Vacant Land",
+          "2005": "Other Real Estate"
         }
       },
       "21": {
         "title": "Web, Mobile & Software Development",
         "sub": {
-          "1": "Desktop software development",
-          "2": "E-commerce development",
-          "3": "Game development",
-          "4": "Mobile development",
-          "5": "Other software development positions",
-          "6": "Product management",
-          "7": "Testing and quality control",
-          "8": "Utilities and scripts",
-          "9": "Web and mobile design",
-          "10": "Web Development",
-          "11": "Other software, mobile and web development roles"
+          "2100": "Desktop Software Development",
+          "2101": "Ecommerce Development",
+          "2102": "Game Development",
+          "2103": "Mobile Development",
+          "2104": "Other Software Development",
+          "2105": "Product Management",
+          "2106": "QA & Testing",
+          "2107": "Scripts & Utilities",
+          "2108": "Web & Mobile Design",
+          "2109": "Web Development",
+          "2110": "Other Web, Mobile & Software Dev"
         }
       },
       "22": {
-        "title": "Transport & Logistics",
+        "title": "Writing",
         "sub": {
-          "1": "Administration",
-          "2": "Inventory planning",
-          "3": "Warehouses",
-          "4": "Procurement of goods and services",
-          "5": "Packaging and storage",
-          "6": "Transport",
-          "7": "Customer service",
-          "8": "Other transport and logistics stations"
+          "2200": "Content & Copywriting",
+          "2201": "Creative Writing",
+          "2202": "Editing & Proofreading",
+          "2203": "Grant Writing",
+          "2204": "Resumes & Cover Letters",
+          "2205": "Technical Writing",
+          "2206": "Other Writing"
         }
       },
       "23": {
-        "title": "Banking, Finance & Insurance",
+        "title": "Agriculture & Agribusiness",
         "sub": {
-          "1": "Financial services sector",
-          "2": "Financial planning",
-          "3": "Corporate finance",
-          "4": "Commercial banking",
-          "5": "Investment banking",
-          "6": "Hedge funds",
-          "7": "Venture capital, private capital",
-          "8": "Insurance",
-          "9": "Other banking, finance and insurance positions"
+          "2300": "Crops",
+          "2301": "Livestock (both production and animal health)",
+          "2302": "Fisheries and Aquaculture (including capture fisheries)",
+          "2303": "Forest",
+          "2304": "Other Agriculture & Agribusiness"
         }
       },
       "24": {
-        "title": "Beauty, Fitness & Sport ",
+        "title": "Secretariat, Correspondence & Records Management",
         "sub": {
-          "1": "Athletic trainer",
-          "2": "Exercise physiologist",
-          "3": "Physical trainer",
-          "4": "Masseuse",
-          "5": "Occupational therapist",
-          "6": "Physiotherapist",
-          "7": "Recreational therapist",
-          "8": "Beauty salon",
-          "9": "Other beauty, fitness and sports stands"
+          "2400": "Property records - title deeds and settlements",
+          "2401": "Accounting papers - rentals, vouchers, surveys and valuations.",
+          "2402": "Legal papers",
+          "2403": "Inventories",
+          "2404": "Correspondence",
+          "2405": "Enclosure papers",
+          "2406": "Manorial papers - court rolls, custumals, terriers, surveys etc.",
+          "2407": "Personal and political papers",
+          "2408": "Maps and plans",
+          "2409": "Other Secretariat, Correspondence & Records Management"
         }
       },
       "25": {
-        "title": "Creative Production",
+        "title": "Medicine & Pharmacy",
         "sub": {
-          "1": "Art and illustration",
-          "2": "Music and audio production",
-          "3": "Performing arts",
-          "4": "Photography",
-          "5": "Video and animation",
-          "6": "Voice talent",
-          "7": "Voice talent",
-          "8": "3D Visualization",
-          "9": "Other creative production positions"
+          "2500": "Retail Pharmacy",
+          "2501": "Hospital Pharmacy",
+          "2502": "Medication Distribution Center",
+          "2503": "Homecare & Hospice Pharmacy",
+          "2504": "Pharmacy Informatics",
+          "2505": "Ambulatory Care Pharmacy",
+          "2506": "Pharmacists",
+          "2507": "Other Medicine & Pharmacy"
         }
       },
       "26": {
-        "title": "Marketing and sales",
+        "title": "Transport & Logistics",
         "sub": {
-          "1": "Graphic advertising",
-          "2": "Marketing and email automation",
-          "3": "Attracting potential customers",
-          "4": "Market research",
-          "5": "Marketing strategy",
-          "6": "Public relations",
-          "7": "SEM (search engine marketing)",
-          "8": "SEO (search engine optimization)",
-          "9": "SMM (social media marketing)",
-          "10": "Other sales and marketing positions"
+          "2600": "Management",
+          "2601": "Inventory Planning",
+          "2602": "Warehousing",
+          "2603": "Procurement of Goods and Services",
+          "2604": "Packaging and Storage",
+          "2605": "Transportation",
+          "2606": "Customer service",
+          "2607": "Other Transport & Logistics"
         }
       },
       "27": {
-        "title": "Translation",
+        "title": "Construction",
         "sub": {
-          "1": "General translation",
-          "2": "Legal translation",
-          "3": "Medical translation",
-          "4": "Technical translation",
-          "5": "Other translation positions"
+          "2700": "Residential Building",
+          "2701": "Institutional and Commercial Building",
+          "2702": "Infrastructure and Heavy Construction",
+          "2703": "Specialized Industrial Construction",
+          "2704": "Other Construction"
         }
       },
       "28": {
-        "title": "Real Estate",
+        "title": "Retail Pharmacy",
         "sub": {
-          "1": "Residential real estate",
-          "2": "New construction and second hand",
-          "3": "Commercial real estate",
-          "4": "Industrial real estate",
-          "5": "Solar",
-          "6": "Other real estate positions"
+          "2800": "Retail pharmacy",
+          "2801": "Hospital Pharmacy",
+          "2802": "Medication Distribution Center",
+          "2803": "Homecare & Hospice Pharmacy",
+          "2804": "Pharmacy Informatics",
+          "2805": "Ambulatory Care Pharmacy",
+          "2806": "Pharmacists",
+          "2807": "Other Medicine & Pharmacy"
         }
       },
       "29": {
-        "title": "Agriculture & Agribusiness",
+        "title": "Banking, Finance & Insurance",
         "sub": {
-          "1": "Crops",
-          "2": "Livestock (both production and animal health)",
-          "3": "Fisheries and aquaculture (including capture fisheries)",
-          "4": "Forest",
-          "5": "Other agricultural and agricultural trade posts"
+          "2900": "The Financial Services Industry",
+          "2901": "Financial Planning",
+          "2902": "Corporate Finance",
+          "2903": "Commercial Banking",
+          "2904": "Investment Banking",
+          "2905": "Hedge Funds",
+          "2906": "Private Equity, Venture Capital",
+          "2907": "Insurance",
+          "2908": "Other Banking, Finance & Insurance"
         }
       },
       "30": {
-        "title": "Construction",
+        "title": "Tourism, leisure and entertainment",
         "sub": {
-          "1": "Residential buildings",
-          "2": "Institutional and commercial buildings",
-          "3": "Heavy construction and infrastructure",
-          "4": "Specialized industrial construction",
-          "5": "Other construction sites"
+          "3000": "Amusement Attendant",
+          "3001": "Concierge",
+          "3002": "Cruise Ship Director",
+          "3003": "Curator",
+          "3004": "Gaming Dealers",
+          "3005": "Lifeguard",
+          "3006": "Information Clerk",
+          "3007": "Recreation Worker",
+          "3008": "Tour and Travel Guide",
+          "3009": "Other Tourism, Leisure & Entertainment"
         }
       },
       "31": {
-        "title": "Early Career & Students",
+        "title": "Telecommunications",
         "sub": {
-          "1": "Messenger",
-          "2": "Waiter",
-          "3": "Other student and internship positions"
+          "3100": "Telecommunications Systems Managers",
+          "3101": "Line Installers",
+          "3102": "Customer Service Representative",
+          "3103": "Computer Software Engineers",
+          "3104": "Computer Programmers",
+          "3105": "Professional Associations",
+          "3106": "Related Certification Bodies",
+          "3107": "Other Telecommunications"
         }
       },
       "32": {
-        "title": "Service staff",
+        "title": "Early Career & Students",
         "sub": {
-          "1": "Catering and food service sector",
-          "2": "Other service staff posts"
+          "3200": "Courier",
+          "3201": "Waiter",
+          "3202": "Other Early Career & Students"
         }
       },
       "33": {
-        "title": "Seasonal work",
+        "title": "Service staff",
         "sub": {
-          "1": "Variable",
-          "2": "Part-time",
-          "3": "Full-time"
-        }
-      },
-      "34": {
-        "title": "Undefined",
-        "sub": {
-          "1": "Part-time",
-          "2": "Full-time",
-          "3": "Work abroad"
+          "3300": "Restaurants & Food Services industry",
+          "3301": "Other Service Occupations"
         }
       }
     }
@@ -867,7 +871,7 @@
     "attention": "Attention",
     "goBack": "If you go back, you won't be able to continue.",
     "error": "Error",
-    "unsavedChanges":"There are unsaved changes",
+    "unsavedChanges": "There are unsaved changes",
     "dontSave": "Do not Save",
     "chooseCard": "Choose Card",
     "copy": "Copy",
@@ -940,6 +944,7 @@
     "coding": "Programming",
     "uploadAImages": "Upload images or videos",
     "description": "Description",
+    "noDescription": "No description",
     "addCase": "Add case",
     "openADispute": "Begin Dispute",
     "disputeTheme": "Dispute Theme",
@@ -1169,6 +1174,7 @@
     "createGroupChat": "Create group chat",
     "favorite": "Add to favorites",
     "messages": "Messages",
+    "message": "Message",
     "chat": "Chat",
     "quest": "Quest:",
     "you": "Your username:",
@@ -1176,7 +1182,7 @@
     "writeYouMessage": "Write your message"
   },
   "settings": {
-    "profileChanged":"Profile changed successfully",
+    "profileChanged": "Profile changed successfully",
     "changeProfile": "Change profile",
     "placeOfStudying": "Place of study",
     "specialization": "Specialization",

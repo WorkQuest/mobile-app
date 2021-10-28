@@ -4,6 +4,7 @@ import 'package:app/keys.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
+import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
@@ -118,6 +119,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @observable
   String locationPlaceName = '';
 
+  @observable
+  List<String> skillFilters = [];
+
   /// change location data
 
   @action
@@ -153,18 +157,23 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @computed
   bool get canCreateQuest =>
-      !isLoading && locationPlaceName.isNotEmpty && mediaDrishya.isNotEmpty;
+      !isLoading &&
+      locationPlaceName.isNotEmpty &&
+      mediaDrishya.isNotEmpty &&
+      skillFilters.isNotEmpty;
 
   @computed
   bool get canSubmitEditQuest =>
       !isLoading &&
       locationPlaceName.isNotEmpty &&
-      (mediaIds.isNotEmpty || mediaDrishya.isNotEmpty);
+      (mediaIds.isNotEmpty || mediaDrishya.isNotEmpty) &&
+      skillFilters.isNotEmpty;
 
   @action
-  void emptyField() {
-    if (locationPlaceName.isEmpty) onError("Address is empty");
-    if (mediaDrishya.isEmpty) onError("Media is empty");
+  void emptyField(BuildContext context) {
+    if (locationPlaceName.isEmpty) errorAlert(context, "Address is empty");
+    if (mediaDrishya.isEmpty) errorAlert(context, "Media is empty");
+    if (skillFilters.isEmpty) errorAlert(context, "Skills are empty");
   }
 
   String getWorkplaceValue() {
@@ -235,7 +244,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         employment: getEmploymentValue(),
         locationPlaceName: locationPlaceName,
         workplace: getWorkplaceValue(),
-        skillFilters: {},
+        specializationKeys: skillFilters,
         priority: priorityList.indexOf(priority),
         location: location,
         media: mediaIds +

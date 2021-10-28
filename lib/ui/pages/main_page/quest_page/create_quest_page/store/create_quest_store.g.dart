@@ -317,6 +317,21 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
+  final _$skillFiltersAtom = Atom(name: '_CreateQuestStore.skillFilters');
+
+  @override
+  List<String> get skillFilters {
+    _$skillFiltersAtom.reportRead();
+    return super.skillFilters;
+  }
+
+  @override
+  set skillFilters(List<String> value) {
+    _$skillFiltersAtom.reportWrite(value, super.skillFilters, () {
+      super.skillFilters = value;
+    });
+  }
+
   final _$getPredictionAsyncAction =
       AsyncAction('_CreateQuestStore.getPrediction');
 
@@ -433,11 +448,11 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
-  void emptyField() {
+  void emptyField(BuildContext context) {
     final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
         name: '_CreateQuestStore.emptyField');
     try {
-      return super.emptyField();
+      return super.emptyField(context);
     } finally {
       _$_CreateQuestStoreActionController.endAction(_$actionInfo);
     }
@@ -465,6 +480,7 @@ adType: ${adType},
 mediaDrishya: ${mediaDrishya},
 mediaIds: ${mediaIds},
 locationPlaceName: ${locationPlaceName},
+skillFilters: ${skillFilters},
 dateString: ${dateString},
 canCreateQuest: ${canCreateQuest},
 canSubmitEditQuest: ${canSubmitEditQuest}

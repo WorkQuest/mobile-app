@@ -67,8 +67,10 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                   child: CircularProgressIndicator(),
                   width: 30,
                   height: 30,
-                ))
+                ),
+              )
             : ListView.builder(
+                cacheExtent: 2500,
                 itemCount: storeFilter.filters.length,
                 addAutomaticKeepAlives: true,
                 itemBuilder: (context, index) {
@@ -252,9 +254,11 @@ class _ExpansionCellState extends State<ExpansionCell> {
 
   @override
   void initState() {
-    setState(() {
-      selected = List.generate(widget.filter.list.length, (index) => false);
-    });
+    setState(
+      () {
+        selected = List.generate(widget.filter.list.length, (index) => false);
+      },
+    );
     super.initState();
   }
 
@@ -263,7 +267,10 @@ class _ExpansionCellState extends State<ExpansionCell> {
     return Column(
       children: <Widget>[
         ExpansionTile(
-          title: Text("filters.${widget.filter.header}.title".tr()),
+          maintainState: true,
+          title: Text(
+            "filters.${widget.filter.header}.title".tr(),
+          ),
           children: [
             for (int i = 0; i < widget.filter.list.length; i++)
               getCheckbox(
@@ -286,9 +293,11 @@ class _ExpansionCellState extends State<ExpansionCell> {
             checkColor: Colors.white,
             value: selected[index],
             onChanged: (bool? value) {
-              setState(() {
-                selected[index] = value!;
-              });
+              setState(
+                () {
+                  selected[index] = value!;
+                },
+              );
             },
           ),
           Expanded(

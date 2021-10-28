@@ -23,6 +23,8 @@ class BaseQuestResponse {
     required this.response,
     required this.locationPlaceName,
     required this.assignedWorker,
+    required this.employment,
+    required this.questSpecializations,
   });
 
   String id;
@@ -42,6 +44,8 @@ class BaseQuestResponse {
   bool star;
   bool response;
   AssignedWorker? assignedWorker;
+  String employment;
+  List<String> questSpecializations;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(
@@ -66,6 +70,14 @@ class BaseQuestResponse {
       assignedWorker: json["assignedWorker"] == null
           ? null
           : AssignedWorker.fromJson(json["assignedWorker"]),
+      employment: json["employment"],
+      questSpecializations: (List<Map<String, dynamic>> skills) {
+        List<String> skillsString = [];
+        for (var skill in skills) {
+          skillsString.add(skill.values.toString());
+        }
+        return skillsString;
+      }([...json["questSpecializations"]]),
     );
   }
 

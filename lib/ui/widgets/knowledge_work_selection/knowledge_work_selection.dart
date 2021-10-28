@@ -127,8 +127,6 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                           widget.controller!.store!.numberOfFiled.last.dateTo,
                       date: "settings.education.to".tr(),
                       onChanged: (text) {
-                        print(
-                            "Date to ${widget.controller!.store!.numberOfFiled.last.dateTo}");
                         kng.dateTo = text;
                       },
                     ),

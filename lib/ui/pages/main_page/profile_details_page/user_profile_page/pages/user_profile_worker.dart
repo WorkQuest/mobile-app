@@ -1,5 +1,6 @@
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_worker_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -16,75 +17,62 @@ class WorkerProfile extends ProfileReviews {
 class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
   final String tabTitle = "profiler.portfolio".tr();
 
-  Widget questPortfolio() => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ///Add new portfolio
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10.0,
-              vertical: 10.0,
-            ),
-            child: OutlinedButton(
-              onPressed: () => Navigator.pushNamed(
-                context,
-                CreatePortfolioPage.routeName,
-                arguments: false,
-              ),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(
-                  color: Colors.blueAccent.withOpacity(0.3),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10.0,
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Add new",
-                  ),
-                  const SizedBox(
-                    width: 5.0,
-                  ),
-                  const Icon(
-                    Icons.add,
-                  ),
-                ],
-              ),
-            ),
-          ),
+  final store = UserProfileWorkerStore();
 
-          Expanded(
-            child: Observer(
-              builder: (_) => Center(
-                child: portfolioStore!.portfolioList.isEmpty
-                    ? Text(
-                        "profiler.dontHavePortfolio".tr(),
-                      )
-                    : ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.only(
-                          top: 0.0,
-                        ),
-                        itemCount: portfolioStore!.portfolioList.length,
-                        itemBuilder: (context, index) => PortfolioWidget(
-                          index: index,
-                          imageUrl: portfolioStore!
-                                  .portfolioList[index].medias.isEmpty
-                              ? "https://app-ver1.workquest.co/_nuxt/img/logo.1baae1e.svg"
-                              : portfolioStore!
-                                  .portfolioList[index].medias.first.url,
-                          title: portfolioStore!.portfolioList[index].title,
-                        ),
-                      ),
+  List<Widget> questPortfolio() => [
+        ///Add new portfolio
+        Container(
+          color: Colors.white,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10.0,
+            vertical: 10.0,
+          ),
+          child: OutlinedButton(
+            onPressed: () => Navigator.pushNamed(
+              context,
+              CreatePortfolioPage.routeName,
+              arguments: false,
+            ),
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(
+                color: Colors.blueAccent.withOpacity(0.3),
+              ),
+              padding: const EdgeInsets.symmetric(
+                vertical: 10.0,
               ),
             ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Add new"),
+                const SizedBox(width: 5.0),
+                const Icon(Icons.add),
+              ],
+            ),
           ),
-        ],
-      );
+        ),
+
+        Observer(
+          builder: (_) => portfolioStore!.portfolioList.isEmpty
+              ? Text("profiler.dontHavePortfolio".tr())
+              : Column(
+                  children: [
+                    for (int index = 0;
+                        index < portfolioStore!.portfolioList.length;
+                        index++)
+                      PortfolioWidget(
+                        index: index,
+                        imageUrl: portfolioStore!
+                                .portfolioList[index].medias.isEmpty
+                            ? "https://app-ver1.workquest.co/_nuxt/img/logo.1baae1e.svg"
+                            : portfolioStore!
+                                .portfolioList[index].medias.first.url,
+                        title: portfolioStore!.portfolioList[index].title,
+                      ),
+                  ],
+                ),
+        ),
+      ];
 
   List<Widget> workerWidgets() => [
 //_____________Skills______________/
@@ -96,7 +84,7 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
             style: style,
           ),
         ),
-        (userStore!.userData!.skillFilters.isEmpty)
+        (userStore!.userData!.userSpecializations.isEmpty)
             ? Text(
                 "skills.noSkills".tr(),
                 style: style.copyWith(
@@ -105,7 +93,8 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
                 ),
               )
             : skills(
-                skills: userStore!.userData!.additionalInfo!.skills,
+                skills: store.parser(userStore!.userData!.userSpecializations),
+                context: context,
               ),
 
         spacer,

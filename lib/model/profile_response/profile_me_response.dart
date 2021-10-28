@@ -15,7 +15,7 @@ class ProfileMeResponse {
     required this.additionalInfo,
     required this.role,
     required this.avatar,
-    required this.skillFilters,
+    required this.userSpecializations,
     required this.ratingStatistic,
     required this.location,
     // required this.createdAt,
@@ -32,7 +32,7 @@ class ProfileMeResponse {
   AdditionalInfo? additionalInfo;
   UserRole role;
   Avatar? avatar;
-  Map<String, List<String>> skillFilters;
+  List<String> userSpecializations;
   RatingStatistic? ratingStatistic;
   Location? location;
 
@@ -50,7 +50,7 @@ class ProfileMeResponse {
               : null,
           role: object.role,
           avatar: object.avatar,
-          skillFilters: object.skillFilters,
+          userSpecializations: object.userSpecializations,
           ratingStatistic: object.ratingStatistic != null
               ? RatingStatistic.clone(object.ratingStatistic!)
               : null,
@@ -63,17 +63,6 @@ class ProfileMeResponse {
   // DateTime updatedAt;
 
   factory ProfileMeResponse.fromJson(Map<String, dynamic> json) {
-    json.forEach((key, value) {
-      print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-      json.forEach((key, value) {
-        print("key $key value $value");
-      });
-      print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    });
-    // Map<String,List<String>>   listSkills = {};
-    // json["skillFilters"].forEach((key, value) {
-    //   listSkills[key] =  List<String>.of(value.map((e)=>e as String)).toList();
-    // });
     return ProfileMeResponse(
       id: json["id"],
       avatarId: json["avatarId"] ?? "",
@@ -87,8 +76,13 @@ class ProfileMeResponse {
           : AdditionalInfo.fromJson(json["additionalInfo"]),
       role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
       avatar: Avatar.fromJson(json["avatar"]),
-      skillFilters: {},
-      //listSkills,
+      userSpecializations: (List<Map<String, dynamic>> skills) {
+        List<String> skillsString = [];
+        for (var skill in skills) {
+          skillsString.add(skill.values.toString());
+        }
+        return skillsString;
+      }([...json["userSpecializations"]]),
       ratingStatistic: json["ratingStatistic"] == null
           ? null
           : RatingStatistic.fromJson(json["ratingStatistic"]),

@@ -46,7 +46,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                 delegate: SliverChildListDelegate(
                   [
                     Text(
-                      "Rate this employer",
+                      "quests.rateEmployer".tr(),
                     ),
                     const SizedBox(height: 24),
                     Observer(
@@ -72,7 +72,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                     ),
                     const SizedBox(height: 32),
                     Text(
-                      "Add your review",
+                      "quests.addYourReview".tr(),
                     ),
                     const SizedBox(height: 16),
                     Container(
@@ -93,7 +93,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                         textAlignVertical: TextAlignVertical.top,
                         expands: true,
                         decoration: InputDecoration(
-                          hintText: "Message".tr(),
+                          hintText: "chat.message".tr(),
                         ),
                       ),
                     ),
@@ -102,8 +102,12 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           store.addReview(widget.questId);
-                          successAlert(context, "Review sent");
                           Navigator.pop(context);
+                          Navigator.pop(context);
+                          successAlert(
+                            context,
+                            "quests.reviewSent".tr(),
+                          );
                         }
                       },
                       child: Text(

@@ -47,6 +47,9 @@ abstract class ChangeProfileStoreBase with Store {
   bool areThereAnyChanges(ProfileMeResponse? userData) {
     if (userData == null) return false;
 
+    if (this.userData.userSpecializations != userData.userSpecializations)
+      return true;
+
     if (this.userData.firstName != userData.firstName) return true;
 
     if ((this.userData.lastName ?? "") != (userData.lastName ?? ""))

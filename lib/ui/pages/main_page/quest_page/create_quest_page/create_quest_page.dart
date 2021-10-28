@@ -2,6 +2,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
@@ -29,11 +30,14 @@ class CreateQuestPage extends StatefulWidget {
 
 class _CreateQuestPageState extends State<CreateQuestPage> {
   final _formKey = GlobalKey<FormState>();
+  final _controller = SkillSpecializationController();
+  late ProfileMeStore? profile;
 
   bool isEdit = false;
 
   void initState() {
     super.initState();
+    profile = context.read<ProfileMeStore>();
     if (widget.questInfo != null) {
       this.isEdit = true;
       final store = context.read<CreateQuestStore>();
@@ -49,7 +53,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
 
   Widget build(context) {
     final store = context.read<CreateQuestStore>();
-    SkillSpecializationController? _controller;
+
     final questStore = context.read<MyQuestStore>();
 
     return Form(
@@ -407,10 +411,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       margin: const EdgeInsets.symmetric(vertical: 30),
                       child: ObserverListener<CreateQuestStore>(
                         onSuccess: () async {
-
                           ///review
                           await questStore.getQuests(
-                            widget.questInfo!.userId,
+                            profile!.userData!.id,
                             UserRole.Employer,
                           );
                           Navigator.pop(context, true);
@@ -433,6 +436,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         child: Observer(
                           builder: (context) => ElevatedButton(
                             onPressed: () async {
+                              store.skillFilters =
+                                  _controller.getSkillAndSpecialization();
                               if (isEdit) {
                                 if (store.canSubmitEditQuest) {
                                   if (_formKey.currentState?.validate() ??
@@ -448,7 +453,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   await store.createQuest();
                                 print("create");
                               } else
-                                store.emptyField();
+                                store.emptyField(context);
                             },
                             child: store.isLoading
                                 ? PlatformActivityIndicator()

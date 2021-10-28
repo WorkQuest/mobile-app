@@ -39,6 +39,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     _controllerKnowledge = KnowledgeWorkSelectionController();
     _controllerWork = KnowledgeWorkSelectionController();
     profile = context.read<ProfileMeStore>();
+    // if (profile!.userData!.userSpecializations.isNotEmpty)
+    //   profile!.userData!.userSpecializations.forEach((element) {
+    //     _controller!.store!.selectedSkills.forEach((key, value) {
+    //       value.add(element);
+    //     });
+    //   });
     pageStore = ChangeProfileStore(
       ProfileMeResponse.clone(profile!.userData!),
     );
@@ -436,7 +442,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
           _controllerWork!.getListMap();
       pageStore.userData.additionalInfo!.address = pageStore.address;
       if (!profile!.isLoading)
-        pageStore.userData.skillFilters =
+        pageStore.userData.userSpecializations =
             _controller!.getSkillAndSpecialization();
       profile!.changeProfile(
         pageStore.userData,

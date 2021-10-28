@@ -11,8 +11,10 @@ class MediaUpload extends StatefulWidget {
   final ObservableList<DrishyaEntity> mediaDrishya;
   final ObservableList<Media> mediaURL;
 
-  MediaUpload({required this.mediaDrishya, required List<Media> mediaURL})
-      : this.mediaURL = ObservableList.of(mediaURL);
+  MediaUpload({
+    required this.mediaDrishya,
+    required List<Media> mediaURL,
+  }) : this.mediaURL = ObservableList.of(mediaURL);
 
   @override
   _MediaUploadState createState() => _MediaUploadState();

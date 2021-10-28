@@ -47,8 +47,6 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   @action
   void setDescription(String value) {
     description = value;
-    print(value);
-    print(description);
   }
 
   @action

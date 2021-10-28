@@ -14,7 +14,8 @@ class SkillSpecializationSelection extends StatefulWidget {
 }
 
 class _SkillSpecializationSelectionState
-    extends State<SkillSpecializationSelection> with AutomaticKeepAliveClientMixin {
+    extends State<SkillSpecializationSelection>
+    with AutomaticKeepAliveClientMixin {
   final store = SkillSpecializationStore();
   final maxLength = 5;
 
@@ -298,14 +299,17 @@ class SkillSpecializationController {
     }
   }
 
-  Map<String, List<String>> getSkillAndSpecialization() {
-    Map<String, List<String>> genMap = {};
+  List<String> getSkillAndSpecialization() {
+    List<String> genMap = [];
     if (store != null) {
       for (final index in store!.selectedSpices.keys) {
-        genMap[store!.selectedSpices[index]!.header] =
-            store!.selectedSkills[index]!;
+        for (int i = 0; i < (store!.selectedSkills[index]?.length ?? 0); i++)
+          genMap.add(
+            "${int.parse(store!.selectedSkills[index]![i]) ~/ 100}" +
+                ".${int.parse(store!.selectedSkills[index]![i])}"
+          );
       }
     }
     return genMap;
   }
-}
+ }

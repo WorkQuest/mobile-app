@@ -65,37 +65,47 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            widget.questInfo.userId == profile!.userData!.id
-                ? Text(
-                    "quests.yourQuest".tr(),
-                  )
-                : Container(
-                    alignment: Alignment.topLeft,
-                    width: double.maxFinite,
-                    child: Wrap(
-                      alignment: WrapAlignment.start,
-                      runAlignment: WrapAlignment.start,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: Image.network(
-                            widget.questInfo.user.avatar.url,
-                            width: 30,
-                            height: 30,
-                            fit: BoxFit.cover,
-                          ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                widget.questInfo.userId == profile!.userData!.id
+                    ? Text(
+                        "quests.yourQuest".tr(),
+                      )
+                    : Container(
+                        alignment: Alignment.topLeft,
+                        child: Wrap(
+                          alignment: WrapAlignment.start,
+                          runAlignment: WrapAlignment.start,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.network(
+                                widget.questInfo.user.avatar.url,
+                                width: 30,
+                                height: 30,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        const SizedBox(width: 10),
-                        PriorityView(widget.questInfo.priority),
-                      ],
-                    ),
-                  ),
+                      ),
+                Row(
+                  children: [
+                    const SizedBox(width: 10),
+                    PriorityView(widget.questInfo.priority),
+                    const SizedBox(width: 10),
+                    tagEmployment(),
+                  ],
+                ),
+              ],
+            ),
             if (widget.questInfo.userId != profile!.userData!.id)
               Column(
                 children: [
@@ -119,7 +129,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
               ),
             const SizedBox(height: 17),
             tagItem(
-              "modals.paintingWork".tr(),
+              profile!.parser(widget.questInfo.questSpecializations),
             ),
             if (widget.questInfo.assignedWorker != null &&
                 (widget.questInfo.status == 1 || widget.questInfo.status == 5))
@@ -202,21 +212,54 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
     return const SizedBox();
   }
 
-  Widget tagItem(String text) {
+  Widget tagItem(List<String> skills) {
+    return Wrap(
+      children: skills
+          .map(
+            (item) => new ActionChip(
+              padding: EdgeInsets.symmetric(
+                vertical: 8.0,
+                horizontal: 10.0,
+              ),
+              onPressed: () => null,
+              label: Text(
+                item,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Color(0xFF0083C7),
+                ),
+              ),
+              backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget tagEmployment() {
+    String employment = "";
+    switch (widget.questInfo.employment) {
+      case "fullTime":
+        employment = "Full time";
+        break;
+      case "partTime":
+        employment = "Part time";
+        break;
+      case "fixedTerm":
+        employment = "Fixed term";
+        break;
+    }
+
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 7,
-        vertical: 5,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
       decoration: BoxDecoration(
-        color: Color(0xFF0083C7).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(44),
+        color: Color(0xFF22CC14).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(3),
       ),
       child: Text(
-        text,
+        employment,
         style: TextStyle(
-          color: Color(0xFF0083C7),
-          fontSize: 16,
+          color: Color(0xFF22CC14),
         ),
       ),
     );

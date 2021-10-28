@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../enums.dart';
-
-// 1 - low; 2 - normal; 3 - urgent
+// 0 - low; 1 - normal; 2 - urgent
 class PriorityView extends StatelessWidget {
   const PriorityView(this.priority);
 
@@ -12,7 +10,7 @@ class PriorityView extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget returnWidget = Container();
     switch (priority) {
-      case 1:
+      case 0:
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(
@@ -27,7 +25,7 @@ class PriorityView extends StatelessWidget {
           ),
         );
         break;
-      case 2:
+      case 1:
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(
@@ -42,7 +40,7 @@ class PriorityView extends StatelessWidget {
           ),
         );
         break;
-      case 3:
+      case 2:
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(

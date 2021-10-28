@@ -201,7 +201,7 @@ abstract class FilterQuestsStoreBase with Store {
 
   @action
   Future readFilters() async {
-    final json = await parseJsonFromAssets("assets/lang/es-ES.json");
+    final json = await parseJsonFromAssets("assets/lang/en-US.json");
     final filtersJson = json["filters"]["items"] as Map<String, dynamic>;
     filtersJson.forEach((key, value) {
       filters.add(FilterItem(

@@ -10,7 +10,7 @@ class CreateQuestRequestModel  {
   String workplace;
   String price;
   List media;
-  Map skillFilters;
+  List<String> specializationKeys;
   int adType;
   String employment;
 
@@ -19,7 +19,7 @@ class CreateQuestRequestModel  {
     required this.location,
     required this.priority,
     required this.employment,
-    required this.skillFilters,
+    required this.specializationKeys,
     required this.locationPlaceName,
     required this.workplace,
     required this.title,
@@ -37,7 +37,7 @@ class CreateQuestRequestModel  {
     questData['locationPlaceName'] = this.locationPlaceName;
     questData['location'] = this.location.toJson();
     questData['title'] = this.title;
-    questData['skillFilters'] = this.skillFilters;
+    questData['specializationKeys'] = this.specializationKeys;
     questData['medias'] = this.media;
     questData['description'] = this.description;
     questData['price'] = this.price;

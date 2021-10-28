@@ -32,6 +32,9 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
 
   late TabController _tabController;
 
+  ScrollController controllerMain = ScrollController();
+  ScrollController controllerTab = ScrollController();
+
   ProfileMeStore? userStore;
   PortfolioStore? portfolioStore;
   MyQuestStore? myQuests;
@@ -39,10 +42,7 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
 
   void initState() {
     super.initState();
-    _tabController = TabController(
-      vsync: this,
-      length: 2,
-    );
+    _tabController = TabController(vsync: this, length: 2);
     userStore = context.read<ProfileMeStore>();
     portfolioStore = context.read<PortfolioStore>();
     myQuests = context.read<MyQuestStore>();
@@ -50,10 +50,7 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
 
     userStore!.getProfileMe().then((value) {
       setState(() => role = userStore!.userData!.role);
-      myQuests!.getQuests(
-        userStore!.userData!.id,
-        role,
-      );
+      myQuests!.getQuests(userStore!.userData!.id, role);
     });
 
     if (userStore!.userData!.role == UserRole.Worker)
@@ -72,7 +69,15 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
   List<Widget> employerWidgets() => [];
 
   @protected
-  Widget questPortfolio() => SizedBox.shrink();
+  List<Widget> questPortfolio() => [];
+
+  Widget wrapperTabBar(List<Widget> body) {
+    return ListView(
+      controller: controllerTab,
+      physics: NeverScrollableScrollPhysics(),
+      children: body,
+    );
+  }
 
   @protected
   String tabTitle = "";
@@ -82,99 +87,114 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
     final userStore = context.read<ProfileMeStore>();
 
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (
-          BuildContext context,
-          bool innerBoxIsScrolled,
-        ) {
-          return <Widget>[
-            //__________AppBar__________//
-            sliverAppBar(),
-            SliverPadding(
-              padding: EdgeInsets.fromLTRB(
-                16.0,
-                16.0,
-                16.0,
-                0.0,
-              ),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: userStore.userData!.role == UserRole.Worker
-                          ? workerWidgets()
-                          : employerWidgets(),
-                    ),
-
-                    ///Social Accounts
-                    socialAccounts(
-                      socialNetwork:
-                          userStore.userData?.additionalInfo?.socialNetwork,
-                    ),
-
-                    ///Contact Details
-                    contactDetails(
-                      location:
-                          userStore.userData?.additionalInfo?.address ?? ' ',
-                      number: userStore.userData?.phone ?? " ",
-                      secondNumber: userStore
-                              .userData?.additionalInfo?.secondMobileNumber ??
-                          "",
-                      email: userStore.userData?.email ?? " ",
-                    ),
-                    spacer,
-                  ],
-                ),
-              ),
+      body: CustomScrollView(
+        controller: controllerMain,
+        physics: ClampingScrollPhysics(),
+        // headerSliverBuilder: (
+        //   BuildContext context,
+        //   bool innerBoxIsScrolled,
+        // ) {
+        //   return
+        slivers: <Widget>[
+          //__________AppBar__________//
+          sliverAppBar(),
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              16.0,
+              16.0,
+              16.0,
+              0.0,
             ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: StickyTabBarDelegate(
-                child: TabBar(
-                  unselectedLabelColor: Color(0xFF8D96A1),
-                  indicator: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.0),
-                    color: Colors.white,
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: userStore.userData!.role == UserRole.Worker
+                        ? workerWidgets()
+                        : employerWidgets(),
                   ),
-                  labelColor: Colors.black,
-                  controller: this._tabController,
-                  tabs: <Widget>[
-                    Tab(
-                      child: Text(
-                        "profiler.reviews".tr(),
-                        style: TextStyle(fontSize: 14.0),
-                      ),
-                    ),
-                    Tab(
-                      child: Text(
-                        tabTitle,
-                        style: TextStyle(fontSize: 14.0),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ];
-        },
-        body: TabBarView(
-          controller: this._tabController,
-          children: <Widget>[
-            ///Reviews Tab
-            reviewsTab(),
 
-            ///Portfolio and Quests
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: Material(
-                color: const Color(0xFFF7F8FA),
-                child: questPortfolio(),
+                  ///Social Accounts
+                  socialAccounts(
+                    socialNetwork:
+                        userStore.userData?.additionalInfo?.socialNetwork,
+                  ),
+
+                  ///Contact Details
+                  contactDetails(
+                    location:
+                        userStore.userData?.additionalInfo?.address ?? ' ',
+                    number: userStore.userData?.phone ?? " ",
+                    secondNumber: userStore
+                            .userData?.additionalInfo?.secondMobileNumber ??
+                        "",
+                    email: userStore.userData?.email ?? " ",
+                  ),
+                  spacer,
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: StickyTabBarDelegate(
+              child: TabBar(
+                unselectedLabelColor: Color(0xFF8D96A1),
+                indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6.0),
+                  color: Colors.white,
+                ),
+                labelColor: Colors.black,
+                controller: this._tabController,
+                tabs: <Widget>[
+                  Tab(
+                    child: Text(
+                      "profiler.reviews".tr(),
+                      style: TextStyle(fontSize: 14.0),
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      tabTitle,
+                      style: TextStyle(fontSize: 14.0),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverFillRemaining(
+            child: GestureDetector(
+              onVerticalDragUpdate: (details) {
+                if (controllerMain.position.maxScrollExtent >
+                    controllerMain.offset)
+                  controllerMain
+                      .jumpTo(controllerMain.offset - details.delta.dy);
+                else if (0.0 > controllerTab.offset) {
+                  controllerMain
+                      .jumpTo(controllerMain.offset - details.delta.dy);
+                } else if (controllerMain.position.maxScrollExtent >=
+                    controllerMain.offset) {
+                  controllerTab.jumpTo(controllerTab.offset - details.delta.dy);
+                }
+              },
+              child: TabBarView(
+                controller: this._tabController,
+                children: <Widget>[
+                  ///Reviews Tab
+                  wrapperTabBar(reviewsTab()),
+
+                  ///Portfolio and Quests
+                  wrapperTabBar(
+                    questPortfolio(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

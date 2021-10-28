@@ -340,6 +340,9 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<QuestsStore>(),
               ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
             ],
             child: Directionality(
               textDirection: checkDirection(context),
@@ -476,8 +479,15 @@ class Routes {
 
       case CreatePortfolioPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<PortfolioStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<PortfolioStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: CreatePortfolioPage(

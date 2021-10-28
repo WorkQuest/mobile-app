@@ -1,7 +1,7 @@
 import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
-
+import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -61,7 +61,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                         ]
                       : [
                           "quests.active".tr(),
-                          "quests.invited".tr(),
+                          "quests.requested".tr(),
                           "quests.performed".tr(),
                         ]),
                 ),
@@ -71,40 +71,111 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
             body: TabBarView(
               children: [
                 Center(
-                  child: QuestsList(
-                    QuestItemPriorityType.Active,
-                    myQuests?.active,
-                    onCreate: role == UserRole.Employer
-                        ? (statusCreate) {
-                            if (statusCreate) myQuests!.getQuests(userID, role);
-                          }
-                        : null,
+                  child: NotificationListener<ScrollEndNotification>(
+                    onNotification: (scrollEnd) {
+                      final metrics = scrollEnd.metrics;
+                      if (metrics.atEdge ||
+                          metrics.maxScrollExtent < metrics.pixels) {
+                        myQuests!.getQuests(userID, role);
+                        Observer(
+                          builder: (_) => Visibility(
+                            visible: true,
+                            child: PlatformActivityIndicator(),
+                          ),
+                        );
+                      }
+                      return true;
+                    },
+                    child: QuestsList(
+                      QuestItemPriorityType.Active,
+                      myQuests?.active,
+                      onCreate: role == UserRole.Employer
+                          ? (statusCreate) {
+                              if (statusCreate)
+                                myQuests!.getQuests(userID, role);
+                            }
+                          : null,
+                    ),
                   ),
                 ),
-                role == UserRole.Worker
-                    ? Center(
-                        child: QuestsList(
-                          QuestItemPriorityType.Invited,
-                          myQuests?.invited,
-                        ),
-                      )
-                    : Center(
-                        child: QuestsList(
-                          QuestItemPriorityType.Requested,
-                          myQuests?.requested,
-                        ),
-                      ),
                 Center(
-                  child: QuestsList(
-                    QuestItemPriorityType.Performed,
-                    myQuests?.performed,
+                  child: NotificationListener<ScrollEndNotification>(
+                    onNotification: (scrollEnd) {
+                      final metrics = scrollEnd.metrics;
+                      if (metrics.atEdge ||
+                          metrics.maxScrollExtent < metrics.pixels) {
+                        myQuests!.getQuests(userID, role);
+                        Observer(
+                          builder: (_) => Visibility(
+                            visible: true,
+                            child: PlatformActivityIndicator(),
+                          ),
+                        );
+                      }
+                      return true;
+                    },
+                    child: role == UserRole.Worker
+                        ? Center(
+                            child: QuestsList(
+                              QuestItemPriorityType.Invited,
+                              myQuests?.invited,
+                            ),
+                          )
+                        : Center(
+                            child: QuestsList(
+                              QuestItemPriorityType.Requested,
+                              myQuests?.requested,
+                            ),
+                          ),
+                  ),
+                ),
+                Center(
+                  child: NotificationListener<ScrollEndNotification>(
+                    onNotification: (scrollEnd) {
+                      final metrics = scrollEnd.metrics;
+                      if (metrics.atEdge ||
+                          metrics.maxScrollExtent < metrics.pixels) {
+                        myQuests!.getQuests(userID, role);
+                        Observer(
+                          builder: (_) => Visibility(
+                            visible: true,
+                            child: PlatformActivityIndicator(),
+                          ),
+                        );
+                      }
+                      return true;
+                    },
+                    child: Center(
+                      child: QuestsList(
+                        QuestItemPriorityType.Performed,
+                        myQuests?.performed,
+                      ),
+                    ),
                   ),
                 ),
                 if (role == UserRole.Worker)
                   Center(
-                    child: QuestsList(
-                      QuestItemPriorityType.Starred,
-                      myQuests?.starred,
+                    child: NotificationListener<ScrollEndNotification>(
+                      onNotification: (scrollEnd) {
+                        final metrics = scrollEnd.metrics;
+                        if (metrics.atEdge ||
+                            metrics.maxScrollExtent < metrics.pixels) {
+                          myQuests!.getQuests(userID, role);
+                          Observer(
+                            builder: (_) => Visibility(
+                              visible: true,
+                              child: PlatformActivityIndicator(),
+                            ),
+                          );
+                        }
+                        return true;
+                      },
+                      child: Center(
+                        child: QuestsList(
+                          QuestItemPriorityType.Starred,
+                          myQuests?.starred,
+                        ),
+                      ),
                     ),
                   ),
               ],

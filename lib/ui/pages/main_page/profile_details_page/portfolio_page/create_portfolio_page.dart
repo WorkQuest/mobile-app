@@ -1,5 +1,6 @@
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
@@ -26,6 +27,7 @@ class CreatePortfolioPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final store = context.read<PortfolioStore>();
+    final userId = context.read<ProfileMeStore>().userData!.id;
     if (allowEdit) {
       store.title = store.portfolioList[store.portfolioIndex].title;
       store.description = store.portfolioList[store.portfolioIndex].description;
@@ -40,6 +42,7 @@ class CreatePortfolioPage extends StatelessWidget {
       body: Observer(
         builder: (_) => SafeArea(
           child: CustomScrollView(
+            cacheExtent: 1000,
             slivers: [
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
@@ -160,7 +163,9 @@ class CreatePortfolioPage extends StatelessWidget {
                       _spacer,
                       MediaUpload(
                         mediaDrishya: store.media,
-                        mediaURL: store.portfolioList[store.portfolioIndex].medias,
+                        mediaURL: allowEdit
+                            ? store.portfolioList[store.portfolioIndex].medias
+                            : [],
                       )
                     ],
                   ),
@@ -193,16 +198,21 @@ class CreatePortfolioPage extends StatelessWidget {
                                                     store.portfolioIndex]
                                                 .id)
                                         : store.createPortfolio();
+                                    store.getPortfolio(userId: userId);
                                     if (store.isSuccess) {
                                       await successAlert(
-                                          context, "Portfolio created".tr());
+                                        context,
+                                        "Portfolio created".tr(),
+                                      );
                                       Navigator.pop(context);
                                     }
                                   }
                                 : null,
                             child: store.isLoading
                                 ? PlatformActivityIndicator()
-                                : Text("meta.save".tr()),
+                                : Text(
+                                    "meta.save".tr(),
+                                  ),
                           ),
                         ),
                       ),
