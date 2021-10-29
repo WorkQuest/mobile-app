@@ -686,7 +686,6 @@ extension Portfolio on ApiProvider {
       final responseData = await _httpClient.get(
         query: '/v1/user/$userId/portfolio/cases',
       );
-      print("portfolio: $responseData");
       return List<PortfolioModel>.from(
         responseData.map(
           (x) => PortfolioModel.fromJson(x),
@@ -750,7 +749,7 @@ extension Reviews on ApiProvider {
         query: '/v1/user/$userId/reviews',
       );
       return List<Review>.from(
-        response.map(
+        response["reviews"].map(
           (review) => Review.fromJson(review),
         ),
       );
