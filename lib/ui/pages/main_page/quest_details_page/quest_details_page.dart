@@ -96,11 +96,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                           ],
                         ),
                       ),
-                Row(
+                Column(
                   children: [
-                    const SizedBox(width: 10),
-                    PriorityView(widget.questInfo.priority),
-                    const SizedBox(width: 10),
+                    const SizedBox(height: 10),
                     tagEmployment(),
                   ],
                 ),
@@ -117,12 +115,17 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         color: Color(0xFF7C838D),
                       ),
                       const SizedBox(width: 9),
-                      Text(
-                        "150 from you",
-                        style: TextStyle(
-                          color: Color(0xFF7C838D),
+                      Flexible(
+                        child: Text(
+                          widget.questInfo.locationPlaceName,
+                          // "150 from you",
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(
+                            color: Color(0xFF7C838D),
+                          ),
                         ),
                       ),
+                      PriorityView(widget.questInfo.priority),
                     ],
                   ),
                 ],

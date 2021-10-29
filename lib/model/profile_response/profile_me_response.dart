@@ -194,7 +194,7 @@ class RatingStatistic {
       id: json["id"],
       userId: json["userId"],
       reviewCount: json["reviewCount"],
-      averageMark: json["averageMark"] ?? 0.0,
+      averageMark: json["averageMark"].toDouble() ?? 0.0,
       createdAt: json["createdAt"],
       updatedAt: json["updatedAt"],
     );

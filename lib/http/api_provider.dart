@@ -184,7 +184,7 @@ extension QuestService on ApiProvider {
         "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
         if (priority != null) "priority": priority,
-        if (workplace != null)"workplace": workplace,
+        if (workplace != null) "workplace": workplace,
         if (employment != null) "employment": employment,
         if (status != null) "status": status,
         //"sort": sort,
@@ -539,8 +539,6 @@ extension GetUploadLink on ApiProvider {
       );
       mediaId.add(response["mediaId"]);
     }
-    print("$mediaId");
-
     return mediaId;
   }
 
@@ -688,6 +686,7 @@ extension Portfolio on ApiProvider {
       final responseData = await _httpClient.get(
         query: '/v1/user/$userId/portfolio/cases',
       );
+      print("portfolio: $responseData");
       return List<PortfolioModel>.from(
         responseData.map(
           (x) => PortfolioModel.fromJson(x),
@@ -746,13 +745,19 @@ extension Reviews on ApiProvider {
   Future<List<Review>> getReviews({
     required String userId,
   }) async {
-    final response = await _httpClient.get(
-      query: '/v1/user/$userId/reviews',
-    );
-    return List<Review>.from(
-      response.map(
-        (review) => Review.fromJson(review),
-      ),
-    );
+    try {
+      final response = await _httpClient.get(
+        query: '/v1/user/$userId/reviews',
+      );
+      return List<Review>.from(
+        response.map(
+          (review) => Review.fromJson(review),
+        ),
+      );
+    } catch (e, stack) {
+      print("ERROR $e");
+      print("ERROR $stack");
+      return [];
+    }
   }
 }

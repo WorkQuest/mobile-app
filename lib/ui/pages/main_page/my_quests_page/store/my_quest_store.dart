@@ -60,10 +60,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       this.onLoading();
       if (role == UserRole.Employer) {
         active = ObservableList.of(
-          await _apiProvider.getEmployerQuests(
-            userId: userId,
-            offset: active?.length??0,
-          ),
+          await _apiProvider.getEmployerQuests(userId: userId),
         );
 
         requested = ObservableList.of(

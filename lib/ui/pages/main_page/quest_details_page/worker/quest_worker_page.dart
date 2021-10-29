@@ -60,14 +60,19 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text(
-            "${widget.questInfo.price} WUSD",
-            textAlign: TextAlign.end,
-            style: const TextStyle(
-              color: Color(0xFF00AA5B),
-              fontSize: 18.0,
-              fontWeight: FontWeight.w700,
-            ),
+          Row(
+            children: [
+              Text(
+                "${widget.questInfo.price} WUSD",
+                textAlign: TextAlign.end,
+                style: const TextStyle(
+                  color: Color(0xFF00AA5B),
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(widget.questInfo.workplace),
+            ],
           ),
           const SizedBox(height: 20),
           Observer(

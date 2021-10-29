@@ -284,9 +284,13 @@ class MyQuestsItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
               color: Colors.green,
             ),
-            child: Text(
-              "quests.employerConfirmationPending".tr(),
-              style: TextStyle(color: Colors.white),
+            child: Row(
+              children: [
+                Text(
+                  "quests.employerConfirmationPending".tr(),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
             ),
           );
         } else {

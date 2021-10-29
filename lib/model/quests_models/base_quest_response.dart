@@ -25,6 +25,7 @@ class BaseQuestResponse {
     required this.assignedWorker,
     required this.employment,
     required this.questSpecializations,
+    required this.workplace,
   });
 
   String id;
@@ -46,6 +47,7 @@ class BaseQuestResponse {
   AssignedWorker? assignedWorker;
   String employment;
   List<String> questSpecializations;
+  String workplace;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(
@@ -78,6 +80,7 @@ class BaseQuestResponse {
         }
         return skillsString;
       }([...json["questSpecializations"]]),
+      workplace: json["workplace"],
     );
   }
 

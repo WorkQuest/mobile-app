@@ -60,6 +60,7 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
     portfolioStore!.getReviews(
       userId: userStore!.userData!.id,
     );
+    print("TAG: ${portfolioStore!.reviewsList}");
   }
 
   @protected
