@@ -2,7 +2,6 @@ import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
-import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -96,37 +95,34 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                           ],
                         ),
                       ),
-                Column(
+                Row(
                   children: [
                     const SizedBox(height: 10),
                     tagEmployment(),
+                    const SizedBox(width: 10),
+                    tagWorkplace(),
                   ],
                 ),
               ],
             ),
+            const SizedBox(height: 17),
             if (widget.questInfo.userId != profile!.userData!.id)
-              Column(
+              Row(
                 children: [
-                  const SizedBox(height: 17),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on_rounded,
+                  Icon(
+                    Icons.location_on_rounded,
+                    color: Color(0xFF7C838D),
+                  ),
+                  const SizedBox(width: 9),
+                  Flexible(
+                    child: Text(
+                      widget.questInfo.locationPlaceName,
+                      // "150 from you",
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(
                         color: Color(0xFF7C838D),
                       ),
-                      const SizedBox(width: 9),
-                      Flexible(
-                        child: Text(
-                          widget.questInfo.locationPlaceName,
-                          // "150 from you",
-                          overflow: TextOverflow.fade,
-                          style: TextStyle(
-                            color: Color(0xFF7C838D),
-                          ),
-                        ),
-                      ),
-                      PriorityView(widget.questInfo.priority),
-                    ],
+                    ),
                   ),
                 ],
               ),
@@ -219,7 +215,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
     return Wrap(
       children: skills
           .map(
-            (item) => new ActionChip(
+            (item) => ActionChip(
               padding: EdgeInsets.symmetric(
                 vertical: 8.0,
                 horizontal: 10.0,
@@ -263,6 +259,35 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
         employment,
         style: TextStyle(
           color: Color(0xFF22CC14),
+        ),
+      ),
+    );
+  }
+
+  Widget tagWorkplace() {
+    String employment = "";
+    switch (widget.questInfo.workplace) {
+      case "distant":
+        employment = "Distant work";
+        break;
+      case "office":
+        employment = "Work in office";
+        break;
+      case "Both variant":
+        employment = "both";
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      decoration: BoxDecoration(
+        color: Color(0xFF0083C7).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        employment,
+        style: TextStyle(
+          color: Color(0xFF0083C7),
         ),
       ),
     );

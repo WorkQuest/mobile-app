@@ -163,7 +163,7 @@ class MyQuestsItem extends StatelessWidget {
                   width: 5,
                 ),
                 Text(
-                  questInfo.user.firstName + questInfo.user.lastName,
+                  questInfo.user.firstName + " " + questInfo.user.lastName,
                   style: TextStyle(fontSize: 16),
                 )
               ],
