@@ -87,9 +87,8 @@ class QuestsList extends StatelessWidget {
                 ),
               ),
             ),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
+         Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -105,7 +104,7 @@ class QuestsList extends StatelessWidget {
                       "quests.questYet".tr(),
                 ),
               ],
-            ),
+
           ),
         ],
       ),
