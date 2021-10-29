@@ -17,8 +17,11 @@ class QuestsList extends StatelessWidget {
 
   final Future<dynamic>? update;
 
+  final ScrollPhysics physics;
+
   const QuestsList(this.questItemPriorityType, this.questsList,
-      {this.onCreate, this.update});
+
+      {this.onCreate, this.update,this.physics = const AlwaysScrollableScrollPhysics()} );
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +30,21 @@ class QuestsList extends StatelessWidget {
       child: questsList == null
           ? getLoadingBody()
           : questsList!.isNotEmpty
-              ? getBody()
-              : getEmptyBody(context),
+          ? getBody()
+          : getEmptyBody(context),
     );
   }
 
   Widget getBody() {
     return
       ListView.builder(
-        itemCount: onCreate!=null ? questsList!.length + 1 : questsList!.length,
+        physics: physics,
+        shrinkWrap: true,
+        itemCount: onCreate != null ? questsList!.length + 1 : questsList!
+            .length,
         padding: EdgeInsets.zero,
         itemBuilder: (BuildContext context, index) {
-          if (onCreate!=null) if (index == 0) {
+          if (onCreate != null) if (index == 0) {
             return Container(
               margin: EdgeInsets.only(top: 10.0),
               color: Colors.white,
@@ -49,9 +55,10 @@ class QuestsList extends StatelessWidget {
                     padding: const EdgeInsets.all(20.0),
                     child: ElevatedButton(
                       onPressed: () async {
-                        bool? status = await Navigator.of(context, rootNavigator: true)
+                        bool? status = await Navigator.of(context,
+                            rootNavigator: true)
                             .pushNamed<bool>(CreateQuestPage.routeName);
-                          onCreate!(status??false);
+                        onCreate!(status ?? false);
                       },
                       child: Text(
                         "quests.addNewQuest".tr(),
@@ -63,18 +70,18 @@ class QuestsList extends StatelessWidget {
             );
           }
           return MyQuestsItem(
-            questsList![(onCreate!=null) ? index - 1 : index],
+            questsList![(onCreate != null) ? index - 1 : index],
             itemType: questItemPriorityType,
           );
         },
-    );
+      );
   }
 
   Widget getEmptyBody(BuildContext context) {
     return Center(
       child: Column(
         children: [
-          if (onCreate!=null)
+          if (onCreate != null)
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: ElevatedButton(
@@ -87,23 +94,26 @@ class QuestsList extends StatelessWidget {
                 ),
               ),
             ),
-         Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  "assets/empty_quest_icon.svg",
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  "quests.youDontHaveAny".tr() +
-                      " ${questItemPriorityType.toString().split(".").last} " +
-                      "quests.questYet".tr(),
-                ),
-              ],
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                "assets/empty_quest_icon.svg",
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              Text(
+                "quests.youDontHaveAny".tr() +
+                    " ${questItemPriorityType
+                        .toString()
+                        .split(".")
+                        .last} " +
+                    "quests.questYet".tr(),
+              ),
+            ],
 
           ),
         ],

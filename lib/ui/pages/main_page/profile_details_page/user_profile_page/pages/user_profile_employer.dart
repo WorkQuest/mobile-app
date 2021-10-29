@@ -20,7 +20,11 @@ class _EmployerProfileState extends ProfileReviewsState<ProfileReviews> {
           height: 20,
         ),
         myQuests?.performed != null
-            ? QuestsList(QuestItemPriorityType.Performed, myQuests?.performed)
+            ? QuestsList(
+                QuestItemPriorityType.Performed,
+                myQuests?.performed,
+                physics: NeverScrollableScrollPhysics(),
+              )
             : Center(
                 child: Text(
                   "errors.emptyData.worker.myQuests.desc".tr(),
