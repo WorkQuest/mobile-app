@@ -85,12 +85,14 @@ class PortfolioWidget extends StatelessWidget {
 ///Reviews Widget
 class ReviewsWidget extends StatelessWidget {
   final String name;
+  final int mark;
   final String userRole;
   final String questTitle;
   final String quest;
 
   const ReviewsWidget({
     required this.name,
+    required this.mark,
     required this.userRole,
     required this.questTitle,
     required this.quest,
@@ -140,35 +142,19 @@ class ReviewsWidget extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.star,
-                    color: Color(0xFFE8D20D),
-                    size: 19.0,
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Color(0xFFE8D20D),
-                    size: 19.0,
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Color(0xFFE8D20D),
-                    size: 19.0,
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Color(0xFFE8D20D),
-                    size: 19.0,
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Color(0xFFE9EDF2),
-                    size: 19.0,
-                  ),
-                  SizedBox(
-                    width: 13.0,
-                  ),
-                  Text('4.00')
+                  for (int i = 0; i < mark; i++)
+                    Icon(
+                      Icons.star,
+                      color: Color(0xFFE8D20D),
+                      size: 19.0,
+                    ),
+                  for (int i = 0; i < 5 - mark; i++)
+                    Icon(
+                      Icons.star,
+                      color: Color(0xFFE9EDF2),
+                      size: 19.0,
+                    ),
+                  Text("$mark"),
                 ],
               ),
             ),
@@ -762,38 +748,38 @@ Widget skills({required List<String>? skills, required BuildContext context}) {
           ),
         )
         .toList()
-          ..add(
-            ActionChip(
-              padding: EdgeInsets.symmetric(
-                vertical: 10.0,
-                horizontal: 10.0,
-              ),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  ChangeProfilePage.routeName,
-                );
-              },
-              label: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "settings.add".tr(),
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ],
-              ),
-              backgroundColor: Color(0xFF0083C7),
-            ),
+      ..add(
+        ActionChip(
+          padding: EdgeInsets.symmetric(
+            vertical: 10.0,
+            horizontal: 10.0,
           ),
+          onPressed: () {
+            Navigator.pushNamed(
+              context,
+              ChangeProfilePage.routeName,
+            );
+          },
+          label: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "settings.add".tr(),
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.white,
+                ),
+              ),
+              Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 20,
+              ),
+            ],
+          ),
+          backgroundColor: Color(0xFF0083C7),
+        ),
+      ),
   );
 }
 

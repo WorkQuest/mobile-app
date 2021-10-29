@@ -92,13 +92,10 @@ extension ReviewsTab on ProfileReviewsState {
                       index++)
                     ReviewsWidget(
                       name: "Edward cooper",
+                      mark: portfolioStore!.reviewsList[index].mark,
                       userRole: UserRole.Worker.toString().split(".").last,
                       questTitle: "SPA saloon design",
-                      quest:
-                          "Lorem ipsum dolor sit amet, consectetur adipiscing "
-                          "elit ut aliquam, purus sit amet luctus venenatis, "
-                          "lectus magna fringilla urna, porttitor rhoncus "
-                          "dolor purus non enim praesent elementum.",
+                      quest: portfolioStore!.reviewsList[index].message,
                     ),
                 ],
               )

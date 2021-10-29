@@ -2,9 +2,9 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
+import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 
-// import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -61,17 +61,19 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         children: [
           const SizedBox(height: 20),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "${widget.questInfo.price} WUSD",
                 textAlign: TextAlign.end,
+                overflow: TextOverflow.fade,
                 style: const TextStyle(
                   color: Color(0xFF00AA5B),
                   fontSize: 18.0,
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              Text(widget.questInfo.workplace),
+              PriorityView(widget.questInfo.priority),
             ],
           ),
           const SizedBox(height: 20),
