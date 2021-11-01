@@ -84,119 +84,130 @@ class PortfolioWidget extends StatelessWidget {
 
 ///Reviews Widget
 class ReviewsWidget extends StatelessWidget {
+  final String avatar;
   final String name;
   final int mark;
   final String userRole;
   final String questTitle;
-  final String quest;
+  final String message;
 
   const ReviewsWidget({
+    required this.avatar,
     required this.name,
     required this.mark,
     required this.userRole,
     required this.questTitle,
-    required this.quest,
+    required this.message,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // margin: EdgeInsets.only(
-      //   left: 16.0,
-      //   right: 16.0,
-      //   top: 10.0,
-      // ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(
-          Radius.circular(6.0),
+    return Column(
+      children: [
+        Container(
+          height: 10,
+          decoration: BoxDecoration(
+            color: Color(0xFFF7F8FA),
+          ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage(
-                  "assets/profile_avatar_test.jpg",
+        Container(
+          // margin: EdgeInsets.only(
+          //   left: 16.0,
+          //   right: 16.0,
+          //   top: 10.0,
+          // ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(
+              Radius.circular(6.0),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(avatar),
+                  ),
+                  title: Text(
+                    name,
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                  subtitle: Text(
+                    userRole,
+                    style: TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
+                  ),
                 ),
               ),
-              title: Text(
-                name,
-                style: TextStyle(fontSize: 16.0),
-              ),
-              subtitle: Text(
-                userRole,
-                style: TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
-              ),
-            ),
-          ),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                bottom: 15.0,
-              ),
-              child: Row(
-                children: [
-                  for (int i = 0; i < mark; i++)
-                    Icon(
-                      Icons.star,
-                      color: Color(0xFFE8D20D),
-                      size: 19.0,
-                    ),
-                  for (int i = 0; i < 5 - mark; i++)
-                    Icon(
-                      Icons.star,
-                      color: Color(0xFFE9EDF2),
-                      size: 19.0,
-                    ),
-                  Text("$mark"),
-                ],
-              ),
-            ),
-          ),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                bottom: 15.0,
-              ),
-              child: RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                        text: "Quest    ",
-                        style: TextStyle(
-                          color: Colors.black,
-                        )),
-                    TextSpan(
-                      text: questTitle,
-                      style: TextStyle(
-                        color: Color(0xFF7C838D),
-                      ),
-                    ),
-                  ],
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    bottom: 15.0,
+                  ),
+                  child: Row(
+                    children: [
+                      for (int i = 0; i < mark; i++)
+                        Icon(
+                          Icons.star,
+                          color: Color(0xFFE8D20D),
+                          size: 19.0,
+                        ),
+                      for (int i = 0; i < 5 - mark; i++)
+                        Icon(
+                          Icons.star,
+                          color: Color(0xFFE9EDF2),
+                          size: 19.0,
+                        ),
+                      Text("$mark"),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                bottom: 15.0,
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    bottom: 15.0,
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Quest    ",
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text: questTitle,
+                          style: TextStyle(
+                            color: Color(0xFF7C838D),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              child: Text(quest),
-            ),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    bottom: 15.0,
+                  ),
+                  child: Text(message),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -748,38 +759,38 @@ Widget skills({required List<String>? skills, required BuildContext context}) {
           ),
         )
         .toList()
-      ..add(
-        ActionChip(
-          padding: EdgeInsets.symmetric(
-            vertical: 10.0,
-            horizontal: 10.0,
-          ),
-          onPressed: () {
-            Navigator.pushNamed(
-              context,
-              ChangeProfilePage.routeName,
-            );
-          },
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "settings.add".tr(),
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.white,
-                ),
+          ..add(
+            ActionChip(
+              padding: EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 10.0,
               ),
-              Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 20,
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  ChangeProfilePage.routeName,
+                );
+              },
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "settings.add".tr(),
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ],
               ),
-            ],
+              backgroundColor: Color(0xFF0083C7),
+            ),
           ),
-          backgroundColor: Color(0xFF0083C7),
-        ),
-      ),
   );
 }
 

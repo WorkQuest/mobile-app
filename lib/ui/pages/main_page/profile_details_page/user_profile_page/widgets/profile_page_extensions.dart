@@ -3,6 +3,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../../../../../enums.dart';
 
 extension CustomAppBar on ProfileReviewsState {
@@ -85,20 +86,27 @@ extension ReviewsTab on ProfileReviewsState {
           height: 20,
         ),
         portfolioStore!.reviewsList.isNotEmpty
-            ? Column(
-                children: [
-                  for (int index = 0;
-                      index < portfolioStore!.reviewsList.length;
-                      index++)
-                    ReviewsWidget(
-                      name: "Edward cooper",
-                      mark: portfolioStore!.reviewsList[index].mark,
-                      userRole: UserRole.Worker.toString().split(".").last,
-                      questTitle: "SPA saloon design",
-                      quest: portfolioStore!.reviewsList[index].message,
-                    ),
-                ],
-              )
+            ? Observer(
+              builder: (_) => Column(
+                  children: [
+                    for (int index = 0;
+                        index < portfolioStore!.reviewsList.length;
+                        index++)
+                      ReviewsWidget(
+                        avatar: portfolioStore!
+                            .reviewsList[index].fromUser.avatar.url,
+                        name: portfolioStore!
+                                .reviewsList[index].fromUser.firstName +
+                            " " +
+                            portfolioStore!.reviewsList[index].fromUser.lastName,
+                        mark: portfolioStore!.reviewsList[index].mark,
+                        userRole: UserRole.Worker.toString().split(".").last,
+                        questTitle: "SPA saloon design",
+                        message: portfolioStore!.reviewsList[index].message,
+                      ),
+                  ],
+                ),
+            )
             : Center(
                 child: Text("You have no reviews yet"),
               ),

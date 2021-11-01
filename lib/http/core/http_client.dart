@@ -98,6 +98,7 @@ class _HttpClient implements IHttpClient {
           println("\n---------- DioRequest ----------"
               "\n\turl: ${options.baseUrl}${options.path}"
               "\n\tmethod: ${options.method}"
+              "\n\tquery: ${options.queryParameters}"
               "\n\tdata: ${options.data}"
               "\n\theaders: ${options.headers}\n}"
               "\n--------------------------------\n");

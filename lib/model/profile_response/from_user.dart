@@ -1,3 +1,5 @@
+import 'package:app/model/profile_response/avatar.dart';
+
 class FromUser {
   FromUser({
     required this.id,
@@ -9,14 +11,21 @@ class FromUser {
   String id;
   String firstName;
   String lastName;
-  String avatar;
+  Avatar avatar;
 
   factory FromUser.fromJson(Map<String, dynamic> json) => FromUser(
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        avatar: json["avatar"] ??
-            "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+        avatar: Avatar.fromJson(
+          json["avatar"] ??
+              {
+                "id": "",
+                "url":
+                    "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                "contentType": "",
+              },
+        ),
       );
 
   Map<String, dynamic> toJson() => {

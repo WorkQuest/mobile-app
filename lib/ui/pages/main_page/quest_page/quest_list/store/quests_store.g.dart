@@ -50,13 +50,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$employmentAtom = Atom(name: '_QuestsStore.employment');
 
   @override
-  String get employment {
+  ObservableList<bool> get employment {
     _$employmentAtom.reportRead();
     return super.employment;
   }
 
   @override
-  set employment(String value) {
+  set employment(ObservableList<bool> value) {
     _$employmentAtom.reportWrite(value, super.employment, () {
       super.employment = value;
     });
@@ -65,13 +65,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$workplaceAtom = Atom(name: '_QuestsStore.workplace');
 
   @override
-  String get workplace {
+  ObservableList<bool> get workplace {
     _$workplaceAtom.reportRead();
     return super.workplace;
   }
 
   @override
-  set workplace(String value) {
+  set workplace(ObservableList<bool> value) {
     _$workplaceAtom.reportWrite(value, super.workplace, () {
       super.workplace = value;
     });
@@ -170,13 +170,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$employmentValueAtom = Atom(name: '_QuestsStore.employmentValue');
 
   @override
-  List<String> get employmentValue {
+  ObservableList<String> get employmentValue {
     _$employmentValueAtom.reportRead();
     return super.employmentValue;
   }
 
   @override
-  set employmentValue(List<String> value) {
+  set employmentValue(ObservableList<String> value) {
     _$employmentValueAtom.reportWrite(value, super.employmentValue, () {
       super.employmentValue = value;
     });
@@ -185,13 +185,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$workplaceValueAtom = Atom(name: '_QuestsStore.workplaceValue');
 
   @override
-  List<String> get workplaceValue {
+  ObservableList<String> get workplaceValue {
     _$workplaceValueAtom.reportRead();
     return super.workplaceValue;
   }
 
   @override
-  set workplaceValue(List<String> value) {
+  set workplaceValue(ObservableList<String> value) {
     _$workplaceValueAtom.reportWrite(value, super.workplaceValue, () {
       super.workplaceValue = value;
     });

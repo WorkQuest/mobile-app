@@ -39,7 +39,7 @@
     "uploadText": "Upload images or videos",
     "uploadImage": "Upload images",
     "upload": "Upload",
-    "files": "files"
+    "files": "Files"
   },
   "messages": {
     "alpha": "{_field_} field can only contain alphabetic characters",

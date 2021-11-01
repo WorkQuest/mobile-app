@@ -29,10 +29,14 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   String? sort = "";
 
   @observable
-  String employment = "Select all";
+  ObservableList<bool> employment = ObservableList.of(
+    List.generate(4, (index) => false),
+  );
 
   @observable
-  String workplace = "Select all";
+  ObservableList<bool> workplace = ObservableList.of(
+    List.generate(3, (index) => false),
+  );
 
   @observable
   int priority = -1;
@@ -53,10 +57,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   List<BaseQuestResponse>? searchResultList = [];
 
   @observable
-  List<String> employmentValue = [];
+  ObservableList<String> employmentValue = ObservableList.of([]);
 
   @observable
-  List<String> workplaceValue = [];
+  ObservableList<String> workplaceValue = ObservableList.of([]);
 
   @observable
   double latitude = 0.0;
@@ -110,26 +114,29 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   List<String> getEmploymentValue() {
-    switch (employment) {
-      case "Select all":
-        employmentValue.clear();
-        employmentValue.add("fullTime");
-        employmentValue.add("partTime");
-        employmentValue.add("fixedTerm");
-        employmentValue.add("contract");
-        return employmentValue;
-      case "Full-time":
-        employmentValue.add("fullTime");
-        return employmentValue;
-      case "Part-time":
-        employmentValue.add("partTime");
-        return employmentValue;
-      case "Fixed-term":
-        employmentValue.add("fixedTerm");
-        return employmentValue;
-      case "Contract":
-        employmentValue.add("contract");
-        return employmentValue;
+    if (employment[0] == true) {
+      employmentValue.clear();
+      employmentValue.add("fullTime");
+      employmentValue.add("partTime");
+      employmentValue.add("fixedTerm");
+      return employmentValue;
+    } else if (employment[0] == false) {
+      employmentValue.clear();
+    }
+    if (employment[1] == true) {
+      employmentValue.add("fullTime");
+    } else if (employment[1] == false) {
+      employmentValue.remove("fullTime");
+    }
+    if (employment[2] == true) {
+      employmentValue.add("partTime");
+    } else if (employment[2] == false) {
+      employmentValue.remove("partTime");
+    }
+    if (employment[3] == true) {
+      employmentValue.add("fixedTerm");
+    } else if (employment[3] == false) {
+      employmentValue.remove("fixedTerm");
     }
     print("employmentValue: $employmentValue");
     return employmentValue;
@@ -137,17 +144,24 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   List<String> getWorkplaceValue() {
-    switch (workplace) {
-      case "Select all":
-        workplaceValue.clear();
-        workplaceValue.add("both");
-        return workplaceValue;
-      case "Work in office":
-        workplaceValue.add("office");
-        return workplaceValue;
-      case "Distant work":
-        workplaceValue.add("distant");
-        return workplaceValue;
+    if (workplace[0] == true) {
+      workplaceValue.clear();
+      workplaceValue.add("both");
+      workplaceValue.add("distant");
+      workplaceValue.add("office");
+      return workplaceValue;
+    } else if (workplace[0] == false) {
+      workplaceValue.clear();
+    }
+    if (workplace[1] == true) {
+      workplaceValue.add("distant");
+    } else if (workplace[1] == false) {
+      workplaceValue.remove("distant");
+    }
+    if (workplace[2] == true) {
+      workplaceValue.add("office");
+    } else if (workplace[2] == false) {
+      workplaceValue.remove("office");
     }
     print("workplaceValue: $workplaceValue");
     return workplaceValue;
@@ -169,8 +183,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       final loadQuestsList = await _apiProvider.getQuests(
-        employment: employmentValue,
-        workplace: workplaceValue,
+        employment: getEmploymentValue(),
+        workplace: getWorkplaceValue(),
         offset: this.offset,
         limit: this.limit,
         sort: this.sort,

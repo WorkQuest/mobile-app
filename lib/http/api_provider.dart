@@ -165,8 +165,8 @@ extension QuestService on ApiProvider {
   }
 
   Future<List<BaseQuestResponse>> getQuests({
-    List<String>? workplace,
-    List<String>? employment,
+    List<String> workplace = const [],
+    List<String> employment = const [],
     int limit = 10,
     int offset = 0,
     String searchWord = "",
@@ -177,15 +177,23 @@ extension QuestService on ApiProvider {
     bool? performing,
     bool? starred,
   }) async {
+    String workplaces = "";
+    workplace.forEach((text) {
+      workplaces += "workplaces[]=$text&";
+    });
+    String employments = "";
+    employment.forEach((text) {
+      employments += "employments[]=$text&";
+    });
     final responseData = await _httpClient.get(
-      query: '/v1/quests',
+      query: '/v1/quests?$workplaces$employments',
       queryParameters: {
         "offset": offset,
         "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
         if (priority != null) "priority": priority,
-        if (workplace != null) "workplace": workplace,
-        if (employment != null) "employment": employment,
+        // if (workplace != null) "workplaces": workplace,
+        // if (employment != null) "employments": employment,
         if (status != null) "status": status,
         //"sort": sort,
         if (invited != null) "invited": invited,

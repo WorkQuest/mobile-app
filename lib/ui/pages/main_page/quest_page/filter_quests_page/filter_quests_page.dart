@@ -27,6 +27,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     storeFilter.readFilters();
     profile = context.read<ProfileMeStore>();
     storeQuest = context.read<QuestsStore>();
+    storeFilter.selectEmployment = storeQuest.employment;
+    storeFilter.selectWorkplace = storeQuest.workplace;
     super.initState();
   }
 
@@ -102,28 +104,26 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                         title: "quests.employment.title".tr(),
                                         list: storeFilter.sortByEmployment,
                                         selected: storeFilter.selectEmployment,
-                                        onChange: (bool? value, int i) {
+                                        onChange: (bool? value, int index) {
                                           storeFilter.setSelectedEmployment(
                                             value,
-                                            i,
+                                            index,
                                           );
-                                          storeQuest.employment =
-                                              storeFilter.sortByEmployment[i];
-                                          storeQuest.getEmploymentValue();
+                                          storeQuest.employment[index] =
+                                              value ?? false;
                                         },
                                       ),
                                       _checkButton(
                                         title: "quests.workplace".tr(),
                                         list: storeFilter.sortByWorkplace,
                                         selected: storeFilter.selectWorkplace,
-                                        onChange: (bool? value, int i) {
+                                        onChange: (bool? value, int index) {
                                           storeFilter.setSelectedWorkplace(
                                             value,
-                                            i,
+                                            index,
                                           );
-                                          storeQuest.workplace =
-                                              storeFilter.sortByWorkplace[i];
-                                          storeQuest.getWorkplaceValue();
+                                          storeQuest.workplace[index] =
+                                              value ?? false;
                                         },
                                       ),
                                     ],

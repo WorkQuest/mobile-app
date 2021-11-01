@@ -1,3 +1,4 @@
+import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 
@@ -26,6 +27,8 @@ class BaseQuestResponse {
     required this.employment,
     required this.questSpecializations,
     required this.workplace,
+    required this.invited,
+    required this.responded,
   });
 
   String id;
@@ -48,6 +51,8 @@ class BaseQuestResponse {
   String employment;
   List<String> questSpecializations;
   String workplace;
+  dynamic invited;
+  Responded? responded;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(
@@ -81,6 +86,10 @@ class BaseQuestResponse {
         return skillsString;
       }([...json["questSpecializations"]]),
       workplace: json["workplace"],
+      invited: json["invited"],
+      responded: json["responded"] == null
+          ? null
+          : Responded.fromJson(json["responded"]),
     );
   }
 
