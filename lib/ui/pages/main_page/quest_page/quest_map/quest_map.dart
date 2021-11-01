@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+import 'package:permission_handler/permission_handler.dart' as perm;
 
 class QuestMap extends StatefulWidget {
   final void Function() changePage;
@@ -126,7 +127,6 @@ class _QuestMapState extends State<QuestMap> {
               builder: (_) => GestureDetector(
                 onTap: () {
                   mapStore!.getPrediction(context, _controller);
-
                 },
                 child: Container(
                   height: 60,
@@ -175,9 +175,12 @@ class _QuestMapState extends State<QuestMap> {
       );
 
   Future<void> _getCurrentLocation() async {
+    print("Start");
     final _permissionGranted = await _location.requestPermission();
     print("Location permission => $_permissionGranted");
-    if (_permissionGranted == PermissionStatus.deniedForever) {
+
+    if (_permissionGranted == PermissionStatus.deniedForever ||
+        _permissionGranted == PermissionStatus.denied) {
       showCupertinoDialog(
         context: context,
         builder: (context) {
@@ -199,7 +202,15 @@ class _QuestMapState extends State<QuestMap> {
                 child: Text(
                   "ui.profile.settings".tr(),
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  if (_permissionGranted == PermissionStatus.denied) {
+                    await _location.requestPermission();
+                  } else {
+                    await perm.openAppSettings();
+                  }
+                  Navigator.pop(context);
+                  //await _onMyLocationPressed();
+                },
               ),
             ],
           );
@@ -230,13 +241,22 @@ class _QuestMapState extends State<QuestMap> {
   }
 
   Future<void> _onMyLocationPressed() async {
-    final myLocation = await _location.getLocation();
-    _controller.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-        bearing: 0,
-        target: LatLng(myLocation.latitude!, myLocation.longitude!),
-        zoom: 17.0,
-      ),
-    ));
+    final status = await _location.hasPermission();
+    if (status == PermissionStatus.granted) {
+      final myLocation = await _location.getLocation();
+      _controller.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            bearing: 0,
+            target: LatLng(
+              myLocation.latitude!,
+              myLocation.longitude!,
+            ),
+            zoom: 17.0,
+          ),
+        ),
+      );
+    } else
+      _getCurrentLocation();
   }
 }
