@@ -165,7 +165,11 @@ class MyQuestsItem extends StatelessWidget {
                 Text(
                   questInfo.user.firstName + " " + questInfo.user.lastName,
                   style: TextStyle(fontSize: 16),
-                )
+                ),
+                // if (questInfo.responded != null)
+                //   if (questInfo.responded!.id ==
+                //       context.read<ProfileMeStore>().userData!.id)
+                //     Text("Вы откликались"),
               ],
             ),
             SizedBox(
@@ -186,10 +190,13 @@ class MyQuestsItem extends StatelessWidget {
                       SizedBox(
                         width: 9,
                       ),
-                      Text(
-                        "150 from you",
-                        style: TextStyle(
-                          color: Color(0xFF7C838D),
+                      Flexible(
+                        child: Text(
+                          questInfo.locationPlaceName,
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(
+                            color: Color(0xFF7C838D),
+                          ),
                         ),
                       ),
                     ],
@@ -310,18 +317,6 @@ class MyQuestsItem extends StatelessWidget {
               children: [
                 Text(
                   "quests.active".tr(),
-                  style: TextStyle(color: Colors.white),
-                ),
-                Spacer(),
-                Text(
-                  "quests.runtime".tr(),
-                  style: TextStyle(color: Colors.white),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "14:10:23",
                   style: TextStyle(color: Colors.white),
                 ),
               ],

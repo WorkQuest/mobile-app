@@ -6,6 +6,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import '../widgets/profile_page_extensions.dart';
@@ -181,17 +182,21 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
                   controllerTab.jumpTo(controllerTab.offset - details.delta.dy);
                 }
               },
-              child: TabBarView(
-                controller: this._tabController,
-                children: <Widget>[
-                  ///Reviews Tab
-                  wrapperTabBar(reviewsTab()),
+              child: Observer(
+                builder: (_) => TabBarView(
+                  controller: this._tabController,
+                  children: <Widget>[
+                    ///Reviews Tab
+                    wrapperTabBar(
+                      reviewsTab(),
+                    ),
 
-                  ///Portfolio and Quests
-                  wrapperTabBar(
-                    questPortfolio(),
-                  ),
-                ],
+                    ///Portfolio and Quests
+                    wrapperTabBar(
+                      questPortfolio(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

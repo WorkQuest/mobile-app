@@ -183,6 +183,7 @@ class _QuestListState extends State<QuestList> {
                           builder: (_) => FilterQuestsPage(),
                         ),
                       );
+                      questsStore!.offset = 0;
                       questsStore!.getQuests(profileMeStore!.userData!.id);
                     },
                     style: ButtonStyle(
@@ -233,11 +234,13 @@ class _QuestListState extends State<QuestList> {
                               ? questsStore!.searchResultList?.length ?? 0
                               : questsStore!.questsList?.length ?? 0,
                           itemBuilder: (_, index) {
-                            return MyQuestsItem(
-                              questsStore!.searchWord.length > 2
-                                  ? questsStore!.searchResultList![index]
-                                  : questsStore!.questsList![index],
-                              itemType: this.questItemPriorityType,
+                            return Observer(
+                              builder: (_) => MyQuestsItem(
+                                questsStore!.searchWord.length > 2
+                                    ? questsStore!.searchResultList![index]
+                                    : questsStore!.questsList![index],
+                                itemType: this.questItemPriorityType,
+                              ),
                             );
                           }),
                 ),
