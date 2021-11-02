@@ -1,3 +1,4 @@
+import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';
@@ -19,10 +20,14 @@ final fiveTabNavKey = GlobalKey<NavigatorState>();
 class MainPage extends StatelessWidget {
   static const String routeName = '/mainPage';
 
-  final List<_TabBarIconData> _tabBarIconsData = [
+  MainPage(this.role);
+
+  final UserRole role;
+
+  late final List<_TabBarIconData> _tabBarIconsData = [
     _TabBarIconData(
       'assets/list_alt.svg',
-      'quests.quests'.tr(),
+      role == UserRole.Employer ? 'quests.quests'.tr() : "ui.workers".tr(),
     ),
     _TabBarIconData(
       'assets/list.svg',

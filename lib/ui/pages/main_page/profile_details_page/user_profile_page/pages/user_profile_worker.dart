@@ -1,3 +1,4 @@
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_worker_store.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 class WorkerProfile extends ProfileReviews {
-  //const WorkerProfile();
+  WorkerProfile(ProfileMeResponse? info):super(info);
 
   @override
   _WorkerProfileState createState() => _WorkerProfileState();

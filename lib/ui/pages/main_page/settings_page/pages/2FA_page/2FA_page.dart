@@ -24,81 +24,90 @@ class TwoFAPage extends StatelessWidget {
     final store = context.read<TwoFAStore>();
     final userStore = context.read<ProfileMeStore>();
 
-    return ObserverListener<TwoFAStore>(
-      onSuccess: () {},
-      child: Observer(
-        builder: (_) => Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: CupertinoNavigationBar(
-            automaticallyImplyLeading: true,
-            middle: Text(
-              "settings.2FA".tr(),
-            ),
-          ),
-          body: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 16.0,
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+      },
+      child: ObserverListener<TwoFAStore>(
+        onSuccess: () {},
+        child: Observer(
+          builder: (_) => Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: CupertinoNavigationBar(
+              automaticallyImplyLeading: true,
+              middle: Text(
+                "settings.2FA".tr(),
               ),
-              child: userStore.twoFAStatus!
-                  ? _disable2FA(
-                      store,
-                      context,
-                      userStore,
-                    )
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 20.0,
-                          alignment: AlignmentDirectional.centerStart,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Color(0xFFF7F8FA),
-                          ),
-                          child: LayoutBuilder(
-                            builder: (context, constraints) => Observer(
-                              builder: (_) => AnimatedContainer(
-                                width: constraints.maxWidth *
-                                    (store.index + 1) /
-                                    4,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.blue,
-                                ),
-                                duration: const Duration(
-                                  milliseconds: 150,
+            ),
+            body: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 16.0,
+                ),
+                child: userStore.twoFAStatus!
+                    ? _disable2FA(
+                        store,
+                        context,
+                        userStore,
+                      )
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 20.0,
+                            alignment: AlignmentDirectional.centerStart,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xFFF7F8FA),
+                            ),
+                            child: LayoutBuilder(
+                              builder: (context, constraints) => Observer(
+                                builder: (_) => AnimatedContainer(
+                                  width: constraints.maxWidth *
+                                      (store.index + 1) /
+                                      4,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.blue,
+                                  ),
+                                  duration: const Duration(
+                                    milliseconds: 150,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        Text(
-                          "modals.step".tr() + " ${store.index + 1}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 23.0,
+                          const SizedBox(
+                            height: 10.0,
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                        Expanded(
-                          child: Confirm2FAPages(
-                            store: store,
-                            userStore: userStore,
+                          Text(
+                            "modals.step".tr() + " ${store.index + 1}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 23.0,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10.0,
-                        ),
-                      ],
-                    ),
+                          const SizedBox(
+                            height: 10.0,
+                          ),
+                          Expanded(
+                            child: Confirm2FAPages(
+                              store: store,
+                              userStore: userStore,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10.0,
+                          ),
+                        ],
+                      ),
+              ),
             ),
           ),
         ),
@@ -275,7 +284,9 @@ class Confirm2FAPages extends StatelessWidget {
         ///Step 2
         Column(
           children: [
-            Text("modals.pleaseSaveThisKey".tr(),),
+            Text(
+              "modals.pleaseSaveThisKey".tr(),
+            ),
             const SizedBox(
               height: 10.0,
             ),

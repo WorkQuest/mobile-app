@@ -52,7 +52,7 @@ abstract class ChangeProfileStoreBase with Store {
 
     if (this.userData.firstName != userData.firstName) return true;
 
-    if ((this.userData.lastName ?? "") != (userData.lastName ?? ""))
+    if (this.userData.lastName  != userData.lastName )
       return true;
 
     if ((this.userData.additionalInfo!.address ?? "") !=

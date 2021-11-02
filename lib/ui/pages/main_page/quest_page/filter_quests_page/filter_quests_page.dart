@@ -29,6 +29,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     storeQuest = context.read<QuestsStore>();
     storeFilter.selectEmployment = storeQuest.employment;
     storeFilter.selectWorkplace = storeQuest.workplace;
+    storeFilter.selectPriority = storeQuest.priority;
     super.initState();
   }
 

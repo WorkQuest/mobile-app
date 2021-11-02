@@ -64,6 +64,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
 import 'di/injector.dart';
+import 'model/profile_response/profile_me_response.dart';
 import 'ui/pages/main_page/chat_page/dispute_page/dispute_page.dart';
 
 class Routes {
@@ -173,7 +174,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: MainPage(),
+              child: MainPage(role ?? UserRole.Worker),
             ),
           ),
         );
@@ -243,8 +244,9 @@ class Routes {
           builder: (context) => Provider(
             create: (context) => getIt.get<ChooseRoleStore>(),
             child: Directionality(
-                textDirection: checkDirection(context),
-                child: ChooseRolePage()),
+              textDirection: checkDirection(context),
+              child: ChooseRolePage(),
+            ),
           ),
         );
 
@@ -253,16 +255,18 @@ class Routes {
           builder: (context) => Provider(
             create: (context) => getIt.get<ChooseRoleStore>(),
             child: Directionality(
-                textDirection: checkDirection(context),
-                child: ApproveRolePage(settings.arguments)),
+              textDirection: checkDirection(context),
+              child: ApproveRolePage(settings.arguments),
+            ),
           ),
         );
 
       case NotificationPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Directionality(
-              textDirection: checkDirection(context),
-              child: NotificationPage()),
+            textDirection: checkDirection(context),
+            child: NotificationPage(),
+          ),
         );
 
       case ProfileReviews.routeName:
@@ -281,8 +285,9 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child:
-                  role == UserRole.Worker ? WorkerProfile() : EmployerProfile(),
+              child: role == UserRole.Worker
+                  ? WorkerProfile(settings.arguments as ProfileMeResponse?)
+                  : EmployerProfile(settings.arguments as ProfileMeResponse?),
             ),
           ),
         );
@@ -293,7 +298,9 @@ class Routes {
             create: (context) => getIt.get<ChooseRoleStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ConfirmEmail(settings.arguments.toString()),
+              child: ConfirmEmail(
+                settings.arguments.toString(),
+              ),
             ),
           ),
         );
@@ -440,8 +447,10 @@ class Routes {
             create: (context) => getIt.get<ChatRoomStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ChatRoomPage(settings.arguments as ChatModel,
-                  getIt.get<ProfileMeStore>().userData!.id),
+              child: ChatRoomPage(
+                settings.arguments as ChatModel,
+                getIt.get<ProfileMeStore>().userData!.id,
+              ),
             ),
           ),
         );
@@ -473,8 +482,9 @@ class Routes {
       case ChangeLanguagePage.routeName:
         return MaterialPageRoute(
           builder: (context) => Directionality(
-              textDirection: checkDirection(context),
-              child: ChangeLanguagePage()),
+            textDirection: checkDirection(context),
+            child: ChangeLanguagePage(),
+          ),
         );
 
       case CreatePortfolioPage.routeName:
@@ -520,7 +530,7 @@ class Routes {
     }
   }
 
-  generateRouteEmplouer(settings) {}
+  generateRouteEmployer(settings) {}
 
   generateRouteWorker(settings) {}
 }

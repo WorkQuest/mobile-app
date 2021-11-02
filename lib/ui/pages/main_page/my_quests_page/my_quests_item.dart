@@ -149,30 +149,38 @@ class MyQuestsItem extends StatelessWidget {
           children: [
             if (!isExpanded) getQuestHeader(itemType, context),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: Image.network(
-                    questInfo.user.avatar.url,
-                    width: 30,
-                    height: 30,
-                    fit: BoxFit.cover,
-                  ),
+                Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.network(
+                        questInfo.user.avatar.url,
+                        width: 30,
+                        height: 30,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      questInfo.user.firstName + " " + questInfo.user.lastName,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  questInfo.user.firstName + " " + questInfo.user.lastName,
-                  style: TextStyle(fontSize: 16),
-                ),
-                // if (questInfo.responded != null)
-                //   if (questInfo.responded!.id ==
-                //       context.read<ProfileMeStore>().userData!.id)
-                //     Text("Вы откликались"),
+                if (questInfo.responded != null)
+                  if (questInfo.responded!.workerId ==
+                          context.read<ProfileMeStore>().userData!.id &&
+                      (questInfo.status == 0 || questInfo.status == 4))
+                    Text(
+                      "quests.youResponded".tr(),
+                    ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 17.5,
             ),
             if (questInfo.userId !=
@@ -332,7 +340,9 @@ class MyQuestsItem extends StatelessWidget {
             vertical: 7.5,
           ),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4), color: Color(0xFFE8D20D)),
+            borderRadius: BorderRadius.circular(4),
+            color: Color(0xFFE8D20D),
+          ),
           child: Row(
             children: [
               Text(
@@ -362,6 +372,11 @@ class MyQuestsItem extends StatelessWidget {
                   color: Color(0xFFAAB0B9),
                 ),
               ),
+              // ListView.builder(
+              //   shrinkWrap: true,
+              //     scrollDirection: Axis.horizontal,
+              //     itemCount: ,
+              //     itemBuilder: )
             ],
           ),
         );

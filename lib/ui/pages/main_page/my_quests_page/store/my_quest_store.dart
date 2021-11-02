@@ -1,6 +1,7 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
@@ -46,6 +47,9 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   ObservableList<BaseQuestResponse>? requested;
 
   @observable
+  ObservableList<Responded?>? responded;
+
+  @observable
   ObservableList<BaseQuestResponse>? invited;
 
   @observable
@@ -60,20 +64,23 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       this.onLoading();
       if (role == UserRole.Employer) {
         active = ObservableList.of(
-          await _apiProvider.getEmployerQuests(userId: userId),
+          await _apiProvider.getEmployerQuests(
+            userId: userId,
+            statuses: [0, 1, 3, 5],
+          ),
         );
 
         requested = ObservableList.of(
           await _apiProvider.getEmployerQuests(
             userId: userId,
-            status: 4,
+            statuses: [4],
           ),
         );
 
         performed = ObservableList.of(
           await _apiProvider.getEmployerQuests(
             userId: userId,
-            status: 6,
+            statuses: [6],
           ),
         );
       } else {
@@ -82,7 +89,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             offset: this.offset,
             limit: this.limit,
             performing: true,
-            status: 1,
+            statuses: [1, 3, 5],
           ),
         );
 
@@ -99,7 +106,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             offset: this.offset,
             limit: this.limit,
             performing: true,
-            status: 4,
+            statuses: [4],
           ),
         );
 
@@ -108,7 +115,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             offset: this.offset,
             limit: this.limit,
             performing: true,
-            status: 6,
+            statuses: [6],
           ),
         );
       }

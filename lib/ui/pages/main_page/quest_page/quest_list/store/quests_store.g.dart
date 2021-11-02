@@ -80,13 +80,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$priorityAtom = Atom(name: '_QuestsStore.priority');
 
   @override
-  int get priority {
+  ObservableList<bool> get priority {
     _$priorityAtom.reportRead();
     return super.priority;
   }
 
   @override
-  set priority(int value) {
+  set priority(ObservableList<bool> value) {
     _$priorityAtom.reportWrite(value, super.priority, () {
       super.priority = value;
     });
@@ -152,6 +152,21 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$workersListAtom = Atom(name: '_QuestsStore.workersList');
+
+  @override
+  List<ProfileMeResponse>? get workersList {
+    _$workersListAtom.reportRead();
+    return super.workersList;
+  }
+
+  @override
+  set workersList(List<ProfileMeResponse>? value) {
+    _$workersListAtom.reportWrite(value, super.workersList, () {
+      super.workersList = value;
+    });
+  }
+
   final _$searchResultListAtom = Atom(name: '_QuestsStore.searchResultList');
 
   @override
@@ -164,6 +179,21 @@ mixin _$QuestsStore on _QuestsStore, Store {
   set searchResultList(List<BaseQuestResponse>? value) {
     _$searchResultListAtom.reportWrite(value, super.searchResultList, () {
       super.searchResultList = value;
+    });
+  }
+
+  final _$searchWorkersListAtom = Atom(name: '_QuestsStore.searchWorkersList');
+
+  @override
+  List<ProfileMeResponse>? get searchWorkersList {
+    _$searchWorkersListAtom.reportRead();
+    return super.searchWorkersList;
+  }
+
+  @override
+  set searchWorkersList(List<ProfileMeResponse>? value) {
+    _$searchWorkersListAtom.reportWrite(value, super.searchWorkersList, () {
+      super.searchWorkersList = value;
     });
   }
 
@@ -194,6 +224,21 @@ mixin _$QuestsStore on _QuestsStore, Store {
   set workplaceValue(ObservableList<String> value) {
     _$workplaceValueAtom.reportWrite(value, super.workplaceValue, () {
       super.workplaceValue = value;
+    });
+  }
+
+  final _$priorityValueAtom = Atom(name: '_QuestsStore.priorityValue');
+
+  @override
+  ObservableList<String> get priorityValue {
+    _$priorityValueAtom.reportRead();
+    return super.priorityValue;
+  }
+
+  @override
+  set priorityValue(ObservableList<String> value) {
+    _$priorityValueAtom.reportWrite(value, super.priorityValue, () {
+      super.priorityValue = value;
     });
   }
 
@@ -272,7 +317,25 @@ mixin _$QuestsStore on _QuestsStore, Store {
     return _$getQuestsAsyncAction.run(() => super.getQuests(userId));
   }
 
+  final _$getWorkersAsyncAction = AsyncAction('_QuestsStore.getWorkers');
+
+  @override
+  Future<dynamic> getWorkers(String userId) {
+    return _$getWorkersAsyncAction.run(() => super.getWorkers(userId));
+  }
+
   final _$_QuestsStoreActionController = ActionController(name: '_QuestsStore');
+
+  @override
+  List<String> parser(List<String> skills) {
+    final _$actionInfo =
+        _$_QuestsStoreActionController.startAction(name: '_QuestsStore.parser');
+    try {
+      return super.parser(skills);
+    } finally {
+      _$_QuestsStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setSearchWord(String value) {
@@ -291,6 +354,17 @@ mixin _$QuestsStore on _QuestsStore, Store {
         name: '_QuestsStore.getEmploymentValue');
     try {
       return super.getEmploymentValue();
+    } finally {
+      _$_QuestsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  List<String> getPriorityValue() {
+    final _$actionInfo = _$_QuestsStoreActionController.startAction(
+        name: '_QuestsStore.getPriorityValue');
+    try {
+      return super.getPriorityValue();
     } finally {
       _$_QuestsStoreActionController.endAction(_$actionInfo);
     }
@@ -319,9 +393,12 @@ offset: ${offset},
 limit: ${limit},
 status: ${status},
 questsList: ${questsList},
+workersList: ${workersList},
 searchResultList: ${searchResultList},
+searchWorkersList: ${searchWorkersList},
 employmentValue: ${employmentValue},
 workplaceValue: ${workplaceValue},
+priorityValue: ${priorityValue},
 latitude: ${latitude},
 longitude: ${longitude},
 locationPlaceName: ${locationPlaceName},

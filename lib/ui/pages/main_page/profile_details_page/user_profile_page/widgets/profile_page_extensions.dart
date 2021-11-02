@@ -74,7 +74,7 @@ extension CustomAppBar on ProfileReviewsState {
             ],
           ),
           title: appBarTitle(
-            "${userStore!.userData!.firstName} ${userStore!.userData!.lastName ?? " "}",
+            "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}",
           ),
         ),
       );

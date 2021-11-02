@@ -258,6 +258,7 @@
     "noSkills": "No skills"
   },
   "quests": {
+    "youResponded": "You responded",
     "title": "Quest Title",
     "quests": "Quests",
     "starred": "Starred",
@@ -1289,6 +1290,7 @@
     "searchQuests": "Search quests",
     "searchWorkers": "Search workers",
     "topWorkers": "Top employees",
+    "workers": "Employees",
     "price": "Price",
     "addedTime": "Creation time",
     "quests": "Quests",
@@ -1296,7 +1298,7 @@
     "specialized": "Specialized",
     "typeOfJob": "Job type",
     "specializations": "Specializations",
-    "aboutMe": "Personal information",
+    "aboutMe": "About me",
     "giveAQuest": "Send an quest",
     "inviteQuestor": "Invite plaintiff",
     "skills": "Skills",

@@ -189,7 +189,7 @@ class _QuestMapState extends State<QuestMap> {
               "quests.ui.access".tr(),
             ),
             content: Text(
-              "quests.openSettings".tr(),
+              "quests.ui.openSettings".tr(),
             ),
             actions: [
               CupertinoDialogAction(

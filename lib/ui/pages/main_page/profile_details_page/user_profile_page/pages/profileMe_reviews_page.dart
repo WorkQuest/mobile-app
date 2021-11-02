@@ -1,4 +1,5 @@
 import 'package:app/enums.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
@@ -13,13 +14,16 @@ import '../widgets/profile_page_extensions.dart';
 
 class ProfileReviews extends StatefulWidget {
   static const String routeName = "/profileReviewPage";
+  final ProfileMeResponse? info;
+
+  ProfileReviews(this.info);
 
   @override
   ProfileReviewsState createState() => ProfileReviewsState();
 }
 
 /// View Your own profile
-class ProfileReviewsState<T extends StatefulWidget> extends State<T>
+class ProfileReviewsState<T extends ProfileReviews> extends State<T>
     with SingleTickerProviderStateMixin {
   final TextStyle style = TextStyle(
     color: Colors.black,
@@ -42,6 +46,7 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
   late UserRole role;
 
   void initState() {
+    widget.info;
     super.initState();
     _tabController = TabController(vsync: this, length: 2);
     userStore = context.read<ProfileMeStore>();
@@ -87,7 +92,6 @@ class ProfileReviewsState<T extends StatefulWidget> extends State<T>
   @override
   Widget build(BuildContext context) {
     final userStore = context.read<ProfileMeStore>();
-
     return Scaffold(
       body: CustomScrollView(
         controller: controllerMain,

@@ -25,7 +25,7 @@ class ProfileMeResponse {
   String id;
   String avatarId;
   String firstName;
-  String? lastName;
+  String lastName;
   String? phone;
   String? tempPhone;
   String? email;
@@ -66,8 +66,8 @@ class ProfileMeResponse {
     return ProfileMeResponse(
       id: json["id"],
       avatarId: json["avatarId"] ?? "",
-      firstName: json["firstName"],
-      lastName: json["lastName"],
+      firstName: json["firstName"]??"",
+      lastName: json["lastName"]??"",
       phone: json["phone"] ?? "",
       tempPhone: json["tempPhone"] ?? "",
       email: json["email"],

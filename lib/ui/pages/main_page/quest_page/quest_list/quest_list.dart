@@ -4,6 +4,7 @@ import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,6 +30,7 @@ class _QuestListState extends State<QuestList> {
 
   ProfileMeStore? profileMeStore;
   Future<dynamic>? refreshQuest;
+  Future<dynamic>? refreshWorkers;
 
   final QuestItemPriorityType questItemPriorityType =
       QuestItemPriorityType.Starred;
@@ -44,7 +46,10 @@ class _QuestListState extends State<QuestList> {
       context.read<ChatStore>().initialSetup(
             profileMeStore!.userData!.id,
           );
-      refreshQuest = questsStore!.getQuests(profileMeStore!.userData!.id);
+      profileMeStore!.userData!.role == UserRole.Worker
+          ? refreshQuest = questsStore!.getQuests(profileMeStore!.userData!.id)
+          : refreshWorkers =
+              questsStore!.getWorkers(profileMeStore!.userData!.id);
     });
   }
 
@@ -84,7 +89,9 @@ class _QuestListState extends State<QuestList> {
   Widget getBody() {
     return RefreshIndicator(
       onRefresh: () async {
-        return await refreshQuest;
+        return profileMeStore!.userData!.role == UserRole.Worker
+            ? await refreshQuest
+            : await refreshWorkers;
       },
       displacement: 50,
       edgeOffset: 300,
@@ -97,7 +104,9 @@ class _QuestListState extends State<QuestList> {
               children: [
                 Expanded(
                   child: Text(
-                    "quests.quests".tr(),
+                    profileMeStore!.userData?.role == UserRole.Worker
+                        ? "quests.quests".tr()
+                        : "workers.workers".tr(),
                   ),
                 ),
                 InkWell(
@@ -170,7 +179,6 @@ class _QuestListState extends State<QuestList> {
             delegate: SliverChildListDelegate(
               [
                 const SizedBox(height: 8),
-                //if (profileMeStore!.userData!.role == UserRole.Worker)
                 _getDivider(),
                 Padding(
                   padding: const EdgeInsets.all(20.0),
@@ -222,27 +230,51 @@ class _QuestListState extends State<QuestList> {
                             ],
                           ),
                         )
-                      : ListView.separated(
-                          key: scrollKey,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          separatorBuilder: (context, index) {
-                            return _getDivider();
-                          },
-                          padding: EdgeInsets.zero,
-                          itemCount: questsStore!.searchWord.length > 2
-                              ? questsStore!.searchResultList?.length ?? 0
-                              : questsStore!.questsList?.length ?? 0,
-                          itemBuilder: (_, index) {
-                            return Observer(
-                              builder: (_) => MyQuestsItem(
-                                questsStore!.searchWord.length > 2
-                                    ? questsStore!.searchResultList![index]
-                                    : questsStore!.questsList![index],
-                                itemType: this.questItemPriorityType,
-                              ),
-                            );
-                          }),
+                      : profileMeStore!.userData?.role == UserRole.Worker
+                          ? ListView.separated(
+                              key: scrollKey,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              separatorBuilder: (context, index) {
+                                return _getDivider();
+                              },
+                              padding: EdgeInsets.zero,
+                              itemCount: questsStore!.searchWord.length > 2
+                                  ? questsStore!.searchResultList?.length ?? 0
+                                  : questsStore!.questsList?.length ?? 0,
+                              itemBuilder: (_, index) {
+                                return Observer(
+                                  builder: (_) => MyQuestsItem(
+                                    questsStore!.searchWord.length > 2
+                                        ? questsStore!.searchResultList![index]
+                                        : questsStore!.questsList![index],
+                                    itemType: this.questItemPriorityType,
+                                  ),
+                                );
+                              },
+                            )
+                          : ListView.separated(
+                              key: scrollKey,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              separatorBuilder: (context, index) {
+                                return _getDivider();
+                              },
+                              padding: EdgeInsets.zero,
+                              itemCount: questsStore!.searchWord.length > 2
+                                  ? questsStore!.searchResultList?.length ?? 0
+                                  : questsStore!.workersList?.length ?? 0,
+                              itemBuilder: (_, index) {
+                                return Observer(
+                                  builder: (_) => WorkersItem(
+                                    questsStore!.searchWord.length > 2
+                                        ? questsStore!.searchWorkersList![index]
+                                        : questsStore!.workersList![index],
+                                    questsStore!,
+                                  ),
+                                );
+                              },
+                            ),
                 ),
               ],
             ),

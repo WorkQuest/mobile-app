@@ -207,6 +207,12 @@ class ReviewsWidget extends StatelessWidget {
             ],
           ),
         ),
+        Container(
+          height: 10,
+          decoration: BoxDecoration(
+            color: Color(0xFFF7F8FA),
+          ),
+        ),
       ],
     );
   }

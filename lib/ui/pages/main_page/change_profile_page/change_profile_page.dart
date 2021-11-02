@@ -124,7 +124,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             ),
             inputBody(
               title: "labels.lastName".tr(),
-              initialValue: pageStore.userData.lastName ?? "",
+              initialValue: pageStore.userData.lastName ,
               onChanged: (text) => pageStore.userData.lastName = text,
               validator: Validators.lastNameValidator,
             ),

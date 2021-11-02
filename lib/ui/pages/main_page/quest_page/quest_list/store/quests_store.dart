@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 part 'quests_store.g.dart';
 
@@ -39,7 +41,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   );
 
   @observable
-  int priority = -1;
+  ObservableList<bool> priority = ObservableList.of(
+      List.generate(4, (index) => false),
+  );
 
   @observable
   int offset = 0;
@@ -54,13 +58,22 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   List<BaseQuestResponse>? questsList;
 
   @observable
+  List<ProfileMeResponse>? workersList;
+
+  @observable
   List<BaseQuestResponse>? searchResultList = [];
+
+  @observable
+  List<ProfileMeResponse>? searchWorkersList = [];
 
   @observable
   ObservableList<String> employmentValue = ObservableList.of([]);
 
   @observable
   ObservableList<String> workplaceValue = ObservableList.of([]);
+
+  @observable
+  ObservableList<String> priorityValue = ObservableList.of([]);
 
   @observable
   double latitude = 0.0;
@@ -89,6 +102,32 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     );
     locationPlaceName = p!.description!;
     displayPrediction(p.placeId);
+  }
+
+  @action
+  List<String> parser(List<String> skills) {
+    List<String> result = [];
+    String spec;
+    String skill;
+    int j;
+    for (int i = 0; i < skills.length; i++) {
+      j = 1;
+      spec = "";
+      skill = "";
+      while (skills[i][j] != ".") {
+        spec += skills[i][j];
+        j++;
+      }
+      j++;
+      while (j < skills[i].length - 1) {
+        skill += skills[i][j];
+        j++;
+      }
+      result.add(
+        "filters.items.$spec.sub.$skill".tr(),
+      );
+    }
+    return result;
   }
 
   @action
@@ -138,8 +177,32 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     } else if (employment[3] == false) {
       employmentValue.remove("fixedTerm");
     }
-    print("employmentValue: $employmentValue");
     return employmentValue;
+  }
+
+  @action
+  List<String> getPriorityValue() {
+    if (priority[0] == true) {
+      priorityValue.add("0");
+    } else if (priority[0] == false) {
+      priorityValue.remove("0");
+    }
+    if (priority[1] == true) {
+      priorityValue.add("1");
+    } else if (priority[1] == false) {
+      priorityValue.remove("1");
+    }
+    if (priority[2] == true) {
+      priorityValue.add("2");
+    } else if (priority[2] == false) {
+      priorityValue.remove("2");
+    }
+    if (priority[3] == true) {
+      priorityValue.add("3");
+    } else if (priority[3] == false) {
+      priorityValue.remove("3");
+    }
+    return priorityValue;
   }
 
   @action
@@ -185,6 +248,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       final loadQuestsList = await _apiProvider.getQuests(
         employment: getEmploymentValue(),
         workplace: getWorkplaceValue(),
+
         offset: this.offset,
         limit: this.limit,
         sort: this.sort,
@@ -199,6 +263,27 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future getWorkers(String userId) async {
+    try {
+      this.onLoading();
+      final loadWorkersList = await _apiProvider.getWorkers(
+        sort: this.sort,
+      );
+      if (workersList != null) {
+        this.workersList = [...this.workersList!, ...loadWorkersList];
+        this.offset += 10;
+      } else {
+        workersList = loadWorkersList;
+        this.offset += 10;
+      }
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("getWorkers error: $e\n$trace");
       this.onError(e.toString());
     }
   }

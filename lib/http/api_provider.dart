@@ -118,29 +118,38 @@ extension QuestService on ApiProvider {
 
   Future<List<BaseQuestResponse>> getEmployerQuests({
     String userId = "",
-    List<String>? workplace,
-    List<String>? employment,
+    List<String> workplace = const [],
+    List<String> employment = const [],
     int limit = 10,
     int offset = 0,
     String searchWord = "",
     int? priority,
-    int? status,
+    List<int> statuses = const [],
     String? sort,
     bool? invited,
     bool? performing,
     bool? starred,
   }) async {
     try {
+      String status = "";
+      statuses.forEach((text) {
+        status += "statuses[]=$text&";
+      });
+      String workplaces = "";
+      workplace.forEach((text) {
+        workplaces += "workplaces[]=$text&";
+      });
+      String employments = "";
+      employment.forEach((text) {
+        employments += "employments[]=$text&";
+      });
       final responseData = await _httpClient.get(
-        query: "/v1/employer/$userId/quests",
+        query: "/v1/employer/$userId/quests?$workplaces$employments$status",
         queryParameters: {
           "offset": offset,
           "limit": limit,
           if (searchWord.isNotEmpty) "q": searchWord,
           if (priority != null) "priority": priority,
-          if (workplace != null) "workplace": workplace,
-          if (employment != null) "employment": employment,
-          if (status != null) "status": status,
           //"sort": sort,
           if (invited != null) "invited": invited,
           if (performing != null) "performing": performing,
@@ -171,12 +180,16 @@ extension QuestService on ApiProvider {
     int offset = 0,
     String searchWord = "",
     int? priority,
-    int? status,
+    List<int> statuses = const [],
     String? sort,
     bool? invited,
     bool? performing,
     bool? starred,
   }) async {
+    String status = "";
+    statuses.forEach((text) {
+      status += "statuses[]=$text&";
+    });
     String workplaces = "";
     workplace.forEach((text) {
       workplaces += "workplaces[]=$text&";
@@ -186,15 +199,12 @@ extension QuestService on ApiProvider {
       employments += "employments[]=$text&";
     });
     final responseData = await _httpClient.get(
-      query: '/v1/quests?$workplaces$employments',
+      query: '/v1/quests?$workplaces$employments$status',
       queryParameters: {
         "offset": offset,
         "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
         if (priority != null) "priority": priority,
-        // if (workplace != null) "workplaces": workplace,
-        // if (employment != null) "employments": employment,
-        if (status != null) "status": status,
         //"sort": sort,
         if (invited != null) "invited": invited,
         if (performing != null) "performing": performing,
@@ -205,6 +215,25 @@ extension QuestService on ApiProvider {
     return List<BaseQuestResponse>.from(
       responseData["quests"].map(
         (x) => BaseQuestResponse.fromJson(x),
+      ),
+    );
+  }
+
+  Future<List<ProfileMeResponse>> getWorkers({
+    String searchWord = "",
+    String? sort,
+  }) async {
+    final responseData = await _httpClient.get(
+      query: '/v1/profile/workers?',
+      queryParameters: {
+        if (searchWord.isNotEmpty) "q": searchWord,
+        //"sort": sort,
+      },
+    );
+
+    return List<ProfileMeResponse>.from(
+      responseData["users"].map(
+        (x) => ProfileMeResponse.fromJson(x),
       ),
     );
   }
@@ -376,8 +405,7 @@ extension UserInfoService on ApiProvider {
       final body = {
         "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
         "firstName": userData.firstName,
-        "lastName":
-            (userData.lastName?.isNotEmpty ?? false) ? userData.lastName : null,
+        "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
         "additionalInfo": {
           "secondMobileNumber":
               (userData.additionalInfo?.secondMobileNumber?.isNotEmpty ?? false)
