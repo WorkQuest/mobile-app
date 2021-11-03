@@ -9,7 +9,6 @@ import 'package:app/ui/widgets/skill_specialization_selection/skill_specializati
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobx/mobx.dart';
@@ -32,7 +31,7 @@ class CreateQuestPage extends StatefulWidget {
 
 class _CreateQuestPageState extends State<CreateQuestPage> {
   final _formKey = GlobalKey<FormState>();
-  final _controller = SkillSpecializationController();
+  SkillSpecializationController? _controller;
   late ProfileMeStore? profile;
 
   bool isEdit = false;
@@ -40,6 +39,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   void initState() {
     super.initState();
     profile = context.read<ProfileMeStore>();
+    _controller = SkillSpecializationController();
     if (widget.questInfo != null) {
       this.isEdit = true;
       final store = context.read<CreateQuestStore>();
@@ -177,71 +177,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    Observer(
-                      builder: (context) => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "quests.runtime".tr(),
-                              ),
-                              Checkbox(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                ),
-                                value: store.hasRuntime,
-                                onChanged: store.setRuntime,
-                              ),
-                            ],
-                          ),
-                          if (store.hasRuntime)
-                            Container(
-                              height: 50,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Color(0xFFF7F8FA),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(6.0),
-                                ),
-                              ),
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Text(
-                                    DateFormat("dd MMMM yyyy").format(
-                                      store.runtimeValue.toLocal(),
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  IconButton(
-                                    alignment: AlignmentDirectional.centerEnd,
-                                    onPressed: () {
-                                      modalBottomSheet(
-                                        SizedBox(
-                                          height: 250,
-                                          child: CupertinoDatePicker(
-                                            mode: CupertinoDatePickerMode.date,
-                                            minimumDate: DateTime.now(),
-                                            onDateTimeChanged:
-                                                store.setDateTime,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    icon: Icon(
-                                      Icons.calendar_today,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
                       ),
                     ),
 
@@ -437,7 +372,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           builder: (context) => ElevatedButton(
                             onPressed: () async {
                               store.skillFilters =
-                                  _controller.getSkillAndSpecialization();
+                                  _controller!.getSkillAndSpecialization();
                               if (isEdit) {
                                 if (store.canSubmitEditQuest) {
                                   if (_formKey.currentState?.validate() ??

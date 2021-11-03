@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../../../../../enums.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 extension CustomAppBar on ProfileReviewsState {
   Widget sliverAppBar() => SliverAppBar(
@@ -18,6 +19,7 @@ extension CustomAppBar on ProfileReviewsState {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
+          if (widget.info==null)
           IconButton(
             icon: Icon(
               Icons.edit,
@@ -44,7 +46,9 @@ extension CustomAppBar on ProfileReviewsState {
             fit: StackFit.expand,
             children: [
               Image.network(
-                userStore!.userData!.avatar!.url,
+                widget.info == null
+                    ? userStore!.userData!.avatar!.url
+                    : widget.info!.avatar!.url,
                 fit: BoxFit.cover,
               ),
               Positioned(
@@ -74,7 +78,9 @@ extension CustomAppBar on ProfileReviewsState {
             ],
           ),
           title: appBarTitle(
-            "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}",
+            widget.info == null
+                ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
+                : "${widget.info!.firstName} ${widget.info!.lastName}",
           ),
         ),
       );
@@ -87,7 +93,7 @@ extension ReviewsTab on ProfileReviewsState {
         ),
         portfolioStore!.reviewsList.isNotEmpty
             ? Observer(
-              builder: (_) => Column(
+                builder: (_) => Column(
                   children: [
                     for (int index = 0;
                         index < portfolioStore!.reviewsList.length;
@@ -98,7 +104,8 @@ extension ReviewsTab on ProfileReviewsState {
                         name: portfolioStore!
                                 .reviewsList[index].fromUser.firstName +
                             " " +
-                            portfolioStore!.reviewsList[index].fromUser.lastName,
+                            portfolioStore!
+                                .reviewsList[index].fromUser.lastName,
                         mark: portfolioStore!.reviewsList[index].mark,
                         userRole: UserRole.Worker.toString().split(".").last,
                         questTitle: "SPA saloon design",
@@ -106,9 +113,13 @@ extension ReviewsTab on ProfileReviewsState {
                       ),
                   ],
                 ),
-            )
+              )
             : Center(
-                child: Text("You have no reviews yet"),
+                child: Text(
+                  widget.info == null
+                      ? "quests.noReview".tr()
+                      : "quests.noReviewForOtherUser".tr(),
+                ),
               ),
       ];
 }

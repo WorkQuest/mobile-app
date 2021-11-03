@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 class WorkerProfile extends ProfileReviews {
-  WorkerProfile(ProfileMeResponse? info):super(info);
+  WorkerProfile(ProfileMeResponse? info) : super(info);
 
   @override
   _WorkerProfileState createState() => _WorkerProfileState();
@@ -22,40 +22,47 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
 
   List<Widget> questPortfolio() => [
         ///Add new portfolio
-        Container(
-          color: Colors.white,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10.0,
-            vertical: 10.0,
-          ),
-          child: OutlinedButton(
-            onPressed: () => Navigator.pushNamed(
-              context,
-              CreatePortfolioPage.routeName,
-              arguments: false,
+        if (widget.info == null)
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10.0,
+              vertical: 10.0,
             ),
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(
-                color: Colors.blueAccent.withOpacity(0.3),
+            child: OutlinedButton(
+              onPressed: () => Navigator.pushNamed(
+                context,
+                CreatePortfolioPage.routeName,
+                arguments: false,
               ),
-              padding: const EdgeInsets.symmetric(
-                vertical: 10.0,
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(
+                  color: Colors.blueAccent.withOpacity(0.3),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10.0,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "quests.addNew".tr(),
+                  ),
+                  const SizedBox(width: 5.0),
+                  const Icon(Icons.add),
+                ],
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Add new"),
-                const SizedBox(width: 5.0),
-                const Icon(Icons.add),
-              ],
-            ),
           ),
-        ),
 
         Observer(
           builder: (_) => portfolioStore!.portfolioList.isEmpty
-              ? Text("profiler.dontHavePortfolio".tr())
+              ? Center(
+                  child: Text(
+                    "profiler.dontHavePortfolioOtherUser".tr(),
+                  ),
+                )
               : Column(
                   children: [
                     for (int index = 0;
@@ -75,28 +82,47 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
         ),
       ];
 
-  List<Widget> workerWidgets() => [
+  @override
+  List<Widget> listWidgets() => [
 //_____________Skills______________/
         Padding(
           padding: const EdgeInsets.only(bottom: 5.0),
           child: Text(
-            "skills.yourSkills".tr(),
+            widget.info == null
+                ? "skills.yourSkills".tr()
+                : "skills.title".tr(),
             textAlign: TextAlign.start,
             style: style,
           ),
         ),
-        (userStore!.userData!.userSpecializations.isEmpty)
-            ? Text(
-                "skills.noSkills".tr(),
-                style: style.copyWith(
-                  color: Color(0xFF7C838D),
-                  fontWeight: FontWeight.normal,
-                ),
-              )
-            : skills(
-                skills: store.parser(userStore!.userData!.userSpecializations),
-                context: context,
-              ),
+        widget.info == null
+            ? (userStore!.userData!.userSpecializations.isEmpty)
+                ? Text(
+                    "skills.noSkills".tr(),
+                    style: style.copyWith(
+                      color: Color(0xFF7C838D),
+                      fontWeight: FontWeight.normal,
+                    ),
+                  )
+                : skills(
+                    skills:
+                        store.parser(userStore!.userData!.userSpecializations),
+                    context: context,
+                    isProfileMy: true,
+                  )
+            : (widget.info!.userSpecializations.isEmpty)
+                ? Text(
+                    "skills.noSkills".tr(),
+                    style: style.copyWith(
+                      color: Color(0xFF7C838D),
+                      fontWeight: FontWeight.normal,
+                    ),
+                  )
+                : skills(
+                    skills: store.parser(widget.info!.userSpecializations),
+                    context: context,
+                    isProfileMy: false,
+                  ),
 
         spacer,
 
@@ -104,12 +130,16 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
         Padding(
           padding: const EdgeInsets.only(bottom: 10.0),
           child: Text(
-            "About",
+            "about.about".tr(),
             style: style,
           ),
         ),
         Text(
-          userStore!.userData?.additionalInfo?.description ?? "No description",
+          widget.info == null
+              ? userStore!.userData?.additionalInfo?.description ??
+                  "modals.noDescription".tr()
+              : widget.info!.additionalInfo?.description ??
+                  "modals.noDescription".tr(),
         ),
 
         spacer,
@@ -124,23 +154,43 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
             ),
           ),
         ),
-
-        (userStore!.userData!.additionalInfo!.educations.isNotEmpty)
-            ? ListView.builder(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount:
-                    userStore!.userData!.additionalInfo!.educations.length,
-                itemBuilder: (_, index) {
-                  final education =
-                      userStore!.userData!.additionalInfo!.educations[index];
-                  return experience(
-                      place: education["place"] ?? "--",
-                      from: education["from"] ?? "--",
-                      to: education["to"] ?? "--");
-                })
-            : Text("No Information"),
+        widget.info == null
+            ? (userStore!.userData!.additionalInfo!.educations.isNotEmpty)
+                ? ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount:
+                        userStore!.userData!.additionalInfo!.educations.length,
+                    itemBuilder: (_, index) {
+                      final education = userStore!
+                          .userData!.additionalInfo!.educations[index];
+                      return experience(
+                          place: education["place"] ?? "--",
+                          from: education["from"] ?? "--",
+                          to: education["to"] ?? "--");
+                    })
+                : Text(
+                    "profiler.noInformation".tr(),
+                  )
+            : (widget.info!.additionalInfo!.educations.isNotEmpty)
+                ? ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: widget.info!.additionalInfo!.educations.length,
+                    itemBuilder: (_, index) {
+                      final education =
+                          widget.info!.additionalInfo!.educations[index];
+                      return experience(
+                          place: education["place"] ?? "--",
+                          from: education["from"] ?? "--",
+                          to: education["to"] ?? "--");
+                    },
+                  )
+                : Text(
+                    "profiler.noInformation".tr(),
+                  ),
 
         spacer,
 
@@ -154,28 +204,51 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
             ),
           ),
         ),
-        (userStore!.userData!.additionalInfo!.workExperiences.isNotEmpty)
-            ? ListView.builder(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount:
-                    userStore!.userData!.additionalInfo!.workExperiences.length,
-                itemBuilder: (_, index) {
-                  final userExperience = userStore!
-                      .userData!.additionalInfo!.workExperiences[index];
-                  return experience(
-                      place: userExperience["place"] ?? "--",
-                      from: userExperience["from"] ?? "--",
-                      to: userExperience["to"] ?? "--");
-                })
-            : Text(
-                "No Information",
-                style: style.copyWith(
-                  color: Color(0xFF7C838D),
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
+        widget.info == null
+            ? (userStore!.userData!.additionalInfo!.workExperiences.isNotEmpty)
+                ? ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: userStore!
+                        .userData!.additionalInfo!.workExperiences.length,
+                    itemBuilder: (_, index) {
+                      final userExperience = userStore!
+                          .userData!.additionalInfo!.workExperiences[index];
+                      return experience(
+                          place: userExperience["place"] ?? "--",
+                          from: userExperience["from"] ?? "--",
+                          to: userExperience["to"] ?? "--");
+                    })
+                : Text(
+                    "profiler.noInformation".tr(),
+                    style: style.copyWith(
+                      color: Color(0xFF7C838D),
+                      fontWeight: FontWeight.normal,
+                    ),
+                  )
+            : (widget.info!.additionalInfo!.workExperiences.isNotEmpty)
+                ? ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount:
+                        widget.info!.additionalInfo!.workExperiences.length,
+                    itemBuilder: (_, index) {
+                      final userExperience =
+                          widget.info!.additionalInfo!.workExperiences[index];
+                      return experience(
+                          place: userExperience["place"] ?? "--",
+                          from: userExperience["from"] ?? "--",
+                          to: userExperience["to"] ?? "--");
+                    })
+                : Text(
+                    "profiler.noInformation".tr(),
+                    style: style.copyWith(
+                      color: Color(0xFF7C838D),
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
       ];
 
   List<Widget> rateWidgets() => [

@@ -46,34 +46,52 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
   late UserRole role;
 
   void initState() {
-    widget.info;
     super.initState();
     _tabController = TabController(vsync: this, length: 2);
-    userStore = context.read<ProfileMeStore>();
     portfolioStore = context.read<PortfolioStore>();
     myQuests = context.read<MyQuestStore>();
-    role = userStore!.userData?.role ?? UserRole.Employer;
+    userStore = context.read<ProfileMeStore>();
+    if (widget.info == null) {
+      role = userStore!.userData?.role ?? UserRole.Worker;
 
-    userStore!.getProfileMe().then((value) {
-      setState(() => role = userStore!.userData!.role);
-      myQuests!.getQuests(userStore!.userData!.id, role);
-    });
+      userStore!.getProfileMe().then((value) {
+        setState(() => role = userStore!.userData!.role);
+        myQuests!.getQuests(userStore!.userData!.id, role);
+      });
 
-    if (userStore!.userData!.role == UserRole.Worker)
-      portfolioStore!.getPortfolio(
+      if (role == UserRole.Worker)
+        portfolioStore!.getPortfolio(
+          userId: userStore!.userData!.id,
+        );
+      portfolioStore!.getReviews(
         userId: userStore!.userData!.id,
       );
-    portfolioStore!.getReviews(
-      userId: userStore!.userData!.id,
-    );
-    print("TAG: ${portfolioStore!.reviewsList}");
+    } else {
+      role = widget.info?.role ?? UserRole.Worker;
+
+      userStore!.getProfileMe().then((value) {
+        setState(() => role = widget.info!.role);
+        myQuests!.getQuests(widget.info!.id, role);
+      });
+
+      if (role == UserRole.Worker)
+        portfolioStore!.getPortfolio(
+          userId: widget.info!.id,
+        );
+      portfolioStore!.getReviews(
+        userId: widget.info!.id,
+      );
+    }
   }
 
-  @protected
-  List<Widget> workerWidgets() => [];
+  // @protected
+  // List<Widget> workerWidgets() => [];
+  //
+  // @protected
+  // List<Widget> employerWidgets() => [];
 
   @protected
-  List<Widget> employerWidgets() => [];
+  List<Widget> listWidgets() => [];
 
   @protected
   List<Widget> questPortfolio() => [];
@@ -117,26 +135,35 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: userStore.userData!.role == UserRole.Worker
-                        ? workerWidgets()
-                        : employerWidgets(),
+                    children: listWidgets()
+                // role != UserRole.Worker
+                //         ? workerWidgets()
+                //         : employerWidgets(),
                   ),
 
                   ///Social Accounts
                   socialAccounts(
-                    socialNetwork:
-                        userStore.userData?.additionalInfo?.socialNetwork,
+                    socialNetwork: widget.info == null
+                        ? userStore.userData?.additionalInfo?.socialNetwork
+                        : widget.info!.additionalInfo?.socialNetwork,
                   ),
 
                   ///Contact Details
                   contactDetails(
-                    location:
-                        userStore.userData?.additionalInfo?.address ?? ' ',
-                    number: userStore.userData?.phone ?? " ",
-                    secondNumber: userStore
-                            .userData?.additionalInfo?.secondMobileNumber ??
-                        "",
-                    email: userStore.userData?.email ?? " ",
+                    location: widget.info == null
+                        ? userStore.userData?.additionalInfo?.address ?? ' '
+                        : widget.info!.additionalInfo?.address ?? " ",
+                    number: widget.info == null
+                        ? userStore.userData?.phone ?? " "
+                        : widget.info!.phone ?? " ",
+                    secondNumber: widget.info == null
+                        ? userStore
+                                .userData?.additionalInfo?.secondMobileNumber ??
+                            ""
+                        : widget.info!.additionalInfo?.secondMobileNumber ?? "",
+                    email: widget.info == null
+                        ? userStore.userData?.email ?? " "
+                        : widget.info!.email ?? " ",
                   ),
                   spacer,
                 ],

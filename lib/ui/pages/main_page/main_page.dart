@@ -27,7 +27,7 @@ class MainPage extends StatelessWidget {
   late final List<_TabBarIconData> _tabBarIconsData = [
     _TabBarIconData(
       'assets/list_alt.svg',
-      role == UserRole.Employer ? 'quests.quests'.tr() : "ui.workers".tr(),
+      role == UserRole.Worker ? 'quests.quests'.tr() : "ui.workers".tr(),
     ),
     _TabBarIconData(
       'assets/list.svg',

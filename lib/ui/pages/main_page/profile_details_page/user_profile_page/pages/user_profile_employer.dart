@@ -7,10 +7,7 @@ import 'package:flutter/material.dart';
 import '../../../../../../enums.dart';
 
 class EmployerProfile extends ProfileReviews {
-
-  EmployerProfile(ProfileMeResponse? info):super(info);
-  //final ProfileMeResponse? questInfo;
-   //EmployerProfile(this.questInfo):super(questInfo: questInfo);
+  EmployerProfile(ProfileMeResponse? info) : super(info);
 
   @override
   _EmployerProfileState createState() => _EmployerProfileState();
@@ -18,7 +15,6 @@ class EmployerProfile extends ProfileReviews {
 
 class _EmployerProfileState extends ProfileReviewsState<ProfileReviews> {
   final String tabTitle = "profiler.sidebar.quests".tr();
-
 
   List<Widget> questPortfolio() => [
         SizedBox(
@@ -37,11 +33,15 @@ class _EmployerProfileState extends ProfileReviewsState<ProfileReviews> {
               ),
       ];
 
-  List<Widget> employerWidgets() => [
+  @override
+  List<Widget> listWidgets() => [
 //_____________About______________/
         Text(
-          userStore!.userData?.additionalInfo?.description ??
-              "modals.noDescription".tr(),
+          widget.info == null
+              ? userStore!.userData?.additionalInfo?.description ??
+                  "modals.noDescription".tr()
+              : widget.info!.additionalInfo?.description ??
+                  "modals.noDescription".tr(),
         ),
       ];
 }

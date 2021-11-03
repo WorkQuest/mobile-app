@@ -68,14 +68,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   String priority = "quests.priority.low".tr();
 
   @observable
-  bool hasRuntime = false;
-
-  @observable
-  DateTime runtimeValue = DateTime.now().add(
-    Duration(days: 1),
-  );
-
-  @observable
   String dateTime = '';
 
   @observable
@@ -112,12 +104,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @action
   void setQuestTitle(String value) => questTitle = value;
-
-  @action
-  void setRuntime(bool? value) => hasRuntime = value!;
-
-  @action
-  void setDateTime(DateTime value) => runtimeValue = value;
 
   @action
   void setAboutQuest(String value) => description = value;

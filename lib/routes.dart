@@ -270,6 +270,7 @@ class Routes {
         );
 
       case ProfileReviews.routeName:
+        bool isViewProfile = settings.arguments != null;
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
             providers: [
@@ -285,7 +286,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: role == UserRole.Worker
+              child: (role== UserRole.Worker||isViewProfile)
                   ? WorkerProfile(settings.arguments as ProfileMeResponse?)
                   : EmployerProfile(settings.arguments as ProfileMeResponse?),
             ),

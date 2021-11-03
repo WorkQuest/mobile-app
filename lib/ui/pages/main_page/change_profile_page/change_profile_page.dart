@@ -124,7 +124,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             ),
             inputBody(
               title: "labels.lastName".tr(),
-              initialValue: pageStore.userData.lastName ,
+              initialValue: pageStore.userData.lastName,
               onChanged: (text) => pageStore.userData.lastName = text,
               validator: Validators.lastNameValidator,
             ),
@@ -287,7 +287,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
   Widget fieldForWorker() {
     return Column(
       children: <Widget>[
-        SkillSpecializationSelection(controller: _controller),
+        SkillSpecializationSelection(
+          controller: _controller,
+          data: pageStore.userData.userSpecializations,
+        ),
         dropDownMenu(
           title: "settings.priority".tr(),
           value: profile!.priority,

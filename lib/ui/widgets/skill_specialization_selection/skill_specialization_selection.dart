@@ -5,8 +5,9 @@ import 'package:easy_localization/easy_localization.dart';
 
 class SkillSpecializationSelection extends StatefulWidget {
   final SkillSpecializationController? controller;
+  final List<String>? data;
 
-  SkillSpecializationSelection({this.controller});
+  SkillSpecializationSelection({this.controller, this.data});
 
   @override
   _SkillSpecializationSelectionState createState() =>
@@ -21,7 +22,11 @@ class _SkillSpecializationSelectionState
 
   @override
   void initState() {
-    if (widget.controller != null) widget.controller!.setStore(store);
+    if (widget.controller != null)
+      widget.controller!.setStore(
+        this.store,
+        this.widget.data,
+      );
     super.initState();
   }
 
@@ -288,14 +293,22 @@ class _SkillSpecializationSelectionState
 
 class SkillSpecializationController {
   SkillSpecializationStore? store;
-  final Map<String, List<String>>? initialValue;
+  List<String>? initialValue;
 
   SkillSpecializationController({this.initialValue});
 
-  setStore(SkillSpecializationStore s) {
-    store = s;
-    if (this.initialValue != null) {
-      // store.selectedSkills
+  setStore(SkillSpecializationStore store, List<String>? initialValue) {
+    this.store = store;
+    if (initialValue != null) {
+      store.numberOfSpices = 0;
+      initialValue.forEach((item) {
+
+      //   store.numberOfFiled.add(KnowledgeWork(
+      //     dateFrom: item["from"] ?? "",
+      //     dateTo: item["to"] ?? "",
+      //     place: item["place"] ?? "",
+      //   ));
+      });
     }
   }
 
@@ -304,12 +317,10 @@ class SkillSpecializationController {
     if (store != null) {
       for (final index in store!.selectedSpices.keys) {
         for (int i = 0; i < (store!.selectedSkills[index]?.length ?? 0); i++)
-          genMap.add(
-            "${int.parse(store!.selectedSkills[index]![i]) ~/ 100}" +
-                ".${int.parse(store!.selectedSkills[index]![i])}"
-          );
+          genMap.add("${int.parse(store!.selectedSkills[index]![i]) ~/ 100}" +
+              ".${int.parse(store!.selectedSkills[index]![i])}");
       }
     }
     return genMap;
   }
- }
+}

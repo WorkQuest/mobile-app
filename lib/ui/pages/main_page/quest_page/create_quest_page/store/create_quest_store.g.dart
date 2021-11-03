@@ -129,36 +129,6 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
-  final _$hasRuntimeAtom = Atom(name: '_CreateQuestStore.hasRuntime');
-
-  @override
-  bool get hasRuntime {
-    _$hasRuntimeAtom.reportRead();
-    return super.hasRuntime;
-  }
-
-  @override
-  set hasRuntime(bool value) {
-    _$hasRuntimeAtom.reportWrite(value, super.hasRuntime, () {
-      super.hasRuntime = value;
-    });
-  }
-
-  final _$runtimeValueAtom = Atom(name: '_CreateQuestStore.runtimeValue');
-
-  @override
-  DateTime get runtimeValue {
-    _$runtimeValueAtom.reportRead();
-    return super.runtimeValue;
-  }
-
-  @override
-  set runtimeValue(DateTime value) {
-    _$runtimeValueAtom.reportWrite(value, super.runtimeValue, () {
-      super.runtimeValue = value;
-    });
-  }
-
   final _$dateTimeAtom = Atom(name: '_CreateQuestStore.dateTime');
 
   @override
@@ -364,28 +334,6 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
-  void setRuntime(bool? value) {
-    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
-        name: '_CreateQuestStore.setRuntime');
-    try {
-      return super.setRuntime(value);
-    } finally {
-      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setDateTime(DateTime value) {
-    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
-        name: '_CreateQuestStore.setDateTime');
-    try {
-      return super.setDateTime(value);
-    } finally {
-      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setAboutQuest(String value) {
     final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
         name: '_CreateQuestStore.setAboutQuest');
@@ -461,8 +409,6 @@ workplace: ${workplace},
 category: ${category},
 categoryValue: ${categoryValue},
 priority: ${priority},
-hasRuntime: ${hasRuntime},
-runtimeValue: ${runtimeValue},
 dateTime: ${dateTime},
 longitude: ${longitude},
 latitude: ${latitude},

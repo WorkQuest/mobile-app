@@ -32,8 +32,11 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   @observable
   String distantWork = "Remote work".tr();
 
-  ObservableList<String> distantWorkList = ObservableList.of(
-      ["Remote work".tr(), "Work in the office".tr(), "Both options".tr()]);
+  ObservableList<String> distantWorkList = ObservableList.of([
+    "Remote work".tr(),
+    "Work in the office".tr(),
+    "Both options".tr(),
+  ]);
 
   ObservableList<String> priorityList = ObservableList.of([
     "Low".tr(),

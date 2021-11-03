@@ -92,6 +92,21 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
     });
   }
 
+  final _$mediaIdsAtom = Atom(name: '_PortfolioStore.mediaIds');
+
+  @override
+  ObservableList<Media> get mediaIds {
+    _$mediaIdsAtom.reportRead();
+    return super.mediaIds;
+  }
+
+  @override
+  set mediaIds(ObservableList<Media> value) {
+    _$mediaIdsAtom.reportWrite(value, super.mediaIds, () {
+      super.mediaIds = value;
+    });
+  }
+
   final _$mediaAtom = Atom(name: '_PortfolioStore.media');
 
   @override
@@ -192,6 +207,7 @@ title: ${title},
 description: ${description},
 portfolioList: ${portfolioList},
 reviewsList: ${reviewsList},
+mediaIds: ${mediaIds},
 media: ${media},
 canSubmit: ${canSubmit}
     ''';

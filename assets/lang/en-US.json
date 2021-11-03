@@ -84,6 +84,7 @@
     "password": "•••••••"
   },
   "about": {
+    "about": "About",
     "contact": "Contact us",
     "contented": {
       "title": "About us",
@@ -106,6 +107,7 @@
     "create": "Create an account"
   },
   "profiler": {
+    "noInformation": "No Information",
     "raiseViews": "Increase views",
     "educations": "Education",
     "prevWorkExp": "Previous professional experience",
@@ -127,6 +129,7 @@
     "reviews": "Reviews",
     "portfolio": "Portfolio",
     "dontHavePortfolio": "You do not have any  Portfolio",
+    "dontHavePortfolioOtherUser": "You do not have any  Portfolio",
     "sidebar": {
       "filter": "Filter All quests",
       "choose": "(Choose a simple category or specialized)",
@@ -311,6 +314,9 @@
     "addReview": "Add review",
     "addYourReview": "Add your review",
     "addNewReview": "Add new review",
+    "noReview": "You have no reviews yet",
+    "noReviewForOtherUser": "No reviews",
+    "addNew": "Add new",
     "reviewSent": "Review sent",
     "rateEmployer": "Rate this employer",
     "MyQuests": "My Quest",

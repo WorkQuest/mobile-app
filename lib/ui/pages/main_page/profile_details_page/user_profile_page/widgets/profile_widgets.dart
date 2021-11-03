@@ -741,62 +741,86 @@ Widget contactDetails({
 
 ///Skills widget
 
-Widget skills({required List<String>? skills, required BuildContext context}) {
+Widget skills({
+  required List<String>? skills,
+  required BuildContext context,
+  required bool isProfileMy,
+}) {
   return Wrap(
     direction: Axis.horizontal,
     spacing: 9.0,
     runSpacing: 0.0,
-    children: skills!
-        .map(
-          (item) => new ActionChip(
-            padding: EdgeInsets.symmetric(
-              vertical: 8.0,
-              horizontal: 10.0,
-            ),
-            onPressed: () => null,
-            label: Text(
-              item,
-              style: TextStyle(
-                fontSize: 16.0,
-                color: Color(0xFF0083C7),
-              ),
-            ),
-            backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
-          ),
-        )
-        .toList()
-          ..add(
-            ActionChip(
-              padding: EdgeInsets.symmetric(
-                vertical: 10.0,
-                horizontal: 10.0,
-              ),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  ChangeProfilePage.routeName,
-                );
-              },
-              label: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "settings.add".tr(),
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.white,
-                    ),
+    children: isProfileMy
+        ? (skills!
+            .map(
+              (item) => new ActionChip(
+                padding: EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 10.0,
+                ),
+                onPressed: () => null,
+                label: Text(
+                  item,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Color(0xFF0083C7),
                   ),
-                  Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ],
+                ),
+                backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
               ),
-              backgroundColor: Color(0xFF0083C7),
-            ),
-          ),
+            )
+            .toList()
+              ..add(
+                ActionChip(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 10.0,
+                    horizontal: 10.0,
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      ChangeProfilePage.routeName,
+                    );
+                  },
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "settings.add".tr(),
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                  backgroundColor: Color(0xFF0083C7),
+                ),
+              ))
+        : skills!
+            .map(
+              (item) => new ActionChip(
+                padding: EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 10.0,
+                ),
+                onPressed: () => null,
+                label: Text(
+                  item,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Color(0xFF0083C7),
+                  ),
+                ),
+                backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
+              ),
+            )
+            .toList(),
   );
 }
 
