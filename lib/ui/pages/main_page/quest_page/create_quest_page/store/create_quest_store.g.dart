@@ -9,13 +9,6 @@ part of 'create_quest_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$CreateQuestStore on _CreateQuestStore, Store {
-  Computed<String>? _$dateStringComputed;
-
-  @override
-  String get dateString =>
-      (_$dateStringComputed ??= Computed<String>(() => super.dateString,
-              name: '_CreateQuestStore.dateString'))
-          .value;
   Computed<bool>? _$canCreateQuestComputed;
 
   @override
@@ -289,13 +282,13 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   final _$mediaIdsAtom = Atom(name: '_CreateQuestStore.mediaIds');
 
   @override
-  List<String> get mediaIds {
+  ObservableList<Media> get mediaIds {
     _$mediaIdsAtom.reportRead();
     return super.mediaIds;
   }
 
   @override
-  set mediaIds(List<String> value) {
+  set mediaIds(ObservableList<Media> value) {
     _$mediaIdsAtom.reportWrite(value, super.mediaIds, () {
       super.mediaIds = value;
     });
@@ -481,7 +474,6 @@ mediaDrishya: ${mediaDrishya},
 mediaIds: ${mediaIds},
 locationPlaceName: ${locationPlaceName},
 skillFilters: ${skillFilters},
-dateString: ${dateString},
 canCreateQuest: ${canCreateQuest},
 canSubmitEditQuest: ${canSubmitEditQuest}
     ''';

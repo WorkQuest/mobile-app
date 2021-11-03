@@ -1,6 +1,7 @@
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/review.dart';
+import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
@@ -34,6 +35,9 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
 
   @observable
   ObservableList<Review> reviewsList = ObservableList();
+
+  @observable
+  ObservableList<Media> mediaIds = ObservableList();
 
   @observable
   ObservableList<DrishyaEntity> media = ObservableList();

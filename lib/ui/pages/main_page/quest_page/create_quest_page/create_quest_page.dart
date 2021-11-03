@@ -9,8 +9,10 @@ import 'package:app/ui/widgets/skill_specialization_selection/skill_specializati
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobx/mobx.dart';
 import "package:provider/provider.dart";
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -47,7 +49,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.description = widget.questInfo!.description;
       store.price = widget.questInfo!.price;
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
-      store.mediaIds = widget.questInfo!.medias.map((e) => e.id).toList();
+      store.mediaIds = ObservableList.of(widget.questInfo!.medias);
     }
   }
 
@@ -196,49 +198,47 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             ],
                           ),
                           if (store.hasRuntime)
-                            titledField(
-                              "quests.runtime".tr(),
-                              Container(
-                                height: 50,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 10,
+                            Container(
+                              height: 50,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Color(0xFFF7F8FA),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(6.0),
                                 ),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFF7F8FA),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(6.0),
+                              ),
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Text(
+                                    DateFormat("dd MMMM yyyy").format(
+                                      store.runtimeValue.toLocal(),
+                                    ),
                                   ),
-                                ),
-                                alignment: Alignment.centerLeft,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Text(
-                                      store.dateString,
-                                    ),
-                                    Spacer(),
-                                    IconButton(
-                                      alignment: AlignmentDirectional.centerEnd,
-                                      onPressed: () {
-                                        modalBottomSheet(
-                                          SizedBox(
-                                            height: 250,
-                                            child: CupertinoDatePicker(
-                                              mode:
-                                                  CupertinoDatePickerMode.date,
-                                              minimumDate: DateTime.now(),
-                                              onDateTimeChanged:
-                                                  store.setDateTime,
-                                            ),
+                                  Spacer(),
+                                  IconButton(
+                                    alignment: AlignmentDirectional.centerEnd,
+                                    onPressed: () {
+                                      modalBottomSheet(
+                                        SizedBox(
+                                          height: 250,
+                                          child: CupertinoDatePicker(
+                                            mode: CupertinoDatePickerMode.date,
+                                            minimumDate: DateTime.now(),
+                                            onDateTimeChanged:
+                                                store.setDateTime,
                                           ),
-                                        );
-                                      },
-                                      icon: Icon(
-                                        Icons.calendar_today,
-                                      ),
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(
+                                      Icons.calendar_today,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                         ],
@@ -380,7 +380,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       ),
                       child: MediaUpload(
                         mediaDrishya: store.mediaDrishya,
-                        mediaURL: widget.questInfo?.medias ?? [],
+                        mediaURL: store.mediaIds,
                       ),
                     ),
                     titledField(

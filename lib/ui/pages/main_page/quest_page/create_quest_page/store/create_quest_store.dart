@@ -4,6 +4,7 @@ import 'package:app/keys.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
+import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,21 +42,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     "Distant work",
     "Work in the office",
     "Both options".tr(),
-  ];
-
-  static List<String> months = [
-    "months.january".tr(),
-    "months.february".tr(),
-    "months.march".tr(),
-    "months.april".tr(),
-    "months.may".tr(),
-    "months.june".tr(),
-    "months.july".tr(),
-    "months.august".tr(),
-    "months.september".tr(),
-    "months.october".tr(),
-    "months.november".tr(),
-    "months.december".tr(),
   ];
 
   /// location, runtime, images and videos ,priority undone
@@ -114,7 +100,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   ObservableList<DrishyaEntity> mediaDrishya = ObservableList();
 
   @observable
-  List<String> mediaIds = [];
+  ObservableList<Media> mediaIds = ObservableList();
 
   @observable
   String locationPlaceName = '';
@@ -129,11 +115,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @action
   void setRuntime(bool? value) => hasRuntime = value!;
-
-  @computed
-  String get dateString => "${runtimeValue.year.toString()} - "
-      "${months[runtimeValue.month - 1].padLeft(2, '0')} - "
-      "${runtimeValue.day.toString().padLeft(2, '0')} ";
 
   @action
   void setDateTime(DateTime value) => runtimeValue = value;
@@ -247,7 +228,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         specializationKeys: skillFilters,
         priority: priorityList.indexOf(priority),
         location: location,
-        media: mediaIds +
+        media: mediaIds.map((e) => e.id).toList() +
             await apiProvider.uploadMedia(
               medias: mediaDrishya,
             ),

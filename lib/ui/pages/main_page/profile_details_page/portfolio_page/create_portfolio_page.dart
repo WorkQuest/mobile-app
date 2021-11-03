@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
@@ -31,7 +32,7 @@ class CreatePortfolioPage extends StatelessWidget {
     if (allowEdit) {
       store.title = store.portfolioList[store.portfolioIndex].title;
       store.description = store.portfolioList[store.portfolioIndex].description;
-      //store.media = store.portfolioList[store.portfolioIndex].medias;
+      store.mediaIds = ObservableList.of(store.portfolioList[store.portfolioIndex].medias);
     }
     return Scaffold(
       appBar: CupertinoNavigationBar(
@@ -164,8 +165,8 @@ class CreatePortfolioPage extends StatelessWidget {
                       MediaUpload(
                         mediaDrishya: store.media,
                         mediaURL: allowEdit
-                            ? store.portfolioList[store.portfolioIndex].medias
-                            : [],
+                            ?  store.mediaIds
+                            : ObservableList(),
                       )
                     ],
                   ),
