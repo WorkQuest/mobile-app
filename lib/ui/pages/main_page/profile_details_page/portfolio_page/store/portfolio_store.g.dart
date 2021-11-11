@@ -126,26 +126,29 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
       AsyncAction('_PortfolioStore.createPortfolio');
 
   @override
-  Future<void> createPortfolio() {
-    return _$createPortfolioAsyncAction.run(() => super.createPortfolio());
+  Future<void> createPortfolio({required String userId}) {
+    return _$createPortfolioAsyncAction
+        .run(() => super.createPortfolio(userId: userId));
   }
 
   final _$editPortfolioAsyncAction =
       AsyncAction('_PortfolioStore.editPortfolio');
 
   @override
-  Future<void> editPortfolio({required String portfolioId}) {
-    return _$editPortfolioAsyncAction
-        .run(() => super.editPortfolio(portfolioId: portfolioId));
+  Future<void> editPortfolio(
+      {required String portfolioId, required String userId}) {
+    return _$editPortfolioAsyncAction.run(
+        () => super.editPortfolio(portfolioId: portfolioId, userId: userId));
   }
 
   final _$deletePortfolioAsyncAction =
       AsyncAction('_PortfolioStore.deletePortfolio');
 
   @override
-  Future<void> deletePortfolio({required String portfolioId}) {
-    return _$deletePortfolioAsyncAction
-        .run(() => super.deletePortfolio(portfolioId: portfolioId));
+  Future<void> deletePortfolio(
+      {required String portfolioId, required String userId}) {
+    return _$deletePortfolioAsyncAction.run(
+        () => super.deletePortfolio(portfolioId: portfolioId, userId: userId));
   }
 
   final _$getPortfolioAsyncAction = AsyncAction('_PortfolioStore.getPortfolio');

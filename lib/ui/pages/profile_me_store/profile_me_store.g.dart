@@ -68,6 +68,23 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
     return _$get2FAStatusAsyncAction.run(() => super.get2FAStatus());
   }
 
+  final _$getQuestHolderAsyncAction =
+      AsyncAction('_ProfileMeStore.getQuestHolder');
+
+  @override
+  Future<dynamic> getQuestHolder(String userId) {
+    return _$getQuestHolderAsyncAction.run(() => super.getQuestHolder(userId));
+  }
+
+  final _$getAssignedWorkerAsyncAction =
+      AsyncAction('_ProfileMeStore.getAssignedWorker');
+
+  @override
+  Future<dynamic> getAssignedWorker(String userId) {
+    return _$getAssignedWorkerAsyncAction
+        .run(() => super.getAssignedWorker(userId));
+  }
+
   final _$changeProfileAsyncAction =
       AsyncAction('_ProfileMeStore.changeProfile');
 

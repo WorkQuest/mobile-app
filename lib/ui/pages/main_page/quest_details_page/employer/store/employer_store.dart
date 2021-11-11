@@ -24,8 +24,12 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   String selectedResponders = "";
 
   @action
-  getRespondedList(String id) async {
+  getRespondedList(String id, String idWorker) async {
     respondedList = await _apiProvider.responsesQuest(id);
+    if (respondedList != null)
+      for (int index = 0; index < (respondedList?.length ?? 0); index++)
+        if (respondedList![index].workerId== idWorker)
+          respondedList!.removeAt(index);
   }
 
   @action

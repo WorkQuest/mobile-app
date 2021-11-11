@@ -19,17 +19,17 @@ extension CustomAppBar on ProfileReviewsState {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          if (widget.info==null)
-          IconButton(
-            icon: Icon(
-              Icons.edit,
-              color: Colors.white,
+          if (widget.info == null)
+            IconButton(
+              icon: Icon(
+                Icons.edit,
+                color: Colors.white,
+              ),
+              onPressed: () =>
+                  Navigator.of(context, rootNavigator: true).pushNamed(
+                ChangeProfilePage.routeName,
+              ),
             ),
-            onPressed: () =>
-                Navigator.of(context, rootNavigator: true).pushNamed(
-              ChangeProfilePage.routeName,
-            ),
-          ),
         ],
         centerTitle: false,
         pinned: true,
@@ -108,8 +108,10 @@ extension ReviewsTab on ProfileReviewsState {
                                 .reviewsList[index].fromUser.lastName,
                         mark: portfolioStore!.reviewsList[index].mark,
                         userRole: UserRole.Worker.toString().split(".").last,
-                        questTitle: "SPA saloon design",
+                        questTitle:
+                            portfolioStore!.reviewsList[index].quest.title,
                         message: portfolioStore!.reviewsList[index].message,
+                        id: portfolioStore!.reviewsList[index].fromUserId,
                       ),
                   ],
                 ),

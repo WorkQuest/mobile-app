@@ -32,7 +32,8 @@ class CreatePortfolioPage extends StatelessWidget {
     if (allowEdit) {
       store.title = store.portfolioList[store.portfolioIndex].title;
       store.description = store.portfolioList[store.portfolioIndex].description;
-      store.mediaIds = ObservableList.of(store.portfolioList[store.portfolioIndex].medias);
+      store.mediaIds =
+          ObservableList.of(store.portfolioList[store.portfolioIndex].medias);
     }
     return Scaffold(
       appBar: CupertinoNavigationBar(
@@ -164,9 +165,7 @@ class CreatePortfolioPage extends StatelessWidget {
                       _spacer,
                       MediaUpload(
                         mediaDrishya: store.media,
-                        mediaURL: allowEdit
-                            ?  store.mediaIds
-                            : ObservableList(),
+                        mediaURL: allowEdit ? store.mediaIds : ObservableList(),
                       )
                     ],
                   ),
@@ -194,18 +193,20 @@ class CreatePortfolioPage extends StatelessWidget {
                                 ? () async {
                                     allowEdit
                                         ? store.editPortfolio(
+                                            userId: userId,
                                             portfolioId: store
                                                 .portfolioList[
                                                     store.portfolioIndex]
                                                 .id)
-                                        : store.createPortfolio();
-                                    store.getPortfolio(userId: userId);
+                                        : store.createPortfolio(
+                                            userId: userId,
+                                          );
                                     if (store.isSuccess) {
+                                      Navigator.pop(context);
                                       await successAlert(
                                         context,
-                                        "Portfolio created".tr(),
+                                        "modals.success".tr(),
                                       );
-                                      Navigator.pop(context);
                                     }
                                   }
                                 : null,

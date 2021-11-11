@@ -238,6 +238,15 @@ extension QuestService on ApiProvider {
     );
   }
 
+  Future<ProfileMeResponse> getProfileUser({
+    required String userId,
+  }) async {
+    final responseData = await _httpClient.get(
+      query: '/v1/profile/$userId',
+    );
+    return ProfileMeResponse.fromJson(responseData);
+  }
+
   Future<bool> setStar({
     required String id,
   }) async {

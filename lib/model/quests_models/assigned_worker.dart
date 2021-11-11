@@ -1,21 +1,22 @@
-import 'package:app/model/profile_response/additional_info.dart';
+import 'package:app/model/profile_response/avatar.dart';
 
 class AssignedWorker {
   AssignedWorker({
     required this.firstName,
     required this.lastName,
-    required this.additionalInfo,
+    required this.avatar,
+    required this.id,
   });
 
   String firstName;
   String lastName;
-  AdditionalInfo? additionalInfo;
+  Avatar avatar;
+  String id;
 
   factory AssignedWorker.fromJson(Map<String, dynamic> json) => AssignedWorker(
         firstName: json["firstName"],
         lastName: json["lastName"] ?? "",
-        additionalInfo: json["additionalInfo"] == null
-            ? null
-            : AdditionalInfo.fromJson(json["additionalInfo"]),
+        avatar: Avatar.fromJson(json["additionalInfo"]),
+        id: json["id"],
       );
 }

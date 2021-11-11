@@ -11,7 +11,7 @@ class PriorityView extends StatelessWidget {
     Widget returnWidget = Container();
     switch (priority) {
       case 0:
-        Container(
+        returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(
             color: Color(0xFF22CC14).withOpacity(0.1),

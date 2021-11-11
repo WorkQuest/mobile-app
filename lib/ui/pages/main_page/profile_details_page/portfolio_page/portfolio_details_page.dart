@@ -20,143 +20,151 @@ class PortfolioDetails extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Observer(
-        builder: (_) => SafeArea(
-          child: CustomScrollView(
-            slivers: [
-              CupertinoSliverNavigationBar(
-                largeTitle: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "profiler.portfolio".tr(),
-                      ),
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                        20.0,
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () async {
-                            portfolioStore.portfolioIndex = index;
-                            Navigator.of(context, rootNavigator: false)
-                                .popAndPushNamed(
-                              CreatePortfolioPage.routeName,
-                              arguments: true ,
-                            );
-                          },
-                          icon: Icon(
-                            Icons.edit,
-                            color: Theme.of(context).iconTheme.color,
+        builder: (_) =>
+            SafeArea(
+              child: CustomScrollView(
+                slivers: [
+                  CupertinoSliverNavigationBar(
+                    largeTitle: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "profiler.portfolio".tr(),
                           ),
                         ),
-                      ),
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                        20.0,
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () async {
-                            await portfolioStore.deletePortfolio(
-                              portfolioId:
-                                  portfolioStore.portfolioList[index].id,
-                            );
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(
-                            Icons.delete_forever,
-                            color: Colors.redAccent,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                            20.0,
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () async {
+                                portfolioStore.portfolioIndex = index;
+                                Navigator.of(context, rootNavigator: false)
+                                    .popAndPushNamed(
+                                  CreatePortfolioPage.routeName,
+                                  arguments: true,
+                                );
+                              },
+                              icon: Icon(
+                                Icons.edit,
+                                color: Theme
+                                    .of(context)
+                                    .iconTheme
+                                    .color,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              ///Images View
-              SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  height: 300,
-                  child: PageView(
-                    onPageChanged: portfolioStore.changePageNumber,
-                    children: portfolioStore.portfolioList[index].medias
-                        .map(
-                          (e) => Image.network(
-                            e.url,
-                            fit: BoxFit.fitHeight,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                            20.0,
                           ),
-                        )
-                        .toList(),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () async {
+                                await portfolioStore.deletePortfolio(
+                                    portfolioId:
+                                    portfolioStore.portfolioList[index].id,
+                                    userId: portfolioStore.portfolioList[index]
+                                        .userId,
+                                );
+                                Navigator.pop(context);
+                              },
+                              icon: Icon(
+                                Icons.delete_forever,
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ),
 
-              SliverPadding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                ),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    ///Image position indicator
-                    Container(
-                      alignment: Alignment.center,
-                      height: 50,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount:
+                  ///Images View
+                  SliverToBoxAdapter(
+                    child: Container(
+                      width: double.infinity,
+                      height: 300,
+                      child: PageView(
+                        onPageChanged: portfolioStore.changePageNumber,
+                        children: portfolioStore.portfolioList[index].medias
+                            .map(
+                              (e) =>
+                              Image.network(
+                                e.url,
+                                fit: BoxFit.fitHeight,
+                              ),
+                        )
+                            .toList(),
+                      ),
+                    ),
+                  ),
+
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+
+                        ///Image position indicator
+                        Container(
+                          alignment: Alignment.center,
+                          height: 50,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount:
                             portfolioStore.portfolioList[index].medias.length,
-                        itemBuilder: (_, index) => Observer(
-                          builder: (_) => index == portfolioStore.pageNumber
-                              ? _indicator(true, context)
-                              : _indicator(false, context),
+                            itemBuilder: (_, index) =>
+                                Observer(
+                                  builder: (_) =>
+                                  index == portfolioStore.pageNumber
+                                      ? _indicator(true, context)
+                                      : _indicator(false, context),
+                                ),
+                          ),
                         ),
-                      ),
-                    ),
 
-                    ///Portfolio Title
-                    Text(
-                      portfolioStore.portfolioList[index].title,
-                      style: const TextStyle(
-                        fontSize: 23,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
+                        ///Portfolio Title
+                        Text(
+                          portfolioStore.portfolioList[index].title,
+                          style: const TextStyle(
+                            fontSize: 23,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
 
-                    ///Portfolio Description
-                    Text(
-                      portfolioStore.portfolioList[index].description,
-                      // style: const TextStyle(
-                      //   fontSize: 23,
-                      //   fontWeight: FontWeight.w500,
-                      // ),
+                        ///Portfolio Description
+                        Text(
+                          portfolioStore.portfolioList[index].description,
+                          // style: const TextStyle(
+                          //   fontSize: 23,
+                          //   fontWeight: FontWeight.w500,
+                          // ),
+                        ),
+                        Text("skills.title".tr()),
+                      ]),
                     ),
-                    Text("skills.title".tr()),
-                  ]),
-                ),
-              )
-            ],
-          ),
-        ),
+                  )
+                ],
+              ),
+            ),
       ),
     );
   }
 
-  Widget _indicator(
-    bool isActive,
-    BuildContext context,
-  ) {
+  Widget _indicator(bool isActive,
+      BuildContext context,) {
     return Container(
       height: 10,
       child: AnimatedContainer(
@@ -168,23 +176,29 @@ class PortfolioDetails extends StatelessWidget {
           boxShadow: [
             isActive
                 ? BoxShadow(
-                    color: Theme.of(context).primaryColor.withOpacity(
-                          0.72,
-                        ),
-                    blurRadius: 4.0,
-                    spreadRadius: 1.0,
-                    offset: Offset(
-                      0.0,
-                      0.0,
-                    ),
-                  )
+              color: Theme
+                  .of(context)
+                  .primaryColor
+                  .withOpacity(
+                0.72,
+              ),
+              blurRadius: 4.0,
+              spreadRadius: 1.0,
+              offset: Offset(
+                0.0,
+                0.0,
+              ),
+            )
                 : BoxShadow(
-                    color: Colors.transparent,
-                  ),
+              color: Colors.transparent,
+            ),
           ],
           shape: BoxShape.circle,
           color: isActive
-              ? Theme.of(context).primaryColor.withOpacity(0.72)
+              ? Theme
+              .of(context)
+              .primaryColor
+              .withOpacity(0.72)
               : Color(0XFFEAEAEA),
         ),
       ),

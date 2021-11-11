@@ -1,3 +1,5 @@
+import 'package:app/model/quests_models/base_quest_response.dart';
+
 import 'from_user.dart';
 
 class Review {
@@ -10,6 +12,7 @@ class Review {
     required this.mark,
     required this.createdAt,
     required this.fromUser,
+    required this.quest,
     //required this.updatedAt,
   });
 
@@ -21,7 +24,7 @@ class Review {
   int mark;
   DateTime createdAt;
   FromUser fromUser;
-
+  BaseQuestResponse quest;
 
   //DateTime updatedAt;
 
@@ -34,6 +37,7 @@ class Review {
         mark: json["mark"],
         createdAt: DateTime.parse(json["createdAt"]),
         fromUser: FromUser.fromJson(json["fromUser"]),
+        quest: BaseQuestResponse.fromJson(json["quest"]),
         //updatedAt: DateTime.parse(json["updatedAt"]),
       );
 
@@ -45,6 +49,7 @@ class Review {
         "message": message,
         "mark": mark,
         "createdAt": createdAt.toIso8601String(),
+        "quest": quest,
         //"updatedAt": updatedAt.toIso8601String(),
       };
 }

@@ -20,7 +20,7 @@ abstract class ChangeProfileStoreBase with Store {
   DrishyaEntity? media;
 
   @observable
-  late String address = userData.additionalInfo?.address ?? "";
+  String address = "";
 
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
@@ -31,10 +31,10 @@ abstract class ChangeProfileStoreBase with Store {
       apiKey: Keys.googleKey,
       mode: Mode.overlay,
       logo: SizedBox(),
-      // Mode.fullscreen
     );
-    address = p!.description!;
-    displayPrediction(p.placeId);
+    if (p != null) {
+      address = p.description!;
+    }
   }
 
   @action

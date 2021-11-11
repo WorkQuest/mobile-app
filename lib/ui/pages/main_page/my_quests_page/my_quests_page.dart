@@ -29,7 +29,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
     profileMeStore.getProfileMe().then((value) {
       setState(() => role = profileMeStore.userData!.role);
       userID = profileMeStore.userData!.id;
-      myQuests!.getQuests(userID, role);
+      myQuests!.getQuests(userID, role, true);
     });
     super.initState();
   }
@@ -76,7 +76,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                       final metrics = scrollEnd.metrics;
                       if (metrics.atEdge ||
                           metrics.maxScrollExtent < metrics.pixels) {
-                        myQuests!.getQuests(userID, role);
+                        myQuests!.getQuests(userID, role, false);
                         Observer(
                           builder: (_) => Visibility(
                             visible: true,
@@ -92,7 +92,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                       onCreate: role == UserRole.Employer
                           ? (statusCreate) {
                               if (statusCreate)
-                                myQuests!.getQuests(userID, role);
+                                myQuests!.getQuests(userID, role, false);
                             }
                           : null,
                     ),
@@ -104,7 +104,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                       final metrics = scrollEnd.metrics;
                       if (metrics.atEdge ||
                           metrics.maxScrollExtent < metrics.pixels) {
-                        myQuests!.getQuests(userID, role);
+                        myQuests!.getQuests(userID, role, false);
                         Observer(
                           builder: (_) => Visibility(
                             visible: true,
@@ -135,7 +135,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                       final metrics = scrollEnd.metrics;
                       if (metrics.atEdge ||
                           metrics.maxScrollExtent < metrics.pixels) {
-                        myQuests!.getQuests(userID, role);
+                        myQuests!.getQuests(userID, role, false);
                         Observer(
                           builder: (_) => Visibility(
                             visible: true,
@@ -160,7 +160,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                         final metrics = scrollEnd.metrics;
                         if (metrics.atEdge ||
                             metrics.maxScrollExtent < metrics.pixels) {
-                          myQuests!.getQuests(userID, role);
+                          myQuests!.getQuests(userID, role, false);
                           Observer(
                             builder: (_) => Visibility(
                               visible: true,

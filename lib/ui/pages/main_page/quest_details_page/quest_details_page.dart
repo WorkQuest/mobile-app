@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:app/utils/utils.dart';
@@ -71,28 +74,44 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     ? Text(
                         "quests.yourQuest".tr(),
                       )
-                    : Container(
-                        alignment: Alignment.topLeft,
-                        child: Wrap(
-                          alignment: WrapAlignment.start,
-                          runAlignment: WrapAlignment.start,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Image.network(
-                                widget.questInfo.user.avatar.url,
-                                width: 30,
-                                height: 30,
-                                fit: BoxFit.cover,
+                    : GestureDetector(
+                        // onTap: () {},
+                        onTap: () async {
+                          profile!.getQuestHolder(widget.questInfo.userId);
+                          Timer.periodic(Duration(milliseconds: 100), (timer) {
+                            if (profile!.questHolder?.id != null) {
+                              timer.cancel();
+                              Navigator.of(context, rootNavigator: true)
+                                  .pushNamed(
+                                ProfileReviews.routeName,
+                                arguments: profile!.questHolder,
+                              );
+                            }
+                          });
+                        },
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          child: Wrap(
+                            alignment: WrapAlignment.start,
+                            runAlignment: WrapAlignment.start,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.network(
+                                  widget.questInfo.user.avatar.url,
+                                  width: 30,
+                                  height: 30,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
+                              const SizedBox(width: 10),
+                              Text(
+                                "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                 Row(

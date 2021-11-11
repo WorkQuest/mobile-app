@@ -54,7 +54,9 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   }
 
   @action
-  Future<void> createPortfolio() async {
+  Future<void> createPortfolio({
+    required String userId,
+  }) async {
     try {
       this.onLoading();
       await _apiProvider.addPortfolio(
@@ -64,6 +66,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
           medias: media,
         ),
       );
+      await getPortfolio(userId: userId);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
@@ -73,6 +76,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   @action
   Future<void> editPortfolio({
     required String portfolioId,
+    required String userId,
   }) async {
     try {
       this.onLoading();
@@ -84,6 +88,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
           medias: media,
         ),
       );
+      await getPortfolio(userId: userId);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
@@ -93,12 +98,14 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   @action
   Future<void> deletePortfolio({
     required String portfolioId,
+    required String userId,
   }) async {
     try {
       this.onLoading();
       await _apiProvider.deletePortfolio(
         portfolioId: portfolioId,
       );
+      await getPortfolio(userId: userId);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

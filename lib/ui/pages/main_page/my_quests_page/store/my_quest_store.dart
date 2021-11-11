@@ -35,22 +35,22 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   int status = -1;
 
   @observable
-  ObservableList<BaseQuestResponse>? active;
+  ObservableList<BaseQuestResponse> active = ObservableList.of([]);
 
   @observable
-  ObservableList<BaseQuestResponse>? starred;
+  ObservableList<BaseQuestResponse> starred = ObservableList.of([]);
 
   @observable
-  ObservableList<BaseQuestResponse>? performed;
+  ObservableList<BaseQuestResponse> performed = ObservableList.of([]);
 
   @observable
-  ObservableList<BaseQuestResponse>? requested;
+  ObservableList<BaseQuestResponse> requested = ObservableList.of([]);
 
   @observable
-  ObservableList<Responded?>? responded;
+  ObservableList<Responded?> responded = ObservableList.of([]);
 
   @observable
-  ObservableList<BaseQuestResponse>? invited;
+  ObservableList<BaseQuestResponse> invited = ObservableList.of([]);
 
   @observable
   List<BitmapDescriptor> iconsMarker = [];
@@ -59,66 +59,79 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   BaseQuestResponse? selectQuestInfo;
 
   @action
-  Future getQuests(String userId, UserRole role) async {
+  Future getQuests(String userId, UserRole role, bool createNewList) async {
     try {
       this.onLoading();
+      if (createNewList) {
+        this.offset = 0;
+        active.clear();
+        starred.clear();
+        performed.clear();
+        requested.clear();
+        responded.clear();
+        invited.clear();
+      }
       if (role == UserRole.Employer) {
-        active = ObservableList.of(
+        active.addAll(ObservableList.of(
           await _apiProvider.getEmployerQuests(
             userId: userId,
+            offset: this.offset,
             statuses: [0, 1, 3, 5],
           ),
-        );
+        ));
 
-        requested = ObservableList.of(
+        requested.addAll(ObservableList.of(
           await _apiProvider.getEmployerQuests(
             userId: userId,
             statuses: [4],
+            offset: this.offset,
           ),
-        );
+        ));
 
-        performed = ObservableList.of(
+        performed.addAll(ObservableList.of(
           await _apiProvider.getEmployerQuests(
             userId: userId,
             statuses: [6],
+            offset: this.offset,
           ),
-        );
+        ));
       } else {
-        active = ObservableList.of(
+        active.addAll(ObservableList.of(
           await _apiProvider.getQuests(
             offset: this.offset,
             limit: this.limit,
             performing: true,
             statuses: [1, 3, 5],
           ),
-        );
+        ));
 
-        starred = ObservableList.of(
+        starred.addAll(ObservableList.of(
           await _apiProvider.getQuests(
             offset: this.offset,
             limit: this.limit,
             starred: true,
           ),
-        );
+        ));
 
-        invited = ObservableList.of(
+        invited.addAll(ObservableList.of(
           await _apiProvider.getQuests(
             offset: this.offset,
             limit: this.limit,
             performing: true,
             statuses: [4],
           ),
-        );
+        ));
 
-        performed = ObservableList.of(
+        performed.addAll(ObservableList.of(
           await _apiProvider.getQuests(
             offset: this.offset,
             limit: this.limit,
             performing: true,
             statuses: [6],
           ),
-        );
+        ));
       }
+      this.offset += 10;
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");

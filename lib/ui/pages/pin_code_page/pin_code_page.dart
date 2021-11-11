@@ -107,7 +107,8 @@ class _PinCodePageState extends State<PinCodePage>
                                   builder: (buildContext, child) {
                                     return Container(
                                       margin: EdgeInsets.symmetric(
-                                          horizontal: 24.0),
+                                        horizontal: 24.0,
+                                      ),
                                       padding: EdgeInsets.only(
                                         left: offsetAnimation.value + 24.0,
                                         right: 24.0 - offsetAnimation.value,

@@ -39,7 +39,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   void initState() {
     super.initState();
     profile = context.read<ProfileMeStore>();
-    _controller = SkillSpecializationController();
     if (widget.questInfo != null) {
       this.isEdit = true;
       final store = context.read<CreateQuestStore>();
@@ -50,7 +49,10 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.price = widget.questInfo!.price;
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
       store.mediaIds = ObservableList.of(widget.questInfo!.medias);
-    }
+      _controller = SkillSpecializationController(
+          initialValue: widget.questInfo!.questSpecializations);
+    } else
+      _controller = SkillSpecializationController();
   }
 
   Widget build(context) {
@@ -126,9 +128,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         ),
                       ),
                     ),
-                    SkillSpecializationSelection(
-                      controller: _controller,
-                    ),
+                    SkillSpecializationSelection(controller: _controller),
                     titledField(
                       "quests.address".tr(),
                       Observer(
@@ -326,7 +326,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           keyboardType: TextInputType.number,
                           onChanged: store.setPrice,
                           initialValue: store.price,
-                          validator: Validators.emptyValidator,
+                          validator: Validators.zeroValidator,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(
                               RegExp(r'[0-9]'),
@@ -350,6 +350,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           await questStore.getQuests(
                             profile!.userData!.id,
                             UserRole.Employer,
+                            true,
                           );
                           Navigator.pop(context, true);
                           if (isEdit) {
@@ -373,6 +374,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             onPressed: () async {
                               store.skillFilters =
                                   _controller!.getSkillAndSpecialization();
+                              print("spices: ${store.skillFilters}");
                               if (isEdit) {
                                 if (store.canSubmitEditQuest) {
                                   if (_formKey.currentState?.validate() ??

@@ -192,6 +192,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   Future<BaseQuestResponse> getQuest(String questId) async {
     return await apiProvider.getQuest(
       id: questId,
+
     );
   }
 

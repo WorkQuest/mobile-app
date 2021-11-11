@@ -21,7 +21,6 @@ class BaseQuestResponse {
     required this.adType,
     required this.createdAt,
     required this.star,
-    required this.response,
     required this.locationPlaceName,
     required this.assignedWorker,
     required this.employment,
@@ -46,7 +45,6 @@ class BaseQuestResponse {
   int adType;
   DateTime createdAt;
   bool star;
-  bool response;
   AssignedWorker? assignedWorker;
   String employment;
   List<String> questSpecializations;
@@ -73,7 +71,6 @@ class BaseQuestResponse {
       adType: json["adType"],
       createdAt: DateTime.parse(json["createdAt"]),
       star: json["star"] == null ? false : true,
-      response: json["response"] == null ? false : true,
       assignedWorker: json["assignedWorker"] == null
           ? null
           : AssignedWorker.fromJson(json["assignedWorker"]),

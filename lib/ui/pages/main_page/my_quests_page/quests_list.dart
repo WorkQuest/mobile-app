@@ -2,8 +2,10 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:mobx/mobx.dart';
 
 import '../../../../enums.dart';
 import 'my_quests_item.dart';
@@ -13,70 +15,73 @@ class QuestsList extends StatelessWidget {
 
   final Function(bool)? onCreate;
 
-  final List<BaseQuestResponse>? questsList;
+  final ObservableList<BaseQuestResponse>? questsList;
 
   final Future<dynamic>? update;
 
   final ScrollPhysics physics;
 
   const QuestsList(this.questItemPriorityType, this.questsList,
-
-      {this.onCreate, this.update,this.physics = const AlwaysScrollableScrollPhysics()} );
+      {this.onCreate,
+      this.update,
+      this.physics = const AlwaysScrollableScrollPhysics()});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFF7F8FA),
-      child: questsList == null
-          ? getLoadingBody()
-          : questsList!.isNotEmpty
-          ? getBody()
-          : getEmptyBody(context),
+    return Observer(
+      builder:(_)=> Container(
+        color: const Color(0xFFF7F8FA),
+        child: questsList == null
+            ? getLoadingBody()
+            : questsList!.isNotEmpty
+                ? getBody()
+                : getEmptyBody(context),
+      ),
     );
   }
 
   Widget getBody() {
-    return
-      Align(alignment: Alignment.topCenter,
-        child: ListView.builder(
-          physics: physics,
-          shrinkWrap: true,
-          itemCount: onCreate != null ? questsList!.length + 1 : questsList!
-              .length,
-          padding: EdgeInsets.zero,
-          itemBuilder: (BuildContext context, index) {
-            if (onCreate != null) if (index == 0) {
-              return Container(
-                margin: EdgeInsets.only(top: 10.0),
-                color: Colors.white,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          bool? status = await Navigator.of(context,
-                              rootNavigator: true)
-                              .pushNamed<bool>(CreateQuestPage.routeName);
-                          onCreate!(status ?? false);
-                        },
-                        child: Text(
-                          "quests.addNewQuest".tr(),
-                        ),
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ListView.builder(
+        physics: physics,
+        shrinkWrap: true,
+        itemCount:
+            onCreate != null ? questsList!.length + 1 : questsList!.length,
+        padding: EdgeInsets.zero,
+        itemBuilder: (BuildContext context, index) {
+          if (onCreate != null) if (index == 0) {
+            return Container(
+              margin: EdgeInsets.only(top: 10.0),
+              color: Colors.white,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        bool? status =
+                            await Navigator.of(context, rootNavigator: true)
+                                .pushNamed<bool>(CreateQuestPage.routeName);
+                        onCreate!(status ?? false);
+                      },
+                      child: Text(
+                        "quests.addNewQuest".tr(),
                       ),
                     ),
-                  ],
-                ),
-              );
-            }
-            return MyQuestsItem(
-              questsList![(onCreate != null) ? index - 1 : index],
-              itemType: questItemPriorityType,
+                  ),
+                ],
+              ),
             );
-          },
-        ),
-      );
+          }
+          return MyQuestsItem(
+            questsList![(onCreate != null) ? index - 1 : index],
+            itemType: questItemPriorityType,
+          );
+        },
+      ),
+    );
   }
 
   Widget getEmptyBody(BuildContext context) {
@@ -96,27 +101,26 @@ class QuestsList extends StatelessWidget {
                 ),
               ),
             ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                "assets/empty_quest_icon.svg",
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              Text(
-                "quests.youDontHaveAny".tr() +
-                    " ${questItemPriorityType
-                        .toString()
-                        .split(".")
-                        .last} " +
-                    "quests.questYet".tr(),
-              ),
-            ],
-
+          Padding(
+            padding: EdgeInsets.only(top: 20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  "assets/empty_quest_icon.svg",
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  "quests.youDontHaveAny".tr() +
+                      " ${questItemPriorityType.toString().split(".").last} " +
+                      "quests.questYet".tr(),
+                ),
+              ],
+            ),
           ),
         ],
       ),

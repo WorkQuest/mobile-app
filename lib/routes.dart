@@ -1,5 +1,4 @@
 import 'package:app/enums.dart';
-import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
@@ -270,7 +269,12 @@ class Routes {
         );
 
       case ProfileReviews.routeName:
-        bool isViewProfile = settings.arguments != null;
+        final arguments = settings.arguments as ProfileMeResponse?;
+        final isViewProfile;
+        if (settings.arguments == null)
+          isViewProfile = role ?? UserRole.Worker;
+        else
+          isViewProfile = arguments!.role;
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
             providers: [
@@ -286,9 +290,13 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: (role== UserRole.Worker||isViewProfile)
-                  ? WorkerProfile(settings.arguments as ProfileMeResponse?)
-                  : EmployerProfile(settings.arguments as ProfileMeResponse?),
+              child: (settings.arguments == null)
+                  ? role == UserRole.Worker
+                      ? WorkerProfile(arguments)
+                      : EmployerProfile(arguments)
+                  : isViewProfile == UserRole.Worker
+                      ? WorkerProfile(arguments)
+                      : EmployerProfile(arguments),
             ),
           ),
         );
@@ -449,8 +457,8 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChatRoomPage(
-                settings.arguments as ChatModel,
-                getIt.get<ProfileMeStore>().userData!.id,
+                settings.arguments as String,
+                // getIt.get<ProfileMeStore>().userData!.id,
               ),
             ),
           ),

@@ -246,6 +246,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       final loadQuestsList = await _apiProvider.getQuests(
+        statuses: [0, 1, 4],
+
         employment: getEmploymentValue(),
         workplace: getWorkplaceValue(),
 

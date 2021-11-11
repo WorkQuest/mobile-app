@@ -87,13 +87,13 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   final _$activeAtom = Atom(name: '_MyQuestStore.active');
 
   @override
-  ObservableList<BaseQuestResponse>? get active {
+  ObservableList<BaseQuestResponse> get active {
     _$activeAtom.reportRead();
     return super.active;
   }
 
   @override
-  set active(ObservableList<BaseQuestResponse>? value) {
+  set active(ObservableList<BaseQuestResponse> value) {
     _$activeAtom.reportWrite(value, super.active, () {
       super.active = value;
     });
@@ -102,13 +102,13 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   final _$starredAtom = Atom(name: '_MyQuestStore.starred');
 
   @override
-  ObservableList<BaseQuestResponse>? get starred {
+  ObservableList<BaseQuestResponse> get starred {
     _$starredAtom.reportRead();
     return super.starred;
   }
 
   @override
-  set starred(ObservableList<BaseQuestResponse>? value) {
+  set starred(ObservableList<BaseQuestResponse> value) {
     _$starredAtom.reportWrite(value, super.starred, () {
       super.starred = value;
     });
@@ -117,13 +117,13 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   final _$performedAtom = Atom(name: '_MyQuestStore.performed');
 
   @override
-  ObservableList<BaseQuestResponse>? get performed {
+  ObservableList<BaseQuestResponse> get performed {
     _$performedAtom.reportRead();
     return super.performed;
   }
 
   @override
-  set performed(ObservableList<BaseQuestResponse>? value) {
+  set performed(ObservableList<BaseQuestResponse> value) {
     _$performedAtom.reportWrite(value, super.performed, () {
       super.performed = value;
     });
@@ -132,13 +132,13 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   final _$requestedAtom = Atom(name: '_MyQuestStore.requested');
 
   @override
-  ObservableList<BaseQuestResponse>? get requested {
+  ObservableList<BaseQuestResponse> get requested {
     _$requestedAtom.reportRead();
     return super.requested;
   }
 
   @override
-  set requested(ObservableList<BaseQuestResponse>? value) {
+  set requested(ObservableList<BaseQuestResponse> value) {
     _$requestedAtom.reportWrite(value, super.requested, () {
       super.requested = value;
     });
@@ -147,13 +147,13 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   final _$respondedAtom = Atom(name: '_MyQuestStore.responded');
 
   @override
-  ObservableList<Responded?>? get responded {
+  ObservableList<Responded?> get responded {
     _$respondedAtom.reportRead();
     return super.responded;
   }
 
   @override
-  set responded(ObservableList<Responded?>? value) {
+  set responded(ObservableList<Responded?> value) {
     _$respondedAtom.reportWrite(value, super.responded, () {
       super.responded = value;
     });
@@ -162,13 +162,13 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   final _$invitedAtom = Atom(name: '_MyQuestStore.invited');
 
   @override
-  ObservableList<BaseQuestResponse>? get invited {
+  ObservableList<BaseQuestResponse> get invited {
     _$invitedAtom.reportRead();
     return super.invited;
   }
 
   @override
-  set invited(ObservableList<BaseQuestResponse>? value) {
+  set invited(ObservableList<BaseQuestResponse> value) {
     _$invitedAtom.reportWrite(value, super.invited, () {
       super.invited = value;
     });
@@ -207,8 +207,9 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   final _$getQuestsAsyncAction = AsyncAction('_MyQuestStore.getQuests');
 
   @override
-  Future<dynamic> getQuests(String userId, UserRole role) {
-    return _$getQuestsAsyncAction.run(() => super.getQuests(userId, role));
+  Future<dynamic> getQuests(String userId, UserRole role, bool createNewList) {
+    return _$getQuestsAsyncAction
+        .run(() => super.getQuests(userId, role, createNewList));
   }
 
   @override

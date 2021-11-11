@@ -6,6 +6,14 @@ class Validators {
     return null;
   }
 
+  static String? zeroValidator(dynamic text) {
+    if (text.isEmpty) {
+      return "Empty field";
+    }
+    if (int.parse(text) < 1) return "Please enter a value greater than zero";
+    return null;
+  }
+
   static String? emailValidator(String? email) {
     String p =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';

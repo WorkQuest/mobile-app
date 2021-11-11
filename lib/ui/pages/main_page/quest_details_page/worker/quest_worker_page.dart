@@ -1,7 +1,9 @@
+import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 
@@ -24,15 +26,26 @@ class QuestWorker extends QuestDetails {
 
 class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   late WorkerStore store;
+  ProfileMeStore? profile;
+  List<Responded?> respondedList = [];
+  bool responded = false;
 
   AnimationController? controller;
 
   @override
   void initState() {
     store = context.read<WorkerStore>();
+    profile = context.read<ProfileMeStore>();
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
+    respondedList.add(store.quest.value?.responded);
+    respondedList.forEach((element) {
+      if (element != null) if (element.workerId != profile!.userData!.id) {
+        store.response = true;
+        return;
+      }
+    });
     super.initState();
   }
 
@@ -78,40 +91,38 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           ),
           const SizedBox(height: 20),
           Observer(
-            builder: (_) => !store.quest.value!.response
+            builder: (_) => store.response
                 ? store.isLoading
                     ? Center(
                         child: CircularProgressIndicator(),
                       )
-                    : !store.quest.value!.response
-                        ? TextButton(
-                            onPressed: () {
-                              bottomForm(
-                                child: bottomRespond(),
-                              );
+                    : TextButton(
+                        onPressed: () {
+                          bottomForm(
+                            child: bottomRespond(),
+                          );
+                        },
+                        child: Text(
+                          "modals.sendARequest".tr(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all(
+                            Size(double.maxFinite, 43),
+                          ),
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.pressed))
+                                return Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.5);
+                              return const Color(0xFF0083C7);
                             },
-                            child: Text(
-                              "modals.sendARequest".tr(),
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            style: ButtonStyle(
-                              fixedSize: MaterialStateProperty.all(
-                                Size(double.maxFinite, 43),
-                              ),
-                              backgroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                                  if (states.contains(MaterialState.pressed))
-                                    return Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.5);
-                                  return const Color(0xFF0083C7);
-                                },
-                              ),
-                            ),
-                          )
-                        : SizedBox()
+                          ),
+                        ),
+                      )
                 : SizedBox(),
           ),
           if (store.quest.value!.status == 4)
@@ -297,7 +308,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 onPressed: store.opinion != ""
                     ? () {
                         store.sendRespondOnQuest(store.opinion);
-                        store.quest.value!.response = true;
                         Navigator.pop(context);
                         Navigator.pop(context);
                         successAlert(
@@ -350,7 +360,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         TextButton(
           onPressed: () {
             store.sendAcceptOnQuest();
-            store.quest.value!.status = 1;
             Navigator.pop(context);
             Navigator.pop(context);
             successAlert(
@@ -424,7 +433,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         TextButton(
           onPressed: () {
             store.sendCompleteWork();
-            store.quest.value!.status = 5;
             Navigator.pop(context);
             Navigator.pop(context);
             successAlert(

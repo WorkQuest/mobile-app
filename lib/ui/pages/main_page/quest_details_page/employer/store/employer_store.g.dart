@@ -44,8 +44,9 @@ mixin _$EmployerStore on _EmployerStore, Store {
       AsyncAction('_EmployerStore.getRespondedList');
 
   @override
-  Future getRespondedList(String id) {
-    return _$getRespondedListAsyncAction.run(() => super.getRespondedList(id));
+  Future getRespondedList(String id, String idWorker) {
+    return _$getRespondedListAsyncAction
+        .run(() => super.getRespondedList(id, idWorker));
   }
 
   final _$startQuestAsyncAction = AsyncAction('_EmployerStore.startQuest');

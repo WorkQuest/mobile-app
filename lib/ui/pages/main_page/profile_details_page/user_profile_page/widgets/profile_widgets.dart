@@ -1,11 +1,20 @@
+import 'dart:async';
+
 import 'package:app/model/profile_response/social_network.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../../../enums.dart';
 
 ///Portfolio Widget
 class PortfolioWidget extends StatelessWidget {
@@ -90,18 +99,24 @@ class ReviewsWidget extends StatelessWidget {
   final String userRole;
   final String questTitle;
   final String message;
+  final String id;
 
-  const ReviewsWidget({
-    required this.avatar,
-    required this.name,
-    required this.mark,
-    required this.userRole,
-    required this.questTitle,
-    required this.message,
-  });
+  const ReviewsWidget(
+      {required this.avatar,
+      required this.name,
+      required this.mark,
+      required this.userRole,
+      required this.questTitle,
+      required this.message,
+      required this.id});
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.read<ProfileMeStore>();
+    final portfolioStore = context.read<PortfolioStore>();
+    final userStore = context.read<ProfileMeStore>();
+    final questStore = context.read<MyQuestStore>();
+    final role = profile.userData!.role;
     return Column(
       children: [
         Container(
@@ -126,18 +141,44 @@ class ReviewsWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Flexible(
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(avatar),
-                  ),
-                  title: Text(
-                    name,
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  subtitle: Text(
-                    userRole,
-                    style: TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
+              GestureDetector(
+                onTap: () {
+                  profile.getAssignedWorker(id);
+                  Timer.periodic(Duration(milliseconds: 100), (timer) async {
+                    if (profile.assignedWorker != null) {
+                      timer.cancel();
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                        ProfileReviews.routeName,
+                        arguments: profile.assignedWorker,
+                      );
+                      if (role == UserRole.Worker)
+                        portfolioStore.getPortfolio(
+                          userId: userStore.userData!.id,
+                        );
+                      else
+                        questStore.getQuests(
+                            userStore.userData!.id, role, true);
+                      portfolioStore.getReviews(
+                        userId: userStore.userData!.id,
+                      );
+                    }
+                  });
+
+                },
+                child: Flexible(
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(avatar),
+                    ),
+                    title: Text(
+                      name,
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    subtitle: Text(
+                      userRole,
+                      style:
+                          TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
+                    ),
                   ),
                 ),
               ),
@@ -162,6 +203,7 @@ class ReviewsWidget extends StatelessWidget {
                           color: Color(0xFFE9EDF2),
                           size: 19.0,
                         ),
+                      const SizedBox(width: 13),
                       Text("$mark"),
                     ],
                   ),

@@ -25,6 +25,7 @@ class ChangeProfilePage extends StatefulWidget {
 class _ChangeProfilePageState extends State<ChangeProfilePage>
     with AutomaticKeepAliveClientMixin {
   ProfileMeStore? profile;
+  bool checkPermission = false;
   late ChangeProfileStore pageStore;
   final _formKey = GlobalKey<FormState>();
 
@@ -35,30 +36,14 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
 
   @override
   void initState() {
-    _controller = SkillSpecializationController();
+    profile = context.read<ProfileMeStore>();
+    pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
+    if (profile!.userData!.additionalInfo!.address != null)
+      pageStore.address = profile!.userData!.additionalInfo!.address!;
+    _controller = SkillSpecializationController(
+        initialValue: pageStore.userData.userSpecializations);
     _controllerKnowledge = KnowledgeWorkSelectionController();
     _controllerWork = KnowledgeWorkSelectionController();
-    profile = context.read<ProfileMeStore>();
-    // if (profile!.userData!.userSpecializations.isNotEmpty)
-    //   profile!.userData!.userSpecializations.forEach((element) {
-    //     _controller!.store!.selectedSkills.forEach((key, value) {
-    //       value.add(element);
-    //     });
-    //   });
-    pageStore = ChangeProfileStore(
-      ProfileMeResponse.clone(profile!.userData!),
-    );
-    gallController = GalleryController(
-      gallerySetting: const GallerySetting(
-        maximum: 1,
-        albumSubtitle: 'All',
-        requestType: RequestType.image,
-      ),
-      panelSetting: PanelSetting(
-        //topMargin: 100.0,
-        headerMaxHeight: 100.0,
-      ),
-    );
     super.initState();
   }
 
@@ -164,8 +149,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                             ),
                             Flexible(
                               child: Text(
-                                pageStore.userData.additionalInfo!.address ??
-                                    "",
+                                pageStore.address,
                                 overflow: TextOverflow.fade,
                               ),
                             ),
@@ -275,6 +259,20 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                 color: Colors.white,
               ),
               onPressed: () {
+                if (!checkPermission) {
+                  gallController = GalleryController(
+                    gallerySetting: const GallerySetting(
+                      maximum: 1,
+                      albumSubtitle: 'All',
+                      requestType: RequestType.image,
+                    ),
+                    panelSetting: PanelSetting(
+                      //topMargin: 100.0,
+                      headerMaxHeight: 100.0,
+                    ),
+                  );
+                  checkPermission = true;
+                }
                 showGallery();
               },
             ),
@@ -287,10 +285,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
   Widget fieldForWorker() {
     return Column(
       children: <Widget>[
-        SkillSpecializationSelection(
-          controller: _controller,
-          data: pageStore.userData.userSpecializations,
-        ),
+        SkillSpecializationSelection(controller: _controller),
         dropDownMenu(
           title: "settings.priority".tr(),
           value: profile!.priority,

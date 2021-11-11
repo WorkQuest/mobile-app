@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
@@ -30,7 +33,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   void initState() {
     store = context.read<EmployerStore>();
     questStore = context.read<MyQuestStore>();
-    store.getRespondedList(widget.questInfo.id);
+    store.getRespondedList(
+        widget.questInfo.id, widget.questInfo.assignedWorker?.id ?? "");
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(
       milliseconds: 500,
@@ -78,7 +82,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   message: "quests.deleteQuestMessage".tr(),
                   confirmAction: () {
                     store.deleteQuest(questId: widget.questInfo.id);
-                    widget.questInfo.status = 2;
                     Navigator.pop(context);
                     Navigator.pop(context);
                   },
@@ -129,31 +132,45 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             ),
           ),
           const SizedBox(height: 10),
-          Row(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(15),
+          GestureDetector(
+            onTap: () async {
+              profile!.getAssignedWorker(widget.questInfo.assignedWorker!.id);
+              //ждем ответ с бэка
+              Timer.periodic(Duration(milliseconds: 100), (timer) {
+                if (profile!.assignedWorker?.id != null) {
+                  timer.cancel();
+                  Navigator.of(context, rootNavigator: true).pushNamed(
+                    ProfileReviews.routeName,
+                    arguments: profile!.assignedWorker,
+                  );
+                }
+              });
+            },
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(15),
+                  ),
+                  child: Image.network(
+                    widget.questInfo.assignedWorker!.avatar.url,
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.fitHeight,
+                  ),
                 ),
-                child: Image.network(
-                  widget.questInfo.assignedWorker!.additionalInfo?.avatar.url ??
-                      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                  width: 30,
-                  height: 30,
-                  fit: BoxFit.fitHeight,
+                const SizedBox(width: 10),
+                Text(
+                  "${widget.questInfo.assignedWorker!.firstName} " +
+                      "${widget.questInfo.assignedWorker!.lastName}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                "${widget.questInfo.assignedWorker!.firstName} " +
-                    "${widget.questInfo.assignedWorker!.lastName}",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(width: 10),
-            ],
+                const SizedBox(width: 10),
+              ],
+            ),
           ),
         ],
       ),
@@ -198,15 +215,14 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 20),
-                        if (store.respondedList!.isNotEmpty)
-                          Text(
-                            "btn.responded".tr(),
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xFF1D2127),
-                              fontWeight: FontWeight.w500,
-                            ),
+                        Text(
+                          "btn.responded".tr(),
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF1D2127),
+                            fontWeight: FontWeight.w500,
                           ),
+                        ),
                         if (store.respondedList!.isNotEmpty)
                           for (final respond in store.respondedList ?? [])
                             selectableMember(respond),
@@ -244,7 +260,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                     userId: store.selectedResponders,
                                     questId: widget.questInfo.id,
                                   );
-                                  widget.questInfo.status = 4;
                                   Navigator.pop(context);
                                   successAlert(
                                     context,
@@ -336,7 +351,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   TextButton(
                     onPressed: () {
                       store.acceptCompletedWork(questId: widget.questInfo.id);
-                      widget.questInfo.status = 6;
                       Navigator.pop(context);
                       Navigator.pop(context);
                       successAlert(
@@ -368,7 +382,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   TextButton(
                     onPressed: () {
                       store.rejectCompletedWork(questId: widget.questInfo.id);
-                      widget.questInfo.status = 4;
                       Navigator.pop(context);
                       Navigator.pop(context);
                       successAlert(

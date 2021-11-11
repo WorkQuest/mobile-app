@@ -56,7 +56,7 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
 
       userStore!.getProfileMe().then((value) {
         setState(() => role = userStore!.userData!.role);
-        myQuests!.getQuests(userStore!.userData!.id, role);
+        myQuests!.getQuests(userStore!.userData!.id, role, true);
       });
 
       if (role == UserRole.Worker)
@@ -71,7 +71,7 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
 
       userStore!.getProfileMe().then((value) {
         setState(() => role = widget.info!.role);
-        myQuests!.getQuests(widget.info!.id, role);
+        myQuests!.getQuests(widget.info!.id, role, true);
       });
 
       if (role == UserRole.Worker)
@@ -83,12 +83,6 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
       );
     }
   }
-
-  // @protected
-  // List<Widget> workerWidgets() => [];
-  //
-  // @protected
-  // List<Widget> employerWidgets() => [];
 
   @protected
   List<Widget> listWidgets() => [];
@@ -136,9 +130,6 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: listWidgets()
-                // role != UserRole.Worker
-                //         ? workerWidgets()
-                //         : employerWidgets(),
                   ),
 
                   ///Social Accounts

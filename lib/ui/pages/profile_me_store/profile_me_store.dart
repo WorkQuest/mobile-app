@@ -22,6 +22,8 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   }
 
   ProfileMeResponse? userData;
+  ProfileMeResponse? questHolder;
+  ProfileMeResponse? assignedWorker;
 
   @observable
   bool? twoFAStatus;
@@ -94,6 +96,30 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     await SharedPreferences.getInstance().then((sharedPrefs) {
       twoFAStatus = sharedPrefs.getBool("2FAStatus") ?? false;
     });
+  }
+
+  @action
+  Future getQuestHolder(String userId) async {
+    try {
+      this.onLoading();
+      questHolder = await _apiProvider.getProfileUser(userId: userId);
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print(trace);
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future getAssignedWorker(String userId) async {
+    try {
+      this.onLoading();
+      assignedWorker = await _apiProvider.getProfileUser(userId: userId);
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print(trace);
+      this.onError(e.toString());
+    }
   }
 
   @action

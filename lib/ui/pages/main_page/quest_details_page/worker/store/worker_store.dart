@@ -21,6 +21,9 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   @observable
   String opinion = "";
 
+  @observable
+  bool response = false;
+
   @action
   void setOpinion(String value) => opinion = value;
 

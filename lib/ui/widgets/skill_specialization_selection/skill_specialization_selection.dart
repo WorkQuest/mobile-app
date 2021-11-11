@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/ui/widgets/skill_specialization_selection/store/skill_specialization_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -22,11 +24,12 @@ class _SkillSpecializationSelectionState
 
   @override
   void initState() {
-    if (widget.controller != null)
-      widget.controller!.setStore(
-        this.store,
-        this.widget.data,
-      );
+    Timer.periodic(Duration(microseconds: 100), (timer) {
+      if (!store.isLoading) {
+        if (widget.controller != null) widget.controller!.setStore(this.store);
+        timer.cancel();
+      }
+    });
     super.initState();
   }
 
@@ -297,17 +300,27 @@ class SkillSpecializationController {
 
   SkillSpecializationController({this.initialValue});
 
-  setStore(SkillSpecializationStore store, List<String>? initialValue) {
+  setStore(SkillSpecializationStore store) {
     this.store = store;
-    if (initialValue != null) {
-      store.numberOfSpices = 0;
-      initialValue.forEach((item) {
+    Map<int, int> equivalent = {};
 
-      //   store.numberOfFiled.add(KnowledgeWork(
-      //     dateFrom: item["from"] ?? "",
-      //     dateTo: item["to"] ?? "",
-      //     place: item["place"] ?? "",
-      //   ));
+    if (initialValue != null) {
+      print(initialValue);
+      initialValue!.forEach((text) {
+        text = text.replaceAll("(", "").replaceAll(")", "");
+        List<String> pars = text.split('.');
+        int index = int.parse(pars.first);
+        if (!equivalent.containsKey(index)) {
+          if (store.selectedSpices[store.numberOfSpices] == null) {
+            store.selectedSpices[store.numberOfSpices] =
+                store.allSpices[index - 1];
+            equivalent[index] = store.numberOfSpices;
+            store.numberOfSpices++;
+          }
+        }
+        if (!store.selectedSkills.containsKey(equivalent[index]))
+          store.selectedSkills[equivalent[index]!] = [];
+        store.selectedSkills[equivalent[index]]!.add(pars.last);
       });
     }
   }

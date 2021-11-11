@@ -39,6 +39,21 @@ mixin _$WorkerStore on _WorkerStore, Store {
     });
   }
 
+  final _$responseAtom = Atom(name: '_WorkerStore.response');
+
+  @override
+  bool get response {
+    _$responseAtom.reportRead();
+    return super.response;
+  }
+
+  @override
+  set response(bool value) {
+    _$responseAtom.reportWrite(value, super.response, () {
+      super.response = value;
+    });
+  }
+
   final _$_WorkerStoreActionController = ActionController(name: '_WorkerStore');
 
   @override
@@ -56,7 +71,8 @@ mixin _$WorkerStore on _WorkerStore, Store {
   String toString() {
     return '''
 media: ${media},
-opinion: ${opinion}
+opinion: ${opinion},
+response: ${response}
     ''';
   }
 }
