@@ -46,8 +46,10 @@ class _QuestListState extends State<QuestList> {
       context.read<ChatStore>().initialSetup(
             profileMeStore!.userData!.id,
           );
+      context.read<ChatStore>().role = profileMeStore!.userData!.role;
       profileMeStore!.userData!.role == UserRole.Worker
-          ? refreshQuest = questsStore!.getQuests(profileMeStore!.userData!.id)
+          ? refreshQuest =
+              questsStore!.getQuests(profileMeStore!.userData!.id, false)
           : refreshWorkers =
               questsStore!.getWorkers(profileMeStore!.userData!.id);
     });
@@ -192,7 +194,8 @@ class _QuestListState extends State<QuestList> {
                         ),
                       );
                       questsStore!.offset = 0;
-                      questsStore!.getQuests(profileMeStore!.userData!.id);
+                      questsStore!
+                          .getQuests(profileMeStore!.userData!.id, true);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(
@@ -241,13 +244,13 @@ class _QuestListState extends State<QuestList> {
                               padding: EdgeInsets.zero,
                               itemCount: questsStore!.searchWord.length > 2
                                   ? questsStore!.searchResultList?.length ?? 0
-                                  : questsStore!.questsList?.length ?? 0,
+                                  : questsStore!.questsList.length,
                               itemBuilder: (_, index) {
                                 return Observer(
                                   builder: (_) => MyQuestsItem(
                                     questsStore!.searchWord.length > 2
                                         ? questsStore!.searchResultList![index]
-                                        : questsStore!.questsList![index],
+                                        : questsStore!.questsList[index],
                                     itemType: this.questItemPriorityType,
                                   ),
                                 );
@@ -306,7 +309,7 @@ class _QuestListState extends State<QuestList> {
     if (controller!.position.extentAfter < 500) {
       if (questsStore != null) {
         if (questsStore!.isLoading) return;
-        questsStore!.getQuests(profileMeStore!.userData!.id);
+        questsStore!.getQuests(profileMeStore!.userData!.id, false);
       }
     }
   }
