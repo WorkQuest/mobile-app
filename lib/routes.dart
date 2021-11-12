@@ -450,19 +450,19 @@ class Routes {
           ),
         );
 
-      case ChatRoomPage.routeName:
-        return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<ChatRoomStore>(),
-            child: Directionality(
-              textDirection: checkDirection(context),
-              child: ChatRoomPage(
-                settings.arguments as String,
-                // getIt.get<ProfileMeStore>().userData!.id,
-              ),
-            ),
-          ),
-        );
+      // case ChatRoomPage.routeName:
+      //   return MaterialPageRoute(
+      //     builder: (context) => Provider(
+      //       create: (context) => getIt.get<ChatRoomStore>(),
+      //       child: Directionality(
+      //         textDirection: checkDirection(context),
+      //         child: ChatRoomPage(
+      //           settings.arguments as String,
+      //           //getIt.get<ProfileMeStore>().userData!.id,
+      //         ),
+      //       ),
+      //     ),
+      //   );
 
       case DisputePage.routeName:
         return MaterialPageRoute(
