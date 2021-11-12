@@ -140,13 +140,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$questsListAtom = Atom(name: '_QuestsStore.questsList');
 
   @override
-  List<BaseQuestResponse>? get questsList {
+  ObservableList<BaseQuestResponse> get questsList {
     _$questsListAtom.reportRead();
     return super.questsList;
   }
 
   @override
-  set questsList(List<BaseQuestResponse>? value) {
+  set questsList(ObservableList<BaseQuestResponse> value) {
     _$questsListAtom.reportWrite(value, super.questsList, () {
       super.questsList = value;
     });
@@ -242,6 +242,21 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$loadQuestsListAtom = Atom(name: '_QuestsStore.loadQuestsList');
+
+  @override
+  ObservableList<BaseQuestResponse> get loadQuestsList {
+    _$loadQuestsListAtom.reportRead();
+    return super.loadQuestsList;
+  }
+
+  @override
+  set loadQuestsList(ObservableList<BaseQuestResponse> value) {
+    _$loadQuestsListAtom.reportWrite(value, super.loadQuestsList, () {
+      super.loadQuestsList = value;
+    });
+  }
+
   final _$latitudeAtom = Atom(name: '_QuestsStore.latitude');
 
   @override
@@ -313,8 +328,8 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$getQuestsAsyncAction = AsyncAction('_QuestsStore.getQuests');
 
   @override
-  Future<dynamic> getQuests(String userId) {
-    return _$getQuestsAsyncAction.run(() => super.getQuests(userId));
+  Future<dynamic> getQuests(String userId, bool newList) {
+    return _$getQuestsAsyncAction.run(() => super.getQuests(userId, newList));
   }
 
   final _$getWorkersAsyncAction = AsyncAction('_QuestsStore.getWorkers');
@@ -399,6 +414,7 @@ searchWorkersList: ${searchWorkersList},
 employmentValue: ${employmentValue},
 workplaceValue: ${workplaceValue},
 priorityValue: ${priorityValue},
+loadQuestsList: ${loadQuestsList},
 latitude: ${latitude},
 longitude: ${longitude},
 locationPlaceName: ${locationPlaceName},

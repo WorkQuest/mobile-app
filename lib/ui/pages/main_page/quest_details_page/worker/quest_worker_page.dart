@@ -28,7 +28,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   late WorkerStore store;
   ProfileMeStore? profile;
   List<Responded?> respondedList = [];
-  bool responded = false;
 
   AnimationController? controller;
 
@@ -40,8 +39,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
     respondedList.add(store.quest.value?.responded);
+    // respondedList.map((e) => null)
     respondedList.forEach((element) {
-      if (element != null) if (element.workerId != profile!.userData!.id) {
+      if (element != null) if (element.workerId == profile!.userData!.id) {
         store.response = true;
         return;
       }
@@ -90,8 +90,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             ],
           ),
           const SizedBox(height: 20),
-          Observer(
-            builder: (_) => store.response
+         Observer(
+            builder: (_) => !store.response
                 ? store.isLoading
                     ? Center(
                         child: CircularProgressIndicator(),
