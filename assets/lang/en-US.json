@@ -36,6 +36,7 @@
     "showYourMessage": "Show your message"
   },
   "uploader": {
+    "loading": "Loading",
     "uploadText": "Upload images or videos",
     "uploadImage": "Upload images",
     "upload": "Upload",
@@ -1183,8 +1184,10 @@
     "messages": "Messages",
     "message": "Message",
     "chat": "Chat",
+    "noChats": "No chats",
     "quest": "Quest:",
-    "you": "Your username:",
+    "yourUsername": "Your username:",
+    "you": "You:",
     "invitedYou": "invited you to an quest",
     "writeYouMessage": "Write your message"
   },

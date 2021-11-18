@@ -15,27 +15,30 @@ class QuestsList extends StatelessWidget {
 
   final Function(bool)? onCreate;
 
-  final ObservableList<BaseQuestResponse>? questsList;
+  ObservableList<BaseQuestResponse> questsList = ObservableList.of([]);
 
   final Future<dynamic>? update;
 
   final ScrollPhysics physics;
 
-  const QuestsList(this.questItemPriorityType, this.questsList,
+  final bool isLoading;
+
+  QuestsList(this.questItemPriorityType, this.questsList,
       {this.onCreate,
       this.update,
-      this.physics = const AlwaysScrollableScrollPhysics()});
+      this.physics = const AlwaysScrollableScrollPhysics(),
+      required this.isLoading});
 
   @override
   Widget build(BuildContext context) {
     return Observer(
-      builder:(_)=> Container(
+      builder: (_) => Container(
         color: const Color(0xFFF7F8FA),
-        child: questsList == null
-            ? getLoadingBody()
-            : questsList!.isNotEmpty
-                ? getBody()
-                : getEmptyBody(context),
+        child: questsList.isEmpty
+            ? isLoading
+                ? getLoadingBody()
+                : getEmptyBody(context)
+            : getBody(),
       ),
     );
   }
@@ -47,7 +50,7 @@ class QuestsList extends StatelessWidget {
         physics: physics,
         shrinkWrap: true,
         itemCount:
-            onCreate != null ? questsList!.length + 1 : questsList!.length,
+            onCreate != null ? questsList.length + 1 : questsList.length,
         padding: EdgeInsets.zero,
         itemBuilder: (BuildContext context, index) {
           if (onCreate != null) if (index == 0) {
@@ -76,7 +79,7 @@ class QuestsList extends StatelessWidget {
             );
           }
           return MyQuestsItem(
-            questsList![(onCreate != null) ? index - 1 : index],
+            questsList[(onCreate != null) ? index - 1 : index],
             itemType: questItemPriorityType,
           );
         },
@@ -86,7 +89,8 @@ class QuestsList extends StatelessWidget {
 
   Widget getEmptyBody(BuildContext context) {
     return Center(
-      child: Column(
+      child: ListView(
+        shrinkWrap: true,
         children: [
           if (onCreate != null)
             Padding(

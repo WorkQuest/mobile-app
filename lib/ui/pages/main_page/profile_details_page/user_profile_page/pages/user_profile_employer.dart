@@ -23,8 +23,9 @@ class _EmployerProfileState extends ProfileReviewsState<ProfileReviews> {
         myQuests?.performed != null
             ? QuestsList(
                 QuestItemPriorityType.Performed,
-                myQuests?.performed,
+                myQuests!.performed,
                 physics: NeverScrollableScrollPhysics(),
+                isLoading: myQuests!.isLoading,
               )
             : Center(
                 child: Text(

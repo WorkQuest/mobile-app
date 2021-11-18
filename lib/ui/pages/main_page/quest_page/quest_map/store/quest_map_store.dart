@@ -51,8 +51,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   @observable
   String address = "";
 
-  GoogleMapsPlaces _places =
-      GoogleMapsPlaces(apiKey: Keys.googleKey);
+  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
   Future<Null> getPrediction(
@@ -108,11 +107,12 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
               : markerLoader!.icons[1],
           markerId: MarkerId(
             item.questId == null
-                ? item.location.latitude.toString() +
-                    item.location.longitude.toString()
+                ? item.location[0].toString() +
+                    item.location[1].toString()
                 : item.questId!,
           ),
-          position: LatLng(item.location.longitude, item.location.latitude),
+          position:
+              LatLng(56.4977100, 56.4977100),
         ),
       );
     }

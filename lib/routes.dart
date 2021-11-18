@@ -457,7 +457,7 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChatRoomPage(
-                settings.arguments as String,
+                settings.arguments as Map<String, dynamic>,
                 // getIt.get<ProfileMeStore>().userData!.id,
               ),
             ),
@@ -523,7 +523,7 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: PortfolioDetails(
-                index: settings.arguments as int,
+                arguments: settings.arguments as Map<String, dynamic>,
               ),
             ),
           ),

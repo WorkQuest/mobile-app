@@ -610,12 +610,19 @@ extension GetUploadLink on ApiProvider {
 ///Chat Service
 extension ChatsService on ApiProvider {
   Future<List<ChatModel>> getChats() async {
+    try {
     final responseData = await _httpClient.get(query: '/v1/user/me/chats');
     return List<ChatModel>.from(
       responseData["chats"].map(
         (x) => ChatModel.fromJson(x),
       ),
     );
+
+    } catch (e, stack) {
+      print("ERROR $e");
+      print("ERROR $stack");
+      return [];
+    }
   }
 
   Future<Map<String, dynamic>> getMessages({
@@ -640,6 +647,21 @@ extension ChatsService on ApiProvider {
   }) async {
     final responseData = await _httpClient.post(
       query: '/v1/chat/$chatId/send-message',
+      data: {
+        "text": text ?? "",
+        "medias": mediasId ?? [],
+      },
+    );
+    return responseData == null;
+  }
+
+  Future<bool> sendMessageToUser({
+    required String userId,
+    String? text,
+    List<String>? mediasId,
+  }) async {
+    final responseData = await _httpClient.post(
+      query: '/v1/user/$userId/send-message',
       data: {
         "text": text ?? "",
         "medias": mediasId ?? [],
@@ -732,7 +754,7 @@ extension Portfolio on ApiProvider {
         query: '/v1/user/$userId/portfolio/cases',
       );
       return List<PortfolioModel>.from(
-        responseData.map(
+        responseData["cases"].map(
           (x) => PortfolioModel.fromJson(x),
         ),
       );

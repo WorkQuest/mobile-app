@@ -1,57 +1,67 @@
-import 'package:app/model/chat_model/message_model.dart';
-import 'package:app/model/profile_response/avatar.dart';
-import 'package:mobx/mobx.dart';
+import 'package:app/model/chat_model/me_member.dart';
+import 'package:app/model/chat_model/owner.dart';
+import 'package:app/model/chat_model/star.dart';
+
+import 'message_model.dart';
 
 class ChatModel {
-  String id;
-  String name;
-  int type;
-  ChatUserModel otherMember;
-  MessageModel? lastMessage;
-  DateTime? lastMessageDate;
-  ObservableList<MessageModel>? messages;
   ChatModel({
     required this.id,
+    required this.ownerUserId,
+    required this.lastMessageId,
+    required this.lastMessageDate,
     required this.name,
     required this.type,
-    required this.otherMember,
+    required this.owner,
     required this.lastMessage,
-    required this.lastMessageDate,
+    required this.meMember,
+    required this.userMembers,
+    required this.star,
   });
+
+  String id;
+  String? ownerUserId;
+  String lastMessageId;
+  DateTime lastMessageDate;
+  String? name;
+  String type;
+  Owner? owner;
+  MessageModel? lastMessage;
+  MeMember? meMember;
+  List<Owner> userMembers;
+  Star? star;
 
   factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
         id: json["id"],
-        name: json["name"] ?? "",
+        ownerUserId: json["ownerUserId"] == null ? null : json["ownerUserId"],
+        lastMessageId: json["lastMessageId"],
+        lastMessageDate: DateTime.parse(json["lastMessageDate"]),
+        name: json["name"] == null ? null : json["name"],
         type: json["type"],
+        owner: json["owner"] == null ? null : Owner.fromJson(json["owner"]),
         lastMessage: json["lastMessage"] == null
             ? null
-            : MessageModel.fromJson(json["lastMessage"], ""),
-        otherMember: ChatUserModel.fromJson(json["members"][0]),
-        lastMessageDate: json["lastMessageDate"] == null
+            : MessageModel.fromJson(json["lastMessage"]),
+        meMember: json["meMember"] == null
             ? null
-            : DateTime.parse(json['lastMessageDate']),
+            : MeMember.fromJson(json["meMember"]),
+        userMembers: (json["userMembers"] as List<dynamic>)
+            .map((e) => Owner.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        star: json["star"] == null ? null : Star.fromJson(json["star"]),
       );
-}
 
-class ChatUserModel {
-  String id;
-  String firstName;
-  String lastName;
-  String avatarId;
-  Avatar avatar;
-  ChatUserModel({
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.avatarId,
-    required this.avatar,
-  });
-  factory ChatUserModel.fromJson(Map<String, dynamic> json) => ChatUserModel(
-        id: json["id"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
-        avatarId: json["avatarId"] ??
-            "https://decimalchain.com/_nuxt/img/image.b668d57.jpg",
-        avatar: Avatar.fromJson(json["avatar"]),
-      );
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "ownerUserId": ownerUserId,
+        "lastMessageId": lastMessageId,
+        "lastMessageDate": lastMessageDate.toIso8601String(),
+        "name": name,
+        "type": type,
+        "owner": owner == null ? null : owner!.toJson(),
+        "lastMessage": lastMessage == null ? null : lastMessage!.toJson(),
+        // "meMember": meMember.toJson(),
+        //"userMembers": userMembers.toJson(),
+        "star": star == null ? null : star!.toJson(),
+      };
 }

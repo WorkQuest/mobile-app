@@ -2,6 +2,8 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
+import 'package:app/ui/pages/main_page/chat_page/repository/conversation_repository.dart';
+import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -14,98 +16,100 @@ class ChatRoomStore extends _ChatRoomStore with _$ChatRoomStore {
 
 abstract class _ChatRoomStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
+
   _ChatRoomStore(this._apiProvider);
 
   int _count = 0;
   int _offset = 0;
   int _limit = 20;
 
+  @observable
   String _myId = "";
 
   @observable
   ChatModel? chat;
 
   @observable
-  bool isloadingMessages = false;
+  ObservableList<MessageModel> messages = ObservableList.of([]);
+
+  @observable
+  bool isLoadingMessages = false;
+
+  @observable
+  bool refresh = false;
 
   @action
-  Future loadChat(String myId) async {
-    this._myId = myId;
-    try {
-      isloadingMessages = true;
-      this.onLoading();
-      if (chat!.messages == null)
-        chat!.messages = ObservableList<MessageModel>.of([]);
-      _offset = chat!.messages!.length;
-      final responseData = await _apiProvider.getMessages(
-        chatId: chat!.id,
-        offset: 0,
-        limit: 1,
-      );
-      _count = responseData["count"];
-      isloadingMessages = false;
-      this.onSuccess(true);
-    } catch (e) {
-      isloadingMessages = false;
-      this.onError(e.toString());
-    }
+  void loadChat(String chatId) {
+    // this.onLoading();
+    // _offset = messages.length;
+    // final responseData = await _apiProvider.getMessages(
+    //   chatId: chatId,
+    //   offset: 0,
+    //   limit: 1,
+    // );
+    ConversationRepository().chats.forEach((element) {
+      if (element.chatModel!.id == chatId) {
+        chat = element.chatModel;
+        _count = element.messages.length;
+        messages = ObservableList.of(element.messages);
+      }
+    });
+
+    for (int index = 0; index < messages.length; index++)
+      if (messages[index].text == null) messages.removeAt(index);
+    // print("hello: ${chat.id}");
+    // _count = responseData["count"];
+    // chat = ChatModel.fromJson(responseData["chat"]);
   }
 
-  getMessages() async {
-    if (chat!.messages!.length >= _count) return;
-    isloadingMessages = true;
+  @action
+  getMessages(String chatId) async {
+    if (messages.length >= _count && refresh) {
+      refresh = true;
+      return;
+    }
+    isLoadingMessages = true;
     final responseData = await _apiProvider.getMessages(
-      chatId: chat!.id,
+      chatId: chatId,
       offset: _offset,
       limit: _limit,
     );
-    _count = responseData["count"];
-    // if (_count == 0) return;
 
-    // if (chat!.messages!.length >= _count) return;
-    // _offset = _count - _offset > _limit
-    //     ? _offset + _limit
-    //     : _offset == 0
-    //         ? _count
-    //         : _offset + (_count % _limit);
-    chat!.messages!.insertAll(
-      chat!.messages!.length,
+    _count = responseData["count"];
+    messages.addAll(
       List<MessageModel>.from(
         responseData["messages"].map(
-          (x) => MessageModel.fromJson(x, this._myId),
+          (x) => MessageModel.fromJson(x),
         ),
       ),
     );
-    _offset = chat!.messages!.length;
-
-    isloadingMessages = false;
+    for (int index = 0; index < messages.length; index++)
+      if (messages[index].text == null) messages.removeAt(index);
+    _offset = messages.length;
+    isLoadingMessages = false;
   }
 
   @action
-  Future sendMessage(String text) async {
+  Future sendMessage(String text, String chatId, String userId) async {
+    WebSocket().sendMessage(chatId: chatId, text: text, medias: []);
     var message = MessageModel(
-      id: "id",
-      chatId: chat!.id,
-      isMy: true,
+      id: "",
+      number: messages.length,
+      chatId: chatId,
+      senderUserId: userId,
+      senderStatus: "",
+      type: "",
       text: text,
-      senderUserId: "senderUserId",
-      updatedAt: DateTime.now(),
       createdAt: DateTime.now(),
       medias: [],
-      status: MessageStatus.Wait,
+      sender: null,
+      infoMessage: null,
+      star: null,
     );
-    chat!.messages!.insert(0, message);
-    final check = await _apiProvider.sendMessageToChat(
-      chatId: chat!.id,
-      text: text,
-    );
-
-    chat!.messages!.remove(message);
-    message.updatedAt = DateTime.now();
-    if (check)
-      message.status = MessageStatus.Send;
-    else
-      message.status = MessageStatus.Error;
-    chat!.messages!.insert(0, message);
+    // ConversationRepository().chats.forEach((element) {
+    //   if (element.chatModel!.id == chatId) {
+    messages.insert(0, message);
+    //   }
+    // });
   }
 }

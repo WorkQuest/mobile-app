@@ -3,13 +3,16 @@ import 'package:flutter_svg/svg.dart';
 
 class InputToolbar extends StatefulWidget {
   final void Function(String) onSend;
+
   InputToolbar(this.onSend);
+
   @override
   _InputToolbarState createState() => _InputToolbarState();
 }
 
 class _InputToolbarState extends State<InputToolbar> {
   TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -18,8 +21,9 @@ class _InputToolbarState extends State<InputToolbar> {
           Padding(
             padding: const EdgeInsets.only(left: 18, right: 12),
             child: InkWell(
-                onTap: () {},
-                child: SvgPicture.asset("assets/attach_media_icon.svg")),
+              onTap: () {},
+              child: SvgPicture.asset("assets/attach_media_icon.svg"),
+            ),
           ),
           Expanded(
             child: TextFormField(
@@ -46,7 +50,11 @@ class _InputToolbarState extends State<InputToolbar> {
                   },
             child: Padding(
               padding: const EdgeInsets.only(
-                  left: 14, right: 20, top: 10, bottom: 10),
+                left: 14,
+                right: 20,
+                top: 10,
+                bottom: 10,
+              ),
               child: SvgPicture.asset(
                 "assets/send_message_icon.svg",
                 color:
