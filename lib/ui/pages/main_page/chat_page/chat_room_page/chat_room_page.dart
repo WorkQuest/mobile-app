@@ -76,33 +76,33 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 print("Render ${_store.chat?.messages.first.text}");
                 return _store.isLoading
                     ? Center(child: CircularProgressIndicator())
-                    : _store.flag
-                        ? ListView(
-                            // controller: _controller,
-                            reverse: true,
-                            children: [
-                              for (final mess in _store.chat?.messages ?? [])
-                                MessageCell(
-                                  {
-                                    "message": mess,
-                                    "userId": widget.arguments["userId"]
-                                  },
-                                )
-                            ],
-                          )
-                        : ListView.builder(
-                            reverse: true,
-                            controller: _controller,
-                            itemCount: _store.chat?.messages.length ?? 0,
-                            itemBuilder: (context, index) => Observer(
-                              builder: (_) => MessageCell(
-                                {
-                                  "message": _store.chat?.messages[index],
-                                  "userId": widget.arguments["userId"]
-                                },
-                              ),
-                            ),
-                          );
+                    // : _store.flag
+                    : ListView(
+                        controller: _controller,
+                        reverse: true,
+                        children: [
+                          for (final mess in _store.chat?.messages ?? [])
+                            MessageCell(
+                              {
+                                "message": mess,
+                                "userId": widget.arguments["userId"]
+                              },
+                            )
+                        ],
+                      );
+                // : ListView.builder(
+                //     reverse: true,
+                //     controller: _controller,
+                //     itemCount: _store.chat?.messages.length ?? 0,
+                //     itemBuilder: (context, index) => Observer(
+                //       builder: (_) => MessageCell(
+                //         {
+                //           "message": _store.chat?.messages[index],
+                //           "userId": widget.arguments["userId"]
+                //         },
+                //       ),
+                //     ),
+                //   );
               }),
             ),
             InputToolbar((text) {

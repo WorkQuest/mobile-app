@@ -10,7 +10,6 @@ import "package:provider/provider.dart";
 import 'chat_room_page/chat_room_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'chat_room_page/test.dart';
 import 'dispute_page/dispute_page.dart';
 
 class ChatPage extends StatefulWidget {
@@ -137,7 +136,7 @@ class _ChatPageState extends State<ChatPage> {
           "userId": userData.userData!.id
         };
         Navigator.of(context, rootNavigator: true)
-            .pushNamed(Test.routeName, arguments: arguments);
+            .pushNamed(ChatRoomPage.routeName, arguments: arguments);
       },
       child: Column(
         children: [
