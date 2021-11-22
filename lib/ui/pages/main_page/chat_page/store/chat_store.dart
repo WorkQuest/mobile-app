@@ -14,17 +14,19 @@ part 'chat_store.g.dart';
 
 @singleton
 class ChatStore extends _ChatStore with _$ChatStore {
-  ChatStore(ApiProvider apiProvider) : super(apiProvider);
+  ChatStore(ApiProvider apiProvider, ConversationRepository repo) : super(apiProvider,repo);
 }
 
 abstract class _ChatStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
+  final ConversationRepository repo;
 
   String _myId = "";
 
   UserRole? role;
 
-  _ChatStore(this._apiProvider) {
+  _ChatStore(this._apiProvider,this.repo) {
+
     // WebSocket().setListener(this._handle);
   }
 
@@ -89,8 +91,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
     }
   }
 
+  @action
   getMessages() async {
-    int index = 0;
     chats.forEach((element) async {
       final responseData = await _apiProvider.getMessages(
         chatId: element.id,
@@ -106,8 +108,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
           ),
         ),
       );
-      ConversationRepository().getMsg(messages, element, index);
-      index++;
+      repo.setMessage(messages, element);
     });
   }
 }

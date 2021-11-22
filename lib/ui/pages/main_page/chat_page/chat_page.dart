@@ -10,6 +10,7 @@ import "package:provider/provider.dart";
 import 'chat_room_page/chat_room_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import 'chat_room_page/test.dart';
 import 'dispute_page/dispute_page.dart';
 
 class ChatPage extends StatefulWidget {
@@ -136,9 +137,7 @@ class _ChatPageState extends State<ChatPage> {
           "userId": userData.userData!.id
         };
         Navigator.of(context, rootNavigator: true)
-            .pushNamed(ChatRoomPage.routeName, arguments: arguments
-                //chatDetails.id
-                );
+            .pushNamed(Test.routeName, arguments: arguments);
       },
       child: Column(
         children: [
@@ -157,8 +156,9 @@ class _ChatPageState extends State<ChatPage> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.network(
-                      chatDetails.owner?.avatar.url ??
-                          "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                      chatDetails.userMembers[0].id != userData.userData!.id
+                          ? "${chatDetails.userMembers[0].avatar.url}"
+                          : "${chatDetails.userMembers[1].avatar.url}",
                       width: 56,
                       height: 56,
                       fit: BoxFit.cover,

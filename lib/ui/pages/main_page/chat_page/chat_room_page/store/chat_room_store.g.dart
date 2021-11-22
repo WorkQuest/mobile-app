@@ -9,6 +9,13 @@ part of 'chat_room_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ChatRoomStore on _ChatRoomStore, Store {
+  Computed<Chats?>? _$chatComputed;
+
+  @override
+  Chats? get chat => (_$chatComputed ??=
+          Computed<Chats?>(() => super.chat, name: '_ChatRoomStore.chat'))
+      .value;
+
   final _$_myIdAtom = Atom(name: '_ChatRoomStore._myId');
 
   @override
@@ -21,36 +28,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   set _myId(String value) {
     _$_myIdAtom.reportWrite(value, super._myId, () {
       super._myId = value;
-    });
-  }
-
-  final _$chatAtom = Atom(name: '_ChatRoomStore.chat');
-
-  @override
-  ChatModel? get chat {
-    _$chatAtom.reportRead();
-    return super.chat;
-  }
-
-  @override
-  set chat(ChatModel? value) {
-    _$chatAtom.reportWrite(value, super.chat, () {
-      super.chat = value;
-    });
-  }
-
-  final _$messagesAtom = Atom(name: '_ChatRoomStore.messages');
-
-  @override
-  ObservableList<MessageModel> get messages {
-    _$messagesAtom.reportRead();
-    return super.messages;
-  }
-
-  @override
-  set messages(ObservableList<MessageModel> value) {
-    _$messagesAtom.reportWrite(value, super.messages, () {
-      super.messages = value;
     });
   }
 
@@ -85,11 +62,26 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
+  final _$flagAtom = Atom(name: '_ChatRoomStore.flag');
+
+  @override
+  bool get flag {
+    _$flagAtom.reportRead();
+    return super.flag;
+  }
+
+  @override
+  set flag(bool value) {
+    _$flagAtom.reportWrite(value, super.flag, () {
+      super.flag = value;
+    });
+  }
+
   final _$getMessagesAsyncAction = AsyncAction('_ChatRoomStore.getMessages');
 
   @override
-  Future getMessages(String chatId) {
-    return _$getMessagesAsyncAction.run(() => super.getMessages(chatId));
+  Future getMessages() {
+    return _$getMessagesAsyncAction.run(() => super.getMessages());
   }
 
   final _$sendMessageAsyncAction = AsyncAction('_ChatRoomStore.sendMessage');
@@ -102,6 +94,17 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
 
   final _$_ChatRoomStoreActionController =
       ActionController(name: '_ChatRoomStore');
+
+  @override
+  void updateMessages(List<MessageModel> msg) {
+    final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
+        name: '_ChatRoomStore.updateMessages');
+    try {
+      return super.updateMessages(msg);
+    } finally {
+      _$_ChatRoomStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void loadChat(String chatId) {
@@ -117,10 +120,10 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   @override
   String toString() {
     return '''
-chat: ${chat},
-messages: ${messages},
 isLoadingMessages: ${isLoadingMessages},
-refresh: ${refresh}
+refresh: ${refresh},
+flag: ${flag},
+chat: ${chat}
     ''';
   }
 }

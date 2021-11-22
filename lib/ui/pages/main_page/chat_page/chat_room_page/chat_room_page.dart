@@ -4,6 +4,8 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+
 import "package:provider/provider.dart";
 
 class ChatRoomPage extends StatefulWidget {
@@ -17,19 +19,45 @@ class ChatRoomPage extends StatefulWidget {
 }
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
-  ChatRoomStore? _store;
+  late final ChatRoomStore _store;
   ScrollController _controller = ScrollController();
+
+  String get id => _store.chat?.chatModel.userMembers[0].id ?? "--";
+
+  String get firstName1 =>
+      _store.chat?.chatModel.userMembers[0].firstName ?? "--";
+
+  String get lastName1 =>
+      _store.chat?.chatModel.userMembers[0].lastName ?? "--";
+
+  String get firstName2 =>
+      _store.chat?.chatModel.userMembers[1].firstName ?? "--";
+
+  String get lastName2 =>
+      _store.chat?.chatModel.userMembers[1].lastName ?? "--";
+
+  String get url1 =>
+      _store.chat?.chatModel.userMembers[0].avatar.url ??
+      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs";
+
+  String get url2 =>
+      _store.chat?.chatModel.userMembers[1].avatar.url ??
+      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs";
 
   @override
   void initState() {
     _store = context.read<ChatRoomStore>();
-    _store!.loadChat(widget.arguments["chatId"]);
+    _store.idChat = widget.arguments["chatId"];
+    final _ = reaction((_) => _store.chat?.messages, (_) {
+      print("reaction reaction reaction  reaction ");
+    });
+    // ConversationRepository().store = _store;
     super.initState();
     _controller.addListener(() {
-      if (_controller.position.extentAfter < 500) if (_store !=
-          null) if (!_store!.isLoadingMessages)
-        _store!.getMessages(widget.arguments["chatId"]);
+      if (_controller.position.extentAfter < 500) if (!_store.isLoadingMessages)
+        _store.getMessages();
     });
+    _store.loadChat(widget.arguments["chatId"]);
   }
 
   @override
@@ -43,29 +71,44 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(
-              child: Observer(
-                builder: (_) => _store!.isLoading
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : Observer(
-                        builder: (_) => ListView.builder(
-                          reverse: true,
-                          controller: _controller,
-                          itemCount: _store!.messages.length,
-                          itemBuilder: (context, index) => MessageCell({
-                            "message": _store!.messages[index],
-                            "userId": widget.arguments["userId"]
-                          }),
-                        ),
-                      ),
-              ),
+            Expanded(
+              child: Observer(builder: (_) {
+                print("Render ${_store.chat?.messages.first.text}");
+                return _store.isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : _store.flag
+                        ? ListView(
+                            // controller: _controller,
+                            reverse: true,
+                            children: [
+                              for (final mess in _store.chat?.messages ?? [])
+                                MessageCell(
+                                  {
+                                    "message": mess,
+                                    "userId": widget.arguments["userId"]
+                                  },
+                                )
+                            ],
+                          )
+                        : ListView.builder(
+                            reverse: true,
+                            controller: _controller,
+                            itemCount: _store.chat?.messages.length ?? 0,
+                            itemBuilder: (context, index) => Observer(
+                              builder: (_) => MessageCell(
+                                {
+                                  "message": _store.chat?.messages[index],
+                                  "userId": widget.arguments["userId"]
+                                },
+                              ),
+                            ),
+                          );
+              }),
             ),
             InputToolbar((text) {
-              _store!.sendMessage(
+              _store.sendMessage(
                 text,
-                _store!.chat!.id,
+                _store.chat!.chatModel.id,
                 widget.arguments["userId"],
               );
             }),
@@ -90,9 +133,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       centerTitle: true,
       title: Observer(
         builder: (_) => Text(
-          widget.arguments["userId"] != _store!.chat!.userMembers[0].id
-              ? "${_store!.chat!.userMembers[0].firstName} ${_store!.chat!.userMembers[0].lastName}"
-              : "${_store!.chat!.userMembers[1].firstName} ${_store!.chat!.userMembers[1].lastName}",
+          widget.arguments["userId"] != id
+              ? "$firstName1 $lastName1"
+              : "$firstName2 $lastName2",
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -104,9 +147,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         Observer(
           builder: (_) => CircleAvatar(
             backgroundImage: NetworkImage(
-              widget.arguments["userId"] != _store!.chat!.userMembers[0].id
-                  ? _store!.chat!.userMembers[0].avatar.url
-                  : _store!.chat!.userMembers[1].avatar.url,
+              widget.arguments["userId"] != id ? url1 : url2,
             ),
             maxRadius: 20,
           ),
