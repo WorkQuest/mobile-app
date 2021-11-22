@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:app/model/chat_model/message_model.dart';
-import 'package:app/ui/pages/main_page/chat_page/repository/conversation_repository.dart';
 import 'package:app/utils/storage.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -12,6 +11,7 @@ class WebSocket {
   // setListener(Function(Map<String, dynamic> message)? messageHandler) {
   //   this._messageHandler = messageHandler;
   // }
+  void Function(MessageModel)? handlerChats;
 
   late IOWebSocketChannel _channel;
 
@@ -66,8 +66,9 @@ class WebSocket {
         message = MessageModel.fromJson(json["message"]["data"]);
       else
         message = MessageModel.fromJson(json["payload"]["result"]);
-
-      ConversationRepository().addedMsg(message);
+      if(handlerChats!=null)
+        handlerChats!(message);
+      // ConversationRepository().addedMessage(message);
       print("chatMessage: ${message.toJson()}");
     } catch (e) {
       print("WebSocket message ERROR: ${e.toString()}");

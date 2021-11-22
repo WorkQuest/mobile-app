@@ -80,6 +80,13 @@ mixin _$ChatStore on _ChatStore, Store {
     return _$loadChatsAsyncAction.run(() => super.loadChats());
   }
 
+  final _$getMessagesAsyncAction = AsyncAction('_ChatStore.getMessages');
+
+  @override
+  Future getMessages() {
+    return _$getMessagesAsyncAction.run(() => super.getMessages());
+  }
+
   @override
   String toString() {
     return '''

@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 
 class MessageCell extends StatefulWidget {
   final Map<String, dynamic> arguments;
+  // final int index;
 
-  MessageCell(this.arguments);
+  MessageCell(this.arguments,
+      // {this.index = 0}
+      );
 
   @override
   _MessageCellState createState() => _MessageCellState();
@@ -25,6 +28,7 @@ class _MessageCellState extends State<MessageCell> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      // key: Key("${widget.index}"),
       // onLongPress: ,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
