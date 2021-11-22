@@ -1,6 +1,8 @@
+import 'package:app/enums.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -19,10 +21,12 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   late ChatStore store;
+  late ProfileMeStore userData;
 
   @override
   void initState() {
     store = context.read<ChatStore>();
+    userData = context.read<ProfileMeStore>();
     super.initState();
   }
 
@@ -37,7 +41,9 @@ class _ChatPageState extends State<ChatPage> {
               largeTitle: Row(
                 children: <Widget>[
                   Expanded(
-                    child: Text("chat.chat".tr()),
+                    child: Text(
+                      "chat.chat".tr(),
+                    ),
                   ),
                   PopupMenuButton<String>(
                     elevation: 10,
@@ -45,32 +51,52 @@ class _ChatPageState extends State<ChatPage> {
                       borderRadius: BorderRadius.circular(6.0),
                     ),
                     itemBuilder: (BuildContext context) {
-                      return {
-                        "chat.favoriteMessages".tr(),
-                        "chat.openDispute".tr(),
-                        "chat.createGroupChat".tr()
-                      }.map((String choice) {
-                        return PopupMenuItem<String>(
-                          value: choice,
-                          enabled: false,
-                          child: TextButton(
-                            onPressed: () {
-                              if (choice == "chat.favoriteMessages".tr()) {
-                              } else if (choice == "chat.openDispute".tr()) {
-                                Navigator.pushNamed(
-                                    context, DisputePage.routeName,
-                                    arguments: store.selectedCategories[1]);
-                              } else {}
-                            },
-                            child: Text(
-                              choice,
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList();
+                      return store.role == UserRole.Worker
+                          ? store.selectedCategoriesWorker.map((String choice) {
+                              return PopupMenuItem<String>(
+                                value: choice,
+                                enabled: false,
+                                child: TextButton(
+                                  onPressed: () {
+                                    if (choice ==
+                                        "chat.favoriteMessages".tr()) {
+                                    } else if (choice ==
+                                        "chat.openDispute".tr()) {
+                                      Navigator.pushNamed(
+                                          context, DisputePage.routeName,
+                                          arguments: store
+                                              .selectedCategoriesWorker[1]);
+                                    } else {}
+                                  },
+                                  child: Text(
+                                    choice,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList()
+                          : store.selectedCategoriesEmployer
+                              .map((String choice) {
+                              return PopupMenuItem<String>(
+                                value: choice,
+                                enabled: false,
+                                child: TextButton(
+                                  onPressed: () {
+                                    if (choice ==
+                                        "chat.favoriteMessages".tr()) {
+                                    } else {}
+                                  },
+                                  child: Text(
+                                    choice,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList();
                     },
                   ),
                 ],
@@ -84,11 +110,17 @@ class _ChatPageState extends State<ChatPage> {
           child: ObserverListener<ChatStore>(
             onSuccess: () {},
             child: Observer(
-              builder: (_) => SingleChildScrollView(
-                child: Column(
-                  children: store.chats.map((e) => _chatItem(e)).toList(),
-                ),
-              ),
+              builder: (_) => store.chats.isNotEmpty
+                  ? SingleChildScrollView(
+                      child: Column(
+                        children: store.chats.map((e) => _chatItem(e)).toList(),
+                      ),
+                    )
+                  : Center(
+                      child: Text(
+                        "chat.noChats".tr(),
+                      ),
+                    ),
             ),
           ),
         ),
@@ -99,8 +131,14 @@ class _ChatPageState extends State<ChatPage> {
   Widget _chatItem(ChatModel chatDetails, {bool hasUnreadMessages = false}) {
     return GestureDetector(
       onTap: () {
+        Map<String, dynamic> arguments = {
+          "chatId": chatDetails.id,
+          "userId": userData.userData!.id
+        };
         Navigator.of(context, rootNavigator: true)
-            .pushNamed(ChatRoomPage.routeName, arguments: chatDetails);
+            .pushNamed(ChatRoomPage.routeName, arguments: arguments
+                //chatDetails.id
+                );
       },
       child: Column(
         children: [
@@ -119,7 +157,8 @@ class _ChatPageState extends State<ChatPage> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Image.network(
-                      chatDetails.otherMember.avatar.url,
+                      chatDetails.owner?.avatar.url ??
+                          "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                       width: 56,
                       height: 56,
                       fit: BoxFit.cover,
@@ -132,7 +171,9 @@ class _ChatPageState extends State<ChatPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "${chatDetails.otherMember.firstName} ${chatDetails.otherMember.lastName}",
+                        chatDetails.userMembers[0].id != userData.userData!.id
+                            ? "${chatDetails.userMembers[0].firstName} ${chatDetails.userMembers[0].lastName}"
+                            : "${chatDetails.userMembers[1].firstName} ${chatDetails.userMembers[1].lastName}",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -141,8 +182,12 @@ class _ChatPageState extends State<ChatPage> {
                       const SizedBox(height: 5),
                       if (chatDetails.lastMessage != null)
                         Text(
-                          "chat.you:".tr() +
-                              " ${chatDetails.lastMessage} " * 10,
+                          chatDetails.lastMessage!.senderUserId ==
+                                  userData.userData!.id
+                              ? "chat.you".tr() +
+                                  " ${chatDetails.lastMessage!.text} "
+                              : "${chatDetails.lastMessage!.sender!.firstName}:" +
+                                  " ${chatDetails.lastMessage!.text} ",
                           style: TextStyle(
                             fontSize: 14,
                             color: Color(0xFF7C838D),
@@ -151,9 +196,9 @@ class _ChatPageState extends State<ChatPage> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       const SizedBox(height: 5),
-                      if (chatDetails.lastMessageDate != null)
+                      if (chatDetails.lastMessage != null)
                         Text(
-                          chatDetails.lastMessageDate!.toString(),
+                          chatDetails.lastMessageDate.toString(),
                           style: TextStyle(
                             fontSize: 12,
                             color: Color(0xFFD8DFE3),
@@ -163,15 +208,16 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                 ),
                 const SizedBox(width: 50),
-                Container(
-                  width: 11,
-                  height: 11,
-                  margin: const EdgeInsets.only(top: 25, right: 16),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFF0083C7),
-                  ),
-                )
+                if (chatDetails.lastMessage!.senderStatus == "unread")
+                  Container(
+                    width: 11,
+                    height: 11,
+                    margin: const EdgeInsets.only(top: 25, right: 16),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xFF0083C7),
+                    ),
+                  )
               ],
             ),
           ),

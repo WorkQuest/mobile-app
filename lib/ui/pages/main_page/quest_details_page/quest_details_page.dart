@@ -75,7 +75,6 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         "quests.yourQuest".tr(),
                       )
                     : GestureDetector(
-                        // onTap: () {},
                         onTap: () async {
                           profile!.getQuestHolder(widget.questInfo.userId);
                           Timer.periodic(Duration(milliseconds: 100), (timer) {

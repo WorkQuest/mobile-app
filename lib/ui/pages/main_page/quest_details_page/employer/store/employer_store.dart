@@ -1,5 +1,6 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
 
 import 'package:injectable/injectable.dart';
@@ -23,6 +24,8 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   @observable
   String selectedResponders = "";
 
+  Observable<BaseQuestResponse?> quest = Observable(null);
+
   @action
   getRespondedList(String id, String idWorker) async {
     respondedList = await _apiProvider.responsesQuest(id);
@@ -30,6 +33,12 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       for (int index = 0; index < (respondedList?.length ?? 0); index++)
         if (respondedList![index].workerId== idWorker)
           respondedList!.removeAt(index);
+  }
+
+  _getQuest() async {
+    final newQuest = await _apiProvider.getQuest(id: quest.value!.id);
+    quest.value!.update(newQuest);
+    quest.reportChanged();
   }
 
   @action
@@ -40,6 +49,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.startQuest(questId: questId, userId: userId);
+      await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
       print("accept error: $e\n$trace");
@@ -54,6 +64,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptCompletedWork(questId: questId);
+      await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
       print("accept error: $e\n$trace");
@@ -68,6 +79,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.rejectCompletedWork(questId: questId);
+      await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
       print("accept error: $e\n$trace");
@@ -82,6 +94,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.deleteQuest(questId: questId);
+      await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
       print("accept error: $e\n$trace");

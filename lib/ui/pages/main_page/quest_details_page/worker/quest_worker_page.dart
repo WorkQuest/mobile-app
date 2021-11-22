@@ -90,8 +90,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             ],
           ),
           const SizedBox(height: 20),
-         Observer(
-            builder: (_) => !store.response
+          Observer(
+            builder: (_) => !store.response &&
+                    (widget.questInfo.status == 0 ||
+                        widget.questInfo.status == 4)
                 ? store.isLoading
                     ? Center(
                         child: CircularProgressIndicator(),

@@ -41,7 +41,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   final List<String> distantWorkList = [
     "Distant work",
     "Work in the office",
-    "Both options".tr(),
+    "Both variant",
   ];
 
   /// location, runtime, images and videos ,priority undone
@@ -147,7 +147,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     switch (workplace) {
       case "Distant work":
         return workplaceValue = "distant";
-      case "Work in office":
+      case "Work in the office":
         return workplaceValue = "office";
       case "Both variant":
         return workplaceValue = "both";

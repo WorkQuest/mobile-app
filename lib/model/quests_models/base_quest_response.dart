@@ -105,6 +105,13 @@ class BaseQuestResponse {
     this.adType = updateQuest.adType;
     this.createdAt = updateQuest.createdAt;
     this.star = updateQuest.star;
+    this.locationPlaceName = updateQuest.locationPlaceName;
+    this.assignedWorker = updateQuest.assignedWorker;
+    this.employment = updateQuest.employment;
+    this.questSpecializations = updateQuest.questSpecializations;
+    this.workplace = updateQuest.workplace;
+    this.invited = updateQuest.invited;
+    this.responded = updateQuest.responded;
   }
 
   Map<String, dynamic> toJson() => {

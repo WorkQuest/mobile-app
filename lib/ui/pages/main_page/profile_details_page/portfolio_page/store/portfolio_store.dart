@@ -62,9 +62,10 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
       await _apiProvider.addPortfolio(
         title: title,
         description: description,
-        media: await _apiProvider.uploadMedia(
-          medias: media,
-        ),
+        media: mediaIds.map((e) => e.id).toList() +
+            await _apiProvider.uploadMedia(
+              medias: media,
+            ),
       );
       await getPortfolio(userId: userId);
       this.onSuccess(true);
@@ -84,9 +85,10 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
         portfolioId: portfolioId,
         title: title,
         description: description,
-        media: await _apiProvider.uploadMedia(
-          medias: media,
-        ),
+        media: mediaIds.map((e) => e.id).toList() +
+            await _apiProvider.uploadMedia(
+              medias: media,
+            ),
       );
       await getPortfolio(userId: userId);
       this.onSuccess(true);
@@ -149,5 +151,8 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   }
 
   @computed
-  bool get canSubmit => title.isNotEmpty && description.isNotEmpty;
+  bool get canSubmit =>
+      title.isNotEmpty &&
+      description.isNotEmpty &&
+      (media.isNotEmpty || mediaIds.isNotEmpty);
 }

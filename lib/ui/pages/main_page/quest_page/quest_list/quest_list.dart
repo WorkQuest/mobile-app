@@ -29,8 +29,6 @@ class _QuestListState extends State<QuestList> {
   QuestsStore? questsStore;
 
   ProfileMeStore? profileMeStore;
-  Future<dynamic>? refreshQuest;
-  Future<dynamic>? refreshWorkers;
 
   final QuestItemPriorityType questItemPriorityType =
       QuestItemPriorityType.Starred;
@@ -48,10 +46,8 @@ class _QuestListState extends State<QuestList> {
           );
       context.read<ChatStore>().role = profileMeStore!.userData!.role;
       profileMeStore!.userData!.role == UserRole.Worker
-          ? refreshQuest =
-              questsStore!.getQuests(profileMeStore!.userData!.id, false)
-          : refreshWorkers =
-              questsStore!.getWorkers(profileMeStore!.userData!.id);
+          ? questsStore!.getQuests(profileMeStore!.userData!.id, true)
+          : questsStore!.getWorkers(profileMeStore!.userData!.id, true);
     });
   }
 
@@ -92,8 +88,8 @@ class _QuestListState extends State<QuestList> {
     return RefreshIndicator(
       onRefresh: () async {
         return profileMeStore!.userData!.role == UserRole.Worker
-            ? await refreshQuest
-            : await refreshWorkers;
+            ? questsStore!.getQuests(profileMeStore!.userData!.id, true)
+            : questsStore!.getWorkers(profileMeStore!.userData!.id, true);
       },
       displacement: 50,
       edgeOffset: 300,
@@ -266,13 +262,13 @@ class _QuestListState extends State<QuestList> {
                               padding: EdgeInsets.zero,
                               itemCount: questsStore!.searchWord.length > 2
                                   ? questsStore!.searchResultList?.length ?? 0
-                                  : questsStore!.workersList?.length ?? 0,
+                                  : questsStore!.workersList.length,
                               itemBuilder: (_, index) {
                                 return Observer(
                                   builder: (_) => WorkersItem(
                                     questsStore!.searchWord.length > 2
                                         ? questsStore!.searchWorkersList![index]
-                                        : questsStore!.workersList![index],
+                                        : questsStore!.workersList[index],
                                     questsStore!,
                                   ),
                                 );

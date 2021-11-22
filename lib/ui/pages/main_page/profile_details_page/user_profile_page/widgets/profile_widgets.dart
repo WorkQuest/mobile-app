@@ -21,21 +21,27 @@ class PortfolioWidget extends StatelessWidget {
   final String title;
   final String imageUrl;
   final int index;
+  final bool isProfileYour;
 
   const PortfolioWidget({
     required this.title,
     required this.index,
     required this.imageUrl,
+    required this.isProfileYour,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        Map<String, dynamic> arguments = {
+          "index": index,
+          "isProfileYour": isProfileYour
+        };
         Navigator.pushNamed(
           context,
           PortfolioDetails.routeName,
-          arguments: index,
+          arguments: arguments,
         );
       },
       child: Padding(
@@ -141,31 +147,31 @@ class ReviewsWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              GestureDetector(
-                onTap: () {
-                  profile.getAssignedWorker(id);
-                  Timer.periodic(Duration(milliseconds: 100), (timer) async {
-                    if (profile.assignedWorker != null) {
-                      timer.cancel();
-                      await Navigator.of(context, rootNavigator: true).pushNamed(
-                        ProfileReviews.routeName,
-                        arguments: profile.assignedWorker,
-                      );
-                      if (role == UserRole.Worker)
-                        portfolioStore.getPortfolio(
+              Flexible(
+                child: GestureDetector(
+                  onTap: () {
+                    profile.getAssignedWorker(id);
+                    Timer.periodic(Duration(milliseconds: 100), (timer) async {
+                      if (profile.assignedWorker != null) {
+                        timer.cancel();
+                        await Navigator.of(context, rootNavigator: true)
+                            .pushNamed(
+                          ProfileReviews.routeName,
+                          arguments: profile.assignedWorker,
+                        );
+                        if (role == UserRole.Worker)
+                          portfolioStore.getPortfolio(
+                            userId: userStore.userData!.id,
+                          );
+                        else
+                          questStore.getQuests(
+                              userStore.userData!.id, role, true);
+                        portfolioStore.getReviews(
                           userId: userStore.userData!.id,
                         );
-                      else
-                        questStore.getQuests(
-                            userStore.userData!.id, role, true);
-                      portfolioStore.getReviews(
-                        userId: userStore.userData!.id,
-                      );
-                    }
-                  });
-
-                },
-                child: Flexible(
+                      }
+                    });
+                  },
                   child: ListTile(
                     leading: CircleAvatar(
                       backgroundImage: NetworkImage(avatar),
@@ -627,7 +633,7 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
                   : null,
               icon: SvgPicture.asset(
                 "assets/linkedin_icon_disabled.svg",
-                color: twitter != null ? Color(0xFF0A7EEA) : null,
+                color: linkedin != null ? Color(0xFF0A7EEA) : null,
               ),
             ),
           ),

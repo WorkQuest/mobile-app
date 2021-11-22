@@ -49,6 +49,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptOnQuest(questId: quest.value!.id);
+      await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -60,6 +61,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.rejectOnQuest(questId: quest.value!.id);
+      await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -71,6 +73,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.completeWork(questId: quest.value!.id);
+      await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -82,6 +85,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.respondOnQuest(id: quest.value!.id, message: message);
+      await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");

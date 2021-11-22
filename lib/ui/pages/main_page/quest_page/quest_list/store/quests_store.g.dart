@@ -152,16 +152,31 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$questsListLengthAtom = Atom(name: '_QuestsStore.questsListLength');
+
+  @override
+  int get questsListLength {
+    _$questsListLengthAtom.reportRead();
+    return super.questsListLength;
+  }
+
+  @override
+  set questsListLength(int value) {
+    _$questsListLengthAtom.reportWrite(value, super.questsListLength, () {
+      super.questsListLength = value;
+    });
+  }
+
   final _$workersListAtom = Atom(name: '_QuestsStore.workersList');
 
   @override
-  List<ProfileMeResponse>? get workersList {
+  ObservableList<ProfileMeResponse> get workersList {
     _$workersListAtom.reportRead();
     return super.workersList;
   }
 
   @override
-  set workersList(List<ProfileMeResponse>? value) {
+  set workersList(ObservableList<ProfileMeResponse> value) {
     _$workersListAtom.reportWrite(value, super.workersList, () {
       super.workersList = value;
     });
@@ -335,8 +350,8 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$getWorkersAsyncAction = AsyncAction('_QuestsStore.getWorkers');
 
   @override
-  Future<dynamic> getWorkers(String userId) {
-    return _$getWorkersAsyncAction.run(() => super.getWorkers(userId));
+  Future<dynamic> getWorkers(String userId, bool newList) {
+    return _$getWorkersAsyncAction.run(() => super.getWorkers(userId, newList));
   }
 
   final _$_QuestsStoreActionController = ActionController(name: '_QuestsStore');
@@ -408,6 +423,7 @@ offset: ${offset},
 limit: ${limit},
 status: ${status},
 questsList: ${questsList},
+questsListLength: ${questsListLength},
 workersList: ${workersList},
 searchResultList: ${searchResultList},
 searchWorkersList: ${searchWorkersList},
