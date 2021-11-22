@@ -48,10 +48,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   void initState() {
     _store = context.read<ChatRoomStore>();
     _store.idChat = widget.arguments["chatId"];
-    final _ = reaction((_) => _store.chat?.messages, (_) {
-      print("reaction reaction reaction  reaction ");
-    });
-    // ConversationRepository().store = _store;
     super.initState();
     _controller.addListener(() {
       if (_controller.position.extentAfter < 500) if (!_store.isLoadingMessages)
@@ -73,7 +69,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           children: [
             Expanded(
               child: Observer(builder: (_) {
-                print("Render ${_store.chat?.messages.first.text}");
                 return _store.isLoading
                     ? Center(child: CircularProgressIndicator())
                     // : _store.flag
@@ -83,6 +78,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         children: [
                           for (final mess in _store.chat?.messages ?? [])
                             MessageCell(
+                              UniqueKey(),
                               {
                                 "message": mess,
                                 "userId": widget.arguments["userId"]
@@ -90,19 +86,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                             )
                         ],
                       );
-                // : ListView.builder(
-                //     reverse: true,
-                //     controller: _controller,
-                //     itemCount: _store.chat?.messages.length ?? 0,
-                //     itemBuilder: (context, index) => Observer(
-                //       builder: (_) => MessageCell(
-                //         {
-                //           "message": _store.chat?.messages[index],
-                //           "userId": widget.arguments["userId"]
-                //         },
-                //       ),
-                //     ),
-                //   );
               }),
             ),
             InputToolbar((text) {

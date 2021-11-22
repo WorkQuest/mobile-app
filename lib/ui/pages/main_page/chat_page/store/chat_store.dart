@@ -14,7 +14,8 @@ part 'chat_store.g.dart';
 
 @singleton
 class ChatStore extends _ChatStore with _$ChatStore {
-  ChatStore(ApiProvider apiProvider, ConversationRepository repo) : super(apiProvider,repo);
+  ChatStore(ApiProvider apiProvider, ConversationRepository repo)
+      : super(apiProvider, repo);
 }
 
 abstract class _ChatStore extends IStore<bool> with Store {
@@ -25,8 +26,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   UserRole? role;
 
-  _ChatStore(this._apiProvider,this.repo) {
-
+  _ChatStore(this._apiProvider, this.repo) {
     // WebSocket().setListener(this._handle);
   }
 
@@ -55,15 +55,15 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   @observable
   List<String> selectedCategoriesWorker = [
-    "chat.favoriteMessages".tr(),
-    "chat.openDispute".tr(),
-    "chat.createGroupChat".tr(),
+    "Starred message",
+    "Report",
+    "Create group chat",
   ];
 
   @observable
   List<String> selectedCategoriesEmployer = [
-    "chat.favoriteMessages".tr(),
-    "chat.openDispute".tr(),
+    "Starred message",
+    "Report",
   ];
 
   @observable

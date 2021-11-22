@@ -58,10 +58,8 @@ class _ChatPageState extends State<ChatPage> {
                                 enabled: false,
                                 child: TextButton(
                                   onPressed: () {
-                                    if (choice ==
-                                        "chat.favoriteMessages".tr()) {
-                                    } else if (choice ==
-                                        "chat.openDispute".tr()) {
+                                    if (choice == "Starred message") {
+                                    } else if (choice == "Report") {
                                       Navigator.pushNamed(
                                           context, DisputePage.routeName,
                                           arguments: store
@@ -84,8 +82,7 @@ class _ChatPageState extends State<ChatPage> {
                                 enabled: false,
                                 child: TextButton(
                                   onPressed: () {
-                                    if (choice ==
-                                        "chat.favoriteMessages".tr()) {
+                                    if (choice == "Create group chat") {
                                     } else {}
                                   },
                                   child: Text(

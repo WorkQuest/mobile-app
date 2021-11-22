@@ -96,17 +96,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
       ActionController(name: '_ChatRoomStore');
 
   @override
-  void updateMessages(List<MessageModel> msg) {
-    final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
-        name: '_ChatRoomStore.updateMessages');
-    try {
-      return super.updateMessages(msg);
-    } finally {
-      _$_ChatRoomStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void loadChat(String chatId) {
     final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
         name: '_ChatRoomStore.loadChat');

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
-import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/repository/chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/repository/conversation_repository.dart';
@@ -35,23 +34,6 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   @computed
   Chats? get chat => repo.chatByID(idChat);
 
-  // List<MessageModel> get messages {
-  //   if (chatId == null) return [];
-  //   return repo.chats
-  //       .firstWhere((chat) => chat.chatModel?.id == chatId)
-  //       .messages;
-  // }
-
-  // void addMessages(List<MessageModel> list) {
-  //   _messages.addAll(list);
-  //   _$messagesAtom.reportChanged();
-  // }
-
-  // set addFirstMessage(MessageModel mess) {
-  //   _messages.insert(0, mess);
-  //   _$messagesAtom.reportChanged();
-  // }
-
   @observable
   bool isLoadingMessages = false;
 
@@ -62,24 +44,8 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   bool flag = false;
 
   @action
-  void updateMessages(List<MessageModel> msg) {
-    // messages = msg;
-    // print("HEEEEEEEEY: ${msg.first.text}");
-  }
-
-  @action
   void loadChat(String chatId) {
     idChat = chatId;
-    print("${chat?.messages.length}");
-    // this.chat = repo.chats.firstWhere((chat) => chat.chatModel?.id == chatId);
-    // repo.chats.forEach((element) {
-    //   if (element.chatModel!.id == chatId) {
-    //     chat = element.chatModel;
-    //     _count = element.messages.lengthx;
-    //
-    //     // messages = element.messages;
-    //   }
-    // });
     for (int index = 0; index < chat!.messages.length; index++)
       if (chat!.messages[index].text == null) chat!.messages.removeAt(index);
   }
@@ -127,12 +93,6 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     //   infoMessage: null,
     //   star: null,
     // );
-    // flag = ConversationRepository().flag;
     // messages.insert(0, message);
-    // Timer.periodic(Duration(milliseconds: 100), (timer) {
-    //   flag = false;
-    //   timer.cancel();
-    // });
-    // ConversationRepository().updateMessages(messages, chatId);
   }
 }
