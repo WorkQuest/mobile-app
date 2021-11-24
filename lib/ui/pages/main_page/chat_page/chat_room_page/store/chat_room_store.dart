@@ -68,7 +68,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   @observable
   ObservableList<MessageModel> starredMessage = ObservableList.of([]);
 
-  Observable<BaseQuestResponse?> quest = Observable(null);
+  // Observable<BaseQuestResponse?> quest = Observable(null);
 
   @action
   void setChatName(String value) => chatName = value;
@@ -96,13 +96,13 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     }
   }
 
-  onStar() async {
-    if (quest.value!.star) {
-      await _apiProvider.removeStar(id: quest.value!.id);
-    } else
-      await _apiProvider.setStar(id: quest.value!.id);
-    await _getQuest();
-  }
+  // onStar() async {
+  //   if (quest.value!.star) {
+  //     await _apiProvider.removeStar(id: quest.value!.id);
+  //   } else
+  //     await _apiProvider.setStar(id: quest.value!.id);
+  //   await _getQuest();
+  // }
 
   @action
   Future getStarredMessage() async {

@@ -66,10 +66,10 @@ class _ChatPageState extends State<ChatPage> {
                                 child: TextButton(
                                   onPressed: () {
                                     if (choice == "Starred message") {
-                                      Navigator.pushNamed(
-                                        context, StarredMessage.routeName,
-                                        arguments: userData.userData!.id
-                                      );
+                                      // Navigator.pushNamed(
+                                      //   context, StarredMessage.routeName,
+                                      //   arguments: userData.userData!.id
+                                      // );
                                     } else if (choice == "Report") {
                                       Navigator.pushNamed(
                                         context, DisputePage.routeName,

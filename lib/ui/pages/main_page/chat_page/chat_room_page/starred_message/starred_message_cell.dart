@@ -50,16 +50,16 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
                       ],
                     ),
 
-                    Observer(
-                      builder: (_) => IconButton(
-                        icon: Icon(
-                          store.quest.value!.star ? Icons.star : Icons.star_border,
-                          color:
-                          store.quest.value!.star ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
-                        ),
-                        onPressed: (){},
-                      ),
-                    )
+                    // Observer(
+                    //   builder: (_) => IconButton(
+                    //     icon: Icon(
+                    //       store.quest.value!.star ? Icons.star : Icons.star_border,
+                    //       color:
+                    //       store.quest.value!.star ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
+                    //     ),
+                    //     onPressed: (){},
+                    //   ),
+                    // )
                   ],
                 ),
           Row(
