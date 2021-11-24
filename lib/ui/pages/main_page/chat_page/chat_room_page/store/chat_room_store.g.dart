@@ -46,6 +46,21 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
+  final _$messageSelectedAtom = Atom(name: '_ChatRoomStore.messageSelected');
+
+  @override
+  bool get messageSelected {
+    _$messageSelectedAtom.reportRead();
+    return super.messageSelected;
+  }
+
+  @override
+  set messageSelected(bool value) {
+    _$messageSelectedAtom.reportWrite(value, super.messageSelected, () {
+      super.messageSelected = value;
+    });
+  }
+
   final _$userInChatAtom = Atom(name: '_ChatRoomStore.userInChat');
 
   @override
@@ -167,6 +182,21 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
+  final _$starredMessageAtom = Atom(name: '_ChatRoomStore.starredMessage');
+
+  @override
+  ObservableList<MessageModel> get starredMessage {
+    _$starredMessageAtom.reportRead();
+    return super.starredMessage;
+  }
+
+  @override
+  set starredMessage(ObservableList<MessageModel> value) {
+    _$starredMessageAtom.reportWrite(value, super.starredMessage, () {
+      super.starredMessage = value;
+    });
+  }
+
   final _$getUsersForGroupCHatAsyncAction =
       AsyncAction('_ChatRoomStore.getUsersForGroupCHat');
 
@@ -174,6 +204,14 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   Future<dynamic> getUsersForGroupCHat() {
     return _$getUsersForGroupCHatAsyncAction
         .run(() => super.getUsersForGroupCHat());
+  }
+
+  final _$getStarredMessageAsyncAction =
+      AsyncAction('_ChatRoomStore.getStarredMessage');
+
+  @override
+  Future<dynamic> getStarredMessage() {
+    return _$getStarredMessageAsyncAction.run(() => super.getStarredMessage());
   }
 
   final _$createGroupChatAsyncAction =
@@ -201,6 +239,17 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
 
   final _$_ChatRoomStoreActionController =
       ActionController(name: '_ChatRoomStore');
+
+  @override
+  void setMessageHighlighted(String value) {
+    final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
+        name: '_ChatRoomStore.setMessageHighlighted');
+    try {
+      return super.setMessageHighlighted(value);
+    } finally {
+      _$_ChatRoomStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setChatName(String value) {
@@ -251,6 +300,7 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     return '''
 chatName: ${chatName},
 index: ${index},
+messageSelected: ${messageSelected},
 userInChat: ${userInChat},
 infoMessageValue: ${infoMessageValue},
 isLoadingMessages: ${isLoadingMessages},
@@ -258,6 +308,7 @@ refresh: ${refresh},
 usersId: ${usersId},
 availableUsers: ${availableUsers},
 selectedUsers: ${selectedUsers},
+starredMessage: ${starredMessage},
 chat: ${chat}
     ''';
   }

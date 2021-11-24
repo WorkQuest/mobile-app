@@ -9,12 +9,12 @@ import 'package:easy_localization/easy_localization.dart';
 
 class MediaUpload extends StatefulWidget {
   final ObservableList<DrishyaEntity> mediaDrishya;
-  final ObservableList<Media> mediaURL;
+  final ObservableList<Media>? mediaURL;
 
-  const MediaUpload({
+  const MediaUpload(
+    this.mediaURL, {
     required this.mediaDrishya,
-    required this.mediaURL,
-  }) ;
+  });
 
   @override
   _MediaUploadState createState() => _MediaUploadState();
@@ -61,7 +61,7 @@ class _MediaUploadState extends State<MediaUpload> {
         child: Center(
           child: Observer(
             builder: (context) => widget.mediaDrishya.isEmpty &&
-                    widget.mediaURL.isEmpty &&
+                    (widget.mediaURL?.isEmpty ?? true) &&
                     widget.mediaDrishya.isEmpty
                 ? galleryView()
                 : Column(
@@ -129,7 +129,8 @@ class _MediaUploadState extends State<MediaUpload> {
         scrollDirection: Axis.horizontal,
         children: [
           for (var media in widget.mediaDrishya) dataEntity(media),
-          for (var media in widget.mediaURL) dataURL(media),
+          if (widget.mediaURL != null)
+            for (var media in widget.mediaURL!) dataURL(media),
         ],
       ),
     );
@@ -155,16 +156,17 @@ class _MediaUploadState extends State<MediaUpload> {
               ),
             ),
 
-            Positioned(
-              top: -15.0,
-              right: -15.0,
-              child: IconButton(
-                onPressed: () => widget.mediaURL.remove(media),
-                icon: Icon(Icons.cancel),
-                iconSize: 25.0,
-                color: Colors.redAccent,
+            if (widget.mediaURL != null)
+              Positioned(
+                top: -15.0,
+                right: -15.0,
+                child: IconButton(
+                  onPressed: () => widget.mediaURL!.remove(media),
+                  icon: Icon(Icons.cancel),
+                  iconSize: 25.0,
+                  color: Colors.redAccent,
+                ),
               ),
-            ),
           ],
         ),
       ),

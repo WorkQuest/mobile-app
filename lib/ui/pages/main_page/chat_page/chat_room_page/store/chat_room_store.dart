@@ -8,6 +8,7 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/repository/chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/repository/conversation_repository.dart';
 import 'package:app/utils/web_socket.dart';
+import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -35,8 +36,17 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   @observable
   String chatName = "";
 
+  // @observable
+  // ObservableList<bool> isMessageHighlighted = ObservableList.of([]);
+  //
+  // @observable
+  // ObservableList<String> idMessages = ObservableList.of([]);
+
   @observable
   int index = 0;
+
+  @observable
+  bool messageSelected = false;
 
   @observable
   ObservableList<bool> userInChat = ObservableList.of([]);
@@ -68,7 +78,18 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   @observable
   ObservableList<MessageModel> starredMessage = ObservableList.of([]);
 
+  @observable
+  ObservableList<DrishyaEntity> media = ObservableList();
+
   // Observable<BaseQuestResponse?> quest = Observable(null);
+
+  @action
+  void setMessageHighlighted(String value) => chatName = value;
+
+  // @action
+  // void setStar(bool value) {
+  //   chatName = !value;
+  // }
 
   @action
   void setChatName(String value) => chatName = value;
@@ -83,6 +104,13 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     }
     usersId.add(availableUsers[index].id);
   }
+
+  // @action
+  // void setLists() {
+  //   isMessageHighlighted =
+  //       ObservableList.of(List.generate(_count, (index) => false));
+  //   idMessages = ObservableList.of(List.generate(_count, (index) => ""));
+  // }
 
   @action
   Future getUsersForGroupCHat() async {

@@ -95,9 +95,8 @@ class CreatePortfolioPage extends StatelessWidget {
                         "uploader.files".tr(),
                       ),
                       _spacer,
-                      MediaUpload(
+                      MediaUpload(allowEdit ? store.mediaIds : ObservableList(),
                         mediaDrishya: store.media,
-                        mediaURL: allowEdit ? store.mediaIds : ObservableList(),
                       )
                     ],
                   ),

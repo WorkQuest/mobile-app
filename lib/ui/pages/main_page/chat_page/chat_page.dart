@@ -72,7 +72,8 @@ class _ChatPageState extends State<ChatPage> {
                                       // );
                                     } else if (choice == "Report") {
                                       Navigator.pushNamed(
-                                        context, DisputePage.routeName,
+                                        context,
+                                        DisputePage.routeName,
                                       );
                                     } else if (choice == "Create group chat") {
                                       // Navigator.pushNamed(
@@ -139,6 +140,9 @@ class _ChatPageState extends State<ChatPage> {
                         return true;
                       },
                       child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(),
+                        ),
                         child: Column(
                           children:
                               store.chats.map((e) => _chatItem(e)).toList(),

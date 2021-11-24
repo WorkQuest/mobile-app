@@ -313,9 +313,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       padding: const EdgeInsets.only(
                         top: 20.0,
                       ),
-                      child: MediaUpload(
+                      child: MediaUpload(store.mediaIds,
                         mediaDrishya: store.mediaDrishya,
-                        mediaURL: store.mediaIds,
                       ),
                     ),
                     titledField(

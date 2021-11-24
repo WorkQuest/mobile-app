@@ -2,6 +2,7 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -20,8 +21,6 @@ class ChatRoomPage extends StatefulWidget {
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
   late final ChatRoomStore _store;
-
-  // ScrollController _controller = ScrollController();
 
   String get id => _store.chat?.chatModel.userMembers[0].id ?? "--";
 
@@ -54,10 +53,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     _store = context.read<ChatRoomStore>();
     _store.idChat = widget.arguments["chatId"];
     super.initState();
-    // _controller.addListener(() {
-    //   if (_controller.position.extentAfter < 500) if (!_store.isLoadingMessages)
-    //     _store.getMessages();
-    // });
     if (_store.chat!.chatModel.type == "group") _store.generateListUserInChat();
   }
 
@@ -84,19 +79,18 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           }
                           return true;
                         },
-                        child: ListView(
-                          // controller: _controller,
+                        child: ListView.builder(
+                          physics: const BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics(),
+                          ),
+                          itemCount: _store.chat?.messages.length,
+                          itemBuilder: (context, index) => MessageCell(
+                            UniqueKey(),
+                            _store.chat!.messages[index],
+                            widget.arguments["userId"],
+                            index,
+                          ),
                           reverse: true,
-                          children: [
-                            for (final mess in _store.chat?.messages ?? [])
-                              MessageCell(
-                                UniqueKey(),
-                                {
-                                  "message": mess,
-                                  "userId": widget.arguments["userId"]
-                                },
-                              )
-                          ],
                         ),
                       );
               }),
@@ -109,6 +103,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               );
             }),
             const SizedBox(height: 10),
+            MediaUpload(null,
+              mediaDrishya: _store.media,
+            )
           ],
         ),
       ),
@@ -152,13 +149,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         //       )
         //     :
         Observer(
-                builder: (_) => CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    widget.arguments["userId"] != id ? url1 : url2,
-                  ),
-                  maxRadius: 20,
-                ),
-              ),
+          builder: (_) => CircleAvatar(
+            backgroundImage: NetworkImage(
+              widget.arguments["userId"] != id ? url1 : url2,
+            ),
+            maxRadius: 20,
+          ),
+        ),
         const SizedBox(width: 16),
       ],
     );

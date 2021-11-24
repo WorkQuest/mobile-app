@@ -47,10 +47,11 @@ class QuestsList extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: ListView.builder(
-        physics: physics,
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         shrinkWrap: true,
-        itemCount:
-            onCreate != null ? questsList.length + 1 : questsList.length,
+        itemCount: onCreate != null ? questsList.length + 1 : questsList.length,
         padding: EdgeInsets.zero,
         itemBuilder: (BuildContext context, index) {
           if (onCreate != null) if (index == 0) {
