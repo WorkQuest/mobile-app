@@ -3,6 +3,7 @@ import 'package:app/enums.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/model/chat_model/chat_model.dart';
+import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
@@ -609,20 +610,74 @@ extension GetUploadLink on ApiProvider {
 
 ///Chat Service
 extension ChatsService on ApiProvider {
-  Future<List<ChatModel>> getChats() async {
+  Future<List<ChatModel>> getChats({
+    required int offset,
+    required int limit,
+  }) async {
     try {
-    final responseData = await _httpClient.get(query: '/v1/user/me/chats');
-    return List<ChatModel>.from(
-      responseData["chats"].map(
-        (x) => ChatModel.fromJson(x),
-      ),
-    );
-
+      final responseData = await _httpClient.get(
+        query: '/v1/user/me/chats',
+        queryParameters: {
+          "offset": offset,
+          "limit": limit,
+        },
+      );
+      return List<ChatModel>.from(
+        responseData["chats"].map(
+          (x) => ChatModel.fromJson(x),
+        ),
+      );
     } catch (e, stack) {
       print("ERROR $e");
       print("ERROR $stack");
       return [];
     }
+  }
+
+  Future<List<ProfileMeResponse>> getUsersForGroupCHat() async {
+    try {
+      final responseData = await _httpClient.get(
+          query: '/v1/user/me/chat/members/users-by-chats');
+      return List<ProfileMeResponse>.from(
+        responseData["users"].map(
+          (x) => ProfileMeResponse.fromJson(x),
+        ),
+      );
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      return [];
+    }
+  }
+
+  Future<List<MessageModel>> getStarredMessage() async {
+    try {
+      final responseData = await _httpClient.get(
+          query: '/v1/user/me/chat/messages/star');
+      return List<MessageModel>.from(
+        responseData["messages"].map(
+          (x) => MessageModel.fromJson(x),
+        ),
+      );
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>> createGroupChat({
+    required String chatName,
+    required List<String> usersId,
+  }) async {
+    final responseData = await _httpClient.post(
+      query: '/v1/user/me/chat/group/create',
+      data: {
+        "name": chatName,
+        "memberUserIds": usersId,
+      },
+    );
+    return responseData;
   }
 
   Future<Map<String, dynamic>> getMessages({

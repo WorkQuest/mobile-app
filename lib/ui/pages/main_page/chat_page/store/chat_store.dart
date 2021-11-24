@@ -23,6 +23,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
   final ConversationRepository repo;
 
   String _myId = "";
+  int offset = 0;
+  int limit = 10;
 
   UserRole? role;
 
@@ -67,24 +69,64 @@ abstract class _ChatStore extends IStore<bool> with Store {
   ];
 
   @observable
-  List<ChatModel> chats = [];
+  ObservableList<ChatModel> chats = ObservableList.of([]);
+
+  @observable
+  String infoMessageValue = "";
+
+  @observable
+  bool isLoadingChats = false;
+
+  @observable
+  bool refresh = false;
+
+  @observable
+  int _count = 0;
 
   @observable
   ObservableList<MessageModel> messages = ObservableList.of([]);
 
+  @action
+  String setInfoMessage(String infoMessage) {
+    switch (infoMessage) {
+      case "groupChatCreate":
+        return infoMessageValue = "You created a group chat";
+      case "employerRejectResponseOnQuest":
+        return infoMessageValue =
+            "The employer rejected the response to the request";
+      case "workerResponseOnQuest":
+        return infoMessageValue = "You have responded to the quest";
+    }
+    return infoMessageValue;
+  }
+
   initialSetup(String myId) async {
     this._myId = myId;
-    await loadChats();
+    await loadChats(false);
     WebSocket().connect();
   }
 
   @action
-  Future loadChats() async {
-    if (this._myId.isEmpty) return;
+  Future loadChats(bool isNewList) async {
+    if (isNewList) {
+      chats = ObservableList.of([]);
+      this.offset = 0;
+      refresh = false;
+    }
+    if (this._myId.isEmpty || (_count == chats.length && refresh) )
+      return;
     try {
+      // this.offset = 0;
+      // this.limit = 10;
+      _count = chats.length;
       this.onLoading();
-      chats = await _apiProvider.getChats();
+      chats.addAll(await _apiProvider.getChats(
+        offset: this.offset,
+        limit: this.limit,
+      ));
+      this.offset = chats.length;
       getMessages();
+      refresh = true;
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

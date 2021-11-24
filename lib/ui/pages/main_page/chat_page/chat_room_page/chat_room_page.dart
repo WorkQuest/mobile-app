@@ -1,10 +1,10 @@
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
 
 import "package:provider/provider.dart";
 
@@ -20,7 +20,8 @@ class ChatRoomPage extends StatefulWidget {
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
   late final ChatRoomStore _store;
-  ScrollController _controller = ScrollController();
+
+  // ScrollController _controller = ScrollController();
 
   String get id => _store.chat?.chatModel.userMembers[0].id ?? "--";
 
@@ -44,16 +45,20 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       _store.chat?.chatModel.userMembers[1].avatar.url ??
       "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs";
 
+  String get chatType => _store.chat?.chatModel.type ?? "";
+
+  String get chatName => _store.chat?.chatModel.name ?? "--";
+
   @override
   void initState() {
     _store = context.read<ChatRoomStore>();
     _store.idChat = widget.arguments["chatId"];
     super.initState();
-    _controller.addListener(() {
-      if (_controller.position.extentAfter < 500) if (!_store.isLoadingMessages)
-        _store.getMessages();
-    });
-    _store.loadChat(widget.arguments["chatId"]);
+    // _controller.addListener(() {
+    //   if (_controller.position.extentAfter < 500) if (!_store.isLoadingMessages)
+    //     _store.getMessages();
+    // });
+    if (_store.chat!.chatModel.type == "group") _store.generateListUserInChat();
   }
 
   @override
@@ -71,20 +76,28 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               child: Observer(builder: (_) {
                 return _store.isLoading
                     ? Center(child: CircularProgressIndicator())
-                    // : _store.flag
-                    : ListView(
-                        controller: _controller,
-                        reverse: true,
-                        children: [
-                          for (final mess in _store.chat?.messages ?? [])
-                            MessageCell(
-                              UniqueKey(),
-                              {
-                                "message": mess,
-                                "userId": widget.arguments["userId"]
-                              },
-                            )
-                        ],
+                    : NotificationListener<ScrollStartNotification>(
+                        onNotification: (scrollStart) {
+                          final metrics = scrollStart.metrics;
+                          if (metrics.maxScrollExtent < metrics.pixels) {
+                            _store.getMessages(true);
+                          }
+                          return true;
+                        },
+                        child: ListView(
+                          // controller: _controller,
+                          reverse: true,
+                          children: [
+                            for (final mess in _store.chat?.messages ?? [])
+                              MessageCell(
+                                UniqueKey(),
+                                {
+                                  "message": mess,
+                                  "userId": widget.arguments["userId"]
+                                },
+                              )
+                          ],
+                        ),
                       );
               }),
             ),
@@ -116,9 +129,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       centerTitle: true,
       title: Observer(
         builder: (_) => Text(
-          widget.arguments["userId"] != id
-              ? "$firstName1 $lastName1"
-              : "$firstName2 $lastName2",
+          chatType == "group"
+              ? "$chatName"
+              : widget.arguments["userId"] != id
+                  ? "$firstName1 $lastName1"
+                  : "$firstName2 $lastName2",
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -127,15 +142,24 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         ),
       ),
       actions: [
+        // chatType == "group"
+        //     ? IconButton(
+        //         onPressed: () {
+        //           Navigator.pushNamed(context, EditGroupChat.routeName,
+        //               arguments: _store);
+        //         },
+        //         icon: Icon(Icons.edit),
+        //       )
+        //     :
         Observer(
-          builder: (_) => CircleAvatar(
-            backgroundImage: NetworkImage(
-              widget.arguments["userId"] != id ? url1 : url2,
-            ),
-            maxRadius: 20,
-          ),
-        ),
-        const SizedBox(width: 20),
+                builder: (_) => CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    widget.arguments["userId"] != id ? url1 : url2,
+                  ),
+                  maxRadius: 20,
+                ),
+              ),
+        const SizedBox(width: 16),
       ],
     );
   }

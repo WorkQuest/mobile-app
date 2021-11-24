@@ -66,8 +66,8 @@ class ProfileMeResponse {
     return ProfileMeResponse(
       id: json["id"],
       avatarId: json["avatarId"] ?? "",
-      firstName: json["firstName"]??"",
-      lastName: json["lastName"]??"",
+      firstName: json["firstName"] ?? "",
+      lastName: json["lastName"] ?? "",
       phone: json["phone"] ?? "",
       tempPhone: json["tempPhone"] ?? "",
       email: json["email"],
@@ -76,13 +76,15 @@ class ProfileMeResponse {
           : AdditionalInfo.fromJson(json["additionalInfo"]),
       role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
       avatar: Avatar.fromJson(json["avatar"]),
-      userSpecializations: (List<Map<String, dynamic>> skills) {
-        List<String> skillsString = [];
-        for (var skill in skills) {
-          skillsString.add(skill.values.toString());
-        }
-        return skillsString;
-      }([...json["userSpecializations"]]),
+      userSpecializations: json["userSpecializations"] == null
+          ? []
+          : (List<Map<String, dynamic>> skills) {
+              List<String> skillsString = [];
+              for (var skill in skills) {
+                skillsString.add(skill.values.toString());
+              }
+              return skillsString;
+            }([...json["userSpecializations"]]),
       ratingStatistic: json["ratingStatistic"] == null
           ? null
           : RatingStatistic.fromJson(json["ratingStatistic"]),

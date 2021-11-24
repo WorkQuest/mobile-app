@@ -1,5 +1,7 @@
+import 'package:app/model/chat_model/info_message.dart';
 import 'package:app/model/chat_model/owner.dart';
 import 'package:app/model/chat_model/star.dart';
+import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 
 class MessageModel {
   MessageModel({
@@ -25,9 +27,9 @@ class MessageModel {
   String type;
   String? text;
   DateTime createdAt;
-  List<String> medias;
+  List<Media> medias;
   Owner? sender;
-  dynamic infoMessage;
+  InfoMessage? infoMessage;
   dynamic star;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
@@ -39,9 +41,13 @@ class MessageModel {
         type: json["type"],
         text: json["text"] == null ? null : json["text"],
         createdAt: DateTime.parse(json["createdAt"]),
-        medias: List<String>.from(json["medias"].map((x) => x)),
+        medias: (json["medias"] as List<dynamic>)
+            .map((e) => Media.fromJson(e as Map<String, dynamic>))
+            .toList(),
         sender: Owner.fromJson(json["sender"]),
-        infoMessage: json["infoMessage"],
+        infoMessage: json["infoMessage"] == null
+            ? null
+            : InfoMessage.fromJson(json["infoMessage"]),
         star: json["star"] == null ? null : Star.fromJson(json["star"]),
       );
 

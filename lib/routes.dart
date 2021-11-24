@@ -2,6 +2,9 @@ import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/dispute_page/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
@@ -458,7 +461,43 @@ class Routes {
               textDirection: checkDirection(context),
               child: ChatRoomPage(
                 settings.arguments as Map<String, dynamic>,
-                // getIt.get<ProfileMeStore>().userData!.id,
+              ),
+            ),
+          ),
+        );
+
+      case StarredMessage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChatRoomStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: StarredMessage(settings.arguments as String),
+            ),
+          ),
+        );
+
+      case CreateGroupPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChatRoomStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: CreateGroupPage(
+                settings.arguments as String,
+              ),
+            ),
+          ),
+        );
+
+      case EditGroupChat.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChatRoomStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: EditGroupChat(
+                settings.arguments as ChatRoomStore,
               ),
             ),
           ),

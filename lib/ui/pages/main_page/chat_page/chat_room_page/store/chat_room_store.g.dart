@@ -16,6 +16,51 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
           Computed<Chats?>(() => super.chat, name: '_ChatRoomStore.chat'))
       .value;
 
+  final _$chatNameAtom = Atom(name: '_ChatRoomStore.chatName');
+
+  @override
+  String get chatName {
+    _$chatNameAtom.reportRead();
+    return super.chatName;
+  }
+
+  @override
+  set chatName(String value) {
+    _$chatNameAtom.reportWrite(value, super.chatName, () {
+      super.chatName = value;
+    });
+  }
+
+  final _$indexAtom = Atom(name: '_ChatRoomStore.index');
+
+  @override
+  int get index {
+    _$indexAtom.reportRead();
+    return super.index;
+  }
+
+  @override
+  set index(int value) {
+    _$indexAtom.reportWrite(value, super.index, () {
+      super.index = value;
+    });
+  }
+
+  final _$userInChatAtom = Atom(name: '_ChatRoomStore.userInChat');
+
+  @override
+  ObservableList<bool> get userInChat {
+    _$userInChatAtom.reportRead();
+    return super.userInChat;
+  }
+
+  @override
+  set userInChat(ObservableList<bool> value) {
+    _$userInChatAtom.reportWrite(value, super.userInChat, () {
+      super.userInChat = value;
+    });
+  }
+
   final _$_myIdAtom = Atom(name: '_ChatRoomStore._myId');
 
   @override
@@ -28,6 +73,21 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   set _myId(String value) {
     _$_myIdAtom.reportWrite(value, super._myId, () {
       super._myId = value;
+    });
+  }
+
+  final _$infoMessageValueAtom = Atom(name: '_ChatRoomStore.infoMessageValue');
+
+  @override
+  String get infoMessageValue {
+    _$infoMessageValueAtom.reportRead();
+    return super.infoMessageValue;
+  }
+
+  @override
+  set infoMessageValue(String value) {
+    _$infoMessageValueAtom.reportWrite(value, super.infoMessageValue, () {
+      super.infoMessageValue = value;
     });
   }
 
@@ -62,26 +122,73 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
-  final _$flagAtom = Atom(name: '_ChatRoomStore.flag');
+  final _$usersIdAtom = Atom(name: '_ChatRoomStore.usersId');
 
   @override
-  bool get flag {
-    _$flagAtom.reportRead();
-    return super.flag;
+  ObservableList<String> get usersId {
+    _$usersIdAtom.reportRead();
+    return super.usersId;
   }
 
   @override
-  set flag(bool value) {
-    _$flagAtom.reportWrite(value, super.flag, () {
-      super.flag = value;
+  set usersId(ObservableList<String> value) {
+    _$usersIdAtom.reportWrite(value, super.usersId, () {
+      super.usersId = value;
     });
+  }
+
+  final _$availableUsersAtom = Atom(name: '_ChatRoomStore.availableUsers');
+
+  @override
+  ObservableList<ProfileMeResponse> get availableUsers {
+    _$availableUsersAtom.reportRead();
+    return super.availableUsers;
+  }
+
+  @override
+  set availableUsers(ObservableList<ProfileMeResponse> value) {
+    _$availableUsersAtom.reportWrite(value, super.availableUsers, () {
+      super.availableUsers = value;
+    });
+  }
+
+  final _$selectedUsersAtom = Atom(name: '_ChatRoomStore.selectedUsers');
+
+  @override
+  ObservableList<bool> get selectedUsers {
+    _$selectedUsersAtom.reportRead();
+    return super.selectedUsers;
+  }
+
+  @override
+  set selectedUsers(ObservableList<bool> value) {
+    _$selectedUsersAtom.reportWrite(value, super.selectedUsers, () {
+      super.selectedUsers = value;
+    });
+  }
+
+  final _$getUsersForGroupCHatAsyncAction =
+      AsyncAction('_ChatRoomStore.getUsersForGroupCHat');
+
+  @override
+  Future<dynamic> getUsersForGroupCHat() {
+    return _$getUsersForGroupCHatAsyncAction
+        .run(() => super.getUsersForGroupCHat());
+  }
+
+  final _$createGroupChatAsyncAction =
+      AsyncAction('_ChatRoomStore.createGroupChat');
+
+  @override
+  Future<dynamic> createGroupChat() {
+    return _$createGroupChatAsyncAction.run(() => super.createGroupChat());
   }
 
   final _$getMessagesAsyncAction = AsyncAction('_ChatRoomStore.getMessages');
 
   @override
-  Future getMessages() {
-    return _$getMessagesAsyncAction.run(() => super.getMessages());
+  Future getMessages(bool isPagination) {
+    return _$getMessagesAsyncAction.run(() => super.getMessages(isPagination));
   }
 
   final _$sendMessageAsyncAction = AsyncAction('_ChatRoomStore.sendMessage');
@@ -96,11 +203,44 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
       ActionController(name: '_ChatRoomStore');
 
   @override
-  void loadChat(String chatId) {
+  void setChatName(String value) {
     final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
-        name: '_ChatRoomStore.loadChat');
+        name: '_ChatRoomStore.setChatName');
     try {
-      return super.loadChat(chatId);
+      return super.setChatName(value);
+    } finally {
+      _$_ChatRoomStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void selectUser(int index) {
+    final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
+        name: '_ChatRoomStore.selectUser');
+    try {
+      return super.selectUser(index);
+    } finally {
+      _$_ChatRoomStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  String setInfoMessage(String infoMessage) {
+    final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
+        name: '_ChatRoomStore.setInfoMessage');
+    try {
+      return super.setInfoMessage(infoMessage);
+    } finally {
+      _$_ChatRoomStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic generateListUserInChat() {
+    final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
+        name: '_ChatRoomStore.generateListUserInChat');
+    try {
+      return super.generateListUserInChat();
     } finally {
       _$_ChatRoomStoreActionController.endAction(_$actionInfo);
     }
@@ -109,9 +249,15 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   @override
   String toString() {
     return '''
+chatName: ${chatName},
+index: ${index},
+userInChat: ${userInChat},
+infoMessageValue: ${infoMessageValue},
 isLoadingMessages: ${isLoadingMessages},
 refresh: ${refresh},
-flag: ${flag},
+usersId: ${usersId},
+availableUsers: ${availableUsers},
+selectedUsers: ${selectedUsers},
 chat: ${chat}
     ''';
   }

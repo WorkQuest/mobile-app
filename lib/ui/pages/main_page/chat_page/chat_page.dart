@@ -1,6 +1,8 @@
 import 'package:app/enums.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/observer_consumer.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,12 +24,17 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   late ChatStore store;
   late ProfileMeStore userData;
+  ScrollController controller = ScrollController();
 
   @override
   void initState() {
     store = context.read<ChatStore>();
     userData = context.read<ProfileMeStore>();
     super.initState();
+    // controller.addListener(() {
+    //   if (controller.position.extentAfter < 500) if (!store.isLoadingChats)
+    //     store.getMessages();
+    // });
   }
 
   @override
@@ -59,12 +66,21 @@ class _ChatPageState extends State<ChatPage> {
                                 child: TextButton(
                                   onPressed: () {
                                     if (choice == "Starred message") {
+                                      Navigator.pushNamed(
+                                        context, StarredMessage.routeName,
+                                        arguments: userData.userData!.id
+                                      );
                                     } else if (choice == "Report") {
                                       Navigator.pushNamed(
-                                          context, DisputePage.routeName,
-                                          arguments: store
-                                              .selectedCategoriesWorker[1]);
-                                    } else {}
+                                        context, DisputePage.routeName,
+                                      );
+                                    } else if (choice == "Create group chat") {
+                                      // Navigator.pushNamed(
+                                      //   context,
+                                      //   CreateGroupPage.routeName,
+                                      //   arguments: userData.userData!.id,
+                                      // );
+                                    }
                                   },
                                   child: Text(
                                     choice,
@@ -83,6 +99,10 @@ class _ChatPageState extends State<ChatPage> {
                                 child: TextButton(
                                   onPressed: () {
                                     if (choice == "Create group chat") {
+                                      // Navigator.pushNamed(
+                                      //   context,
+                                      //   CreateGroupPage.routeName,
+                                      // );
                                     } else {}
                                   },
                                   child: Text(
@@ -103,14 +123,26 @@ class _ChatPageState extends State<ChatPage> {
           ];
         },
         body: RefreshIndicator(
-          onRefresh: store.loadChats,
+          onRefresh: () {
+            return store.loadChats(true);
+          },
           child: ObserverListener<ChatStore>(
             onSuccess: () {},
             child: Observer(
               builder: (_) => store.chats.isNotEmpty
-                  ? SingleChildScrollView(
-                      child: Column(
-                        children: store.chats.map((e) => _chatItem(e)).toList(),
+                  ? NotificationListener<ScrollEndNotification>(
+                      onNotification: (scrollEnd) {
+                        final metrics = scrollEnd.metrics;
+                        if (metrics.maxScrollExtent < metrics.pixels) {
+                          store.loadChats(false);
+                        }
+                        return true;
+                      },
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children:
+                              store.chats.map((e) => _chatItem(e)).toList(),
+                        ),
                       ),
                     )
                   : Center(
@@ -126,6 +158,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _chatItem(ChatModel chatDetails, {bool hasUnreadMessages = false}) {
+    final differenceTime =
+        DateTime.now().difference(chatDetails.lastMessageDate).inDays;
     return GestureDetector(
       onTap: () {
         Map<String, dynamic> arguments = {
@@ -167,9 +201,12 @@ class _ChatPageState extends State<ChatPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        chatDetails.userMembers[0].id != userData.userData!.id
-                            ? "${chatDetails.userMembers[0].firstName} ${chatDetails.userMembers[0].lastName}"
-                            : "${chatDetails.userMembers[1].firstName} ${chatDetails.userMembers[1].lastName}",
+                        chatDetails.name == null
+                            ? chatDetails.userMembers[0].id !=
+                                    userData.userData!.id
+                                ? "${chatDetails.userMembers[0].firstName} ${chatDetails.userMembers[0].lastName}"
+                                : "${chatDetails.userMembers[1].firstName} ${chatDetails.userMembers[1].lastName}"
+                            : "${chatDetails.name}",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -181,7 +218,7 @@ class _ChatPageState extends State<ChatPage> {
                           chatDetails.lastMessage!.senderUserId ==
                                   userData.userData!.id
                               ? "chat.you".tr() +
-                                  " ${chatDetails.lastMessage!.text} "
+                                  " ${chatDetails.lastMessage?.text ?? store.setInfoMessage(chatDetails.lastMessage!.infoMessage!.messageAction)} "
                               : "${chatDetails.lastMessage!.sender!.firstName}:" +
                                   " ${chatDetails.lastMessage!.text} ",
                           style: TextStyle(
@@ -194,7 +231,11 @@ class _ChatPageState extends State<ChatPage> {
                       const SizedBox(height: 5),
                       if (chatDetails.lastMessage != null)
                         Text(
-                          chatDetails.lastMessageDate.toString(),
+                          differenceTime == 0
+                              ? "chat.today".tr()
+                              : differenceTime == 1
+                                  ? "$differenceTime " + "chat.day".tr()
+                                  : "$differenceTime " + "chat.days".tr(),
                           style: TextStyle(
                             fontSize: 12,
                             color: Color(0xFFD8DFE3),

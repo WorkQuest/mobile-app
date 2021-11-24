@@ -869,9 +869,11 @@
     }
   },
   "modals": {
-    "chatCreate": {
+    "modals": {
       "title": "Create group chat",
-      "desc": "Name the group chat and choose users from the chat list",
+      "edit": "Edit group chat",
+      "enterName": "Enter chat name",
+      "enterUserName": "Enter user name",
       "participants": "Participants",
       "chatName": "Chat name"
     },
@@ -1176,14 +1178,18 @@
   },
   "chat": {
     "openDispute": "Open dispute",
+    "owner": "Owner",
     "approveQuest": "Approve quest",
-    "favoriteMessages": "Favorite messages",
+    "starredMessages": "Starred messages",
     "favoriteChats": "Favorite chats",
     "createGroupChat": "Create group chat",
     "favorite": "Add to favorites",
     "messages": "Messages",
     "message": "Message",
     "chat": "Chat",
+    "today": "Today",
+    "day": "day ago",
+    "days": "days ago",
     "noChats": "No chats",
     "quest": "Quest:",
     "yourUsername": "Your username:",
