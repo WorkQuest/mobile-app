@@ -59,7 +59,7 @@ class MainPage extends StatelessWidget {
       child: Observer(
         builder: (_) => CupertinoTabScaffold(
           tabBar: CupertinoTabBar(
-            items: _tabBarIconsData
+            items : _tabBarIconsData
                 .map((item) => BottomNavigationBarItem(
                       icon: SvgPicture.asset(item.svgPath),
                       activeIcon: SvgPicture.asset(

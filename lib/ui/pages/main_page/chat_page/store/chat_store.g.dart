@@ -9,6 +9,21 @@ part of 'chat_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ChatStore on _ChatStore, Store {
+  final _$unreadAtom = Atom(name: '_ChatStore.unread');
+
+  @override
+  bool get unread {
+    _$unreadAtom.reportRead();
+    return super.unread;
+  }
+
+  @override
+  set unread(bool value) {
+    _$unreadAtom.reportWrite(value, super.unread, () {
+      super.unread = value;
+    });
+  }
+
   final _$selectedCategoriesWorkerAtom =
       Atom(name: '_ChatStore.selectedCategoriesWorker');
 
@@ -134,6 +149,7 @@ mixin _$ChatStore on _ChatStore, Store {
   @override
   String toString() {
     return '''
+unread: ${unread},
 selectedCategoriesWorker: ${selectedCategoriesWorker},
 selectedCategoriesEmployer: ${selectedCategoriesEmployer},
 infoMessageValue: ${infoMessageValue},

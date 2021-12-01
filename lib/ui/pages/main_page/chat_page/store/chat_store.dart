@@ -24,6 +24,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
   int limit = 10;
 
   UserRole? role;
+  @observable
   bool unread = false;
 
   _ChatStore(this._apiProvider) {
