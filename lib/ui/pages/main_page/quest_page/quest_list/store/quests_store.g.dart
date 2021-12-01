@@ -140,28 +140,43 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$questsListAtom = Atom(name: '_QuestsStore.questsList');
 
   @override
-  List<BaseQuestResponse>? get questsList {
+  ObservableList<BaseQuestResponse> get questsList {
     _$questsListAtom.reportRead();
     return super.questsList;
   }
 
   @override
-  set questsList(List<BaseQuestResponse>? value) {
+  set questsList(ObservableList<BaseQuestResponse> value) {
     _$questsListAtom.reportWrite(value, super.questsList, () {
       super.questsList = value;
+    });
+  }
+
+  final _$questsListLengthAtom = Atom(name: '_QuestsStore.questsListLength');
+
+  @override
+  int get questsListLength {
+    _$questsListLengthAtom.reportRead();
+    return super.questsListLength;
+  }
+
+  @override
+  set questsListLength(int value) {
+    _$questsListLengthAtom.reportWrite(value, super.questsListLength, () {
+      super.questsListLength = value;
     });
   }
 
   final _$workersListAtom = Atom(name: '_QuestsStore.workersList');
 
   @override
-  List<ProfileMeResponse>? get workersList {
+  ObservableList<ProfileMeResponse> get workersList {
     _$workersListAtom.reportRead();
     return super.workersList;
   }
 
   @override
-  set workersList(List<ProfileMeResponse>? value) {
+  set workersList(ObservableList<ProfileMeResponse> value) {
     _$workersListAtom.reportWrite(value, super.workersList, () {
       super.workersList = value;
     });
@@ -242,6 +257,21 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$loadQuestsListAtom = Atom(name: '_QuestsStore.loadQuestsList');
+
+  @override
+  ObservableList<BaseQuestResponse> get loadQuestsList {
+    _$loadQuestsListAtom.reportRead();
+    return super.loadQuestsList;
+  }
+
+  @override
+  set loadQuestsList(ObservableList<BaseQuestResponse> value) {
+    _$loadQuestsListAtom.reportWrite(value, super.loadQuestsList, () {
+      super.loadQuestsList = value;
+    });
+  }
+
   final _$latitudeAtom = Atom(name: '_QuestsStore.latitude');
 
   @override
@@ -313,15 +343,15 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$getQuestsAsyncAction = AsyncAction('_QuestsStore.getQuests');
 
   @override
-  Future<dynamic> getQuests(String userId) {
-    return _$getQuestsAsyncAction.run(() => super.getQuests(userId));
+  Future<dynamic> getQuests(String userId, bool newList) {
+    return _$getQuestsAsyncAction.run(() => super.getQuests(userId, newList));
   }
 
   final _$getWorkersAsyncAction = AsyncAction('_QuestsStore.getWorkers');
 
   @override
-  Future<dynamic> getWorkers(String userId) {
-    return _$getWorkersAsyncAction.run(() => super.getWorkers(userId));
+  Future<dynamic> getWorkers(String userId, bool newList) {
+    return _$getWorkersAsyncAction.run(() => super.getWorkers(userId, newList));
   }
 
   final _$_QuestsStoreActionController = ActionController(name: '_QuestsStore');
@@ -393,12 +423,14 @@ offset: ${offset},
 limit: ${limit},
 status: ${status},
 questsList: ${questsList},
+questsListLength: ${questsListLength},
 workersList: ${workersList},
 searchResultList: ${searchResultList},
 searchWorkersList: ${searchWorkersList},
 employmentValue: ${employmentValue},
 workplaceValue: ${workplaceValue},
 priorityValue: ${priorityValue},
+loadQuestsList: ${loadQuestsList},
 latitude: ${latitude},
 longitude: ${longitude},
 locationPlaceName: ${locationPlaceName},

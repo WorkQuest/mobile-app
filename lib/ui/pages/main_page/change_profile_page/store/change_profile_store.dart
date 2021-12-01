@@ -25,6 +25,9 @@ abstract class ChangeProfileStoreBase with Store {
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
+
+
+  @action
   Future<Null> getPrediction(BuildContext context) async {
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
@@ -48,6 +51,9 @@ abstract class ChangeProfileStoreBase with Store {
     if (userData == null) return false;
 
     if (this.userData.userSpecializations != userData.userSpecializations)
+      return true;
+
+    if (this.userData.wagePerHour != userData.wagePerHour)
       return true;
 
     if (this.userData.firstName != userData.firstName) return true;

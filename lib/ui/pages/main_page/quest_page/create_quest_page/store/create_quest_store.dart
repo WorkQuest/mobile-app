@@ -41,7 +41,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   final List<String> distantWorkList = [
     "Distant work",
     "Work in the office",
-    "Both options".tr(),
+    "Both variant",
   ];
 
   /// location, runtime, images and videos ,priority undone
@@ -147,7 +147,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     switch (workplace) {
       case "Distant work":
         return workplaceValue = "distant";
-      case "Work in office":
+      case "Work in the office":
         return workplaceValue = "office";
       case "Both variant":
         return workplaceValue = "both";
@@ -165,6 +165,30 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         return employmentValue = "fixedTerm";
     }
     return employmentValue;
+  }
+
+  String getWorkplace(String workplaceValue) {
+    switch (workplaceValue) {
+      case "distant":
+        return workplace = "Distant work";
+      case "office":
+        return workplace = "Work in the office";
+      case "both":
+        return workplace = "Both variant";
+    }
+    return workplace;
+  }
+
+  String getEmployment(String employmentValue) {
+    switch (employmentValue) {
+      case "fullTime":
+        return employment = "Full time";
+      case "partTime":
+        return employment = "Part time";
+      case "fixedTerm":
+        return employment = "Fixed term";
+    }
+    return employment;
   }
 
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);

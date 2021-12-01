@@ -3,6 +3,7 @@ import 'package:app/enums.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/model/chat_model/chat_model.dart';
+import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
@@ -415,6 +416,9 @@ extension UserInfoService on ApiProvider {
         "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
         "firstName": userData.firstName,
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
+        "wagePerHour": userData.wagePerHour,
+        if (userData.role == UserRole.Worker) "priority": userData.priority,
+        if (userData.role == UserRole.Worker) "workplace": userData.workplace,
         "additionalInfo": {
           "secondMobileNumber":
               (userData.additionalInfo?.secondMobileNumber?.isNotEmpty ?? false)
@@ -566,10 +570,12 @@ extension GetUploadLink on ApiProvider {
           media.entity.type == AssetType.video ? "video/mp4" : "image/jpeg";
 
       if (media.entity.type == AssetType.video) {
-        File? file = await media.entity.file;
-        bytes = await file!.readAsBytes();
+        // File? file = await media.entity.thumbData;
+        bytes = await media.entity.thumbData;
       } else
         bytes = media.thumbBytes;
+
+      print("bytes after -> ${bytes?.length}");
 
       final response = await _httpClient.post(
         query: '/v1/storage/get-upload-link',
@@ -609,13 +615,118 @@ extension GetUploadLink on ApiProvider {
 
 ///Chat Service
 extension ChatsService on ApiProvider {
-  Future<List<ChatModel>> getChats() async {
-    final responseData = await _httpClient.get(query: '/v1/user/me/chats');
-    return List<ChatModel>.from(
-      responseData["chats"].map(
-        (x) => ChatModel.fromJson(x),
-      ),
+  Future<List<ChatModel>> getChats({
+    required int offset,
+    required int limit,
+  }) async {
+    try {
+      final responseData = await _httpClient.get(
+        query: '/v1/user/me/chats',
+        queryParameters: {
+          "offset": offset,
+          "limit": limit,
+        },
+      );
+      return List<ChatModel>.from(
+        responseData["chats"].map(
+          (x) => ChatModel.fromJson(x),
+        ),
+      );
+    } catch (e, stack) {
+      print("ERROR $e");
+      print("ERROR $stack");
+      return [];
+    }
+  }
+
+  Future<List<ProfileMeResponse>> getUsersForGroupCHat() async {
+    try {
+      final responseData = await _httpClient.get(
+          query: '/v1/user/me/chat/members/users-by-chats');
+      return List<ProfileMeResponse>.from(
+        responseData["users"].map(
+          (x) => ProfileMeResponse.fromJson(x),
+        ),
+      );
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      return [];
+    }
+  }
+
+  Future<List<MessageModel>> getStarredMessage() async {
+    try {
+      final responseData =
+          await _httpClient.get(query: '/v1/user/me/chat/messages/star');
+      return List<MessageModel>.from(
+        responseData["messages"].map(
+          (x) => MessageModel.fromJson(x),
+        ),
+      );
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>> createGroupChat({
+    required String chatName,
+    required List<String> usersId,
+  }) async {
+    final responseData = await _httpClient.post(
+      query: '/v1/user/me/chat/group/create',
+      data: {
+        "name": chatName,
+        "memberUserIds": usersId,
+      },
     );
+    return responseData;
+  }
+
+  Future<void> addUsersInChat({
+    required String chatId,
+    required List<String> userIds,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/user/me/chat/group/$chatId/add',
+      data: {"userIds": userIds},
+    );
+  }
+
+  Future<void> setMessageStar({
+    required String chatId,
+    required String messageId,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/user/me/chat/$chatId/message/$messageId/star',
+    );
+  }
+
+  Future<void> removeStarFromMsg({
+    required String messageId,
+  }) async {
+    await _httpClient.delete(
+      query: '/v1/user/me/chat/message/$messageId/star',
+    );
+  }
+
+  Future<void> removeUser({
+    required String chatId,
+    required String userId,
+  }) async {
+    await _httpClient.delete(
+      query: '/v1/user/me/chat/group/$chatId/remove/$userId',
+    );
+  }
+
+  Future<void> setMessageRead({
+    required String chatId,
+    required String messageId,
+  }) async {
+    await _httpClient.post(
+        query: '/v1/read/message/$chatId', data: {"messageId": messageId});
   }
 
   Future<Map<String, dynamic>> getMessages({
@@ -631,21 +742,6 @@ extension ChatsService on ApiProvider {
       },
     );
     return responseData;
-  }
-
-  Future<bool> sendMessageToChat({
-    required String chatId,
-    String? text,
-    List<String>? mediasId,
-  }) async {
-    final responseData = await _httpClient.post(
-      query: '/v1/chat/$chatId/send-message',
-      data: {
-        "text": text ?? "",
-        "medias": mediasId ?? [],
-      },
-    );
-    return responseData == null;
   }
 }
 
@@ -732,7 +828,7 @@ extension Portfolio on ApiProvider {
         query: '/v1/user/$userId/portfolio/cases',
       );
       return List<PortfolioModel>.from(
-        responseData.map(
+        responseData["cases"].map(
           (x) => PortfolioModel.fromJson(x),
         ),
       );

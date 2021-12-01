@@ -35,6 +35,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     questStore = context.read<MyQuestStore>();
     store.getRespondedList(
         widget.questInfo.id, widget.questInfo.assignedWorker?.id ?? "");
+    store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(
       milliseconds: 500,
@@ -143,6 +144,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     ProfileReviews.routeName,
                     arguments: profile!.assignedWorker,
                   );
+                  profile!.assignedWorker = null;
                 }
               });
             },

@@ -18,6 +18,9 @@ class ProfileMeResponse {
     required this.userSpecializations,
     required this.ratingStatistic,
     required this.location,
+    required this.wagePerHour,
+    required this.workplace,
+    required this.priority,
     // required this.createdAt,
     // required this.updatedAt,
   });
@@ -35,6 +38,9 @@ class ProfileMeResponse {
   List<String> userSpecializations;
   RatingStatistic? ratingStatistic;
   Location? location;
+  String wagePerHour;
+  String? workplace;
+  int? priority;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(
@@ -56,6 +62,9 @@ class ProfileMeResponse {
               : null,
           location:
               object.location != null ? Location.clone(object.location!) : null,
+          wagePerHour: object.wagePerHour,
+          workplace: object.workplace,
+          priority: object.priority,
         );
 
   //RatingStatistic? ratingStatistic;
@@ -66,8 +75,8 @@ class ProfileMeResponse {
     return ProfileMeResponse(
       id: json["id"],
       avatarId: json["avatarId"] ?? "",
-      firstName: json["firstName"]??"",
-      lastName: json["lastName"]??"",
+      firstName: json["firstName"] ?? "",
+      lastName: json["lastName"] ?? "",
       phone: json["phone"] ?? "",
       tempPhone: json["tempPhone"] ?? "",
       email: json["email"],
@@ -76,18 +85,23 @@ class ProfileMeResponse {
           : AdditionalInfo.fromJson(json["additionalInfo"]),
       role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
       avatar: Avatar.fromJson(json["avatar"]),
-      userSpecializations: (List<Map<String, dynamic>> skills) {
-        List<String> skillsString = [];
-        for (var skill in skills) {
-          skillsString.add(skill.values.toString());
-        }
-        return skillsString;
-      }([...json["userSpecializations"]]),
+      userSpecializations: json["userSpecializations"] == null
+          ? []
+          : (List<Map<String, dynamic>> skills) {
+              List<String> skillsString = [];
+              for (var skill in skills) {
+                skillsString.add(skill.values.toString());
+              }
+              return skillsString;
+            }([...json["userSpecializations"]]),
       ratingStatistic: json["ratingStatistic"] == null
           ? null
           : RatingStatistic.fromJson(json["ratingStatistic"]),
       location:
           json["location"] == null ? null : Location.fromJson(json["location"]),
+      wagePerHour: json["wagePerHour"] ?? "",
+      workplace: json["workplace"],
+      priority: json["priority"],
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );
@@ -107,6 +121,9 @@ class ProfileMeResponse {
         // "skillFilter": skillFilters.map((item) => item.toJson()),
         "ratingStatistic": ratingStatistic!.toJson(),
         "location": location!.toJson(),
+        "wagePerHour": wagePerHour,
+        "workplace": workplace,
+        "priority": priority,
         // "createdAt": createdAt.toIso8601String(),
         // "updatedAt": updatedAt.toIso8601String(),
       };
@@ -194,7 +211,7 @@ class RatingStatistic {
       id: json["id"],
       userId: json["userId"],
       reviewCount: json["reviewCount"],
-      averageMark: json["averageMark"].toDouble() ?? 0.0,
+      averageMark: json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble() ,
       createdAt: json["createdAt"],
       updatedAt: json["updatedAt"],
     );

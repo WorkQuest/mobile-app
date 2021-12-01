@@ -24,6 +24,7 @@ class _QuestMapState extends State<QuestMap> {
   QuestMapStore? mapStore;
   CameraPosition? _initialCameraPosition;
   late GoogleMapController _controller;
+  PermissionStatus _permissionGranted = PermissionStatus.denied;
 
   @override
   void initState() {
@@ -176,7 +177,7 @@ class _QuestMapState extends State<QuestMap> {
 
   Future<void> _getCurrentLocation() async {
     print("Start");
-    final _permissionGranted = await _location.requestPermission();
+    _permissionGranted = await _location.requestPermission();
     print("Location permission => $_permissionGranted");
 
     if (_permissionGranted == PermissionStatus.deniedForever ||

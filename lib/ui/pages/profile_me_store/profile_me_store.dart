@@ -29,22 +29,50 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   bool? twoFAStatus;
 
   @observable
-  String priority = "Low".tr();
+  String priority = "Low";
 
   @observable
-  String distantWork = "Remote work".tr();
+  String distantWork = "Remote work";
 
-  ObservableList<String> distantWorkList = ObservableList.of([
-    "Remote work".tr(),
-    "Work in the office".tr(),
-    "Both options".tr(),
-  ]);
+  // @observable
+  // String wagePerHour = "";
+  //
+  // ObservableList<String> distantWorkList = ObservableList.of([
+  //   "Remote work",
+  //   "Work in the office",
+  //   "Both options",
+  // ]);
 
-  ObservableList<String> priorityList = ObservableList.of([
-    "Low".tr(),
-    "Normal".tr(),
-    "Urgent".tr(),
-  ]);
+  // ObservableList<String> priorityList = ObservableList.of([
+  //   "Low",
+  //   "Normal",
+  //   "Urgent",
+  // ]);
+
+  // @observable
+  // String setPriority(int value){
+  //   switch(value){
+  //     case 0: priority = "Low";
+  //       return priority;
+  //     case 1: priority = "Normal";
+  //       return priority;
+  //     case 2: priority = "Urgent";
+  //       return priority;
+  //   }
+  //   return priority;
+  // }
+
+  // @observable
+  // void setPriorityValue(String priority){
+  //   switch(priority){
+  //     case "Low": userData!.priority = 0;
+  //     break;
+  //     case "Normal": userData!.priority = 1;
+  //       break;
+  //     case "Urgent": userData!.priority = 2;
+  //     break;
+  //   }
+  // }
 
   @action
   List<String> parser(List<String> skills) {
@@ -71,13 +99,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
     return result;
   }
-
-  @action
-  void changeDistantWork(String selectedDistantWork) =>
-      distantWork = selectedDistantWork;
-
-  @action
-  void changePriority(String selectedPriority) => priority = selectedPriority;
 
   @action
   Future getProfileMe() async {

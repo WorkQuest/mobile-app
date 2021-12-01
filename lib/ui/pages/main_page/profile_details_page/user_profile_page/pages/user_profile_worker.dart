@@ -76,6 +76,7 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
                             : portfolioStore!
                                 .portfolioList[index].medias.first.url,
                         title: portfolioStore!.portfolioList[index].title,
+                        isProfileYour: widget.info == null ? true : false,
                       ),
                   ],
                 ),
