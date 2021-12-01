@@ -51,6 +51,22 @@ class WebSocket {
         );
   }
 
+  void _onData(message) {
+    print("WebSocket message: $message");
+    final json = jsonDecode(message.toString());
+    switch (json["type"]) {
+      case "pub":
+        _handleSubscription(json);
+        break;
+      case "ping":
+        _ping();
+        break;
+      case "request":
+        getMessage(json);
+        break;
+    }
+  }
+
   void _handleSubscription(dynamic json) async {
     if (json["path"] == "/notifications/chat") {
       // changeFreezeBalance(json);
@@ -68,7 +84,6 @@ class WebSocket {
         message = MessageModel.fromJson(json["payload"]["result"]);
       if(handlerChats!=null)
         handlerChats!(message);
-      // ConversationRepository().addedMessage(message);
       print("chatMessage: ${message.toJson()}");
     } catch (e) {
       print("WebSocket message ERROR: ${e.toString()}");
@@ -87,7 +102,7 @@ class WebSocket {
       "path": "/api/v1/chat/$chatId/send-message",
       "payload": {
         "text": "$text",
-        "medias": [],
+        "medias": medias,
       }
     };
     String textPayload = json.encode(payload).toString();
@@ -95,22 +110,6 @@ class WebSocket {
     print("Send Message: $textPayload");
     // ConversationRepository().sendMsg(message)
     _counter++;
-  }
-
-  void _onData(message) {
-    print("WebSocket message: $message");
-    final json = jsonDecode(message.toString());
-    switch (json["type"]) {
-      case "pub":
-        _handleSubscription(json);
-        break;
-      case "ping":
-        _ping();
-        break;
-      case "request":
-        getMessage(json);
-        break;
-    }
   }
 
   void _ping() {

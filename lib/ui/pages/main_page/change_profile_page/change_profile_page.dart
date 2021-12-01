@@ -286,24 +286,28 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     return Column(
       children: <Widget>[
         SkillSpecializationSelection(controller: _controller),
-        dropDownMenu(
-          title: "settings.priority".tr(),
-          value: profile!.priority,
-          list: profile!.priorityList,
-          onChanged: (text) => profile!.changePriority(text!),
-        ),
+        // dropDownMenu(
+        //     title: "settings.priority".tr(),
+        //     value: profile!.setPriority(pageStore.userData.priority),
+        //     list: profile!.priorityList,
+        //     onChanged: (text) {
+        //       profile!.setPriorityValue(text!);
+        //       profile!.priority = text;
+        //     }),
         inputBody(
           title: "settings.costPerHour".tr(),
-          initialValue: "",
-          onChanged: (text) => text,
-          validator: Validators.nicknameTwitterValidator,
+          initialValue: pageStore.userData.wagePerHour,
+          onChanged: (text) => pageStore.userData.wagePerHour = text,
+          validator: Validators.emptyValidator,
         ),
-        dropDownMenu(
-          title: "settings.distantWork".tr(),
-          value: profile!.distantWork,
-          list: profile!.distantWorkList,
-          onChanged: (text) => profile!.changeDistantWork(text!),
-        ),
+        // Observer(
+        //   builder: (_) => dropDownMenu(
+        //     title: "settings.distantWork".tr(),
+        //     value: pageStore.userData.workplace ?? "Both options",
+        //     list: profile!.distantWorkList,
+        //     onChanged: (text) => pageStore.userData.workplace = text,
+        //   ),
+        // ),
         KnowledgeWorkSelection(
           title: "Knowledge",
           hintText: "settings.education.educationalInstitution".tr(),
@@ -389,27 +393,29 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
           ),
           alignment: Alignment.centerLeft,
           child: DropdownButtonHideUnderline(
-            child: DropdownButton(
-              isExpanded: true,
-              value: value,
-              onChanged: onChanged,
-              items: list.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: new Text(value),
-                );
-              }).toList(),
-              icon: Icon(
-                Icons.arrow_drop_down,
-                size: 30,
-                color: Colors.blueAccent,
-              ),
-              hint: Text(
-                title.tr(),
-                maxLines: 1,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
+            child: Observer(
+              builder: (_) => DropdownButton(
+                isExpanded: true,
+                value: value,
+                onChanged: onChanged,
+                items: list.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                icon: Icon(
+                  Icons.arrow_drop_down,
+                  size: 30,
+                  color: Colors.blueAccent,
+                ),
+                hint: Text(
+                  title,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
                 ),
               ),
             ),

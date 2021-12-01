@@ -4,9 +4,11 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
+import 'package:app/model/chat_model/star.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/repository/chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/repository/conversation_repository.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
@@ -16,15 +18,15 @@ part 'chat_room_store.g.dart';
 
 @injectable
 class ChatRoomStore extends _ChatRoomStore with _$ChatRoomStore {
-  ChatRoomStore(ApiProvider apiProvider, ConversationRepository repo)
-      : super(apiProvider, repo);
+  ChatRoomStore(ApiProvider apiProvider, ChatStore chats)
+      : super(apiProvider, chats);
 }
 
 abstract class _ChatRoomStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
-  final ConversationRepository repo;
+  final ChatStore chats;
 
-  _ChatRoomStore(this._apiProvider, this.repo);
+  _ChatRoomStore(this._apiProvider, this.chats);
 
   int _count = 0;
   int _offset = 0;
@@ -36,11 +38,14 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   @observable
   String chatName = "";
 
-  // @observable
-  // ObservableList<bool> isMessageHighlighted = ObservableList.of([]);
-  //
-  // @observable
-  // ObservableList<String> idMessages = ObservableList.of([]);
+  @observable
+  ObservableList<bool> isMessageHighlighted = ObservableList.of([]);
+
+  @observable
+  ObservableList<String> idMessages = ObservableList.of([]);
+
+  @observable
+  ObservableList<String> idMessagesForDeleting = ObservableList.of([]);
 
   @observable
   int index = 0;
@@ -52,13 +57,19 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   ObservableList<bool> userInChat = ObservableList.of([]);
 
   @observable
+  ObservableList<String> userForDeleting = ObservableList.of([]);
+
+  @observable
   String _myId = "";
 
   @observable
   String infoMessageValue = "";
 
+  @observable
+  String userName = "";
+
   @computed
-  Chats? get chat => repo.chatByID(idChat);
+  Chats? get chat => chats.chatByID(idChat!);
 
   @observable
   bool isLoadingMessages = false;
@@ -67,10 +78,16 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   bool refresh = false;
 
   @observable
+  ProfileMeResponse? companion;
+
+  @observable
   ObservableList<String> usersId = ObservableList.of([]);
 
   @observable
   ObservableList<ProfileMeResponse> availableUsers = ObservableList.of([]);
+
+  @observable
+  ObservableList<ProfileMeResponse> foundUsers = ObservableList.of([]);
 
   @observable
   ObservableList<bool> selectedUsers = ObservableList.of([]);
@@ -79,20 +96,87 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   ObservableList<MessageModel> starredMessage = ObservableList.of([]);
 
   @observable
-  ObservableList<DrishyaEntity> media = ObservableList();
+  List<DrishyaEntity> media = [];
 
-  // Observable<BaseQuestResponse?> quest = Observable(null);
+  @observable
+  int pageNumber = 0;
 
   @action
-  void setMessageHighlighted(String value) => chatName = value;
+  void changePageNumber(int value) => pageNumber = value;
 
-  // @action
-  // void setStar(bool value) {
-  //   chatName = !value;
-  // }
+  @action
+  void setMessageSelected(bool value) => messageSelected = value;
+
+  void availableUsersForAdding(List<ProfileMeResponse> list) {
+    for (int i = 0; i < list.length; i++)
+      for (int j = 0; j < availableUsers.length; j++)
+        if (availableUsers[j].id == list[i].id)
+          availableUsers.remove(availableUsers[j]);
+  }
+
+  @action
+  void setMessageHighlighted(int index, MessageModel message) {
+    isMessageHighlighted[index] = !isMessageHighlighted[index];
+    for (int i = 0; i < idMessages.length; i++)
+      if (idMessages[i] == message.id) {
+        idMessages.removeAt(i);
+        // message.star = null;
+        return;
+      }
+    idMessages.add(message.id);
+  }
+
+  @action
+  void setStar() {
+    for (int i = 0; i < idMessages.length; i++)
+      for (int j = 0; j < chat!.messages.length; j++)
+        if (idMessages[i] == chat!.messages[j].id &&
+            chat!.messages[j].star != null) {
+          idMessagesForDeleting.add(idMessages[i]);
+          idMessages.removeAt(i);
+          i--;
+        } else if (idMessages[i] == chat!.messages[j].id &&
+            chat!.messages[j].star == null)
+          chat!.messages[j].star = Star(
+            id: "",
+            messageId: chat!.messages[j].id,
+            createdAt: DateTime.now(),
+            userId: chat!.messages[j].senderUserId,
+          );
+    idMessages.forEach((element) async {
+      await _apiProvider.setMessageStar(
+        chatId: chat!.chatModel.id,
+        messageId: element,
+      );
+    });
+    idMessagesForDeleting.forEach((element) async{
+      await _apiProvider.removeStarFromMsg(messageId: element);
+    });
+  }
+
+  @action
+  String copyMessage() {
+    String text = "";
+    for (int i = 0; i < idMessages.length; i++)
+      for (int j = 0; j < chat!.messages.length; j++)
+        if (idMessages[i] == chat!.messages[j].id)
+          text += chat!.messages[j].text! + " ";
+    return text;
+  }
 
   @action
   void setChatName(String value) => chatName = value;
+
+  @action
+  void findUser(String text) {
+    userName = text;
+    foundUsers.clear();
+    availableUsers.forEach((element) {
+      if (element.firstName.toLowerCase().contains(text.toLowerCase()) ||
+          element.lastName.toLowerCase().contains(text.toLowerCase()))
+        foundUsers.add(element);
+    });
+  }
 
   @action
   void selectUser(int index) {
@@ -105,6 +189,20 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     usersId.add(availableUsers[index].id);
   }
 
+  @action
+  void undeletingUser(ProfileMeResponse user) {
+    for (int i = 0; i < userForDeleting.length; i++) {
+      if (userForDeleting[i] == user.id) {
+        userForDeleting.removeAt(i);
+      }
+    }
+  }
+
+  @action
+  void deleteUser(ProfileMeResponse user) {
+    userForDeleting.add(user.id);
+  }
+
   // @action
   // void setLists() {
   //   isMessageHighlighted =
@@ -115,11 +213,25 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   @action
   Future getUsersForGroupCHat() async {
     try {
+      availableUsers.clear();
+      selectedUsers.clear();
       availableUsers
           .addAll(ObservableList.of(await _apiProvider.getUsersForGroupCHat()));
       selectedUsers = ObservableList.of(
           List.generate(availableUsers.length, (index) => false));
     } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future getCompanion(String userId) async {
+    try {
+      this.onLoading();
+      companion = await _apiProvider.getProfileUser(userId: userId);
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print(trace);
       this.onError(e.toString());
     }
   }
@@ -139,23 +251,6 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
           ObservableList.of(await _apiProvider.getStarredMessage());
       selectedUsers = ObservableList.of(
           List.generate(availableUsers.length, (index) => false));
-    } catch (e) {
-      this.onError(e.toString());
-    }
-  }
-
-  @action
-  Future createGroupChat() async {
-    try {
-      this.onLoading();
-      final responseData = await _apiProvider.createGroupChat(
-        chatName: chatName,
-        usersId: usersId,
-      );
-      idGroupChat = responseData["id"];
-      repo.setMessage([MessageModel.fromJson(responseData["lastMessage"])],
-          ChatModel.fromJson(responseData));
-      this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
     }
@@ -185,7 +280,57 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   generateListUserInChat() {
     userInChat = ObservableList.of(
         List.generate(chat!.chatModel.userMembers.length, (index) => true));
-    print("userInChat: ${userInChat.length}");
+  }
+
+  @action
+  Future createGroupChat() async {
+    try {
+      this.onLoading();
+      final responseData = await _apiProvider.createGroupChat(
+        chatName: chatName,
+        usersId: usersId,
+      );
+      idGroupChat = responseData["id"];
+      chats.setMessages([MessageModel.fromJson(responseData["lastMessage"])],
+          ChatModel.fromJson(responseData));
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  Future addUsersInChat() async {
+    try {
+      this.onLoading();
+      await _apiProvider.addUsersInChat(
+        chatId: chat!.chatModel.id,
+        userIds: usersId,
+      );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  Future removeUserFromChat() async {
+    if (userForDeleting.isNotEmpty)
+      try {
+        this.onLoading();
+        userForDeleting.forEach((element) async {
+          await _apiProvider.removeUser(
+            chatId: chat!.chatModel.id,
+            userId: element,
+          );
+          for (int i = 0; i < chat!.chatModel.userMembers.length; i++)
+            if (chat!.chatModel.userMembers[i].id == element) {
+              chat!.chatModel.userMembers
+                  .remove(chat!.chatModel.userMembers[i]);
+            }
+        });
+        this.onSuccess(true);
+      } catch (e) {
+        this.onError(e.toString());
+      }
   }
 
   @action
@@ -193,7 +338,6 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     if (chat!.messages.length >= _count && refresh) {
       return;
     }
-    refresh = true;
     if (isPagination) _offset = chat!.messages.length;
     isLoadingMessages = true;
     final responseData = await _apiProvider.getMessages(
@@ -203,23 +347,25 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     );
 
     _count = responseData["count"];
-
-    repo.addAllMessages(
+    chats.addAllMessages(
         List<MessageModel>.from(
             responseData["messages"].map((x) => MessageModel.fromJson(x))),
         chat!.chatModel.id);
-
-    for (int index = 0; index < chat!.messages.length; index++)
-      if (chat!.messages[index].text == null &&
-          chat!.messages[index].infoMessage == null) {
-        chat!.messages.removeAt(index);
-      }
     _offset = chat!.messages.length;
+    if (!refresh)
+      isMessageHighlighted =
+          ObservableList.of(List.generate(_count, (index) => false));
+    refresh = true;
     isLoadingMessages = false;
+    chat!.update();
   }
 
   @action
   Future sendMessage(String text, String chatId, String userId) async {
-    WebSocket().sendMessage(chatId: chatId, text: text, medias: []);
+    WebSocket().sendMessage(
+        chatId: chatId,
+        text: text,
+        medias: await _apiProvider.uploadMedia(medias: media));
+    media.clear();
   }
 }

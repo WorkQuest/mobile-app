@@ -7,8 +7,9 @@ import 'package:provider/provider.dart';
 class AddUserCell extends StatefulWidget {
   final ProfileMeResponse user;
   final int index;
+  final ChatRoomStore store;
 
-  const AddUserCell(this.user, this.index);
+  const AddUserCell(this.user, this.index, this.store);
 
   @override
   _AddUserCellState createState() => _AddUserCellState();
@@ -43,11 +44,11 @@ class _AddUserCellState extends State<AddUserCell> {
           ),
           Observer(
             builder: (_) => Checkbox(
-              value: context.read<ChatRoomStore>().selectedUsers[widget.index],
+              value: widget.store.selectedUsers[widget.index],
               onChanged: (value) {
-                context.read<ChatRoomStore>().selectedUsers[widget.index] =
+                widget.store.selectedUsers[widget.index] =
                     value!;
-                context.read<ChatRoomStore>().selectUser(widget.index);
+                widget.store.selectUser(widget.index);
               },
             ),
           )

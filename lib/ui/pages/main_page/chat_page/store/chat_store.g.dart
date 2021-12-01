@@ -43,21 +43,6 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
-  final _$chatsAtom = Atom(name: '_ChatStore.chats');
-
-  @override
-  ObservableList<ChatModel> get chats {
-    _$chatsAtom.reportRead();
-    return super.chats;
-  }
-
-  @override
-  set chats(ObservableList<ChatModel> value) {
-    _$chatsAtom.reportWrite(value, super.chats, () {
-      super.chats = value;
-    });
-  }
-
   final _$infoMessageValueAtom = Atom(name: '_ChatStore.infoMessageValue');
 
   @override
@@ -118,21 +103,6 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
-  final _$messagesAtom = Atom(name: '_ChatStore.messages');
-
-  @override
-  ObservableList<MessageModel> get messages {
-    _$messagesAtom.reportRead();
-    return super.messages;
-  }
-
-  @override
-  set messages(ObservableList<MessageModel> value) {
-    _$messagesAtom.reportWrite(value, super.messages, () {
-      super.messages = value;
-    });
-  }
-
   final _$loadChatsAsyncAction = AsyncAction('_ChatStore.loadChats');
 
   @override
@@ -140,11 +110,12 @@ mixin _$ChatStore on _ChatStore, Store {
     return _$loadChatsAsyncAction.run(() => super.loadChats(isNewList));
   }
 
-  final _$getMessagesAsyncAction = AsyncAction('_ChatStore.getMessages');
+  final _$setMessageReadAsyncAction = AsyncAction('_ChatStore.setMessageRead');
 
   @override
-  Future getMessages() {
-    return _$getMessagesAsyncAction.run(() => super.getMessages());
+  Future<dynamic> setMessageRead(String chatId, String messageId) {
+    return _$setMessageReadAsyncAction
+        .run(() => super.setMessageRead(chatId, messageId));
   }
 
   final _$_ChatStoreActionController = ActionController(name: '_ChatStore');
@@ -165,11 +136,9 @@ mixin _$ChatStore on _ChatStore, Store {
     return '''
 selectedCategoriesWorker: ${selectedCategoriesWorker},
 selectedCategoriesEmployer: ${selectedCategoriesEmployer},
-chats: ${chats},
 infoMessageValue: ${infoMessageValue},
 isLoadingChats: ${isLoadingChats},
-refresh: ${refresh},
-messages: ${messages}
+refresh: ${refresh}
     ''';
   }
 }

@@ -1,3 +1,4 @@
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_user_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
@@ -5,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-
-import '../chat_room_page.dart';
 
 final _spacer = Spacer();
 
@@ -113,7 +112,7 @@ class CreateGroupPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextFormField(
-            onChanged: (text) => store.setChatName(text),
+            onChanged: (text) => store.findUser(text),
             decoration: InputDecoration(
               prefixIcon: const Icon(
                 Icons.search,
@@ -148,9 +147,16 @@ class CreateGroupPage extends StatelessWidget {
                   endIndent: 50.0,
                   indent: 50.0,
                 ),
-                itemCount: store.availableUsers.length,
-                itemBuilder: (context, index) =>
-                    AddUserCell(store.availableUsers[index], index),
+                itemCount:
+                    store.foundUsers.length == 0 && store.userName.isEmpty
+                        ? store.availableUsers.length
+                        : store.foundUsers.length,
+                itemBuilder: (context, index) => AddUserCell(
+                    store.foundUsers.isEmpty && store.userName.isEmpty
+                        ? store.availableUsers[index]
+                        : store.foundUsers[index],
+                    index,
+                    store),
               ),
             ),
           ),
@@ -210,7 +216,7 @@ class CreateGroupPage extends StatelessWidget {
                             await store.createGroupChat();
                             if (store.isSuccess) {
                               Navigator.of(context, rootNavigator: true)
-                                  .pushNamed(ChatRoomPage.routeName,
+                                  .pushReplacementNamed(ChatRoomPage.routeName,
                                       arguments: {
                                     "chatId": store.idGroupChat,
                                     "userId": myId,

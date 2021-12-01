@@ -85,6 +85,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                 ProfileReviews.routeName,
                                 arguments: profile!.questHolder,
                               );
+                              profile!.questHolder = null;
                             }
                           });
                         },
@@ -291,8 +292,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
       case "office":
         employment = "Work in office";
         break;
-      case "Both variant":
-        employment = "both";
+      case "both":
+        employment = "Both variant";
         break;
     }
 

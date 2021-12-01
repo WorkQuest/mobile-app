@@ -1,9 +1,13 @@
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_user_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
+
+final _spacer = Spacer();
 
 class EditGroupChat extends StatelessWidget {
   static const String routeName = "/editPageChat";
@@ -37,7 +41,12 @@ class EditGroupChat extends StatelessWidget {
           ),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                await store.getUsersForGroupCHat();
+                store.usersId.clear();
+                Navigator.pushNamed(context, AddMembers.routeName,
+                    arguments: store);
+              },
               icon: SvgPicture.asset(
                 "assets/plus_icon.svg",
                 color: Theme.of(context).iconTheme.color,
@@ -91,6 +100,7 @@ class EditGroupChat extends StatelessWidget {
                         index,
                         store.chat!.chatModel.userMembers[index].id ==
                             store.chat!.chatModel.ownerUserId,
+                        store,
                       ),
                       separatorBuilder: (context, index) => const Divider(
                         color: Colors.black12,
@@ -101,6 +111,8 @@ class EditGroupChat extends StatelessWidget {
                     ),
                   ),
                 ),
+                _spacer,
+                buttonRow(store, context: context),
               ],
             ),
           ),
@@ -108,4 +120,55 @@ class EditGroupChat extends StatelessWidget {
       ),
     );
   }
+
+  Widget buttonRow(
+    ChatRoomStore store, {
+    required BuildContext context,
+  }) =>
+      Row(
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 45.0,
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "meta.cancel".tr(),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(
+                    width: 1.0,
+                    color: Color(0xFF0083C7).withOpacity(0.1),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 20.0,
+          ),
+          Expanded(
+            child: Observer(
+              builder: (_) => ElevatedButton(
+                onPressed: () {
+                  store.removeUserFromChat();
+                  if (store.isSuccess) {
+                    store.getMessages(true);
+                    Navigator.pop(context);
+                  }
+                },
+                child: store.isLoading
+                    ? Center(
+                        child: PlatformActivityIndicator(),
+                      )
+                    : Text(
+                        "meta.save".tr(),
+                      ),
+              ),
+            ),
+          ),
+        ],
+      );
 }

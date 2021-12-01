@@ -170,6 +170,7 @@ class ReviewsWidget extends StatelessWidget {
                           userId: userStore.userData!.id,
                         );
                       }
+                      profile.assignedWorker = null;
                     });
                   },
                   child: ListTile(

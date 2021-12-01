@@ -144,6 +144,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     ProfileReviews.routeName,
                     arguments: profile!.assignedWorker,
                   );
+                  profile!.assignedWorker = null;
                 }
               });
             },

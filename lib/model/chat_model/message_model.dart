@@ -1,6 +1,6 @@
 import 'package:app/model/chat_model/info_message.dart';
-import 'package:app/model/chat_model/owner.dart';
 import 'package:app/model/chat_model/star.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 
 class MessageModel {
@@ -28,9 +28,9 @@ class MessageModel {
   String? text;
   DateTime createdAt;
   List<Media> medias;
-  Owner? sender;
+  ProfileMeResponse? sender;
   InfoMessage? infoMessage;
-  dynamic star;
+  Star? star;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
         id: json["id"],
@@ -44,7 +44,7 @@ class MessageModel {
         medias: (json["medias"] as List<dynamic>)
             .map((e) => Media.fromJson(e as Map<String, dynamic>))
             .toList(),
-        sender: Owner.fromJson(json["sender"]),
+        sender: ProfileMeResponse.fromJson(json["sender"]),
         infoMessage: json["infoMessage"] == null
             ? null
             : InfoMessage.fromJson(json["infoMessage"]),

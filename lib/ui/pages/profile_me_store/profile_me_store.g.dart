@@ -109,28 +109,6 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
   }
 
   @override
-  void changeDistantWork(String selectedDistantWork) {
-    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
-        name: '_ProfileMeStore.changeDistantWork');
-    try {
-      return super.changeDistantWork(selectedDistantWork);
-    } finally {
-      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void changePriority(String selectedPriority) {
-    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
-        name: '_ProfileMeStore.changePriority');
-    try {
-      return super.changePriority(selectedPriority);
-    } finally {
-      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 twoFAStatus: ${twoFAStatus},

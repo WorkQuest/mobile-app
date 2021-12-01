@@ -167,6 +167,30 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     return employmentValue;
   }
 
+  String getWorkplace(String workplaceValue) {
+    switch (workplaceValue) {
+      case "distant":
+        return workplace = "Distant work";
+      case "office":
+        return workplace = "Work in the office";
+      case "both":
+        return workplace = "Both variant";
+    }
+    return workplace;
+  }
+
+  String getEmployment(String employmentValue) {
+    switch (employmentValue) {
+      case "fullTime":
+        return employment = "Full time";
+      case "partTime":
+        return employment = "Part time";
+      case "fixedTerm":
+        return employment = "Fixed term";
+    }
+    return employment;
+  }
+
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action

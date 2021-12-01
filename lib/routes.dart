@@ -1,7 +1,9 @@
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
@@ -453,6 +455,24 @@ class Routes {
           ),
         );
 
+      case ChatPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<ChatStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ChatPage(),
+            ),
+          ),
+        );
+
       case ChatRoomPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
@@ -486,6 +506,17 @@ class Routes {
               child: CreateGroupPage(
                 settings.arguments as String,
               ),
+            ),
+          ),
+        );
+
+      case AddMembers.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChatRoomStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: AddMembers(settings.arguments as ChatRoomStore),
             ),
           ),
         );

@@ -1188,6 +1188,8 @@
     "message": "Message",
     "noMessages": "No messages",
     "chat": "Chat",
+    "copy": "Copied",
+    "addMembers": "Add members",
     "today": "Today",
     "day": "day ago",
     "days": "days ago",
