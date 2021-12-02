@@ -38,6 +38,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
   void initState() {
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
+    profile!.priorityToValue();
+    profile!.workplaceToValue();
     if (profile!.userData!.additionalInfo!.address != null)
       pageStore.address = profile!.userData!.additionalInfo!.address!;
     _controller = SkillSpecializationController(
@@ -286,28 +288,30 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     return Column(
       children: <Widget>[
         SkillSpecializationSelection(controller: _controller),
-        // dropDownMenu(
-        //     title: "settings.priority".tr(),
-        //     value: profile!.setPriority(pageStore.userData.priority),
-        //     list: profile!.priorityList,
-        //     onChanged: (text) {
-        //       profile!.setPriorityValue(text!);
-        //       profile!.priority = text;
-        //     }),
+        dropDownMenu(
+          title: "settings.priority".tr(),
+          value: profile!.priorityValue,
+          list: profile!.priorityList,
+          onChanged: (text) {
+            profile!.setPriorityValue(text!);
+          },
+        ),
         inputBody(
           title: "settings.costPerHour".tr(),
           initialValue: pageStore.userData.wagePerHour,
           onChanged: (text) => pageStore.userData.wagePerHour = text,
           validator: Validators.emptyValidator,
         ),
-        // Observer(
-        //   builder: (_) => dropDownMenu(
-        //     title: "settings.distantWork".tr(),
-        //     value: pageStore.userData.workplace ?? "Both options",
-        //     list: profile!.distantWorkList,
-        //     onChanged: (text) => pageStore.userData.workplace = text,
-        //   ),
-        // ),
+        Observer(
+          builder: (_) => dropDownMenu(
+            title: "settings.distantWork".tr(),
+            value: profile!.distantWork,
+            list: profile!.distantWorkList,
+            onChanged: (text) {
+              profile!.setWorkplaceValue(text!);
+            },
+          ),
+        ),
         KnowledgeWorkSelection(
           title: "Knowledge",
           hintText: "settings.education.educationalInstitution".tr(),
@@ -445,6 +449,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
       pageStore.userData.additionalInfo?.workExperiences =
           _controllerWork!.getListMap();
       pageStore.userData.additionalInfo!.address = pageStore.address;
+      pageStore.userData.priority = profile!.valueToPriority();
+      pageStore.userData.workplace = profile!.valueToWorkplace();
       if (!profile!.isLoading)
         pageStore.userData.userSpecializations =
             _controller!.getSkillAndSpecialization();

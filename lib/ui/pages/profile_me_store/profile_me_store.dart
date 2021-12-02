@@ -29,50 +29,94 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   bool? twoFAStatus;
 
   @observable
-  String priority = "Low";
+  String priorityValue = "Low";
 
   @observable
   String distantWork = "Remote work";
 
-  // @observable
-  // String wagePerHour = "";
-  //
-  // ObservableList<String> distantWorkList = ObservableList.of([
-  //   "Remote work",
-  //   "Work in the office",
-  //   "Both options",
-  // ]);
+  @observable
+  String wagePerHour = "";
 
-  // ObservableList<String> priorityList = ObservableList.of([
-  //   "Low",
-  //   "Normal",
-  //   "Urgent",
-  // ]);
+  ObservableList<String> distantWorkList = ObservableList.of([
+    "Remote work",
+    "Work in the office",
+    "Both options",
+  ]);
 
-  // @observable
-  // String setPriority(int value){
-  //   switch(value){
-  //     case 0: priority = "Low";
-  //       return priority;
-  //     case 1: priority = "Normal";
-  //       return priority;
-  //     case 2: priority = "Urgent";
-  //       return priority;
-  //   }
-  //   return priority;
-  // }
+  ObservableList<String> priorityList = ObservableList.of([
+    "Low",
+    "Normal",
+    "Urgent",
+  ]);
 
-  // @observable
-  // void setPriorityValue(String priority){
-  //   switch(priority){
-  //     case "Low": userData!.priority = 0;
-  //     break;
-  //     case "Normal": userData!.priority = 1;
-  //       break;
-  //     case "Urgent": userData!.priority = 2;
-  //     break;
-  //   }
-  // }
+  @action
+  void priorityToValue() {
+    switch (userData!.priority) {
+      case 0:
+        priorityValue = "Low";
+        return;
+      case 1:
+        priorityValue = "Normal";
+        print("value: $priorityValue");
+        return;
+      case 2:
+        priorityValue = "Urgent";
+        return;
+    }
+  }
+
+  @action
+  void setPriorityValue(String text) => priorityValue = text;
+
+  int valueToPriority() {
+    switch (priorityValue) {
+      case "Low":
+        return userData!.priority = 0;
+      case "Normal":
+        return userData!.priority = 1;
+      case "Urgent":
+        return userData!.priority = 2;
+    }
+    return userData!.priority;
+  }
+
+  @action
+  void workplaceToValue() {
+    switch (userData!.workplace) {
+      case "distant":
+        distantWork = "Distant work";
+        break;
+      case "office":
+        distantWork = "Work in office";
+        break;
+      case "both":
+        distantWork = "Both variant";
+        break;
+    }
+  }
+
+  @action
+  void setWorkplaceValue(String text) => distantWork = text;
+
+  String valueToWorkplace() {
+    switch (distantWork) {
+      case "Distant work":
+        userData!.workplace = "distant";
+        break;
+      case "Work in office":
+        userData!.workplace = "office";
+        break;
+      case "Both variant":
+        userData!.workplace = "both";
+        break;
+    }
+    return userData?.workplace ?? "distant";
+  }
+
+  @action
+  void setWorkplace(String value) {
+    userData!.workplace = value;
+  }
 
   @action
   List<String> parser(List<String> skills) {
@@ -148,8 +192,8 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       if (media != null)
-        userData.avatarId =
-            (await _apiProvider.uploadMedia(medias: [media]))[0];
+        userData.avatarId = (await _apiProvider.uploadMedia(
+            medias: ObservableList.of([media])))[0];
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
       this.onSuccess(true);

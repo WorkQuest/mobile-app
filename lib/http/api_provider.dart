@@ -416,7 +416,8 @@ extension UserInfoService on ApiProvider {
         "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
         "firstName": userData.firstName,
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
-        "wagePerHour": userData.wagePerHour,
+        if (userData.role == UserRole.Worker)
+          "wagePerHour": userData.wagePerHour,
         if (userData.role == UserRole.Worker) "priority": userData.priority,
         if (userData.role == UserRole.Worker) "workplace": userData.workplace,
         "additionalInfo": {

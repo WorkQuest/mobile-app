@@ -40,7 +40,7 @@ class ProfileMeResponse {
   Location? location;
   String wagePerHour;
   String? workplace;
-  int? priority;
+  int priority;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(
@@ -101,7 +101,7 @@ class ProfileMeResponse {
           json["location"] == null ? null : Location.fromJson(json["location"]),
       wagePerHour: json["wagePerHour"] ?? "",
       workplace: json["workplace"],
-      priority: json["priority"],
+      priority: json["priority"] ?? 0,
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );
