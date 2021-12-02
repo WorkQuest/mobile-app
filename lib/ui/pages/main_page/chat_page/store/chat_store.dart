@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
@@ -18,20 +20,37 @@ class ChatStore extends _ChatStore with _$ChatStore {
 
 abstract class _ChatStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
-
+  final StreamController<bool> streamChatNotification =
+      StreamController<bool>();
   String _myId = "";
   int offset = 0;
   int limit = 10;
 
   UserRole? role;
+
   @observable
   bool unread = false;
+
+  @observable
+  bool starred = false;
+
+  @observable
+  ObservableList<bool> isChatHighlighted = ObservableList.of([]);
+
+  @observable
+  ObservableList<String> idChat = ObservableList.of([]);
+
+  @observable
+  bool chatSelected = false;
 
   _ChatStore(this._apiProvider) {
     WebSocket().handlerChats = this.addedMessage;
   }
 
   Map<String, Chats> chats = {};
+
+  @observable
+  ObservableList<Chats> starredChats = ObservableList.of([]);
 
   Chats? chatByID(String id) {
     if (chats[id] == null) return null;
@@ -81,21 +100,23 @@ abstract class _ChatStore extends IStore<bool> with Store {
     final saveChat = chats.remove(message.chatId);
 
     chats[message.chatId] = saveChat!;
+    checkMessage();
     _atomChats.reportChanged();
     chat.update();
   }
 
-  @observable
-  List<String> selectedCategoriesWorker = [
+  List<String> selectedCategories = [
     "Starred message",
+    "Starred chat",
     "Report",
     "Create group chat",
   ];
 
-  @observable
-  List<String> selectedCategoriesEmployer = [
+  List<String> selectedCategoriesStarred = [
     "Starred message",
+    "All chat",
     "Report",
+    "Create group chat",
   ];
 
   @observable
@@ -109,6 +130,9 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   @observable
   int _count = 0;
+
+  @action
+  openStarredChats(bool value) => starred = value;
 
   @action
   String setInfoMessage(String infoMessage) {
@@ -137,10 +161,25 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   @action
+  void checkMessage() {
+    chats.values.forEach((element) {
+      if (element.chatModel.lastMessage.senderStatus == "unread" &&
+          element.chatModel.lastMessage.senderUserId != this._myId) {
+        streamChatNotification.sink.add(true);
+        unread = true;
+        return;
+      } else {
+        streamChatNotification.sink.add(false);
+        unread = false;
+      }
+    });
+  }
+
+  @action
   Future loadChats(bool isNewList) async {
     if (isNewList) {
-      unread = false;
       chats = {};
+      starredChats = ObservableList.of([]);
       this.offset = 0;
       refresh = false;
     }
@@ -155,10 +194,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
       );
       listChats.forEach((chat) {
         chats[chat.id] = Chats(chat);
-        chats.values.forEach((element) {
-          if (element.chatModel.lastMessage.senderStatus == "unread" &&
-              element.chatModel.lastMessageId != this._myId) unread = true;
-        });
+        if (chats[chat.id]!.chatModel.star != null)
+          starredChats.add(chats[chat.id]!);
       });
       this.offset = chats.length;
       refresh = true;

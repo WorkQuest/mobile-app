@@ -119,8 +119,9 @@ class ProfileMeResponse {
         "role": role.toString().split(".").last,
         "avatar": avatar!.toJson(),
         // "skillFilter": skillFilters.map((item) => item.toJson()),
-        "ratingStatistic": ratingStatistic!.toJson(),
-        "location": location!.toJson(),
+        "ratingStatistic":
+            ratingStatistic == null ? null : ratingStatistic!.toJson(),
+        "location": location == null ? null : location!.toJson(),
         "wagePerHour": wagePerHour,
         "workplace": workplace,
         "priority": priority,
@@ -211,7 +212,8 @@ class RatingStatistic {
       id: json["id"],
       userId: json["userId"],
       reviewCount: json["reviewCount"],
-      averageMark: json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble() ,
+      averageMark:
+          json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
       createdAt: json["createdAt"],
       updatedAt: json["updatedAt"],
     );

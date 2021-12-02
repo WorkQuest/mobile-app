@@ -5,9 +5,7 @@ import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mobx/mobx.dart';
 import '../../../background_observer_page.dart';
 import '../../../routes.dart';
 import 'chat_page/chat_page.dart';
@@ -21,7 +19,10 @@ final thirdTabNavKey = GlobalKey<NavigatorState>();
 final forthTabNavKey = GlobalKey<NavigatorState>();
 final fiveTabNavKey = GlobalKey<NavigatorState>();
 
+final key = GlobalKey<FormState>();
+
 class MainPage extends StatelessWidget {
+  final controller = CupertinoTabController();
   static const String routeName = '/mainPage';
 
   MainPage(this.role);
@@ -30,88 +31,144 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ObservableList<_TabBarIconData> _tabBarIconsData = ObservableList.of([
+    List<_TabBarIconData> _tabBarIconsData = [
       _TabBarIconData(
         'assets/list_alt.svg',
-        role == UserRole.Worker ? 'quests.quests'.tr() : "ui.workers".tr(),
+        role == UserRole.Worker ? 'quests.quests' : "ui.workers",
       ),
       _TabBarIconData(
         'assets/list.svg',
-        'quests.MyQuests'.tr(),
+        'quests.MyQuests',
       ),
       _TabBarIconData(
-        context.read<ChatStore>().unread
-            ? 'assets/message_mark.svg'
-            : 'assets/message.svg',
-        'chat.chat'.tr(),
+        'assets/message.svg',
+        'chat.chat',
       ),
       _TabBarIconData(
         'assets/wallet_icon.svg',
-        'wallet.wallet'.tr(),
+        'wallet.wallet',
       ),
       _TabBarIconData(
         'assets/more.svg',
-        'settings.more'.tr(),
+        'settings.more',
       ),
-    ]);
+    ];
+
     return BackgroundObserverPage(
       con: context,
-      child: Observer(
-        builder: (_) => CupertinoTabScaffold(
-          tabBar: CupertinoTabBar(
-            items : _tabBarIconsData
-                .map((item) => BottomNavigationBarItem(
-                      icon: SvgPicture.asset(item.svgPath),
-                      activeIcon: SvgPicture.asset(
-                        item.svgPath,
-                        color: CupertinoTheme.of(context).primaryColor,
-                      ),
-                      label: item.label,
-                    ))
-                .toList(),
-          ),
-          tabBuilder: (context, index) {
-            switch (index) {
-              case 0:
-                return CupertinoTabView(
-                    onGenerateRoute: Routes.generateRoute,
-                    navigatorKey: firstTabNavKey,
-                    builder: (context) {
-                      return QuestPage();
-                    });
-              case 1:
-                return CupertinoTabView(
-                  onGenerateRoute: Routes.generateRoute,
-                  navigatorKey: secondTabNavKey,
-                  builder: (context) {
-                    return MyQuestsPage();
-                  },
-                );
-              case 2:
-                return CupertinoTabView(
-                  onGenerateRoute: Routes.generateRoute,
-                  navigatorKey: thirdTabNavKey,
-                  builder: (BuildContext context) => ChatPage(),
-                );
-              case 3:
-                return CupertinoTabView(
-                  onGenerateRoute: Routes.generateRoute,
-                  navigatorKey: forthTabNavKey,
-                  builder: (BuildContext context) {
-                    return WalletPage();
-                  },
-                );
-              default:
-                return CupertinoTabView(
-                  onGenerateRoute: Routes.generateRoute,
-                  navigatorKey: fiveTabNavKey,
-                  builder: (context) {
-                    return SettingsPage();
-                  },
-                );
-            }
-          },
+      child: CupertinoTabScaffold(
+        controller: controller,
+        tabBar: CupertinoTabBar(
+          items: [
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(_tabBarIconsData[0].svgPath),
+              activeIcon: SvgPicture.asset(
+                _tabBarIconsData[0].svgPath,
+                color: CupertinoTheme.of(context).primaryColor,
+              ),
+              label: _tabBarIconsData[0].label.tr(),
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(_tabBarIconsData[1].svgPath),
+              activeIcon: SvgPicture.asset(
+                _tabBarIconsData[1].svgPath,
+                color: CupertinoTheme.of(context).primaryColor,
+              ),
+              label: _tabBarIconsData[1].label.tr(),
+            ),
+            BottomNavigationBarItem(
+              icon: StreamBuilder<bool>(
+                key: key,
+                initialData: false,
+                stream: context.read<ChatStore>().streamChatNotification.stream,
+                builder: (context, snapshot) {
+                  if (snapshot.data!)
+                    return SvgPicture.asset(
+                      'assets/message_mark.svg',
+                    );
+                  else
+                    return SvgPicture.asset(
+                      'assets/message.svg',
+                    );
+                },
+              ),
+              activeIcon: StreamBuilder<bool>(
+                key: key,
+                initialData: false,
+                stream: context.read<ChatStore>().streamChatNotification.stream,
+                builder: (context, snapshot) {
+                  if (snapshot.data!)
+                    return SvgPicture.asset(
+                      'assets/message_mark.svg',
+                    );
+                  else
+                    return SvgPicture.asset(
+                      'assets/message.svg',
+                      color: CupertinoTheme.of(context).primaryColor,
+                    );
+                },
+              ),
+              label: _tabBarIconsData[2].label.tr(),
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(_tabBarIconsData[3].svgPath),
+              activeIcon: SvgPicture.asset(
+                _tabBarIconsData[3].svgPath,
+                color: CupertinoTheme.of(context).primaryColor,
+              ),
+              label: _tabBarIconsData[3].label.tr(),
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(_tabBarIconsData[4].svgPath),
+              activeIcon: SvgPicture.asset(
+                _tabBarIconsData[4].svgPath,
+                color: CupertinoTheme.of(context).primaryColor,
+              ),
+              label: _tabBarIconsData[4].label.tr(),
+            ),
+          ],
         ),
+        tabBuilder: (context, index) {
+          switch (index) {
+            case 0:
+              return CupertinoTabView(
+                  onGenerateRoute: Routes.generateRoute,
+                  navigatorKey: firstTabNavKey,
+                  builder: (context) {
+                    return QuestPage();
+                  });
+            case 1:
+              return CupertinoTabView(
+                onGenerateRoute: Routes.generateRoute,
+                navigatorKey: secondTabNavKey,
+                builder: (context) {
+                  return MyQuestsPage();
+                },
+              );
+            case 2:
+              return CupertinoTabView(
+                onGenerateRoute: Routes.generateRoute,
+                navigatorKey: thirdTabNavKey,
+                builder: (BuildContext context) => ChatPage(),
+              );
+            case 3:
+              return CupertinoTabView(
+                onGenerateRoute: Routes.generateRoute,
+                navigatorKey: forthTabNavKey,
+                builder: (BuildContext context) {
+                  return WalletPage();
+                },
+              );
+            default:
+              return CupertinoTabView(
+                onGenerateRoute: Routes.generateRoute,
+                navigatorKey: fiveTabNavKey,
+                builder: (context) {
+                  return SettingsPage();
+                },
+              );
+          }
+        },
       ),
     );
   }

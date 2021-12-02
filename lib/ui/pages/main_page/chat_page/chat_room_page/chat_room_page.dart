@@ -106,14 +106,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           ),
                   ),
                 ),
-                InputToolbar((text) {
-                  _store.sendMessage(
-                    text,
-                    _store.chat!.chatModel.id,
-                    widget.arguments["userId"],
-                    // _store.media,
-                  );
-                }),
+                InputToolbar(_store, widget.arguments["userId"]),
                 if (_store.media.isNotEmpty) _media(),
                 const SizedBox(height: 10),
               ],
@@ -171,10 +164,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       backgroundColor: Color(0xFF0083C7),
       leading: IconButton(
         onPressed: () {
-          _store.messageSelected = false;
-          _store.isMessageHighlighted.forEach((element) {
-            element = false;
-          });
+          _store.setMessageSelected(false);
+          _store.uncheck();
         },
         icon: Icon(
           Icons.close,
@@ -195,10 +186,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         IconButton(
           onPressed: () {
             _store.setStar();
-            _store.messageSelected = false;
-            _store.isMessageHighlighted.forEach((element) {
-              element = false;
-            });
+            _store.setMessageSelected(false);
+            _store.uncheck();
           },
           icon: Icon(
             Icons.star,
@@ -211,7 +200,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               text: _store.copyMessage(),
             ),
           ).then(
-                (_) {
+            (_) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   duration: Duration(

@@ -1,4 +1,3 @@
-import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
 import 'package:app/ui/pages/main_page/chat_page/repository/chat.dart';
@@ -54,68 +53,10 @@ class _ChatPageState extends State<ChatPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6.0),
                     ),
-                    itemBuilder: (BuildContext context) {
-                      return store.role == UserRole.Worker
-                          ? store.selectedCategoriesWorker.map((String choice) {
-                              return PopupMenuItem<String>(
-                                value: choice,
-                                enabled: false,
-                                child: TextButton(
-                                  onPressed: () {
-                                    if (choice == "Starred message") {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pushNamed(StarredMessage.routeName,
-                                              arguments: userData.userData!.id);
-                                    } else if (choice == "Report") {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pushNamed(
-                                        DisputePage.routeName,
-                                      );
-                                    } else if (choice == "Create group chat") {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pushNamed(
-                                        CreateGroupPage.routeName,
-                                        arguments: userData.userData!.id,
-                                      );
-                                    }
-                                  },
-                                  child: Text(
-                                    choice,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList()
-                          : store.selectedCategoriesEmployer
-                              .map((String choice) {
-                              return PopupMenuItem<String>(
-                                value: choice,
-                                enabled: false,
-                                child: TextButton(
-                                  onPressed: () {
-                                    if (choice == "Starred message") {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pushNamed(StarredMessage.routeName,
-                                              arguments: userData.userData!.id);
-                                    } else {
-                                      Navigator.pushNamed(
-                                        context,
-                                        DisputePage.routeName,
-                                      );
-                                    }
-                                  },
-                                  child: Text(
-                                    choice,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList();
-                    },
+                    itemBuilder: (BuildContext context) => !store.starred
+                        ? popUpMenu(list: store.selectedCategories)
+                        : popUpMenu(
+                            list: store.selectedCategoriesStarred),
                   ),
                 ],
               ),
@@ -145,13 +86,14 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                           child: Observer(builder: (_) {
                             return Column(
-                                children: store.chatKeyList
-                                    .map((key) => _chatItem(store.chats[key]!))
-                                    .toList()
-                                // store.chats.values
-                                //     .map((chat) => _chatItem(chat))
-                                //     .toList(),
-                                );
+                                children: !store.starred
+                                    ? store.chatKeyList
+                                        .map((key) =>
+                                            _chatItem(store.chats[key]!))
+                                        .toList()
+                                    : store.starredChats
+                                        .map((key) => _chatItem(key))
+                                        .toList());
                           }),
                         ),
                       )
@@ -166,11 +108,62 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  List<PopupMenuEntry<String>> popUpMenu({
+    required List<String> list,
+  }) =>
+      list.map((String choice) {
+        return PopupMenuItem<String>(
+          value: choice,
+          enabled: false,
+          child: TextButton(
+            onPressed: () {
+              if (choice == "Starred message") {
+                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pushNamed(
+                    StarredMessage.routeName,
+                    arguments: userData.userData!.id);
+              } else if (choice == "Starred chat") {
+                Navigator.pop(context);
+                store.openStarredChats(true);
+              } else if (choice == "All chat") {
+                Navigator.pop(context);
+                store.openStarredChats(false);
+              } else if (choice == "Report") {
+                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pushNamed(
+                  DisputePage.routeName,
+                );
+              } else if (choice == "Create group chat") {
+                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pushNamed(
+                  CreateGroupPage.routeName,
+                  arguments: userData.userData!.id,
+                );
+              }
+            },
+            child: Text(
+              choice,
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+          ),
+        );
+      }).toList();
+
   Widget _chatItem(Chats chatDetails) {
     final differenceTime =
         DateTime.now().difference(chatDetails.chatModel.lastMessageDate).inDays;
     return GestureDetector(
       onTap: () {
+        // if (store.messageSelected) {
+        //   store.setMessageHighlighted(widget.index, widget.mess);
+        // }
+        // for (int i = 0; i < store.isMessageHighlighted.length; i++)
+        //   if (store.isMessageHighlighted[i] == true) {
+        //     return;
+        //   }
+        // store.setMessageSelected(false);
         Map<String, dynamic> arguments = {
           "chatId": chatDetails.chatModel.id,
           "userId": userData.userData!.id
@@ -183,6 +176,7 @@ class _ChatPageState extends State<ChatPage> {
         }
         Navigator.of(context, rootNavigator: true)
             .pushNamed(ChatRoomPage.routeName, arguments: arguments);
+        store.checkMessage();
       },
       child: Container(
         color: Colors.transparent,

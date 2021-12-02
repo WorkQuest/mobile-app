@@ -14,8 +14,8 @@ import 'package:app/model/respond_model.dart';
 import 'package:dio/dio.dart';
 import 'package:drishya_picker/drishya_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:io';
 import 'package:injectable/injectable.dart';
+import 'package:mobx/mobx.dart';
 
 @singleton
 class ApiProvider {
@@ -560,7 +560,7 @@ extension SMSVerification on ApiProvider {
 ///Media Upload
 extension GetUploadLink on ApiProvider {
   Future<List<String>> uploadMedia({
-    required List<DrishyaEntity> medias,
+    required ObservableList<DrishyaEntity> medias,
   }) async {
     List<String> mediaId = [];
     Uint8List? bytes;

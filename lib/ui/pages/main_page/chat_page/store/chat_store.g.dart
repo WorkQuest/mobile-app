@@ -24,37 +24,78 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
-  final _$selectedCategoriesWorkerAtom =
-      Atom(name: '_ChatStore.selectedCategoriesWorker');
+  final _$starredAtom = Atom(name: '_ChatStore.starred');
 
   @override
-  List<String> get selectedCategoriesWorker {
-    _$selectedCategoriesWorkerAtom.reportRead();
-    return super.selectedCategoriesWorker;
+  bool get starred {
+    _$starredAtom.reportRead();
+    return super.starred;
   }
 
   @override
-  set selectedCategoriesWorker(List<String> value) {
-    _$selectedCategoriesWorkerAtom
-        .reportWrite(value, super.selectedCategoriesWorker, () {
-      super.selectedCategoriesWorker = value;
+  set starred(bool value) {
+    _$starredAtom.reportWrite(value, super.starred, () {
+      super.starred = value;
     });
   }
 
-  final _$selectedCategoriesEmployerAtom =
-      Atom(name: '_ChatStore.selectedCategoriesEmployer');
+  final _$isChatHighlightedAtom = Atom(name: '_ChatStore.isChatHighlighted');
 
   @override
-  List<String> get selectedCategoriesEmployer {
-    _$selectedCategoriesEmployerAtom.reportRead();
-    return super.selectedCategoriesEmployer;
+  ObservableList<bool> get isChatHighlighted {
+    _$isChatHighlightedAtom.reportRead();
+    return super.isChatHighlighted;
   }
 
   @override
-  set selectedCategoriesEmployer(List<String> value) {
-    _$selectedCategoriesEmployerAtom
-        .reportWrite(value, super.selectedCategoriesEmployer, () {
-      super.selectedCategoriesEmployer = value;
+  set isChatHighlighted(ObservableList<bool> value) {
+    _$isChatHighlightedAtom.reportWrite(value, super.isChatHighlighted, () {
+      super.isChatHighlighted = value;
+    });
+  }
+
+  final _$idChatAtom = Atom(name: '_ChatStore.idChat');
+
+  @override
+  ObservableList<String> get idChat {
+    _$idChatAtom.reportRead();
+    return super.idChat;
+  }
+
+  @override
+  set idChat(ObservableList<String> value) {
+    _$idChatAtom.reportWrite(value, super.idChat, () {
+      super.idChat = value;
+    });
+  }
+
+  final _$chatSelectedAtom = Atom(name: '_ChatStore.chatSelected');
+
+  @override
+  bool get chatSelected {
+    _$chatSelectedAtom.reportRead();
+    return super.chatSelected;
+  }
+
+  @override
+  set chatSelected(bool value) {
+    _$chatSelectedAtom.reportWrite(value, super.chatSelected, () {
+      super.chatSelected = value;
+    });
+  }
+
+  final _$starredChatsAtom = Atom(name: '_ChatStore.starredChats');
+
+  @override
+  ObservableList<Chats> get starredChats {
+    _$starredChatsAtom.reportRead();
+    return super.starredChats;
+  }
+
+  @override
+  set starredChats(ObservableList<Chats> value) {
+    _$starredChatsAtom.reportWrite(value, super.starredChats, () {
+      super.starredChats = value;
     });
   }
 
@@ -136,6 +177,17 @@ mixin _$ChatStore on _ChatStore, Store {
   final _$_ChatStoreActionController = ActionController(name: '_ChatStore');
 
   @override
+  dynamic openStarredChats(bool value) {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore.openStarredChats');
+    try {
+      return super.openStarredChats(value);
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String setInfoMessage(String infoMessage) {
     final _$actionInfo = _$_ChatStoreActionController.startAction(
         name: '_ChatStore.setInfoMessage');
@@ -147,11 +199,25 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   @override
+  void checkMessage() {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore.checkMessage');
+    try {
+      return super.checkMessage();
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 unread: ${unread},
-selectedCategoriesWorker: ${selectedCategoriesWorker},
-selectedCategoriesEmployer: ${selectedCategoriesEmployer},
+starred: ${starred},
+isChatHighlighted: ${isChatHighlighted},
+idChat: ${idChat},
+chatSelected: ${chatSelected},
+starredChats: ${starredChats},
 infoMessageValue: ${infoMessageValue},
 isLoadingChats: ${isLoadingChats},
 refresh: ${refresh}

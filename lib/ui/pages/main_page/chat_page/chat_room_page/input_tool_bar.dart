@@ -1,13 +1,13 @@
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
-import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class InputToolbar extends StatefulWidget {
-  final void Function(String) onSend;
+  final ChatRoomStore store;
+  final String userId;
 
-  InputToolbar(this.onSend);
+  InputToolbar(this.store, this.userId);
 
   @override
   _InputToolbarState createState() => _InputToolbarState();
@@ -61,12 +61,14 @@ class _InputToolbarState extends State<InputToolbar> {
             ),
           ),
           InkWell(
-            onTap: _controller.text.isNotEmpty ||
-                    context.read<ChatRoomStore>().media.isNotEmpty
+            onTap: _controller.text.isNotEmpty
                 ? () {
-                    if (_controller.text.isNotEmpty ||
-                        context.read<ChatRoomStore>().media.isNotEmpty)
-                      widget.onSend(_controller.text);
+                    widget.store.sendMessage(
+                      _controller.text,
+                      widget.store.chat!.chatModel.id,
+                      widget.userId,
+                      // _store.media,
+                    );
                     _controller.text = "";
                   }
                 : null,
@@ -79,8 +81,7 @@ class _InputToolbarState extends State<InputToolbar> {
               ),
               child: SvgPicture.asset(
                 "assets/send_message_icon.svg",
-                color: _controller.text.isNotEmpty ||
-                        context.read<ChatRoomStore>().media.isNotEmpty
+                color: _controller.text.isNotEmpty
                     ? Color(0xFF0083C7)
                     : Colors.grey,
               ),

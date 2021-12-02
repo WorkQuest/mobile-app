@@ -7,7 +7,6 @@ import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/chat_model/star.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/repository/chat.dart';
-import 'package:app/ui/pages/main_page/chat_page/repository/conversation_repository.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:drishya_picker/drishya_picker.dart';
@@ -25,7 +24,6 @@ class ChatRoomStore extends _ChatRoomStore with _$ChatRoomStore {
 abstract class _ChatRoomStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
   final ChatStore chats;
-
   _ChatRoomStore(this._apiProvider, this.chats);
 
   int _count = 0;
@@ -34,6 +32,10 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   String? idChat;
 
   String idGroupChat = "";
+
+  final _atomMessages = Atom(name: '_ChatRoomStore.uncheck');
+
+  final _atomSendMessage = Atom(name: '_ChatRoomStore.SengMessage');
 
   @observable
   String chatName = "";
@@ -96,7 +98,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   ObservableList<MessageModel> starredMessage = ObservableList.of([]);
 
   @observable
-  List<DrishyaEntity> media = [];
+  ObservableList<DrishyaEntity> media = ObservableList.of([]);
 
   @observable
   int pageNumber = 0;
@@ -105,7 +107,16 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   void changePageNumber(int value) => pageNumber = value;
 
   @action
-  void setMessageSelected(bool value) => messageSelected = value;
+  void setMessageSelected(bool value) {
+    messageSelected = value;
+  }
+
+  void uncheck() {
+    for (int i = 0; i < isMessageHighlighted.length; i++) {
+      isMessageHighlighted[i] = false;
+    }
+    _atomMessages.reportChanged();
+  }
 
   void availableUsersForAdding(List<ProfileMeResponse> list) {
     for (int i = 0; i < list.length; i++)
@@ -120,38 +131,32 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     for (int i = 0; i < idMessages.length; i++)
       if (idMessages[i] == message.id) {
         idMessages.removeAt(i);
-        // message.star = null;
         return;
       }
     idMessages.add(message.id);
   }
 
-  @action
-  void setStar() {
+  Future setStar() async {
     for (int i = 0; i < idMessages.length; i++)
       for (int j = 0; j < chat!.messages.length; j++)
         if (idMessages[i] == chat!.messages[j].id &&
             chat!.messages[j].star != null) {
-          idMessagesForDeleting.add(idMessages[i]);
-          idMessages.removeAt(i);
-          i--;
+          chat!.messages[j].star = null;
+          await _apiProvider.removeStarFromMsg(messageId: idMessages[i]);
         } else if (idMessages[i] == chat!.messages[j].id &&
-            chat!.messages[j].star == null)
+            chat!.messages[j].star == null) {
+          await _apiProvider.setMessageStar(
+            chatId: chat!.chatModel.id,
+            messageId: idMessages[i],
+          );
           chat!.messages[j].star = Star(
             id: "",
             messageId: chat!.messages[j].id,
             createdAt: DateTime.now(),
             userId: chat!.messages[j].senderUserId,
           );
-    idMessages.forEach((element) async {
-      await _apiProvider.setMessageStar(
-        chatId: chat!.chatModel.id,
-        messageId: element,
-      );
-    });
-    idMessagesForDeleting.forEach((element) async{
-      await _apiProvider.removeStarFromMsg(messageId: element);
-    });
+        }
+    _atomMessages.reportChanged();
   }
 
   @action
@@ -351,6 +356,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
         List<MessageModel>.from(
             responseData["messages"].map((x) => MessageModel.fromJson(x))),
         chat!.chatModel.id);
+
     _offset = chat!.messages.length;
     if (!refresh)
       isMessageHighlighted =
@@ -360,12 +366,13 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     chat!.update();
   }
 
-  @action
   Future sendMessage(String text, String chatId, String userId) async {
     WebSocket().sendMessage(
         chatId: chatId,
         text: text,
         medias: await _apiProvider.uploadMedia(medias: media));
     media.clear();
+    isMessageHighlighted.addAll(List.generate(1, (index) => false));
+    _atomSendMessage.reportChanged();
   }
 }

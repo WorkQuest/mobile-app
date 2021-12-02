@@ -8,7 +8,7 @@ class Star {
 
   String? id;
   String userId;
-  String messageId;
+  String? messageId;
   DateTime createdAt;
 
   factory Star.fromJson(Map<String, dynamic> json) => Star(

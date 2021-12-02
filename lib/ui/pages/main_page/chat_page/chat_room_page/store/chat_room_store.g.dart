@@ -309,13 +309,13 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   final _$mediaAtom = Atom(name: '_ChatRoomStore.media');
 
   @override
-  List<DrishyaEntity> get media {
+  ObservableList<DrishyaEntity> get media {
     _$mediaAtom.reportRead();
     return super.media;
   }
 
   @override
-  set media(List<DrishyaEntity> value) {
+  set media(ObservableList<DrishyaEntity> value) {
     _$mediaAtom.reportWrite(value, super.media, () {
       super.media = value;
     });
@@ -375,14 +375,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     return _$getMessagesAsyncAction.run(() => super.getMessages(isPagination));
   }
 
-  final _$sendMessageAsyncAction = AsyncAction('_ChatRoomStore.sendMessage');
-
-  @override
-  Future<dynamic> sendMessage(String text, String chatId, String userId) {
-    return _$sendMessageAsyncAction
-        .run(() => super.sendMessage(text, chatId, userId));
-  }
-
   final _$_ChatRoomStoreActionController =
       ActionController(name: '_ChatRoomStore');
 
@@ -414,17 +406,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
         name: '_ChatRoomStore.setMessageHighlighted');
     try {
       return super.setMessageHighlighted(index, message);
-    } finally {
-      _$_ChatRoomStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setStar() {
-    final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
-        name: '_ChatRoomStore.setStar');
-    try {
-      return super.setStar();
     } finally {
       _$_ChatRoomStoreActionController.endAction(_$actionInfo);
     }
