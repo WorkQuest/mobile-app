@@ -1,7 +1,8 @@
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import "package:provider/provider.dart";
 
 class InputToolbar extends StatefulWidget {
   final ChatRoomStore store;

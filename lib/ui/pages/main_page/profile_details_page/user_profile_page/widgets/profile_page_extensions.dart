@@ -53,7 +53,7 @@ extension CustomAppBar on ProfileReviewsState {
               ),
               Positioned(
                 bottom: 85.0,
-                left: 50.0,
+                left: 15.0,
                 child: Row(
                   children: [
                     for (int i = 0;
@@ -78,10 +78,10 @@ extension CustomAppBar on ProfileReviewsState {
             ],
           ),
           title: appBarTitle(
-            widget.info == null
-                ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
-                : "${widget.info!.firstName} ${widget.info!.lastName}",
-          ),
+              widget.info == null
+                  ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
+                  : "${widget.info!.firstName} ${widget.info!.lastName}",
+              appBarPosition),
         ),
       );
 }

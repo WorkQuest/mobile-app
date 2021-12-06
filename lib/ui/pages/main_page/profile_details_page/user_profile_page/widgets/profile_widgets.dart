@@ -268,9 +268,10 @@ class ReviewsWidget extends StatelessWidget {
 }
 
 ///AppBar Title
-Widget appBarTitle(String name) {
-  return Transform.translate(
-    offset: Offset(25.0, 0.0),
+Widget appBarTitle(String name, double padding) {
+  return AnimatedPadding(
+    padding: EdgeInsets.only(left: padding),
+    duration: Duration(milliseconds: 100),
     child: Stack(
       children: [
         Positioned(
