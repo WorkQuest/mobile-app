@@ -174,96 +174,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     });
   }
 
-  final _$activeLengthAtom = Atom(name: '_MyQuestStore.activeLength');
-
-  @override
-  int get activeLength {
-    _$activeLengthAtom.reportRead();
-    return super.activeLength;
-  }
-
-  @override
-  set activeLength(int value) {
-    _$activeLengthAtom.reportWrite(value, super.activeLength, () {
-      super.activeLength = value;
-    });
-  }
-
-  final _$starredLengthAtom = Atom(name: '_MyQuestStore.starredLength');
-
-  @override
-  int get starredLength {
-    _$starredLengthAtom.reportRead();
-    return super.starredLength;
-  }
-
-  @override
-  set starredLength(int value) {
-    _$starredLengthAtom.reportWrite(value, super.starredLength, () {
-      super.starredLength = value;
-    });
-  }
-
-  final _$performedLengthAtom = Atom(name: '_MyQuestStore.performedLength');
-
-  @override
-  int get performedLength {
-    _$performedLengthAtom.reportRead();
-    return super.performedLength;
-  }
-
-  @override
-  set performedLength(int value) {
-    _$performedLengthAtom.reportWrite(value, super.performedLength, () {
-      super.performedLength = value;
-    });
-  }
-
-  final _$requestedLengthAtom = Atom(name: '_MyQuestStore.requestedLength');
-
-  @override
-  int get requestedLength {
-    _$requestedLengthAtom.reportRead();
-    return super.requestedLength;
-  }
-
-  @override
-  set requestedLength(int value) {
-    _$requestedLengthAtom.reportWrite(value, super.requestedLength, () {
-      super.requestedLength = value;
-    });
-  }
-
-  final _$respondedLengthAtom = Atom(name: '_MyQuestStore.respondedLength');
-
-  @override
-  int get respondedLength {
-    _$respondedLengthAtom.reportRead();
-    return super.respondedLength;
-  }
-
-  @override
-  set respondedLength(int value) {
-    _$respondedLengthAtom.reportWrite(value, super.respondedLength, () {
-      super.respondedLength = value;
-    });
-  }
-
-  final _$invitedLengthAtom = Atom(name: '_MyQuestStore.invitedLength');
-
-  @override
-  int get invitedLength {
-    _$invitedLengthAtom.reportRead();
-    return super.invitedLength;
-  }
-
-  @override
-  set invitedLength(int value) {
-    _$invitedLengthAtom.reportWrite(value, super.invitedLength, () {
-      super.invitedLength = value;
-    });
-  }
-
   final _$iconsMarkerAtom = Atom(name: '_MyQuestStore.iconsMarker');
 
   @override
@@ -316,12 +226,6 @@ performed: ${performed},
 requested: ${requested},
 responded: ${responded},
 invited: ${invited},
-activeLength: ${activeLength},
-starredLength: ${starredLength},
-performedLength: ${performedLength},
-requestedLength: ${requestedLength},
-respondedLength: ${respondedLength},
-invitedLength: ${invitedLength},
 iconsMarker: ${iconsMarker},
 selectQuestInfo: ${selectQuestInfo}
     ''';
