@@ -93,13 +93,15 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           },
           itemBuilder: (BuildContext context) {
             return {
-              'quests.raiseViews'.tr(),
-              'registration.edit'.tr(),
-              'settings.delete'.tr()
+              'quests.raiseViews',
+              'registration.edit',
+              'settings.delete',
             }.map((String choice) {
               return PopupMenuItem<String>(
-                value: choice,
-                child: Text(choice),
+                value: choice.tr(),
+                child: Text(
+                  choice.tr(),
+                ),
               );
             }).toList();
           },

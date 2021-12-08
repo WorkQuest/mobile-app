@@ -8,6 +8,7 @@ import 'package:app/ui/pages/main_page/chat_page/repository/chat.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../../enums.dart';
 
@@ -20,8 +21,7 @@ class ChatStore extends _ChatStore with _$ChatStore {
 
 abstract class _ChatStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
-  final StreamController<bool> streamChatNotification =
-      StreamController<bool>();
+  StreamController<bool>? streamChatNotification;
   String _myId = "";
   int offset = 0;
   int limit = 10;
@@ -79,45 +79,53 @@ abstract class _ChatStore extends IStore<bool> with Store {
     if (chats[chat.id] == null) chats[chat.id] = Chats(chat);
     chats[chat.id]!.messages = messages;
     chats[chat.id]!.update();
+    _atomChats.reportChanged();
   }
 
   void addAllMessages(List<MessageModel> messages, String id) {
     try {
       if (chats[id] == null) return;
       chats[id]!.messages.addAll(messages);
+      checkMessage();
       chats[id]!.update();
     } catch (e, trace) {
       print("$e $trace");
     }
   }
 
-  void addedMessage(MessageModel message) {
-    var chat = chats[message.chatId];
-    if (chat == null) return;
-    chat.chatModel.lastMessage = message;
-    chat.messages.insert(0, message);
+  void addedMessage(dynamic json) {
+    try {
+      var message;
+      if (json["type"] == "request")
+        message = MessageModel.fromJson(json["payload"]["result"]);
+      else if (json["message"]["action"] == "groupChatCreate")
+        setMessages(
+            [MessageModel.fromJson(json["message"]["data"]["lastMessage"])],
+            ChatModel.fromJson(json["message"]["data"]));
+      else if (json["message"]["action"] == "newMessage")
+        message = MessageModel.fromJson(json["message"]["data"]);
+      else if (json["message"]["action"] == "messageReadByRecipient") {
+        message = MessageModel.fromJson(json["message"]["data"]);
+        chats[message.chatId]!.chatModel.lastMessage.senderStatus = "read";
+        _atomChats.reportChanged();
+        return;
+      }
+      var chat = chats[message.chatId];
+      if (chat == null) return;
+      chat.chatModel.lastMessage = message;
+      chat.messages.insert(0, message);
 
-    final saveChat = chats.remove(message.chatId);
+      final saveChat = chats.remove(message.chatId);
 
-    chats[message.chatId] = saveChat!;
-    checkMessage();
-    _atomChats.reportChanged();
-    chat.update();
+      chats[message.chatId] = saveChat!;
+      checkMessage();
+      _atomChats.reportChanged();
+      chat.update();
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+    }
   }
-
-  List<String> selectedCategories = [
-    "Starred message",
-    "Starred chat",
-    "Report",
-    "Create group chat",
-  ];
-
-  List<String> selectedCategoriesStarred = [
-    "Starred message",
-    "All chat",
-    "Report",
-    "Create group chat",
-  ];
 
   @observable
   String infoMessageValue = "";
@@ -138,18 +146,18 @@ abstract class _ChatStore extends IStore<bool> with Store {
   String setInfoMessage(String infoMessage) {
     switch (infoMessage) {
       case "groupChatCreate":
-        return infoMessageValue = "You created a group chat";
+        return infoMessageValue = "chat.infoMessage.groupChatCreate".tr();
       case "employerRejectResponseOnQuest":
         return infoMessageValue =
-            "The employer rejected the response to the request";
+            "chat.infoMessage.employerRejectResponseOnQuest".tr();
       case "workerResponseOnQuest":
-        return infoMessageValue = "The worker responded to the quest";
+        return infoMessageValue = "chat.infoMessage.workerResponseOnQuest".tr();
       case "groupChatAddUser":
-        return infoMessageValue = "User added";
+        return infoMessageValue = "chat.infoMessage.groupChatAddUser".tr();
       case "groupChatDeleteUser":
-        return infoMessageValue = "User deleted";
+        return infoMessageValue = "chat.infoMessage.groupChatDeleteUser".tr();
       case "groupChatLeaveUser":
-        return infoMessageValue = "User left chat";
+        return infoMessageValue = "chat.infoMessage.groupChatLeaveUser".tr();
     }
     return infoMessageValue;
   }
@@ -165,14 +173,19 @@ abstract class _ChatStore extends IStore<bool> with Store {
     chats.values.forEach((element) {
       if (element.chatModel.lastMessage.senderStatus == "unread" &&
           element.chatModel.lastMessage.senderUserId != this._myId) {
-        streamChatNotification.sink.add(true);
+        streamChatNotification!.sink.add(true);
         unread = true;
         return;
       } else {
-        streamChatNotification.sink.add(false);
+        streamChatNotification!.sink.add(false);
         unread = false;
       }
     });
+  }
+
+  void initialStore() async {
+    if (streamChatNotification != null) await streamChatNotification!.close();
+    streamChatNotification = StreamController<bool>();
   }
 
   @action

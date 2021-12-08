@@ -1,11 +1,12 @@
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/video_file.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 
 class MessageCell extends StatefulWidget {
   final LocalKey key;
@@ -21,11 +22,16 @@ class MessageCell extends StatefulWidget {
 
 class _MessageCellState extends State<MessageCell> {
   late ChatRoomStore store;
-  late VideoPlayerController _controller;
+  late String date;
 
   @override
   void initState() {
     store = context.read<ChatRoomStore>();
+    date = widget.mess.createdAt.year == DateTime.now().year &&
+            widget.mess.createdAt.month == DateTime.now().month &&
+            widget.mess.createdAt.day == DateTime.now().day
+        ? ""
+        : DateFormat('dd MMM, kk:mm').format(widget.mess.createdAt);
     super.initState();
   }
 
@@ -96,8 +102,7 @@ class _MessageCellState extends State<MessageCell> {
                             Row(
                               children: [
                                 Text(
-                                  "${widget.mess.createdAt.hour < 10 ? "0${widget.mess.createdAt.hour}" : widget.mess.createdAt.hour}:" +
-                                      "${widget.mess.createdAt.minute < 10 ? "0${widget.mess.createdAt.minute}" : widget.mess.createdAt.minute}",
+                                  date,
                                   style: TextStyle(
                                     color: widget.mess.senderUserId !=
                                             widget.userId
@@ -136,88 +141,50 @@ class _MessageCellState extends State<MessageCell> {
     );
   }
 
-  Widget media() => SizedBox(
-        height: 150.0,
-        child: ListView.separated(
+  Widget media() {
+    return SizedBox(
+      height: 150.0,
+      child: ListView.separated(
           separatorBuilder: (_, index) => SizedBox(
             width: 10.0,
           ),
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemCount: widget.mess.medias.length,
-          itemBuilder: (_, index) =>
-              widget.mess.medias[index].type == TypeMedia.Image
-                  ? imageItem(index)
-                  : videoItem(index),
+          itemBuilder: (_, index) {
+            if (widget.mess.medias[index].type == TypeMedia.Video) {
+              store.setThumbnailPath(widget.mess.medias[index].url, widget.mess.medias[index].id);
+            }
+            return widget.mess.medias[index].type == TypeMedia.Image
+                ? Image.network(
+                    widget.mess.medias[index].url,
+                    fit: BoxFit.cover,
+                  )
+                : widget.mess.medias[index].type == TypeMedia.Video
+                    ?
+            Observer(
+              builder: (_) => store.mapOfPath[widget.mess.medias[index].id] != null
+                          ? InkWell(
+                              child: Image.asset(
+                                store.mapOfPath[widget.mess.medias[index].id],
+                                fit: BoxFit.cover,
+                              ),
+                              onTap: () {
+                                store.urlVideo = widget.mess.medias[index].url;
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushNamed(VideoFile.routeName,
+                                        arguments: store);
+                              },
+                            )
+                          : Center(
+                              child: CircularProgressIndicator(),
+                            ),
+            )
+                    : Center(
+                        child: Text("This isn't video or image"),
+                      );
+          },
         ),
-      );
-
-  imageItem(int index) {
-    return SizedBox(
-      width: 120.0,
-      child: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
-        children: [
-          // Media
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Container(
-              width: double.infinity,
-              height: 300,
-              child: PageView(
-                onPageChanged: store.changePageNumber,
-                children: widget.mess.medias
-                    .map(
-                      (e) => Image.network(
-                        e.url,
-                        fit: BoxFit.fitHeight,
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  videoItem(int index) {
-    // final fileName = await VideoThumbnail.thumbnailFile(
-    //     video: "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
-    //     thumbnailPath: (await getApplicationDocumentsDirectory()).path,
-    // imageFormat: ImageFormat.WEBP,
-    // maxHeight: 64, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
-    // quality: 75,
-    // );
-    return SizedBox(
-      width: 120.0,
-      child: Stack(
-        clipBehavior: Clip.none,
-        fit: StackFit.expand,
-        children: [
-          // Media
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Container(
-              width: double.infinity,
-              height: 300,
-              child: PageView(
-                onPageChanged: store.changePageNumber,
-                children: widget.mess.medias
-                    .map(
-                      (e) => Image.network(
-                        e.url,
-                        fit: BoxFit.fitHeight,
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

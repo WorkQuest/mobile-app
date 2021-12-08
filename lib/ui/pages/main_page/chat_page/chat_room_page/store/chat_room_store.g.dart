@@ -309,13 +309,13 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   final _$mediaAtom = Atom(name: '_ChatRoomStore.media');
 
   @override
-  ObservableList<DrishyaEntity> get media {
+  ObservableList<File> get media {
     _$mediaAtom.reportRead();
     return super.media;
   }
 
   @override
-  set media(ObservableList<DrishyaEntity> value) {
+  set media(ObservableList<File> value) {
     _$mediaAtom.reportWrite(value, super.media, () {
       super.media = value;
     });
@@ -333,6 +333,36 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   set pageNumber(int value) {
     _$pageNumberAtom.reportWrite(value, super.pageNumber, () {
       super.pageNumber = value;
+    });
+  }
+
+  final _$fileNameBytesAtom = Atom(name: '_ChatRoomStore.fileNameBytes');
+
+  @override
+  Uint8List? get fileNameBytes {
+    _$fileNameBytesAtom.reportRead();
+    return super.fileNameBytes;
+  }
+
+  @override
+  set fileNameBytes(Uint8List? value) {
+    _$fileNameBytesAtom.reportWrite(value, super.fileNameBytes, () {
+      super.fileNameBytes = value;
+    });
+  }
+
+  final _$mapOfPathAtom = Atom(name: '_ChatRoomStore.mapOfPath');
+
+  @override
+  ObservableMap<String, dynamic> get mapOfPath {
+    _$mapOfPathAtom.reportRead();
+    return super.mapOfPath;
+  }
+
+  @override
+  set mapOfPath(ObservableMap<String, dynamic> value) {
+    _$mapOfPathAtom.reportWrite(value, super.mapOfPath, () {
+      super.mapOfPath = value;
     });
   }
 
@@ -522,6 +552,8 @@ selectedUsers: ${selectedUsers},
 starredMessage: ${starredMessage},
 media: ${media},
 pageNumber: ${pageNumber},
+fileNameBytes: ${fileNameBytes},
+mapOfPath: ${mapOfPath},
 chat: ${chat}
     ''';
   }

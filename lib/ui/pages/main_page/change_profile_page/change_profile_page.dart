@@ -360,6 +360,13 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                 width: 2.0,
               ),
             ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              borderSide: BorderSide(
+                width: 1.0,
+                color: Colors.red,
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 20),
@@ -397,29 +404,27 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
           ),
           alignment: Alignment.centerLeft,
           child: DropdownButtonHideUnderline(
-            child: Observer(
-              builder: (_) => DropdownButton(
-                isExpanded: true,
-                value: value,
-                onChanged: onChanged,
-                items: list.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                icon: Icon(
-                  Icons.arrow_drop_down,
-                  size: 30,
-                  color: Colors.blueAccent,
-                ),
-                hint: Text(
-                  title,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+            child: DropdownButton(
+              isExpanded: true,
+              value: value,
+              onChanged: onChanged,
+              items: list.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              icon: Icon(
+                Icons.arrow_drop_down,
+                size: 30,
+                color: Colors.blueAccent,
+              ),
+              hint: Text(
+                title,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
                 ),
               ),
             ),

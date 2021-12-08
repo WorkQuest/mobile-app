@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_page.dart';
@@ -31,6 +33,7 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<ChatStore>().initialStore();
     List<_TabBarIconData> _tabBarIconsData = [
       _TabBarIconData(
         'assets/list_alt.svg',
@@ -80,32 +83,25 @@ class MainPage extends StatelessWidget {
               icon: StreamBuilder<bool>(
                 key: key,
                 initialData: false,
-                stream: context.read<ChatStore>().streamChatNotification.stream,
+                stream:
+                    context.read<ChatStore>().streamChatNotification!.stream,
                 builder: (context, snapshot) {
-                  if (snapshot.data!)
+                  if (controller.index == 2 &&snapshot.data!) {
                     return SvgPicture.asset(
                       'assets/message_mark.svg',
-                    );
-                  else
-                    return SvgPicture.asset(
-                      'assets/message.svg',
-                    );
-                },
-              ),
-              activeIcon: StreamBuilder<bool>(
-                key: key,
-                initialData: false,
-                stream: context.read<ChatStore>().streamChatNotification.stream,
-                builder: (context, snapshot) {
-                  if (snapshot.data!)
-                    return SvgPicture.asset(
-                      'assets/message_mark.svg',
-                    );
-                  else
-                    return SvgPicture.asset(
-                      'assets/message.svg',
                       color: CupertinoTheme.of(context).primaryColor,
                     );
+                  }
+                  else if (controller.index == 2 && !snapshot.data!) {
+                    return SvgPicture.asset(
+                      _tabBarIconsData[2].svgPath,
+                      color: CupertinoTheme.of(context).primaryColor,
+                    );
+                  }
+                  if (snapshot.data!)
+                    return SvgPicture.asset('assets/message_mark.svg');
+                  else
+                    return SvgPicture.asset(_tabBarIconsData[2].svgPath);
                 },
               ),
               label: _tabBarIconsData[2].label.tr(),
@@ -149,7 +145,9 @@ class MainPage extends StatelessWidget {
               return CupertinoTabView(
                 onGenerateRoute: Routes.generateRoute,
                 navigatorKey: thirdTabNavKey,
-                builder: (BuildContext context) => ChatPage(),
+                builder: (BuildContext context) {
+                  return ChatPage();
+                },
               );
             case 3:
               return CupertinoTabView(

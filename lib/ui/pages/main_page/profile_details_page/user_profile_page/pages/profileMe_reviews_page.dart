@@ -109,14 +109,14 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
     return Scaffold(
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
-          if(controllerMain.offset <240)
+          if (controllerMain.offset < 240)
             setState(() {
               appBarPosition = 0.0;
             });
-          if(controllerMain.offset >0&&controllerMain.offset <240)
+          if (controllerMain.offset > 0 && controllerMain.offset < 240)
             setState(() {
               appBarPosition = controllerMain.offset < 120 ? 0.0 : 25.0;
-              print(appBarPosition);
+              // print(appBarPosition);
             });
           return true;
         },

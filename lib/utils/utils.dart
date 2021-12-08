@@ -1,17 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
-import '../constants.dart';
-
-class Utils {
-
-  static String dateTimeFormatter(DateTime t) {
-    String h = t.hour < 10 ? '0${t.hour}' : t.hour.toString();
-    String m = t.minute < 10 ? '0${t.minute}' : t.minute.toString();
-    return "${t.day} ${Constants.months[t.month]} ${t.year}, $h:$m";
-  }
-}
-
 ///Card Utils
 class CardNumberInputFormatter extends TextInputFormatter {
   @override

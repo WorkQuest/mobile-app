@@ -117,17 +117,20 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     );
   }
 
-  Widget _media() => SizedBox(
-        height: 150.0,
-        child: Observer(
-          builder: (_) => ListView.separated(
-            separatorBuilder: (_, index) => SizedBox(
-              width: 10.0,
-            ),
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: _store.media.length,
-            itemBuilder: (_, index) => SizedBox(
+  Widget _media() {
+    return SizedBox(
+      height: 150.0,
+      child: Observer(
+        builder: (_) => ListView.separated(
+          separatorBuilder: (_, index) => SizedBox(
+            width: 10.0,
+          ),
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: _store.media.length,
+          itemBuilder: (_, index) {
+            _store.setThumbnail(_store.media[index].path);
+            return SizedBox(
               width: 120.0,
               child: Stack(
                 clipBehavior: Clip.none,
@@ -136,9 +139,20 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   // Media
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: Image.memory(
-                      _store.media[index].thumbBytes,
-                      fit: BoxFit.cover,
+                    child: Observer(
+                      builder: (_) => _store.media[index].path.split(".")[1] ==
+                                  "jpeg" ||
+                              _store.media[index].path.split(".")[1] == "png"
+                          ? Image.memory(
+                              _store.media[index].readAsBytesSync(),
+                              fit: BoxFit.cover,
+                            )
+                          : _store.fileNameBytes == null
+                              ? CircularProgressIndicator()
+                              : Image.memory(
+                                  _store.fileNameBytes!,
+                                  fit: BoxFit.cover,
+                                ),
                     ),
                   ),
                   Positioned(
@@ -146,16 +160,18 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     right: -15.0,
                     child: IconButton(
                       onPressed: () => _store.media.removeAt(index),
-                      icon: Icon(Icons.cancel),
-                      color: Colors.redAccent,
+                      icon: Icon(Icons.cancel_outlined),
+                      color: Colors.black,
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
+            );
+          },
         ),
-      );
+      ),
+    );
+  }
 
   PreferredSizeWidget _selectedMessages() {
     return AppBar(
@@ -165,6 +181,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       leading: IconButton(
         onPressed: () {
           _store.setMessageSelected(false);
+          _store.idMessages.clear();
           _store.uncheck();
         },
         icon: Icon(
