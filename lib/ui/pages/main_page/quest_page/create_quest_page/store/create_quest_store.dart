@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/keys.dart';
@@ -6,7 +8,6 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
-import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -89,7 +90,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   int adType = 0;
 
   @observable
-  ObservableList<DrishyaEntity> mediaDrishya = ObservableList();
+  ObservableList<File> mediaFile = ObservableList();
 
   @observable
   ObservableList<Media> mediaIds = ObservableList();
@@ -126,20 +127,20 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   bool get canCreateQuest =>
       !isLoading &&
       locationPlaceName.isNotEmpty &&
-      mediaDrishya.isNotEmpty &&
+          mediaFile.isNotEmpty &&
       skillFilters.isNotEmpty;
 
   @computed
   bool get canSubmitEditQuest =>
       !isLoading &&
       locationPlaceName.isNotEmpty &&
-      (mediaIds.isNotEmpty || mediaDrishya.isNotEmpty) &&
+      (mediaIds.isNotEmpty || mediaFile.isNotEmpty) &&
       skillFilters.isNotEmpty;
 
   @action
   void emptyField(BuildContext context) {
     if (locationPlaceName.isEmpty) errorAlert(context, "Address is empty");
-    if (mediaDrishya.isEmpty) errorAlert(context, "Media is empty");
+    if (mediaFile.isEmpty) errorAlert(context, "Media is empty");
     if (skillFilters.isEmpty) errorAlert(context, "Skills are empty");
   }
 
@@ -202,8 +203,10 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
       logo: SizedBox(),
       // Mode.fullscreen
     );
-    locationPlaceName = p!.description!;
-    displayPrediction(p.placeId);
+    if (p != null) {
+      locationPlaceName = p.description!;
+      displayPrediction(p.placeId);
+    }
   }
 
   @action
@@ -216,7 +219,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   Future<BaseQuestResponse> getQuest(String questId) async {
     return await apiProvider.getQuest(
       id: questId,
-
     );
   }
 
@@ -241,7 +243,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         location: location,
         media: mediaIds.map((e) => e.id).toList() +
             await apiProvider.uploadMedia(
-              medias: mediaDrishya,
+              medias: mediaFile,
             ),
         title: questTitle,
         description: description,

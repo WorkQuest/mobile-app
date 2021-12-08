@@ -27,13 +27,13 @@ mixin _$ChangeProfileStore on ChangeProfileStoreBase, Store {
   final _$mediaAtom = Atom(name: 'ChangeProfileStoreBase.media');
 
   @override
-  DrishyaEntity? get media {
+  File? get media {
     _$mediaAtom.reportRead();
     return super.media;
   }
 
   @override
-  set media(DrishyaEntity? value) {
+  set media(File? value) {
     _$mediaAtom.reportWrite(value, super.media, () {
       super.media = value;
     });

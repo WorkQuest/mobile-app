@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:app/keys.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
-import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
@@ -17,7 +18,7 @@ abstract class ChangeProfileStoreBase with Store {
   ProfileMeResponse userData;
 
   @observable
-  DrishyaEntity? media;
+  File? media;
 
   @observable
   String address = "";

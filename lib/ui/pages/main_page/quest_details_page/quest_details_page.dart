@@ -5,6 +5,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
+import 'package:app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -179,7 +180,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
               ImageViewerWidget(widget.questInfo.medias),
             ],
             Text(
-              widget.questInfo.createdAt.toString(),
+              DateFormat('dd MMMM yyyy, kk:mm')
+                  .format(widget.questInfo.createdAt),
               style: TextStyle(
                 color: Color(0xFFAAB0B9),
                 fontSize: 12,

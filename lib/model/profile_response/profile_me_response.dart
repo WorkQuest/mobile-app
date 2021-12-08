@@ -186,6 +186,7 @@ class RatingStatistic {
     required this.userId,
     required this.reviewCount,
     required this.averageMark,
+    required this.status,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -194,6 +195,7 @@ class RatingStatistic {
   String userId;
   int reviewCount;
   double averageMark;
+  String status;
   String createdAt;
   String updatedAt;
 
@@ -203,6 +205,7 @@ class RatingStatistic {
           userId: object.userId,
           reviewCount: object.reviewCount,
           averageMark: object.averageMark,
+          status: object.status,
           createdAt: object.createdAt,
           updatedAt: object.updatedAt,
         );
@@ -214,6 +217,7 @@ class RatingStatistic {
       reviewCount: json["reviewCount"],
       averageMark:
           json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
+      status: json["status"],
       createdAt: json["createdAt"],
       updatedAt: json["updatedAt"],
     );
@@ -224,6 +228,7 @@ class RatingStatistic {
         "userId": userId,
         "reviewCount": reviewCount,
         "averageMark": averageMark,
+        "status": status,
         "createdAt": createdAt,
         "updatedAt": updatedAt,
       };

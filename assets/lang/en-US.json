@@ -953,6 +953,7 @@
     "cooking": "Cooking",
     "coding": "Programming",
     "uploadAImages": "Upload images or videos",
+    "uploadADocuments": "Upload documents",
     "description": "Description",
     "noDescription": "No description",
     "addCase": "Add case",
@@ -1198,7 +1199,15 @@
     "yourUsername": "Your username:",
     "you": "You:",
     "invitedYou": "invited you to an quest",
-    "writeYouMessage": "Write your message"
+    "writeYouMessage": "Write your message",
+    "infoMessage": {
+      "groupChatCreate": "Group chat created",
+      "employerRejectResponseOnQuest": "The employer rejected the response to the request",
+      "workerResponseOnQuest": "The worker responded to the quest",
+      "groupChatAddUser": "User added",
+      "groupChatDeleteUser": "User deleted",
+      "groupChatLeaveUser": "User left chat"
+    }
   },
   "settings": {
     "profileChanged": "Profile changed successfully",

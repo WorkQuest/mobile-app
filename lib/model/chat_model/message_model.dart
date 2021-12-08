@@ -34,7 +34,7 @@ class MessageModel {
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
         id: json["id"],
-        number: json["number"],
+        number: json["number"]??0,
         chatId: json["chatId"],
         senderUserId: json["senderUserId"],
         senderStatus: json["senderStatus"],

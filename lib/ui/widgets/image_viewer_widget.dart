@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:video_player/video_player.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ImageViewerWidget extends StatelessWidget {
   ImageViewerWidget(this.medias, {Key? key}) : super(key: key);
@@ -11,7 +14,6 @@ class ImageViewerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 15),
-      height: 200,
       child: Row(
         children: [
           Flexible(
@@ -37,14 +39,17 @@ class ImageViewerWidget extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => ScrollingImages(medias)));
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ScrollingImages(medias),
+                        ),
+                      );
                     },
                     child: Icon(Icons.more_horiz),
                     style: ButtonStyle(
-                      fixedSize:
-                          MaterialStateProperty.all(Size(double.maxFinite, 60)),
+                      fixedSize: MaterialStateProperty.all(
+                        Size(double.maxFinite, 60),
+                      ),
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
@@ -68,14 +73,20 @@ class ImageViewerWidget extends StatelessWidget {
 
   getImageCell(int index, BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        if (medias[index].type == TypeMedia.Image ||
+            medias[index].type == TypeMedia.Video) {
+          Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (_) => ScrollingImages(
-                      medias,
-                      index: index,
-                    )));
+              builder: (_) => ScrollingImages(
+                medias,
+                index: index,
+              ),
+            ),
+          );
+        } else {
+        }
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
@@ -83,20 +94,35 @@ class ImageViewerWidget extends StatelessWidget {
             ? Image.network(
                 medias[index].url,
                 fit: BoxFit.cover,
-                height: index == 0 ? double.infinity : 60,
+                height: index == 0 ? 200 : 60,
                 width: double.maxFinite,
               )
-            : Container(
-                color: Colors.black,
-                height: index == 0 ? double.infinity : 60,
-                width: double.maxFinite,
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.play_arrow,
-                  size: index == 0 ? 100 : 40,
-                  color: Color(0xDDFFFFFF),
-                ),
-              ),
+            : medias[index].type == TypeMedia.Video
+                ? Container(
+                    color: Colors.black,
+                    height: index == 0 ? 200 : 60,
+                    width: double.maxFinite,
+                    alignment: Alignment.center,
+                    child: SvgPicture.asset(
+                      'assets/play.svg',
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      color: Color(0xFFE9EDF2),
+                    ),
+                  )
+                : Row(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/pdf.svg",
+                      ),
+                      const SizedBox(
+                        width: 14,
+                      ),
+                      Flexible(
+                        child: Text("PDF file"),
+                      ),
+                    ],
+                  ),
       ),
     );
   }
@@ -104,6 +130,7 @@ class ImageViewerWidget extends StatelessWidget {
 
 class ScrollingImages extends StatefulWidget {
   ScrollingImages(this.medias, {this.index});
+
   final List<Media> medias;
   final int? index;
 
@@ -115,6 +142,7 @@ class _ScrollingImagesState extends State<ScrollingImages> {
   int index = 0;
   double width = 0;
   final scrollController = ScrollController();
+
   @override
   void initState() {
     Timer(
@@ -193,7 +221,9 @@ class _ScrollingImagesState extends State<ScrollingImages> {
 
 class VideoWidget extends StatefulWidget {
   final String url;
+
   VideoWidget({required this.url});
+
   @override
   _VideoWidgetState createState() => _VideoWidgetState();
 }
@@ -235,10 +265,11 @@ class _VideoWidgetState extends State<VideoWidget> {
                 : CircularProgressIndicator(),
             if (!_controller!.value.isPlaying &&
                 _controller!.value.isInitialized)
-              Icon(
-                Icons.play_arrow,
-                size: MediaQuery.of(context).size.width * 0.5,
-                color: Color(0xDDFFFFFF),
+              SvgPicture.asset(
+                'assets/play.svg',
+                width: MediaQuery.of(context).size.width * 0.1,
+                height: MediaQuery.of(context).size.height * 0.1,
+                color: Color(0xFFE9EDF2),
               ),
           ],
         ),

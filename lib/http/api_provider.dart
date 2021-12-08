@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:app/enums.dart';
 import 'package:app/http/core/i_http_client.dart';
@@ -12,10 +13,8 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/quest_map_point.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:dio/dio.dart';
-import 'package:drishya_picker/drishya_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobx/mobx.dart';
 
 @singleton
 class ApiProvider {
@@ -561,22 +560,38 @@ extension SMSVerification on ApiProvider {
 ///Media Upload
 extension GetUploadLink on ApiProvider {
   Future<List<String>> uploadMedia({
-    required ObservableList<DrishyaEntity> medias,
+    required List<File> medias,
   }) async {
     List<String> mediaId = [];
     Uint8List? bytes;
 
     for (var media in medias) {
-      String contentType =
-          media.entity.type == AssetType.video ? "video/mp4" : "image/jpeg";
+      String contentType = "";
+      switch (media.path.split("/").reversed.first.split(".")[1]) {
+        case "mp4":
+          contentType = "video/mp4";
+          break;
+        case "mov":
+          contentType = "video/mp4";
+          break;
+        case "jpeg":
+          contentType = "image/jpeg";
+          break;
+        case "jpg":
+          contentType = "image/jpeg";
+          break;
+        case "png":
+          contentType = "image/png";
+          break;
+        case "pdf":
+          contentType = "application/pdf";
+          break;
+        case "doc":
+          contentType = "application/msword";
+          break;
+      }
 
-      if (media.entity.type == AssetType.video) {
-        // File? file = await media.entity.thumbData;
-        bytes = await media.entity.thumbData;
-      } else
-        bytes = media.thumbBytes;
-
-      print("bytes after -> ${bytes?.length}");
+      bytes = media.readAsBytesSync();
 
       final response = await _httpClient.post(
         query: '/v1/storage/get-upload-link',

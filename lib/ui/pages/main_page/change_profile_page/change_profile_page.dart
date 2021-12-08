@@ -7,7 +7,7 @@ import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/validator.dart';
-import 'package:drishya_picker/drishya_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -32,7 +32,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
   SkillSpecializationController? _controller;
   KnowledgeWorkSelectionController? _controllerKnowledge;
   KnowledgeWorkSelectionController? _controllerWork;
-  late final GalleryController gallController;
 
   @override
   void initState() {
@@ -249,7 +248,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                       fit: BoxFit.cover,
                     )
                   : Image.memory(
-                      pageStore.media!.thumbBytes,
+                      pageStore.media!.readAsBytesSync(),
                       height: 130,
                       width: 130,
                       fit: BoxFit.cover,
@@ -260,22 +259,17 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                 Icons.edit,
                 color: Colors.white,
               ),
-              onPressed: () {
+              onPressed: () async {
                 if (!checkPermission) {
-                  gallController = GalleryController(
-                    gallerySetting: const GallerySetting(
-                      maximum: 1,
-                      albumSubtitle: 'All',
-                      requestType: RequestType.image,
-                    ),
-                    panelSetting: PanelSetting(
-                      //topMargin: 100.0,
-                      headerMaxHeight: 100.0,
-                    ),
+                  final result = await FilePicker.platform.pickFiles(
+                    allowMultiple: true,
+                    type: FileType.media,
                   );
                   checkPermission = true;
+                  List<File> files =
+                  result!.paths.map((path) => File(path!)).toList();
+                  pageStore.media = files.first;
                 }
-                showGallery();
               },
             ),
           ],
@@ -360,6 +354,13 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                 width: 2.0,
               ),
             ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              borderSide: BorderSide(
+                width: 1.0,
+                color: Colors.red,
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 20),
@@ -397,29 +398,27 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
           ),
           alignment: Alignment.centerLeft,
           child: DropdownButtonHideUnderline(
-            child: Observer(
-              builder: (_) => DropdownButton(
-                isExpanded: true,
-                value: value,
-                onChanged: onChanged,
-                items: list.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                icon: Icon(
-                  Icons.arrow_drop_down,
-                  size: 30,
-                  color: Colors.blueAccent,
-                ),
-                hint: Text(
-                  title,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+            child: DropdownButton(
+              isExpanded: true,
+              value: value,
+              onChanged: onChanged,
+              items: list.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              icon: Icon(
+                Icons.arrow_drop_down,
+                size: 30,
+                color: Colors.blueAccent,
+              ),
+              hint: Text(
+                title,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
                 ),
               ),
             ),
@@ -428,13 +427,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
         const SizedBox(height: 20),
       ],
     );
-  }
-
-  Future showGallery() async {
-    final picked = await gallController.pick(
-      context,
-    );
-    if (picked.isNotEmpty) pageStore.media = picked.first;
   }
 
   onBack() {

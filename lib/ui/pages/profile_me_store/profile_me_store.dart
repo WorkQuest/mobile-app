@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
-import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,22 +33,22 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   String priorityValue = "Low";
 
   @observable
-  String distantWork = "Remote work";
+  String distantWork = "Distant work";
 
   @observable
   String wagePerHour = "";
 
-  ObservableList<String> distantWorkList = ObservableList.of([
-    "Remote work",
+  List<String> distantWorkList = [
+    "Distant work",
     "Work in the office",
     "Both options",
-  ]);
+  ];
 
-  ObservableList<String> priorityList = ObservableList.of([
+  List<String> priorityList = [
     "Low",
     "Normal",
     "Urgent",
-  ]);
+  ];
 
   @action
   void priorityToValue() {
@@ -57,7 +58,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
         return;
       case 1:
         priorityValue = "Normal";
-        print("value: $priorityValue");
         return;
       case 2:
         priorityValue = "Urgent";
@@ -188,7 +188,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   }
 
   @action
-  changeProfile(ProfileMeResponse userData, {DrishyaEntity? media}) async {
+  changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {
       this.onLoading();
       if (media != null)

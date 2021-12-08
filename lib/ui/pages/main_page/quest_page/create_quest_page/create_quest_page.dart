@@ -317,7 +317,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       ),
                       child: MediaUpload(
                         store.mediaIds,
-                        mediaDrishya: store.mediaDrishya,
+                        mediaFile: store.mediaFile,
                       ),
                     ),
                     titledField(
@@ -376,7 +376,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             onPressed: () async {
                               store.skillFilters =
                                   _controller!.getSkillAndSpecialization();
-                              print("spices: ${store.skillFilters}");
                               if (isEdit) {
                                 if (store.canSubmitEditQuest) {
                                   if (_formKey.currentState?.validate() ??
