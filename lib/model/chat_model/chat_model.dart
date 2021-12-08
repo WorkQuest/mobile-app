@@ -1,6 +1,6 @@
 import 'package:app/model/chat_model/me_member.dart';
-import 'package:app/model/chat_model/owner.dart';
 import 'package:app/model/chat_model/star.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 
 import 'message_model.dart';
 
@@ -25,10 +25,10 @@ class ChatModel {
   DateTime lastMessageDate;
   String? name;
   String type;
-  Owner? owner;
-  MessageModel? lastMessage;
+  ProfileMeResponse? owner;
+  MessageModel lastMessage;
   MeMember? meMember;
-  List<Owner> userMembers;
+  List<ProfileMeResponse> userMembers;
   Star? star;
 
   factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
@@ -38,15 +38,15 @@ class ChatModel {
         lastMessageDate: DateTime.parse(json["lastMessageDate"]),
         name: json["name"] == null ? null : json["name"],
         type: json["type"],
-        owner: json["owner"] == null ? null : Owner.fromJson(json["owner"]),
-        lastMessage: json["lastMessage"] == null
+        owner: json["owner"] == null
             ? null
-            : MessageModel.fromJson(json["lastMessage"]),
+            : ProfileMeResponse.fromJson(json["owner"]),
+        lastMessage: MessageModel.fromJson(json["lastMessage"]),
         meMember: json["meMember"] == null
             ? null
             : MeMember.fromJson(json["meMember"]),
         userMembers: (json["userMembers"] as List<dynamic>)
-            .map((e) => Owner.fromJson(e as Map<String, dynamic>))
+            .map((e) => ProfileMeResponse.fromJson(e as Map<String, dynamic>))
             .toList(),
         star: json["star"] == null ? null : Star.fromJson(json["star"]),
       );
@@ -59,9 +59,9 @@ class ChatModel {
         "name": name,
         "type": type,
         "owner": owner == null ? null : owner!.toJson(),
-        "lastMessage": lastMessage == null ? null : lastMessage!.toJson(),
+        "lastMessage": lastMessage.toJson(),
         // "meMember": meMember.toJson(),
         //"userMembers": userMembers.toJson(),
-        "star": star == null ? null : star!.toJson(),
+        "star": star,
       };
 }

@@ -53,11 +53,11 @@ extension CustomAppBar on ProfileReviewsState {
               ),
               Positioned(
                 bottom: 85.0,
-                left: 50.0,
+                left: 15.0,
                 child: Row(
                   children: [
                     for (int i = 0;
-                        i < 0; //userStore!.userData!.ratingStatistic!.averageMark;
+                        i < userStore!.userData!.ratingStatistic!.averageMark;
                         i++)
                       Icon(
                         Icons.star,
@@ -65,7 +65,7 @@ extension CustomAppBar on ProfileReviewsState {
                         size: 20.0,
                       ),
                     for (int i = 0;
-                        i < 5 - 0; //userStore!.userData!.ratingStatistic!.averageMark;
+                        i < 5 - userStore!.userData!.ratingStatistic!.averageMark;
                         i++)
                       Icon(
                         Icons.star,
@@ -78,10 +78,10 @@ extension CustomAppBar on ProfileReviewsState {
             ],
           ),
           title: appBarTitle(
-            widget.info == null
-                ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
-                : "${widget.info!.firstName} ${widget.info!.lastName}",
-          ),
+              widget.info == null
+                  ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
+                  : "${widget.info!.firstName} ${widget.info!.lastName}",
+              appBarPosition),
         ),
       );
 }

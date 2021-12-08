@@ -50,6 +50,9 @@ abstract class ChangeProfileStoreBase with Store {
     if (this.userData.userSpecializations != userData.userSpecializations)
       return true;
 
+    if (this.userData.wagePerHour != userData.wagePerHour)
+      return true;
+
     if (this.userData.firstName != userData.firstName) return true;
 
     if (this.userData.lastName  != userData.lastName )

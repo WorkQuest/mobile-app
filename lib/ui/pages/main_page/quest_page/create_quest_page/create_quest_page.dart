@@ -45,6 +45,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.priority = store.priorityList[widget.questInfo!.priority];
       store.category = widget.questInfo!.category;
       store.questTitle = widget.questInfo!.title;
+      store.getWorkplace(widget.questInfo!.workplace);
+      store.getEmployment(widget.questInfo!.employment);
       store.description = widget.questInfo!.description;
       store.price = widget.questInfo!.price;
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
@@ -314,8 +316,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         top: 20.0,
                       ),
                       child: MediaUpload(
+                        store.mediaIds,
                         mediaDrishya: store.mediaDrishya,
-                        mediaURL: store.mediaIds,
                       ),
                     ),
                     titledField(

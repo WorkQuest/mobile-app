@@ -24,18 +24,18 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
     });
   }
 
-  final _$priorityAtom = Atom(name: '_ProfileMeStore.priority');
+  final _$priorityValueAtom = Atom(name: '_ProfileMeStore.priorityValue');
 
   @override
-  String get priority {
-    _$priorityAtom.reportRead();
-    return super.priority;
+  String get priorityValue {
+    _$priorityValueAtom.reportRead();
+    return super.priorityValue;
   }
 
   @override
-  set priority(String value) {
-    _$priorityAtom.reportWrite(value, super.priority, () {
-      super.priority = value;
+  set priorityValue(String value) {
+    _$priorityValueAtom.reportWrite(value, super.priorityValue, () {
+      super.priorityValue = value;
     });
   }
 
@@ -51,6 +51,21 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
   set distantWork(String value) {
     _$distantWorkAtom.reportWrite(value, super.distantWork, () {
       super.distantWork = value;
+    });
+  }
+
+  final _$wagePerHourAtom = Atom(name: '_ProfileMeStore.wagePerHour');
+
+  @override
+  String get wagePerHour {
+    _$wagePerHourAtom.reportRead();
+    return super.wagePerHour;
+  }
+
+  @override
+  set wagePerHour(String value) {
+    _$wagePerHourAtom.reportWrite(value, super.wagePerHour, () {
+      super.wagePerHour = value;
     });
   }
 
@@ -98,6 +113,61 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
       ActionController(name: '_ProfileMeStore');
 
   @override
+  void priorityToValue() {
+    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
+        name: '_ProfileMeStore.priorityToValue');
+    try {
+      return super.priorityToValue();
+    } finally {
+      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setPriorityValue(String text) {
+    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
+        name: '_ProfileMeStore.setPriorityValue');
+    try {
+      return super.setPriorityValue(text);
+    } finally {
+      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void workplaceToValue() {
+    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
+        name: '_ProfileMeStore.workplaceToValue');
+    try {
+      return super.workplaceToValue();
+    } finally {
+      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setWorkplaceValue(String text) {
+    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
+        name: '_ProfileMeStore.setWorkplaceValue');
+    try {
+      return super.setWorkplaceValue(text);
+    } finally {
+      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setWorkplace(String value) {
+    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
+        name: '_ProfileMeStore.setWorkplace');
+    try {
+      return super.setWorkplace(value);
+    } finally {
+      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   List<String> parser(List<String> skills) {
     final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
         name: '_ProfileMeStore.parser');
@@ -109,33 +179,12 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
   }
 
   @override
-  void changeDistantWork(String selectedDistantWork) {
-    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
-        name: '_ProfileMeStore.changeDistantWork');
-    try {
-      return super.changeDistantWork(selectedDistantWork);
-    } finally {
-      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void changePriority(String selectedPriority) {
-    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
-        name: '_ProfileMeStore.changePriority');
-    try {
-      return super.changePriority(selectedPriority);
-    } finally {
-      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 twoFAStatus: ${twoFAStatus},
-priority: ${priority},
-distantWork: ${distantWork}
+priorityValue: ${priorityValue},
+distantWork: ${distantWork},
+wagePerHour: ${wagePerHour}
     ''';
   }
 }

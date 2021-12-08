@@ -62,27 +62,27 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           ),
           onSelected: (value) async {
             switch (value) {
-              case "Raise views":
+              case "quests.raiseViews":
                 Navigator.pushNamed(
                   context,
                   RaiseViews.routeName,
                   arguments: widget.questInfo,
                 );
                 break;
-              case "Edit":
+              case "registration.edit":
                 Navigator.pushNamed(
                   context,
                   CreateQuestPage.routeName,
                   arguments: widget.questInfo,
                 );
                 break;
-              case "Delete":
+              case "settings.delete":
                 dialog(
                   context,
                   title: "quests.deleteQuest".tr(),
                   message: "quests.deleteQuestMessage".tr(),
-                  confirmAction: () {
-                    store.deleteQuest(questId: widget.questInfo.id);
+                  confirmAction: () async {
+                   await store.deleteQuest(questId: widget.questInfo.id);
                     Navigator.pop(context);
                     Navigator.pop(context);
                   },
@@ -92,14 +92,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             }
           },
           itemBuilder: (BuildContext context) {
-            return {
-              'quests.raiseViews'.tr(),
-              'registration.edit'.tr(),
-              'settings.delete'.tr()
-            }.map((String choice) {
+            return {'quests.raiseViews', 'registration.edit', 'settings.delete'}
+                .map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,
-                child: Text(choice),
+                child: Text(choice.tr()),
               );
             }).toList();
           },
@@ -144,6 +141,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     ProfileReviews.routeName,
                     arguments: profile!.assignedWorker,
                   );
+                  profile!.assignedWorker = null;
                 }
               });
             },

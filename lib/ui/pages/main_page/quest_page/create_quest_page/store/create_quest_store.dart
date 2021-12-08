@@ -167,6 +167,30 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     return employmentValue;
   }
 
+  String getWorkplace(String workplaceValue) {
+    switch (workplaceValue) {
+      case "distant":
+        return workplace = "Distant work";
+      case "office":
+        return workplace = "Work in the office";
+      case "both":
+        return workplace = "Both variant";
+    }
+    return workplace;
+  }
+
+  String getEmployment(String employmentValue) {
+    switch (employmentValue) {
+      case "fullTime":
+        return employment = "Full time";
+      case "partTime":
+        return employment = "Part time";
+      case "fixedTerm":
+        return employment = "Fixed term";
+    }
+    return employment;
+  }
+
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
@@ -178,8 +202,10 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
       logo: SizedBox(),
       // Mode.fullscreen
     );
-    locationPlaceName = p!.description!;
-    displayPrediction(p.placeId);
+    if (p != null) {
+      locationPlaceName = p.description!;
+      displayPrediction(p.placeId);
+    }
   }
 
   @action
@@ -192,7 +218,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   Future<BaseQuestResponse> getQuest(String questId) async {
     return await apiProvider.getQuest(
       id: questId,
-
     );
   }
 
@@ -207,31 +232,31 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         longitude: longitude,
         latitude: latitude,
       );
-      final CreateQuestRequestModel questModel = CreateQuestRequestModel(
-        category: categoryValue,
-        employment: getEmploymentValue(),
-        locationPlaceName: locationPlaceName,
-        workplace: getWorkplaceValue(),
-        specializationKeys: skillFilters,
-        priority: priorityList.indexOf(priority),
-        location: location,
-        media: mediaIds.map((e) => e.id).toList() +
-            await apiProvider.uploadMedia(
-              medias: mediaDrishya,
-            ),
-        title: questTitle,
-        description: description,
-        price: price,
-        adType: adType,
-      );
-      isEdit
-          ? await apiProvider.editQuest(
-              quest: questModel,
-              questId: questId,
-            )
-          : await apiProvider.createQuest(
-              quest: questModel,
-            );
+      // final CreateQuestRequestModel questModel = CreateQuestRequestModel(
+      //   category: categoryValue,
+      //   employment: getEmploymentValue(),
+      //   locationPlaceName: locationPlaceName,
+      //   workplace: getWorkplaceValue(),
+      //   specializationKeys: skillFilters,
+      //   priority: priorityList.indexOf(priority),
+      //   location: location,
+      //   media: mediaIds.map((e) => e.id).toList() +
+      //       await apiProvider.uploadMedia(
+      //         medias: mediaDrishya,
+      //       ),
+      //   title: questTitle,
+      //   description: description,
+      //   price: price,
+      //   adType: adType,
+      // );
+      // isEdit
+      //     ? await apiProvider.editQuest(
+      //         quest: questModel,
+      //         questId: questId,
+      //       )
+      //     : await apiProvider.createQuest(
+      //         quest: questModel,
+      //       );
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

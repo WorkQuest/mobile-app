@@ -86,8 +86,11 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                 ),
                 Center(
                   child: refreshIndicator(
-                    notificationListener(QuestItemPriorityType.Requested,
-                        myQuests!.requested, null),
+                      role == UserRole.Employer
+                    ?notificationListener(QuestItemPriorityType.Requested,
+                        myQuests!.requested, null)
+                  :notificationListener(QuestItemPriorityType.Invited,
+                          myQuests!.invited, null),
                   ),
                 ),
                 Center(

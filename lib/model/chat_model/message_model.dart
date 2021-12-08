@@ -1,5 +1,7 @@
-import 'package:app/model/chat_model/owner.dart';
+import 'package:app/model/chat_model/info_message.dart';
 import 'package:app/model/chat_model/star.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
+import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 
 class MessageModel {
   MessageModel({
@@ -25,23 +27,27 @@ class MessageModel {
   String type;
   String? text;
   DateTime createdAt;
-  List<String> medias;
-  Owner? sender;
-  dynamic infoMessage;
-  dynamic star;
+  List<Media> medias;
+  ProfileMeResponse? sender;
+  InfoMessage? infoMessage;
+  Star? star;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
         id: json["id"],
-        number: json["number"],
+        number: json["number"]??0,
         chatId: json["chatId"],
         senderUserId: json["senderUserId"],
         senderStatus: json["senderStatus"],
         type: json["type"],
         text: json["text"] == null ? null : json["text"],
         createdAt: DateTime.parse(json["createdAt"]),
-        medias: List<String>.from(json["medias"].map((x) => x)),
-        sender: Owner.fromJson(json["sender"]),
-        infoMessage: json["infoMessage"],
+        medias: (json["medias"] as List<dynamic>)
+            .map((e) => Media.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        sender: ProfileMeResponse.fromJson(json["sender"]),
+        infoMessage: json["infoMessage"] == null
+            ? null
+            : InfoMessage.fromJson(json["infoMessage"]),
         star: json["star"] == null ? null : Star.fromJson(json["star"]),
       );
 

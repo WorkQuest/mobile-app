@@ -53,24 +53,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   ObservableList<BaseQuestResponse> invited = ObservableList.of([]);
 
   @observable
-  int activeLength = 0;
-
-  @observable
-  int starredLength = 0;
-
-  @observable
-  int performedLength = 0;
-
-  @observable
-  int requestedLength = 0;
-
-  @observable
-  int respondedLength = 0;
-
-  @observable
-  int invitedLength = 0;
-
-  @observable
   List<BitmapDescriptor> iconsMarker = [];
 
   @observable
@@ -88,13 +70,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         requested.clear();
         responded.clear();
         invited.clear();
-      } else {
-        activeLength = active.length;
-        starredLength = starred.length;
-        performedLength = performed.length;
-        requestedLength = requested.length;
-        respondedLength = responded.length;
-        invitedLength = invited.length;
       }
       if (role == UserRole.Employer) {
         active.addAll(ObservableList.of(

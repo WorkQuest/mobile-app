@@ -94,7 +94,6 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.deleteQuest(questId: questId);
-      await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
       print("accept error: $e\n$trace");

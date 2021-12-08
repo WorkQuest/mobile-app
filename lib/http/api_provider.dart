@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:app/enums.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/model/chat_model/chat_model.dart';
+import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
@@ -12,9 +14,10 @@ import 'package:app/model/quests_models/quest_map_point.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:dio/dio.dart';
 import 'package:drishya_picker/drishya_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:io';
 import 'package:injectable/injectable.dart';
+import 'package:mobx/mobx.dart';
 
 @singleton
 class ApiProvider {
@@ -415,6 +418,10 @@ extension UserInfoService on ApiProvider {
         "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
         "firstName": userData.firstName,
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
+        if (userData.role == UserRole.Worker)
+          "wagePerHour": userData.wagePerHour,
+        if (userData.role == UserRole.Worker) "priority": userData.priority,
+        if (userData.role == UserRole.Worker) "workplace": userData.workplace,
         "additionalInfo": {
           "secondMobileNumber":
               (userData.additionalInfo?.secondMobileNumber?.isNotEmpty ?? false)
@@ -556,20 +563,43 @@ extension SMSVerification on ApiProvider {
 ///Media Upload
 extension GetUploadLink on ApiProvider {
   Future<List<String>> uploadMedia({
-    required List<DrishyaEntity> medias,
+    required List<File> medias,
   }) async {
     List<String> mediaId = [];
     Uint8List? bytes;
 
     for (var media in medias) {
-      String contentType =
-          media.entity.type == AssetType.video ? "video/mp4" : "image/jpeg";
+      String contentType = "";
+      print(media.path);
+      switch (media.path.split(".")[1]) {
+        case "mp4":
+          contentType = "video/mp4";
+          break;
+        case "mov":
+          contentType = "video/mp4";
+          break;
+        case "jpeg":
+          contentType = "image/jpeg";
+          break;
+        case "png":
+          contentType = "image/png";
+          break;
+        case "pdf":
+          contentType = "application/pdf";
+          break;
+        case "doc":
+          contentType = "application/msword";
+          break;
+      }
 
-      if (media.entity.type == AssetType.video) {
-        File? file = await media.entity.file;
-        bytes = await file!.readAsBytes();
-      } else
-        bytes = media.thumbBytes;
+      // if (media.entity.type == AssetType.video) {
+      // File? file = await media.entity.thumbData;
+      bytes = media.readAsBytesSync(); //entity.thumbDataWithSize(
+        // media.entity.width,
+        // media.entity.height,
+      // );
+      // } else
+      //   bytes = media.thumbBytes;
 
       final response = await _httpClient.post(
         query: '/v1/storage/get-upload-link',
@@ -609,20 +639,118 @@ extension GetUploadLink on ApiProvider {
 
 ///Chat Service
 extension ChatsService on ApiProvider {
-  Future<List<ChatModel>> getChats() async {
+  Future<List<ChatModel>> getChats({
+    required int offset,
+    required int limit,
+  }) async {
     try {
-    final responseData = await _httpClient.get(query: '/v1/user/me/chats');
-    return List<ChatModel>.from(
-      responseData["chats"].map(
-        (x) => ChatModel.fromJson(x),
-      ),
-    );
-
+      final responseData = await _httpClient.get(
+        query: '/v1/user/me/chats',
+        queryParameters: {
+          "offset": offset,
+          "limit": limit,
+        },
+      );
+      return List<ChatModel>.from(
+        responseData["chats"].map(
+          (x) => ChatModel.fromJson(x),
+        ),
+      );
     } catch (e, stack) {
       print("ERROR $e");
       print("ERROR $stack");
       return [];
     }
+  }
+
+  Future<List<ProfileMeResponse>> getUsersForGroupCHat() async {
+    try {
+      final responseData = await _httpClient.get(
+          query: '/v1/user/me/chat/members/users-by-chats');
+      return List<ProfileMeResponse>.from(
+        responseData["users"].map(
+          (x) => ProfileMeResponse.fromJson(x),
+        ),
+      );
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      return [];
+    }
+  }
+
+  Future<List<MessageModel>> getStarredMessage() async {
+    try {
+      final responseData =
+          await _httpClient.get(query: '/v1/user/me/chat/messages/star');
+      return List<MessageModel>.from(
+        responseData["messages"].map(
+          (x) => MessageModel.fromJson(x),
+        ),
+      );
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>> createGroupChat({
+    required String chatName,
+    required List<String> usersId,
+  }) async {
+    final responseData = await _httpClient.post(
+      query: '/v1/user/me/chat/group/create',
+      data: {
+        "name": chatName,
+        "memberUserIds": usersId,
+      },
+    );
+    return responseData;
+  }
+
+  Future<void> addUsersInChat({
+    required String chatId,
+    required List<String> userIds,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/user/me/chat/group/$chatId/add',
+      data: {"userIds": userIds},
+    );
+  }
+
+  Future<void> setMessageStar({
+    required String chatId,
+    required String messageId,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/user/me/chat/$chatId/message/$messageId/star',
+    );
+  }
+
+  Future<void> removeStarFromMsg({
+    required String messageId,
+  }) async {
+    await _httpClient.delete(
+      query: '/v1/user/me/chat/message/$messageId/star',
+    );
+  }
+
+  Future<void> removeUser({
+    required String chatId,
+    required String userId,
+  }) async {
+    await _httpClient.delete(
+      query: '/v1/user/me/chat/group/$chatId/remove/$userId',
+    );
+  }
+
+  Future<void> setMessageRead({
+    required String chatId,
+    required String messageId,
+  }) async {
+    await _httpClient.post(
+        query: '/v1/read/message/$chatId', data: {"messageId": messageId});
   }
 
   Future<Map<String, dynamic>> getMessages({
@@ -638,36 +766,6 @@ extension ChatsService on ApiProvider {
       },
     );
     return responseData;
-  }
-
-  Future<bool> sendMessageToChat({
-    required String chatId,
-    String? text,
-    List<String>? mediasId,
-  }) async {
-    final responseData = await _httpClient.post(
-      query: '/v1/chat/$chatId/send-message',
-      data: {
-        "text": text ?? "",
-        "medias": mediasId ?? [],
-      },
-    );
-    return responseData == null;
-  }
-
-  Future<bool> sendMessageToUser({
-    required String userId,
-    String? text,
-    List<String>? mediasId,
-  }) async {
-    final responseData = await _httpClient.post(
-      query: '/v1/user/$userId/send-message',
-      data: {
-        "text": text ?? "",
-        "medias": mediasId ?? [],
-      },
-    );
-    return responseData == null;
   }
 }
 
