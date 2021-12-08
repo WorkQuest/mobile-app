@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
@@ -9,9 +11,11 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/repository/chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/utils/web_socket.dart';
-import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'chat_room_store.g.dart';
 
@@ -24,6 +28,7 @@ class ChatRoomStore extends _ChatRoomStore with _$ChatRoomStore {
 abstract class _ChatRoomStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
   final ChatStore chats;
+
   _ChatRoomStore(this._apiProvider, this.chats);
 
   int _count = 0;
@@ -98,10 +103,42 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   ObservableList<MessageModel> starredMessage = ObservableList.of([]);
 
   @observable
-  ObservableList<DrishyaEntity> media = ObservableList.of([]);
+  ObservableList<File> media = ObservableList.of([]);
 
   @observable
   int pageNumber = 0;
+
+  @observable
+  Uint8List? fileNameBytes;
+
+  String? filePath;
+
+  @observable
+  ObservableMap<String, dynamic> mapOfPath = ObservableMap.of({});
+
+  int countVideo = 0;
+
+  String urlVideo = "";
+
+  setThumbnail(String path) async {
+    fileNameBytes = await VideoThumbnail.thumbnailData(
+      video: path,
+      imageFormat: ImageFormat.JPEG,
+      maxWidth: 128,
+      quality: 25,
+    );
+  }
+
+  setThumbnailPath(String url, String mediaId) async {
+    filePath = await VideoThumbnail.thumbnailFile(
+      video: url,
+      thumbnailPath: (await getTemporaryDirectory()).path,
+      imageFormat: ImageFormat.JPEG,
+      maxHeight: 64,
+      quality: 75,
+    );
+    mapOfPath[mediaId] = filePath;
+  }
 
   @action
   void changePageNumber(int value) => pageNumber = value;
@@ -156,6 +193,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
             userId: chat!.messages[j].senderUserId,
           );
         }
+    idMessages.clear();
     _atomMessages.reportChanged();
   }
 
@@ -208,13 +246,6 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     userForDeleting.add(user.id);
   }
 
-  // @action
-  // void setLists() {
-  //   isMessageHighlighted =
-  //       ObservableList.of(List.generate(_count, (index) => false));
-  //   idMessages = ObservableList.of(List.generate(_count, (index) => ""));
-  // }
-
   @action
   Future getUsersForGroupCHat() async {
     try {
@@ -241,14 +272,6 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     }
   }
 
-  // onStar() async {
-  //   if (quest.value!.star) {
-  //     await _apiProvider.removeStar(id: quest.value!.id);
-  //   } else
-  //     await _apiProvider.setStar(id: quest.value!.id);
-  //   await _getQuest();
-  // }
-
   @action
   Future getStarredMessage() async {
     try {
@@ -265,18 +288,18 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   String setInfoMessage(String infoMessage) {
     switch (infoMessage) {
       case "groupChatCreate":
-        return infoMessageValue = "You created a group chat";
+        return infoMessageValue = "chat.infoMessage.groupChatCreate".tr();
       case "employerRejectResponseOnQuest":
         return infoMessageValue =
-            "The employer rejected the response to the request";
+            "chat.infoMessage.employerRejectResponseOnQuest".tr();
       case "workerResponseOnQuest":
-        return infoMessageValue = "The worker responded to the quest";
+        return infoMessageValue = "chat.infoMessage.workerResponseOnQuest".tr();
       case "groupChatAddUser":
-        return infoMessageValue = "User added";
+        return infoMessageValue = "chat.infoMessage.groupChatAddUser".tr();
       case "groupChatDeleteUser":
-        return infoMessageValue = "User deleted";
+        return infoMessageValue = "chat.infoMessage.groupChatDeleteUser".tr();
       case "groupChatLeaveUser":
-        return infoMessageValue = "User left chat";
+        return infoMessageValue = "chat.infoMessage.groupChatLeaveUser".tr();
     }
     return infoMessage;
   }
@@ -358,9 +381,8 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
         chat!.chatModel.id);
 
     _offset = chat!.messages.length;
-    if (!refresh)
-      isMessageHighlighted =
-          ObservableList.of(List.generate(_count, (index) => false));
+    isMessageHighlighted
+        .addAll(ObservableList.of(List.generate(20, (index) => false)));
     refresh = true;
     isLoadingMessages = false;
     chat!.update();

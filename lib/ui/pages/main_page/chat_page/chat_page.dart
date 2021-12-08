@@ -29,6 +29,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     store = context.read<ChatStore>();
+
     userData = context.read<ProfileMeStore>();
     super.initState();
   }
@@ -48,15 +49,73 @@ class _ChatPageState extends State<ChatPage> {
                       "chat.chat".tr(),
                     ),
                   ),
-                  PopupMenuButton<String>(
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6.0),
+                  Observer(
+                    builder: (_) => PopupMenuButton<String>(
+                      elevation: 10,
+                      icon: Icon(Icons.more_vert),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6.0),
+                      ),
+                      onSelected: (value) {
+                        switch (value) {
+                          case "Starred message":
+                            Navigator.of(context, rootNavigator: true)
+                                .pushNamed(StarredMessage.routeName,
+                                    arguments: userData.userData!.id);
+                            break;
+                          case "Starred chat":
+                            store.openStarredChats(true);
+                            break;
+                          case "All chat":
+                            store.openStarredChats(false);
+                            break;
+                          case "Report":
+                            Navigator.of(context, rootNavigator: true)
+                                .pushNamed(
+                              DisputePage.routeName,
+                            );
+                            break;
+                          case "Create group chat":
+                            Navigator.of(context, rootNavigator: true)
+                                .pushNamed(
+                              CreateGroupPage.routeName,
+                              arguments: userData.userData!.id,
+                            );
+                            break;
+                        }
+                      },
+                      itemBuilder: !store.starred
+                          ? (BuildContext context) {
+                              return {
+                                "Starred message",
+                                "Starred chat",
+                                "Report",
+                                "Create group chat",
+                              }.map((String choice) {
+                                return PopupMenuItem<String>(
+                                  value: choice,
+                                  child: Text(
+                                    choice.tr(),
+                                  ),
+                                );
+                              }).toList();
+                            }
+                          : (BuildContext context) {
+                              return {
+                                "Starred message",
+                                "All chat",
+                                "Report",
+                                "Create group chat",
+                              }.map((String choice) {
+                                return PopupMenuItem<String>(
+                                  value: choice,
+                                  child: Text(
+                                    choice.tr(),
+                                  ),
+                                );
+                              }).toList();
+                            },
                     ),
-                    itemBuilder: (BuildContext context) => !store.starred
-                        ? popUpMenu(list: store.selectedCategories)
-                        : popUpMenu(
-                            list: store.selectedCategoriesStarred),
                   ),
                 ],
               ),
@@ -107,49 +166,6 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
-
-  List<PopupMenuEntry<String>> popUpMenu({
-    required List<String> list,
-  }) =>
-      list.map((String choice) {
-        return PopupMenuItem<String>(
-          value: choice,
-          enabled: false,
-          child: TextButton(
-            onPressed: () {
-              if (choice == "Starred message") {
-                Navigator.pop(context);
-                Navigator.of(context, rootNavigator: true).pushNamed(
-                    StarredMessage.routeName,
-                    arguments: userData.userData!.id);
-              } else if (choice == "Starred chat") {
-                Navigator.pop(context);
-                store.openStarredChats(true);
-              } else if (choice == "All chat") {
-                Navigator.pop(context);
-                store.openStarredChats(false);
-              } else if (choice == "Report") {
-                Navigator.pop(context);
-                Navigator.of(context, rootNavigator: true).pushNamed(
-                  DisputePage.routeName,
-                );
-              } else if (choice == "Create group chat") {
-                Navigator.pop(context);
-                Navigator.of(context, rootNavigator: true).pushNamed(
-                  CreateGroupPage.routeName,
-                  arguments: userData.userData!.id,
-                );
-              }
-            },
-            child: Text(
-              choice,
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
-          ),
-        );
-      }).toList();
 
   Widget _chatItem(Chats chatDetails) {
     final differenceTime =

@@ -59,14 +59,14 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      await _apiProvider.addPortfolio(
-        title: title,
-        description: description,
-        media: mediaIds.map((e) => e.id).toList() +
-            await _apiProvider.uploadMedia(
-              medias: media,
-            ),
-      );
+      // await _apiProvider.addPortfolio(
+      //   title: title,
+      //   description: description,
+      //   media: mediaIds.map((e) => e.id).toList() +
+      //       await _apiProvider.uploadMedia(
+      //         medias: media,
+      //       ),
+      // );
       await getPortfolio(userId: userId);
       this.onSuccess(true);
     } catch (e) {
@@ -81,15 +81,15 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      await _apiProvider.editPortfolio(
-        portfolioId: portfolioId,
-        title: title,
-        description: description,
-        media: mediaIds.map((e) => e.id).toList() +
-            await _apiProvider.uploadMedia(
-              medias: media,
-            ),
-      );
+      // await _apiProvider.editPortfolio(
+      //   portfolioId: portfolioId,
+      //   title: title,
+      //   description: description,
+      //   media: mediaIds.map((e) => e.id).toList() +
+      //       await _apiProvider.uploadMedia(
+      //         medias: media,
+      //       ),
+      // );
       await getPortfolio(userId: userId);
       this.onSuccess(true);
     } catch (e) {

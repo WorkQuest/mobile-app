@@ -32,22 +32,22 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   String priorityValue = "Low";
 
   @observable
-  String distantWork = "Remote work";
+  String distantWork = "Distant work";
 
   @observable
   String wagePerHour = "";
 
-  ObservableList<String> distantWorkList = ObservableList.of([
-    "Remote work",
+  List<String> distantWorkList = [
+    "Distant work",
     "Work in the office",
     "Both options",
-  ]);
+  ];
 
-  ObservableList<String> priorityList = ObservableList.of([
+  List<String> priorityList = [
     "Low",
     "Normal",
     "Urgent",
-  ]);
+  ];
 
   @action
   void priorityToValue() {
@@ -57,7 +57,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
         return;
       case 1:
         priorityValue = "Normal";
-        print("value: $priorityValue");
         return;
       case 2:
         priorityValue = "Urgent";
@@ -191,9 +190,9 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   changeProfile(ProfileMeResponse userData, {DrishyaEntity? media}) async {
     try {
       this.onLoading();
-      if (media != null)
-        userData.avatarId = (await _apiProvider.uploadMedia(
-            medias: ObservableList.of([media])))[0];
+      // if (media != null)
+      //   userData.avatarId = (await _apiProvider.uploadMedia(
+      //       medias: ObservableList.of([media])))[0];
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
       this.onSuccess(true);

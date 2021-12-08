@@ -179,7 +179,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
               ImageViewerWidget(widget.questInfo.medias),
             ],
             Text(
-              widget.questInfo.createdAt.toString(),
+              DateFormat('dd MMMM yyyy, kk:mm')
+                  .format(widget.questInfo.createdAt),
               style: TextStyle(
                 color: Color(0xFFAAB0B9),
                 fontSize: 12,

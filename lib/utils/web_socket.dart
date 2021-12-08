@@ -11,7 +11,7 @@ class WebSocket {
   // setListener(Function(Map<String, dynamic> message)? messageHandler) {
   //   this._messageHandler = messageHandler;
   // }
-  void Function(MessageModel)? handlerChats;
+  void Function(dynamic)? handlerChats;
 
   late IOWebSocketChannel _channel;
 
@@ -77,16 +77,12 @@ class WebSocket {
 
   void getMessage(dynamic json) async {
     try {
-      var message;
-      if (json["type"] == "pub")
-        message = MessageModel.fromJson(json["message"]["data"]);
-      else
-        message = MessageModel.fromJson(json["payload"]["result"]);
-      if(handlerChats!=null)
-        handlerChats!(message);
-      print("chatMessage: ${message.toJson()}");
-    } catch (e) {
-      print("WebSocket message ERROR: ${e.toString()}");
+      var message = json;
+      if (handlerChats != null) handlerChats!(message);
+      print("chatMessage: ${message.toString()}");
+    } catch (e, trace) {
+      print("WebSocket message ERROR: $e");
+      print("WebSocket message ERROR: $trace");
     }
   }
 
