@@ -8,6 +8,7 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/creat
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/video_file.dart';
 import 'package:app/ui/pages/main_page/chat_page/dispute_page/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
@@ -481,6 +482,19 @@ class Routes {
               textDirection: checkDirection(context),
               child: ChatRoomPage(
                 settings.arguments as Map<String, dynamic>,
+              ),
+            ),
+          ),
+        );
+
+      case VideoFile.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChatRoomStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: VideoFile(
+                settings.arguments as ChatRoomStore,
               ),
             ),
           ),

@@ -108,6 +108,38 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   @observable
   int pageNumber = 0;
 
+  @observable
+  Uint8List? fileNameBytes;
+
+  String? filePath;
+
+  @observable
+  ObservableMap<String, dynamic> mapOfPath = ObservableMap.of({});
+
+  int countVideo = 0;
+
+  String urlVideo = "";
+
+  setThumbnail(String path) async {
+    fileNameBytes = await VideoThumbnail.thumbnailData(
+      video: path,
+      imageFormat: ImageFormat.JPEG,
+      maxWidth: 128,
+      quality: 25,
+    );
+  }
+
+  setThumbnailPath(String url, String mediaId) async {
+    filePath = await VideoThumbnail.thumbnailFile(
+      video: url,
+      thumbnailPath: (await getTemporaryDirectory()).path,
+      imageFormat: ImageFormat.JPEG,
+      maxHeight: 64,
+      quality: 75,
+    );
+    mapOfPath[mediaId] = filePath;
+  }
+
   @action
   void changePageNumber(int value) => pageNumber = value;
 

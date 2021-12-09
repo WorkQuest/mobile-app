@@ -336,6 +336,36 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
+  final _$fileNameBytesAtom = Atom(name: '_ChatRoomStore.fileNameBytes');
+
+  @override
+  Uint8List? get fileNameBytes {
+    _$fileNameBytesAtom.reportRead();
+    return super.fileNameBytes;
+  }
+
+  @override
+  set fileNameBytes(Uint8List? value) {
+    _$fileNameBytesAtom.reportWrite(value, super.fileNameBytes, () {
+      super.fileNameBytes = value;
+    });
+  }
+
+  final _$mapOfPathAtom = Atom(name: '_ChatRoomStore.mapOfPath');
+
+  @override
+  ObservableMap<String, dynamic> get mapOfPath {
+    _$mapOfPathAtom.reportRead();
+    return super.mapOfPath;
+  }
+
+  @override
+  set mapOfPath(ObservableMap<String, dynamic> value) {
+    _$mapOfPathAtom.reportWrite(value, super.mapOfPath, () {
+      super.mapOfPath = value;
+    });
+  }
+
   final _$getUsersForGroupCHatAsyncAction =
       AsyncAction('_ChatRoomStore.getUsersForGroupCHat');
 
@@ -522,6 +552,8 @@ selectedUsers: ${selectedUsers},
 starredMessage: ${starredMessage},
 media: ${media},
 pageNumber: ${pageNumber},
+fileNameBytes: ${fileNameBytes},
+mapOfPath: ${mapOfPath},
 chat: ${chat}
     ''';
   }
