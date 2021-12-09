@@ -191,9 +191,9 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {
       this.onLoading();
-      // if (media != null)
-      //   userData.avatarId = (await _apiProvider.uploadMedia(
-      //       medias: ObservableList.of([media])))[0];
+      if (media != null)
+        userData.avatarId = (await _apiProvider.uploadMedia(
+            medias: ObservableList.of([media])))[0];
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
       this.onSuccess(true);

@@ -1,14 +1,17 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:path_provider/path_provider.dart';
 
 class ImageViewerWidget extends StatelessWidget {
-  ImageViewerWidget(this.medias, {Key? key}) : super(key: key);
+  ImageViewerWidget(this.medias, this.textColor);
+
   final List<Media> medias;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +88,7 @@ class ImageViewerWidget extends StatelessWidget {
               ),
             ),
           );
-        } else {
-        }
+        } else {}
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
@@ -110,21 +112,63 @@ class ImageViewerWidget extends StatelessWidget {
                       color: Color(0xFFE9EDF2),
                     ),
                   )
-                : Row(
-                    children: [
-                      SvgPicture.asset(
-                        "assets/pdf.svg",
-                      ),
-                      const SizedBox(
-                        width: 14,
-                      ),
-                      Flexible(
-                        child: Text("PDF file"),
-                      ),
-                    ],
+                : GestureDetector(
+                    onTap: () async {
+                      String dir = "";
+                      if (Platform.isAndroid) {
+                        dir = (await getExternalStorageDirectory())!.path;
+                      } else if (Platform.isIOS) {
+                        dir = (await getApplicationDocumentsDirectory()).path;
+                      }
+                      print("dir: $dir");
+                      final f = downloadFile(
+                          medias[index].url,
+                          medias[index].url.split("/").reversed.first + ".pdf",
+                          dir);
+                    },
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/pdf.svg",
+                        ),
+                        const SizedBox(
+                          width: 14,
+                        ),
+                        Flexible(
+                          child: Text(
+                            "${medias[index].url.split("/").reversed.first}",
+                            style: TextStyle(color: textColor),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
       ),
     );
+  }
+
+  Future<String> downloadFile(String url, String fileName, String dir) async {
+    HttpClient httpClient = new HttpClient();
+    File file;
+    String filePath = '';
+
+    try {
+      print("myURL: $url");
+      var request = await httpClient.getUrl(Uri.parse(url));
+      var response = await request.close();
+      if (response.statusCode == 200) {
+        var bytes = await consolidateHttpClientResponseBytes(response);
+        filePath = '$dir/$fileName';
+        file = File(filePath);
+        await file.writeAsBytes(bytes);
+      } else
+        filePath = 'Error code: ' + response.statusCode.toString();
+    } catch (ex) {
+      filePath = 'Can not fetch url';
+    }
+    print("FILE PATH: $filePath");
+
+    return filePath;
   }
 }
 

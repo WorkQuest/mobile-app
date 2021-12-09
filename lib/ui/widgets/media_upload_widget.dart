@@ -64,8 +64,7 @@ class _MediaUploadState extends State<MediaUpload> {
                         onPressed: () async {
                           final result = await FilePicker.platform.pickFiles(
                             allowMultiple: true,
-                            type: FileType.custom,
-                            allowedExtensions: ['jpg', 'jpeg', 'png'],
+                            type: FileType.image,
                           );
                           List<File> files =
                           result!.paths.map((path) => File(path!)).toList();
@@ -87,8 +86,7 @@ class _MediaUploadState extends State<MediaUpload> {
         onTap: () async {
           final result = await FilePicker.platform.pickFiles(
             allowMultiple: true,
-            type: FileType.custom,
-            allowedExtensions: ['jpg', 'jpeg', 'png'],
+            type: FileType.image,
           );
           List<File> files =
           result!.paths.map((path) => File(path!)).toList();

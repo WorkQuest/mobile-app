@@ -25,7 +25,6 @@ class ChangeProfilePage extends StatefulWidget {
 class _ChangeProfilePageState extends State<ChangeProfilePage>
     with AutomaticKeepAliveClientMixin {
   ProfileMeStore? profile;
-  bool checkPermission = false;
   late ChangeProfileStore pageStore;
   final _formKey = GlobalKey<FormState>();
 
@@ -260,14 +259,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                 color: Colors.white,
               ),
               onPressed: () async {
-                if (!checkPermission) {
-                  final result = await FilePicker.platform.pickFiles(
-                    allowMultiple: true,
-                    type: FileType.media,
-                  );
-                  checkPermission = true;
+                final result = await FilePicker.platform.pickFiles(
+                  type: FileType.image,
+                );
+                if (result != null) {
                   List<File> files =
-                  result!.paths.map((path) => File(path!)).toList();
+                      result.paths.map((path) => File(path!)).toList();
                   pageStore.media = files.first;
                 }
               },

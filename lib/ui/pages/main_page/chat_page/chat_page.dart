@@ -125,7 +125,8 @@ class _ChatPageState extends State<ChatPage> {
         },
         body: RefreshIndicator(
           onRefresh: () {
-            return store.loadChats(true);
+            store.loadChats(true);
+            return Future.value(false);
           },
           child: Observer(
             builder: (_) => store.isLoading

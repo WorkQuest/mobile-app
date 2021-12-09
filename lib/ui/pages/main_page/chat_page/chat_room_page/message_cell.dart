@@ -29,7 +29,7 @@ class _MessageCellState extends State<MessageCell> {
     date = widget.mess.createdAt.year == DateTime.now().year &&
             widget.mess.createdAt.month == DateTime.now().month &&
             widget.mess.createdAt.day == DateTime.now().day
-        ?  DateFormat('kk:mm').format(widget.mess.createdAt)
+        ? DateFormat('kk:mm').format(widget.mess.createdAt)
         : DateFormat('dd MMM, kk:mm').format(widget.mess.createdAt);
     super.initState();
   }
@@ -96,7 +96,12 @@ class _MessageCellState extends State<MessageCell> {
                             ),
                             if (widget.mess.medias.isNotEmpty)
                               Center(
-                                child: ImageViewerWidget(widget.mess.medias),
+                                child: ImageViewerWidget(
+                                  widget.mess.medias,
+                                  widget.mess.senderUserId != widget.userId
+                                      ? Color(0xFFFFFFFF)
+                                      : Color(0xFF1D2127),
+                                ),
                               ),
                             Row(
                               children: [
