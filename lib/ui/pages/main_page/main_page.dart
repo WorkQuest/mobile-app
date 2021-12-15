@@ -1,12 +1,9 @@
-import 'dart:async';
-
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/wallet_page.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../background_observer_page.dart';
 import '../../../routes.dart';
