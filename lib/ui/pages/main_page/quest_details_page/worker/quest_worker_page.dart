@@ -1,5 +1,6 @@
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
@@ -26,6 +27,7 @@ class QuestWorker extends QuestDetails {
 
 class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   late WorkerStore store;
+  late MyQuestStore questStore;
   ProfileMeStore? profile;
   List<Responded?> respondedList = [];
 
@@ -35,6 +37,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   void initState() {
     store = context.read<WorkerStore>();
     profile = context.read<ProfileMeStore>();
+    questStore = context.read<MyQuestStore>();
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
@@ -59,7 +62,13 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             color:
                 store.quest.value!.star ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
           ),
-          onPressed: store.onStar,
+          onPressed: () {
+            store.onStar();
+            deleteQuest(store.quest.value!);
+            store.quest.value!.star
+                ? addQuest(store.quest.value!, false)
+                : addQuest(store.quest.value!, true);
+          },
         ),
       )
     ];
@@ -319,6 +328,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                             message: store.opinion,
                             createdAt: DateTime.now(),
                             updatedAt: DateTime.now());
+                        deleteQuest(widget.questInfo);
+                        addQuest(widget.questInfo, true);
                         Navigator.pop(context);
                         Navigator.pop(context);
                         successAlert(
@@ -372,6 +383,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           onPressed: () {
             store.sendAcceptOnQuest();
             widget.questInfo.status = 1;
+            deleteQuest(widget.questInfo);
+            addQuest(widget.questInfo, true);
             Navigator.pop(context);
             Navigator.pop(context);
             successAlert(
@@ -402,6 +415,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             store.sendRejectOnQuest();
             widget.questInfo.responded!.status = -1;
             widget.questInfo.assignedWorker = null;
+            deleteQuest(widget.questInfo);
+            addQuest(widget.questInfo, true);
             Navigator.pop(context);
             Navigator.pop(context);
             successAlert(
@@ -448,6 +463,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           onPressed: () {
             store.sendCompleteWork();
             widget.questInfo.status = 5;
+            deleteQuest(widget.questInfo);
+            addQuest(widget.questInfo, true);
             Navigator.pop(context);
             Navigator.pop(context);
             successAlert(
@@ -475,6 +492,28 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         const SizedBox(height: 15),
       ],
     );
+  }
+
+  deleteQuest(BaseQuestResponse quest) {
+    questStore.active.removeWhere((element) => element == quest);
+    questStore.performed.removeWhere((element) => element == quest);
+    questStore.requested.removeWhere((element) => element == quest);
+    questStore.invited.removeWhere((element) => element == quest);
+    questStore.starred.removeWhere((element) => element.id == quest.id);
+  }
+
+  addQuest(BaseQuestResponse quest, bool restoreStarred) {
+    if (quest.status == 0 ||
+        quest.status == 1 ||
+        quest.status == 3 ||
+        quest.status == 5)
+      questStore.active.add(quest);
+    else if (quest.status == 4) {
+      questStore.invited.add(quest);
+      questStore.requested.add(quest);
+    } else if (quest.status == 6) questStore.performed.add(quest);
+    if (restoreStarred) questStore.starred.add(quest);
+    questStore.sortQuests();
   }
 
   @override

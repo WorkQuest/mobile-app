@@ -49,9 +49,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   ObservableList<BaseQuestResponse> requested = ObservableList.of([]);
 
   @observable
-  ObservableList<Responded?> responded = ObservableList.of([]);
-
-  @observable
   ObservableList<BaseQuestResponse> invited = ObservableList.of([]);
 
   @observable
@@ -71,6 +68,29 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   int starredCount = 0;
 
+  void sortQuests() {
+    active.sort((key1, key2) {
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
+    });
+    starred.sort((key1, key2) {
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
+    });
+    performed.sort((key1, key2) {
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
+    });
+    requested.sort((key1, key2) {
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
+    });
+    invited.sort((key1, key2) {
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
+    });
+  }
+
   @action
   Future getQuests(String userId, UserRole role, bool createNewList) async {
     try {
@@ -84,7 +104,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         starred.clear();
         performed.clear();
         requested.clear();
-        responded.clear();
         invited.clear();
       }
       if (role == UserRole.Employer) {

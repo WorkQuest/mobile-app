@@ -129,21 +129,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     });
   }
 
-  final _$respondedAtom = Atom(name: '_MyQuestStore.responded');
-
-  @override
-  ObservableList<Responded?> get responded {
-    _$respondedAtom.reportRead();
-    return super.responded;
-  }
-
-  @override
-  set responded(ObservableList<Responded?> value) {
-    _$respondedAtom.reportWrite(value, super.responded, () {
-      super.responded = value;
-    });
-  }
-
   final _$invitedAtom = Atom(name: '_MyQuestStore.invited');
 
   @override
@@ -223,7 +208,6 @@ active: ${active},
 starred: ${starred},
 performed: ${performed},
 requested: ${requested},
-responded: ${responded},
 invited: ${invited},
 allQuests: ${allQuests},
 iconsMarker: ${iconsMarker},
