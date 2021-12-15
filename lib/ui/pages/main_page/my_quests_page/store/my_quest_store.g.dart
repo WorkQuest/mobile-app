@@ -39,21 +39,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     });
   }
 
-  final _$offsetAtom = Atom(name: '_MyQuestStore.offset');
-
-  @override
-  int get offset {
-    _$offsetAtom.reportRead();
-    return super.offset;
-  }
-
-  @override
-  set offset(int value) {
-    _$offsetAtom.reportWrite(value, super.offset, () {
-      super.offset = value;
-    });
-  }
-
   final _$limitAtom = Atom(name: '_MyQuestStore.limit');
 
   @override
@@ -174,6 +159,21 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     });
   }
 
+  final _$allQuestsAtom = Atom(name: '_MyQuestStore.allQuests');
+
+  @override
+  ObservableList<BaseQuestResponse> get allQuests {
+    _$allQuestsAtom.reportRead();
+    return super.allQuests;
+  }
+
+  @override
+  set allQuests(ObservableList<BaseQuestResponse> value) {
+    _$allQuestsAtom.reportWrite(value, super.allQuests, () {
+      super.allQuests = value;
+    });
+  }
+
   final _$iconsMarkerAtom = Atom(name: '_MyQuestStore.iconsMarker');
 
   @override
@@ -217,7 +217,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     return '''
 sort: ${sort},
 priority: ${priority},
-offset: ${offset},
 limit: ${limit},
 status: ${status},
 active: ${active},
@@ -226,6 +225,7 @@ performed: ${performed},
 requested: ${requested},
 responded: ${responded},
 invited: ${invited},
+allQuests: ${allQuests},
 iconsMarker: ${iconsMarker},
 selectQuestInfo: ${selectQuestInfo}
     ''';

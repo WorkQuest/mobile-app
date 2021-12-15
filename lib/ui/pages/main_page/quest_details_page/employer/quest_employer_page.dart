@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/model/quests_models/assigned_worker.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -57,6 +58,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           (widget.questInfo.status == 0 || widget.questInfo.status == 4))
         PopupMenuButton<String>(
           elevation: 10,
+          icon: Icon(Icons.more_vert),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(6.0),
           ),
@@ -82,7 +84,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   title: "quests.deleteQuest".tr(),
                   message: "quests.deleteQuestMessage".tr(),
                   confirmAction: () async {
-                   await store.deleteQuest(questId: widget.questInfo.id);
+                    await store.deleteQuest(questId: widget.questInfo.id);
                     Navigator.pop(context);
                     Navigator.pop(context);
                   },
@@ -252,13 +254,23 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         //   ),
                         const SizedBox(height: 15),
                         TextButton(
-                          onPressed: store.selectedResponders.isEmpty
+                          onPressed: store.selectedResponders != null
                               ? null
                               : () {
                                   store.startQuest(
-                                    userId: store.selectedResponders,
+                                    userId: store.selectedResponders!.id,
                                     questId: widget.questInfo.id,
                                   );
+                                  widget.questInfo.assignedWorker =
+                                      AssignedWorker(
+                                          firstName: store.selectedResponders!
+                                              .worker.firstName,
+                                          lastName:
+                                              store.selectedResponders!.worker
+                                                  .lastName,
+                                          avatar: store.selectedResponders!
+                                              .worker.avatar,
+                                          id: store.selectedResponders!.id);
                                   Navigator.pop(context);
                                   successAlert(
                                     context,
@@ -268,7 +280,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           child: Text(
                             "quests.chooseWorker".tr(),
                             style: TextStyle(
-                              color: store.selectedResponders.isEmpty
+                              color: store.selectedResponders == null
                                   ? Colors.grey
                                   : Colors.white,
                             ),
@@ -350,6 +362,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   TextButton(
                     onPressed: () {
                       store.acceptCompletedWork(questId: widget.questInfo.id);
+                      widget.questInfo.status = 6;
                       Navigator.pop(context);
                       Navigator.pop(context);
                       successAlert(
@@ -381,6 +394,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   TextButton(
                     onPressed: () {
                       store.rejectCompletedWork(questId: widget.questInfo.id);
+                      widget.questInfo.status = 5;
                       Navigator.pop(context);
                       Navigator.pop(context);
                       successAlert(
@@ -440,10 +454,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 child: Radio(
                   toggleable: true,
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  value: respond.workerId,
+                  value: respond,
                   groupValue: store.selectedResponders,
-                  onChanged: (String? id) =>
-                      store.selectedResponders = id ?? "",
+                  onChanged: (RespondModel? user) =>
+                      store.selectedResponders = user,
                 ),
               ),
             ],

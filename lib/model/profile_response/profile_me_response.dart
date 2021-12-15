@@ -94,9 +94,16 @@ class ProfileMeResponse {
               }
               return skillsString;
             }([...json["userSpecializations"]]),
-      ratingStatistic: json["ratingStatistic"] == null
-          ? null
-          : RatingStatistic.fromJson(json["ratingStatistic"]),
+      ratingStatistic: RatingStatistic.fromJson(json["ratingStatistic"] ??
+          {
+            "id": "",
+            "userId": json["id"],
+            "reviewCount": 0,
+            "averageMark": 0,
+            "status": "",
+            // createdAt: createdAt,
+            // updatedAt: updatedAt,
+          }),
       location:
           json["location"] == null ? null : Location.fromJson(json["location"]),
       wagePerHour: json["wagePerHour"] ?? "",
@@ -187,8 +194,8 @@ class RatingStatistic {
     required this.reviewCount,
     required this.averageMark,
     required this.status,
-    required this.createdAt,
-    required this.updatedAt,
+    // required this.createdAt,
+    // required this.updatedAt,
   });
 
   String id;
@@ -196,8 +203,9 @@ class RatingStatistic {
   int reviewCount;
   double averageMark;
   String status;
-  String createdAt;
-  String updatedAt;
+
+  // String createdAt;
+  // String updatedAt;
 
   RatingStatistic.clone(RatingStatistic object)
       : this(
@@ -206,8 +214,8 @@ class RatingStatistic {
           reviewCount: object.reviewCount,
           averageMark: object.averageMark,
           status: object.status,
-          createdAt: object.createdAt,
-          updatedAt: object.updatedAt,
+          // createdAt: object.createdAt,
+          // updatedAt: object.updatedAt,
         );
 
   factory RatingStatistic.fromJson(Map<String, dynamic> json) {
@@ -218,8 +226,8 @@ class RatingStatistic {
       averageMark:
           json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
       status: json["status"],
-      createdAt: json["createdAt"],
-      updatedAt: json["updatedAt"],
+      // createdAt: json["createdAt"],
+      // updatedAt: json["updatedAt"],
     );
   }
 
@@ -229,7 +237,7 @@ class RatingStatistic {
         "reviewCount": reviewCount,
         "averageMark": averageMark,
         "status": status,
-        "createdAt": createdAt,
-        "updatedAt": updatedAt,
+        // "createdAt": createdAt,
+        // "updatedAt": updatedAt,
       };
 }

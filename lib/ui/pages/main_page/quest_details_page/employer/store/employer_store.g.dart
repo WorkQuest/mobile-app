@@ -28,13 +28,13 @@ mixin _$EmployerStore on _EmployerStore, Store {
       Atom(name: '_EmployerStore.selectedResponders');
 
   @override
-  String get selectedResponders {
+  RespondModel? get selectedResponders {
     _$selectedRespondersAtom.reportRead();
     return super.selectedResponders;
   }
 
   @override
-  set selectedResponders(String value) {
+  set selectedResponders(RespondModel? value) {
     _$selectedRespondersAtom.reportWrite(value, super.selectedResponders, () {
       super.selectedResponders = value;
     });

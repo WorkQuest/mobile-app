@@ -49,6 +49,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   int offset = 0;
 
   @observable
+  int offsetWorkers = 0;
+
+  @observable
   int limit = 10;
 
   @observable
@@ -56,9 +59,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @observable
   ObservableList<BaseQuestResponse> questsList = ObservableList.of([]);
-
-  @observable
-  int questsListLength = 0;
 
   @observable
   ObservableList<ProfileMeResponse> workersList = ObservableList.of([]);
@@ -76,16 +76,16 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   ObservableList<String> workplaceValue = ObservableList.of([]);
 
   @observable
-  ObservableList<String> priorityValue = ObservableList.of([]);
+  ObservableList<int> priorityValue = ObservableList.of([]);
 
   @observable
   ObservableList<BaseQuestResponse> loadQuestsList = ObservableList.of([]);
 
   @observable
-  double latitude = 0.0;
+  double? latitude;
 
   @observable
-  double longitude = 0.0;
+  double? longitude;
 
   Timer? debounce;
 
@@ -96,7 +96,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
-  Future<Null> getPrediction(BuildContext context) async {
+  Future<Null> getPrediction(BuildContext context, String userId) async {
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
 
@@ -104,10 +104,14 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       apiKey: Keys.googleKey,
       mode: Mode.overlay,
       logo: SizedBox(),
+      startText: locationPlaceName.isNotEmpty ? locationPlaceName : "",
       // Mode.fullscreen
     );
-    locationPlaceName = p!.description!;
-    displayPrediction(p.placeId);
+    if (p != null) {
+      locationPlaceName = p.description!;
+      displayPrediction(p.placeId);
+      // getQuests(userId, true);
+    }
   }
 
   @action
@@ -187,26 +191,26 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  List<String> getPriorityValue() {
+  List<int> getPriorityValue() {
     if (priority[0] == true) {
-      priorityValue.add("0");
+      priorityValue.add(0);
     } else if (priority[0] == false) {
-      priorityValue.remove("0");
+      priorityValue.remove(0);
     }
     if (priority[1] == true) {
-      priorityValue.add("1");
+      priorityValue.add(1);
     } else if (priority[1] == false) {
-      priorityValue.remove("1");
+      priorityValue.remove(1);
     }
     if (priority[2] == true) {
-      priorityValue.add("2");
+      priorityValue.add(2);
     } else if (priority[2] == false) {
-      priorityValue.remove("2");
+      priorityValue.remove(2);
     }
     if (priority[3] == true) {
-      priorityValue.add("3");
+      priorityValue.add(3);
     } else if (priority[3] == false) {
-      priorityValue.remove("3");
+      priorityValue.remove(3);
     }
     return priorityValue;
   }
@@ -239,9 +243,11 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   Future getSearchedQuests() async {
     this.onLoading();
     debounce = Timer(const Duration(milliseconds: 300), () async {
-      searchResultList = await _apiProvider.getQuests(
+      final responseData = await _apiProvider.getQuests(
         searchWord: this.searchWord,
       );
+      searchResultList = List<BaseQuestResponse>.from(
+          responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)));
       this.onSuccess(true);
     });
   }
@@ -253,21 +259,22 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       if (newList) {
         this.offset = 0;
         questsList.clear();
-      } else
-        questsListLength = questsList.length;
-      questsList.addAll(
-        ObservableList.of(
-          await _apiProvider.getQuests(
-            statuses: [0, 1, 4],
-            employment: getEmploymentValue(),
-            workplace: getWorkplaceValue(),
-            offset: this.offset,
-            limit: this.limit,
-            sort: this.sort,
-          ),
-        ),
+      }
+      final responseData = await _apiProvider.getQuests(
+        statuses: [0, 1, 4],
+        employment: getEmploymentValue(),
+        workplace: getWorkplaceValue(),
+        offset: this.offset,
+        limit: this.limit,
+        sort: this.sort,
+        // north: this.latitude.toString(),
+        // south:  this.longitude.toString(),
       );
-      if (questsListLength != questsList.length) this.offset += 10;
+      questsList.addAll(
+        ObservableList.of(List<BaseQuestResponse>.from(
+            responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)))),
+      );
+      if (offset < questsList.length) this.offset += 10;
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -278,15 +285,22 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getWorkers(String userId, bool newList) async {
     try {
-      if (newList) workersList.clear();
+      if (newList) {
+        workersList.clear();
+        offsetWorkers = 0;
+      }
       this.onLoading();
-      workersList.addAll(
-        ObservableList.of(
-          await _apiProvider.getWorkers(
-            sort: this.sort,
-          ),
-        ),
+      final responseData = await _apiProvider.getWorkers(
+        sort: this.sort,
+        offset: this.offsetWorkers,
+        limit: this.limit,
+        priority: getPriorityValue(),
+        ratingStatus: [],
+        workplace: getWorkplaceValue(),
       );
+      workersList.addAll(ObservableList.of(List<ProfileMeResponse>.from(
+          responseData["users"].map((x) => ProfileMeResponse.fromJson(x)))));
+      if (responseData["count"] > offsetWorkers) offsetWorkers += 10;
       this.onSuccess(true);
     } catch (e, trace) {
       print("getWorkers error: $e\n$trace");

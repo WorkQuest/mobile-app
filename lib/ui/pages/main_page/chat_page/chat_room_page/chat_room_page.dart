@@ -99,7 +99,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                 UniqueKey(),
                                 _store.chat!.messages[index],
                                 widget.arguments["userId"],
-                                index,
+                                _store,
                               ),
                               reverse: true,
                             ),
@@ -238,7 +238,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       actions: [
         IconButton(
           onPressed: () {
-            _store.setStar();
+            _store.setStar(true);
             _store.setMessageSelected(false);
             _store.uncheck();
           },

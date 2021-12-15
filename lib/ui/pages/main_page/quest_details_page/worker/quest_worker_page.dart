@@ -310,6 +310,15 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 onPressed: store.opinion != ""
                     ? () {
                         store.sendRespondOnQuest(store.opinion);
+                        widget.questInfo.responded = Responded(
+                            id: "",
+                            workerId: profile!.userData!.id,
+                            questId: widget.questInfo.id,
+                            status: 0,
+                            type: 0,
+                            message: store.opinion,
+                            createdAt: DateTime.now(),
+                            updatedAt: DateTime.now());
                         Navigator.pop(context);
                         Navigator.pop(context);
                         successAlert(
@@ -362,6 +371,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         TextButton(
           onPressed: () {
             store.sendAcceptOnQuest();
+            widget.questInfo.status = 1;
             Navigator.pop(context);
             Navigator.pop(context);
             successAlert(
@@ -390,6 +400,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         TextButton(
           onPressed: () {
             store.sendRejectOnQuest();
+            widget.questInfo.responded!.status = -1;
+            widget.questInfo.assignedWorker = null;
             Navigator.pop(context);
             Navigator.pop(context);
             successAlert(
@@ -435,6 +447,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         TextButton(
           onPressed: () {
             store.sendCompleteWork();
+            widget.questInfo.status = 5;
             Navigator.pop(context);
             Navigator.pop(context);
             successAlert(
@@ -466,7 +479,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   void dispose() {
-    // widget.questInfo.update(store.quest.value!);
+    widget.questInfo.update(store.quest.value!);
     super.dispose();
   }
 }

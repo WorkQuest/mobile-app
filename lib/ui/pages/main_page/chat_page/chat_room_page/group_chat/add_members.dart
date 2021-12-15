@@ -86,11 +86,12 @@ class AddMembers extends StatelessWidget {
                             ? store.availableUsers.length
                             : store.foundUsers.length,
                     itemBuilder: (context, index) => AddUserCell(
-                        store.foundUsers.isEmpty && store.userName.isEmpty
-                            ? store.availableUsers[index]
-                            : store.foundUsers[index],
-                        index,
-                        store),
+                      store.foundUsers.isEmpty && store.userName.isEmpty
+                          ? store.availableUsers[index]
+                          : store.foundUsers[index],
+                      index,
+                      store,
+                    ),
                   ),
                 ),
               ),

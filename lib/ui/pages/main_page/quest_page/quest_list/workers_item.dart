@@ -56,7 +56,8 @@ class WorkersItem extends StatelessWidget {
                         const SizedBox(
                           height: 5,
                         ),
-                        tagStatus(2),
+                        tagStatus(
+                            workersInfo.ratingStatistic?.status ?? "noStatus"),
                       ],
                     ),
                   ],
@@ -123,10 +124,10 @@ class WorkersItem extends StatelessWidget {
     );
   }
 
-  Widget tagStatus(int status) {
+  Widget tagStatus(String status) {
     Widget returnWidget = Container();
     switch (status) {
-      case 0:
+      case "topRanked":
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(
@@ -142,7 +143,7 @@ class WorkersItem extends StatelessWidget {
           ),
         );
         break;
-      case 1:
+      case "reliable":
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(
@@ -158,7 +159,7 @@ class WorkersItem extends StatelessWidget {
           ),
         );
         break;
-      case 2:
+      case "verified":
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(

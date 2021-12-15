@@ -31,20 +31,19 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
-  final _$isMessageHighlightedAtom =
-      Atom(name: '_ChatRoomStore.isMessageHighlighted');
+  final _$idMessagesForStarAtom =
+      Atom(name: '_ChatRoomStore.idMessagesForStar');
 
   @override
-  ObservableList<bool> get isMessageHighlighted {
-    _$isMessageHighlightedAtom.reportRead();
-    return super.isMessageHighlighted;
+  ObservableMap<String, bool> get idMessagesForStar {
+    _$idMessagesForStarAtom.reportRead();
+    return super.idMessagesForStar;
   }
 
   @override
-  set isMessageHighlighted(ObservableList<bool> value) {
-    _$isMessageHighlightedAtom.reportWrite(value, super.isMessageHighlighted,
-        () {
-      super.isMessageHighlighted = value;
+  set idMessagesForStar(ObservableMap<String, bool> value) {
+    _$idMessagesForStarAtom.reportWrite(value, super.idMessagesForStar, () {
+      super.idMessagesForStar = value;
     });
   }
 
@@ -60,23 +59,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   set idMessages(ObservableList<String> value) {
     _$idMessagesAtom.reportWrite(value, super.idMessages, () {
       super.idMessages = value;
-    });
-  }
-
-  final _$idMessagesForDeletingAtom =
-      Atom(name: '_ChatRoomStore.idMessagesForDeleting');
-
-  @override
-  ObservableList<String> get idMessagesForDeleting {
-    _$idMessagesForDeletingAtom.reportRead();
-    return super.idMessagesForDeleting;
-  }
-
-  @override
-  set idMessagesForDeleting(ObservableList<String> value) {
-    _$idMessagesForDeletingAtom.reportWrite(value, super.idMessagesForDeleting,
-        () {
-      super.idMessagesForDeleting = value;
     });
   }
 
@@ -351,6 +333,21 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
+  final _$starAtom = Atom(name: '_ChatRoomStore.star');
+
+  @override
+  Map<String, Star?> get star {
+    _$starAtom.reportRead();
+    return super.star;
+  }
+
+  @override
+  set star(Map<String, Star?> value) {
+    _$starAtom.reportWrite(value, super.star, () {
+      super.star = value;
+    });
+  }
+
   final _$mapOfPathAtom = Atom(name: '_ChatRoomStore.mapOfPath');
 
   @override
@@ -364,6 +361,13 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     _$mapOfPathAtom.reportWrite(value, super.mapOfPath, () {
       super.mapOfPath = value;
     });
+  }
+
+  final _$setStarAsyncAction = AsyncAction('_ChatRoomStore.setStar');
+
+  @override
+  Future<dynamic> setStar(bool allMsg) {
+    return _$setStarAsyncAction.run(() => super.setStar(allMsg));
   }
 
   final _$getUsersForGroupCHatAsyncAction =
@@ -396,6 +400,23 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   @override
   Future<dynamic> createGroupChat() {
     return _$createGroupChatAsyncAction.run(() => super.createGroupChat());
+  }
+
+  final _$addUsersInChatAsyncAction =
+      AsyncAction('_ChatRoomStore.addUsersInChat');
+
+  @override
+  Future<dynamic> addUsersInChat() {
+    return _$addUsersInChatAsyncAction.run(() => super.addUsersInChat());
+  }
+
+  final _$removeUserFromChatAsyncAction =
+      AsyncAction('_ChatRoomStore.removeUserFromChat');
+
+  @override
+  Future<dynamic> removeUserFromChat() {
+    return _$removeUserFromChatAsyncAction
+        .run(() => super.removeUserFromChat());
   }
 
   final _$getMessagesAsyncAction = AsyncAction('_ChatRoomStore.getMessages');
@@ -431,11 +452,11 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   }
 
   @override
-  void setMessageHighlighted(int index, MessageModel message) {
+  void setMessageHighlighted(MessageModel message) {
     final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
         name: '_ChatRoomStore.setMessageHighlighted');
     try {
-      return super.setMessageHighlighted(index, message);
+      return super.setMessageHighlighted(message);
     } finally {
       _$_ChatRoomStoreActionController.endAction(_$actionInfo);
     }
@@ -533,9 +554,8 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   String toString() {
     return '''
 chatName: ${chatName},
-isMessageHighlighted: ${isMessageHighlighted},
+idMessagesForStar: ${idMessagesForStar},
 idMessages: ${idMessages},
-idMessagesForDeleting: ${idMessagesForDeleting},
 index: ${index},
 messageSelected: ${messageSelected},
 userInChat: ${userInChat},
@@ -553,6 +573,7 @@ starredMessage: ${starredMessage},
 media: ${media},
 pageNumber: ${pageNumber},
 fileNameBytes: ${fileNameBytes},
+star: ${star},
 mapOfPath: ${mapOfPath},
 chat: ${chat}
     ''';

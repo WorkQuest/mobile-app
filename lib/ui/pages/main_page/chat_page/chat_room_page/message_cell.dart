@@ -11,9 +11,9 @@ class MessageCell extends StatefulWidget {
   final LocalKey key;
   final MessageModel mess;
   final String userId;
-  final int index;
+  final ChatRoomStore store;
 
-  MessageCell(this.key, this.mess, this.userId, this.index);
+  MessageCell(this.key, this.mess, this.userId, this.store);
 
   @override
   _MessageCellState createState() => _MessageCellState();
@@ -37,31 +37,57 @@ class _MessageCellState extends State<MessageCell> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      // onLongPress: () {
+      //   store.setChatSelected(true);
+      //   store.setChatHighlighted(chatDetails);
+      // },
+      // onTap: () {
+      //   if (store.chatSelected) {
+      //     store.setChatHighlighted(chatDetails);
+      //     for (int i = 0; i < store.idChatsForStar.values.length; i++)
+      //       if (store.idChatsForStar.values.toList()[i] == true) return;
+      //     store.setChatSelected(false);
+      //     print("${store.chatSelected}");
+      //   } else {
+      //     Map<String, dynamic> arguments = {
+      //       "chatId": chatDetails.chatModel.id,
+      //       "userId": userData.userData!.id
+      //     };
+      //     if (chatDetails.chatModel.lastMessage.senderUserId !=
+      //         userData.userData!.id) {
+      //       store.setMessageRead(
+      //           chatDetails.chatModel.id, chatDetails.chatModel.lastMessageId);
+      //       chatDetails.chatModel.lastMessage.senderStatus = "read";
+      //     }
+      //     Navigator.of(context, rootNavigator: true)
+      //         .pushNamed(ChatRoomPage.routeName, arguments: arguments);
+      //     store.checkMessage();
+      //   }
+      // },
       onTap: () {
         FocusScope.of(context).unfocus();
         if (widget.mess.infoMessage == null) {
           if (store.messageSelected) {
-            store.setMessageHighlighted(widget.index, widget.mess);
+            store.setMessageHighlighted(widget.mess);
+
+            for (int i = 0; i < store.idMessagesForStar.length; i++)
+              if (store.idMessagesForStar.values.toList()[i] == true) {
+                return;
+              }
+            store.setMessageSelected(false);
           }
-          for (int i = 0; i < store.isMessageHighlighted.length; i++)
-            if (store.isMessageHighlighted[i] == true) {
-              return;
-            }
-          store.setMessageSelected(false);
         }
       },
       onLongPress: () {
         if (widget.mess.infoMessage == null) {
           store.setMessageSelected(true);
-          store.setMessageHighlighted(widget.index, widget.mess);
+          store.setMessageHighlighted(widget.mess);
         }
       },
       child: Observer(
         builder: (_) => Container(
-          color: store.isMessageHighlighted.isNotEmpty
-              ? store.isMessageHighlighted[widget.index]
-                  ? Color(0xFFE9EDF2)
-                  : Color(0xFFFFFFFF)
+          color: store.idMessagesForStar[widget.mess.id] ?? false
+              ? Color(0xFFE9EDF2)
               : Color(0xFFFFFFFF),
           child: Padding(
             key: widget.key,
@@ -124,7 +150,7 @@ class _MessageCellState extends State<MessageCell> {
                                         : Color(0xFF8D96A1).withOpacity(0.4),
                                   ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                       ),

@@ -116,7 +116,8 @@ extension QuestService on ApiProvider {
     );
   }
 
-  Future<List<BaseQuestResponse>> getEmployerQuests({
+  // Future<List<BaseQuestResponse>>
+  Future<Map<String, dynamic>> getEmployerQuests({
     String userId = "",
     List<String> workplace = const [],
     List<String> employment = const [],
@@ -156,13 +157,14 @@ extension QuestService on ApiProvider {
           if (starred != null) "starred": starred,
         },
       );
-      return List<BaseQuestResponse>.from(
-        responseData["quests"].map(
-          (x) => BaseQuestResponse.fromJson(x),
-        ),
-      );
+      return responseData;
+      //   List<BaseQuestResponse>.from(
+      //   responseData["quests"].map(
+      //     (x) => BaseQuestResponse.fromJson(x),
+      //   ),
+      // );
     } catch (e) {
-      return [];
+      return {};
     }
   }
 
@@ -173,7 +175,7 @@ extension QuestService on ApiProvider {
     return BaseQuestResponse.fromJson(responseData);
   }
 
-  Future<List<BaseQuestResponse>> getQuests({
+  Future<Map<String, dynamic>> getQuests({
     List<String> workplace = const [],
     List<String> employment = const [],
     int limit = 10,
@@ -185,6 +187,8 @@ extension QuestService on ApiProvider {
     bool? invited,
     bool? performing,
     bool? starred,
+    String? north,
+    String? south,
   }) async {
     String status = "";
     statuses.forEach((text) {
@@ -209,33 +213,56 @@ extension QuestService on ApiProvider {
         if (invited != null) "invited": invited,
         if (performing != null) "performing": performing,
         if (starred != null) "starred": starred,
+        if (north != null) "north": north,
+        if (south != null) "south": south,
       },
     );
 
-    return List<BaseQuestResponse>.from(
-      responseData["quests"].map(
-        (x) => BaseQuestResponse.fromJson(x),
-      ),
-    );
+    return responseData;
+    //   List<BaseQuestResponse>.from(
+    //   responseData["quests"].map(
+    //     (x) => BaseQuestResponse.fromJson(x),
+    //   ),
+    // );
   }
 
-  Future<List<ProfileMeResponse>> getWorkers({
+  Future<Map<String, dynamic>> getWorkers({
     String searchWord = "",
     String? sort,
+    int limit = 10,
+    int offset = 0,
+    List<int> priority = const [],
+    List<String> ratingStatus = const [],
+    List<String> workplace = const [],
   }) async {
+    String priorities = "";
+    priority.forEach((text) {
+      priorities += "priority[]=$text&";
+    });
+    String ratingStatuses = "";
+    ratingStatus.forEach((text) {
+      ratingStatuses += "ratingStatus[]=$text&";
+    });
+    String workplaces = "";
+    workplace.forEach((text) {
+      workplaces += "workplaces[]=$text&";
+    });
     final responseData = await _httpClient.get(
       query: '/v1/profile/workers?',
       queryParameters: {
         if (searchWord.isNotEmpty) "q": searchWord,
+        "offset": offset,
+        "limit": limit,
         //"sort": sort,
       },
     );
 
-    return List<ProfileMeResponse>.from(
-      responseData["users"].map(
-        (x) => ProfileMeResponse.fromJson(x),
-      ),
-    );
+    return responseData;
+    //   List<ProfileMeResponse>.from(
+    //   responseData["users"].map(
+    //     (x) => ProfileMeResponse.fromJson(x),
+    //   ),
+    // );
   }
 
   Future<ProfileMeResponse> getProfileUser({
@@ -400,10 +427,19 @@ extension QuestService on ApiProvider {
 
 extension UserInfoService on ApiProvider {
   Future<ProfileMeResponse> getProfileMe() async {
-    final responseData = await _httpClient.get(
-      query: '/v1/profile/me',
-    );
-    return ProfileMeResponse.fromJson(responseData);
+    try {
+      final responseData = await _httpClient.get(
+        query: '/v1/profile/me',
+      );
+      return ProfileMeResponse.fromJson(responseData);
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      final responseData = await _httpClient.get(
+        query: '/v1/profile/me',
+      );
+      return ProfileMeResponse.fromJson(responseData);
+    }
   }
 
   Future<ProfileMeResponse> changeProfileMe(
@@ -720,11 +756,28 @@ extension ChatsService on ApiProvider {
     );
   }
 
+  Future<void> setChatStar({
+    required String chatId,
+  }) async {
+    await _httpClient.post(
+      query: '/v1/user/me/chat/$chatId/star',
+    );
+  }
+
   Future<void> removeStarFromMsg({
     required String messageId,
   }) async {
     await _httpClient.delete(
       query: '/v1/user/me/chat/message/$messageId/star',
+    );
+  }
+
+
+  Future<void> removeStarFromChat({
+    required String chatId,
+  }) async {
+    await _httpClient.delete(
+      query: '/v1/user/me/chat/$chatId/star',
     );
   }
 

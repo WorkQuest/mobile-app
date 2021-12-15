@@ -134,12 +134,15 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
           }
           return true;
         },
-        child: Center(
-          child: QuestsList(
-            type,
-            list,
-            onCreate: onCreate,
-            isLoading: myQuests!.isLoading,
+        child: Container(
+          color: const Color(0xFFF7F8FA),
+          child: Center(
+            child: QuestsList(
+              type,
+              list,
+              onCreate: onCreate,
+              isLoading: myQuests!.isLoading,
+            ),
           ),
         ),
       );

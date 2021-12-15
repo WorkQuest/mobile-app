@@ -60,6 +60,7 @@ class _StarredMessageState extends State<StarredMessage> {
                     store.starredMessage[index],
                     index,
                     widget.userId,
+                    store,
                   ),
                 ),
               )

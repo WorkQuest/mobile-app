@@ -154,7 +154,7 @@
     "submit": "Submit",
     "showAllReviews": "Show all reviews",
     "later": "Later",
-    "iAgree": "I accept",
+    "iAgree": "I agree",
     "next": "Next",
     "continue": "Continue",
     "change": "Change",
@@ -239,7 +239,7 @@
   "privacy": {
     "title": "Privacy Policy",
     "desc": "",
-    "agree": "I accept the",
+    "agree": "I agree with",
     "privacyLink": "Privacy Policy",
     "termsLink": "Terms and conditions",
     "amlLink": "AML and CTF Policy"
@@ -980,6 +980,7 @@
     "requestSend": " Request sent",
     "sendARequest": "Send a request",
     "message": "Message",
+    "newMessage": "New message",
     "bodyMessage": "Hello",
     "areYouSure": "Sure?",
     "transactionSend": "Transaction sent",

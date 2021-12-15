@@ -22,7 +22,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   List<RespondModel>? respondedList;
 
   @observable
-  String selectedResponders = "";
+  RespondModel? selectedResponders;
 
   Observable<BaseQuestResponse?> quest = Observable(null);
 
@@ -31,8 +31,8 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     respondedList = await _apiProvider.responsesQuest(id);
     if (respondedList != null)
       for (int index = 0; index < (respondedList?.length ?? 0); index++)
-        if (respondedList![index].workerId== idWorker)
-          respondedList!.removeAt(index);
+        if (respondedList![index].workerId == idWorker ||
+            respondedList![index].status == -1) respondedList!.removeAt(index);
   }
 
   _getQuest() async {
