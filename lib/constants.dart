@@ -19,18 +19,5 @@ class Constants {
     Color.fromRGBO(232, 210, 13, 1),
     Color.fromRGBO(223, 51, 51, 1),
   ];
-  static const List<String> months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
+
 }
