@@ -57,7 +57,7 @@ extension CustomAppBar on ProfileReviewsState {
                 child: Row(
                   children: [
                     for (int i = 0;
-                        i < userStore!.userData!.ratingStatistic!.averageMark;
+                        i < userStore!.userData!.ratingStatistic!.averageMark.round();
                         i++)
                       Icon(
                         Icons.star,
@@ -68,7 +68,7 @@ extension CustomAppBar on ProfileReviewsState {
                         i <
                             5 -
                                 userStore!
-                                    .userData!.ratingStatistic!.averageMark;
+                                    .userData!.ratingStatistic!.averageMark.round();
                         i++)
                       Icon(
                         Icons.star,

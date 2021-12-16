@@ -61,6 +61,7 @@ dependencies:
   dots_indicator: ^2.0.0
   share: ^2.0.4
   mask_text_input_formatter: ^2.0.0
+  custom_refresh_indicator: ^1.0.0
 
   #url & app launcher
   url_launcher: ^6.0.9

@@ -288,6 +288,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
       this.offset = 0;
       refresh = false;
     }
+    print("qwe");
     if (this._myId.isEmpty || (_count == chats.length && refresh)) return;
     try {
       _count = chats.length;

@@ -259,7 +259,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                               ? null
                               : () {
                                   store.startQuest(
-                                    userId: store.selectedResponders!.id,
+                                    userId: store.selectedResponders!.workerId,
                                     questId: widget.questInfo.id,
                                   );
                                   widget.questInfo.assignedWorker =
