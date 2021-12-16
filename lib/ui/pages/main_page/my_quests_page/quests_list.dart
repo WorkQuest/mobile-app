@@ -26,7 +26,9 @@ class QuestsList extends StatelessWidget {
   QuestsList(this.questItemPriorityType, this.questsList,
       {this.onCreate,
       this.update,
-      this.physics = const AlwaysScrollableScrollPhysics(),
+      this.physics = const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
       required this.isLoading});
 
   @override
@@ -47,9 +49,7 @@ class QuestsList extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: ListView.builder(
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
+        physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: onCreate != null ? questsList.length + 1 : questsList.length,
         padding: EdgeInsets.zero,
@@ -92,6 +92,7 @@ class QuestsList extends StatelessWidget {
     return Center(
       child: ListView(
         shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
         children: [
           if (onCreate != null)
             Padding(

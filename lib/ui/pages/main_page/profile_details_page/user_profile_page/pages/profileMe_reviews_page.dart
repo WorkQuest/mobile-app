@@ -5,7 +5,6 @@ import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -38,7 +37,7 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
   late TabController _tabController;
 
   ScrollController controllerMain = ScrollController();
-  ScrollController controllerTab = ScrollController();
+  ScrollController tabChildController = ScrollController();
 
   ProfileMeStore? userStore;
   PortfolioStore? portfolioStore;
@@ -90,9 +89,11 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
   @protected
   List<Widget> questPortfolio() => [];
 
-  Widget wrapperTabBar(List<Widget> body) {
+  Widget wrapperTabBar(
+    List<Widget> body,
+  ) {
     return ListView(
-      controller: controllerTab,
+      controller: tabChildController,
       physics: NeverScrollableScrollPhysics(),
       children: body,
     );
@@ -202,17 +203,18 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
             SliverFillRemaining(
               child: GestureDetector(
                 onVerticalDragUpdate: (details) {
+                  //  print(_tabController.index);
                   if (controllerMain.position.maxScrollExtent >
                       controllerMain.offset)
                     controllerMain
                         .jumpTo(controllerMain.offset - details.delta.dy);
-                  else if (0.0 > controllerTab.offset) {
+                  else if (0.0 > tabChildController.offset) {
                     controllerMain
                         .jumpTo(controllerMain.offset - details.delta.dy);
                   } else if (controllerMain.position.maxScrollExtent >=
                       controllerMain.offset) {
-                    controllerTab
-                        .jumpTo(controllerTab.offset - details.delta.dy);
+                    tabChildController
+                        .jumpTo(tabChildController.offset - details.delta.dy);
                   }
                 },
                 child: Observer(

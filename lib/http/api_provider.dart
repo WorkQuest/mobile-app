@@ -13,11 +13,8 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/quest_map_point.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:dio/dio.dart';
-import 'package:drishya_picker/drishya_picker.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
-import 'package:mobx/mobx.dart';
 
 @singleton
 class ApiProvider {
@@ -111,7 +108,15 @@ extension QuestService on ApiProvider {
           'north[longitude]=${bounds.northeast.longitude.toString()}' +
           '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
           'south[longitude]=${bounds.southwest.longitude.toString()}',
+      // queryParameters: {
+      //   "north": "${bounds.northeast.latitude.toString()}",
+      //   "south": "${bounds.northeast.latitude.toString()}",
+      //   "q": "",
+      //   "priority": "",
+      //   "status": ""
+      // },
     );
+    print("markers$response");
     return List<QuestMapPoint>.from(
       response.map(
         (x) => QuestMapPoint.fromJson(x),
@@ -595,8 +600,8 @@ extension GetUploadLink on ApiProvider {
       // if (media.entity.type == AssetType.video) {
       // File? file = await media.entity.thumbData;
       bytes = media.readAsBytesSync(); //entity.thumbDataWithSize(
-        // media.entity.width,
-        // media.entity.height,
+      // media.entity.width,
+      // media.entity.height,
       // );
       // } else
       //   bytes = media.thumbBytes;
