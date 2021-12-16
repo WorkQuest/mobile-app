@@ -107,6 +107,21 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$offsetWorkersAtom = Atom(name: '_QuestsStore.offsetWorkers');
+
+  @override
+  int get offsetWorkers {
+    _$offsetWorkersAtom.reportRead();
+    return super.offsetWorkers;
+  }
+
+  @override
+  set offsetWorkers(int value) {
+    _$offsetWorkersAtom.reportWrite(value, super.offsetWorkers, () {
+      super.offsetWorkers = value;
+    });
+  }
+
   final _$limitAtom = Atom(name: '_QuestsStore.limit');
 
   @override
@@ -149,21 +164,6 @@ mixin _$QuestsStore on _QuestsStore, Store {
   set questsList(ObservableList<BaseQuestResponse> value) {
     _$questsListAtom.reportWrite(value, super.questsList, () {
       super.questsList = value;
-    });
-  }
-
-  final _$questsListLengthAtom = Atom(name: '_QuestsStore.questsListLength');
-
-  @override
-  int get questsListLength {
-    _$questsListLengthAtom.reportRead();
-    return super.questsListLength;
-  }
-
-  @override
-  set questsListLength(int value) {
-    _$questsListLengthAtom.reportWrite(value, super.questsListLength, () {
-      super.questsListLength = value;
     });
   }
 
@@ -245,13 +245,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$priorityValueAtom = Atom(name: '_QuestsStore.priorityValue');
 
   @override
-  ObservableList<String> get priorityValue {
+  ObservableList<int> get priorityValue {
     _$priorityValueAtom.reportRead();
     return super.priorityValue;
   }
 
   @override
-  set priorityValue(ObservableList<String> value) {
+  set priorityValue(ObservableList<int> value) {
     _$priorityValueAtom.reportWrite(value, super.priorityValue, () {
       super.priorityValue = value;
     });
@@ -275,13 +275,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$latitudeAtom = Atom(name: '_QuestsStore.latitude');
 
   @override
-  double get latitude {
+  double? get latitude {
     _$latitudeAtom.reportRead();
     return super.latitude;
   }
 
   @override
-  set latitude(double value) {
+  set latitude(double? value) {
     _$latitudeAtom.reportWrite(value, super.latitude, () {
       super.latitude = value;
     });
@@ -290,13 +290,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$longitudeAtom = Atom(name: '_QuestsStore.longitude');
 
   @override
-  double get longitude {
+  double? get longitude {
     _$longitudeAtom.reportRead();
     return super.longitude;
   }
 
   @override
-  set longitude(double value) {
+  set longitude(double? value) {
     _$longitudeAtom.reportWrite(value, super.longitude, () {
       super.longitude = value;
     });
@@ -320,8 +320,9 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$getPredictionAsyncAction = AsyncAction('_QuestsStore.getPrediction');
 
   @override
-  Future<Null> getPrediction(BuildContext context) {
-    return _$getPredictionAsyncAction.run(() => super.getPrediction(context));
+  Future<Null> getPrediction(BuildContext context, String userId) {
+    return _$getPredictionAsyncAction
+        .run(() => super.getPrediction(context, userId));
   }
 
   final _$displayPredictionAsyncAction =
@@ -390,7 +391,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
   }
 
   @override
-  List<String> getPriorityValue() {
+  List<int> getPriorityValue() {
     final _$actionInfo = _$_QuestsStoreActionController.startAction(
         name: '_QuestsStore.getPriorityValue');
     try {
@@ -420,10 +421,10 @@ employment: ${employment},
 workplace: ${workplace},
 priority: ${priority},
 offset: ${offset},
+offsetWorkers: ${offsetWorkers},
 limit: ${limit},
 status: ${status},
 questsList: ${questsList},
-questsListLength: ${questsListLength},
 workersList: ${workersList},
 searchResultList: ${searchResultList},
 searchWorkersList: ${searchWorkersList},

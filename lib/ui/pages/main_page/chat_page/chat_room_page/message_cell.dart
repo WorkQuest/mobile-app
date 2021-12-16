@@ -1,7 +1,6 @@
 import 'package:app/model/chat_model/message_model.dart';
-import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/video_file.dart';
+import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +11,9 @@ class MessageCell extends StatefulWidget {
   final LocalKey key;
   final MessageModel mess;
   final String userId;
-  final int index;
+  final ChatRoomStore store;
 
-  MessageCell(this.key, this.mess, this.userId, this.index);
+  MessageCell(this.key, this.mess, this.userId, this.store);
 
   @override
   _MessageCellState createState() => _MessageCellState();
@@ -30,7 +29,7 @@ class _MessageCellState extends State<MessageCell> {
     date = widget.mess.createdAt.year == DateTime.now().year &&
             widget.mess.createdAt.month == DateTime.now().month &&
             widget.mess.createdAt.day == DateTime.now().day
-        ? ""
+        ? DateFormat('kk:mm').format(widget.mess.createdAt)
         : DateFormat('dd MMM, kk:mm').format(widget.mess.createdAt);
     super.initState();
   }
@@ -38,31 +37,57 @@ class _MessageCellState extends State<MessageCell> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      // onLongPress: () {
+      //   store.setChatSelected(true);
+      //   store.setChatHighlighted(chatDetails);
+      // },
+      // onTap: () {
+      //   if (store.chatSelected) {
+      //     store.setChatHighlighted(chatDetails);
+      //     for (int i = 0; i < store.idChatsForStar.values.length; i++)
+      //       if (store.idChatsForStar.values.toList()[i] == true) return;
+      //     store.setChatSelected(false);
+      //     print("${store.chatSelected}");
+      //   } else {
+      //     Map<String, dynamic> arguments = {
+      //       "chatId": chatDetails.chatModel.id,
+      //       "userId": userData.userData!.id
+      //     };
+      //     if (chatDetails.chatModel.lastMessage.senderUserId !=
+      //         userData.userData!.id) {
+      //       store.setMessageRead(
+      //           chatDetails.chatModel.id, chatDetails.chatModel.lastMessageId);
+      //       chatDetails.chatModel.lastMessage.senderStatus = "read";
+      //     }
+      //     Navigator.of(context, rootNavigator: true)
+      //         .pushNamed(ChatRoomPage.routeName, arguments: arguments);
+      //     store.checkMessage();
+      //   }
+      // },
       onTap: () {
         FocusScope.of(context).unfocus();
         if (widget.mess.infoMessage == null) {
           if (store.messageSelected) {
-            store.setMessageHighlighted(widget.index, widget.mess);
+            store.setMessageHighlighted(widget.mess);
+
+            for (int i = 0; i < store.idMessagesForStar.length; i++)
+              if (store.idMessagesForStar.values.toList()[i] == true) {
+                return;
+              }
+            store.setMessageSelected(false);
           }
-          for (int i = 0; i < store.isMessageHighlighted.length; i++)
-            if (store.isMessageHighlighted[i] == true) {
-              return;
-            }
-          store.setMessageSelected(false);
         }
       },
       onLongPress: () {
         if (widget.mess.infoMessage == null) {
           store.setMessageSelected(true);
-          store.setMessageHighlighted(widget.index, widget.mess);
+          store.setMessageHighlighted(widget.mess);
         }
       },
       child: Observer(
         builder: (_) => Container(
-          color: store.isMessageHighlighted.isNotEmpty
-              ? store.isMessageHighlighted[widget.index]
-                  ? Color(0xFFE9EDF2)
-                  : Color(0xFFFFFFFF)
+          color: store.idMessagesForStar[widget.mess.id] ?? false
+              ? Color(0xFFE9EDF2)
               : Color(0xFFFFFFFF),
           child: Padding(
             key: widget.key,
@@ -97,7 +122,12 @@ class _MessageCellState extends State<MessageCell> {
                             ),
                             if (widget.mess.medias.isNotEmpty)
                               Center(
-                                child: media(),
+                                child: ImageViewerWidget(
+                                  widget.mess.medias,
+                                  widget.mess.senderUserId != widget.userId
+                                      ? Color(0xFFFFFFFF)
+                                      : Color(0xFF1D2127),
+                                ),
                               ),
                             Row(
                               children: [
@@ -120,7 +150,7 @@ class _MessageCellState extends State<MessageCell> {
                                         : Color(0xFF8D96A1).withOpacity(0.4),
                                   ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -138,53 +168,6 @@ class _MessageCellState extends State<MessageCell> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget media() {
-    return SizedBox(
-      height: 150.0,
-      child: ListView.separated(
-          separatorBuilder: (_, index) => SizedBox(
-            width: 10.0,
-          ),
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: widget.mess.medias.length,
-          itemBuilder: (_, index) {
-            if (widget.mess.medias[index].type == TypeMedia.Video) {
-              store.setThumbnailPath(widget.mess.medias[index].url, widget.mess.medias[index].id);
-            }
-            return widget.mess.medias[index].type == TypeMedia.Image
-                ? Image.network(
-                    widget.mess.medias[index].url,
-                    fit: BoxFit.cover,
-                  )
-                : widget.mess.medias[index].type == TypeMedia.Video
-                    ?
-            Observer(
-              builder: (_) => store.mapOfPath[widget.mess.medias[index].id] != null
-                          ? InkWell(
-                              child: Image.asset(
-                                store.mapOfPath[widget.mess.medias[index].id],
-                                fit: BoxFit.cover,
-                              ),
-                              onTap: () {
-                                store.urlVideo = widget.mess.medias[index].url;
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushNamed(VideoFile.routeName,
-                                        arguments: store);
-                              },
-                            )
-                          : Center(
-                              child: CircularProgressIndicator(),
-                            ),
-            )
-                    : Center(
-                        child: Text("This isn't video or image"),
-                      );
-          },
-        ),
     );
   }
 }

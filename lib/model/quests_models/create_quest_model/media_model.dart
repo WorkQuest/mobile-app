@@ -8,9 +8,14 @@ class Media {
   factory Media.fromJson(Map<String, dynamic>? json) => Media(
       id: json?['id'] ?? "",
       url: json?['url'] ?? "",
-      type: (json?['contentType'] ?? "") == "video/mp4"
+      type: (json?['contentType'] ?? "") == "video/mp4" ||
+              (json?['contentType'] ?? "") == "video/mov"
           ? TypeMedia.Video
-          : TypeMedia.Image);
+          : (json?['contentType'] ?? "") == "application/pdf"
+              ? TypeMedia.Pdf
+              : (json?['contentType'] ?? "") == "application/msword"
+                  ? TypeMedia.Doc
+                  : TypeMedia.Image);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> locationData = new Map<String, dynamic>();
@@ -20,4 +25,4 @@ class Media {
   }
 }
 
-enum TypeMedia { Image, Video }
+enum TypeMedia { Image, Video, Pdf, Doc }

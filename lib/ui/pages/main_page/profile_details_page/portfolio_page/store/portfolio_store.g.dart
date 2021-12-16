@@ -110,13 +110,13 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
   final _$mediaAtom = Atom(name: '_PortfolioStore.media');
 
   @override
-  ObservableList<DrishyaEntity> get media {
+  ObservableList<File> get media {
     _$mediaAtom.reportRead();
     return super.media;
   }
 
   @override
-  set media(ObservableList<DrishyaEntity> value) {
+  set media(ObservableList<File> value) {
     _$mediaAtom.reportWrite(value, super.media, () {
       super.media = value;
     });

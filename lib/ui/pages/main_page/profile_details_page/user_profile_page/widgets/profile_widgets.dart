@@ -268,7 +268,7 @@ class ReviewsWidget extends StatelessWidget {
 }
 
 ///AppBar Title
-Widget appBarTitle(String name, double padding) {
+Widget appBarTitle(String name, double padding, String status) {
   return AnimatedPadding(
     padding: EdgeInsets.only(left: padding),
     duration: Duration(milliseconds: 100),
@@ -293,24 +293,67 @@ Widget appBarTitle(String name, double padding) {
               horizontal: 5.0,
               vertical: 2.0,
             ),
-            decoration: BoxDecoration(
-              color: Color(0xFFF6CF00),
-              borderRadius: BorderRadius.all(
-                Radius.circular(3.0),
-              ),
-            ),
-            child: Text(
-              "HIGHER LEVEL",
-              style: TextStyle(
-                fontSize: 8.0,
-                color: Colors.white,
-              ),
-            ),
+            child: tagStatus(status),
           ),
         ),
       ],
     ),
   );
+}
+
+Widget tagStatus(String status) {
+  Widget returnWidget = Container();
+  switch (status) {
+    case "topRanked":
+      returnWidget = Container(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+        decoration: BoxDecoration(
+          color: Color(0xFFF6CF00),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Text(
+          "GOLD PLUS",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 8,
+          ),
+        ),
+      );
+      break;
+    case "reliable":
+      returnWidget = Container(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+        decoration: BoxDecoration(
+          color: Color(0xFFBBC0C7),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Text(
+          "SILVER",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 8,
+          ),
+        ),
+      );
+      break;
+    case "verified":
+      returnWidget = Container(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+        decoration: BoxDecoration(
+          color: Color(0xFFB79768),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Text(
+          "BRONZE",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 8,
+          ),
+        ),
+      );
+      break;
+  }
+  return returnWidget;
 }
 
 ///Quest Widget

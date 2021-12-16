@@ -89,25 +89,23 @@ class QuestsList extends StatelessWidget {
   }
 
   Widget getEmptyBody(BuildContext context) {
-    return Center(
-      child: ListView(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          if (onCreate != null)
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true)
-                      .pushNamed(CreateQuestPage.routeName);
-                },
-                child: Text(
-                  "quests.addNewQuest".tr(),
-                ),
+    return Column(
+      children: [
+        if (onCreate != null)
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true)
+                    .pushNamed(CreateQuestPage.routeName);
+              },
+              child: Text(
+                "quests.addNewQuest".tr(),
               ),
             ),
-          Padding(
+          ),
+        Expanded(
+          child: Padding(
             padding: EdgeInsets.only(top: 20.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -128,8 +126,8 @@ class QuestsList extends StatelessWidget {
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

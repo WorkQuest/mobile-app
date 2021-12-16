@@ -176,7 +176,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              ImageViewerWidget(widget.questInfo.medias),
+              ImageViewerWidget(widget.questInfo.medias, Color(0xFF1D2127)),
             ],
             Text(
               DateFormat('dd MMMM yyyy, kk:mm')

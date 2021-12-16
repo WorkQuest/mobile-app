@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/review.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
-import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
@@ -40,7 +41,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   ObservableList<Media> mediaIds = ObservableList();
 
   @observable
-  ObservableList<DrishyaEntity> media = ObservableList();
+  ObservableList<File> media = ObservableList();
 
   @action
   void changePageNumber(int value) => pageNumber = value;
@@ -59,14 +60,14 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      // await _apiProvider.addPortfolio(
-      //   title: title,
-      //   description: description,
-      //   media: mediaIds.map((e) => e.id).toList() +
-      //       await _apiProvider.uploadMedia(
-      //         medias: media,
-      //       ),
-      // );
+      await _apiProvider.addPortfolio(
+        title: title,
+        description: description,
+        media: mediaIds.map((e) => e.id).toList() +
+            await _apiProvider.uploadMedia(
+              medias: media,
+            ),
+      );
       await getPortfolio(userId: userId);
       this.onSuccess(true);
     } catch (e) {
@@ -81,15 +82,15 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      // await _apiProvider.editPortfolio(
-      //   portfolioId: portfolioId,
-      //   title: title,
-      //   description: description,
-      //   media: mediaIds.map((e) => e.id).toList() +
-      //       await _apiProvider.uploadMedia(
-      //         medias: media,
-      //       ),
-      // );
+      await _apiProvider.editPortfolio(
+        portfolioId: portfolioId,
+        title: title,
+        description: description,
+        media: mediaIds.map((e) => e.id).toList() +
+            await _apiProvider.uploadMedia(
+              medias: media,
+            ),
+      );
       await getPortfolio(userId: userId);
       this.onSuccess(true);
     } catch (e) {

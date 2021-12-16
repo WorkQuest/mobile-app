@@ -39,21 +39,6 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
-  final _$isChatHighlightedAtom = Atom(name: '_ChatStore.isChatHighlighted');
-
-  @override
-  ObservableList<bool> get isChatHighlighted {
-    _$isChatHighlightedAtom.reportRead();
-    return super.isChatHighlighted;
-  }
-
-  @override
-  set isChatHighlighted(ObservableList<bool> value) {
-    _$isChatHighlightedAtom.reportWrite(value, super.isChatHighlighted, () {
-      super.isChatHighlighted = value;
-    });
-  }
-
   final _$idChatAtom = Atom(name: '_ChatStore.idChat');
 
   @override
@@ -84,6 +69,21 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  final _$listNotificationAtom = Atom(name: '_ChatStore.listNotification');
+
+  @override
+  ObservableList<Notifications> get listNotification {
+    _$listNotificationAtom.reportRead();
+    return super.listNotification;
+  }
+
+  @override
+  set listNotification(ObservableList<Notifications> value) {
+    _$listNotificationAtom.reportWrite(value, super.listNotification, () {
+      super.listNotification = value;
+    });
+  }
+
   final _$starredChatsAtom = Atom(name: '_ChatStore.starredChats');
 
   @override
@@ -96,6 +96,36 @@ mixin _$ChatStore on _ChatStore, Store {
   set starredChats(ObservableList<Chats> value) {
     _$starredChatsAtom.reportWrite(value, super.starredChats, () {
       super.starredChats = value;
+    });
+  }
+
+  final _$chatsIdAtom = Atom(name: '_ChatStore.chatsId');
+
+  @override
+  ObservableList<String> get chatsId {
+    _$chatsIdAtom.reportRead();
+    return super.chatsId;
+  }
+
+  @override
+  set chatsId(ObservableList<String> value) {
+    _$chatsIdAtom.reportWrite(value, super.chatsId, () {
+      super.chatsId = value;
+    });
+  }
+
+  final _$idChatsForStarAtom = Atom(name: '_ChatStore.idChatsForStar');
+
+  @override
+  ObservableMap<String, bool> get idChatsForStar {
+    _$idChatsForStarAtom.reportRead();
+    return super.idChatsForStar;
+  }
+
+  @override
+  set idChatsForStar(ObservableMap<String, bool> value) {
+    _$idChatsForStarAtom.reportWrite(value, super.idChatsForStar, () {
+      super.idChatsForStar = value;
     });
   }
 
@@ -159,11 +189,25 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  final _$setStarAsyncAction = AsyncAction('_ChatStore.setStar');
+
+  @override
+  Future<dynamic> setStar() {
+    return _$setStarAsyncAction.run(() => super.setStar());
+  }
+
   final _$loadChatsAsyncAction = AsyncAction('_ChatStore.loadChats');
 
   @override
   Future<dynamic> loadChats(bool isNewList) {
     return _$loadChatsAsyncAction.run(() => super.loadChats(isNewList));
+  }
+
+  final _$getUserDataAsyncAction = AsyncAction('_ChatStore.getUserData');
+
+  @override
+  Future<dynamic> getUserData(String idUser) {
+    return _$getUserDataAsyncAction.run(() => super.getUserData(idUser));
   }
 
   final _$setMessageReadAsyncAction = AsyncAction('_ChatStore.setMessageRead');
@@ -175,6 +219,39 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   final _$_ChatStoreActionController = ActionController(name: '_ChatStore');
+
+  @override
+  dynamic uncheck() {
+    final _$actionInfo =
+        _$_ChatStoreActionController.startAction(name: '_ChatStore.uncheck');
+    try {
+      return super.uncheck();
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setChatSelected(bool value) {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore.setChatSelected');
+    try {
+      return super.setChatSelected(value);
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setChatHighlighted(Chats chatDetails) {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore.setChatHighlighted');
+    try {
+      return super.setChatHighlighted(chatDetails);
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   dynamic openStarredChats(bool value) {
@@ -214,10 +291,12 @@ mixin _$ChatStore on _ChatStore, Store {
     return '''
 unread: ${unread},
 starred: ${starred},
-isChatHighlighted: ${isChatHighlighted},
 idChat: ${idChat},
 chatSelected: ${chatSelected},
+listNotification: ${listNotification},
 starredChats: ${starredChats},
+chatsId: ${chatsId},
+idChatsForStar: ${idChatsForStar},
 infoMessageValue: ${infoMessageValue},
 isLoadingChats: ${isLoadingChats},
 refresh: ${refresh}

@@ -64,6 +64,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
       mode: Mode.overlay,
       logo: SizedBox(),
       hint: "quests.ui.search".tr(),
+      startText: address.isNotEmpty ? address : "",
     );
     if (p != null) {
       address = p.description!;

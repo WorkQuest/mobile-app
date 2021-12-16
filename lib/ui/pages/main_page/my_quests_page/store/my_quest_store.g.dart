@@ -39,21 +39,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     });
   }
 
-  final _$offsetAtom = Atom(name: '_MyQuestStore.offset');
-
-  @override
-  int get offset {
-    _$offsetAtom.reportRead();
-    return super.offset;
-  }
-
-  @override
-  set offset(int value) {
-    _$offsetAtom.reportWrite(value, super.offset, () {
-      super.offset = value;
-    });
-  }
-
   final _$limitAtom = Atom(name: '_MyQuestStore.limit');
 
   @override
@@ -144,21 +129,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     });
   }
 
-  final _$respondedAtom = Atom(name: '_MyQuestStore.responded');
-
-  @override
-  ObservableList<Responded?> get responded {
-    _$respondedAtom.reportRead();
-    return super.responded;
-  }
-
-  @override
-  set responded(ObservableList<Responded?> value) {
-    _$respondedAtom.reportWrite(value, super.responded, () {
-      super.responded = value;
-    });
-  }
-
   final _$invitedAtom = Atom(name: '_MyQuestStore.invited');
 
   @override
@@ -171,6 +141,21 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   set invited(ObservableList<BaseQuestResponse> value) {
     _$invitedAtom.reportWrite(value, super.invited, () {
       super.invited = value;
+    });
+  }
+
+  final _$allQuestsAtom = Atom(name: '_MyQuestStore.allQuests');
+
+  @override
+  ObservableList<BaseQuestResponse> get allQuests {
+    _$allQuestsAtom.reportRead();
+    return super.allQuests;
+  }
+
+  @override
+  set allQuests(ObservableList<BaseQuestResponse> value) {
+    _$allQuestsAtom.reportWrite(value, super.allQuests, () {
+      super.allQuests = value;
     });
   }
 
@@ -217,15 +202,14 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     return '''
 sort: ${sort},
 priority: ${priority},
-offset: ${offset},
 limit: ${limit},
 status: ${status},
 active: ${active},
 starred: ${starred},
 performed: ${performed},
 requested: ${requested},
-responded: ${responded},
 invited: ${invited},
+allQuests: ${allQuests},
 iconsMarker: ${iconsMarker},
 selectQuestInfo: ${selectQuestInfo}
     ''';

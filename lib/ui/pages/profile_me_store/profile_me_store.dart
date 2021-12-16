@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
-import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -187,12 +188,12 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   }
 
   @action
-  changeProfile(ProfileMeResponse userData, {DrishyaEntity? media}) async {
+  changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {
       this.onLoading();
-      // if (media != null)
-      //   userData.avatarId = (await _apiProvider.uploadMedia(
-      //       medias: ObservableList.of([media])))[0];
+      if (media != null)
+        userData.avatarId = (await _apiProvider.uploadMedia(
+            medias: ObservableList.of([media])))[0];
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
       this.onSuccess(true);

@@ -7,7 +7,7 @@ import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/validator.dart';
-import 'package:drishya_picker/drishya_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -25,14 +25,12 @@ class ChangeProfilePage extends StatefulWidget {
 class _ChangeProfilePageState extends State<ChangeProfilePage>
     with AutomaticKeepAliveClientMixin {
   ProfileMeStore? profile;
-  bool checkPermission = false;
   late ChangeProfileStore pageStore;
   final _formKey = GlobalKey<FormState>();
 
   SkillSpecializationController? _controller;
   KnowledgeWorkSelectionController? _controllerKnowledge;
   KnowledgeWorkSelectionController? _controllerWork;
-  late final GalleryController gallController;
 
   @override
   void initState() {
@@ -249,7 +247,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                       fit: BoxFit.cover,
                     )
                   : Image.memory(
-                      pageStore.media!.thumbBytes,
+                      pageStore.media!.readAsBytesSync(),
                       height: 130,
                       width: 130,
                       fit: BoxFit.cover,
@@ -260,22 +258,15 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                 Icons.edit,
                 color: Colors.white,
               ),
-              onPressed: () {
-                if (!checkPermission) {
-                  gallController = GalleryController(
-                    gallerySetting: const GallerySetting(
-                      maximum: 1,
-                      albumSubtitle: 'All',
-                      requestType: RequestType.image,
-                    ),
-                    panelSetting: PanelSetting(
-                      //topMargin: 100.0,
-                      headerMaxHeight: 100.0,
-                    ),
-                  );
-                  checkPermission = true;
+              onPressed: () async {
+                final result = await FilePicker.platform.pickFiles(
+                  type: FileType.image,
+                );
+                if (result != null) {
+                  List<File> files =
+                      result.paths.map((path) => File(path!)).toList();
+                  pageStore.media = files.first;
                 }
-                showGallery();
               },
             ),
           ],
@@ -433,13 +424,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
         const SizedBox(height: 20),
       ],
     );
-  }
-
-  Future showGallery() async {
-    final picked = await gallController.pick(
-      context,
-    );
-    if (picked.isNotEmpty) pageStore.media = picked.first;
   }
 
   onBack() {

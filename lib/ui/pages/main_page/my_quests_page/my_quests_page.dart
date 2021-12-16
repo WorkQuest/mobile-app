@@ -39,39 +39,38 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: role == UserRole.Worker ? 4 : 3,
-      child: Observer(
-        builder: (_) => Scaffold(
-          body: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                CupertinoSliverNavigationBar(
-                  largeTitle: Text(
-                    "quests.MyQuests".tr(),
-                  ),
-                  border: const Border.fromBorderSide(BorderSide.none),
+      child: Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              CupertinoSliverNavigationBar(
+                largeTitle: Text(
+                  "quests.MyQuests".tr(),
                 ),
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: _PersistentTabBar(role == UserRole.Worker
-                      ? [
-                          "quests.active".tr(),
-                          "quests.invited".tr(),
-                          "quests.performed".tr(),
-                          "quests.starred".tr(),
-                        ]
-                      : [
-                          "quests.active".tr(),
-                          "quests.requested".tr(),
-                          "quests.performed".tr(),
-                        ]),
-                ),
-              ];
-            },
-            physics: const ClampingScrollPhysics(),
-            body: TabBarView(
-              children: [
-                Center(
+                border: const Border.fromBorderSide(BorderSide.none),
+              ),
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: _PersistentTabBar(role == UserRole.Worker
+                    ? [
+                        "quests.active".tr(),
+                        "quests.invited".tr(),
+                        "quests.performed".tr(),
+                        "quests.starred".tr(),
+                      ]
+                    : [
+                        "quests.active".tr(),
+                        "quests.requested".tr(),
+                        "quests.performed".tr(),
+                      ]),
+              ),
+            ];
+          },
+          physics: const ClampingScrollPhysics(),
+          body: TabBarView(
+            children: [
+              Observer(
+                builder: (_) => Center(
                   child: refreshIndicator(
                     notificationListener(
                         QuestItemPriorityType.Active,
@@ -84,16 +83,20 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                             : null),
                   ),
                 ),
-                Center(
+              ),
+              Observer(
+                builder: (_) => Center(
                   child: refreshIndicator(
-                      role == UserRole.Employer
-                    ?notificationListener(QuestItemPriorityType.Requested,
-                        myQuests!.requested, null)
-                  :notificationListener(QuestItemPriorityType.Invited,
-                          myQuests!.invited, null),
+                    role == UserRole.Employer
+                        ? notificationListener(QuestItemPriorityType.Requested,
+                            myQuests!.requested, null)
+                        : notificationListener(QuestItemPriorityType.Invited,
+                            myQuests!.invited, null),
                   ),
                 ),
-                Center(
+              ),
+              Observer(
+                builder: (_) => Center(
                   child: refreshIndicator(
                     notificationListener(
                       QuestItemPriorityType.Performed,
@@ -102,15 +105,17 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                     ),
                   ),
                 ),
-                if (role == UserRole.Worker)
-                  Center(
+              ),
+              if (role == UserRole.Worker)
+                Observer(
+                  builder: (_) => Center(
                     child: refreshIndicator(
                       notificationListener(QuestItemPriorityType.Starred,
                           myQuests!.starred, null),
                     ),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ),
@@ -134,12 +139,15 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
           }
           return true;
         },
-        child: Center(
-          child: QuestsList(
-            type,
-            list,
-            onCreate: onCreate,
-            isLoading: myQuests!.isLoading,
+        child: Container(
+          color: const Color(0xFFF7F8FA),
+          child: Center(
+            child: QuestsList(
+              type,
+              list,
+              onCreate: onCreate,
+              isLoading: myQuests!.isLoading,
+            ),
           ),
         ),
       );

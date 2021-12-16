@@ -234,18 +234,18 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
-  final _$mediaDrishyaAtom = Atom(name: '_CreateQuestStore.mediaDrishya');
+  final _$mediaFileAtom = Atom(name: '_CreateQuestStore.mediaFile');
 
   @override
-  ObservableList<DrishyaEntity> get mediaDrishya {
-    _$mediaDrishyaAtom.reportRead();
-    return super.mediaDrishya;
+  ObservableList<File> get mediaFile {
+    _$mediaFileAtom.reportRead();
+    return super.mediaFile;
   }
 
   @override
-  set mediaDrishya(ObservableList<DrishyaEntity> value) {
-    _$mediaDrishyaAtom.reportWrite(value, super.mediaDrishya, () {
-      super.mediaDrishya = value;
+  set mediaFile(ObservableList<File> value) {
+    _$mediaFileAtom.reportWrite(value, super.mediaFile, () {
+      super.mediaFile = value;
     });
   }
 
@@ -416,7 +416,7 @@ questTitle: ${questTitle},
 description: ${description},
 price: ${price},
 adType: ${adType},
-mediaDrishya: ${mediaDrishya},
+mediaFile: ${mediaFile},
 mediaIds: ${mediaIds},
 locationPlaceName: ${locationPlaceName},
 skillFilters: ${skillFilters},

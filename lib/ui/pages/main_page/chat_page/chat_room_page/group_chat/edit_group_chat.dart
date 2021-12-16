@@ -68,30 +68,60 @@ class EditGroupChat extends StatelessWidget {
                 const SizedBox(
                   height: 5.0,
                 ),
-                TextFormField(
-                  initialValue: store.chat!.chatModel.name,
-                  onChanged: (text) => store.setChatName(text),
-                  decoration: InputDecoration(
-                    hintText: "modals.modals.chatName".tr(),
-                    fillColor: Colors.white,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(6.0),
-                      borderSide: BorderSide(
-                        color: Colors.blue,
+                Container(
+                  height: 50,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Color(0xFFF7F8FA),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(6.0),
                       ),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(6.0),
-                      borderSide: BorderSide(
-                        color: Color(0xFFf7f8fa),
-                        width: 2.0,
-                      ),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Flexible(
+                          child: Text(
+                            store.chat!.chatModel.name!,
+                            overflow: TextOverflow.fade,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
                 const SizedBox(
                   height: 16.0,
                 ),
+                // TextFormField(
+                //   initialValue: store.chat!.chatModel.name,
+                //   onChanged: (text) => store.setChatName(text),
+                //   decoration: InputDecoration(
+                //     hintText: "modals.modals.chatName".tr(),
+                //     fillColor: Colors.white,
+                //     focusedBorder: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(6.0),
+                //       borderSide: BorderSide(
+                //         color: Colors.blue,
+                //       ),
+                //     ),
+                //     enabledBorder: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(6.0),
+                //       borderSide: BorderSide(
+                //         color: Color(0xFFf7f8fa),
+                //         width: 2.0,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                // const SizedBox(
+                //   height: 16.0,
+                // ),
                 Expanded(
                   child: Observer(
                     builder: (_) => ListView.separated(

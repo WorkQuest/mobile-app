@@ -104,7 +104,7 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
       AsyncAction('_ProfileMeStore.changeProfile');
 
   @override
-  Future changeProfile(ProfileMeResponse userData, {DrishyaEntity? media}) {
+  Future changeProfile(ProfileMeResponse userData, {File? media}) {
     return _$changeProfileAsyncAction
         .run(() => super.changeProfile(userData, media: media));
   }

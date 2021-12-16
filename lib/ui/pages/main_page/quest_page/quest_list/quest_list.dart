@@ -113,6 +113,7 @@ class _QuestListState extends State<QuestList> {
                     rootNavigator: true,
                   ).pushNamed(
                     NotificationPage.routeName,
+                    arguments: profileMeStore!.userData!.id,
                   ),
                   child: const Icon(Icons.notifications_none_outlined),
                 ),
@@ -124,7 +125,8 @@ class _QuestListState extends State<QuestList> {
             pinned: true,
             title: GestureDetector(
               onTap: () {
-                questsStore!.getPrediction(context);
+                questsStore!
+                    .getPrediction(context, profileMeStore!.userData!.id);
               },
               child: Container(
                 height: 50,
@@ -305,7 +307,10 @@ class _QuestListState extends State<QuestList> {
     if (controller!.position.extentAfter < 500) {
       if (questsStore != null) {
         if (questsStore!.isLoading) return;
-        questsStore!.getQuests(profileMeStore!.userData!.id, false);
+        if (profileMeStore!.userData!.role == UserRole.Worker)
+          questsStore!.getQuests(profileMeStore!.userData!.id, false);
+        else
+          questsStore!.getWorkers(profileMeStore!.userData!.id, false);
       }
     }
   }

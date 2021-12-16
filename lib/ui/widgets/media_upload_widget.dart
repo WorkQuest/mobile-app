@@ -1,6 +1,8 @@
+import 'dart:io';
+
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:drishya_picker/drishya_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -8,12 +10,12 @@ import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class MediaUpload extends StatefulWidget {
-  final ObservableList<DrishyaEntity> mediaDrishya;
+  final ObservableList<File> mediaFile;
   final ObservableList<Media>? mediaURL;
 
   const MediaUpload(
     this.mediaURL, {
-    required this.mediaDrishya,
+    required this.mediaFile,
   });
 
   @override
@@ -21,21 +23,9 @@ class MediaUpload extends StatefulWidget {
 }
 
 class _MediaUploadState extends State<MediaUpload> {
-  late final GalleryController gallController;
 
   @override
   void initState() {
-    gallController = GalleryController(
-      gallerySetting: const GallerySetting(
-        maximum: 20,
-        albumSubtitle: 'All',
-        requestType: RequestType.image,
-      ),
-      panelSetting: PanelSetting(
-        //topMargin: 100.0,
-        headerMaxHeight: 100.0,
-      ),
-    );
     super.initState();
   }
 
@@ -60,9 +50,9 @@ class _MediaUploadState extends State<MediaUpload> {
         ),
         child: Center(
           child: Observer(
-            builder: (context) => widget.mediaDrishya.isEmpty &&
+            builder: (context) => widget.mediaFile.isEmpty &&
                     (widget.mediaURL?.isEmpty ?? true) &&
-                    widget.mediaDrishya.isEmpty
+                    widget.mediaFile.isEmpty
                 ? galleryView()
                 : Column(
                     mainAxisSize: MainAxisSize.min,
@@ -72,10 +62,13 @@ class _MediaUploadState extends State<MediaUpload> {
                       ),
                       IconButton(
                         onPressed: () async {
-                          final picked = await gallController.pick(
-                            context,
+                          final result = await FilePicker.platform.pickFiles(
+                            allowMultiple: true,
+                            type: FileType.image,
                           );
-                          widget.mediaDrishya.addAll(picked);
+                          List<File> files =
+                          result!.paths.map((path) => File(path!)).toList();
+                          widget.mediaFile.addAll(files);
                         },
                         icon: Icon(
                           Icons.add_circle,
@@ -91,10 +84,13 @@ class _MediaUploadState extends State<MediaUpload> {
 
   Widget galleryView() => InkWell(
         onTap: () async {
-          final picked = await gallController.pick(
-            context,
+          final result = await FilePicker.platform.pickFiles(
+            allowMultiple: true,
+            type: FileType.image,
           );
-          widget.mediaDrishya.addAll(picked);
+          List<File> files =
+          result!.paths.map((path) => File(path!)).toList();
+          widget.mediaFile.addAll(files);
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -128,7 +124,7 @@ class _MediaUploadState extends State<MediaUpload> {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         children: [
-          for (var media in widget.mediaDrishya) dataEntity(media),
+          for (var media in widget.mediaFile) dataEntity(media),
           if (widget.mediaURL != null)
             for (var media in widget.mediaURL!) dataURL(media),
         ],
@@ -173,7 +169,7 @@ class _MediaUploadState extends State<MediaUpload> {
     );
   }
 
-  Widget dataEntity(DrishyaEntity media) {
+  Widget dataEntity(File media) {
     return Padding(
       padding: EdgeInsets.only(right: 10.0),
       child: Container(
@@ -186,7 +182,7 @@ class _MediaUploadState extends State<MediaUpload> {
             ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child: Image.memory(
-                media.thumbBytes,
+                media.readAsBytesSync(),
                 fit: BoxFit.cover,
               ),
             ),
@@ -195,7 +191,7 @@ class _MediaUploadState extends State<MediaUpload> {
               top: -15.0,
               right: -15.0,
               child: IconButton(
-                onPressed: () => widget.mediaDrishya.remove(media),
+                onPressed: () => widget.mediaFile.remove(media),
                 icon: Icon(Icons.cancel),
                 iconSize: 25.0,
                 color: Colors.redAccent,

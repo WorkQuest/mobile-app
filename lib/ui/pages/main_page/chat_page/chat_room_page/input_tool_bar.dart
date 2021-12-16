@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
-import 'package:drishya_picker/drishya_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:file_picker/file_picker.dart';
@@ -22,7 +21,6 @@ class _InputToolbarState extends State<InputToolbar> {
   bool checkPermission = false;
 
   int get maxAssetsCount => 9;
-  GalleryController? gallController;
   FilePickerResult? result;
 
   @override
@@ -41,26 +39,30 @@ class _InputToolbarState extends State<InputToolbar> {
               onSelected: (value) async {
                 switch (value) {
                   case "modals.uploadAImages":
-                    result = await FilePicker.platform.pickFiles(
-                      allowMultiple: true,
-                      type: FileType.media,
-                    );
+                    if (!checkPermission) {
+                      result = await FilePicker.platform.pickFiles(
+                        allowMultiple: true,
+                        type: FileType.media,
+                      );
+                      checkPermission = true;
+                    }
                     break;
                   case "modals.uploadADocuments":
-                    result = await FilePicker.platform.pickFiles(
-                      allowMultiple: true,
-                      type: FileType.custom,
-                      allowedExtensions: ['mp4', 'jpeg', 'png', 'pdf', 'doc'],
-                    );
+                    if (!checkPermission) {
+                      result = await FilePicker.platform.pickFiles(
+                        allowMultiple: true,
+                        type: FileType.custom,
+                        allowedExtensions: ['pdf', 'doc'],
+                      );
+                      checkPermission = true;
+                    }
                     break;
                 }
                 if (result != null) {
                   List<File> files =
                       result!.paths.map((path) => File(path!)).toList();
                   widget.store.media.addAll(files);
-                } else {
                 }
-                // if (result != null) widget.store.media.add(result!);
               },
               itemBuilder: (BuildContext context) {
                 return {
@@ -76,29 +78,6 @@ class _InputToolbarState extends State<InputToolbar> {
                 }).toList();
               },
             ),
-            // IconButton(
-            //   onPressed: () async {
-            //    // if (!checkPermission) {
-            //       result = await FilePicker.platform.pickFiles(
-            //         type: FileType.custom,
-            //         allowedExtensions: ['mp4', 'jpeg', 'png', 'pdf', 'doc'],
-            //       );
-            //       // gallController = GalleryController(
-            //       //   gallerySetting: const GallerySetting(
-            //       //     maximum: 1,
-            //       //     albumSubtitle: 'All',
-            //       //   ),
-            //       //   panelSetting: PanelSetting(
-            //       //     //topMargin: 100.0,
-            //       //     headerMaxHeight: 100.0,
-            //       //   ),
-            //       // );
-            //       checkPermission = true;
-            //     //}
-            //     showGallery();
-            //   },
-            //   icon: SvgPicture.asset("assets/attach_media_icon.svg"),
-            // ),
           ),
           Expanded(
             child: TextFormField(
@@ -146,9 +125,4 @@ class _InputToolbarState extends State<InputToolbar> {
       ),
     );
   }
-
-  // Future showGallery() async {
-  //   final picked = await gallController!.pick(context);
-  //   if (picked.isNotEmpty) widget.store.media.addAll(picked);
-  // }
 }

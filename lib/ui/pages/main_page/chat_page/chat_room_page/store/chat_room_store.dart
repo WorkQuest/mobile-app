@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
+import 'package:app/model/chat_model/info_message.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/chat_model/star.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
@@ -46,13 +47,10 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   String chatName = "";
 
   @observable
-  ObservableList<bool> isMessageHighlighted = ObservableList.of([]);
+  ObservableMap<String, bool> idMessagesForStar = ObservableMap.of({});
 
   @observable
   ObservableList<String> idMessages = ObservableList.of([]);
-
-  @observable
-  ObservableList<String> idMessagesForDeleting = ObservableList.of([]);
 
   @observable
   int index = 0;
@@ -111,6 +109,9 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   @observable
   Uint8List? fileNameBytes;
 
+  @observable
+  Map<String, Star?> star = {};
+
   String? filePath;
 
   @observable
@@ -149,9 +150,10 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   }
 
   void uncheck() {
-    for (int i = 0; i < isMessageHighlighted.length; i++) {
-      isMessageHighlighted[i] = false;
+    for (int i = 0; i < idMessages.length; i++) {
+      idMessagesForStar[idMessages[i]] = false;
     }
+    idMessages.clear();
     _atomMessages.reportChanged();
   }
 
@@ -163,8 +165,8 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   }
 
   @action
-  void setMessageHighlighted(int index, MessageModel message) {
-    isMessageHighlighted[index] = !isMessageHighlighted[index];
+  void setMessageHighlighted(MessageModel message) {
+    idMessagesForStar[message.id] = !idMessagesForStar[message.id]!;
     for (int i = 0; i < idMessages.length; i++)
       if (idMessages[i] == message.id) {
         idMessages.removeAt(i);
@@ -173,27 +175,39 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     idMessages.add(message.id);
   }
 
-  Future setStar() async {
-    for (int i = 0; i < idMessages.length; i++)
-      for (int j = 0; j < chat!.messages.length; j++)
-        if (idMessages[i] == chat!.messages[j].id &&
-            chat!.messages[j].star != null) {
-          chat!.messages[j].star = null;
-          await _apiProvider.removeStarFromMsg(messageId: idMessages[i]);
-        } else if (idMessages[i] == chat!.messages[j].id &&
-            chat!.messages[j].star == null) {
-          await _apiProvider.setMessageStar(
+  @action
+  Future setStar(bool allMsg) async {
+    List<MessageModel> messages = [];
+    if (allMsg)
+      messages = chat!.messages;
+    else
+      messages = starredMessage;
+    for (int i = 0; i < idMessages.length; i++) {
+      for (int j = 0; j < messages.length; j++) {
+        if (idMessages[i] == messages[j].id && messages[j].star != null) {
+          messages[j].star = null;
+          _apiProvider.removeStarFromMsg(messageId: idMessages[i]);
+          if (!allMsg) {
+            messages.removeAt(j);
+            break;
+          }
+        } else if (idMessages[i] == messages[j].id &&
+            messages[j].star == null) {
+          _apiProvider.setMessageStar(
             chatId: chat!.chatModel.id,
             messageId: idMessages[i],
           );
           chat!.messages[j].star = Star(
             id: "",
             messageId: chat!.messages[j].id,
+            chatId: null,
             createdAt: DateTime.now(),
             userId: chat!.messages[j].senderUserId,
           );
         }
-    idMessages.clear();
+      }
+    }
+    uncheck();
     _atomMessages.reportChanged();
   }
 
@@ -327,6 +341,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     }
   }
 
+  @action
   Future addUsersInChat() async {
     try {
       this.onLoading();
@@ -334,12 +349,56 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
         chatId: chat!.chatModel.id,
         userIds: usersId,
       );
+      chat!.messages.insert(
+          0,
+          MessageModel(
+            id: "",
+            number: 0,
+            chatId: chat!.chatModel.id,
+            senderUserId: chat!.chatModel.id,
+            senderStatus: "",
+            type: "",
+            text: null,
+            createdAt: DateTime.now(),
+            medias: [],
+            sender: chat!.chatModel.owner,
+            infoMessage: InfoMessage(
+              id: "",
+              messageId: "",
+              userId: chat!.chatModel.id,
+              messageAction: "groupChatAddUser",
+              user: null,
+            ),
+            star: null,
+          ));
+      availableUsers.forEach((element) {
+        userInChat[chat!.chatModel.userMembers.length] = true;
+        chat!.chatModel.userMembers.add(ProfileMeResponse(
+            id: element.id,
+            avatarId: element.avatarId,
+            firstName: element.firstName,
+            lastName: element.lastName,
+            phone: element.phone,
+            tempPhone: element.tempPhone,
+            email: element.email,
+            additionalInfo: element.additionalInfo,
+            role: element.role,
+            avatar: element.avatar,
+            userSpecializations: element.userSpecializations,
+            ratingStatistic: element.ratingStatistic,
+            location: element.location,
+            wagePerHour: element.wagePerHour,
+            workplace: element.workplace,
+            priority: element.priority));
+      });
+      chat!.update();
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
     }
   }
 
+  @action
   Future removeUserFromChat() async {
     if (userForDeleting.isNotEmpty)
       try {
@@ -355,8 +414,35 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
                   .remove(chat!.chatModel.userMembers[i]);
             }
         });
+        chat!.messages.insert(
+            0,
+            MessageModel(
+              id: "",
+              number: 0,
+              chatId: chat!.chatModel.id,
+              senderUserId: chat!.chatModel.id,
+              senderStatus: "",
+              type: "",
+              text: null,
+              createdAt: DateTime.now(),
+              medias: [],
+              sender: chat!.chatModel.owner,
+              infoMessage: InfoMessage(
+                id: "",
+                messageId: "",
+                userId: chat!.chatModel.id,
+                messageAction: "groupChatDeleteUser",
+                user: null,
+              ),
+              star: null,
+            ));
+        print("deleted");
+
+        chat!.update();
         this.onSuccess(true);
-      } catch (e) {
+      } catch (e, trace) {
+        print("ERROR: $e");
+        print("ERROR: $trace");
         this.onError(e.toString());
       }
   }
@@ -380,9 +466,20 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
             responseData["messages"].map((x) => MessageModel.fromJson(x))),
         chat!.chatModel.id);
 
+    chat!.messages.forEach((element) {
+      if (idMessagesForStar[element.id] == null)
+        idMessagesForStar[element.id] = false;
+    });
+    // chats.chats.forEach((key, value) {
+    //   value.messages.forEach((element) {
+    //     if (element.star == null)
+    //       star[element.id] = null;
+    //     else
+    //       star[element.id] = element.star;
+    //   });
+    // });
+
     _offset = chat!.messages.length;
-    isMessageHighlighted
-        .addAll(ObservableList.of(List.generate(20, (index) => false)));
     refresh = true;
     isLoadingMessages = false;
     chat!.update();
@@ -394,7 +491,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
         text: text,
         medias: await _apiProvider.uploadMedia(medias: media));
     media.clear();
-    isMessageHighlighted.addAll(List.generate(1, (index) => false));
+    // isMessageHighlighted.addAll(List.generate(1, (index) => false));
     _atomSendMessage.reportChanged();
   }
 }

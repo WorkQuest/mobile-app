@@ -92,7 +92,7 @@ class ApproveRolePage extends StatelessWidget {
                     child: store.isLoading
                         ? PlatformActivityIndicator()
                         : Text(
-                            "privacy.agree".tr(),
+                            "meta.iAgree".tr(),
                           ),
                   ),
                 ),

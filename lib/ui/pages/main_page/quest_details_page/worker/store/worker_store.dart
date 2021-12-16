@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:drishya_picker/drishya_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -16,7 +17,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
   @observable
-  ObservableList<DrishyaEntity> media = ObservableList();
+  ObservableList<File> media = ObservableList();
 
   @observable
   String opinion = "";

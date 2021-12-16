@@ -22,15 +22,15 @@ class MyQuestsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        final myQuestStore = context.read<MyQuestStore>();
+        // final myQuestStore = context.read<MyQuestStore>();
         final questStore = context.read<QuestsStore>();
         final profile = context.read<ProfileMeStore>();
         await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
           arguments: questInfo,
         );
-        myQuestStore.getQuests(
-            profile.userData!.id, profile.userData!.role, true);
+        // myQuestStore.getQuests(
+        //     profile.userData!.id, profile.userData!.role, true);
         questStore.getQuests(profile.userData!.id, true);
       },
       child: Container(
