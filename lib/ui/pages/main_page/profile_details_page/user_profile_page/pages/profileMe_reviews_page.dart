@@ -37,7 +37,6 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
   late TabController _tabController;
 
   ScrollController controllerMain = ScrollController();
-  ScrollController tabChildController = ScrollController();
 
   ProfileMeStore? userStore;
   PortfolioStore? portfolioStore;
@@ -93,10 +92,7 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
     List<Widget> body,
   ) {
     return ListView(
-      controller: tabChildController,
-      physics: NeverScrollableScrollPhysics(),
-      children: body,
-    );
+        children: body);
   }
 
   @protected
@@ -121,121 +117,106 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
             });
           return true;
         },
-        child: CustomScrollView(
+        child: NestedScrollView(
           controller: controllerMain,
           physics: ClampingScrollPhysics(),
-          slivers: <Widget>[
-            //__________AppBar__________//
-            sliverAppBar(),
-            SliverPadding(
-              padding: EdgeInsets.fromLTRB(
-                16.0,
-                16.0,
-                16.0,
-                0.0,
-              ),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: listWidgets()),
-
-                    ///Social Accounts
-                    socialAccounts(
-                      socialNetwork: widget.info == null
-                          ? userStore.userData?.additionalInfo?.socialNetwork
-                          : widget.info!.additionalInfo?.socialNetwork,
-                    ),
-
-                    ///Contact Details
-                    contactDetails(
-                      location: widget.info == null
-                          ? userStore.userData?.additionalInfo?.address ?? ' '
-                          : widget.info!.additionalInfo?.address ?? " ",
-                      number: widget.info == null
-                          ? userStore.userData?.phone ?? " "
-                          : widget.info!.phone ?? " ",
-                      secondNumber: widget.info == null
-                          ? userStore.userData?.additionalInfo
-                                  ?.secondMobileNumber ??
-                              ""
-                          : widget.info!.additionalInfo?.secondMobileNumber ??
-                              "",
-                      email: widget.info == null
-                          ? userStore.userData?.email ?? " "
-                          : widget.info!.email ?? " ",
-                    ),
-                    spacer,
-                  ],
+          headerSliverBuilder: (
+            BuildContext context,
+            bool innerBoxIsScrolled,
+          ) {
+            return <Widget>[
+              //__________AppBar__________//
+              sliverAppBar(),
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(
+                  16.0,
+                  16.0,
+                  16.0,
+                  0.0,
                 ),
-              ),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: StickyTabBarDelegate(
-                child: TabBar(
-                  unselectedLabelColor: Color(0xFF8D96A1),
-                  indicator: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.0),
-                    color: Colors.white,
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: listWidgets()),
+
+                      ///Social Accounts
+                      socialAccounts(
+                        socialNetwork: widget.info == null
+                            ? userStore.userData?.additionalInfo?.socialNetwork
+                            : widget.info!.additionalInfo?.socialNetwork,
+                      ),
+
+                      ///Contact Details
+                      contactDetails(
+                        location: widget.info == null
+                            ? userStore.userData?.additionalInfo?.address ?? ' '
+                            : widget.info!.additionalInfo?.address ?? " ",
+                        number: widget.info == null
+                            ? userStore.userData?.phone ?? " "
+                            : widget.info!.phone ?? " ",
+                        secondNumber: widget.info == null
+                            ? userStore.userData?.additionalInfo
+                                    ?.secondMobileNumber ??
+                                ""
+                            : widget.info!.additionalInfo?.secondMobileNumber ??
+                                "",
+                        email: widget.info == null
+                            ? userStore.userData?.email ?? " "
+                            : widget.info!.email ?? " ",
+                      ),
+                      spacer,
+                    ],
                   ),
-                  labelColor: Colors.black,
-                  controller: this._tabController,
-                  tabs: <Widget>[
-                    Tab(
-                      child: Text(
-                        "profiler.reviews".tr(),
-                        style: TextStyle(fontSize: 14.0),
-                      ),
-                    ),
-                    Tab(
-                      child: Text(
-                        tabTitle,
-                        style: TextStyle(fontSize: 14.0),
-                      ),
-                    ),
-                  ],
                 ),
               ),
-            ),
-            SliverFillRemaining(
-              child: GestureDetector(
-                onVerticalDragUpdate: (details) {
-                  //  print(_tabController.index);
-                  if (controllerMain.position.maxScrollExtent >
-                      controllerMain.offset)
-                    controllerMain
-                        .jumpTo(controllerMain.offset - details.delta.dy);
-                  else if (0.0 > tabChildController.offset) {
-                    controllerMain
-                        .jumpTo(controllerMain.offset - details.delta.dy);
-                  } else if (controllerMain.position.maxScrollExtent >=
-                      controllerMain.offset) {
-                    tabChildController
-                        .jumpTo(tabChildController.offset - details.delta.dy);
-                  }
-                },
-                child: Observer(
-                  builder: (_) => TabBarView(
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: StickyTabBarDelegate(
+                  child: TabBar(
+                    unselectedLabelColor: Color(0xFF8D96A1),
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.0),
+                      color: Colors.white,
+                    ),
+                    labelColor: Colors.black,
                     controller: this._tabController,
-                    children: <Widget>[
-                      ///Reviews Tab
-                      wrapperTabBar(
-                        reviewsTab(),
+                    tabs: <Widget>[
+                      Tab(
+                        child: Text(
+                          "profiler.reviews".tr(),
+                          style: TextStyle(fontSize: 14.0),
+                        ),
                       ),
-
-                      ///Portfolio and Quests
-                      wrapperTabBar(
-                        questPortfolio(),
+                      Tab(
+                        child: Text(
+                          tabTitle,
+                          style: TextStyle(fontSize: 14.0),
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
+            ];
+          },
+          body: Observer(
+            builder: (_) => TabBarView(
+              controller: this._tabController,
+              children: <Widget>[
+                ///Reviews Tab
+                wrapperTabBar(
+                  reviewsTab(),
+                ),
+                ///Portfolio and Quests
+                wrapperTabBar(
+                  questPortfolio(),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

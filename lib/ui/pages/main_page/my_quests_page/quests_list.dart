@@ -49,7 +49,7 @@ class QuestsList extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
+        physics: physics,
         shrinkWrap: true,
         itemCount: onCreate != null ? questsList.length + 1 : questsList.length,
         padding: EdgeInsets.zero,
@@ -90,6 +90,7 @@ class QuestsList extends StatelessWidget {
 
   Widget getEmptyBody(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         if (onCreate != null)
           Padding(
