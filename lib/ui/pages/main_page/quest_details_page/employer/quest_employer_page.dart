@@ -4,7 +4,7 @@ import 'package:app/model/quests_models/assigned_worker.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
@@ -141,7 +141,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 if (profile!.assignedWorker?.id != null) {
                   timer.cancel();
                   Navigator.of(context, rootNavigator: true).pushNamed(
-                    ProfileReviews.routeName,
+                    UserProfile.routeName,
                     arguments: profile!.assignedWorker,
                   );
                   profile!.assignedWorker = null;

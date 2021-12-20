@@ -1,5 +1,5 @@
 import 'package:app/model/profile_response/profile_me_response.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -16,7 +16,7 @@ class WorkersItem extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         await Navigator.of(context, rootNavigator: true).pushNamed(
-          ProfileReviews.routeName,
+          UserProfile.routeName,
           arguments: workersInfo,
         );
       },

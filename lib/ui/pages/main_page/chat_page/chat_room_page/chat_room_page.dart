@@ -4,7 +4,7 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -320,7 +320,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     if (_store.companion != null) {
                       timer.cancel();
                       Navigator.of(context, rootNavigator: true).pushNamed(
-                        ProfileReviews.routeName,
+                        UserProfile.routeName,
                         arguments: _store.companion,
                       );
                       _store.companion = null;

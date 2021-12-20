@@ -11,18 +11,17 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import '../widgets/profile_page_extensions.dart';
 
-class ProfileReviews extends StatefulWidget {
+class UserProfile extends StatefulWidget {
   static const String routeName = "/profileReviewPage";
   final ProfileMeResponse? info;
 
-  ProfileReviews(this.info);
+  UserProfile(this.info);
 
   @override
-  ProfileReviewsState createState() => ProfileReviewsState();
+  UserProfileState createState() => UserProfileState();
 }
 
-/// View Your own profile
-class ProfileReviewsState<T extends ProfileReviews> extends State<T>
+class UserProfileState<T extends UserProfile> extends State<T>
     with SingleTickerProviderStateMixin {
   final TextStyle style = TextStyle(
     color: Colors.black,
@@ -38,6 +37,7 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
 
   ScrollController controllerMain = ScrollController();
 
+  ProfileMeStore? myStore;
   ProfileMeStore? userStore;
   PortfolioStore? portfolioStore;
   MyQuestStore? myQuests;
@@ -48,26 +48,26 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
     _tabController = TabController(vsync: this, length: 2);
     portfolioStore = context.read<PortfolioStore>();
     myQuests = context.read<MyQuestStore>();
-    userStore = context.read<ProfileMeStore>();
+    myStore = context.read<ProfileMeStore>();
     if (widget.info == null) {
-      role = userStore!.userData?.role ?? UserRole.Worker;
+      role = myStore!.userData?.role ?? UserRole.Worker;
 
-      userStore!.getProfileMe().then((value) {
-        setState(() => role = userStore!.userData!.role);
-        myQuests!.getQuests(userStore!.userData!.id, role, true);
+      myStore!.getProfileMe().then((value) {
+        setState(() => role = myStore!.userData!.role);
+        myQuests!.getQuests(myStore!.userData!.id, role, true);
       });
 
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(
-          userId: userStore!.userData!.id,
+          userId: myStore!.userData!.id,
         );
       portfolioStore!.getReviews(
-        userId: userStore!.userData!.id,
+        userId: myStore!.userData!.id,
       );
     } else {
       role = widget.info?.role ?? UserRole.Worker;
 
-      userStore!.getProfileMe().then((value) {
+      myStore!.getProfileMe().then((value) {
         setState(() => role = widget.info!.role);
         myQuests!.getQuests(widget.info!.id, role, true);
       });
@@ -91,8 +91,7 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
   Widget wrapperTabBar(
     List<Widget> body,
   ) {
-    return ListView(
-        children: body);
+    return ListView(children: body);
   }
 
   @protected
@@ -138,9 +137,10 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
                   delegate: SliverChildListDelegate(
                     [
                       Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: listWidgets()),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: listWidgets(),
+                      ),
 
                       ///Social Accounts
                       socialAccounts(
@@ -210,6 +210,7 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
                 wrapperTabBar(
                   reviewsTab(),
                 ),
+
                 ///Portfolio and Quests
                 wrapperTabBar(
                   questPortfolio(),

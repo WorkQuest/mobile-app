@@ -1,5 +1,5 @@
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-extension CustomAppBar on ProfileReviewsState {
+extension CustomAppBar on UserProfileState {
   Widget sliverAppBar() => SliverAppBar(
         backgroundColor: Color(0xFF0083C7),
         automaticallyImplyLeading: false,
@@ -47,7 +47,7 @@ extension CustomAppBar on ProfileReviewsState {
             children: [
               Image.network(
                 widget.info == null
-                    ? userStore!.userData!.avatar!.url
+                    ? myStore!.userData!.avatar!.url
                     : widget.info!.avatar!.url,
                 fit: BoxFit.cover,
               ),
@@ -57,7 +57,7 @@ extension CustomAppBar on ProfileReviewsState {
                 child: Row(
                   children: [
                     for (int i = 0;
-                        i < userStore!.userData!.ratingStatistic!.averageMark.round();
+                        i < myStore!.userData!.ratingStatistic!.averageMark.round();
                         i++)
                       Icon(
                         Icons.star,
@@ -67,7 +67,7 @@ extension CustomAppBar on ProfileReviewsState {
                     for (int i = 0;
                         i <
                             5 -
-                                userStore!
+                                myStore!
                                     .userData!.ratingStatistic!.averageMark.round();
                         i++)
                       Icon(
@@ -82,16 +82,16 @@ extension CustomAppBar on ProfileReviewsState {
           ),
           title: appBarTitle(
             widget.info == null
-                ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
+                ? "${myStore!.userData!.firstName} ${myStore!.userData!.lastName}"
                 : "${widget.info!.firstName} ${widget.info!.lastName}",
             appBarPosition,
-            userStore!.userData!.ratingStatistic?.status ?? "noStatus",
+            myStore!.userData!.ratingStatistic?.status ?? "noStatus",
           ),
         ),
       );
 }
 
-extension ReviewsTab on ProfileReviewsState {
+extension ReviewsTab on UserProfileState {
   List<Widget> reviewsTab() => [
         SizedBox(
           height: 20,

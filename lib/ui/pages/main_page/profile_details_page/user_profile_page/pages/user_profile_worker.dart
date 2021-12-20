@@ -1,20 +1,20 @@
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_worker_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
-class WorkerProfile extends ProfileReviews {
+class WorkerProfile extends UserProfile {
   WorkerProfile(ProfileMeResponse? info) : super(info);
 
   @override
   _WorkerProfileState createState() => _WorkerProfileState();
 }
 
-class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
+class _WorkerProfileState extends UserProfileState<UserProfile> {
   final String tabTitle = "profiler.portfolio".tr();
 
   final store = UserProfileWorkerStore();
@@ -96,7 +96,7 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
           ),
         ),
         widget.info == null
-            ? (userStore!.userData!.userSpecializations.isEmpty)
+            ? (myStore!.userData!.userSpecializations.isEmpty)
                 ? Text(
                     "skills.noSkills".tr(),
                     style: style.copyWith(
@@ -106,7 +106,7 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
                   )
                 : skills(
                     skills:
-                        store.parser(userStore!.userData!.userSpecializations),
+                        store.parser(myStore!.userData!.userSpecializations),
                     context: context,
                     isProfileMy: true,
                   )
@@ -136,7 +136,7 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
         ),
         Text(
           widget.info == null
-              ? userStore!.userData?.additionalInfo?.description ??
+              ? myStore!.userData?.additionalInfo?.description ??
                   "modals.noDescription".tr()
               : widget.info!.additionalInfo?.description ??
                   "modals.noDescription".tr(),
@@ -155,15 +155,15 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
           ),
         ),
         widget.info == null
-            ? (userStore!.userData!.additionalInfo!.educations.isNotEmpty)
+            ? (myStore!.userData!.additionalInfo!.educations.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemCount:
-                        userStore!.userData!.additionalInfo!.educations.length,
+                        myStore!.userData!.additionalInfo!.educations.length,
                     itemBuilder: (_, index) {
-                      final education = userStore!
+                      final education = myStore!
                           .userData!.additionalInfo!.educations[index];
                       return experience(
                           place: education["place"] ?? "--",
@@ -205,15 +205,15 @@ class _WorkerProfileState extends ProfileReviewsState<ProfileReviews> {
           ),
         ),
         widget.info == null
-            ? (userStore!.userData!.additionalInfo!.workExperiences.isNotEmpty)
+            ? (myStore!.userData!.additionalInfo!.workExperiences.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: userStore!
+                    itemCount: myStore!
                         .userData!.additionalInfo!.workExperiences.length,
                     itemBuilder: (_, index) {
-                      final userExperience = userStore!
+                      final userExperience = myStore!
                           .userData!.additionalInfo!.workExperiences[index];
                       return experience(
                           place: userExperience["place"] ?? "--",

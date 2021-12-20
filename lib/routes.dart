@@ -17,7 +17,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portf
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_employer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_worker.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
@@ -279,7 +279,7 @@ class Routes {
           ),
         );
 
-      case ProfileReviews.routeName:
+      case UserProfile.routeName:
         final arguments = settings.arguments as ProfileMeResponse?;
         final isViewProfile;
         if (settings.arguments == null)

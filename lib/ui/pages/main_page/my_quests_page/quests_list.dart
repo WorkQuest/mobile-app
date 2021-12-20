@@ -73,7 +73,7 @@ class QuestsList extends StatelessWidget {
         ),
         Text(
           "quests.youDontHaveAny".tr() +
-              " ${questItemPriorityType.toString().split(".").last} " +
+              " ${questItemPriorityType.name} " +
               "quests.questYet".tr(),
           style: TextStyle(
             color:Color(0xFFD8DFE3),

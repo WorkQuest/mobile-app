@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +75,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     if (context.read<ChatStore>().userData != null) {
                       timer.cancel();
                       Navigator.of(context, rootNavigator: true).pushNamed(
-                        ProfileReviews.routeName,
+                        UserProfile.routeName,
                         arguments: context.read<ChatStore>().userData,
                       );
                       context.read<ChatStore>().userData = null;

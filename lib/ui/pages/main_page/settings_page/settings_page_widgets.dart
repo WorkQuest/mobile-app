@@ -1,4 +1,4 @@
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
@@ -185,7 +185,7 @@ class MyProfileImage extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context, rootNavigator: true)
-            .pushNamed(ProfileReviews.routeName);
+            .pushNamed(UserProfile.routeName);
       },
       child: Container(
         height: 150.0,
