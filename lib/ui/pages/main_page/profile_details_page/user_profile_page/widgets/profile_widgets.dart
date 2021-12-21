@@ -5,7 +5,7 @@ import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.d
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/material.dart';
@@ -156,7 +156,7 @@ class ReviewsWidget extends StatelessWidget {
                         timer.cancel();
                         await Navigator.of(context, rootNavigator: true)
                             .pushNamed(
-                          ProfileReviews.routeName,
+                          UserProfile.routeName,
                           arguments: profile.assignedWorker,
                         );
                         if (role == UserRole.Worker)

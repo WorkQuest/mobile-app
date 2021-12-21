@@ -1,5 +1,5 @@
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profileMe_reviews_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-extension CustomAppBar on ProfileReviewsState {
+extension CustomAppBar on UserProfileState {
   Widget sliverAppBar() => SliverAppBar(
         backgroundColor: Color(0xFF0083C7),
         automaticallyImplyLeading: false,
@@ -121,7 +121,7 @@ extension CustomAppBar on ProfileReviewsState {
       );
 }
 
-extension ReviewsTab on ProfileReviewsState {
+extension ReviewsTab on UserProfileState {
   List<Widget> reviewsTab() => [
         SizedBox(
           height: 20,

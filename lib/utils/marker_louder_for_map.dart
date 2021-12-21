@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'dart:typed_data';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -38,7 +36,7 @@ class MarkerLoader {
   }
 
   Future<BitmapDescriptor> getCluster(int clusterSize) async {
-    final PictureRecorder pictureRecorder = PictureRecorder();
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
     final TextPainter textPainter =
         TextPainter(textDirection: TextDirection.ltr);
@@ -75,7 +73,7 @@ class MarkerLoader {
           _clusterSize.width.round(),
           _clusterSize.height.round(),
         );
-    final data = await image.toByteData(format: ImageByteFormat.png);
+    final data = await image.toByteData(format: ui.ImageByteFormat.png);
     return BitmapDescriptor.fromBytes(data!.buffer.asUint8List());
   }
 

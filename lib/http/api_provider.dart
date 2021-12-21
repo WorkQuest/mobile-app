@@ -469,7 +469,7 @@ extension UserInfoService on ApiProvider {
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
         if (userData.role == UserRole.Worker)
           "wagePerHour": userData.wagePerHour,
-        if (userData.role == UserRole.Worker) "priority": userData.priority,
+        if (userData.role == UserRole.Worker) "priority": userData.priority.index,
         if (userData.role == UserRole.Worker) "workplace": userData.workplace,
         "additionalInfo": {
           "secondMobileNumber":

@@ -10,7 +10,6 @@ import 'package:google_maps_webservice/places.dart';
 part 'change_profile_store.g.dart';
 
 class ChangeProfileStore = ChangeProfileStoreBase with _$ChangeProfileStore;
-
 abstract class ChangeProfileStoreBase with Store {
   ChangeProfileStoreBase(this.userData);
 
