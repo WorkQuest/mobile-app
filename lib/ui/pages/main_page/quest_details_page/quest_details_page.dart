@@ -67,33 +67,30 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                widget.questInfo.userId == profile!.userData!.id
-                    ? Text(
-                        "quests.yourQuest".tr(),
-                      )
-                    : GestureDetector(
-                        onTap: () async {
-                          profile!.getQuestHolder(widget.questInfo.userId);
-                          Timer.periodic(Duration(milliseconds: 100), (timer) {
-                            if (profile!.questHolder?.id != null) {
-                              timer.cancel();
-                              Navigator.of(context, rootNavigator: true)
-                                  .pushNamed(
-                                ProfileReviews.routeName,
-                                arguments: profile!.questHolder,
-                              );
-                              profile!.questHolder = null;
-                            }
-                          });
-                        },
-                        child: Container(
-                          alignment: Alignment.topLeft,
-                          child: Wrap(
-                            alignment: WrapAlignment.start,
-                            runAlignment: WrapAlignment.start,
-                            crossAxisAlignment: WrapCrossAlignment.center,
+                Expanded(
+                  child: widget.questInfo.userId == profile!.userData!.id
+                      ? Text(
+                          "quests.yourQuest".tr(),
+                        )
+                      : GestureDetector(
+                          onTap: () async {
+                            profile!.getQuestHolder(widget.questInfo.userId);
+                            Timer.periodic(Duration(milliseconds: 100),
+                                (timer) {
+                              if (profile!.questHolder?.id != null) {
+                                timer.cancel();
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushNamed(
+                                  ProfileReviews.routeName,
+                                  arguments: profile!.questHolder,
+                                );
+                                profile!.questHolder = null;
+                              }
+                            });
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
@@ -112,38 +109,31 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                             ],
                           ),
                         ),
-                      ),
-                Row(
-                  children: [
-                    const SizedBox(height: 10),
-                    tagEmployment(),
-                    const SizedBox(width: 10),
-                    tagWorkplace(),
-                  ],
                 ),
+                tagEmployment(),
               ],
             ),
             const SizedBox(height: 17),
-            if (widget.questInfo.userId != profile!.userData!.id)
-              Row(
-                children: [
+            Row(
+              children: [
+                if (widget.questInfo.userId != profile!.userData!.id)
                   Icon(
                     Icons.location_on_rounded,
                     color: Color(0xFF7C838D),
                   ),
-                  const SizedBox(width: 9),
-                  Flexible(
-                    child: Text(
-                      widget.questInfo.locationPlaceName,
-                      // "150 from you",
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(
-                        color: Color(0xFF7C838D),
-                      ),
+                const SizedBox(width: 9),
+                Flexible(
+                  child: Text(
+                    widget.questInfo.locationPlaceName,
+                    // "150 from you",
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(
+                      color: Color(0xFF7C838D),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
             const SizedBox(height: 17),
             tagItem(
               profile!.parser(widget.questInfo.questSpecializations),
@@ -278,35 +268,6 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
         employment,
         style: TextStyle(
           color: Color(0xFF22CC14),
-        ),
-      ),
-    );
-  }
-
-  Widget tagWorkplace() {
-    String employment = "";
-    switch (widget.questInfo.workplace) {
-      case "distant":
-        employment = "Distant work";
-        break;
-      case "office":
-        employment = "Work in office";
-        break;
-      case "both":
-        employment = "Both variant";
-        break;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-      decoration: BoxDecoration(
-        color: Color(0xFF0083C7).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(
-        employment,
-        style: TextStyle(
-          color: Color(0xFF0083C7),
         ),
       ),
     );

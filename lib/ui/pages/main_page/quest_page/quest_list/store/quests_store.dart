@@ -27,23 +27,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @observable
   String searchWord = "";
 
+  List<String> selectedSkill = [];
+
   @observable
   String? sort = "";
-
-  @observable
-  ObservableList<bool> employment = ObservableList.of(
-    List.generate(4, (index) => false),
-  );
-
-  @observable
-  ObservableList<bool> workplace = ObservableList.of(
-    List.generate(3, (index) => false),
-  );
-
-  @observable
-  ObservableList<bool> priority = ObservableList.of(
-    List.generate(4, (index) => false),
-  );
 
   @observable
   int offset = 0;
@@ -70,15 +57,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   List<ProfileMeResponse>? searchWorkersList = [];
 
   @observable
-  ObservableList<String> employmentValue = ObservableList.of([]);
-
-  @observable
-  ObservableList<String> workplaceValue = ObservableList.of([]);
-
-  @observable
-  ObservableList<int> priorityValue = ObservableList.of([]);
-
-  @observable
   ObservableList<BaseQuestResponse> loadQuestsList = ObservableList.of([]);
 
   @observable
@@ -94,6 +72,15 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   ///API_KEY HERE
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
+
+  addSkill(String skill) {
+    selectedSkill.add(skill);
+  }
+
+  deleteSkill(String skill) {
+    for (int i = 0; i < selectedSkill.length; i++)
+      if (selectedSkill[i] == skill) selectedSkill.remove(skill);
+  }
 
   @action
   Future<Null> getPrediction(BuildContext context, String userId) async {
@@ -162,84 +149,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       searchWord.length > 2 && searchResultList!.isEmpty && !this.isLoading;
 
   @action
-  List<String> getEmploymentValue() {
-    if (employment[0] == true) {
-      employmentValue.clear();
-      employmentValue.add("fullTime");
-      employmentValue.add("partTime");
-      employmentValue.add("fixedTerm");
-      return employmentValue;
-    } else if (employment[0] == false) {
-      employmentValue.clear();
-    }
-    if (employment[1] == true) {
-      employmentValue.add("fullTime");
-    } else if (employment[1] == false) {
-      employmentValue.remove("fullTime");
-    }
-    if (employment[2] == true) {
-      employmentValue.add("partTime");
-    } else if (employment[2] == false) {
-      employmentValue.remove("partTime");
-    }
-    if (employment[3] == true) {
-      employmentValue.add("fixedTerm");
-    } else if (employment[3] == false) {
-      employmentValue.remove("fixedTerm");
-    }
-    return employmentValue;
-  }
-
-  @action
-  List<int> getPriorityValue() {
-    if (priority[0] == true) {
-      priorityValue.add(0);
-    } else if (priority[0] == false) {
-      priorityValue.remove(0);
-    }
-    if (priority[1] == true) {
-      priorityValue.add(1);
-    } else if (priority[1] == false) {
-      priorityValue.remove(1);
-    }
-    if (priority[2] == true) {
-      priorityValue.add(2);
-    } else if (priority[2] == false) {
-      priorityValue.remove(2);
-    }
-    if (priority[3] == true) {
-      priorityValue.add(3);
-    } else if (priority[3] == false) {
-      priorityValue.remove(3);
-    }
-    return priorityValue;
-  }
-
-  @action
-  List<String> getWorkplaceValue() {
-    if (workplace[0] == true) {
-      workplaceValue.clear();
-      workplaceValue.add("both");
-      workplaceValue.add("distant");
-      workplaceValue.add("office");
-      return workplaceValue;
-    } else if (workplace[0] == false) {
-      workplaceValue.clear();
-    }
-    if (workplace[1] == true) {
-      workplaceValue.add("distant");
-    } else if (workplace[1] == false) {
-      workplaceValue.remove("distant");
-    }
-    if (workplace[2] == true) {
-      workplaceValue.add("office");
-    } else if (workplace[2] == false) {
-      workplaceValue.remove("office");
-    }
-    return workplaceValue;
-  }
-
-  @action
   Future getSearchedQuests() async {
     this.onLoading();
     debounce = Timer(const Duration(milliseconds: 300), () async {
@@ -253,7 +162,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  Future getQuests(String userId, bool newList) async {
+  Future getQuests(bool newList) async {
     try {
       this.onLoading();
       if (newList) {
@@ -262,11 +171,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       }
       final responseData = await _apiProvider.getQuests(
         statuses: [0, 1, 4],
-        employment: getEmploymentValue(),
-        workplace: getWorkplaceValue(),
+        // employment: getEmploymentValue(),
+        // workplace: getWorkplaceValue(),
         offset: this.offset,
         limit: this.limit,
         sort: this.sort,
+        specializations: selectedSkill,
         // north: this.latitude.toString(),
         // south:  this.longitude.toString(),
       );
@@ -274,7 +184,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         ObservableList.of(List<BaseQuestResponse>.from(
             responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)))),
       );
-      if (offset < questsList.length) this.offset += 10;
+      // if (offset < questsList.length)
+      this.offset += 10;
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -283,7 +194,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  Future getWorkers(String userId, bool newList) async {
+  Future getWorkers(bool newList) async {
     try {
       if (newList) {
         workersList.clear();
@@ -294,9 +205,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         sort: this.sort,
         offset: this.offsetWorkers,
         limit: this.limit,
-        priority: getPriorityValue(),
+        // priority: getPriorityValue(),
         ratingStatus: [],
-        workplace: getWorkplaceValue(),
+        // workplace: getWorkplaceValue(),
       );
       workersList.addAll(ObservableList.of(List<ProfileMeResponse>.from(
           responseData["users"].map((x) => ProfileMeResponse.fromJson(x)))));

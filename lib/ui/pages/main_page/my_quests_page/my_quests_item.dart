@@ -24,14 +24,14 @@ class MyQuestsItem extends StatelessWidget {
       onTap: () async {
         // final myQuestStore = context.read<MyQuestStore>();
         final questStore = context.read<QuestsStore>();
-        final profile = context.read<ProfileMeStore>();
+        // final profile = context.read<ProfileMeStore>();
         await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
           arguments: questInfo,
         );
         // myQuestStore.getQuests(
         //     profile.userData!.id, profile.userData!.role, true);
-        questStore.getQuests(profile.userData!.id, true);
+        questStore.getQuests(true);
       },
       child: Container(
         color: Colors.white,

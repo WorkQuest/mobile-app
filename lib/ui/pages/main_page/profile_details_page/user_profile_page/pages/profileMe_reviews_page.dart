@@ -93,7 +93,6 @@ class ProfileReviewsState<T extends ProfileReviews> extends State<T>
   Widget wrapperTabBar(List<Widget> body) {
     return ListView(
       controller: controllerTab,
-      physics: NeverScrollableScrollPhysics(),
       children: body,
     );
   }

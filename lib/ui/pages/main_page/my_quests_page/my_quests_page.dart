@@ -73,14 +73,15 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                 builder: (_) => Center(
                   child: refreshIndicator(
                     notificationListener(
-                        QuestItemPriorityType.Active,
-                        myQuests!.active,
-                        role == UserRole.Employer
-                            ? (statusCreate) {
-                                if (statusCreate)
-                                  myQuests!.getQuests(userID, role, false);
-                              }
-                            : null),
+                      QuestItemPriorityType.Active,
+                      myQuests!.active,
+                      role == UserRole.Employer
+                          ? (statusCreate) {
+                              if (statusCreate)
+                                myQuests!.getQuests(userID, role, false);
+                            }
+                          : null,
+                    ),
                   ),
                 ),
               ),

@@ -46,8 +46,8 @@ class _QuestListState extends State<QuestList> {
           );
       context.read<ChatStore>().role = profileMeStore!.userData!.role;
       profileMeStore!.userData!.role == UserRole.Worker
-          ? questsStore!.getQuests(profileMeStore!.userData!.id, true)
-          : questsStore!.getWorkers(profileMeStore!.userData!.id, true);
+          ? questsStore!.getQuests(true)
+          : questsStore!.getWorkers(true);
     });
   }
 
@@ -88,8 +88,8 @@ class _QuestListState extends State<QuestList> {
     return RefreshIndicator(
       onRefresh: () async {
         return profileMeStore!.userData!.role == UserRole.Worker
-            ? questsStore!.getQuests(profileMeStore!.userData!.id, true)
-            : questsStore!.getWorkers(profileMeStore!.userData!.id, true);
+            ? questsStore!.getQuests(true)
+            : questsStore!.getWorkers(true);
       },
       displacement: 50,
       edgeOffset: 300,
@@ -184,16 +184,15 @@ class _QuestListState extends State<QuestList> {
                   padding: const EdgeInsets.all(20.0),
                   child: OutlinedButton(
                     onPressed: () async {
-                      await Navigator.push(
-                        context,
-                        // Сделано для отладки будет перенесена в routes.dart
-                        MaterialPageRoute(
-                          builder: (_) => FilterQuestsPage(),
-                        ),
-                      );
-                      questsStore!.offset = 0;
-                      questsStore!
-                          .getQuests(profileMeStore!.userData!.id, true);
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                          FilterQuestsPage.routeName
+                          // Сделано для отладки будет перенесена в routes.dart
+                          // MaterialPageRoute(
+                          //   builder: (_) => FilterQuestsPage(),
+                          // ),
+                          );
+                      // questsStore!.offset = 0;
+                      // questsStore!.getQuests(true);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(
@@ -308,9 +307,9 @@ class _QuestListState extends State<QuestList> {
       if (questsStore != null) {
         if (questsStore!.isLoading) return;
         if (profileMeStore!.userData!.role == UserRole.Worker)
-          questsStore!.getQuests(profileMeStore!.userData!.id, false);
+          questsStore!.getQuests(false);
         else
-          questsStore!.getWorkers(profileMeStore!.userData!.id, false);
+          questsStore!.getWorkers(false);
       }
     }
   }

@@ -47,51 +47,6 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$employmentAtom = Atom(name: '_QuestsStore.employment');
-
-  @override
-  ObservableList<bool> get employment {
-    _$employmentAtom.reportRead();
-    return super.employment;
-  }
-
-  @override
-  set employment(ObservableList<bool> value) {
-    _$employmentAtom.reportWrite(value, super.employment, () {
-      super.employment = value;
-    });
-  }
-
-  final _$workplaceAtom = Atom(name: '_QuestsStore.workplace');
-
-  @override
-  ObservableList<bool> get workplace {
-    _$workplaceAtom.reportRead();
-    return super.workplace;
-  }
-
-  @override
-  set workplace(ObservableList<bool> value) {
-    _$workplaceAtom.reportWrite(value, super.workplace, () {
-      super.workplace = value;
-    });
-  }
-
-  final _$priorityAtom = Atom(name: '_QuestsStore.priority');
-
-  @override
-  ObservableList<bool> get priority {
-    _$priorityAtom.reportRead();
-    return super.priority;
-  }
-
-  @override
-  set priority(ObservableList<bool> value) {
-    _$priorityAtom.reportWrite(value, super.priority, () {
-      super.priority = value;
-    });
-  }
-
   final _$offsetAtom = Atom(name: '_QuestsStore.offset');
 
   @override
@@ -212,51 +167,6 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$employmentValueAtom = Atom(name: '_QuestsStore.employmentValue');
-
-  @override
-  ObservableList<String> get employmentValue {
-    _$employmentValueAtom.reportRead();
-    return super.employmentValue;
-  }
-
-  @override
-  set employmentValue(ObservableList<String> value) {
-    _$employmentValueAtom.reportWrite(value, super.employmentValue, () {
-      super.employmentValue = value;
-    });
-  }
-
-  final _$workplaceValueAtom = Atom(name: '_QuestsStore.workplaceValue');
-
-  @override
-  ObservableList<String> get workplaceValue {
-    _$workplaceValueAtom.reportRead();
-    return super.workplaceValue;
-  }
-
-  @override
-  set workplaceValue(ObservableList<String> value) {
-    _$workplaceValueAtom.reportWrite(value, super.workplaceValue, () {
-      super.workplaceValue = value;
-    });
-  }
-
-  final _$priorityValueAtom = Atom(name: '_QuestsStore.priorityValue');
-
-  @override
-  ObservableList<int> get priorityValue {
-    _$priorityValueAtom.reportRead();
-    return super.priorityValue;
-  }
-
-  @override
-  set priorityValue(ObservableList<int> value) {
-    _$priorityValueAtom.reportWrite(value, super.priorityValue, () {
-      super.priorityValue = value;
-    });
-  }
-
   final _$loadQuestsListAtom = Atom(name: '_QuestsStore.loadQuestsList');
 
   @override
@@ -344,15 +254,15 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$getQuestsAsyncAction = AsyncAction('_QuestsStore.getQuests');
 
   @override
-  Future<dynamic> getQuests(String userId, bool newList) {
-    return _$getQuestsAsyncAction.run(() => super.getQuests(userId, newList));
+  Future<dynamic> getQuests(bool newList) {
+    return _$getQuestsAsyncAction.run(() => super.getQuests(newList));
   }
 
   final _$getWorkersAsyncAction = AsyncAction('_QuestsStore.getWorkers');
 
   @override
-  Future<dynamic> getWorkers(String userId, bool newList) {
-    return _$getWorkersAsyncAction.run(() => super.getWorkers(userId, newList));
+  Future<dynamic> getWorkers(bool newList) {
+    return _$getWorkersAsyncAction.run(() => super.getWorkers(newList));
   }
 
   final _$_QuestsStoreActionController = ActionController(name: '_QuestsStore');
@@ -380,46 +290,10 @@ mixin _$QuestsStore on _QuestsStore, Store {
   }
 
   @override
-  List<String> getEmploymentValue() {
-    final _$actionInfo = _$_QuestsStoreActionController.startAction(
-        name: '_QuestsStore.getEmploymentValue');
-    try {
-      return super.getEmploymentValue();
-    } finally {
-      _$_QuestsStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  List<int> getPriorityValue() {
-    final _$actionInfo = _$_QuestsStoreActionController.startAction(
-        name: '_QuestsStore.getPriorityValue');
-    try {
-      return super.getPriorityValue();
-    } finally {
-      _$_QuestsStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  List<String> getWorkplaceValue() {
-    final _$actionInfo = _$_QuestsStoreActionController.startAction(
-        name: '_QuestsStore.getWorkplaceValue');
-    try {
-      return super.getWorkplaceValue();
-    } finally {
-      _$_QuestsStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 searchWord: ${searchWord},
 sort: ${sort},
-employment: ${employment},
-workplace: ${workplace},
-priority: ${priority},
 offset: ${offset},
 offsetWorkers: ${offsetWorkers},
 limit: ${limit},
@@ -428,9 +302,6 @@ questsList: ${questsList},
 workersList: ${workersList},
 searchResultList: ${searchResultList},
 searchWorkersList: ${searchWorkersList},
-employmentValue: ${employmentValue},
-workplaceValue: ${workplaceValue},
-priorityValue: ${priorityValue},
 loadQuestsList: ${loadQuestsList},
 latitude: ${latitude},
 longitude: ${longitude},

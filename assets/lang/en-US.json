@@ -146,6 +146,7 @@
     "save": "Save",
     "close": "Close",
     "reset": "Reset",
+    "accept": "Accept",
     "fromYou": "close to your location",
     "details": "Ver detalles",
     "cancel": "Cancel",
@@ -637,14 +638,14 @@
       "15": {
         "title": "Creative Production",
         "sub": {
-          "1700": "Art & Illustration",
-          "1701": "Audio & Music Production",
-          "1702": "Performing Arts",
-          "1703": "Photography",
-          "1704": "Video & Animation",
-          "1705": "Voice Talent",
-          "1706": "3D Visualization",
-          "1707": "Other Creative Production"
+          "1500": "Art & Illustration",
+          "1501": "Audio & Music Production",
+          "1502": "Performing Arts",
+          "1503": "Photography",
+          "1504": "Video & Animation",
+          "1505": "Voice Talent",
+          "1506": "3D Visualization",
+          "1507": "Other Creative Production"
         }
       },
       "16": {
@@ -763,14 +764,14 @@
       "25": {
         "title": "Medicine & Pharmacy",
         "sub": {
-          "2500": "Retail Pharmacy",
-          "2501": "Hospital Pharmacy",
-          "2502": "Medication Distribution Center",
-          "2503": "Homecare & Hospice Pharmacy",
-          "2504": "Pharmacy Informatics",
-          "2505": "Ambulatory Care Pharmacy",
-          "2506": "Pharmacists",
-          "2507": "Other Medicine & Pharmacy"
+          "2800": "Retail Pharmacy",
+          "2801": "Hospital Pharmacy",
+          "2802": "Medication Distribution Center",
+          "2803": "Homecare & Hospice Pharmacy",
+          "2804": "Pharmacy Informatics",
+          "2805": "Ambulatory Care Pharmacy",
+          "2806": "Pharmacists",
+          "2807": "Other Medicine & Pharmacy"
         }
       },
       "26": {
@@ -794,19 +795,6 @@
           "2702": "Infrastructure and Heavy Construction",
           "2703": "Specialized Industrial Construction",
           "2704": "Other Construction"
-        }
-      },
-      "28": {
-        "title": "Retail Pharmacy",
-        "sub": {
-          "2800": "Retail pharmacy",
-          "2801": "Hospital Pharmacy",
-          "2802": "Medication Distribution Center",
-          "2803": "Homecare & Hospice Pharmacy",
-          "2804": "Pharmacy Informatics",
-          "2805": "Ambulatory Care Pharmacy",
-          "2806": "Pharmacists",
-          "2807": "Other Medicine & Pharmacy"
         }
       },
       "29": {
@@ -947,7 +935,7 @@
     "title": "Title",
     "badService": "Bad service",
     "otherReason": "Another reason",
-    "reviewOnEmployer": "Opinion about the employer",
+    "reviewOnEmployer": "Write a few words to the employer",
     "paintingWork": "Painting work",
     "art": "Art",
     "cooking": "Cooking",

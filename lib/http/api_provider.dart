@@ -184,12 +184,17 @@ extension QuestService on ApiProvider {
     int? priority,
     List<int> statuses = const [],
     String? sort,
+    List<String> specializations = const [],
     bool? invited,
     bool? performing,
     bool? starred,
     String? north,
     String? south,
   }) async {
+    String specialization = "";
+    specializations.forEach((text) {
+      specialization += "specializations[]=$text&";
+    });
     String status = "";
     statuses.forEach((text) {
       status += "statuses[]=$text&";
@@ -203,7 +208,7 @@ extension QuestService on ApiProvider {
       employments += "employments[]=$text&";
     });
     final responseData = await _httpClient.get(
-      query: '/v1/quests?$workplaces$employments$status',
+      query: '/v1/quests?$workplaces$employments$status$specialization',
       queryParameters: {
         "offset": offset,
         "limit": limit,
@@ -272,6 +277,17 @@ extension QuestService on ApiProvider {
       query: '/v1/profile/$userId',
     );
     return ProfileMeResponse.fromJson(responseData);
+  }
+
+  Future<Map<int, List<int>>> getSkillFilters() async {
+    final responseData = await _httpClient.get(
+      query: '/v1/skill-filters',
+    );
+    Map<int, List<int>> list = (responseData as Map).map((key, value) {
+      return MapEntry<int, List<int>>(value["id"],
+          (value["skills"] as Map).values.map((e) => e as int).toList());
+    });
+    return list;
   }
 
   Future<bool> setStar({
@@ -603,7 +619,13 @@ extension GetUploadLink on ApiProvider {
 
     for (var media in medias) {
       String contentType = "";
-      switch (media.path.split("/").reversed.first.split(".")[1]) {
+      switch (media.path
+          .split("/")
+          .reversed
+          .first
+          .split(".")
+          .reversed
+          .toList()[0]) {
         case "mp4":
           contentType = "video/mp4";
           break;
@@ -771,7 +793,6 @@ extension ChatsService on ApiProvider {
       query: '/v1/user/me/chat/message/$messageId/star',
     );
   }
-
 
   Future<void> removeStarFromChat({
     required String chatId,

@@ -18,18 +18,22 @@ class FilterQuestsPage extends StatefulWidget {
 
 class _FilterQuestsPageState extends State<FilterQuestsPage>
     with AutomaticKeepAliveClientMixin {
-  final storeFilter = FilterQuestsStore();
+  FilterQuestsStore? storeFilter;
   ProfileMeStore? profile;
   late final QuestsStore storeQuest;
 
   @override
   void initState() {
-    storeFilter.readFilters();
+    storeFilter = context.read<FilterQuestsStore>();
     profile = context.read<ProfileMeStore>();
     storeQuest = context.read<QuestsStore>();
-    storeFilter.selectEmployment = storeQuest.employment;
-    storeFilter.selectWorkplace = storeQuest.workplace;
-    storeFilter.selectPriority = storeQuest.priority;
+    if (storeFilter != null) {
+      storeFilter!.getFilters();
+      // storeFilter!.readFilters();
+      storeFilter!.selectEmployment = storeFilter!.employment;
+      storeFilter!.selectWorkplace = storeFilter!.workplace;
+      storeFilter!.selectPriority = storeFilter!.priority;
+    }
     super.initState();
   }
 
@@ -63,7 +67,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
   Widget getBody() {
     return Observer(
       builder: (_) {
-        return storeFilter.isLoading
+        return storeFilter!.isLoading
             ? Center(
                 heightFactor: double.maxFinite,
                 child: SizedBox(
@@ -74,126 +78,183 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
               )
             : ListView.builder(
                 cacheExtent: 2500,
-                itemCount: storeFilter.filters.length,
+                itemCount: storeFilter!.skillFilters.length + 4,
                 addAutomaticKeepAlives: true,
                 itemBuilder: (context, index) {
-                  return storeFilter.filters[index].type == TypeFilter.Check
-                      ? ExpansionCell(storeFilter.filters[index])
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _radioButton(),
-                            profile!.userData!.role == UserRole.Worker
-                                ? Column(
-                                    children: [
-                                      _checkButton(
-                                        title: "quests.quests".tr(),
-                                        list: storeFilter.sortByQuest,
-                                        selected: storeFilter.selectQuest,
-                                        onChange: storeFilter.setSelectedQuest,
-                                      ),
-                                      _checkButton(
-                                        title:
-                                            "quests.filter.deliveryTime".tr(),
-                                        list: storeFilter.sortByQuestDelivery,
-                                        selected:
-                                            storeFilter.selectQuestDelivery,
-                                        onChange: storeFilter
-                                            .setSelectedQuestDelivery,
-                                      ),
-                                      _checkButton(
-                                        title: "quests.employment.title".tr(),
-                                        list: storeFilter.sortByEmployment,
-                                        selected: storeFilter.selectEmployment,
-                                        onChange: (bool? value, int index) {
-                                          storeFilter.setSelectedEmployment(
-                                            value,
-                                            index,
-                                          );
-                                          storeQuest.employment[index] =
-                                              value ?? false;
-                                        },
-                                      ),
-                                      _checkButton(
-                                        title: "quests.workplace".tr(),
-                                        list: storeFilter.sortByWorkplace,
-                                        selected: storeFilter.selectWorkplace,
-                                        onChange: (bool? value, int index) {
-                                          storeFilter.setSelectedWorkplace(
-                                            value,
-                                            index,
-                                          );
-                                          storeQuest.workplace[index] =
-                                              value ?? false;
-                                        },
-                                      ),
-                                    ],
-                                  )
-                                : Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      _checkButton(
-                                        title:
-                                            "quests.filter.priorityOfTheEmployee"
-                                                .tr(),
-                                        list: storeFilter.sortByPriority,
-                                        selected: storeFilter.selectPriority,
-                                        onChange:
-                                            storeFilter.setSelectedPriority,
-                                      ),
-                                      _checkButton(
-                                        title:
-                                            "quests.filter.employeeRating".tr(),
-                                        list: storeFilter.sortByEmployeeRating,
-                                        selected:
-                                            storeFilter.selectEmployeeRating,
-                                        onChange: storeFilter
-                                            .setSelectedEmployeeRating,
-                                      ),
-                                      _checkButton(
-                                        title: "quests.workplace".tr(),
-                                        list: storeFilter.sortByWorkplace,
-                                        selected: storeFilter.selectWorkplace,
-                                        onChange:
-                                            storeFilter.setSelectedWorkplace,
-                                      ),
-                                    ],
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (index == 0) _radioButton(),
+                      if (index == 1)
+                        profile!.userData!.role == UserRole.Worker
+                            ? Column(
+                                children: [
+                                  // _checkButton(
+                                  //   title: "quests.quests".tr(),
+                                  //   list: storeFilter!.sortByQuest,
+                                  //   selected: storeFilter!.selectQuest,
+                                  //   onChange: storeFilter!.setSelectedQuest,
+                                  // ),
+                                  _checkButton(
+                                    title: "quests.filter.deliveryTime".tr(),
+                                    list: storeFilter!.sortByQuestDelivery,
+                                    selected: storeFilter!.selectQuestDelivery,
+                                    onChange:
+                                        storeFilter!.setSelectedQuestDelivery,
                                   ),
-                            Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Text(
-                                "filters.dd.1".tr(),
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                  _checkButton(
+                                    title: "quests.employment.title".tr(),
+                                    list: storeFilter!.sortByEmployment,
+                                    selected: storeFilter!.selectEmployment,
+                                    onChange: (bool? value, int index) {
+                                      storeFilter!.setSelectedEmployment(
+                                        value,
+                                        index,
+                                      );
+                                      storeFilter!.employment[index] =
+                                          value ?? false;
+                                    },
+                                  ),
+                                  _checkButton(
+                                    title: "quests.workplace".tr(),
+                                    list: storeFilter!.sortByWorkplace,
+                                    selected: storeFilter!.selectWorkplace,
+                                    onChange: (bool? value, int index) {
+                                      storeFilter!.setSelectedWorkplace(
+                                        value,
+                                        index,
+                                      );
+                                      storeFilter!.workplace[index] =
+                                          value ?? false;
+                                    },
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _checkButton(
+                                    title: "quests.filter.priorityOfTheEmployee"
+                                        .tr(),
+                                    list: storeFilter!.sortByPriority,
+                                    selected: storeFilter!.selectPriority,
+                                    onChange: storeFilter!.setSelectedPriority,
+                                  ),
+                                  _checkButton(
+                                    title: "quests.filter.employeeRating".tr(),
+                                    list: storeFilter!.sortByEmployeeRating,
+                                    selected: storeFilter!.selectEmployeeRating,
+                                    onChange:
+                                        storeFilter!.setSelectedEmployeeRating,
+                                  ),
+                                  _checkButton(
+                                    title: "quests.workplace".tr(),
+                                    list: storeFilter!.sortByWorkplace,
+                                    selected: storeFilter!.selectWorkplace,
+                                    onChange: storeFilter!.setSelectedWorkplace,
+                                  ),
+                                ],
                               ),
+                      if (index == 2)
+                        Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text(
+                            "filters.dd.1".tr(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
-                          ],
-                        );
+                          ),
+                        ),
+                      if (index > 2 && index != 30)
+                        ExpansionCell(
+                          storeFilter!.skillFilters[index - 2]!,
+                          index - 2,
+                          storeQuest,
+                        ),
+                      if (index == storeFilter!.skillFilters.length + 3)
+                        bottomButtons(),
+                    ],
+                  );
                 },
               );
       },
     );
   }
 
+  Widget bottomButtons() => Padding(
+        padding: EdgeInsets.only(
+          left: 16.0,
+          right: 16.0,
+          bottom: 30.0,
+        ),
+        child: Column(
+          children: [
+            TextButton(
+              onPressed: () {
+                storeQuest.getQuests(true);
+                Navigator.pop(context);
+              },
+              child: Text(
+                "meta.accept".tr(),
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ButtonStyle(
+                fixedSize: MaterialStateProperty.all(
+                  Size(double.maxFinite, 43),
+                ),
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.pressed))
+                      return Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.5);
+                    return const Color(0xFF0083C7);
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 16.0,
+            ),
+            OutlinedButton(
+              onPressed: () {
+                storeQuest.selectedSkill.clear();
+                storeQuest.getQuests(true);
+                Navigator.pop(context);
+              },
+              child: Text(
+                "meta.reset".tr(),
+              ),
+              style: OutlinedButton.styleFrom(
+                fixedSize: Size(double.maxFinite, 43),
+                side: BorderSide(
+                  width: 1.0,
+                  color: Color(0xFF0083C7).withOpacity(0.1),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
   Widget _radioButton() => ExpansionTile(
         title: Text(
           "quests.filter.sortBy.title".tr(),
         ),
         children: [
-          for (int i = 0; i < storeFilter.sortBy.length; i++)
+          for (int i = 0; i < storeFilter!.sortBy.length; i++)
             Observer(
               builder: (_) => RadioListTile<String>(
                 title: Text(
-                  storeFilter.sortBy[i],
+                  storeFilter!.sortBy[i],
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   softWrap: false,
                 ),
-                value: storeFilter.sortBy[i],
-                groupValue: storeFilter.selectSortBy,
-                onChanged: storeFilter.setSortBy,
+                value: storeFilter!.sortBy[i],
+                groupValue: storeFilter!.selectSortBy,
+                onChanged: storeFilter!.setSortBy,
               ),
             )
         ],
@@ -241,9 +302,11 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
 }
 
 class ExpansionCell<T> extends StatefulWidget {
-  final FilterItem filter;
+  final List<int> filter;
+  final int index;
+  final QuestsStore storeQuest;
 
-  const ExpansionCell(this.filter);
+  const ExpansionCell(this.filter, this.index, this.storeQuest);
 
   @override
   State<ExpansionCell> createState() => _ExpansionCellState();
@@ -257,7 +320,7 @@ class _ExpansionCellState extends State<ExpansionCell> {
   void initState() {
     setState(
       () {
-        selected = List.generate(widget.filter.list.length, (index) => false);
+        selected = List.generate(widget.filter.length, (index) => false);
       },
     );
     super.initState();
@@ -270,14 +333,15 @@ class _ExpansionCellState extends State<ExpansionCell> {
         ExpansionTile(
           maintainState: true,
           title: Text(
-            "filters.${widget.filter.header}.title".tr(),
+            "filters.items.${widget.index}.title".tr(),
           ),
           children: [
-            for (int i = 0; i < widget.filter.list.length; i++)
+            for (int i = 0; i < widget.filter.length; i++)
               getCheckbox(
                 i,
-                "filters.${widget.filter.header}.sub.${widget.filter.list[i]}"
-                    .tr(),
+                "filters.items.${widget.index}.sub.${widget.filter[i]}".tr(),
+                widget.index,
+                widget.filter[i],
               ),
           ],
         ),
@@ -285,7 +349,7 @@ class _ExpansionCellState extends State<ExpansionCell> {
     );
   }
 
-  Widget getCheckbox(int index, String text) {
+  Widget getCheckbox(int index, String text, int spec, int skill) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Row(
@@ -297,6 +361,10 @@ class _ExpansionCellState extends State<ExpansionCell> {
               setState(
                 () {
                   selected[index] = value!;
+                  if (value == true)
+                    widget.storeQuest.addSkill("$spec.$skill");
+                  else
+                    widget.storeQuest.deleteSkill("$spec.$skill");
                 },
               );
             },
