@@ -96,7 +96,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           ),
         ),
         widget.info == null
-            ? (myStore!.userData!.userSpecializations.isEmpty)
+            ? (userStore!.userData!.userSpecializations.isEmpty)
                 ? Text(
                     "skills.noSkills".tr(),
                     style: style.copyWith(
@@ -106,7 +106,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   )
                 : skills(
                     skills:
-                        store.parser(myStore!.userData!.userSpecializations),
+                        store.parser(userStore!.userData!.userSpecializations),
                     context: context,
                     isProfileMy: true,
                   )
@@ -136,7 +136,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
         ),
         Text(
           widget.info == null
-              ? myStore!.userData?.additionalInfo?.description ??
+              ? userStore!.userData?.additionalInfo?.description ??
                   "modals.noDescription".tr()
               : widget.info!.additionalInfo?.description ??
                   "modals.noDescription".tr(),
@@ -155,15 +155,15 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           ),
         ),
         widget.info == null
-            ? (myStore!.userData!.additionalInfo!.educations.isNotEmpty)
+            ? (userStore!.userData!.additionalInfo!.educations.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemCount:
-                        myStore!.userData!.additionalInfo!.educations.length,
+                        userStore!.userData!.additionalInfo!.educations.length,
                     itemBuilder: (_, index) {
-                      final education = myStore!
+                      final education = userStore!
                           .userData!.additionalInfo!.educations[index];
                       return experience(
                           place: education["place"] ?? "--",
@@ -205,15 +205,15 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           ),
         ),
         widget.info == null
-            ? (myStore!.userData!.additionalInfo!.workExperiences.isNotEmpty)
+            ? (userStore!.userData!.additionalInfo!.workExperiences.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: myStore!
+                    itemCount: userStore!
                         .userData!.additionalInfo!.workExperiences.length,
                     itemBuilder: (_, index) {
-                      final userExperience = myStore!
+                      final userExperience = userStore!
                           .userData!.additionalInfo!.workExperiences[index];
                       return experience(
                           place: userExperience["place"] ?? "--",

@@ -37,7 +37,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   ScrollController controllerMain = ScrollController();
 
-  ProfileMeStore? myStore;
   ProfileMeStore? userStore;
   PortfolioStore? portfolioStore;
   MyQuestStore? myQuests;
@@ -48,26 +47,26 @@ class UserProfileState<T extends UserProfile> extends State<T>
     _tabController = TabController(vsync: this, length: 2);
     portfolioStore = context.read<PortfolioStore>();
     myQuests = context.read<MyQuestStore>();
-    myStore = context.read<ProfileMeStore>();
+    userStore = context.read<ProfileMeStore>();
     if (widget.info == null) {
-      role = myStore!.userData?.role ?? UserRole.Worker;
+      role = userStore!.userData?.role ?? UserRole.Worker;
 
-      myStore!.getProfileMe().then((value) {
-        setState(() => role = myStore!.userData!.role);
-        myQuests!.getQuests(myStore!.userData!.id, role, true);
+      userStore!.getProfileMe().then((value) {
+        setState(() => role = userStore!.userData!.role);
+        myQuests!.getQuests(userStore!.userData!.id, role, true);
       });
 
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(
-          userId: myStore!.userData!.id,
+          userId: userStore!.userData!.id,
         );
       portfolioStore!.getReviews(
-        userId: myStore!.userData!.id,
+        userId: userStore!.userData!.id,
       );
     } else {
       role = widget.info?.role ?? UserRole.Worker;
 
-      myStore!.getProfileMe().then((value) {
+      userStore!.getProfileMe().then((value) {
         setState(() => role = widget.info!.role);
         myQuests!.getQuests(widget.info!.id, role, true);
       });

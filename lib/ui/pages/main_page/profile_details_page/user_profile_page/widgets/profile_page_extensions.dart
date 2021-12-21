@@ -47,7 +47,7 @@ extension CustomAppBar on UserProfileState {
             children: [
               Image.network(
                 widget.info == null
-                    ? myStore!.userData!.avatar!.url
+                    ? userStore!.userData!.avatar!.url
                     : widget.info!.avatar!.url,
                 fit: BoxFit.cover,
               ),
@@ -57,7 +57,7 @@ extension CustomAppBar on UserProfileState {
                 child: Row(
                   children: [
                     for (int i = 0;
-                        i < myStore!.userData!.ratingStatistic!.averageMark.round();
+                        i < userStore!.userData!.ratingStatistic!.averageMark.round();
                         i++)
                       Icon(
                         Icons.star,
@@ -67,7 +67,7 @@ extension CustomAppBar on UserProfileState {
                     for (int i = 0;
                         i <
                             5 -
-                                myStore!
+                                userStore!
                                     .userData!.ratingStatistic!.averageMark.round();
                         i++)
                       Icon(
@@ -82,10 +82,10 @@ extension CustomAppBar on UserProfileState {
           ),
           title: appBarTitle(
             widget.info == null
-                ? "${myStore!.userData!.firstName} ${myStore!.userData!.lastName}"
+                ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
                 : "${widget.info!.firstName} ${widget.info!.lastName}",
             appBarPosition,
-            myStore!.userData!.ratingStatistic?.status ?? "noStatus",
+            userStore!.userData!.ratingStatistic?.status ?? "noStatus",
           ),
         ),
       );

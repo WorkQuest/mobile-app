@@ -8,6 +8,8 @@ import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../enums.dart';
+
 part 'profile_me_store.g.dart';
 
 @singleton
@@ -30,7 +32,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   bool? twoFAStatus;
 
   @observable
-  String priorityValue = "Low";
+  QuestPriority priorityValue = QuestPriority.Normal;
 
   @observable
   String distantWork = "Distant work";
@@ -40,85 +42,42 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   List<String> distantWorkList = [
     "Distant work",
-    "Work in the office",
+    "Work in office",
     "Both options",
   ];
 
-  List<String> priorityList = [
-    "Low",
-    "Normal",
-    "Urgent",
-  ];
+  void setPriorityValue(String priority) =>
+      priorityValue = QuestPriority.values.byName(priority);
 
-  @action
-  void priorityToValue() {
-    switch (userData!.priority) {
-      case 0:
-        priorityValue = "Low";
-        return;
-      case 1:
-        priorityValue = "Normal";
-        return;
-      case 2:
-        priorityValue = "Urgent";
-        return;
-    }
-  }
-
-  @action
-  void setPriorityValue(String text) => priorityValue = text;
-
-  int valueToPriority() {
-    switch (priorityValue) {
-      case "Low":
-        return userData!.priority = 0;
-      case "Normal":
-        return userData!.priority = 1;
-      case "Urgent":
-        return userData!.priority = 2;
-    }
-    return userData!.priority;
-  }
-
-  @action
   void workplaceToValue() {
     switch (userData!.workplace) {
       case "distant":
-        distantWork = "Distant work";
+        distantWork = distantWorkList[0];
         break;
       case "office":
-        distantWork = "Work in office";
+        distantWork = distantWorkList[1];
         break;
       case "both":
-        distantWork = "Both variant";
+        distantWork = distantWorkList[2];
         break;
     }
   }
 
-  @action
   void setWorkplaceValue(String text) => distantWork = text;
 
   String valueToWorkplace() {
     switch (distantWork) {
       case "Distant work":
-        userData!.workplace = "distant";
-        break;
+        return userData!.workplace = "distant";
       case "Work in office":
-        userData!.workplace = "office";
-        break;
-      case "Both variant":
-        userData!.workplace = "both";
-        break;
+        return userData!.workplace = "office";
+      case "Both options":
+        return userData!.workplace = "both";
+      default:
+        return userData?.workplace ?? "both";
     }
-    return userData?.workplace ?? "distant";
   }
 
-  @action
-  void setWorkplace(String value) {
-    userData!.workplace = value;
-  }
-
-  @action
   List<String> parser(List<String> skills) {
     List<String> result = [];
     String spec;
@@ -144,7 +103,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     return result;
   }
 
-  @action
   Future getProfileMe() async {
     try {
       this.onLoading();
@@ -156,14 +114,12 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  @action
   Future<void> get2FAStatus() async {
     await SharedPreferences.getInstance().then((sharedPrefs) {
       twoFAStatus = sharedPrefs.getBool("2FAStatus") ?? false;
     });
   }
 
-  @action
   Future getQuestHolder(String userId) async {
     try {
       this.onLoading();
@@ -175,7 +131,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  @action
   Future getAssignedWorker(String userId) async {
     try {
       this.onLoading();
@@ -187,7 +142,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  @action
   changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {
       this.onLoading();

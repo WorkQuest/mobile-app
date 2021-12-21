@@ -39,7 +39,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
 //_____________About______________/
         Text(
           widget.info == null
-              ? myStore!.userData?.additionalInfo?.description ??
+              ? userStore!.userData?.additionalInfo?.description ??
                   "modals.noDescription".tr()
               : widget.info!.additionalInfo?.description ??
                   "modals.noDescription".tr(),
