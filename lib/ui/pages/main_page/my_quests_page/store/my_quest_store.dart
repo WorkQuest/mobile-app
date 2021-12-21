@@ -107,7 +107,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         this.offsetInvited = 0;
         this.offsetPerformed = 0;
         this.offsetStarred = 0;
-        active.clear();
+        active = ObservableList.of([]);
         starred.clear();
         performed.clear();
         requested.clear();
@@ -116,6 +116,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         loadInvited = true;
         loadPerformed = true;
         loadStarred = true;
+        print("clear");
       }
       if (role == UserRole.Employer) {
         final responseActive = await _apiProvider.getEmployerQuests(
@@ -193,8 +194,9 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
               responseActive["quests"]
                   .map((x) => BaseQuestResponse.fromJson(x)))));
 
+        print("loadQuestsActive: $loadActive");
         print("activeCount: $activeCount");
-        print("activeCount: ${active.length}");
+        print("active length: ${active.length}");
 
         final responseInvited = await _apiProvider.getQuests(
           offset: this.offsetInvited,
@@ -213,8 +215,9 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           statuses: [6],
         );
 
+        print("loadQuestsInvited: $loadInvited");
         print("invitedCount: $invitedCount");
-        print("invitedCount: ${invited.length}");
+        print("invited length: ${invited.length}");
 
         performedCount = responsePerformed["count"];
 
@@ -228,8 +231,9 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           starred: true,
         );
 
+        print("loadQuestsPerformed: $loadPerformed");
         print("performedCount: $performedCount");
-        print("performedCount: ${performed.length}");
+        print("performed length: ${performed.length}");
 
         starredCount = responseStarred["count"];
 
@@ -237,6 +241,10 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           starred.addAll(ObservableList.of(List<BaseQuestResponse>.from(
               responseStarred["quests"]
                   .map((x) => BaseQuestResponse.fromJson(x)))));
+
+        print("loadQuestsStarred: $loadStarred");
+        print("starredCount: $starredCount");
+        print("starred length: ${starred.length}");
 
         // active.addAll(ObservableList.of(
         //   await _apiProvider.getQuests(
@@ -273,26 +281,26 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         //   ),
         // ));
       }
-      if (offsetActive + 10 < activeCount) {
-        this.offsetActive += 10;
-        loadActive = true;
-      } else
-        loadActive = false;
-      if (offsetInvited + 10 < invitedCount) {
-        this.offsetInvited += 10;
-        loadInvited = true;
-      } else
-        loadInvited = false;
-      if (offsetPerformed + 10 < performedCount) {
-        this.offsetPerformed += 10;
-        loadPerformed = true;
-      } else
-        loadPerformed = false;
-      if (offsetStarred + 10 < starredCount) {
-        this.offsetStarred += 10;
-        loadStarred = true;
-      } else
-        loadStarred = false;
+      // if (offsetActive != activeCount) {
+      offsetActive += 10;
+      //   loadActive = true;
+      // } else
+      //   loadActive = false;
+      // if (offsetInvited + 10 < invitedCount) {
+      this.offsetInvited += 10;
+      //   loadInvited = true;
+      // } else
+      //   loadInvited = false;
+      // if (offsetPerformed + 10 < performedCount) {
+      this.offsetPerformed += 10;
+      //   loadPerformed = true;
+      // } else
+      //   loadPerformed = false;
+      // if (offsetStarred + 10 < starredCount) {
+      this.offsetStarred += 10;
+      //   loadStarred = true;
+      // } else
+      //   loadStarred = false;
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");

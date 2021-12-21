@@ -54,29 +54,59 @@ extension CustomAppBar on UserProfileState {
               Positioned(
                 bottom: 85.0,
                 left: 15.0,
-                child: Row(
-                  children: [
-                    for (int i = 0;
-                        i < userStore!.userData!.ratingStatistic!.averageMark.round();
-                        i++)
-                      Icon(
-                        Icons.star,
-                        color: Color(0xFFE8D20D),
-                        size: 20.0,
+                child: widget.info == null
+                    ? Row(
+                        children: [
+                          for (int i = 0;
+                              i <
+                                  userStore!
+                                      .userData!.ratingStatistic!.averageMark
+                                      .round();
+                              i++)
+                            Icon(
+                              Icons.star,
+                              color: Color(0xFFE8D20D),
+                              size: 20.0,
+                            ),
+                          for (int i = 0;
+                              i <
+                                  5 -
+                                      userStore!.userData!.ratingStatistic!
+                                          .averageMark
+                                          .round();
+                              i++)
+                            Icon(
+                              Icons.star,
+                              color: Color(0xFFE9EDF2),
+                              size: 20.0,
+                            ),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          for (int i = 0;
+                              i <
+                                  widget.info!.ratingStatistic!.averageMark
+                                      .round();
+                              i++)
+                            Icon(
+                              Icons.star,
+                              color: Color(0xFFE8D20D),
+                              size: 20.0,
+                            ),
+                          for (int i = 0;
+                              i <
+                                  5 -
+                                      widget.info!.ratingStatistic!.averageMark
+                                          .round();
+                              i++)
+                            Icon(
+                              Icons.star,
+                              color: Color(0xFFE9EDF2),
+                              size: 20.0,
+                            ),
+                        ],
                       ),
-                    for (int i = 0;
-                        i <
-                            5 -
-                                userStore!
-                                    .userData!.ratingStatistic!.averageMark.round();
-                        i++)
-                      Icon(
-                        Icons.star,
-                        color: Color(0xFFE9EDF2),
-                        size: 20.0,
-                      ),
-                  ],
-                ),
               ),
             ],
           ),

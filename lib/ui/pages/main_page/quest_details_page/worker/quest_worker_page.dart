@@ -7,6 +7,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_st
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/ui/widgets/workplace_view.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -83,18 +84,21 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         children: [
           const SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "${widget.questInfo.price} WUSD",
-                textAlign: TextAlign.end,
-                overflow: TextOverflow.fade,
-                style: const TextStyle(
-                  color: Color(0xFF00AA5B),
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w700,
+              Expanded(
+                child: Text(
+                  "${widget.questInfo.price} WUSD",
+                  // textAlign: TextAlign.end,
+                  overflow: TextOverflow.fade,
+                  style: const TextStyle(
+                    color: Color(0xFF00AA5B),
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
+              WorkplaceView(widget.questInfo.workplace),
+              const SizedBox(width: 5,),
               PriorityView(widget.questInfo.priority),
             ],
           ),
@@ -136,7 +140,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       )
                 : SizedBox(),
           ),
-          if (store.quest.value!.status == 4)
+          if (store.quest.value!.status == 4 &&
+              store.quest.value!.assignedWorker?.id == profile!.userData!.id)
             store.isLoading
                 ? Center(
                     child: CircularProgressIndicator(),
@@ -348,6 +353,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   ),
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.disabled))
+                        return const Color(0xFFF7F8FA);
                       if (states.contains(MaterialState.pressed))
                         return Theme.of(context)
                             .colorScheme
@@ -414,6 +421,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           onPressed: () {
             store.sendRejectOnQuest();
             widget.questInfo.responded!.status = -1;
+            widget.questInfo.status = 0;
             widget.questInfo.assignedWorker = null;
             deleteQuest(widget.questInfo);
             addQuest(widget.questInfo, true);

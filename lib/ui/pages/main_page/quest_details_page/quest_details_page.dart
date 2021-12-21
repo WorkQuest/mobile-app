@@ -66,17 +66,17 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   Widget _getBody() {
     return SingleChildScrollView(
       physics: ClampingScrollPhysics(),
-      child: AbsorbPointer(
+      child:  AbsorbPointer(
         absorbing: isLoading,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  widget.questInfo.userId == profile!.userData!.id
+        child:Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: widget.questInfo.userId == profile!.userData!.id
                       ? Text(
                           "quests.yourQuest".tr(),
                         )
@@ -89,152 +89,138 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                 .getQuestHolder(widget.questInfo.userId)
                                 .then(
                                   (value) =>
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pushNamed(
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed(
                                     UserProfile.routeName,
                                     arguments: profile!.questHolder,
                                   ),
-                                );
+                            );
                             this.isLoading = false;
                           },
-                          child: Container(
-                            alignment: Alignment.topLeft,
-                            child: Wrap(
-                              alignment: WrapAlignment.start,
-                              runAlignment: WrapAlignment.start,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Image.network(
-                                    widget.questInfo.user.avatar.url,
-                                    width: 30,
-                                    height: 30,
-                                    fit: BoxFit.cover,
-                                  ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Image.network(
+                                  widget.questInfo.user.avatar.url,
+                                  width: 30,
+                                  height: 30,
+                                  fit: BoxFit.cover,
                                 ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ],
                           ),
                         ),
-                  Row(
-                    children: [
-                      const SizedBox(height: 10),
-                      tagEmployment(),
-                      const SizedBox(width: 10),
-                      tagWorkplace(),
-                    ],
+                ),
+                tagEmployment(),
+              ],
+            ),
+            const SizedBox(height: 17),
+            Row(
+              children: [
+                if (widget.questInfo.userId != profile!.userData!.id)
+                  Icon(
+                    Icons.location_on_rounded,
+                    color: Color(0xFF7C838D),
+                  ),
+                const SizedBox(width: 9),
+                Flexible(
+                  child: Text(
+                    widget.questInfo.locationPlaceName,
+                    // "150 from you",
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(
+                      color: Color(0xFF7C838D),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 17),
+            tagItem(
+              profile!.parser(widget.questInfo.questSpecializations),
+            ),
+            if (widget.questInfo.assignedWorker != null &&
+                (widget.questInfo.status == 1 || widget.questInfo.status == 5))
+              inProgressBy(),
+            const SizedBox(height: 15),
+            Text(
+              widget.questInfo.title,
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1D2127),
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Text(widget.questInfo.description),
+            const SizedBox(
+              height: 15,
+            ),
+            if (widget.questInfo.medias.isNotEmpty) ...[
+              Text(
+                "quests.questMaterials".tr(),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Color(0xFF1D2127),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              ImageViewerWidget(widget.questInfo.medias, Color(0xFF1D2127)),
+            ],
+            Text(
+              DateFormat('dd MMMM yyyy, kk:mm')
+                  .format(widget.questInfo.createdAt),
+              style: TextStyle(
+                color: Color(0xFFAAB0B9),
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              height: 215,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  GoogleMap(
+                    mapType: MapType.normal,
+                    tiltGesturesEnabled: false,
+                    rotateGesturesEnabled: false,
+                    zoomControlsEnabled: false,
+                    scrollGesturesEnabled: false,
+                    zoomGesturesEnabled: false,
+                    initialCameraPosition: CameraPosition(
+                      bearing: 0,
+                      target: LatLng(
+                        widget.questInfo.location.latitude,
+                        widget.questInfo.location.longitude,
+                      ),
+                      zoom: 15.0,
+                    ),
+                    myLocationButtonEnabled: false,
+                  ),
+                  SvgPicture.asset(
+                    "assets/marker.svg",
+                    width: 22,
+                    height: 29,
+                    color: Constants.priorityColors[widget.questInfo.priority],
                   ),
                 ],
               ),
-              const SizedBox(height: 17),
-              if (widget.questInfo.userId != profile!.userData!.id)
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on_rounded,
-                      color: Color(0xFF7C838D),
-                    ),
-                    const SizedBox(width: 9),
-                    Flexible(
-                      child: Text(
-                        widget.questInfo.locationPlaceName,
-                        // "150 from you",
-                        overflow: TextOverflow.fade,
-                        style: TextStyle(
-                          color: Color(0xFF7C838D),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              const SizedBox(height: 17),
-              tagItem(
-                profile!.parser(widget.questInfo.questSpecializations),
-              ),
-              if (widget.questInfo.assignedWorker != null &&
-                  (widget.questInfo.status == 1 ||
-                      widget.questInfo.status == 5))
-                inProgressBy(),
-              const SizedBox(height: 15),
-              Text(
-                widget.questInfo.title,
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1D2127),
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(widget.questInfo.description),
-              const SizedBox(
-                height: 15,
-              ),
-              if (widget.questInfo.medias.isNotEmpty) ...[
-                Text(
-                  "quests.questMaterials".tr(),
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Color(0xFF1D2127),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                ImageViewerWidget(widget.questInfo.medias, Color(0xFF1D2127)),
-              ],
-              Text(
-                DateFormat('dd MMMM yyyy, kk:mm')
-                    .format(widget.questInfo.createdAt),
-                style: TextStyle(
-                  color: Color(0xFFAAB0B9),
-                  fontSize: 12,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                height: 215,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    GoogleMap(
-                      mapType: MapType.normal,
-                      tiltGesturesEnabled: false,
-                      rotateGesturesEnabled: false,
-                      zoomControlsEnabled: false,
-                      scrollGesturesEnabled: false,
-                      zoomGesturesEnabled: false,
-                      initialCameraPosition: CameraPosition(
-                        bearing: 0,
-                        target: LatLng(
-                          widget.questInfo.location.latitude,
-                          widget.questInfo.location.longitude,
-                        ),
-                        zoom: 15.0,
-                      ),
-                      myLocationButtonEnabled: false,
-                    ),
-                    SvgPicture.asset(
-                      "assets/marker.svg",
-                      width: 22,
-                      height: 29,
-                      color:
-                          Constants.priorityColors[widget.questInfo.priority],
-                    ),
-                  ],
-                ),
-              ),
-              getBody(),
-              const SizedBox(height: 20),
-            ],
-          ),
+            ),
+            getBody(),
+            const SizedBox(height: 20),
+          ],
         ),
-      ),
+      ),),),
     );
   }
 
@@ -290,35 +276,6 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
         employment,
         style: TextStyle(
           color: Color(0xFF22CC14),
-        ),
-      ),
-    );
-  }
-
-  Widget tagWorkplace() {
-    String employment = "";
-    switch (widget.questInfo.workplace) {
-      case "distant":
-        employment = "Distant work";
-        break;
-      case "office":
-        employment = "Work in office";
-        break;
-      case "both":
-        employment = "Both variant";
-        break;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-      decoration: BoxDecoration(
-        color: Color(0xFF0083C7).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(
-        employment,
-        style: TextStyle(
-          color: Color(0xFF0083C7),
         ),
       ),
     );

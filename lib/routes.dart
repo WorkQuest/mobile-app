@@ -28,6 +28,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_st
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/payment_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
@@ -236,7 +237,13 @@ class Routes {
           builder: (context) => MultiProvider(
             providers: [
               Provider(
+                create: (context) => getIt.get<FilterQuestsStore>(),
+              ),
+              Provider(
                 create: (context) => getIt.get<QuestsStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
               ),
             ],
             child: Directionality(

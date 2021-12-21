@@ -1,20 +1,49 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:flutter/services.dart';
+import 'package:app/http/api_provider.dart';
+import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:app/base_store/i_store.dart';
 
 part 'filter_quests_store.g.dart';
 
+@injectable
 class FilterQuestsStore = FilterQuestsStoreBase with _$FilterQuestsStore;
 
-abstract class FilterQuestsStoreBase with Store {
+abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
+  final ApiProvider _apiProvider;
+
+  FilterQuestsStoreBase(this._apiProvider);
+
   @observable
   bool isLoading = true;
 
+  Map<int, List<int>> skillFilters = {};
+
   @observable
-  List<FilterItem> filters = [];
+  ObservableList<bool> employment = ObservableList.of(
+    List.generate(4, (index) => false),
+  );
+
+  @observable
+  ObservableList<bool> workplace = ObservableList.of(
+    List.generate(3, (index) => false),
+  );
+
+  @observable
+  ObservableList<bool> priority = ObservableList.of(
+    List.generate(4, (index) => false),
+  );
+
+  @observable
+  ObservableList<String> employmentValue = ObservableList.of([]);
+
+  @observable
+  ObservableList<String> workplaceValue = ObservableList.of([]);
+
+  @observable
+  ObservableList<int> priorityValue = ObservableList.of([]);
 
   @observable
   List<String> sortBy = [
@@ -26,18 +55,6 @@ abstract class FilterQuestsStoreBase with Store {
 
   @observable
   String selectSortBy = "";
-
-  @observable
-  List<String> sortByQuest = [
-    "quests.filter.sortByQuest.selectAll".tr(),
-    "quests.filter.sortByQuest.specializedQuests".tr(),
-    "quests.filter.sortByQuest.permanentJob".tr(),
-    "quests.filter.sortByQuest.quests".tr(),
-  ];
-
-  @observable
-  ObservableList<bool> selectQuest =
-      ObservableList.of(List.generate(4, (index) => false));
 
   @observable
   List<String> sortByQuestDelivery = [
@@ -57,7 +74,6 @@ abstract class FilterQuestsStoreBase with Store {
     "quests.filter.sortByEmployment.fullTime".tr(),
     "quests.filter.sortByEmployment.partTime".tr(),
     "quests.filter.sortByEmployment.fixedTerm".tr(),
-    // "quests.filter.sortByEmployment.contract".tr(),
   ]);
 
   @observable
@@ -100,6 +116,84 @@ abstract class FilterQuestsStoreBase with Store {
       ObservableList.of(List.generate(3, (index) => false));
 
   @action
+  List<String> getEmploymentValue() {
+    if (employment[0] == true) {
+      employmentValue.clear();
+      employmentValue.add("fullTime");
+      employmentValue.add("partTime");
+      employmentValue.add("fixedTerm");
+      return employmentValue;
+    } else if (employment[0] == false) {
+      employmentValue.clear();
+    }
+    if (employment[1] == true) {
+      employmentValue.add("fullTime");
+    } else if (employment[1] == false) {
+      employmentValue.remove("fullTime");
+    }
+    if (employment[2] == true) {
+      employmentValue.add("partTime");
+    } else if (employment[2] == false) {
+      employmentValue.remove("partTime");
+    }
+    if (employment[3] == true) {
+      employmentValue.add("fixedTerm");
+    } else if (employment[3] == false) {
+      employmentValue.remove("fixedTerm");
+    }
+    return employmentValue;
+  }
+
+  @action
+  List<int> getPriorityValue() {
+    if (priority[0] == true) {
+      priorityValue.add(0);
+    } else if (priority[0] == false) {
+      priorityValue.remove(0);
+    }
+    if (priority[1] == true) {
+      priorityValue.add(1);
+    } else if (priority[1] == false) {
+      priorityValue.remove(1);
+    }
+    if (priority[2] == true) {
+      priorityValue.add(2);
+    } else if (priority[2] == false) {
+      priorityValue.remove(2);
+    }
+    if (priority[3] == true) {
+      priorityValue.add(3);
+    } else if (priority[3] == false) {
+      priorityValue.remove(3);
+    }
+    return priorityValue;
+  }
+
+  @action
+  List<String> getWorkplaceValue() {
+    if (workplace[0] == true) {
+      workplaceValue.clear();
+      workplaceValue.add("both");
+      workplaceValue.add("distant");
+      workplaceValue.add("office");
+      return workplaceValue;
+    } else if (workplace[0] == false) {
+      workplaceValue.clear();
+    }
+    if (workplace[1] == true) {
+      workplaceValue.add("distant");
+    } else if (workplace[1] == false) {
+      workplaceValue.remove("distant");
+    }
+    if (workplace[2] == true) {
+      workplaceValue.add("office");
+    } else if (workplace[2] == false) {
+      workplaceValue.remove("office");
+    }
+    return workplaceValue;
+  }
+
+  @action
   void setSelectedWorkplace(bool? value, int index) {
     switch (index) {
       case 0:
@@ -120,18 +214,6 @@ abstract class FilterQuestsStoreBase with Store {
       }
       if (i == selectWorkplace.length - 1) selectWorkplace[0] = true;
     }
-
-    // if (index == 0) if (value == true)
-    //   for (int i = 0; i < selectWorkplace.length; i++) {
-    //     selectWorkplace[i] = true;
-    //     selectWorkplace.reduce((p, e) => p && e);
-    //   }
-    // else
-    //   for (int i = 0; i < selectWorkplace.length; i++)
-    //     selectWorkplace[i] = false;
-    // else if (selectWorkplace[0] == true) selectWorkplace[0] = false;
-    // selectWorkplace[index] = value ?? false;
-    // selectWorkplace[0] = selectWorkplace.skip(1).reduce((p, e) => p && e);
   }
 
   @action
@@ -158,16 +240,6 @@ abstract class FilterQuestsStoreBase with Store {
       }
       if (i == selectPriority.length - 1) selectPriority[0] = true;
     }
-    // if (index == 0) if (value == true)
-    //   for (int i = 0; i < selectPriority.length; i++) {
-    //     selectPriority[i] = true;
-    //     selectPriority.reduce((p, e) => p && e);
-    //   }
-    // else
-    //   for (int i = 0; i < selectPriority.length; i++) selectPriority[i] = false;
-    // else if (selectPriority[0] == true) selectPriority[0] = false;
-    // selectPriority[index] = value ?? false;
-    // selectPriority[0] = selectPriority.skip(1).reduce((p, e) => p && e);
   }
 
   @action
@@ -194,54 +266,6 @@ abstract class FilterQuestsStoreBase with Store {
       }
       if (i == selectEmployeeRating.length - 1) selectEmployeeRating[0] = true;
     }
-    // if (index == 0) if (value == true)
-    //   for (int i = 0; i < selectEmployeeRating.length; i++) {
-    //     selectEmployeeRating[i] = true;
-    //     selectEmployeeRating.reduce((p, e) => p && e);
-    //   }
-    // else
-    //   for (int i = 0; i < selectEmployeeRating.length; i++)
-    //     selectEmployeeRating[i] = false;
-    // else if (selectEmployeeRating[0] == true) selectEmployeeRating[0] = false;
-    // selectEmployeeRating[index] = value ?? false;
-    // selectEmployeeRating[0] =
-    //     selectEmployeeRating.skip(1).reduce((p, e) => p && e);
-  }
-
-  @action
-  void setSelectedQuest(bool? value, int index) {
-    switch (index) {
-      case 0:
-        for (int i = 0; i < selectQuest.length; i++)
-          selectQuest[i] = value ?? false;
-        break;
-      case 1:
-        selectQuest[1] = value ?? false;
-        break;
-      case 2:
-        selectQuest[2] = value ?? false;
-        break;
-      case 3:
-        selectQuest[3] = value ?? false;
-        break;
-    }
-    for (int i = 1; i < selectQuest.length; i++) {
-      if (selectQuest[i] == false) {
-        selectQuest[0] = false;
-        break;
-      }
-      if (i == selectQuest.length - 1) selectQuest[0] = true;
-    }
-    // if (index == 0) if (value == true)
-    //   for (int i = 0; i < selectQuest.length; i++) {
-    //     selectQuest[i] = true;
-    //     selectQuest.reduce((p, e) => p && e);
-    //   }
-    // else
-    //   for (int i = 0; i < selectQuest.length; i++) selectQuest[i] = false;
-    // else if (selectQuest[0] == true) selectQuest[0] = false;
-    // selectQuest[index] = value ?? false;
-    // selectQuest[0] = selectQuest.skip(1).reduce((p, e) => p && e);
   }
 
   @action
@@ -268,18 +292,6 @@ abstract class FilterQuestsStoreBase with Store {
       }
       if (i == selectQuestDelivery.length - 1) selectQuestDelivery[0] = true;
     }
-    // if (index == 0) if (value == true)
-    //   for (int i = 0; i < selectQuestDelivery.length; i++) {
-    //     selectQuestDelivery[i] = true;
-    //     selectQuestDelivery.reduce((p, e) => p && e);
-    //   }
-    // else
-    //   for (int i = 0; i < selectQuestDelivery.length; i++)
-    //     selectQuestDelivery[i] = false;
-    // else if (selectQuestDelivery[0] == true) selectQuestDelivery[0] = false;
-    // selectQuestDelivery[index] = value ?? false;
-    // selectQuestDelivery[0] =
-    //     selectQuestDelivery.skip(1).reduce((p, e) => p && e);
   }
 
   @computed
@@ -309,52 +321,13 @@ abstract class FilterQuestsStoreBase with Store {
       }
       if (i == selectEmployment.length - 1) selectEmployment[0] = true;
     }
-    // if (index == 0) if (value == true)
-    //   for (int i = 0; i < selectEmployment.length; i++) {
-    //     selectEmployment[i] = true;
-    //     selectEmployment.reduce((p, e) => p && e);
-    //   }
-    // else
-    //   for (int i = 0; i < selectEmployment.length; i++)
-    //     selectEmployment[i] = false;
-    // else if (selectEmployment[0] == true) selectEmployment[0] = false;
-    // selectEmployment[index] = value ?? false;
-    // selectEmployment[0] = selectEmployment.skip(1).reduce((p, e) => p && e);
   }
 
   @action
   void setSortBy(String? index) => selectSortBy = index!;
 
-  Future<Map<String, dynamic>> parseJsonFromAssets(String assetsPath) async {
-    return jsonDecode(await rootBundle.loadString(assetsPath));
-  }
-
-  @action
-  Future readFilters() async {
-    final json = await parseJsonFromAssets("assets/lang/en-US.json");
-    final filtersJson = json["filters"]["items"] as Map<String, dynamic>;
-    filtersJson.forEach((key, value) {
-      filters.add(FilterItem(
-          header: "items.$key",
-          list: (value["sub"] as Map<String, dynamic>).keys.toList(),
-          type: TypeFilter.Check));
-    });
-    filters.insert(
-        0, FilterItem(header: "dd", list: sortBy, type: TypeFilter.Radio));
+  Future getFilters() async {
+    skillFilters = await _apiProvider.getSkillFilters();
     isLoading = false;
   }
 }
-
-class FilterItem {
-  FilterItem({
-    required this.list,
-    required this.header,
-    this.type = TypeFilter.Check,
-  });
-
-  List<String> list;
-  String header;
-  TypeFilter type;
-}
-
-enum TypeFilter { Radio, Check }

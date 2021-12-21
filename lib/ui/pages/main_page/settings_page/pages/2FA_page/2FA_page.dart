@@ -23,6 +23,7 @@ class TwoFAPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final store = context.read<TwoFAStore>();
     final userStore = context.read<ProfileMeStore>();
+    final mail = userStore.userData!.email!.split("@");
 
     return GestureDetector(
       onTap: () {
@@ -100,6 +101,7 @@ class TwoFAPage extends StatelessWidget {
                             child: Confirm2FAPages(
                               store: store,
                               userStore: userStore,
+                              mail: mail,
                             ),
                           ),
                           const SizedBox(
@@ -232,10 +234,12 @@ class TwoFAPage extends StatelessWidget {
 class Confirm2FAPages extends StatelessWidget {
   final TwoFAStore store;
   final ProfileMeStore userStore;
+  final List<String> mail;
 
   const Confirm2FAPages({
     required this.store,
     required this.userStore,
+    required this.mail,
   });
 
   @override
@@ -391,7 +395,13 @@ class Confirm2FAPages extends StatelessWidget {
             const SizedBox(
               height: 10.0,
             ),
-            Text("modals.6-digitCode".tr() + " 1234***@gmail.com."),
+            Text(
+              mail[0].length > 3
+                  ? "modals.6-digitCode".tr() +
+                      " ${mail[0][0]}${mail[0][1]}${mail[0][2]}***@${mail[1]}"
+                  : "modals.6-digitCode".tr() +
+                      " ${mail[0][0]}${mail[0][1]}***@${mail[1]}",
+            ),
             const SizedBox(
               height: 20.0,
             ),

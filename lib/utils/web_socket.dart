@@ -41,7 +41,8 @@ class WebSocket {
           "auth": {
             "headers": {"authorization": "Bearer $token"}
           },
-          "subs": ["/notifications/chat"]
+          "subs": ["/notifications/chat",
+          "/notifications/quest"]
         }""");
 
     this._channel.stream.listen(
