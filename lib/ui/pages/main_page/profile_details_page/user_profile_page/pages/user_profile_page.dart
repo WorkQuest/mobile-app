@@ -50,7 +50,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
     userStore = context.read<ProfileMeStore>();
     if (widget.info == null) {
       role = userStore!.userData?.role ?? UserRole.Worker;
-
       userStore!.getProfileMe().then((value) {
         setState(() => role = userStore!.userData!.role);
         myQuests!.getQuests(userStore!.userData!.id, role, true);

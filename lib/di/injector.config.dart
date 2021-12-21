@@ -21,6 +21,8 @@ import '../ui/pages/main_page/profile_details_page/portfolio_page/store/portfoli
     as _i28;
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart'
     as _i10;
+import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart'
+    as _i31;
 import '../ui/pages/main_page/quest_details_page/employer/store/employer_store.dart'
     as _i12;
 import '../ui/pages/main_page/quest_details_page/worker/store/worker_store.dart'
@@ -112,6 +114,10 @@ extension GetItInjectableX on _i1.GetIt {
     gh.singleton<_i29.ProfileMeStore>(
         _i29.ProfileMeStore(get<_i8.ApiProvider>()));
     gh.singleton<_i30.QuestsStore>(_i30.QuestsStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i31.UserProfileStore>(_i31.UserProfileStore(
+        get<_i8.ApiProvider>(),
+        get<_i26.MyQuestStore>(),
+        get<_i28.PortfolioStore>()));
     return this;
   }
 }
