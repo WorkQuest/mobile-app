@@ -36,14 +36,20 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     List.generate(4, (index) => false),
   );
 
-  @observable
-  ObservableList<String> employmentValue = ObservableList.of([]);
+  List<String> employmentValue = [];
+
+  List<String> workplaceValue = [];
+
+  List<String> employeeRatingValue = [];
+
+  List<int> priorityValue = [];
+
+  List<String> selectedSkill = [];
+
+  String sort = "";
 
   @observable
-  ObservableList<String> workplaceValue = ObservableList.of([]);
-
-  @observable
-  ObservableList<int> priorityValue = ObservableList.of([]);
+  ObservableMap<int, ObservableList<bool>> selectedSkillFilters = ObservableMap.of({});
 
   @observable
   List<String> sortBy = [
@@ -56,17 +62,17 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   @observable
   String selectSortBy = "";
 
-  @observable
-  List<String> sortByQuestDelivery = [
-    "quests.filter.sortByQuestDelivery.selectAll".tr(),
-    "quests.filter.sortByQuestDelivery.urgent".tr(),
-    "quests.filter.sortByQuestDelivery.shortTerm".tr(),
-    "quests.filter.sortByQuestDelivery.fixedDelivery".tr(),
-  ];
-
-  @observable
-  ObservableList<bool> selectQuestDelivery =
-      ObservableList.of(List.generate(4, (index) => false));
+  // @observable
+  // List<String> sortByQuestDelivery = [
+  //   "quests.filter.sortByQuestDelivery.selectAll".tr(),
+  //   "quests.filter.sortByQuestDelivery.urgent".tr(),
+  //   "quests.filter.sortByQuestDelivery.shortTerm".tr(),
+  //   "quests.filter.sortByQuestDelivery.fixedDelivery".tr(),
+  // ];
+  //
+  // @observable
+  // ObservableList<bool> selectQuestDelivery =
+  // ObservableList.of(List.generate(4, (index) => false));
 
   @observable
   ObservableList<String> sortByEmployment = ObservableList.of([
@@ -88,9 +94,9 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     "quests.filter.sortByQuestDelivery.fixedDelivery".tr(),
   ]);
 
-  @observable
-  ObservableList<bool> selectPriority =
-      ObservableList.of(List.generate(4, (index) => false));
+  // @observable
+  // ObservableList<bool> selectPriority =
+  // ObservableList.of(List.generate(4, (index) => false));
 
   @observable
   ObservableList<String> sortByEmployeeRating = ObservableList.of([
@@ -115,7 +121,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   ObservableList<bool> selectWorkplace =
       ObservableList.of(List.generate(3, (index) => false));
 
-  @action
   List<String> getEmploymentValue() {
     if (employment[0] == true) {
       employmentValue.clear();
@@ -144,7 +149,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     return employmentValue;
   }
 
-  @action
   List<int> getPriorityValue() {
     if (priority[0] == true) {
       priorityValue.add(0);
@@ -169,7 +173,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     return priorityValue;
   }
 
-  @action
   List<String> getWorkplaceValue() {
     if (workplace[0] == true) {
       workplaceValue.clear();
@@ -191,6 +194,21 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
       workplaceValue.remove("office");
     }
     return workplaceValue;
+  }
+
+  String getSortByValue() {
+    if (selectSortBy == "quests.filter.sortBy.addedTimeAscending".tr()) {
+      return sort = "sort[createdAt]=asc";
+    } else if (selectSortBy ==
+        "quests.filter.sortBy.addedTimeDescending".tr()) {
+      return sort = "sort[createdAt]=desc";
+    }
+    if (selectSortBy == "quests.filter.sortBy.priceAscending".tr()) {
+      return sort = "sort[price]=asc";
+    } else if (selectSortBy == "quests.filter.sortBy.priceDescending".tr()) {
+      return sort = "sort[price]=desc";
+    }
+    return sort;
   }
 
   @action
@@ -220,25 +238,24 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   void setSelectedPriority(bool? value, int index) {
     switch (index) {
       case 0:
-        for (int i = 0; i < selectPriority.length; i++)
-          selectPriority[i] = value ?? false;
+        for (int i = 0; i < priority.length; i++) priority[i] = value ?? false;
         break;
       case 1:
-        selectPriority[1] = value ?? false;
+        priority[1] = value ?? false;
         break;
       case 2:
-        selectPriority[2] = value ?? false;
+        priority[2] = value ?? false;
         break;
       case 3:
-        selectPriority[3] = value ?? false;
+        priority[3] = value ?? false;
         break;
     }
-    for (int i = 1; i < selectPriority.length; i++) {
-      if (selectPriority[i] == false) {
-        selectPriority[0] = false;
+    for (int i = 1; i < priority.length; i++) {
+      if (priority[i] == false) {
+        priority[0] = false;
         break;
       }
-      if (i == selectPriority.length - 1) selectPriority[0] = true;
+      if (i == priority.length - 1) priority[0] = true;
     }
   }
 
@@ -268,31 +285,52 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     }
   }
 
-  @action
-  void setSelectedQuestDelivery(bool? value, int index) {
-    switch (index) {
-      case 0:
-        for (int i = 0; i < selectQuestDelivery.length; i++)
-          selectQuestDelivery[i] = value ?? false;
-        break;
-      case 1:
-        selectQuestDelivery[1] = value ?? false;
-        break;
-      case 2:
-        selectQuestDelivery[2] = value ?? false;
-        break;
-      case 3:
-        selectQuestDelivery[3] = value ?? false;
-        break;
+  List<String> getEmployeeRating() {
+    employeeRatingValue.clear();
+    if (selectEmployeeRating[0] == true) {
+      employeeRatingValue.add("verified");
+      employeeRatingValue.add("reliable");
+      employeeRatingValue.add("topRanked");
+      return employeeRatingValue;
     }
-    for (int i = 1; i < selectQuestDelivery.length; i++) {
-      if (selectQuestDelivery[i] == false) {
-        selectQuestDelivery[0] = false;
-        break;
-      }
-      if (i == selectQuestDelivery.length - 1) selectQuestDelivery[0] = true;
+    if (selectEmployeeRating[1] == true) {
+      employeeRatingValue.add("verified");
     }
+    if (selectEmployeeRating[2] == true) {
+      employeeRatingValue.add("reliable");
+    }
+    if (selectEmployeeRating[3] == true) {
+      employeeRatingValue.add("topRanked");
+    }
+    return employeeRatingValue;
   }
+
+  //
+  // @action
+  // void setSelectedQuestDelivery(bool? value, int index) {
+  //   switch (index) {
+  //     case 0:
+  //       for (int i = 0; i < selectQuestDelivery.length; i++)
+  //         selectQuestDelivery[i] = value ?? false;
+  //       break;
+  //     case 1:
+  //       selectQuestDelivery[1] = value ?? false;
+  //       break;
+  //     case 2:
+  //       selectQuestDelivery[2] = value ?? false;
+  //       break;
+  //     case 3:
+  //       selectQuestDelivery[3] = value ?? false;
+  //       break;
+  //   }
+  //   for (int i = 1; i < selectQuestDelivery.length; i++) {
+  //     if (selectQuestDelivery[i] == false) {
+  //       selectQuestDelivery[0] = false;
+  //       break;
+  //     }
+  //     if (i == selectQuestDelivery.length - 1) selectQuestDelivery[0] = true;
+  //   }
+  // }
 
   @computed
   bool get allSelected => false;
@@ -324,10 +362,85 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   }
 
   @action
+  void initEmployments(List<String> value) {
+    value.forEach((element) {
+      if (element == "fullTime") selectEmployment[1] = true;
+      if (element == "partTime") selectEmployment[2] = true;
+      if (element == "fixedTerm") selectEmployment[3] = true;
+    });
+    if (selectEmployment[1] == true &&
+        selectEmployment[2] == true &&
+        selectEmployment[3] == true) selectEmployment[0] = true;
+  }
+
+  @action
+  void initWorkplace(List<String> value) {
+    value.forEach((element) {
+      if (element == "both") {
+        selectWorkplace[0] = true;
+        selectWorkplace[1] = true;
+        selectWorkplace[2] = true;
+      }
+      if (element == "distant") selectWorkplace[1] = true;
+      if (element == "office") selectWorkplace[2] = true;
+    });
+  }
+
+  @action
+  void initPriority(List<int> value) {
+    value.forEach((element) {
+      if (element == 0) {
+        priority[0] = true;
+        priority[1] = true;
+        priority[2] = true;
+        priority[3] = true;
+        return;
+      }
+      if (element == 1) priority[1] = true;
+      if (element == 2) priority[2] = true;
+      if (element == 3) priority[3] = true;
+    });
+  }
+
+  @action
+  void initSort(String value) {
+    if (value == "sort[createdAt]=asc") selectSortBy = sortBy[0];
+    if (value == "sort[createdAt]=desc") selectSortBy = sortBy[1];
+    if (value == "sort[price]=asc") selectSortBy = sortBy[2];
+    if (value == "sort[price]=desc") selectSortBy = sortBy[3];
+  }
+
+  @action
+  void initSkillFilters(List<String> value) {
+    for (int i = 1; i < skillFilters.keys.length + 2; i++) {
+      if (skillFilters[i] != null)
+        selectedSkillFilters[i - 1] = ObservableList.of
+            (List.generate(skillFilters[i]!.length, (index) => false));
+    }
+    value.forEach((element) {
+      String skill = element.split(".")[1];
+      if (skill.length == 3) skill = skill[1] + skill[2];
+      if (skill.length == 4) skill = skill[2] + skill[3];
+      selectedSkillFilters[int.parse(element.split(".")[0]) - 1]![
+          int.parse(skill)] = true;
+    });
+  }
+
+  addSkill(String skill) {
+    selectedSkill.add(skill);
+  }
+
+  deleteSkill(String skill) {
+    for (int i = 0; i < selectedSkill.length; i++)
+      if (selectedSkill[i] == skill) selectedSkill.remove(skill);
+  }
+
+  @action
   void setSortBy(String? index) => selectSortBy = index!;
 
-  Future getFilters() async {
+  Future getFilters(List<String> value) async {
     skillFilters = await _apiProvider.getSkillFilters();
+    initSkillFilters(value);
     isLoading = false;
   }
 }

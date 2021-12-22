@@ -181,9 +181,9 @@ extension QuestService on ApiProvider {
     int limit = 10,
     int offset = 0,
     String searchWord = "",
-    int? priority,
+    List<int> priority = const [],
     List<int> statuses = const [],
-    String? sort,
+    String sort = "",
     List<String> specializations = const [],
     bool? invited,
     bool? performing,
@@ -199,6 +199,10 @@ extension QuestService on ApiProvider {
     statuses.forEach((text) {
       status += "statuses[]=$text&";
     });
+    String priorities = "";
+    priority.forEach((text) {
+      priorities += "priorities[]=$text&";
+    });
     String workplaces = "";
     workplace.forEach((text) {
       workplaces += "workplaces[]=$text&";
@@ -208,13 +212,13 @@ extension QuestService on ApiProvider {
       employments += "employments[]=$text&";
     });
     final responseData = await _httpClient.get(
-      query: '/v1/quests?$workplaces$employments$status$specialization',
+      query:
+          '/v1/quests?$workplaces$employments$status$specialization$priorities$sort',
       queryParameters: {
         "offset": offset,
         "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
-        if (priority != null) "priority": priority,
-        //"sort": sort,
+        // if (sort.isNotEmpty) "sort": sort,
         if (invited != null) "invited": invited,
         if (performing != null) "performing": performing,
         if (starred != null) "starred": starred,
@@ -233,27 +237,33 @@ extension QuestService on ApiProvider {
 
   Future<Map<String, dynamic>> getWorkers({
     String searchWord = "",
-    String? sort,
+    String sort = "",
     int limit = 10,
     int offset = 0,
     List<int> priority = const [],
     List<String> ratingStatus = const [],
     List<String> workplace = const [],
+    List<String> specializations = const [],
   }) async {
+    String specialization = "";
+    specializations.forEach((text) {
+      specialization += "specializations[]=$text&";
+    });
     String priorities = "";
     priority.forEach((text) {
       priorities += "priority[]=$text&";
     });
     String ratingStatuses = "";
     ratingStatus.forEach((text) {
-      ratingStatuses += "ratingStatus[]=$text&";
+      ratingStatuses += "ratingStatus=$text&";
     });
     String workplaces = "";
     workplace.forEach((text) {
       workplaces += "workplaces[]=$text&";
     });
     final responseData = await _httpClient.get(
-      query: '/v1/profile/workers?',
+      query:
+          '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort$specialization',
       queryParameters: {
         if (searchWord.isNotEmpty) "q": searchWord,
         "offset": offset,
@@ -469,7 +479,8 @@ extension UserInfoService on ApiProvider {
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
         if (userData.role == UserRole.Worker)
           "wagePerHour": userData.wagePerHour,
-        if (userData.role == UserRole.Worker) "priority": userData.priority.index,
+        if (userData.role == UserRole.Worker)
+          "priority": userData.priority.index,
         if (userData.role == UserRole.Worker) "workplace": userData.workplace,
         "additionalInfo": {
           "secondMobileNumber":

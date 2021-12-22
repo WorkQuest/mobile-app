@@ -30,7 +30,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   List<String> selectedSkill = [];
 
   @observable
-  String? sort = "";
+  String sort = "";
 
   @observable
   int offset = 0;
@@ -70,16 +70,39 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @observable
   String locationPlaceName = '';
 
+  List<String> employments = [];
+
+  List<String> workplaces = [];
+
+  List<String> employeeRatings = [];
+
+  List<int> priorities = [];
+
   ///API_KEY HERE
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
-  addSkill(String skill) {
-    selectedSkill.add(skill);
+  setEmployment(List<String> employment) {
+    employments = employment;
   }
 
-  deleteSkill(String skill) {
-    for (int i = 0; i < selectedSkill.length; i++)
-      if (selectedSkill[i] == skill) selectedSkill.remove(skill);
+  setEmployeeRating(List<String> employeeRating) {
+    employeeRatings = employeeRating;
+  }
+
+  setWorkplace(List<String> workplace) {
+    workplaces = workplace;
+  }
+
+  setPriority(List<int> priority) {
+    priorities = priority;
+  }
+
+  setSortBy(String value) {
+    sort = value;
+  }
+
+  setSkillFilters(List<String> value) {
+    selectedSkill = value;
   }
 
   @action
@@ -171,8 +194,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       }
       final responseData = await _apiProvider.getQuests(
         statuses: [0, 1, 4],
-        // employment: getEmploymentValue(),
-        // workplace: getWorkplaceValue(),
+        employment: employments,
+        workplace: workplaces,
+        priority: priorities,
         offset: this.offset,
         limit: this.limit,
         sort: this.sort,
@@ -205,9 +229,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         sort: this.sort,
         offset: this.offsetWorkers,
         limit: this.limit,
-        // priority: getPriorityValue(),
-        ratingStatus: [],
-        // workplace: getWorkplaceValue(),
+        workplace: workplaces,
+        priority: priorities,
+        ratingStatus: employeeRatings,
       );
       workersList.addAll(ObservableList.of(List<ProfileMeResponse>.from(
           responseData["users"].map((x) => ProfileMeResponse.fromJson(x)))));

@@ -107,7 +107,7 @@ class WorkersItem extends StatelessWidget {
               height: 5,
             ),
             Text(
-              "322  WUSD",
+              "${workersInfo.wagePerHour}  WUSD",
               style: TextStyle(
                 color: Color(0xFF00AA5B),
                 fontSize: 18,

@@ -106,7 +106,7 @@ class ProfileMeResponse {
           }),
       location:
           json["location"] == null ? null : Location.fromJson(json["location"]),
-      wagePerHour: json["wagePerHour"] ?? "",
+      wagePerHour: json["wagePerHour"] ?? "0",
       workplace: json["workplace"],
       priority: QuestPriority.values[json["priority"] ?? 0],
       // createdAt: DateTime.parse(json["createdAt"]),

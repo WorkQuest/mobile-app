@@ -123,7 +123,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
           ) {
             return <Widget>[
               //__________AppBar__________//
-              sliverAppBar(),
+              sliverAppBar(widget.info),
               SliverPadding(
                 padding: EdgeInsets.fromLTRB(
                   16.0,

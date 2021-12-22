@@ -27,13 +27,11 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     storeFilter = context.read<FilterQuestsStore>();
     profile = context.read<ProfileMeStore>();
     storeQuest = context.read<QuestsStore>();
-    if (storeFilter != null) {
-      storeFilter!.getFilters();
-      // storeFilter!.readFilters();
-      storeFilter!.selectEmployment = storeFilter!.employment;
-      storeFilter!.selectWorkplace = storeFilter!.workplace;
-      storeFilter!.selectPriority = storeFilter!.priority;
-    }
+    storeFilter!.getFilters(storeQuest.selectedSkill);
+    storeFilter!.initEmployments(storeQuest.employments);
+    storeFilter!.initWorkplace(storeQuest.workplaces);
+    storeFilter!.initPriority(storeQuest.priorities);
+    storeFilter!.initSort(storeQuest.sort);
     super.initState();
   }
 
@@ -89,18 +87,11 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                         profile!.userData!.role == UserRole.Worker
                             ? Column(
                                 children: [
-                                  // _checkButton(
-                                  //   title: "quests.quests".tr(),
-                                  //   list: storeFilter!.sortByQuest,
-                                  //   selected: storeFilter!.selectQuest,
-                                  //   onChange: storeFilter!.setSelectedQuest,
-                                  // ),
                                   _checkButton(
                                     title: "quests.filter.deliveryTime".tr(),
-                                    list: storeFilter!.sortByQuestDelivery,
-                                    selected: storeFilter!.selectQuestDelivery,
-                                    onChange:
-                                        storeFilter!.setSelectedQuestDelivery,
+                                    list: storeFilter!.sortByPriority,
+                                    selected: storeFilter!.priority,
+                                    onChange: storeFilter!.setSelectedPriority,
                                   ),
                                   _checkButton(
                                     title: "quests.employment.title".tr(),
@@ -137,7 +128,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                     title: "quests.filter.priorityOfTheEmployee"
                                         .tr(),
                                     list: storeFilter!.sortByPriority,
-                                    selected: storeFilter!.selectPriority,
+                                    selected: storeFilter!.priority,
                                     onChange: storeFilter!.setSelectedPriority,
                                   ),
                                   _checkButton(
@@ -170,6 +161,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                           storeFilter!.skillFilters[index - 2]!,
                           index - 2,
                           storeQuest,
+                          storeFilter!,
                         ),
                       if (index == storeFilter!.skillFilters.length + 3)
                         bottomButtons(),
@@ -191,7 +183,15 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
           children: [
             TextButton(
               onPressed: () {
-                storeQuest.getQuests(true);
+                storeQuest.setEmployment(storeFilter!.getEmploymentValue());
+                storeQuest.setWorkplace(storeFilter!.getWorkplaceValue());
+                storeQuest.setPriority(storeFilter!.getPriorityValue());
+                storeQuest.setSortBy(storeFilter!.getSortByValue());
+                storeQuest.setEmployeeRating(storeFilter!.getEmployeeRating());
+                storeQuest.setSkillFilters(storeFilter!.selectedSkill);
+                profile!.userData!.role == UserRole.Employer
+                    ? storeQuest.getWorkers(true)
+                    : storeQuest.getQuests(true);
                 Navigator.pop(context);
               },
               child: Text(
@@ -219,8 +219,15 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
             ),
             OutlinedButton(
               onPressed: () {
+                storeQuest.employments.clear();
+                storeQuest.workplaces.clear();
+                storeQuest.priorities.clear();
                 storeQuest.selectedSkill.clear();
-                storeQuest.getQuests(true);
+                storeQuest.employeeRatings.clear();
+                storeQuest.sort = "";
+                profile!.userData!.role == UserRole.Employer
+                    ? storeQuest.getWorkers(true)
+                    : storeQuest.getQuests(true);
                 Navigator.pop(context);
               },
               child: Text(
@@ -305,26 +312,32 @@ class ExpansionCell<T> extends StatefulWidget {
   final List<int> filter;
   final int index;
   final QuestsStore storeQuest;
+  final FilterQuestsStore storeFilter;
 
-  const ExpansionCell(this.filter, this.index, this.storeQuest);
+  const ExpansionCell(
+    this.filter,
+    this.index,
+    this.storeQuest,
+    this.storeFilter,
+  );
 
   @override
   State<ExpansionCell> createState() => _ExpansionCellState();
 }
 
 class _ExpansionCellState extends State<ExpansionCell> {
-  List<bool> selected = [];
+  // List<bool> selected = [];
   String selectRadioValue = "";
 
-  @override
-  void initState() {
-    setState(
-      () {
-        selected = List.generate(widget.filter.length, (index) => false);
-      },
-    );
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   setState(
+  //     () {
+  //       selected = List.generate(widget.filter.length, (index) => false);
+  //     },
+  //   );
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -354,20 +367,20 @@ class _ExpansionCellState extends State<ExpansionCell> {
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: [
-          Checkbox(
-            checkColor: Colors.white,
-            value: selected[index],
-            onChanged: (bool? value) {
-              setState(
-                () {
-                  selected[index] = value!;
-                  if (value == true)
-                    widget.storeQuest.addSkill("$spec.$skill");
-                  else
-                    widget.storeQuest.deleteSkill("$spec.$skill");
-                },
-              );
-            },
+          Observer(
+            builder: (_) => Checkbox(
+              checkColor: Colors.white,
+              value: widget
+                  .storeFilter.selectedSkillFilters[widget.index - 1]![index],
+              onChanged: (bool? value) {
+                widget.storeFilter
+                    .selectedSkillFilters[widget.index - 1]![index] = value!;
+                if (value == true)
+                  widget.storeFilter.addSkill("$spec.$skill");
+                else
+                  widget.storeFilter.deleteSkill("$spec.$skill");
+              },
+            ),
           ),
           Expanded(
             child: Text(

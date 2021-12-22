@@ -22,7 +22,7 @@ import '../ui/pages/main_page/profile_details_page/portfolio_page/store/portfoli
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart'
     as _i10;
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart'
-    as _i31;
+    as _i32;
 import '../ui/pages/main_page/quest_details_page/employer/store/employer_store.dart'
     as _i12;
 import '../ui/pages/main_page/quest_details_page/worker/store/worker_store.dart'
@@ -110,18 +110,18 @@ extension GetItInjectableX on _i1.GetIt {
     gh.factory<_i25.ChatRoomStore>(() =>
         _i25.ChatRoomStore(get<_i8.ApiProvider>(), get<_i26.ChatStore>()));
     gh.singleton<_i8.ApiProvider>(_i8.ApiProvider(get<_i4.IHttpClient>()));
-    gh.singleton<_i25.ChatStore>(_i25.ChatStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i26.MyQuestStore>(_i26.MyQuestStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i27.PinCodeStore>(_i27.PinCodeStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i28.PortfolioStore>(
-        _i28.PortfolioStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i29.ProfileMeStore>(
-        _i29.ProfileMeStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i30.QuestsStore>(_i30.QuestsStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i31.UserProfileStore>(_i31.UserProfileStore(
+    gh.singleton<_i26.ChatStore>(_i26.ChatStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i27.MyQuestStore>(_i27.MyQuestStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i28.PinCodeStore>(_i28.PinCodeStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i29.PortfolioStore>(
+        _i29.PortfolioStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i30.ProfileMeStore>(
+        _i30.ProfileMeStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i31.QuestsStore>(_i31.QuestsStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i32.UserProfileStore>(_i32.UserProfileStore(
         get<_i8.ApiProvider>(),
-        get<_i26.MyQuestStore>(),
-        get<_i28.PortfolioStore>()));
+        get<_i27.MyQuestStore>(),
+        get<_i29.PortfolioStore>()));
     return this;
   }
 }

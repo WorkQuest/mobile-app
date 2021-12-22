@@ -1,14 +1,14 @@
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 extension CustomAppBar on UserProfileState {
-  Widget sliverAppBar() => SliverAppBar(
+  Widget sliverAppBar(ProfileMeResponse? info) => SliverAppBar(
         backgroundColor: Color(0xFF0083C7),
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -19,7 +19,7 @@ extension CustomAppBar on UserProfileState {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          if (widget.info == null)
+          if (info == null)
             IconButton(
               icon: Icon(
                 Icons.edit,
@@ -46,15 +46,15 @@ extension CustomAppBar on UserProfileState {
             fit: StackFit.expand,
             children: [
               Image.network(
-                widget.info == null
+                info == null
                     ? userStore!.userData!.avatar!.url
-                    : widget.info!.avatar!.url,
+                    : info.avatar!.url,
                 fit: BoxFit.cover,
               ),
               Positioned(
                 bottom: 85.0,
                 left: 15.0,
-                child: widget.info == null
+                child: info == null
                     ? Row(
                         children: [
                           for (int i = 0;
@@ -86,7 +86,7 @@ extension CustomAppBar on UserProfileState {
                         children: [
                           for (int i = 0;
                               i <
-                                  widget.info!.ratingStatistic!.averageMark
+                                  info.ratingStatistic!.averageMark
                                       .round();
                               i++)
                             Icon(
@@ -97,7 +97,7 @@ extension CustomAppBar on UserProfileState {
                           for (int i = 0;
                               i <
                                   5 -
-                                      widget.info!.ratingStatistic!.averageMark
+                                      info.ratingStatistic!.averageMark
                                           .round();
                               i++)
                             Icon(
@@ -111,9 +111,9 @@ extension CustomAppBar on UserProfileState {
             ],
           ),
           title: appBarTitle(
-            widget.info == null
+            info == null
                 ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
-                : "${widget.info!.firstName} ${widget.info!.lastName}",
+                : "${info.firstName} ${info.lastName}",
             appBarPosition,
             userStore!.userData!.ratingStatistic?.status ?? "noStatus",
           ),
