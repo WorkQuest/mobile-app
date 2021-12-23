@@ -2,6 +2,7 @@ import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
@@ -39,22 +40,21 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   ProfileMeStore? userStore;
   PortfolioStore? portfolioStore;
+  UserProfileStore? viewOtherUser;
   MyQuestStore? myQuests;
   late UserRole role;
 
   void initState() {
     super.initState();
+
     _tabController = TabController(vsync: this, length: 2);
+
     portfolioStore = context.read<PortfolioStore>();
     myQuests = context.read<MyQuestStore>();
     userStore = context.read<ProfileMeStore>();
+
     if (widget.info == null) {
       role = userStore!.userData?.role ?? UserRole.Worker;
-      userStore!.getProfileMe().then((value) {
-        setState(() => role = userStore!.userData!.role);
-        myQuests!.getQuests(userStore!.userData!.id, role, true);
-      });
-
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(
           userId: userStore!.userData!.id,
@@ -64,11 +64,11 @@ class UserProfileState<T extends UserProfile> extends State<T>
       );
     } else {
       role = widget.info?.role ?? UserRole.Worker;
-
-      userStore!.getProfileMe().then((value) {
-        setState(() => role = widget.info!.role);
-        myQuests!.getQuests(widget.info!.id, role, true);
-      });
+      viewOtherUser = context.read<UserProfileStore>();
+      viewOtherUser!.getQuests(
+        widget.info!.id,
+        role,
+      );
 
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(

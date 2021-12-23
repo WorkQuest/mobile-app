@@ -20,10 +20,10 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
         SizedBox(
           height: 20,
         ),
-        myQuests?.performed != null
+        myQuests?.performed != null || (viewOtherUser?.userQuest.isNotEmpty ?? false)
             ? QuestsList(
                 QuestItemPriorityType.Performed,
-                myQuests!.performed,
+                widget.info == null ? myQuests!.performed : viewOtherUser!.userQuest,
                 physics: NeverScrollableScrollPhysics(),
                 isLoading: myQuests!.isLoading,
               )

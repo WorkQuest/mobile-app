@@ -55,7 +55,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
             child: Transform.scale(
               scale: 1.5,
               child: CircularProgressIndicator.adaptive(
-                strokeWidth: 10.0,
+                strokeWidth: 2.0,
               ),
             ),
           )

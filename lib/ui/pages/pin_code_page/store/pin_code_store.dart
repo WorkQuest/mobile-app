@@ -126,7 +126,6 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         await Storage.writePinCode(pin);
       } else {
         if (await Storage.readPinCode() != pin) {
-          print("object");
           pin = "";
           attempts += 1;
           if (attempts >= 3) {
@@ -138,17 +137,14 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
           return;
         }
       }
-
       String? token = await Storage.readRefreshToken();
-      print(token);
       if (token == null) {
         await Storage.deleteAllFromSecureStorage();
         this.onSuccess(StatePinCode.ToLogin);
         return;
       }
-
-      print("called");
-      BearerToken bearerToken = await _apiProvider.refreshToken(token);
+      BearerToken bearerToken =
+          await _apiProvider.refreshToken(token);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
 

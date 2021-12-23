@@ -306,7 +306,7 @@ class _VideoWidgetState extends State<VideoWidget> {
                     aspectRatio: _controller!.value.aspectRatio,
                     child: VideoPlayer(_controller!),
                   )
-                : CircularProgressIndicator(),
+                : CircularProgressIndicator.adaptive(),
             if (!_controller!.value.isPlaying &&
                 _controller!.value.isInitialized)
               SvgPicture.asset(
