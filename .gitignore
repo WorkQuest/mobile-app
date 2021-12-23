@@ -78,6 +78,7 @@ app.*.map.json
 **/ios/Flutter/flutter_assets/
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/Runner/keys.swift
 /ios/GoogleService-Info.plist
 
 # Exceptions to above rules.
@@ -86,5 +87,5 @@ app.*.map.json
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 # End of https://www.gitignore.io/api/flutter
-/ios/Runner/keys.swift
 /lib/di/injector.config.dart
+**/keys.dart
