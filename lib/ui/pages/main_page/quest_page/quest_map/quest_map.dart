@@ -222,9 +222,9 @@ class _QuestMapState extends State<QuestMap> {
       );
 
       mapStore!.initialCameraPosition = CameraPosition(
-        bearing: 192,
+        bearing: 192.0,
         target: LatLng(37.4, -122.0),
-        zoom: 17,
+        zoom: 19,
       );
       return;
     }
