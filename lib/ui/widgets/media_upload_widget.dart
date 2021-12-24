@@ -92,25 +92,28 @@ class _MediaUploadState extends State<MediaUpload> {
           result!.paths.map((path) => File(path!)).toList();
           widget.mediaFile.addAll(files);
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "uploader.uploadImage".tr(),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "uploader.uploadImage".tr(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                ),
               ),
-            ),
-            SizedBox(
-              height: 12,
-            ),
-            Icon(
-              Icons.add_to_photos_outlined,
-              color: Colors.blueAccent,
-            ),
-          ],
+              SizedBox(
+                height: 12,
+              ),
+              Icon(
+                Icons.add_to_photos_outlined,
+                color: Colors.blueAccent,
+              ),
+            ],
+          ),
         ),
       );
 

@@ -264,14 +264,14 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                   );
                                   widget.questInfo.assignedWorker =
                                       AssignedWorker(
-                                          firstName: store.selectedResponders!
-                                              .worker.firstName,
-                                          lastName:
-                                              store.selectedResponders!.worker
-                                                  .lastName,
-                                          avatar: store.selectedResponders!
-                                              .worker.avatar,
-                                          id: store.selectedResponders!.id);
+                                    firstName: store
+                                        .selectedResponders!.worker.firstName,
+                                    lastName: store
+                                        .selectedResponders!.worker.lastName,
+                                    avatar:
+                                        store.selectedResponders!.worker.avatar,
+                                    id: store.selectedResponders!.id,
+                                  );
                                   deleteQuest(widget.questInfo);
                                   addQuest(widget.questInfo, true);
                                   Navigator.pop(context);

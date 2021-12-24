@@ -413,31 +413,30 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
               chat!.chatModel.userMembers
                   .remove(chat!.chatModel.userMembers[i]);
             }
-        });
-        chat!.messages.insert(
-            0,
-            MessageModel(
-              id: "",
-              number: 0,
-              chatId: chat!.chatModel.id,
-              senderUserId: chat!.chatModel.id,
-              senderStatus: "",
-              type: "",
-              text: null,
-              createdAt: DateTime.now(),
-              medias: [],
-              sender: chat!.chatModel.owner,
-              infoMessage: InfoMessage(
+          chat!.messages.insert(
+              0,
+              MessageModel(
                 id: "",
-                messageId: "",
-                userId: chat!.chatModel.id,
-                messageAction: "groupChatDeleteUser",
-                user: null,
-              ),
-              star: null,
-            ));
-        print("deleted");
-
+                number: 0,
+                chatId: chat!.chatModel.id,
+                senderUserId: chat!.chatModel.id,
+                senderStatus: "",
+                type: "",
+                text: null,
+                createdAt: DateTime.now(),
+                medias: [],
+                sender: chat!.chatModel.owner,
+                infoMessage: InfoMessage(
+                  id: "",
+                  messageId: "",
+                  userId: chat!.chatModel.id,
+                  messageAction: "groupChatDeleteUser",
+                  user: null,
+                ),
+                star: null,
+              ));
+        });
+        userForDeleting.clear();
         chat!.update();
         this.onSuccess(true);
       } catch (e, trace) {

@@ -77,50 +77,20 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     });
   }
 
-  final _$employmentValueAtom =
-      Atom(name: 'FilterQuestsStoreBase.employmentValue');
+  final _$selectedSkillFiltersAtom =
+      Atom(name: 'FilterQuestsStoreBase.selectedSkillFilters');
 
   @override
-  ObservableList<String> get employmentValue {
-    _$employmentValueAtom.reportRead();
-    return super.employmentValue;
+  ObservableMap<int, ObservableList<bool>> get selectedSkillFilters {
+    _$selectedSkillFiltersAtom.reportRead();
+    return super.selectedSkillFilters;
   }
 
   @override
-  set employmentValue(ObservableList<String> value) {
-    _$employmentValueAtom.reportWrite(value, super.employmentValue, () {
-      super.employmentValue = value;
-    });
-  }
-
-  final _$workplaceValueAtom =
-      Atom(name: 'FilterQuestsStoreBase.workplaceValue');
-
-  @override
-  ObservableList<String> get workplaceValue {
-    _$workplaceValueAtom.reportRead();
-    return super.workplaceValue;
-  }
-
-  @override
-  set workplaceValue(ObservableList<String> value) {
-    _$workplaceValueAtom.reportWrite(value, super.workplaceValue, () {
-      super.workplaceValue = value;
-    });
-  }
-
-  final _$priorityValueAtom = Atom(name: 'FilterQuestsStoreBase.priorityValue');
-
-  @override
-  ObservableList<int> get priorityValue {
-    _$priorityValueAtom.reportRead();
-    return super.priorityValue;
-  }
-
-  @override
-  set priorityValue(ObservableList<int> value) {
-    _$priorityValueAtom.reportWrite(value, super.priorityValue, () {
-      super.priorityValue = value;
+  set selectedSkillFilters(ObservableMap<int, ObservableList<bool>> value) {
+    _$selectedSkillFiltersAtom.reportWrite(value, super.selectedSkillFilters,
+        () {
+      super.selectedSkillFilters = value;
     });
   }
 
@@ -151,38 +121,6 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
   set selectSortBy(String value) {
     _$selectSortByAtom.reportWrite(value, super.selectSortBy, () {
       super.selectSortBy = value;
-    });
-  }
-
-  final _$sortByQuestDeliveryAtom =
-      Atom(name: 'FilterQuestsStoreBase.sortByQuestDelivery');
-
-  @override
-  List<String> get sortByQuestDelivery {
-    _$sortByQuestDeliveryAtom.reportRead();
-    return super.sortByQuestDelivery;
-  }
-
-  @override
-  set sortByQuestDelivery(List<String> value) {
-    _$sortByQuestDeliveryAtom.reportWrite(value, super.sortByQuestDelivery, () {
-      super.sortByQuestDelivery = value;
-    });
-  }
-
-  final _$selectQuestDeliveryAtom =
-      Atom(name: 'FilterQuestsStoreBase.selectQuestDelivery');
-
-  @override
-  ObservableList<bool> get selectQuestDelivery {
-    _$selectQuestDeliveryAtom.reportRead();
-    return super.selectQuestDelivery;
-  }
-
-  @override
-  set selectQuestDelivery(ObservableList<bool> value) {
-    _$selectQuestDeliveryAtom.reportWrite(value, super.selectQuestDelivery, () {
-      super.selectQuestDelivery = value;
     });
   }
 
@@ -231,22 +169,6 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
   set sortByPriority(ObservableList<String> value) {
     _$sortByPriorityAtom.reportWrite(value, super.sortByPriority, () {
       super.sortByPriority = value;
-    });
-  }
-
-  final _$selectPriorityAtom =
-      Atom(name: 'FilterQuestsStoreBase.selectPriority');
-
-  @override
-  ObservableList<bool> get selectPriority {
-    _$selectPriorityAtom.reportRead();
-    return super.selectPriority;
-  }
-
-  @override
-  set selectPriority(ObservableList<bool> value) {
-    _$selectPriorityAtom.reportWrite(value, super.selectPriority, () {
-      super.selectPriority = value;
     });
   }
 
@@ -320,39 +242,6 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
       ActionController(name: 'FilterQuestsStoreBase');
 
   @override
-  List<String> getEmploymentValue() {
-    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
-        name: 'FilterQuestsStoreBase.getEmploymentValue');
-    try {
-      return super.getEmploymentValue();
-    } finally {
-      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  List<int> getPriorityValue() {
-    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
-        name: 'FilterQuestsStoreBase.getPriorityValue');
-    try {
-      return super.getPriorityValue();
-    } finally {
-      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  List<String> getWorkplaceValue() {
-    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
-        name: 'FilterQuestsStoreBase.getWorkplaceValue');
-    try {
-      return super.getWorkplaceValue();
-    } finally {
-      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setSelectedWorkplace(bool? value, int index) {
     final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
         name: 'FilterQuestsStoreBase.setSelectedWorkplace');
@@ -386,22 +275,66 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
   }
 
   @override
-  void setSelectedQuestDelivery(bool? value, int index) {
+  void setSelectedEmployment(bool? value, int index) {
     final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
-        name: 'FilterQuestsStoreBase.setSelectedQuestDelivery');
+        name: 'FilterQuestsStoreBase.setSelectedEmployment');
     try {
-      return super.setSelectedQuestDelivery(value, index);
+      return super.setSelectedEmployment(value, index);
     } finally {
       _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void setSelectedEmployment(bool? value, int index) {
+  void initEmployments(List<String> value) {
     final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
-        name: 'FilterQuestsStoreBase.setSelectedEmployment');
+        name: 'FilterQuestsStoreBase.initEmployments');
     try {
-      return super.setSelectedEmployment(value, index);
+      return super.initEmployments(value);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void initWorkplace(List<String> value) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.initWorkplace');
+    try {
+      return super.initWorkplace(value);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void initPriority(List<int> value) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.initPriority');
+    try {
+      return super.initPriority(value);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void initSort(String value) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.initSort');
+    try {
+      return super.initSort(value);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void initSkillFilters(List<String> value) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.initSkillFilters');
+    try {
+      return super.initSkillFilters(value);
     } finally {
       _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -425,17 +358,12 @@ isLoading: ${isLoading},
 employment: ${employment},
 workplace: ${workplace},
 priority: ${priority},
-employmentValue: ${employmentValue},
-workplaceValue: ${workplaceValue},
-priorityValue: ${priorityValue},
+selectedSkillFilters: ${selectedSkillFilters},
 sortBy: ${sortBy},
 selectSortBy: ${selectSortBy},
-sortByQuestDelivery: ${sortByQuestDelivery},
-selectQuestDelivery: ${selectQuestDelivery},
 sortByEmployment: ${sortByEmployment},
 selectEmployment: ${selectEmployment},
 sortByPriority: ${sortByPriority},
-selectPriority: ${selectPriority},
 sortByEmployeeRating: ${sortByEmployeeRating},
 selectEmployeeRating: ${selectEmployeeRating},
 sortByWorkplace: ${sortByWorkplace},

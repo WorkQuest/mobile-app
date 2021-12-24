@@ -35,13 +35,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$sortAtom = Atom(name: '_QuestsStore.sort');
 
   @override
-  String? get sort {
+  String get sort {
     _$sortAtom.reportRead();
     return super.sort;
   }
 
   @override
-  set sort(String? value) {
+  set sort(String value) {
     _$sortAtom.reportWrite(value, super.sort, () {
       super.sort = value;
     });

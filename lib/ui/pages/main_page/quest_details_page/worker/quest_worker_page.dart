@@ -5,6 +5,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/ui/widgets/workplace_view.dart';
@@ -98,7 +99,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 ),
               ),
               WorkplaceView(widget.questInfo.workplace),
-              const SizedBox(width: 5,),
+              const SizedBox(
+                width: 5,
+              ),
               PriorityView(widget.questInfo.priority),
             ],
           ),
@@ -319,20 +322,33 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               ),
             ),
             const SizedBox(height: 15),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 20.0,
+              ),
+              child: MediaUpload(
+                store.mediaIds,
+                mediaFile: store.mediaFile,
+              ),
+            ),
+            const SizedBox(height: 21),
             Observer(
               builder: (_) => TextButton(
-                onPressed: store.opinion != ""
+                onPressed: store.opinion != "" &&
+                        (store.mediaFile.isNotEmpty ||
+                            store.mediaIds.isNotEmpty)
                     ? () {
                         store.sendRespondOnQuest(store.opinion);
                         widget.questInfo.responded = Responded(
-                            id: "",
-                            workerId: profile!.userData!.id,
-                            questId: widget.questInfo.id,
-                            status: 0,
-                            type: 0,
-                            message: store.opinion,
-                            createdAt: DateTime.now(),
-                            updatedAt: DateTime.now());
+                          id: "",
+                          workerId: profile!.userData!.id,
+                          questId: widget.questInfo.id,
+                          status: 0,
+                          type: 0,
+                          message: store.opinion,
+                          createdAt: DateTime.now(),
+                          updatedAt: DateTime.now(),
+                        );
                         deleteQuest(widget.questInfo);
                         addQuest(widget.questInfo, true);
                         Navigator.pop(context);

@@ -19,9 +19,10 @@ class InputToolbar extends StatefulWidget {
 class _InputToolbarState extends State<InputToolbar> {
   TextEditingController _controller = TextEditingController();
   bool checkPermission = false;
+  FilePickerResult? result;
+  List<File> files = [];
 
   int get maxAssetsCount => 9;
-  FilePickerResult? result;
 
   @override
   Widget build(BuildContext context) {
@@ -39,29 +40,25 @@ class _InputToolbarState extends State<InputToolbar> {
               onSelected: (value) async {
                 switch (value) {
                   case "modals.uploadAImages":
-                    if (!checkPermission) {
-                      result = await FilePicker.platform.pickFiles(
-                        allowMultiple: true,
-                        type: FileType.media,
-                      );
-                      checkPermission = true;
-                    }
+                    result = await FilePicker.platform.pickFiles(
+                      allowMultiple: true,
+                      type: FileType.media,
+                    );
                     break;
                   case "modals.uploadADocuments":
-                    if (!checkPermission) {
-                      result = await FilePicker.platform.pickFiles(
-                        allowMultiple: true,
-                        type: FileType.custom,
-                        allowedExtensions: ['pdf', 'doc'],
-                      );
-                      checkPermission = true;
-                    }
+                    result = await FilePicker.platform.pickFiles(
+                      allowMultiple: true,
+                      type: FileType.custom,
+                      allowedExtensions: ['pdf', 'doc'],
+                    );
                     break;
                 }
                 if (result != null) {
-                  List<File> files =
-                      result!.paths.map((path) => File(path!)).toList();
+                  files.addAll(
+                      result!.paths.map((path) => File(path!)).toList());
                   widget.store.media.addAll(files);
+                  files.clear();
+                  result = null;
                 }
               },
               itemBuilder: (BuildContext context) {
@@ -95,7 +92,7 @@ class _InputToolbarState extends State<InputToolbar> {
             ),
           ),
           InkWell(
-            onTap: _controller.text.isNotEmpty
+            onTap: _controller.text.isNotEmpty || widget.store.media.isNotEmpty
                 ? () {
                     widget.store.sendMessage(
                       _controller.text,
@@ -115,9 +112,10 @@ class _InputToolbarState extends State<InputToolbar> {
               ),
               child: SvgPicture.asset(
                 "assets/send_message_icon.svg",
-                color: _controller.text.isNotEmpty
-                    ? Color(0xFF0083C7)
-                    : Colors.grey,
+                color:
+                    _controller.text.isNotEmpty || widget.store.media.isNotEmpty
+                        ? Color(0xFF0083C7)
+                        : Colors.grey,
               ),
             ),
           ),

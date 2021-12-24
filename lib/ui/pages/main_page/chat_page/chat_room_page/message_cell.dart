@@ -37,33 +37,6 @@ class _MessageCellState extends State<MessageCell> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // onLongPress: () {
-      //   store.setChatSelected(true);
-      //   store.setChatHighlighted(chatDetails);
-      // },
-      // onTap: () {
-      //   if (store.chatSelected) {
-      //     store.setChatHighlighted(chatDetails);
-      //     for (int i = 0; i < store.idChatsForStar.values.length; i++)
-      //       if (store.idChatsForStar.values.toList()[i] == true) return;
-      //     store.setChatSelected(false);
-      //     print("${store.chatSelected}");
-      //   } else {
-      //     Map<String, dynamic> arguments = {
-      //       "chatId": chatDetails.chatModel.id,
-      //       "userId": userData.userData!.id
-      //     };
-      //     if (chatDetails.chatModel.lastMessage.senderUserId !=
-      //         userData.userData!.id) {
-      //       store.setMessageRead(
-      //           chatDetails.chatModel.id, chatDetails.chatModel.lastMessageId);
-      //       chatDetails.chatModel.lastMessage.senderStatus = "read";
-      //     }
-      //     Navigator.of(context, rootNavigator: true)
-      //         .pushNamed(ChatRoomPage.routeName, arguments: arguments);
-      //     store.checkMessage();
-      //   }
-      // },
       onTap: () {
         FocusScope.of(context).unfocus();
         if (widget.mess.infoMessage == null) {

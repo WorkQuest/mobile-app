@@ -76,6 +76,8 @@ class AddMembers extends StatelessWidget {
               Expanded(
                 child: Observer(
                   builder: (_) => ListView.separated(
+                    primary: false,
+                    shrinkWrap: false,
                     separatorBuilder: (context, index) => const Divider(
                       color: Colors.black12,
                       endIndent: 50.0,
@@ -143,11 +145,9 @@ class AddMembers extends StatelessWidget {
                 onPressed: store.usersId.isNotEmpty
                     ? () async {
                         await store.addUsersInChat();
-                        if (store.isSuccess) {
-                          store.getMessages(true);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        }
+                        store.getMessages(true);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                       }
                     : null,
                 child: store.isLoading

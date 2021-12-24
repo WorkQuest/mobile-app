@@ -865,6 +865,8 @@
       "participants": "Participants",
       "chatName": "Chat name"
     },
+    "errorEducation": "Complete all fields in Education",
+    "errorWork": "Complete all fields in Work Experience",
     "code": "Code",
     "attention": "Attention",
     "goBack": "If you go back, you won't be able to continue.",
@@ -1196,6 +1198,14 @@
       "groupChatAddUser": "User added",
       "groupChatDeleteUser": "User deleted",
       "groupChatLeaveUser": "User left chat"
+    },
+    "disputeTheme": {
+      "noResponse": "There is no response from the employer / employee",
+      "badlyDone": "Badly done work",
+      "additionalRequirements": "Additional requirements have been put forward",
+      "inconsistencies": "Inconsistencies in the requirements for the description of the quest",
+      "notConfirmed": "The quest is completed but the employee / employer has not confirmed its completion",
+      "anotherReason": "Another reason"
     }
   },
   "settings": {

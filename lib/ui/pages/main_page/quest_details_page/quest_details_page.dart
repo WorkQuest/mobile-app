@@ -1,8 +1,11 @@
 import 'package:app/constants.dart';
+import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
+import 'package:app/ui/widgets/priority_view.dart';
+import 'package:app/ui/widgets/workplace_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -218,6 +221,18 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                   ],
                 ),
               ),
+              const SizedBox(height: 20),
+              if (profile!.userData!.role == UserRole.Employer)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    WorkplaceView(widget.questInfo.workplace),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    PriorityView(widget.questInfo.priority),
+                  ],
+                ),
               getBody(),
               const SizedBox(height: 20),
             ],

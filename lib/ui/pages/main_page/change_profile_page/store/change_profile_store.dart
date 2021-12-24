@@ -2,14 +2,17 @@ import 'dart:io';
 
 import 'package:app/keys.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
+import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 part 'change_profile_store.g.dart';
 
 class ChangeProfileStore = ChangeProfileStoreBase with _$ChangeProfileStore;
+
 abstract class ChangeProfileStoreBase with Store {
   ChangeProfileStoreBase(this.userData);
 
@@ -44,19 +47,38 @@ abstract class ChangeProfileStoreBase with Store {
     userData.location!.longitude = detail.result.geometry!.location.lng;
   }
 
+  bool validationKnowledge(List<Map<String, String>> list,
+      BuildContext context) {
+    list.forEach((element) {
+      if (element["from"]!.isEmpty ||
+          element["to"]!.isEmpty ||
+          element["place"]!.isEmpty) errorAlert(
+        context, "modals.errorEducation".tr());
+    });
+    return true;
+  }
+
+  bool validationWork(List<Map<String, String>> list, BuildContext context) {
+    list.forEach((element) {
+      if (element["from"]!.isEmpty ||
+          element["to"]!.isEmpty ||
+          element["place"]!.isEmpty) errorAlert(
+          context, "modals.errorWork".tr());
+    });
+    return true;
+  }
+
   bool areThereAnyChanges(ProfileMeResponse? userData) {
     if (userData == null) return false;
 
     if (this.userData.userSpecializations != userData.userSpecializations)
       return true;
 
-    if (this.userData.wagePerHour != userData.wagePerHour)
-      return true;
+    if (this.userData.wagePerHour != userData.wagePerHour) return true;
 
     if (this.userData.firstName != userData.firstName) return true;
 
-    if (this.userData.lastName  != userData.lastName )
-      return true;
+    if (this.userData.lastName != userData.lastName) return true;
 
     if ((this.userData.additionalInfo!.address ?? "") !=
         (userData.additionalInfo!.address ?? "")) return true;
