@@ -1,16 +1,10 @@
 import 'dart:convert';
-import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/utils/storage.dart';
 import 'package:web_socket_channel/io.dart';
 
 class WebSocket {
   static final WebSocket _singleton = WebSocket._internal();
 
-  // Function(Map<String, dynamic> message)? _messageHandler;
-  //
-  // setListener(Function(Map<String, dynamic> message)? messageHandler) {
-  //   this._messageHandler = messageHandler;
-  // }
   void Function(dynamic)? handlerChats;
 
   late IOWebSocketChannel _channel;
@@ -70,8 +64,6 @@ class WebSocket {
 
   void _handleSubscription(dynamic json) async {
     if (json["path"] == "/notifications/chat") {
-      // changeFreezeBalance(json);
-      // changeBalance(json);
       getMessage(json);
     }
   }

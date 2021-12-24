@@ -54,49 +54,12 @@ class _DisputePageState extends State<DisputePage> {
                       alignment: Alignment.centerLeft,
                       child: Observer(
                         builder: (_) => InkWell(
-                          onTap: () => modalBottomSheet(
-                            DraggableScrollableSheet(
-                              initialChildSize: 1.0,
-                              expand: false,
-                              builder: (context, scrollController) =>
-                                  ListView.separated(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20.0,
-                                  vertical: 15.0,
-                                ),
-                                separatorBuilder: (context, index) =>
-                                    const Divider(
-                                  color: Colors.black12,
-                                  endIndent: 50.0,
-                                  indent: 50.0,
-                                ),
-                                controller: scrollController,
-                                shrinkWrap: true,
-                                itemCount: store.disputeCategoriesList.length,
-                                itemBuilder: (context, index) => SizedBox(
-                                  height: 45.0,
-                                  width: double.maxFinite,
-                                  child: InkWell(
-                                    onTap: () {
-                                      store.changeTheme(
-                                          store.disputeCategoriesList[index]);
-                                      Navigator.pop(context);
-                                    },
-                                    child: Center(
-                                      child: new Text(
-                                        store.disputeCategoriesList[index],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          onTap: () => modalBottomSheet(store),
                           child: Row(
                             children: [
                               Expanded(
                                 child: Text(
-                                  store.theme,
+                                  store.theme.tr(),
                                   maxLines: 2,
                                 ),
                               ),
@@ -173,17 +136,48 @@ class _DisputePageState extends State<DisputePage> {
         ],
       );
 
-  modalBottomSheet(Widget child) => showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(
-            20.0,
+  modalBottomSheet(DisputeStore store) => showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(
+              20.0,
+            ),
           ),
         ),
-      ),
-      context: context,
-      builder: (context) {
-        return child;
-      });
+        context: context,
+        builder: (context) {
+          return DraggableScrollableSheet(
+            initialChildSize: 1.0,
+            expand: false,
+            builder: (context, scrollController) => ListView.separated(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 15.0,
+              ),
+              separatorBuilder: (context, index) => const Divider(
+                color: Colors.black12,
+                endIndent: 50.0,
+                indent: 50.0,
+              ),
+              controller: scrollController,
+              shrinkWrap: false,
+              itemCount: store.disputeCategoriesList.length,
+              itemBuilder: (context, index) => SizedBox(
+                height: 45.0,
+                width: double.maxFinite,
+                child: InkWell(
+                  onTap: () {
+                    store.changeTheme(store.disputeCategoriesList[index]);
+                    Navigator.pop(context);
+                  },
+                  child: new Text(
+                    store.disputeCategoriesList[index].tr(),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
 }

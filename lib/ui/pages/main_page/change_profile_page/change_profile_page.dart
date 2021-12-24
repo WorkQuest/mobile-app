@@ -279,7 +279,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
       children: <Widget>[
         SkillSpecializationSelection(controller: _controller),
         Observer(
-          builder:(_) =>dropDownMenu(
+          builder: (_) => dropDownMenu(
             title: "settings.priority",
             value: profile!.priorityValue.name,
             list: QuestPriority.values.map((e) => e.name).toList(),
@@ -434,12 +434,16 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
 
   onSave() async {
     if (_formKey.currentState?.validate() ?? false) {
+      if (!pageStore.validationKnowledge(
+          _controllerKnowledge!.getListMap(), context)) return;
+      if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
+        return;
       pageStore.userData.additionalInfo?.educations =
           _controllerKnowledge!.getListMap();
       pageStore.userData.additionalInfo?.workExperiences =
           _controllerWork!.getListMap();
       pageStore.userData.additionalInfo!.address = pageStore.address;
-      pageStore.userData.priority =profile!.userData!.priority;
+      pageStore.userData.priority = profile!.userData!.priority;
       pageStore.userData.workplace = profile!.valueToWorkplace();
       if (!profile!.isLoading)
         pageStore.userData.userSpecializations =

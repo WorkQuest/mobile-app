@@ -9,21 +9,6 @@ part of 'worker_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$WorkerStore on _WorkerStore, Store {
-  final _$mediaAtom = Atom(name: '_WorkerStore.media');
-
-  @override
-  ObservableList<File> get media {
-    _$mediaAtom.reportRead();
-    return super.media;
-  }
-
-  @override
-  set media(ObservableList<File> value) {
-    _$mediaAtom.reportWrite(value, super.media, () {
-      super.media = value;
-    });
-  }
-
   final _$opinionAtom = Atom(name: '_WorkerStore.opinion');
 
   @override
@@ -54,6 +39,36 @@ mixin _$WorkerStore on _WorkerStore, Store {
     });
   }
 
+  final _$mediaFileAtom = Atom(name: '_WorkerStore.mediaFile');
+
+  @override
+  ObservableList<File> get mediaFile {
+    _$mediaFileAtom.reportRead();
+    return super.mediaFile;
+  }
+
+  @override
+  set mediaFile(ObservableList<File> value) {
+    _$mediaFileAtom.reportWrite(value, super.mediaFile, () {
+      super.mediaFile = value;
+    });
+  }
+
+  final _$mediaIdsAtom = Atom(name: '_WorkerStore.mediaIds');
+
+  @override
+  ObservableList<Media> get mediaIds {
+    _$mediaIdsAtom.reportRead();
+    return super.mediaIds;
+  }
+
+  @override
+  set mediaIds(ObservableList<Media> value) {
+    _$mediaIdsAtom.reportWrite(value, super.mediaIds, () {
+      super.mediaIds = value;
+    });
+  }
+
   final _$_WorkerStoreActionController = ActionController(name: '_WorkerStore');
 
   @override
@@ -70,9 +85,10 @@ mixin _$WorkerStore on _WorkerStore, Store {
   @override
   String toString() {
     return '''
-media: ${media},
 opinion: ${opinion},
-response: ${response}
+response: ${response},
+mediaFile: ${mediaFile},
+mediaIds: ${mediaIds}
     ''';
   }
 }

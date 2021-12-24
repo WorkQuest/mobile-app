@@ -249,6 +249,9 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
         title: Text(
           "quests.filter.sortBy.title".tr(),
         ),
+        collapsedBackgroundColor: storeFilter!.selectSortBy.isNotEmpty
+            ? Color(0xFF0083C7).withOpacity(0.1)
+            : Colors.white,
         children: [
           for (int i = 0; i < storeFilter!.sortBy.length; i++)
             Observer(
@@ -273,34 +276,40 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     required ObservableList<bool> selected,
     required Function onChange,
   }) =>
-      ExpansionTile(
-        maintainState: true,
-        title: Text(title),
-        children: [
-          for (int i = 0; i < list.length; i++)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                children: [
-                  Observer(
-                    builder: (_) => Checkbox(
-                      checkColor: Colors.white,
-                      value: selected[i],
-                      onChanged: (bool? value) => onChange(value, i),
+      Observer(
+        builder: (_) => ExpansionTile(
+          collapsedBackgroundColor: selected
+                  .firstWhere((element) => element == true, orElse: () => false)
+              ? Color(0xFF0083C7).withOpacity(0.1)
+              : Colors.white,
+          maintainState: true,
+          title: Text(title),
+          children: [
+            for (int i = 0; i < list.length; i++)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  children: [
+                    Observer(
+                      builder: (_) => Checkbox(
+                        checkColor: Colors.white,
+                        value: selected[i],
+                        onChanged: (bool? value) => onChange(value, i),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      list[i],
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      softWrap: false,
+                    Expanded(
+                      child: Text(
+                        list[i],
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        softWrap: false,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       );
 
   @override
@@ -326,37 +335,33 @@ class ExpansionCell<T> extends StatefulWidget {
 }
 
 class _ExpansionCellState extends State<ExpansionCell> {
-  // List<bool> selected = [];
   String selectRadioValue = "";
-
-  // @override
-  // void initState() {
-  //   setState(
-  //     () {
-  //       selected = List.generate(widget.filter.length, (index) => false);
-  //     },
-  //   );
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        ExpansionTile(
-          maintainState: true,
-          title: Text(
-            "filters.items.${widget.index}.title".tr(),
+        Observer(
+          builder:(_) => ExpansionTile(
+            collapsedBackgroundColor: widget
+                    .storeFilter.selectedSkillFilters[widget.index - 1]!
+                    .firstWhere((element) => element == true, orElse: () => false)
+                ? Color(0xFF0083C7).withOpacity(0.1)
+                : Colors.white,
+            maintainState: true,
+            title: Text(
+              "filters.items.${widget.index}.title".tr(),
+            ),
+            children: [
+              for (int i = 0; i < widget.filter.length; i++)
+                getCheckbox(
+                  i,
+                  "filters.items.${widget.index}.sub.${widget.filter[i]}".tr(),
+                  widget.index,
+                  widget.filter[i],
+                ),
+            ],
           ),
-          children: [
-            for (int i = 0; i < widget.filter.length; i++)
-              getCheckbox(
-                i,
-                "filters.items.${widget.index}.sub.${widget.filter[i]}".tr(),
-                widget.index,
-                widget.filter[i],
-              ),
-          ],
         ),
       ],
     );

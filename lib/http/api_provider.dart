@@ -255,7 +255,7 @@ extension QuestService on ApiProvider {
     });
     String ratingStatuses = "";
     ratingStatus.forEach((text) {
-      ratingStatuses += "ratingStatus=$text&";
+      ratingStatuses += "ratingStatus[]=$text&";
     });
     String workplaces = "";
     workplace.forEach((text) {
@@ -319,11 +319,15 @@ extension QuestService on ApiProvider {
   Future<bool> respondOnQuest({
     required String id,
     required String message,
+    required List media,
   }) async {
     try {
       final responseData = await _httpClient.post(
         query: '/v1/quest/$id/response',
-        data: {"message": message},
+        data: {
+          "message": message,
+          "medias": media,
+        },
       );
       return responseData == null;
     } catch (e) {

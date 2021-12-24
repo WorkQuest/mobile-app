@@ -11,8 +11,7 @@ class EditUserCell extends StatefulWidget {
   final bool? owner;
   final ChatRoomStore store;
 
-  const EditUserCell(
-      this.user, this.index, this.owner, this.store);
+  const EditUserCell(this.user, this.index, this.owner, this.store);
 
   @override
   _EditUserCellState createState() => _EditUserCellState();
@@ -42,6 +41,7 @@ class _EditUserCellState extends State<EditUserCell> {
               Text(
                 "${widget.user.firstName} ${widget.user.lastName}",
                 style: TextStyle(fontSize: 18.0),
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

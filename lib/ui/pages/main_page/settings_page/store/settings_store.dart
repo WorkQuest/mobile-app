@@ -54,9 +54,9 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
   @computed
   bool get canSubmit =>
       !isLoading &&
-          password.isNotEmpty &&
-          newPassword.isNotEmpty &&
-          confirmNewPassword.isNotEmpty;
+      password.isNotEmpty &&
+      newPassword.isNotEmpty &&
+      confirmNewPassword.isNotEmpty;
 
   @action
   Future changePassword() async {
@@ -70,6 +70,8 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
           );
           this.onSuccess(true);
         } catch (e) {
+          if (e.toString() == "User not found or password does not match")
+            this.onError("The current password was entered incorrectly");
           this.onError(e.toString());
         }
       } else {

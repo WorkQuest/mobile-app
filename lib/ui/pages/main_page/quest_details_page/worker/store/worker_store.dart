@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -17,13 +18,16 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
   @observable
-  ObservableList<File> media = ObservableList();
-
-  @observable
   String opinion = "";
 
   @observable
   bool response = false;
+
+  @observable
+  ObservableList<File> mediaFile = ObservableList();
+
+  @observable
+  ObservableList<Media> mediaIds = ObservableList();
 
   @action
   void setOpinion(String value) => opinion = value;
@@ -85,7 +89,14 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   sendRespondOnQuest(String message) async {
     try {
       this.onLoading();
-      await _apiProvider.respondOnQuest(id: quest.value!.id, message: message);
+      await _apiProvider.respondOnQuest(
+        id: quest.value!.id,
+        message: message,
+        media: mediaIds.map((e) => e.id).toList() +
+            await _apiProvider.uploadMedia(
+              medias: mediaFile,
+            ),
+      );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {

@@ -8,12 +8,12 @@ class DisputeStore = _DisputeStore with _$DisputeStore;
 
 abstract class _DisputeStore with Store {
   final List<String> disputeCategoriesList = [
-    "There is no response from the employer / employee",
-    "Badly done work",
-    "Additional requirements have been put forward",
-    "Inconsistencies in the requirements for the description of the quest",
-    "The quest is completed but the employee / employer has not confirmed its completion",
-    "Another reason"
+    "chat.disputeTheme.noResponse",
+    "chat.disputeTheme.badlyDone",
+    "chat.disputeTheme.additionalRequirements",
+    "chat.disputeTheme.inconsistencies",
+    "chat.disputeTheme.notConfirmed",
+    "chat.disputeTheme.anotherReason"
   ];
 
   @observable

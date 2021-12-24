@@ -152,6 +152,9 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                       hintText: hintText,
                       fillColor: Colors.white,
                     ),
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(150),
+                    ],
                   ),
                 ),
                 SizedBox(

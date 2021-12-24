@@ -1,5 +1,6 @@
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
+import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -19,63 +20,73 @@ class ChangePasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
     final settingsStore = context.read<SettingsPageStore>();
     return Observer(
-      builder: (_) => Scaffold(
-        appBar: CupertinoNavigationBar(
-          automaticallyImplyLeading: true,
-          middle: Text("settings.changePass".tr()),
-        ),
-        body: CustomScrollView(
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  titledTextField(
-                    title: "modals.currentPassword".tr(),
-                    hint: "modals.currentPassword".tr(),
-                    onChanged: settingsStore.setPassword,
-                  ),
-                  spacer,
-                  titledTextField(
-                    title: "modals.newPassword".tr(),
-                    hint: "modals.newPassword".tr(),
-                    onChanged: settingsStore.setNewPassword,
-                  ),
-                  spacer,
-                  titledTextField(
-                    title: "modals.confirmNewPassword".tr(),
-                    hint: "modals.confirmNewPassword".tr(),
-                    onChanged: settingsStore.setConfirmNewPassword,
-                  ),
-                  spacer,
-                  SizedBox(
-                    width: double.infinity,
-                    child: ObserverListener<SettingsPageStore>(
-                      onSuccess: () {
-                        Navigator.pop(context);
-                      },
-                      child: Observer(
-                        builder: (context) {
-                          return ElevatedButton(
-                            onPressed: settingsStore.canSubmit
-                                ? () async {
-                                    await settingsStore.changePassword();
-                                  }
-                                : null,
-                            child: settingsStore.isLoading
-                                ? PlatformActivityIndicator()
-                                : Text("meta.submit".tr()),
-                          );
+      builder: (_) => Form(
+        key: _formKey,
+        child: Scaffold(
+          appBar: CupertinoNavigationBar(
+            automaticallyImplyLeading: true,
+            middle: Text("settings.changePass".tr()),
+          ),
+          body: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    titledTextField(
+                      title: "modals.currentPassword".tr(),
+                      hint: "modals.currentPassword".tr(),
+                      onChanged: settingsStore.setPassword,
+                      validator: Validators.signUpPasswordValidator,
+                    ),
+                    spacer,
+                    titledTextField(
+                      title: "modals.newPassword".tr(),
+                      hint: "modals.newPassword".tr(),
+                      onChanged: settingsStore.setNewPassword,
+                      validator: Validators.signUpPasswordValidator,
+                    ),
+                    spacer,
+                    titledTextField(
+                      title: "modals.confirmNewPassword".tr(),
+                      hint: "modals.confirmNewPassword".tr(),
+                      onChanged: settingsStore.setConfirmNewPassword,
+                      validator: Validators.signUpPasswordValidator,
+                    ),
+                    spacer,
+                    SizedBox(
+                      width: double.infinity,
+                      child: ObserverListener<SettingsPageStore>(
+                        onSuccess: () {
+                          Navigator.pop(context);
                         },
+                        child: Observer(
+                          builder: (context) {
+                            return ElevatedButton(
+                              onPressed: settingsStore.canSubmit
+                                  ? () async {
+                                      if (_formKey.currentState?.validate() ??
+                                          false) {
+                                        await settingsStore.changePassword();
+                                      }
+                                    }
+                                  : null,
+                              child: settingsStore.isLoading
+                                  ? PlatformActivityIndicator()
+                                  : Text("meta.submit".tr()),
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -85,6 +96,7 @@ class ChangePasswordPage extends StatelessWidget {
     required String title,
     required String hint,
     required Function(String) onChanged,
+    String? Function(String?)? validator,
   }) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,6 +111,7 @@ class ChangePasswordPage extends StatelessWidget {
             decoration: InputDecoration(
               hintText: hint,
             ),
+            validator: validator,
           ),
         ],
       );

@@ -88,7 +88,7 @@ class EditGroupChat extends StatelessWidget {
                         Flexible(
                           child: Text(
                             store.chat!.chatModel.name!,
-                            overflow: TextOverflow.fade,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -125,6 +125,8 @@ class EditGroupChat extends StatelessWidget {
                 Expanded(
                   child: Observer(
                     builder: (_) => ListView.separated(
+                      primary: false,
+                      shrinkWrap: false,
                       itemBuilder: (context, index) => EditUserCell(
                         store.chat!.chatModel.userMembers[index],
                         index,

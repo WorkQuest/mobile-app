@@ -135,7 +135,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           separatorBuilder: (_, index) => SizedBox(
             width: 10.0,
           ),
-          shrinkWrap: true,
+          shrinkWrap: false,
           scrollDirection: Axis.horizontal,
           itemCount: _store.media.length,
           itemBuilder: (_, index) {
@@ -217,7 +217,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       leading: IconButton(
         onPressed: () {
           _store.setMessageSelected(false);
-          _store.idMessages.clear();
           _store.uncheck();
         },
         icon: Icon(
@@ -248,24 +247,28 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           ),
         ),
         IconButton(
-          onPressed: () => Clipboard.setData(
-            new ClipboardData(
-              text: _store.copyMessage(),
-            ),
-          ).then(
-            (_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  duration: Duration(
-                    seconds: 1,
+          onPressed: () {
+            Clipboard.setData(
+              new ClipboardData(
+                text: _store.copyMessage(),
+              ),
+            ).then(
+              (_) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    duration: Duration(
+                      seconds: 1,
+                    ),
+                    content: Text(
+                      "chat.copy".tr(),
+                    ),
                   ),
-                  content: Text(
-                    "chat.copy".tr(),
-                  ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            );
+            _store.setMessageSelected(false);
+            _store.uncheck();
+          },
           icon: SvgPicture.asset(
             "assets/copy_icon.svg",
             color: Colors.white,
@@ -288,18 +291,41 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       ),
       centerTitle: true,
       title: Observer(
-        builder: (_) => Text(
-          chatType == "group"
-              ? "$chatName"
-              : widget.arguments["userId"] != id1
-                  ? "$firstName1 $lastName1"
-                  : "$firstName2 $lastName2",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
+        builder: (_) => chatType == "group"
+            ? Text(
+                "$chatName",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              )
+            : GestureDetector(
+                onTap: () async {
+                  _store.getCompanion(
+                      widget.arguments["userId"] != id1 ? id1 : id2);
+                  Timer.periodic(Duration(milliseconds: 100), (timer) {
+                    if (_store.companion != null) {
+                      timer.cancel();
+                      Navigator.of(context, rootNavigator: true).pushNamed(
+                        UserProfile.routeName,
+                        arguments: _store.companion,
+                      );
+                      _store.companion = null;
+                    }
+                  });
+                },
+                child: Text(
+                  widget.arguments["userId"] != id1
+                      ? "$firstName1 $lastName1"
+                      : "$firstName2 $lastName2",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
       ),
       actions: [
         chatType == "group"

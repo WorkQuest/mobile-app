@@ -2,7 +2,6 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
 
 class AddUserCell extends StatefulWidget {
   final ProfileMeResponse user;
@@ -20,7 +19,6 @@ class _AddUserCellState extends State<AddUserCell> {
   Widget build(BuildContext context) {
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
@@ -43,15 +41,23 @@ class _AddUserCellState extends State<AddUserCell> {
             ],
           ),
           Observer(
-            builder: (_) => Checkbox(
-              value: widget.store.selectedUsers[widget.index],
-              onChanged: (value) {
-                widget.store.selectedUsers[widget.index] =
-                    value!;
-                widget.store.selectUser(widget.index);
-              },
+            builder: (_) => Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                  child: Container(
+                    width: 30.0,
+                    child: Checkbox(
+                      value: widget.store.selectedUsers[widget.index],
+                      onChanged: (value) {
+                        widget.store.selectedUsers[widget.index] =
+                            value!;
+                        widget.store.selectUser(widget.index);
+                      },
+                    ),
+                  ),
+                ),
+              ),
             ),
-          )
         ],
       ),
     );
