@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:location/location.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
@@ -38,6 +38,9 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
 
   @observable
   List<QuestMapPoint> points = [];
+
+  @observable
+  CameraPosition? initialCameraPosition ;
 
   @observable
   List<Marker> markers = [];

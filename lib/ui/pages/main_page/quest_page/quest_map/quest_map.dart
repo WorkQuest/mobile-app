@@ -22,7 +22,6 @@ class QuestMap extends StatefulWidget {
 class _QuestMapState extends State<QuestMap> {
   Location _location = Location();
   QuestMapStore? mapStore;
-  CameraPosition? _initialCameraPosition;
   late GoogleMapController _controller;
   PermissionStatus _permissionGranted = PermissionStatus.denied;
 
@@ -34,53 +33,57 @@ class _QuestMapState extends State<QuestMap> {
     super.initState();
   }
 
-  bool isLoading() {
-    if (_initialCameraPosition == null) return true;
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => Scaffold(
-        body: isLoading()
+        body: mapStore?.initialCameraPosition == null
             ? Center(child: CircularProgressIndicator())
-            : Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  GoogleMap(
-                    onCameraMove: (CameraPosition position) {
-                      if (mapStore?.debounce != null)
-                        mapStore!.debounce!.cancel();
-                      mapStore!.debounce = Timer(
-                        const Duration(milliseconds: 50),
-                        () async {
-                          LatLngBounds bounds =
-                              await _controller.getVisibleRegion();
-                          mapStore!.getQuests(bounds);
-                        },
-                      );
-                    },
-                    mapType: MapType.normal,
-                    rotateGesturesEnabled: false,
-                    initialCameraPosition: _initialCameraPosition!,
-                    myLocationEnabled: true,
-                    myLocationButtonEnabled: false,
-                    markers: mapStore!.markers.toSet(),
-                    onMapCreated: (GoogleMapController controller) async {
-                      _controller = controller;
-                      LatLngBounds bounds =
-                          await _controller.getVisibleRegion();
-                      mapStore!.getQuests(bounds);
-                    },
-                    onTap: (point) {
-                      if (mapStore!.infoPanel != InfoPanel.Nope)
-                        mapStore!.onCloseQuest();
-                    },
-                  ),
-                  QuestQuickInfo(),
-                  searchBar(),
-                ],
+            : Visibility(
+                visible: _permissionGranted == PermissionStatus.granted,
+                maintainState: false,
+                replacement: GoogleMap(
+                  mapType: MapType.normal,
+                  rotateGesturesEnabled: false,
+                  initialCameraPosition: mapStore!.initialCameraPosition!,
+                ),
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    GoogleMap(
+                      onCameraMove: (CameraPosition position) {
+                        if (mapStore?.debounce != null)
+                          mapStore!.debounce!.cancel();
+                        mapStore!.debounce = Timer(
+                          const Duration(milliseconds: 50),
+                          () async {
+                            LatLngBounds bounds =
+                                await _controller.getVisibleRegion();
+                            mapStore!.getQuests(bounds);
+                          },
+                        );
+                      },
+                      mapType: MapType.normal,
+                      rotateGesturesEnabled: false,
+                      myLocationEnabled: true,
+                      initialCameraPosition: mapStore!.initialCameraPosition!,
+                      myLocationButtonEnabled: false,
+                      markers: mapStore!.markers.toSet(),
+                      onMapCreated: (GoogleMapController controller) async {
+                        _controller = controller;
+                        LatLngBounds bounds =
+                            await _controller.getVisibleRegion();
+                        mapStore!.getQuests(bounds);
+                      },
+                      onTap: (point) {
+                        if (mapStore!.infoPanel != InfoPanel.Nope)
+                          mapStore!.onCloseQuest();
+                      },
+                    ),
+                    QuestQuickInfo(),
+                    searchBar(),
+                  ],
+                ),
               ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: AnimatedContainer(
@@ -176,8 +179,8 @@ class _QuestMapState extends State<QuestMap> {
       );
 
   Future<void> _getCurrentLocation() async {
-    print("Start");
     _permissionGranted = await _location.requestPermission();
+
     print("Location permission => $_permissionGranted");
 
     if (_permissionGranted == PermissionStatus.deniedForever ||
@@ -210,7 +213,7 @@ class _QuestMapState extends State<QuestMap> {
                     await perm.openAppSettings();
                   }
                   Navigator.pop(context);
-                  //await _onMyLocationPressed();
+                  await _onMyLocationPressed();
                 },
               ),
             ],
@@ -218,26 +221,21 @@ class _QuestMapState extends State<QuestMap> {
         },
       );
 
-      _initialCameraPosition = CameraPosition(
-        bearing: 192.8334901395799,
-        target: LatLng(37.43296265331129, -122.08832357078792),
-        tilt: 59.440717697143555,
-        zoom: 19.151926040649414,
+      mapStore!.initialCameraPosition = CameraPosition(
+        bearing: 192,
+        target: LatLng(37.4, -122.0),
+        zoom: 17,
       );
-
-      this.setState(() {});
       return;
     }
 
     final myLocation = await _location.getLocation();
 
-    _initialCameraPosition = CameraPosition(
+    mapStore!.initialCameraPosition = CameraPosition(
       bearing: 0,
       target: LatLng(myLocation.latitude!, myLocation.longitude!),
       zoom: 17.0,
     );
-
-    this.setState(() {});
     return;
   }
 

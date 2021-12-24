@@ -69,6 +69,23 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
+  final _$initialCameraPositionAtom =
+      Atom(name: '_QuestMapStore.initialCameraPosition');
+
+  @override
+  CameraPosition? get initialCameraPosition {
+    _$initialCameraPositionAtom.reportRead();
+    return super.initialCameraPosition;
+  }
+
+  @override
+  set initialCameraPosition(CameraPosition? value) {
+    _$initialCameraPositionAtom.reportWrite(value, super.initialCameraPosition,
+        () {
+      super.initialCameraPosition = value;
+    });
+  }
+
   final _$markersAtom = Atom(name: '_QuestMapStore.markers');
 
   @override
@@ -185,6 +202,7 @@ infoPanel: ${infoPanel},
 selectQuestInfo: ${selectQuestInfo},
 bufferQuests: ${bufferQuests},
 points: ${points},
+initialCameraPosition: ${initialCameraPosition},
 markers: ${markers},
 debounce: ${debounce},
 markerLoader: ${markerLoader},

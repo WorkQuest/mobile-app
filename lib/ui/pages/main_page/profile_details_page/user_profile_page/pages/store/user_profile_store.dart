@@ -10,9 +10,7 @@ part 'user_profile_store.g.dart';
 
 @singleton
 class UserProfileStore extends _UserProfileStore with _$UserProfileStore {
-
-  UserProfileStore(ApiProvider apiProvider,)
-      : super(apiProvider, );
+  UserProfileStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
 abstract class _UserProfileStore extends IStore<bool> with Store {
@@ -25,7 +23,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
 
   _UserProfileStore(
     this._apiProvider,
-  ) ;
+  );
 
   Future<void> getQuests(
     String userId,
