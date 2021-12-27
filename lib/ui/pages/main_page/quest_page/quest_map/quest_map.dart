@@ -23,7 +23,7 @@ class _QuestMapState extends State<QuestMap> {
   Location _location = Location();
   QuestMapStore? mapStore;
   late GoogleMapController _controller;
-  PermissionStatus _permissionGranted = PermissionStatus.denied;
+  PermissionStatus? _permissionGranted;
 
   @override
   void initState() {

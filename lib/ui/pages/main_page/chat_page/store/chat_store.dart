@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
@@ -277,7 +276,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   void initialStore() async {
     if (streamChatNotification != null) await streamChatNotification!.close();
-    streamChatNotification = StreamController<bool>();
+    streamChatNotification = StreamController<bool>.broadcast();
   }
 
   @action
