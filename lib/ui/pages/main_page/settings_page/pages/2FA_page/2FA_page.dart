@@ -148,85 +148,9 @@ class TwoFAPage extends StatelessWidget {
             child: store.isLoading
                 ? PlatformActivityIndicator()
                 : Text(
-                    "meta,submit".tr(),
+                    "meta.submit".tr(),
                   ),
           )
-        ],
-      );
-
-  ///Bottom row buttons
-  Widget buttonRow(
-    TwoFAStore store, {
-    required String forward,
-    required String back,
-    ProfileMeStore? userStore,
-    required BuildContext context,
-  }) =>
-      Row(
-        children: [
-          Expanded(
-            child: SizedBox(
-              height: 45.0,
-              child: OutlinedButton(
-                onPressed: () {
-                  if (store.index == 0)
-                    dialog(
-                      context,
-                      title: "modals.2FaActivation".tr(),
-                      message: "modals.cancel2Fa".tr(),
-                      confirmAction: () {
-                        Navigator.popUntil(
-                          context,
-                          (route) => route.isFirst,
-                        );
-                      },
-                    );
-                  if (store.index > 0) store.index--;
-                },
-                child: Text(back),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(
-                    width: 1.0,
-                    color: Color(0xFF0083C7).withOpacity(0.1),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 20.0,
-          ),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: store.index < 3
-                  ? () async {
-                      if (store.index == 0) await store.enable2FA();
-                      if (store.index < 3) store.index++;
-                      //if (store.index == 2)
-                      //   await LaunchApp.openApp(
-                      //     androidPackageName: 'com.google.android.apps.authenticator2',
-                      //     iosUrlScheme: 'otpauth://',
-                      //     appStoreLink:
-                      //         'itms-apps://itunes.apple.com/us/app/pulse-secure/id945832041',
-                      //     openStore: true
-                      // );
-                    }
-                  : store.canFinish
-                      ? () async {
-                          await store.confirm2FA();
-                          if (store.isSuccess) {
-                            Navigator.pop(context);
-                            await userStore!.get2FAStatus();
-                          }
-                        }
-                      : null,
-              child: store.isLoading
-                  ? Center(
-                      child: PlatformActivityIndicator(),
-                    )
-                  : Text(forward),
-            ),
-          ),
         ],
       );
 }
@@ -278,8 +202,8 @@ class Confirm2FAPages extends StatelessWidget {
             _spacer,
             buttonRow(
               store,
-              forward: "meta.next".tr(),
-              back: "meta.cancel".tr(),
+              forward: "meta.next",
+              back: "meta.cancel",
               context: context,
             ),
           ],
@@ -342,8 +266,8 @@ class Confirm2FAPages extends StatelessWidget {
             _spacer,
             buttonRow(
               store,
-              forward: "meta.next".tr(),
-              back: "meta.back".tr(),
+              forward: "meta.next",
+              back: "meta.back",
               context: context,
             ),
           ],
@@ -363,8 +287,8 @@ class Confirm2FAPages extends StatelessWidget {
             _spacer,
             buttonRow(
               store,
-              forward: "meta.next".tr(),
-              back: "meta.back".tr(),
+              forward: "modals.openApp",
+              back: "meta.back",
               context: context,
             ),
           ],
@@ -420,8 +344,8 @@ class Confirm2FAPages extends StatelessWidget {
             _spacer,
             buttonRow(
               store,
-              forward: "meta.finish".tr(),
-              back: "meta.back".tr(),
+              forward: "meta.finish",
+              back: "meta.back",
               userStore: userStore,
               context: context,
             ),
@@ -460,7 +384,7 @@ class Confirm2FAPages extends StatelessWidget {
                     );
                   if (store.index > 0) store.index--;
                 },
-                child: Text(back),
+                child: Text(back.tr()),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(
                     width: 1.0,
@@ -479,15 +403,8 @@ class Confirm2FAPages extends StatelessWidget {
                 onPressed: store.index < 3
                     ? () async {
                         if (store.index == 0) await store.enable2FA();
-                        if (store.index < 3) store.index++;
-                        //if (store.index == 2)
-                        //   await LaunchApp.openApp(
-                        //     androidPackageName: 'com.google.android.apps.authenticator2',
-                        //     iosUrlScheme: 'otpauth://',
-                        //     appStoreLink:
-                        //         'itms-apps://itunes.apple.com/us/app/pulse-secure/id945832041',
-                        //     openStore: true
-                        // );
+                        if (store.index == 2) openGoogleAuth();
+                        store.index++;
                       }
                     : store.canFinish
                         ? () async {
@@ -506,10 +423,29 @@ class Confirm2FAPages extends StatelessWidget {
                     ? Center(
                         child: PlatformActivityIndicator(),
                       )
-                    : Text(forward),
+                    : Text(forward.tr()),
               ),
             ),
           ),
         ],
       );
+
+  Future<void> openGoogleAuth() async {
+    try {
+      if (!(await launch(
+          "otpauth://totp/$mail?secret=${store.googleAuthenticatorSecretCode}&issuer=Margex"))) {
+        Platform.isIOS
+            ? launch(
+                "https://apps.apple.com/ru/app/google-authenticator/id388497605")
+            : launch("https://play.google.com/store/apps/details?id=" +
+                "com.google.android.apps.authenticator2");
+      }
+    } catch (e) {
+      Platform.isIOS
+          ? launch(
+              "https://apps.apple.com/ru/app/google-authenticator/id388497605")
+          : launch("https://play.google.com/store/apps/details?id=" +
+              "com.google.android.apps.authenticator2");
+    }
+  }
 }

@@ -875,7 +875,7 @@ extension TwoFA on ApiProvider {
     required String totp,
   }) async {
     await _httpClient.post(
-      query: '/v1/totp/disable',
+      query: '/v1/totp/enable',
       data: {
         "confirmCode": confirmCode,
         "totp": totp,

@@ -202,7 +202,7 @@
     "title": "Security check",
     "confCode": "Google confirmation code",
     "placeholder": "Placeholder",
-    "confCodeDesc": "Enter the 6-digit code of the Google Authenticator app"
+    "confCodeDesc": "Enter the generated key in the Google Authenticator app"
   },
   "signUp": {
     "title": "Register",
@@ -885,6 +885,7 @@
     "enterCodeToDisable2Fa": "Enter code from Google Authenticator app to disable 2FA",
     "2FaActivation": "2FA Activation",
     "cancel2Fa": "Are you sure you want to cancel 2FA activation ?",
+    "openApp": "Open App",
     "continue2Fa": "Continue to next step if you already have Google Authenticator app",
     "codeCopy": "Code copied to clipboard",
     "codeFromEmail": "Code from email",
@@ -911,7 +912,7 @@
     "chooseSkills": "Select the necessary skills",
     "securityCheck": "Security check",
     "googleConfCode": "Google confirmation code",
-    "enterCode": "Enter the 6-digit code of the Google Authenticator app",
+    "enterCode": "Enter the generated key in the Google Authenticator app",
     "warning": "Warning",
     "pleaseDescribe": "Describe the reason for changing the role",
     "ifYouChangeRole": "If you change the role now, you will have to wait a month to change it again. Are you sure you want to continue?",
