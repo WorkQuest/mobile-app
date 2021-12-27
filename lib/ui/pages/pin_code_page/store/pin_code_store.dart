@@ -143,14 +143,14 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         this.onSuccess(StatePinCode.ToLogin);
         return;
       }
-      BearerToken bearerToken =
-          await _apiProvider.refreshToken(token);
+      BearerToken bearerToken = await _apiProvider.refreshToken(token);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
 
       this.onSuccess(StatePinCode.Success);
     } catch (e) {
-      if (e.toString() == "Token invalid") {
+      if (e.toString() == "Token invalid" ||
+          e.toString() == "Session not found") {
         await Storage.deleteAllFromSecureStorage();
         this.onSuccess(StatePinCode.ToLogin);
         return;
