@@ -69,21 +69,6 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
-  final _$listNotificationAtom = Atom(name: '_ChatStore.listNotification');
-
-  @override
-  ObservableList<Notifications> get listNotification {
-    _$listNotificationAtom.reportRead();
-    return super.listNotification;
-  }
-
-  @override
-  set listNotification(ObservableList<Notifications> value) {
-    _$listNotificationAtom.reportWrite(value, super.listNotification, () {
-      super.listNotification = value;
-    });
-  }
-
   final _$starredChatsAtom = Atom(name: '_ChatStore.starredChats');
 
   @override
@@ -293,7 +278,6 @@ unread: ${unread},
 starred: ${starred},
 idChat: ${idChat},
 chatSelected: ${chatSelected},
-listNotification: ${listNotification},
 starredChats: ${starredChats},
 chatsId: ${chatsId},
 idChatsForStar: ${idChatsForStar},

@@ -4,6 +4,7 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.d
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/notifications.dart';
+import 'package:app/ui/pages/main_page/quest_page/notification_page/store/notification_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -22,6 +23,14 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
+  late NotificationStore store;
+
+  @override
+  void initState() {
+    store = context.read<NotificationStore>();
+    super.initState();
+  }
+
   Widget build(context) {
     return Scaffold(
       body: CustomScrollView(
@@ -38,13 +47,15 @@ class _NotificationPageState extends State<NotificationPage> {
                   builder: (_) => ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount:
-                        context.read<ChatStore>().listNotification.length,
+                    itemCount: store.listOfNotifications.length,
+                    // context.read<ChatStore>().listNotification.length,
                     separatorBuilder: (context, index) => Divider(
                       thickness: 1,
                     ),
                     itemBuilder: (context, index) => notificationCard(
-                        context.read<ChatStore>().listNotification[index]),
+                      // context.read<ChatStore>().listNotification[index]
+                      store.listOfNotifications[index],
+                    ),
                   ),
                 ),
               ],

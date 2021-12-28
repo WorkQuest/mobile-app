@@ -119,14 +119,10 @@ extension QuestService on ApiProvider {
   // Future<List<BaseQuestResponse>>
   Future<Map<String, dynamic>> getEmployerQuests({
     String userId = "",
-    List<String> workplace = const [],
-    List<String> employment = const [],
     int limit = 10,
     int offset = 0,
-    String searchWord = "",
     int? priority,
     List<int> statuses = const [],
-    String? sort,
     bool? invited,
     bool? performing,
     bool? starred,
@@ -136,22 +132,12 @@ extension QuestService on ApiProvider {
       statuses.forEach((text) {
         status += "statuses[]=$text&";
       });
-      String workplaces = "";
-      workplace.forEach((text) {
-        workplaces += "workplaces[]=$text&";
-      });
-      String employments = "";
-      employment.forEach((text) {
-        employments += "employments[]=$text&";
-      });
       final responseData = await _httpClient.get(
-        query: "/v1/employer/$userId/quests?$workplaces$employments$status",
+        query: "/v1/employer/$userId/quests?$status",
         queryParameters: {
           "offset": offset,
           "limit": limit,
-          if (searchWord.isNotEmpty) "q": searchWord,
           if (priority != null) "priority": priority,
-          //"sort": sort,
           if (invited != null) "invited": invited,
           if (performing != null) "performing": performing,
           if (starred != null) "starred": starred,
@@ -167,6 +153,42 @@ extension QuestService on ApiProvider {
       return {};
     }
   }
+  Future<Map<String, dynamic>> getWorkerQuests({
+    String userId = "",
+    int limit = 10,
+    int offset = 0,
+    List<int> statuses = const [],
+    bool? invited,
+    bool? performing,
+    bool? starred,
+    String? north,
+    String? south,
+  }) async {
+    String status = "";
+    statuses.forEach((text) {
+      status += "statuses[]=$text&";
+    });
+    final responseData = await _httpClient.get(
+      query:
+      '/v1/worker/$userId/quests?$status',
+      queryParameters: {
+        "offset": offset,
+        "limit": limit,
+        if (invited != null) "invited": invited,
+        if (performing != null) "performing": performing,
+        if (starred != null) "starred": starred,
+        if (north != null) "north": north,
+        if (south != null) "south": south,
+      },
+    );
+
+    return responseData;
+    //   List<BaseQuestResponse>.from(
+    //   responseData["quests"].map(
+    //     (x) => BaseQuestResponse.fromJson(x),
+    //   ),
+    // );
+  }
 
   Future<BaseQuestResponse> getQuest({
     required String id,
@@ -174,6 +196,7 @@ extension QuestService on ApiProvider {
     final responseData = await _httpClient.get(query: '/v1/quest/$id');
     return BaseQuestResponse.fromJson(responseData);
   }
+
 
   Future<Map<String, dynamic>> getQuests({
     List<String> workplace = const [],

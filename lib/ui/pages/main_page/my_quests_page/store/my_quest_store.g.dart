@@ -197,6 +197,31 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
         .run(() => super.getQuests(userId, role, createNewList));
   }
 
+  final _$_MyQuestStoreActionController =
+      ActionController(name: '_MyQuestStore');
+
+  @override
+  dynamic deleteQuest(BaseQuestResponse quest) {
+    final _$actionInfo = _$_MyQuestStoreActionController.startAction(
+        name: '_MyQuestStore.deleteQuest');
+    try {
+      return super.deleteQuest(quest);
+    } finally {
+      _$_MyQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic addQuest(BaseQuestResponse quest, bool restoreStarred) {
+    final _$actionInfo = _$_MyQuestStoreActionController.startAction(
+        name: '_MyQuestStore.addQuest');
+    try {
+      return super.addQuest(quest, restoreStarred);
+    } finally {
+      _$_MyQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

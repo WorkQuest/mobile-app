@@ -85,7 +85,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   message: "quests.deleteQuestMessage".tr(),
                   confirmAction: () async {
                     await store.deleteQuest(questId: widget.questInfo.id);
-                    deleteQuest(widget.questInfo);
+                    questStore.deleteQuest(widget.questInfo);
                     Navigator.pop(context);
                     Navigator.pop(context);
                   },
@@ -272,8 +272,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                         store.selectedResponders!.worker.avatar,
                                     id: store.selectedResponders!.id,
                                   );
-                                  deleteQuest(widget.questInfo);
-                                  addQuest(widget.questInfo, true);
+                                  questStore.deleteQuest(widget.questInfo);
+                                  questStore.addQuest(widget.questInfo, true);
                                   Navigator.pop(context);
                                   successAlert(
                                     context,
@@ -366,8 +366,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     onPressed: () {
                       store.acceptCompletedWork(questId: widget.questInfo.id);
                       widget.questInfo.status = 6;
-                      deleteQuest(widget.questInfo);
-                      addQuest(widget.questInfo, true);
+                      questStore.deleteQuest(widget.questInfo);
+                      questStore.addQuest(widget.questInfo, true);
                       Navigator.pop(context);
                       Navigator.pop(context);
                       successAlert(
@@ -400,8 +400,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     onPressed: () {
                       store.rejectCompletedWork(questId: widget.questInfo.id);
                       widget.questInfo.status = 5;
-                      deleteQuest(widget.questInfo);
-                      addQuest(widget.questInfo, true);
+                      questStore.deleteQuest(widget.questInfo);
+                      questStore.addQuest(widget.questInfo, true);
                       Navigator.pop(context);
                       Navigator.pop(context);
                       successAlert(
@@ -580,27 +580,5 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         );
       },
     );
-  }
-
-  deleteQuest(BaseQuestResponse quest) {
-    questStore.active.removeWhere((element) => element == quest);
-    questStore.performed.removeWhere((element) => element == quest);
-    questStore.requested.removeWhere((element) => element == quest);
-    questStore.invited.removeWhere((element) => element == quest);
-    questStore.starred.removeWhere((element) => element == quest);
-  }
-
-  addQuest(BaseQuestResponse quest, bool restoreStarred) {
-    if (quest.status == 0 ||
-        quest.status == 1 ||
-        quest.status == 3 ||
-        quest.status == 5)
-      questStore.active.add(quest);
-    else if (quest.status == 4) {
-      questStore.invited.add(quest);
-      questStore.requested.add(quest);
-    } else if (quest.status == 6) questStore.performed.add(quest);
-    if (restoreStarred) questStore.starred.add(quest);
-    questStore.sortQuests();
   }
 }

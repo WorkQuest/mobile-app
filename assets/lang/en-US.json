@@ -263,6 +263,19 @@
     "noSkills": "No skills"
   },
   "quests": {
+    "notification": {
+      "questStarted": "Quest started",
+      "workerRejectedQuest": "Worker rejected quest",
+      "workerAcceptedQuest": "Worker accepted quest",
+      "workerCompletedQuest": "Worker completed quest",
+      "employerAcceptedCompletedQuest": "Employer accepted completed quest",
+      "employerRejectedCompletedQuest": "Employer rejected completed quest",
+      "employerInvitedWorkerToQuest": "Employer invited worker to quest",
+      "workerAcceptedInvitationToQuest": "Worker accepted invitation to quest",
+      "workerRejectedInvitationToQuest": "Worker rejected invitation to quest",
+      "employerRejectedWorkersResponse": "Employer rejected workers response",
+      "userLeftReviewAboutQuest": "User left review about quest"
+    },
     "youResponded": "You responded",
     "title": "Quest Title",
     "quests": "Quests",
@@ -315,6 +328,7 @@
     "reviewsBig": "Reviews",
     "addReview": "Add review",
     "addYourReview": "Add your review",
+    "yourReview": "Your review",
     "addNewReview": "Add new review",
     "noReview": "You have no reviews yet",
     "noReviewForOtherUser": "No reviews",

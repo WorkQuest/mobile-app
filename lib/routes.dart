@@ -31,6 +31,7 @@ import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/notification_page/store/notification_store.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/payment_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
@@ -220,6 +221,9 @@ class Routes {
                   Provider(
                     create: (context) => getIt.get<MyQuestStore>(),
                   ),
+                  Provider(
+                    create: (context) => getIt.get<QuestsStore>(),
+                  ),
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),
@@ -279,7 +283,7 @@ class Routes {
       case NotificationPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
-            create: (context) => getIt.get<ChatStore>(),
+            create: (context) => getIt.get<NotificationStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: NotificationPage(settings.arguments as String),

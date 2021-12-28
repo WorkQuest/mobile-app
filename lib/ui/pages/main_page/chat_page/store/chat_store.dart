@@ -13,7 +13,6 @@ import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../../enums.dart';
-import '../../quest_page/notification_page/notifications.dart';
 
 part 'chat_store.g.dart';
 
@@ -44,9 +43,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   @observable
   bool chatSelected = false;
-
-  @observable
-  ObservableList<Notifications> listNotification = ObservableList.of([]);
 
   _ChatStore(this._apiProvider) {
     WebSocket().handlerChats = this.addedMessage;
@@ -167,34 +163,10 @@ abstract class _ChatStore extends IStore<bool> with Store {
         setMessages(
             [MessageModel.fromJson(json["message"]["data"]["lastMessage"])],
             ChatModel.fromJson(json["message"]["data"]));
-        listNotification.insert(
-            0,
-            Notifications(
-                firstName: message.sender.firstName,
-                lastName: message.sender.lastName,
-                avatar: message.sender.avatar,
-                date: message.createdAt,
-                idEvent: message.chatId,
-                idUser: message.senderUserId,
-                type: "chat.infoMessage.groupChatCreate",
-                message: "chat.infoMessage.groupChatCreate".tr()));
         _atomChats.reportChanged();
         return;
       } else if (json["message"]["action"] == "newMessage") {
         message = MessageModel.fromJson(json["message"]["data"]);
-        listNotification.insert(
-            0,
-            Notifications(
-                firstName: message.sender.firstName,
-                lastName: message.sender.lastName,
-                avatar: message.sender.avatar,
-                date: message.createdAt,
-                idEvent: message.chatId,
-                idUser: message.senderUserId,
-                type: "modals.newMessage",
-                message: message.text != null
-                    ? message.text
-                    : message.infoMessage.messageAction));
       } else if (json["message"]["action"] == "messageReadByRecipient") {
         message = MessageModel.fromJson(json["message"]["data"]);
         chats[message.chatId]!.chatModel.lastMessage.senderStatus = "read";
