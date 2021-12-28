@@ -83,13 +83,12 @@ class MainPage extends StatelessWidget {
                 stream:
                     context.read<ChatStore>().streamChatNotification!.stream,
                 builder: (context, snapshot) {
-                  if (controller.index == 2 &&snapshot.data!) {
+                  if (controller.index == 2 && snapshot.data!) {
                     return SvgPicture.asset(
                       'assets/message_mark.svg',
                       color: CupertinoTheme.of(context).primaryColor,
                     );
-                  }
-                  else if (controller.index == 2 && !snapshot.data!) {
+                  } else if (controller.index == 2 && !snapshot.data!) {
                     return SvgPicture.asset(
                       _tabBarIconsData[2].svgPath,
                       color: CupertinoTheme.of(context).primaryColor,
