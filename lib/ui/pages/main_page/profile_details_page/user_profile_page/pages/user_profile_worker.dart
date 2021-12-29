@@ -1,5 +1,6 @@
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_worker_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
@@ -249,6 +250,32 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                       fontWeight: FontWeight.normal,
                     ),
                   ),
+      ];
+
+  List<Widget> addToQuest() => [
+        if (widget.info != null)
+          Column(
+            children: [
+              spacer,
+              ElevatedButton(
+                onPressed: () async {
+                  viewOtherUser!.offset = 0;
+                  viewOtherUser!.questForWorker.clear();
+                  viewOtherUser!.questId = "";
+                  viewOtherUser!.workerId = widget.info!.id;
+                  viewOtherUser!.getQuests(
+                      userStore!.userData!.id, widget.info!.role);
+                  Navigator.of(context, rootNavigator: true).pushNamed(
+                    ChooseQuest.routeName,
+                    arguments: widget.info!.id,
+                  );
+                },
+                child: Text(
+                  "quests.addToQuest".tr(),
+                ),
+              ),
+            ],
+          ),
       ];
 
   List<Widget> rateWidgets() => [

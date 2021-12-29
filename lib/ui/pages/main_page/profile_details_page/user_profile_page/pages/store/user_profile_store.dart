@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../../../enums.dart';
 
 part 'user_profile_store.g.dart';
@@ -21,9 +22,50 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
   @observable
   ObservableList<BaseQuestResponse> userQuest = ObservableList.of([]);
 
+  @observable
+  ObservableList<BaseQuestResponse> questForWorker = ObservableList.of([]);
+
   _UserProfileStore(
     this._apiProvider,
   );
+
+  int offset = 0;
+
+  String workerId = "";
+
+  @observable
+  String questName = "";
+
+  String questId = "";
+
+  @action
+  void setQuest(String? index, String id) {
+    questName = index ?? "";
+    questId = id;
+  }
+
+  Future<void> startQuest(String userId) async {
+    try {
+      await _apiProvider.inviteOnQuest(
+          questId: questId,
+          userId: userId,
+          message: "quests.inviteToQuest".tr());
+    } catch (e) {
+      print("getQuests error: $e");
+      this.onError(e.toString());
+    }
+  }
+
+  void removeOddQuests() {
+    // for (int i = 0; i < questForWorker.length; i++) {
+    //   if (questForWorker[i].responded?.workerId == workerId ||
+    //       questForWorker[i].invited?.workerId == workerId) {
+    //     questForWorker.removeAt(i);
+    //     i--;
+    //   }
+    // }
+    // questForWorker.removeWhere((element) => element.title == questName);
+  }
 
   Future<void> getQuests(
     String userId,
@@ -40,6 +82,17 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
         );
         userQuest.addAll(ObservableList.of(List<BaseQuestResponse>.from(
             quests["quests"].map((x) => BaseQuestResponse.fromJson(x)))));
+      }
+      if (role == UserRole.Worker) {
+        final quests = await _apiProvider.getEmployerQuests(
+          userId: userId,
+          offset: offset,
+          statuses: [0, 4],
+        );
+        questForWorker.addAll(ObservableList.of(List<BaseQuestResponse>.from(
+            quests["quests"].map((x) => BaseQuestResponse.fromJson(x)))));
+        removeOddQuests();
+        offset += 10;
       }
       this.onSuccess(true);
     } catch (e, trace) {

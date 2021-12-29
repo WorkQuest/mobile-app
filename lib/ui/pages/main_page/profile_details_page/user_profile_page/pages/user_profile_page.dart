@@ -86,6 +86,9 @@ class UserProfileState<T extends UserProfile> extends State<T>
   @protected
   List<Widget> questPortfolio() => [];
 
+  @protected
+  List<Widget> addToQuest() => [];
+
   Widget wrapperTabBar(
     List<Widget> body,
   ) {
@@ -165,6 +168,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                             ? userStore.userData?.email ?? " "
                             : widget.info!.email ?? " ",
                       ),
+                      ...addToQuest(),
                       spacer,
                     ],
                   ),

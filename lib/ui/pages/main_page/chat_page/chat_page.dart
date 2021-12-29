@@ -155,29 +155,22 @@ class _ChatPageState extends State<ChatPage> {
                           }
                           return true;
                         },
-                        child: CustomScrollView(
-                          primary: false,
-                          // physics: const BouncingScrollPhysics(
-                          //   parent: AlwaysScrollableScrollPhysics(),
-                          // ),
-                          slivers: [
-                            Observer(builder: (_) {
-                              return SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (ctx, index) {
-                                    return !store.starred
-                                        ? _chatItem(store
-                                            .chats[store.chatKeyList[index]]!)
-                                        // store.chatKeyList
-                                        //         .map((key) =>
-                                        //             _chatItem(store.chats[key]!))
-                                        : _chatItem(store.starredChats[index]);
-                                  },
-                                  childCount: store.chatKeyList.length,
-                                ),
-                              );
-                            }),
-                          ],
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics(),
+                          ),
+                          child: Observer(builder: (_) {
+                            return Column(
+                              children: !store.starred
+                                  ? store.chatKeyList
+                                      .map(
+                                          (key) => _chatItem(store.chats[key]!))
+                                      .toList()
+                                  : store.starredChats
+                                      .map((key) => _chatItem(key))
+                                      .toList(),
+                            );
+                          }),
                         ),
                       )
                     : Center(

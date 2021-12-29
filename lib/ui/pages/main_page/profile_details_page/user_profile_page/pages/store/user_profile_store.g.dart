@@ -24,10 +24,56 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
     });
   }
 
+  final _$questForWorkerAtom = Atom(name: '_UserProfileStore.questForWorker');
+
+  @override
+  ObservableList<BaseQuestResponse> get questForWorker {
+    _$questForWorkerAtom.reportRead();
+    return super.questForWorker;
+  }
+
+  @override
+  set questForWorker(ObservableList<BaseQuestResponse> value) {
+    _$questForWorkerAtom.reportWrite(value, super.questForWorker, () {
+      super.questForWorker = value;
+    });
+  }
+
+  final _$questNameAtom = Atom(name: '_UserProfileStore.questName');
+
+  @override
+  String get questName {
+    _$questNameAtom.reportRead();
+    return super.questName;
+  }
+
+  @override
+  set questName(String value) {
+    _$questNameAtom.reportWrite(value, super.questName, () {
+      super.questName = value;
+    });
+  }
+
+  final _$_UserProfileStoreActionController =
+      ActionController(name: '_UserProfileStore');
+
+  @override
+  void setQuest(String? index, String id) {
+    final _$actionInfo = _$_UserProfileStoreActionController.startAction(
+        name: '_UserProfileStore.setQuest');
+    try {
+      return super.setQuest(index, id);
+    } finally {
+      _$_UserProfileStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
-userQuest: ${userQuest}
+userQuest: ${userQuest},
+questForWorker: ${questForWorker},
+questName: ${questName}
     ''';
   }
 }

@@ -153,6 +153,7 @@ extension QuestService on ApiProvider {
       return {};
     }
   }
+
   Future<Map<String, dynamic>> getWorkerQuests({
     String userId = "",
     int limit = 10,
@@ -169,8 +170,7 @@ extension QuestService on ApiProvider {
       status += "statuses[]=$text&";
     });
     final responseData = await _httpClient.get(
-      query:
-      '/v1/worker/$userId/quests?$status',
+      query: '/v1/worker/$userId/quests?$status',
       queryParameters: {
         "offset": offset,
         "limit": limit,
@@ -196,7 +196,6 @@ extension QuestService on ApiProvider {
     final responseData = await _httpClient.get(query: '/v1/quest/$id');
     return BaseQuestResponse.fromJson(responseData);
   }
-
 
   Future<Map<String, dynamic>> getQuests({
     List<String> workplace = const [],
@@ -383,6 +382,25 @@ extension QuestService on ApiProvider {
       final responseData = await _httpClient.post(
         query: '/v1/quest/$questId/start',
         data: body,
+      );
+      return responseData == null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> inviteOnQuest({
+    required String questId,
+    required String userId,
+    required String message,
+  }) async {
+    try {
+      final responseData = await _httpClient.post(
+        query: '/v1/quest/$questId/invite',
+        data: {
+          "invitedUserId": userId,
+          "message": message,
+        },
       );
       return responseData == null;
     } catch (e) {

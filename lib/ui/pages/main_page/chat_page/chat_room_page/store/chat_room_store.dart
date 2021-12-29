@@ -306,6 +306,9 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
       case "employerRejectResponseOnQuest":
         return infoMessageValue =
             "chat.infoMessage.employerRejectResponseOnQuest".tr();
+      case "employerInviteOnQuest":
+        return infoMessageValue =
+            "chat.infoMessage.employerInviteOnQuest".tr();
       case "workerResponseOnQuest":
         return infoMessageValue = "chat.infoMessage.workerResponseOnQuest".tr();
       case "groupChatAddUser":

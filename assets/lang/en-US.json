@@ -263,6 +263,8 @@
     "noSkills": "No skills"
   },
   "quests": {
+    "inviteToQuest": "Hello! I invite you to the quest",
+    "addToQuest": "Add to quest",
     "notification": {
       "questStarted": "Quest started",
       "workerRejectedQuest": "Worker rejected quest",
@@ -1209,6 +1211,7 @@
     "infoMessage": {
       "groupChatCreate": "Group chat created",
       "employerRejectResponseOnQuest": "The employer rejected the response to the request",
+      "employerInviteOnQuest": "The employer invited on quest",
       "workerResponseOnQuest": "The worker responded to the quest",
       "groupChatAddUser": "User added",
       "groupChatDeleteUser": "User deleted",

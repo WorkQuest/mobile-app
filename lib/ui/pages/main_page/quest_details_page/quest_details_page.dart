@@ -204,7 +204,10 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       initialCameraPosition: CameraPosition(
                         bearing: 0,
                         target: LatLng(
-                          widget.questInfo.location.latitude,
+                          () {
+                            print("latt: ${widget.questInfo.location.latitude}");
+                            return widget.questInfo.location.latitude;
+                          }(),
                           widget.questInfo.location.longitude,
                         ),
                         zoom: 15.0,
