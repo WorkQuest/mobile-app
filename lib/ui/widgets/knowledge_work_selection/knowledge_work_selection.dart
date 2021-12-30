@@ -56,6 +56,9 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
             OutlinedButton(
               onPressed: () {
                 if (widget
+                    .controller!.store!.numberOfFiled.isEmpty)
+                  widget.controller!.store!.addField(KnowledgeWork());
+                if (widget
                     .controller!.store!.numberOfFiled.last.fieldIsNotEmpty) {
                   widget.controller!.store!.addField(KnowledgeWork());
                 }
@@ -228,7 +231,7 @@ class KnowledgeWorkSelectionController {
   void setStore(
       KnowledgeWorkStore store, List<Map<String, String>>? initialValue) {
     this.store = store;
-    if (initialValue != null) {
+    if (initialValue != null && initialValue != []) {
       store.numberOfFiled.clear();
       initialValue.forEach((item) {
         store.numberOfFiled.add(KnowledgeWork(

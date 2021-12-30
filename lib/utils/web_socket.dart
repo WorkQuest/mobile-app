@@ -6,6 +6,7 @@ class WebSocket {
   static final WebSocket _singleton = WebSocket._internal();
 
   void Function(dynamic)? handlerChats;
+  void Function(dynamic)? handlerQuests;
 
   late IOWebSocketChannel _channel;
 
@@ -63,16 +64,32 @@ class WebSocket {
   }
 
   void _handleSubscription(dynamic json) async {
-    if (json["path"] == "/notifications/chat") {
-      getMessage(json);
+    try {
+      if (json["path"] == "/notifications/chat") {
+        getMessage(json);
+      } else if (json["path"] == "/notifications/quest") {
+        questNotification(json["message"]);
+      }
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
     }
   }
 
   void getMessage(dynamic json) async {
     try {
-      var message = json;
-      if (handlerChats != null) handlerChats!(message);
-      print("chatMessage: ${message.toString()}");
+      if (handlerChats != null) handlerChats!(json);
+      print("chatMessage: ${json.toString()}");
+    } catch (e, trace) {
+      print("WebSocket message ERROR: $e");
+      print("WebSocket message ERROR: $trace");
+    }
+  }
+
+  void questNotification(dynamic json) async {
+    try {
+      if (handlerQuests != null) handlerQuests!(json);
+      print("questMessage: ${json.toString()}");
     } catch (e, trace) {
       print("WebSocket message ERROR: $e");
       print("WebSocket message ERROR: $trace");

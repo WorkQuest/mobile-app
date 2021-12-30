@@ -263,6 +263,21 @@
     "noSkills": "No skills"
   },
   "quests": {
+    "inviteToQuest": "Hello! I invite you to the quest",
+    "addToQuest": "Add to quest",
+    "notification": {
+      "questStarted": "Quest started",
+      "workerRejectedQuest": "Worker rejected quest",
+      "workerAcceptedQuest": "Worker accepted quest",
+      "workerCompletedQuest": "Worker completed quest",
+      "employerAcceptedCompletedQuest": "Employer accepted completed quest",
+      "employerRejectedCompletedQuest": "Employer rejected completed quest",
+      "employerInvitedWorkerToQuest": "Employer invited worker to quest",
+      "workerAcceptedInvitationToQuest": "Worker accepted invitation to quest",
+      "workerRejectedInvitationToQuest": "Worker rejected invitation to quest",
+      "employerRejectedWorkersResponse": "Employer rejected workers response",
+      "userLeftReviewAboutQuest": "User left review about quest"
+    },
     "youResponded": "You responded",
     "title": "Quest Title",
     "quests": "Quests",
@@ -315,6 +330,7 @@
     "reviewsBig": "Reviews",
     "addReview": "Add review",
     "addYourReview": "Add your review",
+    "yourReview": "Your review",
     "addNewReview": "Add new review",
     "noReview": "You have no reviews yet",
     "noReviewForOtherUser": "No reviews",
@@ -934,6 +950,9 @@
     "currentPassword": "Current password",
     "newPassword": "New password",
     "confirmNewPassword": "Confirm new password ",
+    "wrongPassword": "The current password was entered incorrectly",
+    "lengthPassword": "Password must be at least 8 characters long",
+    "mismatchPassword": "Password mismatch",
     "change": "Change",
     "title": "Title",
     "badService": "Bad service",
@@ -1195,6 +1214,7 @@
     "infoMessage": {
       "groupChatCreate": "Group chat created",
       "employerRejectResponseOnQuest": "The employer rejected the response to the request",
+      "employerInviteOnQuest": "The employer invited on quest",
       "workerResponseOnQuest": "The worker responded to the quest",
       "groupChatAddUser": "User added",
       "groupChatDeleteUser": "User deleted",

@@ -42,8 +42,8 @@ class EditGroupChat extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () async {
+                // store.usersId.clear();
                 await store.getUsersForGroupCHat();
-                store.usersId.clear();
                 Navigator.pushNamed(context, AddMembers.routeName,
                     arguments: store);
               },
@@ -186,12 +186,12 @@ class EditGroupChat extends StatelessWidget {
               builder: (_) => ElevatedButton(
                 onPressed: () {
                   store.removeUserFromChat();
-                  if (store.isSuccess) {
+                  if (!store.sent) {
                     store.getMessages(true);
                     Navigator.pop(context);
                   }
                 },
-                child: store.isLoading
+                child: store.sent
                     ? Center(
                         child: PlatformActivityIndicator(),
                       )

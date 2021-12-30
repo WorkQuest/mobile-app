@@ -1,6 +1,7 @@
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
+import 'package:app/model/quests_models/your_review.dart';
 
 import '../user_model.dart';
 import 'assigned_worker.dart';
@@ -28,6 +29,7 @@ class BaseQuestResponse {
     required this.workplace,
     required this.invited,
     required this.responded,
+    required this.yourReview,
   });
 
   String id;
@@ -51,6 +53,7 @@ class BaseQuestResponse {
   String workplace;
   dynamic invited;
   Responded? responded;
+  YourReview? yourReview;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(
@@ -87,6 +90,9 @@ class BaseQuestResponse {
       responded: json["responded"] == null
           ? null
           : Responded.fromJson(json["responded"]),
+      yourReview: json["yourReview"] == null
+          ? null
+          : YourReview.fromJson(json["yourReview"]),
     );
   }
 
@@ -112,6 +118,7 @@ class BaseQuestResponse {
     this.workplace = updateQuest.workplace;
     this.invited = updateQuest.invited;
     this.responded = updateQuest.responded;
+    this.yourReview = updateQuest.yourReview;
   }
 
   Map<String, dynamic> toJson() => {

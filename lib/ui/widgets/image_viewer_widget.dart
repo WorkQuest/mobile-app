@@ -15,60 +15,75 @@ class ImageViewerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Media> documents = [];
+    List<Media> media = [];
+    medias.forEach((element) {
+      if (element.type == TypeMedia.Doc || element.type == TypeMedia.Pdf)
+        documents.add(element);
+      else
+        media.add(element);
+    });
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 15),
-      child: Row(
+      child: Column(
         children: [
-          Flexible(
-            flex: 3,
-            child: getImageCell(0, context),
-          ),
-          if (medias.length > 1) ...[
-            const SizedBox(width: 10),
-            Flexible(
-              flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  if (medias.length >= 2) ...[
-                    getImageCell(1, context),
-                    const SizedBox(height: 10),
-                  ],
-                  if (medias.length >= 3) ...[
-                    getImageCell(2, context),
-                    const SizedBox(height: 10),
-                  ],
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ScrollingImages(medias),
-                        ),
-                      );
-                    },
-                    child: Icon(Icons.more_horiz),
-                    style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.all(
-                        Size(double.maxFinite, 60),
-                      ),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed))
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.5);
-                          return const Color(0xFFF7F8FA);
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+          Row(
+            children: [
+              Flexible(
+                flex: 3,
+                child: getImageCell(0, context),
               ),
-            ),
-          ],
+              if (media.length > 1) ...[
+                const SizedBox(width: 10),
+                Flexible(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      if (media.length >= 2) ...[
+                        getImageCell(1, context),
+                        const SizedBox(height: 10),
+                      ],
+                      if (media.length >= 3) ...[
+                        getImageCell(2, context),
+                        const SizedBox(height: 10),
+                      ],
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ScrollingImages(media),
+                            ),
+                          );
+                        },
+                        child: Icon(Icons.more_horiz),
+                        style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all(
+                            Size(double.maxFinite, 60),
+                          ),
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.pressed))
+                                return Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.5);
+                              return const Color(0xFFF7F8FA);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+          for (int i = 0; i < documents.length; i++)
+            getDocumentCell(i, context),
         ],
       ),
     );
@@ -99,50 +114,68 @@ class ImageViewerWidget extends StatelessWidget {
                 height: index == 0 ? 200 : 60,
                 width: double.maxFinite,
               )
-            : medias[index].type == TypeMedia.Video
-                ? Container(
-                    color: Colors.black,
-                    height: index == 0 ? 200 : 60,
-                    width: double.maxFinite,
-                    alignment: Alignment.center,
-                    child: SvgPicture.asset(
-                      'assets/play.svg',
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      height: MediaQuery.of(context).size.height * 0.1,
-                      color: Color(0xFFE9EDF2),
-                    ),
-                  )
-                : GestureDetector(
-                    onTap: () async {
-                      String dir = "";
-                      if (Platform.isAndroid) {
-                        dir = (await getExternalStorageDirectory())!.path;
-                      } else if (Platform.isIOS) {
-                        dir = (await getApplicationDocumentsDirectory()).path;
-                      }
-                      print("dir: $dir");
-                      final f = downloadFile(
-                          medias[index].url,
-                          medias[index].url.split("/").reversed.first + ".pdf",
-                          dir);
-                    },
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(
-                          "assets/pdf.svg",
-                        ),
-                        const SizedBox(
-                          width: 14,
-                        ),
-                        Flexible(
-                          child: Text(
-                            "${medias[index].url.split("/").reversed.first}",
-                            style: TextStyle(color: textColor),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+            : Container(
+                color: Colors.black,
+                height: index == 0 ? 200 : 60,
+                width: double.maxFinite,
+                alignment: Alignment.center,
+                child: SvgPicture.asset(
+                  'assets/play.svg',
+                  width: MediaQuery.of(context).size.width * 0.1,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  color: Color(0xFFE9EDF2),
+                ),
+              ),
+      ),
+    );
+  }
+
+  getDocumentCell(int index, BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        String dir = "";
+        if (Platform.isAndroid) {
+          dir = (await getExternalStorageDirectory())!.path;
+        } else if (Platform.isIOS) {
+          dir = (await getApplicationDocumentsDirectory()).path;
+        }
+        print("dir: $dir");
+        if (medias[index].type == TypeMedia.Pdf)
+          final f = downloadFile(medias[index].url,
+              medias[index].url.split("/").reversed.first + ".pdf", dir);
+        if (medias[index].type == TypeMedia.Doc)
+          final f = downloadFile(medias[index].url,
+              medias[index].url.split("/").reversed.first + ".doc", dir);
+      },
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 5,
+          ),
+          Row(
+            children: [
+              SvgPicture.asset(
+                medias[index].type == TypeMedia.Pdf
+                    ? "assets/pdf.svg"
+                    : "assets/doc.svg",
+                  width: 30,
+                  height: 30,
+              ),
+              const SizedBox(
+                width: 14,
+              ),
+              Flexible(
+                child: Text(
+                  "${medias[index].url.split("/").reversed.first}",
+                  style: TextStyle(color: textColor),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+        ],
       ),
     );
   }

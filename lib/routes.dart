@@ -15,6 +15,7 @@ import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart'
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
@@ -31,6 +32,7 @@ import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/notification_page/store/notification_store.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/payment_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
@@ -220,6 +222,9 @@ class Routes {
                   Provider(
                     create: (context) => getIt.get<MyQuestStore>(),
                   ),
+                  Provider(
+                    create: (context) => getIt.get<QuestsStore>(),
+                  ),
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),
@@ -279,10 +284,21 @@ class Routes {
       case NotificationPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
-            create: (context) => getIt.get<ChatStore>(),
+            create: (context) => getIt.get<NotificationStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: NotificationPage(settings.arguments as String),
+            ),
+          ),
+        );
+
+      case ChooseQuest.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<UserProfileStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ChooseQuest(settings.arguments as String),
             ),
           ),
         );

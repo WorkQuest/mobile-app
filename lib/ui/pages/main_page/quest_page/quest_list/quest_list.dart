@@ -186,10 +186,6 @@ class _QuestListState extends State<QuestList> {
                     onPressed: () async {
                       await Navigator.of(context, rootNavigator: true).pushNamed(
                           FilterQuestsPage.routeName
-                          // Сделано для отладки будет перенесена в routes.dart
-                          // MaterialPageRoute(
-                          //   builder: (_) => FilterQuestsPage(),
-                          // ),
                           );
                       // questsStore!.offset = 0;
                       // questsStore!.getQuests(true);

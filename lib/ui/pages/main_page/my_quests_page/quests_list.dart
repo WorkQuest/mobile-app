@@ -46,7 +46,7 @@ class QuestsList extends StatelessWidget {
       alignment: Alignment.topCenter,
       child: ListView.builder(
         physics: physics,
-        shrinkWrap: true,
+        shrinkWrap: false,
         itemCount: questsList.length,
         padding: EdgeInsets.zero,
         itemBuilder: (BuildContext context, index) {

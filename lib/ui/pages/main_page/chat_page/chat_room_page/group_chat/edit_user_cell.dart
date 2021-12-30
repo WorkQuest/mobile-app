@@ -1,5 +1,6 @@
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/widgets/running_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -20,60 +21,60 @@ class EditUserCell extends StatefulWidget {
 class _EditUserCellState extends State<EditUserCell> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Image.network(
-                  widget.user.avatar!.url,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(
-                width: 10.0,
-              ),
+    return Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: Image.network(
+            widget.user.avatar!.url,
+            width: 50,
+            height: 50,
+            fit: BoxFit.cover,
+          ),
+        ),
+        const SizedBox(
+          width: 10.0,
+        ),
+        Expanded(
+          child: SizedBox(
+            height: 30,
+            child: RunningLine(children: [
               Text(
                 "${widget.user.firstName} ${widget.user.lastName}",
                 style: TextStyle(fontSize: 18.0),
                 overflow: TextOverflow.ellipsis,
               ),
-            ],
+            ]),
           ),
-          widget.owner ?? false
-              ? Text(
-                  "chat.owner".tr(),
-                )
-              : Observer(
-                  builder: (_) => widget.store.userInChat[widget.index]
-                      ? IconButton(
-                          onPressed: () {
-                            widget.store.deleteUser(widget.user);
-                            widget.store.userInChat[widget.index] = false;
-                          },
-                          icon: SvgPicture.asset(
-                            "assets/minus_icon.svg",
-                            color: Color(0xFFDF3333),
-                          ),
-                        )
-                      : IconButton(
-                          onPressed: () {
-                            widget.store.undeletingUser(widget.user);
-                            widget.store.userInChat[widget.index] = true;
-                          },
-                          icon: SvgPicture.asset(
-                            "assets/plus_icon.svg",
-                            color: Theme.of(context).iconTheme.color,
-                          ),
+        ),
+        widget.owner ?? false
+            ? Text(
+                "chat.owner".tr(),
+              )
+            : Observer(
+                builder: (_) => widget.store.userInChat[widget.index]
+                    ? IconButton(
+                        onPressed: () {
+                          widget.store.deleteUser(widget.user);
+                          widget.store.userInChat[widget.index] = false;
+                        },
+                        icon: SvgPicture.asset(
+                          "assets/minus_icon.svg",
+                          color: Color(0xFFDF3333),
                         ),
-                ),
-        ],
-      ),
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          widget.store.undeletingUser(widget.user);
+                          widget.store.userInChat[widget.index] = true;
+                        },
+                        icon: SvgPicture.asset(
+                          "assets/plus_icon.svg",
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                      ),
+              ),
+      ],
     );
   }
 }

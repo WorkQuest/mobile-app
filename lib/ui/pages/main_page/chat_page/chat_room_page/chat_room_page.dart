@@ -143,7 +143,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 .split("/")
                 .reversed
                 .first
-                .split(".")[1];
+                .split(".")
+                .reversed
+                .toList()[0];
             return SizedBox(
               width: 120.0,
               child: Stack(

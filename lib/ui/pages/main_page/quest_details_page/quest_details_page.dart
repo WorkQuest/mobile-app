@@ -5,6 +5,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:app/ui/widgets/priority_view.dart';
+import 'package:app/ui/widgets/running_line.dart';
 import 'package:app/ui/widgets/workplace_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -113,13 +114,26 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                Text(
-                                  "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
-                                  style: TextStyle(fontSize: 16),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 20,
+                                    child: RunningLine(
+                                      children: [
+                                        Text(
+                                          "${widget.questInfo.user.firstName} ${widget.questInfo.user.lastName}",
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
+                  ),
+                  WorkplaceView(widget.questInfo.workplace),
+                  const SizedBox(
+                    width: 5,
                   ),
                   tagEmployment(),
                 ],
@@ -204,7 +218,11 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       initialCameraPosition: CameraPosition(
                         bearing: 0,
                         target: LatLng(
-                          widget.questInfo.location.latitude,
+                          () {
+                            print(
+                                "latt: ${widget.questInfo.location.latitude}");
+                            return widget.questInfo.location.latitude;
+                          }(),
                           widget.questInfo.location.longitude,
                         ),
                         zoom: 15.0,
@@ -223,15 +241,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
               ),
               const SizedBox(height: 20),
               if (profile!.userData!.role == UserRole.Employer)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    WorkplaceView(widget.questInfo.workplace),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    PriorityView(widget.questInfo.priority),
-                  ],
+                Align(
+                  alignment: Alignment.topRight,
+                  child: PriorityView(widget.questInfo.priority),
                 ),
               getBody(),
               const SizedBox(height: 20),

@@ -5,6 +5,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:app/utils/web_socket.dart';
 
 part 'my_quest_store.g.dart';
 
@@ -16,7 +17,9 @@ class MyQuestStore extends _MyQuestStore with _$MyQuestStore {
 abstract class _MyQuestStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _MyQuestStore(this._apiProvider);
+  _MyQuestStore(this._apiProvider) {
+    WebSocket().handlerQuests = this.changeQuest;
+  }
 
   @observable
   String? sort = "";
@@ -75,6 +78,13 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   bool loadStarred = true;
 
+  void changeQuest(dynamic json) {
+    print("WebSocket quests");
+    var quest = BaseQuestResponse.fromJson(json);
+    deleteQuest(quest);
+    addQuest(quest, true);
+  }
+
   void sortQuests() {
     active.sort((key1, key2) {
       return key1.createdAt.millisecondsSinceEpoch
@@ -99,6 +109,32 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   }
 
   @action
+  deleteQuest(BaseQuestResponse quest) {
+    print("delete");
+    active.removeWhere((element) => element.id == quest.id);
+    performed.removeWhere((element) => element.id == quest.id);
+    requested.removeWhere((element) => element.id == quest.id);
+    invited.removeWhere((element) => element.id == quest.id);
+    starred.removeWhere((element) => element.id == quest.id);
+  }
+
+  @action
+  addQuest(BaseQuestResponse quest, bool restoreStarred) {
+    print("add");
+    if (quest.status == 0 ||
+        quest.status == 1 ||
+        quest.status == 3 ||
+        quest.status == 5)
+      active.add(quest);
+    else if (quest.status == 4) {
+      invited.add(quest);
+      requested.add(quest);
+    } else if (quest.status == 6) performed.add(quest);
+    if (restoreStarred) starred.add(quest);
+    sortQuests();
+  }
+
+  @action
   Future getQuests(String userId, UserRole role, bool createNewList) async {
     try {
       this.onLoading();
@@ -116,7 +152,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         loadInvited = true;
         loadPerformed = true;
         loadStarred = true;
-        print("clear");
       }
       if (role == UserRole.Employer) {
         final responseActive = await _apiProvider.getEmployerQuests(
@@ -182,8 +217,9 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         //   ),
         // ));
       } else {
-        final responseActive = await _apiProvider.getQuests(
+        final responseActive = await _apiProvider.getWorkerQuests(
           offset: this.offsetActive,
+          userId: userId,
           statuses: [1, 3, 5],
         );
 
@@ -194,12 +230,9 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
               responseActive["quests"]
                   .map((x) => BaseQuestResponse.fromJson(x)))));
 
-        print("loadQuestsActive: $loadActive");
-        print("activeCount: $activeCount");
-        print("active length: ${active.length}");
-
-        final responseInvited = await _apiProvider.getQuests(
+        final responseInvited = await _apiProvider.getWorkerQuests(
           offset: this.offsetInvited,
+          userId: userId,
           statuses: [4],
         );
 
@@ -210,14 +243,11 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
               responseInvited["quests"]
                   .map((x) => BaseQuestResponse.fromJson(x)))));
 
-        final responsePerformed = await _apiProvider.getQuests(
+        final responsePerformed = await _apiProvider.getWorkerQuests(
           offset: this.offsetPerformed,
+          userId: userId,
           statuses: [6],
         );
-
-        print("loadQuestsInvited: $loadInvited");
-        print("invitedCount: $invitedCount");
-        print("invited length: ${invited.length}");
 
         performedCount = responsePerformed["count"];
 
@@ -226,14 +256,11 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
               responsePerformed["quests"]
                   .map((x) => BaseQuestResponse.fromJson(x)))));
 
-        final responseStarred = await _apiProvider.getQuests(
+        final responseStarred = await _apiProvider.getWorkerQuests(
           offset: this.offsetStarred,
+          userId: userId,
           starred: true,
         );
-
-        print("loadQuestsPerformed: $loadPerformed");
-        print("performedCount: $performedCount");
-        print("performed length: ${performed.length}");
 
         starredCount = responseStarred["count"];
 
@@ -241,10 +268,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           starred.addAll(ObservableList.of(List<BaseQuestResponse>.from(
               responseStarred["quests"]
                   .map((x) => BaseQuestResponse.fromJson(x)))));
-
-        print("loadQuestsStarred: $loadStarred");
-        print("starredCount: $starredCount");
-        print("starred length: ${starred.length}");
 
         // active.addAll(ObservableList.of(
         //   await _apiProvider.getQuests(
