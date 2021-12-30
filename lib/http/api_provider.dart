@@ -703,6 +703,9 @@ extension GetUploadLink on ApiProvider {
         case "doc":
           contentType = "application/msword";
           break;
+        case "docx":
+          contentType = "application/msword";
+          break;
       }
 
       bytes = media.readAsBytesSync();

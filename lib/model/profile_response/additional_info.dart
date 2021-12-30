@@ -67,9 +67,7 @@ class AdditionalInfo {
               });
               return newItem;
             })).toList()
-          : [
-              {"to": "", "from": "", "place": ""}
-            ],
+          : [],
       workExperiences: json["educations"] != null
           ? List<Map<String, String>>.from(json["workExperiences"].map((item) {
               Map<String, String> newItem1 = {};
@@ -78,9 +76,7 @@ class AdditionalInfo {
               });
               return newItem1;
             })).toList()
-          : [
-              {"to": "", "from": "", "place": ""}
-            ],
+          : [],
       description: json["description"],
       avatar: Avatar.fromJson(
         json["avatar"] ??

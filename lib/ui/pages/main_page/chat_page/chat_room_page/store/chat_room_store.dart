@@ -107,6 +107,9 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   int pageNumber = 0;
 
   @observable
+  bool sent = false;
+
+  @observable
   Uint8List? fileNameBytes;
 
   @observable
@@ -263,6 +266,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   @action
   Future getUsersForGroupCHat() async {
     try {
+      usersId.clear();
       availableUsers.clear();
       selectedUsers.clear();
       availableUsers
@@ -307,8 +311,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
         return infoMessageValue =
             "chat.infoMessage.employerRejectResponseOnQuest".tr();
       case "employerInviteOnQuest":
-        return infoMessageValue =
-            "chat.infoMessage.employerInviteOnQuest".tr();
+        return infoMessageValue = "chat.infoMessage.employerInviteOnQuest".tr();
       case "workerResponseOnQuest":
         return infoMessageValue = "chat.infoMessage.workerResponseOnQuest".tr();
       case "groupChatAddUser":
@@ -375,24 +378,29 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
             star: null,
           ));
       availableUsers.forEach((element) {
-        userInChat[chat!.chatModel.userMembers.length] = true;
-        chat!.chatModel.userMembers.add(ProfileMeResponse(
-            id: element.id,
-            avatarId: element.avatarId,
-            firstName: element.firstName,
-            lastName: element.lastName,
-            phone: element.phone,
-            tempPhone: element.tempPhone,
-            email: element.email,
-            additionalInfo: element.additionalInfo,
-            role: element.role,
-            avatar: element.avatar,
-            userSpecializations: element.userSpecializations,
-            ratingStatistic: element.ratingStatistic,
-            location: element.location,
-            wagePerHour: element.wagePerHour,
-            workplace: element.workplace,
-            priority: element.priority));
+        usersId.forEach((idUser) => {
+              if (idUser == element.id)
+                {
+                  userInChat[chat!.chatModel.userMembers.length] = true,
+                  chat!.chatModel.userMembers.add(ProfileMeResponse(
+                      id: element.id,
+                      avatarId: element.avatarId,
+                      firstName: element.firstName,
+                      lastName: element.lastName,
+                      phone: element.phone,
+                      tempPhone: element.tempPhone,
+                      email: element.email,
+                      additionalInfo: element.additionalInfo,
+                      role: element.role,
+                      avatar: element.avatar,
+                      userSpecializations: element.userSpecializations,
+                      ratingStatistic: element.ratingStatistic,
+                      location: element.location,
+                      wagePerHour: element.wagePerHour,
+                      workplace: element.workplace,
+                      priority: element.priority)),
+                }
+            });
       });
       chat!.update();
       this.onSuccess(true);
@@ -487,7 +495,9 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     chat!.update();
   }
 
+  @action
   Future sendMessage(String text, String chatId, String userId) async {
+    sent = true;
     WebSocket().sendMessage(
         chatId: chatId,
         text: text,
@@ -495,5 +505,6 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     media.clear();
     // isMessageHighlighted.addAll(List.generate(1, (index) => false));
     _atomSendMessage.reportChanged();
+    sent = false;
   }
 }

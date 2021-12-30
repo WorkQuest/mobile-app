@@ -2,6 +2,7 @@ import 'package:app/http/api_provider.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 part 'settings_store.g.dart';
 
@@ -70,15 +71,17 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
           );
           this.onSuccess(true);
         } catch (e) {
-          if (e.toString() == "User not found or password does not match")
-            this.onError("The current password was entered incorrectly");
+          if (e.toString() == "User not found or password does not match") {
+            this.onError("modals.wrongPassword".tr());
+            return;
+          }
           this.onError(e.toString());
         }
       } else {
-        this.onError("Password must be at least 8 characters long");
+        this.onError("modals.lengthPassword".tr());
       }
     } else {
-      this.onError("Password mismatch");
+      this.onError("modals.mismatchPassword".tr());
     }
   }
 }

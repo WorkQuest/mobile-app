@@ -10,7 +10,6 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
-import 'package:app/ui/widgets/workplace_view.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -139,10 +138,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-              ),
-              WorkplaceView(widget.questInfo.workplace),
-              const SizedBox(
-                width: 5,
               ),
               PriorityView(widget.questInfo.priority),
             ],

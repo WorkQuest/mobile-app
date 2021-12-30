@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -49,7 +50,7 @@ class _InputToolbarState extends State<InputToolbar> {
                     result = await FilePicker.platform.pickFiles(
                       allowMultiple: true,
                       type: FileType.custom,
-                      allowedExtensions: ['pdf', 'doc'],
+                      allowedExtensions: ['pdf', 'doc', 'docx'],
                     );
                     break;
                 }
@@ -91,31 +92,39 @@ class _InputToolbarState extends State<InputToolbar> {
               ),
             ),
           ),
-          InkWell(
-            onTap: _controller.text.isNotEmpty || widget.store.media.isNotEmpty
-                ? () {
-                    widget.store.sendMessage(
-                      _controller.text,
-                      widget.store.chat!.chatModel.id,
-                      widget.userId,
-                      // _store.media,
-                    );
-                    _controller.text = "";
-                  }
-                : null,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 14,
-                right: 20,
-                top: 10,
-                bottom: 10,
-              ),
-              child: SvgPicture.asset(
-                "assets/send_message_icon.svg",
-                color:
-                    _controller.text.isNotEmpty || widget.store.media.isNotEmpty
-                        ? Color(0xFF0083C7)
-                        : Colors.grey,
+          Observer(
+            builder:(_) => InkWell(
+              onTap: (_controller.text.isNotEmpty ||
+                          widget.store.media.isNotEmpty) &&
+                      !widget.store.sent
+                  ? () {
+                      widget.store.sendMessage(
+                        _controller.text,
+                        widget.store.chat!.chatModel.id,
+                        widget.userId,
+                        // _store.media,
+                      );
+                      _controller.text = "";
+                    }
+                  : null,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 14,
+                  right: 20,
+                  top: 10,
+                  bottom: 10,
+                ),
+                child: Observer(
+                  builder: (_) => widget.store.sent
+                      ? CircularProgressIndicator()
+                      : SvgPicture.asset(
+                          "assets/send_message_icon.svg",
+                          color: _controller.text.isNotEmpty ||
+                                  widget.store.media.isNotEmpty
+                              ? Color(0xFF0083C7)
+                              : Colors.grey,
+                        ),
+                ),
               ),
             ),
           ),

@@ -1,9 +1,9 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
+import 'package:app/ui/widgets/running_line.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";
@@ -44,34 +44,47 @@ class MyQuestsItem extends StatelessWidget {
           children: [
             if (!isExpanded) getQuestHeader(itemType, context),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.network(
-                        questInfo.user.avatar.url,
-                        width: 30,
-                        height: 30,
-                        fit: BoxFit.cover,
-                      ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Image.network(
+                    questInfo.user.avatar.url,
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: 20,
+                    child: RunningLine(
+                      children: [
+                        Text(
+                          questInfo.user.firstName +
+                              " " +
+                              questInfo.user.lastName,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      questInfo.user.firstName + " " + questInfo.user.lastName,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
+                  ),
                 ),
                 if (questInfo.responded != null)
                   if (questInfo.responded!.workerId ==
                           context.read<ProfileMeStore>().userData!.id &&
                       (questInfo.status == 0 || questInfo.status == 4))
-                    Text(
-                      "quests.youResponded".tr(),
+                    Row(
+                      children: [
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "quests.youResponded".tr(),
+                        ),
+                      ],
                     ),
               ],
             ),

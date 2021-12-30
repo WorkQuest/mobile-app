@@ -318,6 +318,21 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
+  final _$sentAtom = Atom(name: '_ChatRoomStore.sent');
+
+  @override
+  bool get sent {
+    _$sentAtom.reportRead();
+    return super.sent;
+  }
+
+  @override
+  set sent(bool value) {
+    _$sentAtom.reportWrite(value, super.sent, () {
+      super.sent = value;
+    });
+  }
+
   final _$fileNameBytesAtom = Atom(name: '_ChatRoomStore.fileNameBytes');
 
   @override
@@ -424,6 +439,14 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   @override
   Future getMessages(bool isPagination) {
     return _$getMessagesAsyncAction.run(() => super.getMessages(isPagination));
+  }
+
+  final _$sendMessageAsyncAction = AsyncAction('_ChatRoomStore.sendMessage');
+
+  @override
+  Future<dynamic> sendMessage(String text, String chatId, String userId) {
+    return _$sendMessageAsyncAction
+        .run(() => super.sendMessage(text, chatId, userId));
   }
 
   final _$_ChatRoomStoreActionController =
@@ -572,6 +595,7 @@ selectedUsers: ${selectedUsers},
 starredMessage: ${starredMessage},
 media: ${media},
 pageNumber: ${pageNumber},
+sent: ${sent},
 fileNameBytes: ${fileNameBytes},
 star: ${star},
 mapOfPath: ${mapOfPath},

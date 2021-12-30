@@ -65,6 +65,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
     } else {
       role = widget.info?.role ?? UserRole.Worker;
       viewOtherUser = context.read<UserProfileStore>();
+      viewOtherUser!.offset = 0;
       viewOtherUser!.getQuests(
         widget.info!.id,
         role,

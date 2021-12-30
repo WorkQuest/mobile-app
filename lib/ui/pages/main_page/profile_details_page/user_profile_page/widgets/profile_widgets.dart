@@ -150,7 +150,10 @@ class ReviewsWidget extends StatelessWidget {
               Flexible(
                 child: GestureDetector(
                   onTap: () {
-                    profile.getAssignedWorker(id);
+                    if (id != profile.userData!.id)
+                      profile.getAssignedWorker(id);
+                    else
+                      profile.assignedWorker = profile.userData!;
                     Timer.periodic(Duration(milliseconds: 100), (timer) async {
                       if (profile.assignedWorker != null) {
                         timer.cancel();
@@ -863,38 +866,38 @@ Widget skills({
               ),
             )
             .toList()
-              ..add(
-                ActionChip(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 10.0,
-                    horizontal: 10.0,
+          ..add(
+            ActionChip(
+              padding: EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 10.0,
+              ),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  ChangeProfilePage.routeName,
+                );
+              },
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "settings.add".tr(),
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                    ),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      ChangeProfilePage.routeName,
-                    );
-                  },
-                  label: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "settings.add".tr(),
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ],
+                  Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 20,
                   ),
-                  backgroundColor: Color(0xFF0083C7),
-                ),
-              ))
+                ],
+              ),
+              backgroundColor: Color(0xFF0083C7),
+            ),
+          ))
         : skills!
             .map(
               (item) => new ActionChip(
