@@ -25,6 +25,7 @@ class _QuestMapState extends State<QuestMap> {
   final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
   StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
 
+
   @override
   void initState() {
     mapStore = context.read<QuestMapStore>();
