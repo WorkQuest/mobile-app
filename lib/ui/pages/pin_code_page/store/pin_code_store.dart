@@ -90,9 +90,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
     }
   }
 
-  ///TODO:check why refresh token not working
   ///TODO:clear password field on error password
-  ///
 
   changeState(StatePinCode state, {errorAnimation = false}) {
     statePin = state;

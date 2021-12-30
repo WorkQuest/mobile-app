@@ -132,9 +132,12 @@ class TwoFAPage extends StatelessWidget {
           const SizedBox(
             height: 10.0,
           ),
-          TextFormField(
+          TextFormField(keyboardType: TextInputType.number,
             onChanged: store.setCodeFromAuthenticator,
-            decoration: InputDecoration(hintText: "*****"),
+            decoration: InputDecoration(
+              hintText: "*****",
+              errorText: "InCorrect Code",
+            ),
           ),
           Spacer(),
           ElevatedButton(

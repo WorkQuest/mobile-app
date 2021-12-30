@@ -51,7 +51,8 @@ dependencies:
 
   google_maps_flutter: ^2.0.3
   flutter_google_places_hoc081098: ^1.0.0-nullsafety.5
-  location: ^4.1.1
+  geolocator: ^8.0.1
+
   permission_handler: ^8.1.4
   flutter_secure_storage: ^4.2.0
   webview_flutter: ^2.0.10

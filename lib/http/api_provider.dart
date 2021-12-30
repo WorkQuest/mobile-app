@@ -109,12 +109,26 @@ extension QuestService on ApiProvider {
           '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
           'south[longitude]=${bounds.southwest.longitude.toString()}',
     );
+
+
+    final response2 = await _httpClient.get(
+      query: '/v1/quests' +
+          '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
+          'north[longitude]=${bounds.northeast.longitude.toString()}' +
+          '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
+          'south[longitude]=${bounds.southwest.longitude.toString()}',
+    );
+
+
+    print("<-------------->$response <-------------->$response2,");
+
     return List<QuestMapPoint>.from(
       response.map(
         (x) => QuestMapPoint.fromJson(x),
       ),
     );
   }
+
 
   // Future<List<BaseQuestResponse>>
   Future<Map<String, dynamic>> getEmployerQuests({

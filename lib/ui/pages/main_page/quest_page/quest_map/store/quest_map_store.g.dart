@@ -86,6 +86,21 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
+  final _$locationPositionAtom = Atom(name: '_QuestMapStore.locationPosition');
+
+  @override
+  Position? get locationPosition {
+    _$locationPositionAtom.reportRead();
+    return super.locationPosition;
+  }
+
+  @override
+  set locationPosition(Position? value) {
+    _$locationPositionAtom.reportWrite(value, super.locationPosition, () {
+      super.locationPosition = value;
+    });
+  }
+
   final _$markersAtom = Atom(name: '_QuestMapStore.markers');
 
   @override
@@ -156,11 +171,12 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
         .run(() => super.getPrediction(context, controller));
   }
 
-  final _$getQuestsAsyncAction = AsyncAction('_QuestMapStore.getQuests');
+  final _$getQuestsOnMapAsyncAction =
+      AsyncAction('_QuestMapStore.getQuestsOnMap');
 
   @override
-  Future<dynamic> getQuests(LatLngBounds bounds) {
-    return _$getQuestsAsyncAction.run(() => super.getQuests(bounds));
+  Future<dynamic> getQuestsOnMap(LatLngBounds bounds) {
+    return _$getQuestsOnMapAsyncAction.run(() => super.getQuestsOnMap(bounds));
   }
 
   final _$onTabQuestAsyncAction = AsyncAction('_QuestMapStore.onTabQuest');
@@ -203,6 +219,7 @@ selectQuestInfo: ${selectQuestInfo},
 bufferQuests: ${bufferQuests},
 points: ${points},
 initialCameraPosition: ${initialCameraPosition},
+locationPosition: ${locationPosition},
 markers: ${markers},
 debounce: ${debounce},
 markerLoader: ${markerLoader},

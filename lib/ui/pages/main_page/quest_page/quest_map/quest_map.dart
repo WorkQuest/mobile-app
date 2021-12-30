@@ -4,11 +4,10 @@ import 'package:app/ui/pages/main_page/quest_page/quest_quick_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
-import 'package:permission_handler/permission_handler.dart' as perm;
 
 class QuestMap extends StatefulWidget {
   final void Function() changePage;
@@ -20,16 +19,17 @@ class QuestMap extends StatefulWidget {
 }
 
 class _QuestMapState extends State<QuestMap> {
-  Location _location = Location();
   QuestMapStore? mapStore;
   late GoogleMapController _controller;
-  PermissionStatus? _permissionGranted;
+  bool hasPermission = false;
+  final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
+  StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
 
   @override
   void initState() {
     mapStore = context.read<QuestMapStore>();
     mapStore!.createMarkerLoader(context);
-    _getCurrentLocation();
+    _getLocation();
     super.initState();
   }
 
@@ -40,7 +40,7 @@ class _QuestMapState extends State<QuestMap> {
         body: mapStore?.initialCameraPosition == null
             ? Center(child: CircularProgressIndicator())
             : Visibility(
-                visible: _permissionGranted == PermissionStatus.granted,
+                visible: hasPermission,
                 maintainState: false,
                 replacement: GoogleMap(
                   mapType: MapType.normal,
@@ -55,11 +55,11 @@ class _QuestMapState extends State<QuestMap> {
                         if (mapStore?.debounce != null)
                           mapStore!.debounce!.cancel();
                         mapStore!.debounce = Timer(
-                          const Duration(milliseconds: 50),
+                          const Duration(milliseconds: 200),
                           () async {
                             LatLngBounds bounds =
                                 await _controller.getVisibleRegion();
-                            mapStore!.getQuests(bounds);
+                            mapStore!.getQuestsOnMap(bounds);
                           },
                         );
                       },
@@ -73,7 +73,7 @@ class _QuestMapState extends State<QuestMap> {
                         _controller = controller;
                         LatLngBounds bounds =
                             await _controller.getVisibleRegion();
-                        mapStore!.getQuests(bounds);
+                        mapStore!.getQuestsOnMap(bounds);
                       },
                       onTap: (point) {
                         if (mapStore!.infoPanel != InfoPanel.Nope)
@@ -178,49 +178,11 @@ class _QuestMapState extends State<QuestMap> {
         ),
       );
 
-  Future<void> _getCurrentLocation() async {
-    _permissionGranted = await _location.requestPermission();
+  Future<void> _getLocation() async {
+    hasPermission = await _handlePermission();
+    setState(() {});
 
-    print("Location permission => $_permissionGranted");
-
-    if (_permissionGranted == PermissionStatus.deniedForever ||
-        _permissionGranted == PermissionStatus.denied) {
-      showCupertinoDialog(
-        context: context,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: Text(
-              "quests.ui.access".tr(),
-            ),
-            content: Text(
-              "quests.ui.openSettings".tr(),
-            ),
-            actions: [
-              CupertinoDialogAction(
-                child: Text(
-                  "meta.close".tr(),
-                ),
-                onPressed: Navigator.of(context).pop,
-              ),
-              CupertinoDialogAction(
-                child: Text(
-                  "ui.profile.settings".tr(),
-                ),
-                onPressed: () async {
-                  if (_permissionGranted == PermissionStatus.denied) {
-                    await _location.requestPermission();
-                  } else {
-                    await perm.openAppSettings();
-                  }
-                  Navigator.pop(context);
-                  await _onMyLocationPressed();
-                },
-              ),
-            ],
-          );
-        },
-      );
-
+    if (!hasPermission) {
       mapStore!.initialCameraPosition = CameraPosition(
         bearing: 192.0,
         target: LatLng(37.4, -122.0),
@@ -228,34 +190,124 @@ class _QuestMapState extends State<QuestMap> {
       );
       return;
     }
-
-    final myLocation = await _location.getLocation();
+    await updatePosition();
 
     mapStore!.initialCameraPosition = CameraPosition(
       bearing: 0,
-      target: LatLng(myLocation.latitude!, myLocation.longitude!),
+      target: LatLng(
+        mapStore!.locationPosition?.latitude ?? 90.0,
+        mapStore!.locationPosition?.longitude ?? 90.0,
+      ),
       zoom: 17.0,
     );
     return;
   }
 
   Future<void> _onMyLocationPressed() async {
-    final status = await _location.hasPermission();
-    if (status == PermissionStatus.granted) {
-      final myLocation = await _location.getLocation();
-      _controller.animateCamera(
+    hasPermission = await _handlePermission();
+    setState(() {});
+    print("permisssion2");
+    if (hasPermission) {
+      print("permisssion2");
+      await updatePosition();
+      print("<----------------> permission updated");
+      await _controller.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
             bearing: 0,
             target: LatLng(
-              myLocation.latitude!,
-              myLocation.longitude!,
+              mapStore?.locationPosition?.latitude ?? 90.0,
+              mapStore!.locationPosition?.longitude ?? 90,
             ),
             zoom: 17.0,
           ),
         ),
       );
-    } else
-      _getCurrentLocation();
+      print("<----------------> cam move");
+    }
+  }
+
+  Future<void> updatePosition() async {
+    _geolocatorPlatform.getCurrentPosition().then((position) {
+      mapStore?.locationPosition = position;
+    });
+
+    await _geolocatorPlatform.getLastKnownPosition().then((position) {
+      mapStore?.locationPosition = position!;
+    });
+  }
+
+  Future<bool> _handlePermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await _geolocatorPlatform.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+
+      return false;
+    }
+
+    permission = await _geolocatorPlatform.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await _geolocatorPlatform.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+
+        return false;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      _requestPermissionDialog();
+      return false;
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+
+    return true;
+  }
+
+  Future<void> _requestPermissionDialog() {
+    return showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text(
+            "quests.ui.access".tr(),
+          ),
+          content: Text(
+            "quests.ui.openSettings".tr(),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: Text(
+                "meta.close".tr(),
+              ),
+              onPressed: Navigator.of(context).pop,
+            ),
+            CupertinoDialogAction(
+              child: Text(
+                "ui.profile.settings".tr(),
+              ),
+              onPressed: () async {
+                await _geolocatorPlatform.openAppSettings();
+                print("pop");
+                Navigator.pop(context);
+                await _onMyLocationPressed();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

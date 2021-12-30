@@ -5,7 +5,6 @@ import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import "package:app/ui/widgets/platform_activity_indicator.dart";
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_mobx/flutter_mobx.dart";
 import 'package:flutter_svg/flutter_svg.dart';
@@ -42,11 +41,11 @@ class _PinCodePageState extends State<PinCodePage>
     final Animation<double> offsetAnimation = Tween(begin: 0.0, end: 24.0)
         .chain(CurveTween(curve: Curves.elasticIn))
         .animate(controller!)
-          ..addStatusListener((status) {
-            if (status == AnimationStatus.completed) {
-              controller!.reverse();
-            }
-          });
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          controller!.reverse();
+        }
+      });
     return WillPopScope(
       onWillPop: () async {
         if (widget.isRecheck) return false;
@@ -77,7 +76,8 @@ class _PinCodePageState extends State<PinCodePage>
               context,
               SignInPage.routeName,
               (_) => false,
-            );
+            ).then((value) => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Token Expired, Please login"))));
           }
         },
         child: Scaffold(

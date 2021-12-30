@@ -29,6 +29,9 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
   @observable
   String codeFromAuthenticator = '';
 
+  @computed
+  String get errorText=>"";
+
   @action
   void setCodeFromAuthenticator(String value) {
     codeFromAuthenticator = value;
@@ -74,7 +77,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await apiProvider.confirmEnabling2FA(
-        confirmCode:codeFromEmail,
+        confirmCode: codeFromEmail,
         totp: codeFromAuthenticator,
       );
       await SharedPreferences.getInstance().then(

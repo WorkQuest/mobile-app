@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:location/location.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
@@ -7,6 +6,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/quest_map_point.dart';
 import 'package:app/utils/marker_louder_for_map.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -41,6 +41,9 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
 
   @observable
   CameraPosition? initialCameraPosition ;
+
+  @observable
+  Position? locationPosition;
 
   @observable
   List<Marker> markers = [];
@@ -85,7 +88,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   }
 
   @action
-  Future getQuests(LatLngBounds bounds) async {
+  Future getQuestsOnMap(LatLngBounds bounds) async {
     try {
       this.onLoading();
       points = await _apiProvider.mapPoints(bounds);
