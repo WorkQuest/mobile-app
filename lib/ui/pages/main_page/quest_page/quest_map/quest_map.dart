@@ -22,9 +22,8 @@ class _QuestMapState extends State<QuestMap> {
   QuestMapStore? mapStore;
   late GoogleMapController _controller;
   bool hasPermission = false;
-  final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
+  final GeolocatorPlatform _geoLocatorPlatform = GeolocatorPlatform.instance;
   StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
-
 
   @override
   void initState() {
@@ -75,6 +74,7 @@ class _QuestMapState extends State<QuestMap> {
                         LatLngBounds bounds =
                             await _controller.getVisibleRegion();
                         mapStore!.getQuestsOnMap(bounds);
+                        _onMyLocationPressed();
                       },
                       onTap: (point) {
                         if (mapStore!.infoPanel != InfoPanel.Nope)
@@ -181,6 +181,7 @@ class _QuestMapState extends State<QuestMap> {
 
   Future<void> _getLocation() async {
     hasPermission = await _handlePermission();
+
     setState(() {});
 
     if (!hasPermission) {
@@ -207,12 +208,9 @@ class _QuestMapState extends State<QuestMap> {
   Future<void> _onMyLocationPressed() async {
     hasPermission = await _handlePermission();
     setState(() {});
-    print("permisssion2");
     if (hasPermission) {
-      print("permisssion2");
       await updatePosition();
-      print("<----------------> permission updated");
-      await _controller.animateCamera(
+      _controller.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
             bearing: 0,
@@ -224,16 +222,15 @@ class _QuestMapState extends State<QuestMap> {
           ),
         ),
       );
-      print("<----------------> cam move");
     }
   }
 
   Future<void> updatePosition() async {
-    _geolocatorPlatform.getCurrentPosition().then((position) {
+    _geoLocatorPlatform.getCurrentPosition().then((position) {
       mapStore?.locationPosition = position;
     });
 
-    await _geolocatorPlatform.getLastKnownPosition().then((position) {
+    await _geoLocatorPlatform.getLastKnownPosition().then((position) {
       mapStore?.locationPosition = position!;
     });
   }
@@ -243,7 +240,7 @@ class _QuestMapState extends State<QuestMap> {
     LocationPermission permission;
 
     // Test if location services are enabled.
-    serviceEnabled = await _geolocatorPlatform.isLocationServiceEnabled();
+    serviceEnabled = await _geoLocatorPlatform.isLocationServiceEnabled();
     if (!serviceEnabled) {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
@@ -252,9 +249,9 @@ class _QuestMapState extends State<QuestMap> {
       return false;
     }
 
-    permission = await _geolocatorPlatform.checkPermission();
+    permission = await _geoLocatorPlatform.checkPermission();
     if (permission == LocationPermission.denied) {
-      permission = await _geolocatorPlatform.requestPermission();
+      permission = await _geoLocatorPlatform.requestPermission();
       if (permission == LocationPermission.denied) {
         // Permissions are denied, next time you could try
         // requesting permissions again (this is also where
@@ -300,9 +297,9 @@ class _QuestMapState extends State<QuestMap> {
                 "ui.profile.settings".tr(),
               ),
               onPressed: () async {
-                await _geolocatorPlatform.openAppSettings();
-                print("pop");
                 Navigator.pop(context);
+                await _geoLocatorPlatform.openAppSettings();
+                print("pop");
                 await _onMyLocationPressed();
               },
             ),

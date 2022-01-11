@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
 import 'package:app/ui/pages/main_page/chat_page/repository/chat.dart';
@@ -13,7 +12,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
 import 'chat_room_page/chat_room_page.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 
 import 'dispute_page/dispute_page.dart';
 
@@ -62,92 +60,20 @@ class _ChatPageState extends State<ChatPage> {
         },
         body: RefreshIndicator(
           displacement: 40,
-          // CustomRefreshIndicator(
-          //   offsetToArmed: _indicatorSize,
-          //   onRefresh: () => store.loadChats(true),
-          //   builder: (
-          //     BuildContext context,
-          //     Widget child,
-          //     IndicatorController controller,
-          //   ) {
-          //     return Stack(
-          //       children: <Widget>[
-          //         AnimatedBuilder(
-          //           animation: controller,
-          //           builder: (BuildContext context, Widget? _) {
-          //             _helper.update(controller.state);
-          //
-          //             if (controller.scrollingDirection ==
-          //                     ScrollDirection.reverse &&
-          //                 prevScrollDirection == ScrollDirection.forward) {
-          //               controller.stopDrag();
-          //             }
-          //
-          //             prevScrollDirection = controller.scrollingDirection;
-          //
-          //             if (_helper.didStateChange(to: IndicatorState.complete)) {
-          //             //   _renderCompleteState = true;
-          //             // } else if (_helper.didStateChange(
-          //             //     to: IndicatorState.idle)) {
-          //             //   _renderCompleteState = false;
-          //             }
-          //             final containerHeight = controller.value * _indicatorSize;
-          //
-          //             return Container(
-          //               alignment: Alignment.center,
-          //               height: containerHeight,
-          //               child: OverflowBox(
-          //                 maxHeight: 40,
-          //                 minHeight: 40,
-          //                 maxWidth: 40,
-          //                 minWidth: 40,
-          //                 alignment: Alignment.center,
-          //                 child: AnimatedContainer(
-          //                   duration: const Duration(milliseconds: 150),
-          //                   alignment: Alignment.center,
-          //                   child: store.isLoading
-          //                       ? SizedBox()
-          //                       : SizedBox(
-          //                           height: 30,
-          //                           width: 30,
-          //                           child: CircularProgressIndicator(
-          //                             strokeWidth: 2,
-          //                             valueColor: AlwaysStoppedAnimation(
-          //                               Color(0xFF0083C7),
-          //                             ),
-          //                             value: controller.isDragging ||
-          //                                     controller.isArmed
-          //                                 ? controller.value.clamp(0.0, 1.0)
-          //                                 : null,
-          //                           ),
-          //                         ),
-          //                   decoration: BoxDecoration(
-          //                     color:Colors.white,
-          //                     shape: BoxShape.circle,
-          //                   ),
-          //                 ),
-          //               ),
-          //             );
-          //           },
-          //         ),
-          //         AnimatedBuilder(
-          //           builder: (context, _) {
-          //             return Transform.translate(
-          //               offset: Offset(0.0, controller.value * _indicatorSize),
-          //               child: child,
-          //             );
-          //           },
-          //           animation: controller,
-          //         ),
-          //       ],
-          //     );
-          //   },
+          triggerMode: RefreshIndicatorTriggerMode.anywhere,
+          notificationPredicate: (ScrollNotification notification) {
+            print(notification.depth);
+            print(notification.metrics.pixels);
+            print("true");
+            return notification.depth == 0;
+          },
           onRefresh: () => store.loadChats(true),
           child: Observer(
             builder: (_) => store.isLoading
                 ? Center(child: CircularProgressIndicator())
                 : store.chats.isNotEmpty
                     ? NotificationListener<ScrollEndNotification>(
+
                         onNotification: (scrollEnd) {
                           final metrics = scrollEnd.metrics;
                           if (metrics.maxScrollExtent < metrics.pixels) {
