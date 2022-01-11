@@ -21,8 +21,7 @@ class QuestsList extends StatelessWidget {
   final bool isLoading;
 
   QuestsList(this.questItemPriorityType, this.questsList,
-      {
-      this.update,
+      {this.update,
       this.physics = const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
       ),
@@ -31,31 +30,36 @@ class QuestsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(
-      builder: (_) => Center(
-        child: questsList.isEmpty
-            ? isLoading
-                ? getLoadingBody()
-                : getEmptyBody(context)
-            : getBody(),
-      ),
+      builder: (_) => questsList.isEmpty
+          ? Center(
+              child: isLoading ? getLoadingBody() : getEmptyBody(context),
+            )
+          : getBody(),
     );
   }
 
   Widget getBody() {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: ListView.builder(
-        physics: physics,
-        shrinkWrap: false,
-        itemCount: questsList.length,
-        padding: EdgeInsets.zero,
-        itemBuilder: (BuildContext context, index) {
-          return MyQuestsItem(
-            questsList[index],
-            itemType: questItemPriorityType,
-          );
-        },
-      ),
+    return ListView.builder(
+      physics: physics,
+      shrinkWrap: true,
+      itemCount: questsList.length,
+      padding: EdgeInsets.zero,
+      itemBuilder: (BuildContext context, index) {
+        return Column(
+          children: [
+            Container(
+              height: 10,
+              decoration: BoxDecoration(
+                color: Color(0xFFF7F8FA),
+              ),
+            ),
+            MyQuestsItem(
+              questsList[index],
+              itemType: questItemPriorityType,
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -76,7 +80,7 @@ class QuestsList extends StatelessWidget {
               " ${questItemPriorityType.name} " +
               "quests.questYet".tr(),
           style: TextStyle(
-            color:Color(0xFFD8DFE3),
+            color: Color(0xFFD8DFE3),
           ),
         ),
       ],

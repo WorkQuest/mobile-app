@@ -39,7 +39,6 @@ abstract class _CreateReviewStore extends IStore<bool> with Store {
 
   void addReview(String questId) async {
     try {
-      print("ID: $questId");
       this.onLoading();
       await _apiProvider.sendReview(
         questId: questId,

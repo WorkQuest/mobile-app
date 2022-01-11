@@ -46,6 +46,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
 
   Future<void> startQuest(String userId) async {
     try {
+      print("chosenQuestId: $questId");
       await _apiProvider.inviteOnQuest(
           questId: questId,
           userId: userId,
@@ -80,7 +81,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
           offset: offset,
           statuses: [6],
         );
-        userQuest.addAll(ObservableList.of(List<BaseQuestResponse>.from(
+        userQuest = (ObservableList.of(List<BaseQuestResponse>.from(
             quests["quests"].map((x) => BaseQuestResponse.fromJson(x)))));
       }
       if (role == UserRole.Worker) {

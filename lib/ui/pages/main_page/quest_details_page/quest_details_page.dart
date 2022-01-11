@@ -1,6 +1,7 @@
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
@@ -8,10 +9,12 @@ import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/running_line.dart';
 import 'package:app/ui/widgets/workplace_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import "package:provider/provider.dart";
+import 'package:maps_launcher/maps_launcher.dart';
 
 class QuestDetails extends StatefulWidget {
   static const String routeName = "/QuestDetails";
@@ -203,40 +206,49 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                 ),
               ),
               const SizedBox(height: 10),
-              Container(
-                height: 215,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    GoogleMap(
-                      mapType: MapType.normal,
-                      tiltGesturesEnabled: false,
-                      rotateGesturesEnabled: false,
-                      zoomControlsEnabled: false,
-                      scrollGesturesEnabled: false,
-                      zoomGesturesEnabled: false,
-                      initialCameraPosition: CameraPosition(
-                        bearing: 0,
-                        target: LatLng(
-                          () {
-                            print(
-                                "latt: ${widget.questInfo.location.latitude}");
-                            return widget.questInfo.location.latitude;
-                          }(),
-                          widget.questInfo.location.longitude,
+              InkWell(
+                onTap: () {
+                  MapsLauncher.launchCoordinates(
+                    widget.questInfo.location.latitude,
+                    widget.questInfo.location.longitude,
+                  );
+                },
+                child: Container(
+                  height: 215,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      GoogleMap(
+                        mapType: MapType.normal,
+                        tiltGesturesEnabled: false,
+                        rotateGesturesEnabled: false,
+                        zoomControlsEnabled: false,
+                        scrollGesturesEnabled: false,
+                        zoomGesturesEnabled: false,
+                        initialCameraPosition: CameraPosition(
+                          bearing: 0,
+                          target: LatLng(
+                            widget.questInfo.location.latitude,
+                            widget.questInfo.location.longitude,
+                          ),
+                          zoom: 15.0,
                         ),
-                        zoom: 15.0,
+                        myLocationButtonEnabled: false,
                       ),
-                      myLocationButtonEnabled: false,
-                    ),
-                    SvgPicture.asset(
-                      "assets/marker.svg",
-                      width: 22,
-                      height: 29,
-                      color:
-                          Constants.priorityColors[widget.questInfo.priority],
-                    ),
-                  ],
+                      SvgPicture.asset(
+                        "assets/marker.svg",
+                        width: 22,
+                        height: 29,
+                        color:
+                            Constants.priorityColors[widget.questInfo.priority],
+                      ),
+                      Container(
+                        color: Colors.transparent,
+                        height: double.maxFinite,
+                        width: double.maxFinite,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -246,6 +258,43 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                   child: PriorityView(widget.questInfo.priority),
                 ),
               getBody(),
+              if (widget.questInfo.status == 6 &&
+                  widget.questInfo.yourReview == null)
+                isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Observer(
+                        builder: (_) => TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              CreateReviewPage.routeName,
+                              arguments: widget.questInfo,
+                            );
+                          },
+                          child: Text(
+                            "quests.addReview".tr(),
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          style: ButtonStyle(
+                            fixedSize: MaterialStateProperty.all(
+                              Size(double.maxFinite, 43),
+                            ),
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.pressed))
+                                  return Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.5);
+                                return const Color(0xFF0083C7);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
               const SizedBox(height: 20),
             ],
           ),

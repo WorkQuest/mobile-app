@@ -1,8 +1,6 @@
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
@@ -240,53 +238,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                 .withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
-                      ),
-                    ),
-                  ),
-          if (store.quest.value!.status == 6 &&
-              store.quest.value!.yourReview == null)
-            store.isLoading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Observer(
-                    builder: (_) => TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          CreateReviewPage.routeName,
-                          arguments: store.quest.value!.id,
-                        );
-                        store.quest.value!.yourReview = YourReview(
-                          id: "",
-                          questId: store.quest.value!.id,
-                          fromUserId: profile!.userData!.id,
-                          toUserId: store.quest.value!.userId,
-                          message: "",
-                          mark: 5,
-                          createdAt: DateTime.now(),
-                          updatedAt: DateTime.now(),
-                        );
-                      },
-                      child: Text(
-                        "quests.addReview".tr(),
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: ButtonStyle(
-                        fixedSize: MaterialStateProperty.all(
-                          Size(double.maxFinite, 43),
-                        ),
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.pressed))
-                              return Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.5);
-                            return const Color(0xFF0083C7);
-                          },
-                        ),
                       ),
                     ),
                   ),

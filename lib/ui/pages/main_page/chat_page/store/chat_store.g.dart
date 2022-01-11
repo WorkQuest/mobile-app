@@ -239,7 +239,7 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   @override
-  dynamic openStarredChats(bool value) {
+  void openStarredChats(bool value) {
     final _$actionInfo = _$_ChatStoreActionController.startAction(
         name: '_ChatStore.openStarredChats');
     try {

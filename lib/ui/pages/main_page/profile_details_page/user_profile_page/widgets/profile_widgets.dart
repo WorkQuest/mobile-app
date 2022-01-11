@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:app/model/profile_response/social_network.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
@@ -106,23 +106,26 @@ class ReviewsWidget extends StatelessWidget {
   final String questTitle;
   final String message;
   final String id;
+  final String myId;
+  final UserRole role;
 
-  const ReviewsWidget(
-      {required this.avatar,
-      required this.name,
-      required this.mark,
-      required this.userRole,
-      required this.questTitle,
-      required this.message,
-      required this.id});
+  const ReviewsWidget({
+    required this.avatar,
+    required this.name,
+    required this.mark,
+    required this.userRole,
+    required this.questTitle,
+    required this.message,
+    required this.id,
+    required this.myId,
+    required this.role,
+  });
 
   @override
   Widget build(BuildContext context) {
     final profile = context.read<ProfileMeStore>();
     final portfolioStore = context.read<PortfolioStore>();
-    final userStore = context.read<ProfileMeStore>();
-    final questStore = context.read<MyQuestStore>();
-    final role = profile.userData!.role;
+    final userProfileStore = context.read<UserProfileStore>();
     return Column(
       children: [
         Container(
@@ -163,15 +166,12 @@ class ReviewsWidget extends StatelessWidget {
                           arguments: profile.assignedWorker,
                         );
                         if (role == UserRole.Worker)
-                          portfolioStore.getPortfolio(
-                            userId: userStore.userData!.id,
-                          );
-                        else
-                          questStore.getQuests(
-                              userStore.userData!.id, role, true);
-                        portfolioStore.getReviews(
-                          userId: userStore.userData!.id,
-                        );
+                          portfolioStore.getPortfolio(userId: myId);
+                        else {
+                          userProfileStore.userQuest.clear();
+                          userProfileStore.getQuests(myId, role);
+                        }
+                        portfolioStore.getReviews(userId: myId);
                       }
                       profile.assignedWorker = null;
                     });
@@ -185,7 +185,7 @@ class ReviewsWidget extends StatelessWidget {
                       style: TextStyle(fontSize: 16.0),
                     ),
                     subtitle: Text(
-                      userRole,
+                      userRole.tr(),
                       style:
                           TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
                     ),

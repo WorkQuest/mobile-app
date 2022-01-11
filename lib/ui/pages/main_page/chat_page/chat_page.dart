@@ -200,23 +200,23 @@ class _ChatPageState extends State<ChatPage> {
               ),
               onSelected: (value) {
                 switch (value) {
-                  case "Starred message":
+                  case "chat.starredMessage":
                     Navigator.of(context, rootNavigator: true).pushNamed(
                         StarredMessage.routeName,
                         arguments: userData.userData!.id);
                     break;
-                  case "Starred chat":
+                  case "chat.starredChat":
                     store.openStarredChats(true);
                     break;
-                  case "All chat":
+                  case "chat.allChat":
                     store.openStarredChats(false);
                     break;
-                  case "Report":
+                  case "chat.report":
                     Navigator.of(context, rootNavigator: true).pushNamed(
                       DisputePage.routeName,
                     );
                     break;
-                  case "Create group chat":
+                  case "chat.createGroupChat":
                     Navigator.of(context, rootNavigator: true).pushNamed(
                       CreateGroupPage.routeName,
                       arguments: userData.userData!.id,
@@ -227,10 +227,10 @@ class _ChatPageState extends State<ChatPage> {
               itemBuilder: !store.starred
                   ? (BuildContext context) {
                       return {
-                        "Starred message",
-                        "Starred chat",
-                        "Report",
-                        "Create group chat",
+                        "chat.starredMessage",
+                        "chat.starredChat",
+                        "chat.report",
+                        "chat.createGroupChat",
                       }.map((String choice) {
                         return PopupMenuItem<String>(
                           value: choice,
@@ -242,10 +242,10 @@ class _ChatPageState extends State<ChatPage> {
                     }
                   : (BuildContext context) {
                       return {
-                        "Starred message",
-                        "All chat",
-                        "Report",
-                        "Create group chat",
+                        "chat.starredMessage",
+                        "chat.allChat",
+                        "chat.report",
+                        "chat.createGroupChat",
                       }.map((String choice) {
                         return PopupMenuItem<String>(
                           value: choice,
@@ -339,7 +339,6 @@ class _ChatPageState extends State<ChatPage> {
           for (int i = 0; i < store.idChatsForStar.values.length; i++)
             if (store.idChatsForStar.values.toList()[i] == true) return;
           store.setChatSelected(false);
-          print("${store.chatSelected}");
         } else {
           Map<String, dynamic> arguments = {
             "chatId": chatDetails.chatModel.id,
@@ -358,10 +357,8 @@ class _ChatPageState extends State<ChatPage> {
       },
       child: Observer(
         builder: (_) => Container(
-          color: store.idChatsForStar[chatDetails.chatModel.id] == null
-              ? store.idChatsForStar[chatDetails.chatModel.id]!
-                  ? Color(0xFFE9EDF2)
-                  : Color(0xFFFFFFFF)
+          color: store.idChatsForStar[chatDetails.chatModel.id]!
+              ? Color(0xFFE9EDF2)
               : Color(0xFFFFFFFF),
           child: Column(
             children: [

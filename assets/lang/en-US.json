@@ -1192,8 +1192,10 @@
     "openDispute": "Open dispute",
     "owner": "Owner",
     "approveQuest": "Approve quest",
-    "starredMessages": "Starred messages",
-    "favoriteChats": "Favorite chats",
+    "starredMessage": "Starred message",
+    "starredChat": "Starred chat",
+    "allChat": "All chat",
+    "report": "Report",
     "createGroupChat": "Create group chat",
     "favorite": "Add to favorites",
     "messages": "Messages",
@@ -1744,6 +1746,7 @@
       "worker": {
         "myQuests": {
           "desc": "You have not completed the quests yet",
+          "notQuest": "No performed quests",
           "btnText": "Create an quest!"
         },
         "allQuests": {

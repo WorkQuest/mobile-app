@@ -3,7 +3,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members/add_members.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
@@ -585,7 +585,7 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: CreateReviewPage(
-                questId: settings.arguments as String,
+                quest: settings.arguments as BaseQuestResponse,
               ),
             ),
           ),

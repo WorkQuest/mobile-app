@@ -326,6 +326,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),
+                  overflow: TextOverflow.fade,
                 ),
               ),
       ),

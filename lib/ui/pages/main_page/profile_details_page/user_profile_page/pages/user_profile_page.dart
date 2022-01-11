@@ -66,10 +66,10 @@ class UserProfileState<T extends UserProfile> extends State<T>
       role = widget.info?.role ?? UserRole.Worker;
       viewOtherUser = context.read<UserProfileStore>();
       viewOtherUser!.offset = 0;
-      viewOtherUser!.getQuests(
-        widget.info!.id,
-        role,
-      );
+      viewOtherUser!.questForWorker.clear();
+      // viewOtherUser!.userQuest.clear();
+      if (viewOtherUser!.userQuest.isEmpty)
+        viewOtherUser!.getQuests(widget.info!.id, role);
 
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(
@@ -103,7 +103,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   @override
   Widget build(BuildContext context) {
-    final userStore = context.read<ProfileMeStore>();
+    // final userStore = context.read<ProfileMeStore>();
     return Scaffold(
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
@@ -147,26 +147,27 @@ class UserProfileState<T extends UserProfile> extends State<T>
                       ///Social Accounts
                       socialAccounts(
                         socialNetwork: widget.info == null
-                            ? userStore.userData?.additionalInfo?.socialNetwork
+                            ? userStore!.userData?.additionalInfo?.socialNetwork
                             : widget.info!.additionalInfo?.socialNetwork,
                       ),
 
                       ///Contact Details
                       contactDetails(
                         location: widget.info == null
-                            ? userStore.userData?.additionalInfo?.address ?? ' '
+                            ? userStore!.userData?.additionalInfo?.address ??
+                                ' '
                             : widget.info!.additionalInfo?.address ?? " ",
                         number: widget.info == null
-                            ? userStore.userData?.phone ?? " "
+                            ? userStore!.userData?.phone ?? " "
                             : widget.info!.phone ?? " ",
                         secondNumber: widget.info == null
-                            ? userStore.userData?.additionalInfo
+                            ? userStore!.userData?.additionalInfo
                                     ?.secondMobileNumber ??
                                 ""
                             : widget.info!.additionalInfo?.secondMobileNumber ??
                                 "",
                         email: widget.info == null
-                            ? userStore.userData?.email ?? " "
+                            ? userStore!.userData?.email ?? " "
                             : widget.info!.email ?? " ",
                       ),
                       ...addToQuest(),

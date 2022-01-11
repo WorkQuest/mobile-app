@@ -99,8 +99,8 @@ class ChooseQuest extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   store.startQuest(workerId);
-                  successAlert(context, "modals.inviteSend".tr());
                   Navigator.pop(context);
+                  successAlert(context, "modals.inviteSend".tr());
                 },
                 child: Text(
                   "quests.addToQuest".tr(),

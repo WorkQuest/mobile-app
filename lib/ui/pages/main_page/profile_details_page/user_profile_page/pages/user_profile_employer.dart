@@ -20,16 +20,21 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
         SizedBox(
           height: 20,
         ),
-        myQuests?.performed != null || (viewOtherUser?.userQuest.isNotEmpty ?? false)
+        myQuests?.performed != null ||
+                (viewOtherUser?.userQuest.isNotEmpty ?? false)
             ? QuestsList(
                 QuestItemPriorityType.Performed,
-                widget.info == null ? myQuests!.performed : viewOtherUser!.userQuest,
+                widget.info == null
+                    ? myQuests!.performed
+                    : viewOtherUser!.userQuest,
                 physics: NeverScrollableScrollPhysics(),
                 isLoading: myQuests!.isLoading,
               )
             : Center(
                 child: Text(
-                  "errors.emptyData.worker.myQuests.desc".tr(),
+                  widget.info == null
+                      ? "errors.emptyData.worker.myQuests.desc".tr()
+                      : "errors.emptyData.worker.myQuests.noQuest".tr(),
                 ),
               ),
       ];

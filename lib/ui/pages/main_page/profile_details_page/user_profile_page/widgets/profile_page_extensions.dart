@@ -4,7 +4,6 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import '../../../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 extension CustomAppBar on UserProfileState {
@@ -85,9 +84,7 @@ extension CustomAppBar on UserProfileState {
                     : Row(
                         children: [
                           for (int i = 0;
-                              i <
-                                  info.ratingStatistic!.averageMark
-                                      .round();
+                              i < info.ratingStatistic!.averageMark.round();
                               i++)
                             Icon(
                               Icons.star,
@@ -95,10 +92,7 @@ extension CustomAppBar on UserProfileState {
                               size: 20.0,
                             ),
                           for (int i = 0;
-                              i <
-                                  5 -
-                                      info.ratingStatistic!.averageMark
-                                          .round();
+                              i < 5 - info.ratingStatistic!.averageMark.round();
                               i++)
                             Icon(
                               Icons.star,
@@ -142,11 +136,21 @@ extension ReviewsTab on UserProfileState {
                             portfolioStore!
                                 .reviewsList[index].fromUser.lastName,
                         mark: portfolioStore!.reviewsList[index].mark,
-                        userRole: UserRole.Worker.toString().split(".").last,
+                        userRole: portfolioStore!
+                                    .reviewsList[index].fromUserId ==
+                                portfolioStore!.reviewsList[index].quest.userId
+                            ? "role.employer"
+                            : "role.worker",
                         questTitle:
                             portfolioStore!.reviewsList[index].quest.title,
                         message: portfolioStore!.reviewsList[index].message,
                         id: portfolioStore!.reviewsList[index].fromUserId,
+                        myId: widget.info == null
+                            ? userStore!.userData!.id
+                            : widget.info!.id,
+                        role: widget.info == null
+                            ? userStore!.userData!.role
+                            : widget.info!.role,
                       ),
                   ],
                 ),

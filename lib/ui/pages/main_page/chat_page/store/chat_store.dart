@@ -72,8 +72,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
     var values = chats.values.toList();
 
     values.forEach((element) {
-      if (idChatsForStar[element.chatModel.id] == null)
-        idChatsForStar[element.chatModel.id] = false;
+      // if (idChatsForStar[element.chatModel.id] == null)
+      idChatsForStar[element.chatModel.id] = false;
     });
 
     keys.sort((key1, key2) {
@@ -203,7 +203,15 @@ abstract class _ChatStore extends IStore<bool> with Store {
   int _count = 0;
 
   @action
-  openStarredChats(bool value) => starred = value;
+  void openStarredChats(bool value) {
+    starred = value;
+    starredChats.clear();
+    chats.forEach((key, value) {
+      if (value.chatModel.star != null) {
+        starredChats.add(value);
+      }
+    });
+  }
 
   @action
   String setInfoMessage(String infoMessage) {
@@ -255,7 +263,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
   Future loadChats(bool isNewList) async {
     if (isNewList) {
       chats = {};
-      starredChats = ObservableList.of([]);
+      starredChats.clear();
       this.offset = 0;
       refresh = false;
     }

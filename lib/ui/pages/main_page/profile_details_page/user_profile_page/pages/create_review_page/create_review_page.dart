@@ -1,3 +1,5 @@
+import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/validator.dart';
@@ -10,9 +12,9 @@ import "package:provider/provider.dart";
 class CreateReviewPage extends StatefulWidget {
   static const String routeName = '/createReviewPage';
 
-  final String questId;
+  final BaseQuestResponse quest;
 
-  const CreateReviewPage({required this.questId});
+  const CreateReviewPage({required this.quest});
 
   @override
   _CreateReviewPageState createState() => _CreateReviewPageState();
@@ -77,7 +79,6 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                     const SizedBox(height: 16),
                     Container(
                       height: 200,
-                      padding: EdgeInsets.symmetric(horizontal: 15),
                       decoration: BoxDecoration(
                         color: Color(0xFFF7F8FA),
                         borderRadius: BorderRadius.all(
@@ -86,6 +87,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                       ),
                       alignment: Alignment.centerLeft,
                       child: TextFormField(
+                        textAlign: TextAlign.start,
                         validator: Validators.emptyValidator,
                         onChanged: (text) => store.setMessage(text),
                         keyboardType: TextInputType.multiline,
@@ -101,8 +103,17 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
-                          store.addReview(widget.questId);
-                          Navigator.pop(context);
+                          store.addReview(widget.quest.id);
+                          widget.quest.yourReview = YourReview(
+                            id: "",
+                            questId: widget.quest.id,
+                            fromUserId: "",
+                            toUserId: "",
+                            message: store.message,
+                            mark: store.mark,
+                            createdAt: DateTime.now(),
+                            updatedAt: DateTime.now(),
+                          );
                           Navigator.pop(context);
                           successAlert(
                             context,

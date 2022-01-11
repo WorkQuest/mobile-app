@@ -1,5 +1,5 @@
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_user_cell.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members/add_user_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/material.dart';
