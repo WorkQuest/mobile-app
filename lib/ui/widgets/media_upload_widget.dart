@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
@@ -204,14 +202,5 @@ class _MediaUploadState extends State<MediaUpload> {
         ),
       ),
     );
-  }
-}
-
-extension on int {
-  String get formattedDuration {
-    final duration = Duration(seconds: this);
-    final min = duration.inMinutes.remainder(60).toString();
-    final sec = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
-    return '$min:$sec';
   }
 }
