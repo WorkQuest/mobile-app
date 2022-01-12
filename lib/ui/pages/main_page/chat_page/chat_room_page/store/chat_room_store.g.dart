@@ -95,13 +95,13 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   final _$userInChatAtom = Atom(name: '_ChatRoomStore.userInChat');
 
   @override
-  ObservableList<bool> get userInChat {
+  ObservableMap<String, bool> get userInChat {
     _$userInChatAtom.reportRead();
     return super.userInChat;
   }
 
   @override
-  set userInChat(ObservableList<bool> value) {
+  set userInChat(ObservableMap<String, bool> value) {
     _$userInChatAtom.reportWrite(value, super.userInChat, () {
       super.userInChat = value;
     });
@@ -378,6 +378,21 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
+  final _$checkAtom = Atom(name: '_ChatRoomStore.check');
+
+  @override
+  bool get check {
+    _$checkAtom.reportRead();
+    return super.check;
+  }
+
+  @override
+  set check(bool value) {
+    _$checkAtom.reportWrite(value, super.check, () {
+      super.check = value;
+    });
+  }
+
   final _$setStarAsyncAction = AsyncAction('_ChatRoomStore.setStar');
 
   @override
@@ -599,6 +614,7 @@ sent: ${sent},
 fileNameBytes: ${fileNameBytes},
 star: ${star},
 mapOfPath: ${mapOfPath},
+check: ${check},
 chat: ${chat}
     ''';
   }

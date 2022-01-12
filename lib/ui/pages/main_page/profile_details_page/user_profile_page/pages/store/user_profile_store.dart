@@ -81,7 +81,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
           offset: offset,
           statuses: [6],
         );
-        userQuest = (ObservableList.of(List<BaseQuestResponse>.from(
+        userQuest.addAll(ObservableList.of(List<BaseQuestResponse>.from(
             quests["quests"].map((x) => BaseQuestResponse.fromJson(x)))));
       }
       if (role == UserRole.Worker) {
@@ -94,6 +94,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
             quests["quests"].map((x) => BaseQuestResponse.fromJson(x)))));
         removeOddQuests();
       }
+      print("OFFSET: $offset");
       offset += 10;
       this.onSuccess(true);
     } catch (e, trace) {

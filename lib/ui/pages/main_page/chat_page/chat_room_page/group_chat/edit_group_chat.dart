@@ -7,8 +7,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 
-final _spacer = Spacer();
-
 class EditGroupChat extends StatelessWidget {
   static const String routeName = "/editPageChat";
 
@@ -40,18 +38,20 @@ class EditGroupChat extends StatelessWidget {
             ),
           ),
           actions: [
-            IconButton(
-              onPressed: () async {
-                // store.usersId.clear();
-                await store.getUsersForGroupCHat();
-                Navigator.pushNamed(context, AddMembers.routeName,
-                    arguments: store);
-              },
-              icon: SvgPicture.asset(
-                "assets/plus_icon.svg",
-                color: Theme.of(context).iconTheme.color,
-              ),
-            ),
+            store.isLoading
+                ? SizedBox()
+                : IconButton(
+                    onPressed: () async {
+                      // store.usersId.clear();
+                      await store.getUsersForGroupCHat();
+                      Navigator.pushNamed(context, AddMembers.routeName,
+                          arguments: store);
+                    },
+                    icon: SvgPicture.asset(
+                      "assets/plus_icon.svg",
+                      color: Theme.of(context).iconTheme.color,
+                    ),
+                  ),
             const SizedBox(width: 16),
           ],
         ),
@@ -98,52 +98,33 @@ class EditGroupChat extends StatelessWidget {
                 const SizedBox(
                   height: 16.0,
                 ),
-                // TextFormField(
-                //   initialValue: store.chat!.chatModel.name,
-                //   onChanged: (text) => store.setChatName(text),
-                //   decoration: InputDecoration(
-                //     hintText: "modals.modals.chatName".tr(),
-                //     fillColor: Colors.white,
-                //     focusedBorder: OutlineInputBorder(
-                //       borderRadius: BorderRadius.circular(6.0),
-                //       borderSide: BorderSide(
-                //         color: Colors.blue,
-                //       ),
-                //     ),
-                //     enabledBorder: OutlineInputBorder(
-                //       borderRadius: BorderRadius.circular(6.0),
-                //       borderSide: BorderSide(
-                //         color: Color(0xFFf7f8fa),
-                //         width: 2.0,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // const SizedBox(
-                //   height: 16.0,
-                // ),
-                Expanded(
-                  child: Observer(
-                    builder: (_) => ListView.separated(
-                      primary: false,
-                      shrinkWrap: false,
-                      itemBuilder: (context, index) => EditUserCell(
-                        store.chat!.chatModel.userMembers[index],
-                        index,
-                        store.chat!.chatModel.userMembers[index].id ==
-                            store.chat!.chatModel.ownerUserId,
-                        store,
-                      ),
-                      separatorBuilder: (context, index) => const Divider(
-                        color: Colors.black12,
-                        endIndent: 50.0,
-                        indent: 50.0,
-                      ),
-                      itemCount: store.chat!.chatModel.userMembers.length,
-                    ),
-                  ),
+                Observer(
+                  builder: (_) => store.check
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Expanded(
+                          child: Observer(
+                            builder: (_) => ListView.separated(
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) => EditUserCell(
+                                store.chat!.chatModel.userMembers[index],
+                                store.chat!.chatModel.userMembers[index].id ==
+                                    store.chat!.chatModel.ownerUserId,
+                                store,
+                              ),
+                              separatorBuilder: (context, index) =>
+                                  const Divider(
+                                color: Colors.black12,
+                                endIndent: 50.0,
+                                indent: 50.0,
+                              ),
+                              itemCount:
+                                  store.chat!.chatModel.userMembers.length,
+                            ),
+                          ),
+                        ),
                 ),
-                _spacer,
                 buttonRow(store, context: context),
               ],
             ),

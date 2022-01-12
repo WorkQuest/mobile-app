@@ -62,9 +62,6 @@ class _ChatPageState extends State<ChatPage> {
           displacement: 40,
           triggerMode: RefreshIndicatorTriggerMode.anywhere,
           notificationPredicate: (ScrollNotification notification) {
-            print(notification.depth);
-            print(notification.metrics.pixels);
-            print("true");
             return notification.depth == 0;
           },
           onRefresh: () => store.loadChats(true),

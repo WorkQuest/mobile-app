@@ -110,7 +110,6 @@ extension QuestService on ApiProvider {
           'south[longitude]=${bounds.southwest.longitude.toString()}',
     );
 
-
     final response2 = await _httpClient.get(
       query: '/v1/quests' +
           '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
@@ -118,7 +117,6 @@ extension QuestService on ApiProvider {
           '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
           'south[longitude]=${bounds.southwest.longitude.toString()}',
     );
-
 
     print("<-------------->$response <-------------->$response2,");
 
@@ -128,7 +126,6 @@ extension QuestService on ApiProvider {
       ),
     );
   }
-
 
   // Future<List<BaseQuestResponse>>
   Future<Map<String, dynamic>> getEmployerQuests({
@@ -276,6 +273,8 @@ extension QuestService on ApiProvider {
     String sort = "",
     int limit = 10,
     int offset = 0,
+    String? north,
+    String? south,
     List<int> priority = const [],
     List<String> ratingStatus = const [],
     List<String> workplace = const [],
@@ -304,6 +303,8 @@ extension QuestService on ApiProvider {
         if (searchWord.isNotEmpty) "q": searchWord,
         "offset": offset,
         "limit": limit,
+        if (north != null) "north": north,
+        if (south != null) "south": south,
         //"sort": sort,
       },
     );

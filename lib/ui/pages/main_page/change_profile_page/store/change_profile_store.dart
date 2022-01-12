@@ -49,23 +49,29 @@ abstract class ChangeProfileStoreBase with Store {
 
   bool validationKnowledge(List<Map<String, String>> list,
       BuildContext context) {
+    bool chek = true;
     list.forEach((element) {
       if (element["from"]!.isEmpty ||
           element["to"]!.isEmpty ||
-          element["place"]!.isEmpty) errorAlert(
-        context, "modals.errorEducation".tr());
+          element["place"]!.isEmpty) {
+        errorAlert(context, "modals.errorEducation".tr());
+        chek = false;
+      }
     });
-    return true;
+    return chek;
   }
 
   bool validationWork(List<Map<String, String>> list, BuildContext context) {
+    bool chek = true;
     list.forEach((element) {
       if (element["from"]!.isEmpty ||
           element["to"]!.isEmpty ||
-          element["place"]!.isEmpty) errorAlert(
-          context, "modals.errorWork".tr());
+          element["place"]!.isEmpty) {
+        errorAlert(context, "modals.errorEducation".tr());
+        chek = false;
+      }
     });
-    return true;
+    return chek;
   }
 
   bool areThereAnyChanges(ProfileMeResponse? userData) {

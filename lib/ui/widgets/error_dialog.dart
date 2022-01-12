@@ -54,7 +54,7 @@ class FunkyOverlayState extends State<FunkyOverlay>
 
         if (controller.isCompleted) {
           Timer(
-            Duration(seconds: 1),
+            Duration(seconds: 2),
             () async {
               await controller.reverse().then(
                     (value) => controller.stop(

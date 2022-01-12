@@ -230,9 +230,9 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$getPredictionAsyncAction = AsyncAction('_QuestsStore.getPrediction');
 
   @override
-  Future<Null> getPrediction(BuildContext context, String userId) {
+  Future<Null> getPrediction(BuildContext context, UserRole role) {
     return _$getPredictionAsyncAction
-        .run(() => super.getPrediction(context, userId));
+        .run(() => super.getPrediction(context, role));
   }
 
   final _$displayPredictionAsyncAction =

@@ -139,7 +139,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                   height: 20,
                 ),
                 Container(
-                  height: 40,
+                  height: 43,
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Color(0xFFE9EDF2),
@@ -152,6 +152,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                         widget.controller!.store!.numberOfFiled.last.place,
                     onChanged: (text) => kng.place = text,
                     decoration: InputDecoration(
+                      // isDense: true,
                       hintText: hintText,
                       fillColor: Colors.white,
                     ),
@@ -197,7 +198,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
     required void Function(String)? onChanged,
   }) {
     return Container(
-      height: 40,
+      height: 43,
       width: 147,
       decoration: BoxDecoration(
         border: Border.all(

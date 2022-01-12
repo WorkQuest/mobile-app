@@ -59,7 +59,6 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
       newPassword.isNotEmpty &&
       confirmNewPassword.isNotEmpty;
 
-  @action
   Future changePassword() async {
     if (newPassword == confirmNewPassword) {
       if (newPassword.length >= 8) {
@@ -79,9 +78,12 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
         }
       } else {
         this.onError("modals.lengthPassword".tr());
+        return;
       }
     } else {
+      this.onLoading();
       this.onError("modals.mismatchPassword".tr());
+      return;
     }
   }
 }

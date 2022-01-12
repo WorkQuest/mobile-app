@@ -235,7 +235,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   initialSetup(String myId) async {
     this._myId = myId;
-    await loadChats(false);
+    await loadChats(true);
     WebSocket().connect();
   }
 

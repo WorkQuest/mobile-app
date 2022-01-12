@@ -244,8 +244,9 @@ class KeyboardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final store = context.read<PinCodeStore>();
     return TextButton(
-      onPressed: onTab,
+      onPressed: store.isLoading ? null : onTab,
       child: child,
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith<Color>(

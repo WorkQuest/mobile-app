@@ -93,14 +93,6 @@ mixin _$SettingsPageStore on _SettingsPageStore, Store {
     });
   }
 
-  final _$changePasswordAsyncAction =
-      AsyncAction('_SettingsPageStore.changePassword');
-
-  @override
-  Future<dynamic> changePassword() {
-    return _$changePasswordAsyncAction.run(() => super.changePassword());
-  }
-
   final _$_SettingsPageStoreActionController =
       ActionController(name: '_SettingsPageStore');
 

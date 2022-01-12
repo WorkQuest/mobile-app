@@ -59,7 +59,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   bool messageSelected = false;
 
   @observable
-  ObservableList<bool> userInChat = ObservableList.of([]);
+  ObservableMap<String, bool> userInChat = ObservableMap.of({});
 
   @observable
   ObservableList<String> userForDeleting = ObservableList.of([]);
@@ -326,8 +326,11 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
 
   @action
   generateListUserInChat() {
-    userInChat = ObservableList.of(
-        List.generate(chat!.chatModel.userMembers.length, (index) => true));
+    chat!.chatModel.userMembers.forEach((element) {
+      userInChat[element.id] = true;
+    });
+    // userInChat = ObservableList.of(
+    //     List.generate(chat!.chatModel.userMembers.length, (index) => true));
   }
 
   @action
@@ -381,7 +384,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
         usersId.forEach((idUser) => {
               if (idUser == element.id)
                 {
-                  userInChat[chat!.chatModel.userMembers.length] = true,
+                  userInChat[idUser] = true,
                   chat!.chatModel.userMembers.add(ProfileMeResponse(
                       id: element.id,
                       avatarId: element.avatarId,
@@ -409,13 +412,17 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     }
   }
 
+  @observable
+  bool check = false;
+
   @action
   Future removeUserFromChat() async {
     if (userForDeleting.isNotEmpty)
       try {
+        check = true;
         this.onLoading();
         userForDeleting.forEach((element) async {
-          await _apiProvider.removeUser(
+          _apiProvider.removeUser(
             chatId: chat!.chatModel.id,
             userId: element,
           );
@@ -423,6 +430,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
             if (chat!.chatModel.userMembers[i].id == element) {
               chat!.chatModel.userMembers
                   .remove(chat!.chatModel.userMembers[i]);
+              print("DELETE: $i");
             }
           chat!.messages.insert(
               0,
@@ -447,9 +455,10 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
                 star: null,
               ));
         });
+        check = false;
         userForDeleting.clear();
-        chat!.update();
         this.onSuccess(true);
+        chat!.update();
       } catch (e, trace) {
         print("ERROR: $e");
         print("ERROR: $trace");

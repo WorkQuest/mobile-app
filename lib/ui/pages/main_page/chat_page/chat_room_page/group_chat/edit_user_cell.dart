@@ -8,11 +8,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class EditUserCell extends StatefulWidget {
   final ProfileMeResponse user;
-  final int index;
   final bool? owner;
   final ChatRoomStore store;
 
-  const EditUserCell(this.user, this.index, this.owner, this.store);
+  const EditUserCell(this.user, this.owner, this.store);
 
   @override
   _EditUserCellState createState() => _EditUserCellState();
@@ -38,13 +37,15 @@ class _EditUserCellState extends State<EditUserCell> {
         Expanded(
           child: SizedBox(
             height: 30,
-            child: RunningLine(children: [
-              Text(
-                "${widget.user.firstName} ${widget.user.lastName}",
-                style: TextStyle(fontSize: 18.0),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ]),
+            child: RunningLine(
+              children: [
+                Text(
+                  "${widget.user.firstName} ${widget.user.lastName}",
+                  style: TextStyle(fontSize: 18.0),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ),
         widget.owner ?? false
@@ -52,11 +53,11 @@ class _EditUserCellState extends State<EditUserCell> {
                 "chat.owner".tr(),
               )
             : Observer(
-                builder: (_) => widget.store.userInChat[widget.index]
+                builder: (_) => widget.store.userInChat[widget.user.id]!
                     ? IconButton(
                         onPressed: () {
                           widget.store.deleteUser(widget.user);
-                          widget.store.userInChat[widget.index] = false;
+                          widget.store.userInChat[widget.user.id] = false;
                         },
                         icon: SvgPicture.asset(
                           "assets/minus_icon.svg",
@@ -66,7 +67,7 @@ class _EditUserCellState extends State<EditUserCell> {
                     : IconButton(
                         onPressed: () {
                           widget.store.undeletingUser(widget.user);
-                          widget.store.userInChat[widget.index] = true;
+                          widget.store.userInChat[widget.user.id] = true;
                         },
                         icon: SvgPicture.asset(
                           "assets/plus_icon.svg",

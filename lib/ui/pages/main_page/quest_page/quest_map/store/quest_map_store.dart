@@ -40,7 +40,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   List<QuestMapPoint> points = [];
 
   @observable
-  CameraPosition? initialCameraPosition ;
+  CameraPosition? initialCameraPosition;
 
   @observable
   Position? locationPosition;
@@ -84,6 +84,8 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
           ),
         ),
       );
+      LatLngBounds bounds = await controller.getVisibleRegion();
+      getQuestsOnMap(bounds);
     }
   }
 
@@ -114,12 +116,10 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
               : markerLoader!.icons[1],
           markerId: MarkerId(
             item.questId == null
-                ? item.location[0].toString() +
-                    item.location[1].toString()
+                ? item.location[0].toString() + item.location[1].toString()
                 : item.questId!,
           ),
-          position:
-              LatLng(56.4977100, 56.4977100),
+          position: LatLng(56.4977100, 56.4977100),
         ),
       );
     }

@@ -67,7 +67,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
       viewOtherUser = context.read<UserProfileStore>();
       viewOtherUser!.offset = 0;
       viewOtherUser!.questForWorker.clear();
-      // viewOtherUser!.userQuest.clear();
       if (viewOtherUser!.userQuest.isEmpty)
         viewOtherUser!.getQuests(widget.info!.id, role);
 
@@ -116,6 +115,30 @@ class UserProfileState<T extends UserProfile> extends State<T>
               appBarPosition = controllerMain.offset < 120 ? 0.0 : 25.0;
               // print(appBarPosition);
             });
+
+          final metrics = scrollNotification.metrics;
+          if (metrics.maxScrollExtent < metrics.pixels) {
+            if (widget.info == null) {
+              if (role == UserRole.Worker)
+                portfolioStore!.getPortfolio(
+                  userId: userStore!.userData!.id,
+                );
+              portfolioStore!.getReviews(
+                userId: userStore!.userData!.id,
+              );
+            } else {
+              viewOtherUser = context.read<UserProfileStore>();
+              if (viewOtherUser!.userQuest.isEmpty)
+                viewOtherUser!.getQuests(widget.info!.id, role);
+              if (role == UserRole.Worker)
+                portfolioStore!.getPortfolio(
+                  userId: widget.info!.id,
+                );
+              portfolioStore!.getReviews(
+                userId: widget.info!.id,
+              );
+            }
+          }
           return true;
         },
         child: NestedScrollView(

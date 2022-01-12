@@ -86,6 +86,7 @@ class _QuestListState extends State<QuestList> {
 
   Widget getBody() {
     return RefreshIndicator(
+      triggerMode: RefreshIndicatorTriggerMode.anywhere,
       onRefresh: () async {
         return profileMeStore!.userData!.role == UserRole.Worker
             ? questsStore!.getQuests(true)
@@ -126,7 +127,7 @@ class _QuestListState extends State<QuestList> {
             title: GestureDetector(
               onTap: () {
                 questsStore!
-                    .getPrediction(context, profileMeStore!.userData!.id);
+                    .getPrediction(context, profileMeStore!.userData!.role);
               },
               child: Container(
                 height: 50,
@@ -184,9 +185,8 @@ class _QuestListState extends State<QuestList> {
                   padding: const EdgeInsets.all(20.0),
                   child: OutlinedButton(
                     onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true).pushNamed(
-                          FilterQuestsPage.routeName
-                          );
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(FilterQuestsPage.routeName);
                       // questsStore!.offset = 0;
                       // questsStore!.getQuests(true);
                     },

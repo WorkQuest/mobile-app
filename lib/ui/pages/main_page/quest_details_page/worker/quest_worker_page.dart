@@ -336,9 +336,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             const SizedBox(height: 21),
             Observer(
               builder: (_) => TextButton(
-                onPressed: store.opinion != "" &&
-                        (store.mediaFile.isNotEmpty ||
-                            store.mediaIds.isNotEmpty)
+                onPressed: store.opinion.isNotEmpty ||
+                        store.mediaFile.isNotEmpty ||
+                        store.mediaIds.isNotEmpty
                     ? () {
                         store.sendRespondOnQuest(store.opinion);
                         widget.questInfo.responded = Responded(

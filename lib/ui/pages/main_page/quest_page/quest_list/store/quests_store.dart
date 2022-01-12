@@ -12,6 +12,8 @@ import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.
 import 'package:google_maps_webservice/places.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../../../enums.dart';
+
 part 'quests_store.g.dart';
 
 @singleton
@@ -106,21 +108,21 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  Future<Null> getPrediction(BuildContext context, String userId) async {
+  Future<Null> getPrediction(BuildContext context, UserRole role) async {
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
-
-      ///API_KEY HERE
       apiKey: Keys.googleKey,
       mode: Mode.overlay,
       logo: SizedBox(),
       startText: locationPlaceName.isNotEmpty ? locationPlaceName : "",
-      // Mode.fullscreen
     );
     if (p != null) {
       locationPlaceName = p.description!;
       displayPrediction(p.placeId);
-      // getQuests(userId, true);
+      // if (role == UserRole.Worker)
+      //   getQuests(true);
+      // else
+      //   getWorkers(true);
     }
   }
 
@@ -202,7 +204,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         sort: this.sort,
         specializations: selectedSkill,
         // north: this.latitude.toString(),
-        // south:  this.longitude.toString(),
+        // south: this.longitude.toString(),
       );
       questsList.addAll(
         ObservableList.of(List<BaseQuestResponse>.from(
@@ -232,6 +234,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         workplace: workplaces,
         priority: priorities,
         ratingStatus: employeeRatings,
+        // north: this.latitude.toString(),
+        // south: this.longitude.toString(),
       );
       workersList.addAll(ObservableList.of(List<ProfileMeResponse>.from(
           responseData["users"].map((x) => ProfileMeResponse.fromJson(x)))));
