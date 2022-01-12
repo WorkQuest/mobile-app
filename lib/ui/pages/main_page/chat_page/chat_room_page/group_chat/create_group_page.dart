@@ -160,7 +160,6 @@ class CreateGroupPage extends StatelessWidget {
               ),
             ),
           ),
-          _spacer,
           buttonRow(
             store,
             forward: "profiler.create".tr(),
@@ -217,10 +216,7 @@ class CreateGroupPage extends StatelessWidget {
                             if (store.isSuccess) {
                               Navigator.of(context, rootNavigator: true)
                                   .pushReplacementNamed(ChatRoomPage.routeName,
-                                      arguments: {
-                                    "chatId": store.idGroupChat,
-                                    "userId": myId,
-                                  });
+                                      arguments: store.idGroupChat);
                             }
                           }
                         : null,

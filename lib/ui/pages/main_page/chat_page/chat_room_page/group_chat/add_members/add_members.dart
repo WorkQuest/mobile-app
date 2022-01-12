@@ -146,8 +146,10 @@ class AddMembers extends StatelessWidget {
                     ? () async {
                         await store.addUsersInChat();
                         store.getMessages(true);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
+                        if (!store.isLoading) {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        }
                       }
                     : null,
                 child: store.isLoading
