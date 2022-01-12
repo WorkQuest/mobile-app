@@ -5,7 +5,7 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.d
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -15,9 +15,9 @@ import "package:provider/provider.dart";
 
 class ChatRoomPage extends StatefulWidget {
   static const String routeName = "/chatRoomPage";
-  final Map<String, dynamic> arguments;
+  final String idChat;
 
-  ChatRoomPage(this.arguments);
+  ChatRoomPage(this.idChat);
 
   @override
   _ChatRoomPageState createState() => _ChatRoomPageState();
@@ -25,6 +25,7 @@ class ChatRoomPage extends StatefulWidget {
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
   late final ChatRoomStore _store;
+  ProfileMeStore? profile;
 
   String get id1 => _store.chat?.chatModel.userMembers[0].id ?? "--";
 
@@ -59,7 +60,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   @override
   void initState() {
     _store = context.read<ChatRoomStore>();
-    _store.idChat = widget.arguments["chatId"];
+    profile = context.read<ProfileMeStore>();
+    _store.idChat = widget.idChat;
     _store.getMessages(true);
     super.initState();
     if (_store.chat!.chatModel.type == "group") _store.generateListUserInChat();
@@ -98,7 +100,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                               itemBuilder: (context, index) => MessageCell(
                                 UniqueKey(),
                                 _store.chat!.messages[index],
-                                widget.arguments["userId"],
+                                profile!.userData!.id,
                                 _store,
                               ),
                               reverse: true,
@@ -106,7 +108,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           ),
                   ),
                 ),
-                InputToolbar(_store, widget.arguments["userId"]),
+                InputToolbar(_store, profile!.userData!.id),
                 if (_store.media.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(
@@ -305,7 +307,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             : GestureDetector(
                 onTap: () async {
                   _store.getCompanion(
-                      widget.arguments["userId"] != id1 ? id1 : id2);
+                      profile!.userData!.id != id1 ? id1 : id2);
                   Timer.periodic(Duration(milliseconds: 100), (timer) {
                     if (_store.companion != null) {
                       timer.cancel();
@@ -318,7 +320,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   });
                 },
                 child: Text(
-                  widget.arguments["userId"] != id1
+                  profile!.userData!.id != id1
                       ? "$firstName1 $lastName1"
                       : "$firstName2 $lastName2",
                   style: TextStyle(
@@ -332,7 +334,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       ),
       actions: [
         chatType == "group"
-            ? widget.arguments["userId"] == ownersChatId
+            ? profile!.userData!.id == ownersChatId
                 ? IconButton(
                     onPressed: () {
                       Navigator.pushNamed(context, EditGroupChat.routeName,
@@ -344,7 +346,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             : GestureDetector(
                 onTap: () async {
                   _store.getCompanion(
-                      widget.arguments["userId"] != id1 ? id1 : id2);
+                      profile!.userData!.id != id1 ? id1 : id2);
                   Timer.periodic(Duration(milliseconds: 100), (timer) {
                     if (_store.companion != null) {
                       timer.cancel();
@@ -359,7 +361,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 child: Observer(
                   builder: (_) => CircleAvatar(
                     backgroundImage: NetworkImage(
-                      widget.arguments["userId"] != id1 ? url1 : url2,
+                      profile!.userData!.id != id1 ? url1 : url2,
                     ),
                     maxRadius: 20,
                   ),

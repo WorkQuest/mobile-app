@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
@@ -9,14 +8,12 @@ import 'package:app/model/chat_model/info_message.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/chat_model/star.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
-import 'package:app/ui/pages/main_page/chat_page/repository/chat.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:path_provider/path_provider.dart';
 
 part 'chat_room_store.g.dart';
 
@@ -77,9 +74,6 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   Chats? get chat => chats.chatByID(idChat!);
 
   @observable
-  bool isLoadingMessages = false;
-
-  @observable
   bool refresh = false;
 
   @observable
@@ -107,42 +101,10 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   int pageNumber = 0;
 
   @observable
-  bool sent = false;
-
-  @observable
-  Uint8List? fileNameBytes;
-
-  @observable
   Map<String, Star?> star = {};
-
-  String? filePath;
 
   @observable
   ObservableMap<String, dynamic> mapOfPath = ObservableMap.of({});
-
-  int countVideo = 0;
-
-  String urlVideo = "";
-
-  setThumbnail(String path) async {
-    fileNameBytes = await VideoThumbnail.thumbnailData(
-      video: path,
-      imageFormat: ImageFormat.JPEG,
-      maxWidth: 128,
-      quality: 25,
-    );
-  }
-
-  setThumbnailPath(String url, String mediaId) async {
-    filePath = await VideoThumbnail.thumbnailFile(
-      video: url,
-      thumbnailPath: (await getTemporaryDirectory()).path,
-      imageFormat: ImageFormat.JPEG,
-      maxHeight: 64,
-      quality: 75,
-    );
-    mapOfPath[mediaId] = filePath;
-  }
 
   @action
   void changePageNumber(int value) => pageNumber = value;
@@ -329,8 +291,6 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     chat!.chatModel.userMembers.forEach((element) {
       userInChat[element.id] = true;
     });
-    // userInChat = ObservableList.of(
-    //     List.generate(chat!.chatModel.userMembers.length, (index) => true));
   }
 
   @action
@@ -412,14 +372,10 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
     }
   }
 
-  @observable
-  bool check = false;
-
   @action
   Future removeUserFromChat() async {
     if (userForDeleting.isNotEmpty)
       try {
-        check = true;
         this.onLoading();
         userForDeleting.forEach((element) async {
           _apiProvider.removeUser(
@@ -427,11 +383,9 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
             userId: element,
           );
           for (int i = 0; i < chat!.chatModel.userMembers.length; i++)
-            if (chat!.chatModel.userMembers[i].id == element) {
+            if (chat!.chatModel.userMembers[i].id == element)
               chat!.chatModel.userMembers
                   .remove(chat!.chatModel.userMembers[i]);
-              print("DELETE: $i");
-            }
           chat!.messages.insert(
               0,
               MessageModel(
@@ -455,13 +409,10 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
                 star: null,
               ));
         });
-        check = false;
         userForDeleting.clear();
         this.onSuccess(true);
         chat!.update();
-      } catch (e, trace) {
-        print("ERROR: $e");
-        print("ERROR: $trace");
+      } catch (e) {
         this.onError(e.toString());
       }
   }
@@ -472,7 +423,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
       return;
     }
     if (isPagination) _offset = chat!.messages.length;
-    isLoadingMessages = true;
+    this.onLoading();
     final responseData = await _apiProvider.getMessages(
       chatId: chat!.chatModel.id,
       offset: _offset,
@@ -489,31 +440,21 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
       if (idMessagesForStar[element.id] == null)
         idMessagesForStar[element.id] = false;
     });
-    // chats.chats.forEach((key, value) {
-    //   value.messages.forEach((element) {
-    //     if (element.star == null)
-    //       star[element.id] = null;
-    //     else
-    //       star[element.id] = element.star;
-    //   });
-    // });
 
     _offset = chat!.messages.length;
     refresh = true;
-    isLoadingMessages = false;
+    this.onSuccess(true);
     chat!.update();
   }
 
-  @action
   Future sendMessage(String text, String chatId, String userId) async {
-    sent = true;
+    this.onLoading();
     WebSocket().sendMessage(
         chatId: chatId,
         text: text,
         medias: await _apiProvider.uploadMedia(medias: media));
     media.clear();
-    // isMessageHighlighted.addAll(List.generate(1, (index) => false));
+    this.onSuccess(true);
     _atomSendMessage.reportChanged();
-    sent = false;
   }
 }

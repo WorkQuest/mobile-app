@@ -508,12 +508,19 @@ class Routes {
 
       case ChatRoomPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<ChatRoomStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<ChatRoomStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChatRoomPage(
-                settings.arguments as Map<String, dynamic>,
+                settings.arguments as String,
               ),
             ),
           ),

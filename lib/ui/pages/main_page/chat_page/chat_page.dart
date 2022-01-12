@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
-import 'package:app/ui/pages/main_page/chat_page/repository/chat.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,7 +70,6 @@ class _ChatPageState extends State<ChatPage> {
                 ? Center(child: CircularProgressIndicator())
                 : store.chats.isNotEmpty
                     ? NotificationListener<ScrollEndNotification>(
-
                         onNotification: (scrollEnd) {
                           final metrics = scrollEnd.metrics;
                           if (metrics.maxScrollExtent < metrics.pixels) {
@@ -263,18 +262,15 @@ class _ChatPageState extends State<ChatPage> {
             if (store.idChatsForStar.values.toList()[i] == true) return;
           store.setChatSelected(false);
         } else {
-          Map<String, dynamic> arguments = {
-            "chatId": chatDetails.chatModel.id,
-            "userId": userData.userData!.id
-          };
           if (chatDetails.chatModel.lastMessage.senderUserId !=
               userData.userData!.id) {
             store.setMessageRead(
                 chatDetails.chatModel.id, chatDetails.chatModel.lastMessageId);
             chatDetails.chatModel.lastMessage.senderStatus = "read";
           }
-          Navigator.of(context, rootNavigator: true)
-              .pushNamed(ChatRoomPage.routeName, arguments: arguments);
+          Navigator.of(context, rootNavigator: true).pushNamed(
+              ChatRoomPage.routeName,
+              arguments: chatDetails.chatModel.id);
           store.checkMessage();
         }
       },

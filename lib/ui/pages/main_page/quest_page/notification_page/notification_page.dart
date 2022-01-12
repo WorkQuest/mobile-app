@@ -164,10 +164,7 @@ class _NotificationPageState extends State<NotificationPage> {
                         onTap: () {
                           Navigator.of(context, rootNavigator: true).pushNamed(
                             ChatRoomPage.routeName,
-                            arguments: {
-                              "userId": widget.userId,
-                              "chatId": body.idEvent,
-                            },
+                            arguments: body.idEvent,
                           );
                         },
                       ),

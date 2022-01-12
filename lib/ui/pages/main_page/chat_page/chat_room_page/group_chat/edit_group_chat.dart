@@ -99,7 +99,7 @@ class EditGroupChat extends StatelessWidget {
                   height: 16.0,
                 ),
                 Observer(
-                  builder: (_) => store.check
+                  builder: (_) => store.isLoading
                       ? Center(
                           child: CircularProgressIndicator(),
                         )
@@ -167,12 +167,12 @@ class EditGroupChat extends StatelessWidget {
               builder: (_) => ElevatedButton(
                 onPressed: () {
                   store.removeUserFromChat();
-                  if (!store.sent) {
+                  if (!store.isLoading) {
                     store.getMessages(true);
                     Navigator.pop(context);
                   }
                 },
-                child: store.sent
+                child: store.isLoading
                     ? Center(
                         child: CircularProgressIndicator.adaptive(),
                       )

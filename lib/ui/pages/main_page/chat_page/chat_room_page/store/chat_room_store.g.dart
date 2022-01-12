@@ -167,22 +167,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
-  final _$isLoadingMessagesAtom =
-      Atom(name: '_ChatRoomStore.isLoadingMessages');
-
-  @override
-  bool get isLoadingMessages {
-    _$isLoadingMessagesAtom.reportRead();
-    return super.isLoadingMessages;
-  }
-
-  @override
-  set isLoadingMessages(bool value) {
-    _$isLoadingMessagesAtom.reportWrite(value, super.isLoadingMessages, () {
-      super.isLoadingMessages = value;
-    });
-  }
-
   final _$refreshAtom = Atom(name: '_ChatRoomStore.refresh');
 
   @override
@@ -318,36 +302,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
-  final _$sentAtom = Atom(name: '_ChatRoomStore.sent');
-
-  @override
-  bool get sent {
-    _$sentAtom.reportRead();
-    return super.sent;
-  }
-
-  @override
-  set sent(bool value) {
-    _$sentAtom.reportWrite(value, super.sent, () {
-      super.sent = value;
-    });
-  }
-
-  final _$fileNameBytesAtom = Atom(name: '_ChatRoomStore.fileNameBytes');
-
-  @override
-  Uint8List? get fileNameBytes {
-    _$fileNameBytesAtom.reportRead();
-    return super.fileNameBytes;
-  }
-
-  @override
-  set fileNameBytes(Uint8List? value) {
-    _$fileNameBytesAtom.reportWrite(value, super.fileNameBytes, () {
-      super.fileNameBytes = value;
-    });
-  }
-
   final _$starAtom = Atom(name: '_ChatRoomStore.star');
 
   @override
@@ -375,21 +329,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   set mapOfPath(ObservableMap<String, dynamic> value) {
     _$mapOfPathAtom.reportWrite(value, super.mapOfPath, () {
       super.mapOfPath = value;
-    });
-  }
-
-  final _$checkAtom = Atom(name: '_ChatRoomStore.check');
-
-  @override
-  bool get check {
-    _$checkAtom.reportRead();
-    return super.check;
-  }
-
-  @override
-  set check(bool value) {
-    _$checkAtom.reportWrite(value, super.check, () {
-      super.check = value;
     });
   }
 
@@ -454,14 +393,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   @override
   Future getMessages(bool isPagination) {
     return _$getMessagesAsyncAction.run(() => super.getMessages(isPagination));
-  }
-
-  final _$sendMessageAsyncAction = AsyncAction('_ChatRoomStore.sendMessage');
-
-  @override
-  Future<dynamic> sendMessage(String text, String chatId, String userId) {
-    return _$sendMessageAsyncAction
-        .run(() => super.sendMessage(text, chatId, userId));
   }
 
   final _$_ChatRoomStoreActionController =
@@ -600,7 +531,6 @@ userInChat: ${userInChat},
 userForDeleting: ${userForDeleting},
 infoMessageValue: ${infoMessageValue},
 userName: ${userName},
-isLoadingMessages: ${isLoadingMessages},
 refresh: ${refresh},
 companion: ${companion},
 usersId: ${usersId},
@@ -610,11 +540,8 @@ selectedUsers: ${selectedUsers},
 starredMessage: ${starredMessage},
 media: ${media},
 pageNumber: ${pageNumber},
-sent: ${sent},
-fileNameBytes: ${fileNameBytes},
 star: ${star},
 mapOfPath: ${mapOfPath},
-check: ${check},
 chat: ${chat}
     ''';
   }

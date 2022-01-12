@@ -96,7 +96,7 @@ class _InputToolbarState extends State<InputToolbar> {
             builder:(_) => InkWell(
               onTap: (_controller.text.isNotEmpty ||
                           widget.store.media.isNotEmpty) &&
-                      !widget.store.sent
+                      !widget.store.isLoading
                   ? () {
                       widget.store.sendMessage(
                         _controller.text,
@@ -115,7 +115,7 @@ class _InputToolbarState extends State<InputToolbar> {
                   bottom: 10,
                 ),
                 child: Observer(
-                  builder: (_) => widget.store.sent
+                  builder: (_) => widget.store.isLoading
                       ? CircularProgressIndicator()
                       : SvgPicture.asset(
                           "assets/send_message_icon.svg",
