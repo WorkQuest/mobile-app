@@ -31,28 +31,6 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<ChatStore>().initialStore();
-    List<_TabBarIconData> _tabBarIconsData = [
-      _TabBarIconData(
-        'assets/list_alt.svg',
-        role == UserRole.Worker ? 'quests.quests' : "ui.workers",
-      ),
-      _TabBarIconData(
-        'assets/list.svg',
-        'quests.MyQuests',
-      ),
-      _TabBarIconData(
-        'assets/message.svg',
-        'chat.chat',
-      ),
-      _TabBarIconData(
-        'assets/wallet_icon.svg',
-        'wallet.wallet',
-      ),
-      _TabBarIconData(
-        'assets/more.svg',
-        'settings.more',
-      ),
-    ];
 
     return BackgroundObserverPage(
       con: context,
@@ -60,21 +38,15 @@ class MainPage extends StatelessWidget {
         controller: controller,
         tabBar: CupertinoTabBar(
           items: [
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(_tabBarIconsData[0].svgPath),
-              activeIcon: SvgPicture.asset(
-                _tabBarIconsData[0].svgPath,
-                color: CupertinoTheme.of(context).primaryColor,
-              ),
-              label: _tabBarIconsData[0].label.tr(),
+            NavBarItem(
+              svgPath: 'assets/list_alt.svg',
+              title: role == UserRole.Worker ? 'quests.quests' : "ui.workers",
+              context: context,
             ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(_tabBarIconsData[1].svgPath),
-              activeIcon: SvgPicture.asset(
-                _tabBarIconsData[1].svgPath,
-                color: CupertinoTheme.of(context).primaryColor,
-              ),
-              label: _tabBarIconsData[1].label.tr(),
+            NavBarItem(
+              svgPath: 'assets/list.svg',
+              title: 'quests.MyQuests',
+              context: context,
             ),
             BottomNavigationBarItem(
               icon: StreamBuilder<bool>(
@@ -90,33 +62,27 @@ class MainPage extends StatelessWidget {
                     );
                   } else if (controller.index == 2 && !snapshot.data!) {
                     return SvgPicture.asset(
-                      _tabBarIconsData[2].svgPath,
+                      'assets/message.svg',
                       color: CupertinoTheme.of(context).primaryColor,
                     );
                   }
                   if (snapshot.data!)
                     return SvgPicture.asset('assets/message_mark.svg');
                   else
-                    return SvgPicture.asset(_tabBarIconsData[2].svgPath);
+                    return SvgPicture.asset('assets/message.svg');
                 },
               ),
-              label: _tabBarIconsData[2].label.tr(),
+              label: 'chat.chat'.tr(),
             ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(_tabBarIconsData[3].svgPath),
-              activeIcon: SvgPicture.asset(
-                _tabBarIconsData[3].svgPath,
-                color: CupertinoTheme.of(context).primaryColor,
-              ),
-              label: _tabBarIconsData[3].label.tr(),
+            NavBarItem(
+              svgPath: 'assets/wallet_icon.svg',
+              title: 'wallet.wallet',
+              context: context,
             ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(_tabBarIconsData[4].svgPath),
-              activeIcon: SvgPicture.asset(
-                _tabBarIconsData[4].svgPath,
-                color: CupertinoTheme.of(context).primaryColor,
-              ),
-              label: _tabBarIconsData[4].label.tr(),
+            NavBarItem(
+              svgPath: 'assets/more.svg',
+              title: 'settings.more',
+              context: context,
             ),
           ],
         ),
@@ -168,12 +134,17 @@ class MainPage extends StatelessWidget {
   }
 }
 
-class _TabBarIconData {
-  final String svgPath;
-  final String label;
-
-  const _TabBarIconData(
-    this.svgPath,
-    this.label,
-  );
+class NavBarItem extends BottomNavigationBarItem {
+  NavBarItem({
+    required String svgPath,
+    required String title,
+    required BuildContext context,
+  }) : super(
+          icon: SvgPicture.asset(svgPath),
+          activeIcon: SvgPicture.asset(
+            svgPath,
+            color: CupertinoTheme.of(context).primaryColor,
+          ),
+          label: title.tr(),
+        );
 }
