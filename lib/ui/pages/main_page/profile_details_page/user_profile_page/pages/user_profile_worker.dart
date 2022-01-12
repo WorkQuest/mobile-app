@@ -1,3 +1,4 @@
+import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
@@ -253,7 +254,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
       ];
 
   List<Widget> addToQuest() => [
-        if (widget.info != null)
+        if (widget.info != null &&
+            userStore!.userData!.role == UserRole.Employer)
           Column(
             children: [
               spacer,
