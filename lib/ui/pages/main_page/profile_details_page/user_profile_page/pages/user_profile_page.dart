@@ -89,6 +89,12 @@ class UserProfileState<T extends UserProfile> extends State<T>
   @protected
   List<Widget> addToQuest() => [];
 
+  @protected
+  List<Widget> employerRateWidgets() => [];
+
+  @protected
+  List<Widget> workerRateWidgets() => [];
+
   Widget wrapperTabBar(
     List<Widget> body,
   ) {
@@ -193,6 +199,15 @@ class UserProfileState<T extends UserProfile> extends State<T>
                             ? userStore!.userData?.email ?? " "
                             : widget.info!.email ?? " ",
                       ),
+
+                      ...widget.info == null
+                          ? userStore!.userData?.role == UserRole.Employer
+                              ? employerRateWidgets()
+                              : workerRateWidgets()
+                          : widget.info?.role == UserRole.Employer
+                              ? employerRateWidgets()
+                              : workerRateWidgets(),
+
                       ...addToQuest(),
                       spacer,
                     ],

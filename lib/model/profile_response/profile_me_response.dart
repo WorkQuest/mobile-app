@@ -21,6 +21,7 @@ class ProfileMeResponse {
     required this.wagePerHour,
     required this.workplace,
     required this.priority,
+    required this.questsStatistic,
     // required this.createdAt,
     // required this.updatedAt,
   });
@@ -41,6 +42,7 @@ class ProfileMeResponse {
   String wagePerHour;
   String? workplace;
   QuestPriority priority;
+  QuestsStatistic questsStatistic;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(
@@ -65,6 +67,7 @@ class ProfileMeResponse {
           wagePerHour: object.wagePerHour,
           workplace: object.workplace,
           priority: object.priority,
+          questsStatistic: object.questsStatistic,
         );
 
   //RatingStatistic? ratingStatistic;
@@ -109,6 +112,7 @@ class ProfileMeResponse {
       wagePerHour: json["wagePerHour"] ?? "0",
       workplace: json["workplace"],
       priority: QuestPriority.values[json["priority"] ?? 0],
+      questsStatistic: QuestsStatistic.fromJson(json["questsStatistic"]),
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );
@@ -132,13 +136,39 @@ class ProfileMeResponse {
         "wagePerHour": wagePerHour,
         "workplace": workplace,
         "priority": priority.index,
+        "questsStatistic": questsStatistic,
         // "createdAt": createdAt.toIso8601String(),
         // "updatedAt": updatedAt.toIso8601String(),
       };
 }
 
+class QuestsStatistic {
+  QuestsStatistic({
+    required this.completed,
+    required this.opened,
+  });
+
+  int completed;
+  int opened;
+
+  QuestsStatistic.clone(QuestsStatistic object)
+      : this(
+          completed: object.completed,
+          opened: object.opened,
+        );
+
+  factory QuestsStatistic.fromJson(Map<String, dynamic> json) =>
+      QuestsStatistic(
+        completed: json["completed"],
+        opened: json["opened"],
+      );
+}
+
 class UserSkillFilters {
-  UserSkillFilters({required this.category, required this.skill});
+  UserSkillFilters({
+    required this.category,
+    required this.skill,
+  });
 
   String category;
   String skill;

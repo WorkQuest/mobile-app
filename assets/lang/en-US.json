@@ -1336,6 +1336,7 @@
     "disputeTime": "Opening time of the dispute:"
   },
   "workers": {
+    "oneTime": "One time",
     "searchQuests": "Search quests",
     "searchWorkers": "Search workers",
     "topWorkers": "Top employees",

@@ -94,7 +94,6 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
             quests["quests"].map((x) => BaseQuestResponse.fromJson(x)))));
         removeOddQuests();
       }
-      print("OFFSET: $offset");
       offset += 10;
       this.onSuccess(true);
     } catch (e, trace) {

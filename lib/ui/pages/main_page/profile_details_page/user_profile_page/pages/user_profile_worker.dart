@@ -263,8 +263,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   viewOtherUser!.questForWorker.clear();
                   viewOtherUser!.questId = "";
                   viewOtherUser!.workerId = widget.info!.id;
-                  viewOtherUser!.getQuests(
-                      userStore!.userData!.id, widget.info!.role);
+                  viewOtherUser!
+                      .getQuests(userStore!.userData!.id, widget.info!.role);
                   Navigator.of(context, rootNavigator: true).pushNamed(
                     ChooseQuest.routeName,
                     arguments: widget.info!.id,
@@ -278,11 +278,20 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           ),
       ];
 
-  List<Widget> rateWidgets() => [
-        rating(
-          completedQuests: "12",
-          averageRating: "4.5",
-          reviews: "23",
+  List<Widget> workerRateWidgets() => [
+        workerRating(
+          completedQuests: widget.info == null
+              ? userStore!.userData!.questsStatistic.completed.toString()
+              : widget.info!.questsStatistic.completed.toString(),
+          activeQuests: widget.info == null
+              ? userStore!.userData!.questsStatistic.opened.toString()
+              : widget.info!.questsStatistic.opened.toString(),
+          averageRating: widget.info == null
+              ? userStore!.userData!.ratingStatistic!.averageMark.toString()
+              : widget.info!.ratingStatistic!.averageMark.toString(),
+          reviews: widget.info == null
+              ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
+              : widget.info!.ratingStatistic!.reviewCount.toString(),
         ),
       ];
 }

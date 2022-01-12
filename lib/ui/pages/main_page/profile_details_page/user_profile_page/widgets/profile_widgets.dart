@@ -362,7 +362,7 @@ Widget tagStatus(String status) {
 ///Quest Rating Widget
 ///
 
-Widget rating({
+Widget employerRating({
   required String completedQuests,
   required String averageRating,
   required String reviews,
@@ -390,7 +390,7 @@ Widget rating({
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Completed quests',
+                  'quests.completedQuests'.tr(),
                   style: TextStyle(fontSize: 16.0),
                 ),
                 Text(
@@ -401,14 +401,14 @@ Widget rating({
                     fontSize: 20.0,
                   ),
                 ),
-                Text(
-                  'Show all',
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    color: Color(0xFF00AA5B),
-                    fontSize: 12.0,
-                  ),
-                ),
+                // Text(
+                //   'Show all',
+                //   style: TextStyle(
+                //     decoration: TextDecoration.underline,
+                //     color: Color(0xFF00AA5B),
+                //     fontSize: 12.0,
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -429,7 +429,7 @@ Widget rating({
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Average rating',
+                  'quests.averageRating'.tr(),
                   style: TextStyle(fontSize: 16.0),
                 ),
                 Row(
@@ -450,7 +450,11 @@ Widget rating({
                   ],
                 ),
                 Text(
-                  "From " + reviews + " reviews",
+                  "settings.education.from".tr() +
+                      " " +
+                      reviews +
+                      " " +
+                      "workers.reviews".tr(),
                   style: TextStyle(
                     color: Color(0xFFD8DFE3),
                     fontSize: 12.0,
@@ -458,6 +462,156 @@ Widget rating({
                 ),
               ],
             ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget workerRating({
+  required String completedQuests,
+  required String averageRating,
+  required String reviews,
+  required String activeQuests,
+}) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 20.0),
+    child: Column(
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: Container(
+                padding: EdgeInsets.all(16.0),
+                height: 140,
+                width: 161,
+                decoration: BoxDecoration(
+                  color: Color(0xFFF7F8FA),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(6.0),
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'quests.activeQuests'.tr(),
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    Text(
+                      completedQuests,
+                      style: TextStyle(
+                        color: Color(0xFF00AA5B),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    Text(
+                      'Show all',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Color(0xFFF7F8FA),
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Flexible(
+              child: Container(
+                padding: EdgeInsets.all(16.0),
+                height: 140,
+                width: 161,
+                decoration: BoxDecoration(
+                  color: Color(0xFFF7F8FA),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(6.0),
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'quests.completedQuests'.tr(),
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    Text(
+                      completedQuests,
+                      style: TextStyle(
+                        color: Color(0xFF0083C7),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    Text(
+                      'workers.oneTime'.tr(),
+                      style: TextStyle(
+                        color: Color(0xFFD8DFE3),
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 15.0,
+        ),
+        Container(
+          padding: EdgeInsets.all(16.0),
+          height: 140,
+          decoration: BoxDecoration(
+            color: Color(0xFFF7F8FA),
+            borderRadius: BorderRadius.all(
+              Radius.circular(6.0),
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'quests.averageRating'.tr(),
+                style: TextStyle(fontSize: 16.0),
+              ),
+              Row(
+                children: [
+                  Text(
+                    averageRating,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 23.0,
+                    ),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Color(0xFFE8D20D),
+                    size: 19.0,
+                  ),
+                ],
+              ),
+              Text(
+                "settings.education.from".tr() +
+                    " " +
+                    reviews +
+                    " " +
+                    "workers.reviews".tr(),
+                style: TextStyle(
+                  color: Color(0xFFD8DFE3),
+                  fontSize: 12.0,
+                ),
+              ),
+            ],
           ),
         ),
       ],
