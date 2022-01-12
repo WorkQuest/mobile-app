@@ -4,7 +4,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dar
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
-import 'package:app/ui/widgets/platform_activity_indicator.dart';
+
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/validator.dart';
@@ -392,7 +392,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 store.emptyField(context);
                             },
                             child: store.isLoading
-                                ? PlatformActivityIndicator()
+                                ? CircularProgressIndicator.adaptive()
                                 : Text(
                                     isEdit
                                         ? "Edit Quest"

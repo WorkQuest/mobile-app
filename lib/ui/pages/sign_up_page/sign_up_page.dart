@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
-import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -163,7 +162,7 @@ class SignUpPage extends StatelessWidget {
                                 }
                               : null,
                           child: store.isLoading
-                              ? PlatformActivityIndicator()
+                              ? CircularProgressIndicator.adaptive()
                               : Text(
                                   "signUp.create".tr(),
                                 ),

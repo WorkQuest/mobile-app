@@ -1,5 +1,5 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/widgets/platform_activity_indicator.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
@@ -89,7 +89,7 @@ class QuestsList extends StatelessWidget {
 
   Widget getLoadingBody() {
     return Center(
-      child: PlatformActivityIndicator(),
+      child: CircularProgressIndicator.adaptive(),
     );
   }
 }

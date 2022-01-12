@@ -1,6 +1,6 @@
 import 'package:app/ui/pages/restore_password_page/restore_password_page.dart';
 import 'package:app/ui/pages/restore_password_page/store.dart';
-import 'package:app/ui/widgets/platform_activity_indicator.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -68,7 +68,7 @@ class SendEmail extends StatelessWidget {
                                 ? _store.requestCode
                                 : null,
                             child: _store.isLoading
-                                ? PlatformActivityIndicator()
+                                ? CircularProgressIndicator.adaptive()
                                 : Text(
                                     "meta.submit".tr(),
                                   ),

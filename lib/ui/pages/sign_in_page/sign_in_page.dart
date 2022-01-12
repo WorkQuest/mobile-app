@@ -4,7 +4,6 @@ import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
-import "package:app/ui/widgets/platform_activity_indicator.dart";
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:app/utils/validator.dart';
@@ -157,7 +156,7 @@ class SignInPage extends StatelessWidget {
                                     }
                                   : null,
                               child: signInStore.isLoading
-                                  ? PlatformActivityIndicator()
+                                  ? CircularProgressIndicator.adaptive()
                                   : Text(
                                       "signIn.login".tr(),
                                     ),

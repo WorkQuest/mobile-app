@@ -1,6 +1,5 @@
 import 'package:app/ui/pages/restore_password_page/store.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -81,7 +80,7 @@ class RestorePasswordPage extends StatelessWidget {
                                 //Navigator.pop(context);
                               }) : null,
                           child: _store.isLoading
-                              ? PlatformActivityIndicator()
+                              ? CircularProgressIndicator.adaptive()
                               : Text("meta.submit".tr()),
                         );
                       },

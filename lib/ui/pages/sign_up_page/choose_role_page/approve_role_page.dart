@@ -1,6 +1,5 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
-import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -90,7 +89,7 @@ class ApproveRolePage extends StatelessWidget {
                           }
                         : null,
                     child: store.isLoading
-                        ? PlatformActivityIndicator()
+                        ? CircularProgressIndicator.adaptive()
                         : Text(
                             "meta.iAgree".tr(),
                           ),

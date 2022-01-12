@@ -1,6 +1,6 @@
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members/add_user_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
-import 'package:app/ui/widgets/platform_activity_indicator.dart';
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -152,7 +152,7 @@ class AddMembers extends StatelessWidget {
                     : null,
                 child: store.isLoading
                     ? Center(
-                        child: PlatformActivityIndicator(),
+                        child: CircularProgressIndicator.adaptive(),
                       )
                     : Text(
                         "meta.save".tr(),

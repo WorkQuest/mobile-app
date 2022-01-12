@@ -1,5 +1,5 @@
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
-import 'package:app/ui/widgets/platform_activity_indicator.dart';
+
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +75,7 @@ class ChangePasswordPage extends StatelessWidget {
                                     }
                                   : null,
                               child: settingsStore.isLoading
-                                  ? PlatformActivityIndicator()
+                                  ? CircularProgressIndicator.adaptive()
                                   : Text("meta.submit".tr()),
                             );
                           },

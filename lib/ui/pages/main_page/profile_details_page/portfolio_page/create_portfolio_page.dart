@@ -2,7 +2,7 @@ import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
-import 'package:app/ui/widgets/platform_activity_indicator.dart';
+
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -142,7 +142,7 @@ class CreatePortfolioPage extends StatelessWidget {
                                   }
                                 : null,
                             child: store.isLoading
-                                ? PlatformActivityIndicator()
+                                ? CircularProgressIndicator.adaptive()
                                 : Text(
                                     "meta.save".tr(),
                                   ),

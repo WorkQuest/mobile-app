@@ -3,7 +3,7 @@ import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
-import 'package:app/ui/widgets/platform_activity_indicator.dart';
+
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -149,7 +149,7 @@ class TwoFAPage extends StatelessWidget {
                   }
                 : null,
             child: store.isLoading
-                ? PlatformActivityIndicator()
+                ? CircularProgressIndicator.adaptive()
                 : Text(
                     "meta.submit".tr(),
                   ),
@@ -424,7 +424,7 @@ class Confirm2FAPages extends StatelessWidget {
                         : null,
                 child: store.isLoading
                     ? Center(
-                        child: PlatformActivityIndicator(),
+                        child: CircularProgressIndicator.adaptive(),
                       )
                     : Text(forward.tr()),
               ),

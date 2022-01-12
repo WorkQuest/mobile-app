@@ -1,6 +1,5 @@
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
-import 'package:app/ui/widgets/platform_activity_indicator.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +89,7 @@ class SMSVerificationPage extends StatelessWidget {
                               },
                         child: store.isLoading
                             ? Center(
-                                child: PlatformActivityIndicator(),
+                                child: CircularProgressIndicator.adaptive(),
                               )
                             : Text(
                                 "meta.submit".tr(),
@@ -144,7 +143,7 @@ class SMSVerificationPage extends StatelessWidget {
                                     },
                               child: store.isLoading
                                   ? Center(
-                                      child: PlatformActivityIndicator(),
+                                      child: CircularProgressIndicator.adaptive(),
                                     )
                                   : Text(
                                       "meta.send".tr(),

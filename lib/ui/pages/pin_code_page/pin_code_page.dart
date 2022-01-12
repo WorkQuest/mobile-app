@@ -4,7 +4,6 @@ import "package:app/ui/pages/main_page/main_page.dart";
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
-import "package:app/ui/widgets/platform_activity_indicator.dart";
 import "package:flutter/material.dart";
 import "package:flutter_mobx/flutter_mobx.dart";
 import 'package:flutter_svg/flutter_svg.dart';
@@ -87,7 +86,7 @@ class _PinCodePageState extends State<PinCodePage>
               builder: (_) {
                 return pinCodeStore.statePin == StatePinCode.NaN
                     ? Center(
-                        child: PlatformActivityIndicator(),
+                        child: CircularProgressIndicator.adaptive(),
                       )
                     : Column(
                         children: [
@@ -101,7 +100,7 @@ class _PinCodePageState extends State<PinCodePage>
                           ),
                           const SizedBox(height: 40),
                           pinCodeStore.isLoading
-                              ? PlatformActivityIndicator()
+                              ? CircularProgressIndicator.adaptive()
                               : AnimatedBuilder(
                                   animation: offsetAnimation,
                                   builder: (buildContext, child) {
