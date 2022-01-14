@@ -22,6 +22,8 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
 
   int portfolioIndex = -1;
 
+  int offset = 0;
+
   @observable
   int pageNumber = 0;
 
@@ -124,6 +126,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
       portfolioList = ObservableList.of(
         await _apiProvider.getPortfolio(
           userId: userId,
+          offset: offset,
         ),
       );
       this.onSuccess(true);

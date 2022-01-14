@@ -979,10 +979,14 @@ extension Portfolio on ApiProvider {
 
   Future<List<PortfolioModel>> getPortfolio({
     required String userId,
+    required int offset,
   }) async {
     try {
       final responseData = await _httpClient.get(
         query: '/v1/user/$userId/portfolio/cases',
+        queryParameters: {
+          "offset": offset,
+        },
       );
       return List<PortfolioModel>.from(
         responseData["cases"].map(

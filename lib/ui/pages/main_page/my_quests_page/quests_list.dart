@@ -20,6 +20,9 @@ class QuestsList extends StatelessWidget {
 
   final bool isLoading;
 
+
+  final PageStorageKey _pageStorageKey = PageStorageKey<int>(1);
+
   QuestsList(this.questItemPriorityType, this.questsList,
       {this.update,
       this.physics = const BouncingScrollPhysics(
@@ -42,6 +45,7 @@ class QuestsList extends StatelessWidget {
     return ListView.builder(
       physics: physics,
       shrinkWrap: true,
+      key: new  PageStorageKey<QuestItemPriorityType>(questItemPriorityType),
       itemCount: questsList.length,
       padding: EdgeInsets.zero,
       itemBuilder: (BuildContext context, index) {

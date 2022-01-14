@@ -96,9 +96,45 @@ class UserProfileState<T extends UserProfile> extends State<T>
   List<Widget> workerRateWidgets() => [];
 
   Widget wrapperTabBar(
-    List<Widget> body,
-  ) {
-    return ListView(children: body);
+    List<Widget> body, [
+    bool getReviews = true,
+  ]) {
+    return NotificationListener<ScrollEndNotification>(
+      onNotification: (scrollNotification) {
+        if (scrollNotification.metrics.atEdge) if (scrollNotification
+                .metrics.pixels ==
+            scrollNotification.metrics.maxScrollExtent) {
+          if (widget.info == null) {
+            //on your own profile
+            if (getReviews)
+              portfolioStore!.getReviews(
+                userId: userStore!.userData!.id,
+              );
+            else if (role == UserRole.Worker)
+              portfolioStore!.getPortfolio(
+                userId: userStore!.userData!.id,
+              );
+          } else {
+            //on another user profile
+            //viewOtherUser = context.read<UserProfileStore>();
+            if (viewOtherUser!.userQuest.isEmpty)
+              viewOtherUser!.getQuests(widget.info!.id, role);
+            if (getReviews)
+              portfolioStore!.getReviews(
+                userId: widget.info!.id,
+              );
+            else if (role == UserRole.Worker)
+              portfolioStore!.getPortfolio(
+                userId: widget.info!.id,
+              );
+          }
+        }
+        return false;
+      },
+      child: ListView(
+        children: body,
+      ),
+    );
   }
 
   @protected
@@ -112,6 +148,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
     return Scaffold(
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
+          //Animate Padding
           if (controllerMain.offset < 240)
             setState(() {
               appBarPosition = 0.0;
@@ -119,33 +156,9 @@ class UserProfileState<T extends UserProfile> extends State<T>
           if (controllerMain.offset > 0 && controllerMain.offset < 240)
             setState(() {
               appBarPosition = controllerMain.offset < 120 ? 0.0 : 25.0;
-              // print(appBarPosition);
             });
 
-          final metrics = scrollNotification.metrics;
-          if (metrics.maxScrollExtent < metrics.pixels) {
-            if (widget.info == null) {
-              if (role == UserRole.Worker)
-                portfolioStore!.getPortfolio(
-                  userId: userStore!.userData!.id,
-                );
-              portfolioStore!.getReviews(
-                userId: userStore!.userData!.id,
-              );
-            } else {
-              viewOtherUser = context.read<UserProfileStore>();
-              if (viewOtherUser!.userQuest.isEmpty)
-                viewOtherUser!.getQuests(widget.info!.id, role);
-              if (role == UserRole.Worker)
-                portfolioStore!.getPortfolio(
-                  userId: widget.info!.id,
-                );
-              portfolioStore!.getReviews(
-                userId: widget.info!.id,
-              );
-            }
-          }
-          return true;
+          return false;
         },
         child: NestedScrollView(
           controller: controllerMain,
@@ -252,6 +265,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                 ///Portfolio and Quests
                 wrapperTabBar(
                   questPortfolio(),
+                  false,
                 ),
               ],
             ),

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+
 class Constants {
   static const Map<String, Locale> languageList = {
     "English": Locale('en', 'US'),
@@ -19,5 +20,10 @@ class Constants {
     Color.fromRGBO(232, 210, 13, 1),
     Color.fromRGBO(223, 51, 51, 1),
   ];
+
+}
+
+
+class AppColors{
 
 }

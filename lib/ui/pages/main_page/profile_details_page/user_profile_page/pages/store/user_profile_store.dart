@@ -46,7 +46,6 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
 
   Future<void> startQuest(String userId) async {
     try {
-      print("chosenQuestId: $questId");
       await _apiProvider.inviteOnQuest(
           questId: questId,
           userId: userId,
