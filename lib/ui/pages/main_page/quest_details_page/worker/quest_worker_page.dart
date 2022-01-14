@@ -261,32 +261,35 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       transitionAnimationController: controller,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-            top: 10.0,
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  height: 5.0,
-                  width: 70.0,
-                  decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15.0),
+        return FractionallySizedBox(
+           heightFactor: 0.9,
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              top: 10.0,
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: 5.0,
+                    width: 70.0,
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(15.0),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              child,
-            ],
+                child,
+              ],
+            ),
           ),
         );
       },
@@ -296,52 +299,64 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   }
 
   bottomRespond() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
+    return ListView(
+      // crossAxisAlignment: CrossAxisAlignment.start,
+      // mainAxisSize: MainAxisSize.min,
+      shrinkWrap: true,
+
       children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 23),
-            Text(
-              "modals.reviewOnEmployer".tr(),
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 5),
-            TextField(
-              onChanged: store.setOpinion,
-              keyboardType: TextInputType.multiline,
-              maxLines: 6,
-              decoration: InputDecoration(
-                hintText: "modals.hello".tr(),
-              ),
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 15),
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 20.0,
-              ),
-              child: MediaUpload(
-                store.mediaIds,
-                mediaFile: store.mediaFile,
-              ),
-            ),
-            const SizedBox(height: 21),
-            Observer(
-              builder: (_) => TextButton(
-                onPressed: store.opinion.isNotEmpty ||
-                        store.mediaFile.isNotEmpty ||
-                        store.mediaIds.isNotEmpty
-                    ? () {
-                        store.sendRespondOnQuest(store.opinion);
-                        widget.questInfo.responded = Responded(
+        const SizedBox(height: 23),
+        Text(
+          "modals.reviewOnEmployer".tr(),
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 5),
+        TextField(
+          onChanged: store.setOpinion,
+          keyboardType: TextInputType.multiline,
+          maxLines: 6,
+          decoration: InputDecoration(
+            hintText: "modals.hello".tr(),
+          ),
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 15),
+        Padding(
+          padding: const EdgeInsets.only(
+            top: 20.0,
+          ),
+          child: MediaUpload(
+            store.mediaIds,
+            mediaFile: store.mediaFile,
+          ),
+        ),
+        const SizedBox(height: 21),
+        Observer(
+          builder: (_) => TextButton(
+            onPressed: store.opinion.isNotEmpty ||
+                    store.mediaFile.isNotEmpty ||
+                    store.mediaIds.isNotEmpty
+                ? () {
+                    store.sendRespondOnQuest(store.opinion);
+                    widget.questInfo.responded = Responded(
+                      id: "",
+                      workerId: profile!.userData!.id,
+                      questId: widget.questInfo.id,
+                      status: 0,
+                      type: 0,
+                      message: store.opinion,
+                      createdAt: DateTime.now(),
+                      updatedAt: DateTime.now(),
+                    );
+                    for (int i = 0; i < questStore.questsList.length; i++)
+                      if (questStore.questsList[i].id ==
+                          widget.questInfo.id)
+                        questStore.questsList[i].responded = Responded(
                           id: "",
                           workerId: profile!.userData!.id,
                           questId: widget.questInfo.id,
@@ -351,55 +366,40 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                           createdAt: DateTime.now(),
                           updatedAt: DateTime.now(),
                         );
-                        for (int i = 0; i < questStore.questsList.length; i++)
-                          if (questStore.questsList[i].id ==
-                              widget.questInfo.id)
-                            questStore.questsList[i].responded = Responded(
-                              id: "",
-                              workerId: profile!.userData!.id,
-                              questId: widget.questInfo.id,
-                              status: 0,
-                              type: 0,
-                              message: store.opinion,
-                              createdAt: DateTime.now(),
-                              updatedAt: DateTime.now(),
-                            );
-                        myQuestStore.deleteQuest(widget.questInfo);
-                        myQuestStore.addQuest(widget.questInfo, true);
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        successAlert(
-                          context,
-                          "modals.requestSend".tr(),
-                        );
-                      }
-                    : null,
-                child: Text(
-                  "modals.sendARequest".tr(),
-                  style: TextStyle(color: Colors.white),
-                ),
-                style: ButtonStyle(
-                  fixedSize: MaterialStateProperty.all(
-                    Size(double.maxFinite, 43),
-                  ),
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled))
-                        return const Color(0xFFF7F8FA);
-                      if (states.contains(MaterialState.pressed))
-                        return Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.5);
-                      return const Color(0xFF0083C7);
-                    },
-                  ),
-                ),
+                    myQuestStore.deleteQuest(widget.questInfo);
+                    myQuestStore.addQuest(widget.questInfo, true);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    successAlert(
+                      context,
+                      "modals.requestSend".tr(),
+                    );
+                  }
+                : null,
+            child: Text(
+              "modals.sendARequest".tr(),
+              style: TextStyle(color: Colors.white),
+            ),
+            style: ButtonStyle(
+              fixedSize: MaterialStateProperty.all(
+                Size(double.maxFinite, 43),
+              ),
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled))
+                    return const Color(0xFFF7F8FA);
+                  if (states.contains(MaterialState.pressed))
+                    return Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withOpacity(0.5);
+                  return const Color(0xFF0083C7);
+                },
               ),
             ),
-            const SizedBox(height: 15),
-          ],
+          ),
         ),
+        const SizedBox(height: 15),
       ],
     );
   }

@@ -396,40 +396,40 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  TextButton(
-                    onPressed: () {
-                      store.rejectCompletedWork(questId: widget.questInfo.id);
-                      widget.questInfo.status = 5;
-                      questStore.deleteQuest(widget.questInfo);
-                      questStore.addQuest(widget.questInfo, true);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      successAlert(
-                        context,
-                        "quests.answerOnQuest.rejectCompletedQuest".tr(),
-                      );
-                    },
-                    child: Text(
-                      "quests.answerOnQuest.rejectCompleted".tr(),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.all(
-                        Size(double.maxFinite, 43),
-                      ),
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed))
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.5);
-                          return const Color(0xFF0083C7);
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
+                  // TextButton(
+                  //   onPressed: () {
+                  //     store.rejectCompletedWork(questId: widget.questInfo.id);
+                  //     widget.questInfo.status = 5;
+                  //     questStore.deleteQuest(widget.questInfo);
+                  //     questStore.addQuest(widget.questInfo, true);
+                  //     Navigator.pop(context);
+                  //     Navigator.pop(context);
+                  //     successAlert(
+                  //       context,
+                  //       "quests.answerOnQuest.rejectCompletedQuest".tr(),
+                  //     );
+                  //   },
+                  //   child: Text(
+                  //     "quests.answerOnQuest.rejectCompleted".tr(),
+                  //     style: TextStyle(color: Colors.white),
+                  //   ),
+                  //   style: ButtonStyle(
+                  //     fixedSize: MaterialStateProperty.all(
+                  //       Size(double.maxFinite, 43),
+                  //     ),
+                  //     backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                  //       (Set<MaterialState> states) {
+                  //         if (states.contains(MaterialState.pressed))
+                  //           return Theme.of(context)
+                  //               .colorScheme
+                  //               .primary
+                  //               .withOpacity(0.5);
+                  //         return const Color(0xFF0083C7);
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 15),
                 ],
               ),
             ],

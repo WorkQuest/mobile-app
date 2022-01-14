@@ -193,7 +193,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         questsList.clear();
       }
       final responseData = await _apiProvider.getQuests(
-        statuses: [0, 1, 4],
+        statuses: [0, 1],
         employment: employments,
         workplace: workplaces,
         priority: priorities,
