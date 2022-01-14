@@ -5,6 +5,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dar
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
@@ -261,34 +262,36 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       transitionAnimationController: controller,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return FractionallySizedBox(
-           heightFactor: 0.9,
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 10.0,
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    height: 5.0,
-                    width: 70.0,
-                    decoration: BoxDecoration(
-                      color: Colors.black12,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15.0),
+        return DismissKeyboard(
+          child: FractionallySizedBox(
+             heightFactor: 0.9,
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                top: 10.0,
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      height: 5.0,
+                      width: 70.0,
+                      decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15.0),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                child,
-              ],
+                  child,
+                ],
+              ),
             ),
           ),
         );

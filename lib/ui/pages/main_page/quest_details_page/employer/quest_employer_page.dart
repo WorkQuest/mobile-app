@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:app/model/quests_models/assigned_worker.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
@@ -323,7 +322,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       ),
       context: context,
       backgroundColor: Colors.white,
-      //transitionAnimationController: controller,
       isScrollControlled: true,
       builder: (BuildContext context) {
         return Padding(
