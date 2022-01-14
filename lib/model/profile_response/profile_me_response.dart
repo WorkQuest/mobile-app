@@ -42,7 +42,7 @@ class ProfileMeResponse {
   String wagePerHour;
   String? workplace;
   QuestPriority priority;
-  QuestsStatistic questsStatistic;
+  QuestsStatistic? questsStatistic;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(
@@ -112,7 +112,9 @@ class ProfileMeResponse {
       wagePerHour: json["wagePerHour"] ?? "0",
       workplace: json["workplace"],
       priority: QuestPriority.values[json["priority"] ?? 0],
-      questsStatistic: QuestsStatistic.fromJson(json["questsStatistic"]),
+      questsStatistic: json["questsStatistic"] == null
+          ? null
+          : QuestsStatistic.fromJson(json["questsStatistic"]),
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );

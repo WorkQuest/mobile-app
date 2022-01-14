@@ -177,11 +177,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   Future getSearchedQuests() async {
     this.onLoading();
     debounce = Timer(const Duration(milliseconds: 300), () async {
-      final responseData = await _apiProvider.getQuests(
+      final searchResultList = await _apiProvider.getQuests(
         searchWord: this.searchWord,
       );
-      searchResultList = List<BaseQuestResponse>.from(
-          responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)));
       this.onSuccess(true);
     });
   }
@@ -207,8 +205,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         // south: this.longitude.toString(),
       );
       questsList.addAll(
-        ObservableList.of(List<BaseQuestResponse>.from(
-            responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)))),
+        ObservableList.of(responseData),
       );
       // if (offset < questsList.length)
       this.offset += 10;

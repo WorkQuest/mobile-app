@@ -283,11 +283,11 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
   List<Widget> workerRateWidgets() => [
         workerRating(
           completedQuests: widget.info == null
-              ? userStore!.userData!.questsStatistic.completed.toString()
-              : widget.info!.questsStatistic.completed.toString(),
+              ? userStore!.userData!.questsStatistic!.completed.toString()
+              : widget.info!.questsStatistic!.completed.toString(),
           activeQuests: widget.info == null
-              ? userStore!.userData!.questsStatistic.opened.toString()
-              : widget.info!.questsStatistic.opened.toString(),
+              ? userStore!.userData!.questsStatistic!.opened.toString()
+              : widget.info!.questsStatistic!.opened.toString(),
           averageRating: widget.info == null
               ? userStore!.userData!.ratingStatistic!.averageMark.toString()
               : widget.info!.ratingStatistic!.averageMark.toString(),

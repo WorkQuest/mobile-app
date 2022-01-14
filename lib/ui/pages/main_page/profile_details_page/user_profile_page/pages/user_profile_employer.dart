@@ -55,8 +55,8 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
   List<Widget> employerRateWidgets() => [
     employerRating(
       completedQuests: widget.info == null
-          ? userStore!.userData!.questsStatistic.completed.toString()
-          : widget.info!.questsStatistic.completed.toString(),
+          ? userStore!.userData!.questsStatistic!.completed.toString()
+          : widget.info!.questsStatistic!.completed.toString(),
       averageRating: widget.info == null
           ? userStore!.userData!.ratingStatistic!.averageMark.toString()
           : widget.info!.ratingStatistic!.averageMark.toString(),

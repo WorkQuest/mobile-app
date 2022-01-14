@@ -68,7 +68,7 @@ class WebSocket {
       if (json["path"] == "/notifications/chat") {
         getMessage(json);
       } else if (json["path"] == "/notifications/quest") {
-        questNotification(json["message"]);
+        questNotification(json["message"]["data"]);
       }
     } catch (e, trace) {
       print("ERROR: $e");

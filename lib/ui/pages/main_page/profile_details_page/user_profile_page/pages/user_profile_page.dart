@@ -200,13 +200,9 @@ class UserProfileState<T extends UserProfile> extends State<T>
                             : widget.info!.email ?? " ",
                       ),
 
-                      ...widget.info == null
-                          ? userStore!.userData?.role == UserRole.Employer
-                              ? employerRateWidgets()
-                              : workerRateWidgets()
-                          : widget.info?.role == UserRole.Employer
-                              ? employerRateWidgets()
-                              : workerRateWidgets(),
+                      ...role == UserRole.Employer
+                          ? employerRateWidgets()
+                          : workerRateWidgets(),
 
                       ...addToQuest(),
                       spacer,

@@ -81,8 +81,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
           offset: offset,
           statuses: [6],
         );
-        userQuest.addAll(ObservableList.of(List<BaseQuestResponse>.from(
-            quests["quests"].map((x) => BaseQuestResponse.fromJson(x)))));
+        userQuest.addAll(quests);
       }
       if (role == UserRole.Worker) {
         final quests = await _apiProvider.getEmployerQuests(
@@ -90,8 +89,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
           offset: offset,
           statuses: [0, 4],
         );
-        questForWorker.addAll(ObservableList.of(List<BaseQuestResponse>.from(
-            quests["quests"].map((x) => BaseQuestResponse.fromJson(x)))));
+        questForWorker.addAll(quests);
         removeOddQuests();
       }
       offset += 10;

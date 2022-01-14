@@ -114,21 +114,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     });
   }
 
-  final _$requestedAtom = Atom(name: '_MyQuestStore.requested');
-
-  @override
-  ObservableList<BaseQuestResponse> get requested {
-    _$requestedAtom.reportRead();
-    return super.requested;
-  }
-
-  @override
-  set requested(ObservableList<BaseQuestResponse> value) {
-    _$requestedAtom.reportWrite(value, super.requested, () {
-      super.requested = value;
-    });
-  }
-
   final _$invitedAtom = Atom(name: '_MyQuestStore.invited');
 
   @override
@@ -223,6 +208,17 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   }
 
   @override
+  dynamic setStar(BaseQuestResponse quest, bool set) {
+    final _$actionInfo = _$_MyQuestStoreActionController.startAction(
+        name: '_MyQuestStore.setStar');
+    try {
+      return super.setStar(quest, set);
+    } finally {
+      _$_MyQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 sort: ${sort},
@@ -232,7 +228,6 @@ status: ${status},
 active: ${active},
 starred: ${starred},
 performed: ${performed},
-requested: ${requested},
 invited: ${invited},
 allQuests: ${allQuests},
 iconsMarker: ${iconsMarker},

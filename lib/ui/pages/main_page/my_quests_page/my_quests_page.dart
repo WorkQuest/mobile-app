@@ -84,9 +84,9 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                     role == UserRole.Employer
                         ? QuestItemPriorityType.Requested
                         : QuestItemPriorityType.Invited,
-                    role == UserRole.Employer
-                        ? myQuests!.requested
-                        : myQuests!.invited,
+                    // role == UserRole.Employer
+                        // ? myQuests!.requested
+                        myQuests!.invited,
                   ),
                 ),
                 Observer(

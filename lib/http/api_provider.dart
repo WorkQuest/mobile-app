@@ -127,8 +127,7 @@ extension QuestService on ApiProvider {
     );
   }
 
-  // Future<List<BaseQuestResponse>>
-  Future<Map<String, dynamic>> getEmployerQuests({
+  Future<List<BaseQuestResponse>> getEmployerQuests({
     String userId = "",
     int limit = 10,
     int offset = 0,
@@ -154,18 +153,14 @@ extension QuestService on ApiProvider {
           if (starred != null) "starred": starred,
         },
       );
-      return responseData;
-      //   List<BaseQuestResponse>.from(
-      //   responseData["quests"].map(
-      //     (x) => BaseQuestResponse.fromJson(x),
-      //   ),
-      // );
+      return List<BaseQuestResponse>.from(
+          responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)));
     } catch (e) {
-      return {};
+      return [];
     }
   }
 
-  Future<Map<String, dynamic>> getWorkerQuests({
+  Future<List<BaseQuestResponse>> getWorkerQuests({
     String userId = "",
     int limit = 10,
     int offset = 0,
@@ -193,12 +188,11 @@ extension QuestService on ApiProvider {
       },
     );
 
-    return responseData;
-    //   List<BaseQuestResponse>.from(
-    //   responseData["quests"].map(
-    //     (x) => BaseQuestResponse.fromJson(x),
-    //   ),
-    // );
+    return List<BaseQuestResponse>.from(
+      responseData["quests"].map(
+        (x) => BaseQuestResponse.fromJson(x),
+      ),
+    );
   }
 
   Future<BaseQuestResponse> getQuest({
@@ -208,7 +202,7 @@ extension QuestService on ApiProvider {
     return BaseQuestResponse.fromJson(responseData);
   }
 
-  Future<Map<String, dynamic>> getQuests({
+  Future<List<BaseQuestResponse>> getQuests({
     List<String> workplace = const [],
     List<String> employment = const [],
     int limit = 10,
@@ -260,12 +254,11 @@ extension QuestService on ApiProvider {
       },
     );
 
-    return responseData;
-    //   List<BaseQuestResponse>.from(
-    //   responseData["quests"].map(
-    //     (x) => BaseQuestResponse.fromJson(x),
-    //   ),
-    // );
+    return List<BaseQuestResponse>.from(
+      responseData["quests"].map(
+        (x) => BaseQuestResponse.fromJson(x),
+      ),
+    );
   }
 
   Future<Map<String, dynamic>> getWorkers({

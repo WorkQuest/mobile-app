@@ -69,8 +69,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             store.onStar();
             myQuestStore.deleteQuest(store.quest.value!);
             store.quest.value!.star
-                ? myQuestStore.addQuest(store.quest.value!, false)
-                : myQuestStore.addQuest(store.quest.value!, true);
+                ? myQuestStore.setStar(store.quest.value!, false)
+                : myQuestStore.setStar(store.quest.value!, true);
           },
         ),
       )
