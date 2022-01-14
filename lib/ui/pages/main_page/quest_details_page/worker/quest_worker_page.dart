@@ -46,7 +46,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
     respondedList.add(store.quest.value?.responded);
-    // respondedList.map((e) => null)
     respondedList.forEach((element) {
       if (element != null) if (element.workerId == profile!.userData!.id) {
         store.response = true;
@@ -77,6 +76,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       )
     ];
   }
+
+
 
   @override
   Widget getBody() {
@@ -263,35 +264,31 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       isScrollControlled: true,
       builder: (BuildContext context) {
         return DismissKeyboard(
-          child: FractionallySizedBox(
-             heightFactor: 0.9,
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: 16.0,
-                right: 16.0,
-                top: 10.0,
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      height: 5.0,
-                      width: 70.0,
-                      decoration: BoxDecoration(
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(15.0),
-                        ),
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              top: 10.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: 5.0,
+                    width: 70.0,
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(15.0),
                       ),
                     ),
                   ),
-                  child,
-                ],
-              ),
+                ),
+                child,
+              ],
             ),
           ),
         );
@@ -302,10 +299,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   }
 
   bottomRespond() {
-    return ListView(
-      // crossAxisAlignment: CrossAxisAlignment.start,
-      // mainAxisSize: MainAxisSize.min,
-      shrinkWrap: true,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
 
       children: [
         const SizedBox(height: 23),
@@ -357,8 +353,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       updatedAt: DateTime.now(),
                     );
                     for (int i = 0; i < questStore.questsList.length; i++)
-                      if (questStore.questsList[i].id ==
-                          widget.questInfo.id)
+                      if (questStore.questsList[i].id == widget.questInfo.id)
                         questStore.questsList[i].responded = Responded(
                           id: "",
                           workerId: profile!.userData!.id,

@@ -49,6 +49,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
     return const SizedBox();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
