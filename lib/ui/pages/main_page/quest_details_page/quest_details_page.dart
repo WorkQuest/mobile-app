@@ -264,7 +264,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                   widget.questInfo.yourReview == null)
                 isLoading
                     ? Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator.adaptive(),
                       )
                     : Observer(
                         builder: (_) => TextButton(

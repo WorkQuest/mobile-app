@@ -83,7 +83,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 Expanded(
                   child: Observer(
                     builder: (_) => _store.isLoading
-                        ? Center(child: CircularProgressIndicator())
+                        ? Center(child: CircularProgressIndicator.adaptive())
                         : NotificationListener<ScrollStartNotification>(
                             onNotification: (scrollStart) {
                               final metrics = scrollStart.metrics;

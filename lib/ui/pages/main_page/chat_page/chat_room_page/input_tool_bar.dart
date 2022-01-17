@@ -116,7 +116,7 @@ class _InputToolbarState extends State<InputToolbar> {
                 ),
                 child: Observer(
                   builder: (_) => widget.store.isLoading
-                      ? CircularProgressIndicator()
+                      ? CircularProgressIndicator.adaptive()
                       : SvgPicture.asset(
                           "assets/send_message_icon.svg",
                           color: _controller.text.isNotEmpty ||

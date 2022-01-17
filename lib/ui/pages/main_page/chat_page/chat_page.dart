@@ -67,7 +67,7 @@ class _ChatPageState extends State<ChatPage> {
           onRefresh: () => store.loadChats(true),
           child: Observer(
             builder: (_) => store.isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? Center(child: CircularProgressIndicator.adaptive())
                 : store.chats.isNotEmpty
                     ? NotificationListener<ScrollEndNotification>(
                         onNotification: (scrollEnd) {

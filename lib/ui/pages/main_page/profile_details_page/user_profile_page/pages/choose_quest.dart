@@ -37,7 +37,7 @@ class ChooseQuest extends StatelessWidget {
       body: Observer(
         builder: (_) => store.isLoading
             ? Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator.adaptive(),
               )
             : ListView.builder(
                 itemBuilder: (context, index) => Column(

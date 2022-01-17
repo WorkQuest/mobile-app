@@ -18,14 +18,18 @@ class _RunningLineState extends State<RunningLine> {
       if (controller.offset == controller.position.maxScrollExtent)
         controller.jumpTo(0);
       else if (controller.offset == controller.position.minScrollExtent)
-        Future.microtask(lestGo);
+        Future.microtask(startAnimate);
     });
-    Future.microtask(lestGo);
+    Future.microtask(startAnimate);
     super.initState();
   }
 
-  void lestGo() => controller.animateTo(controller.position.maxScrollExtent,
-      duration: Duration(seconds: 6), curve: Curves.linear);
+  void startAnimate() {
+    if (controller.position.maxScrollExtent != 0) {
+      controller.animateTo(controller.position.maxScrollExtent,
+          duration: Duration(seconds: 4), curve: Curves.linear);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

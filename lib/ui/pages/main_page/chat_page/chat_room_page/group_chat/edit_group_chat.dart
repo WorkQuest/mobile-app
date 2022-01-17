@@ -99,7 +99,7 @@ class EditGroupChat extends StatelessWidget {
                 Observer(
                   builder: (_) => store.isLoading
                       ? Center(
-                          child: CircularProgressIndicator(),
+                          child: CircularProgressIndicator.adaptive(),
                         )
                       : Expanded(
                           child: Observer(

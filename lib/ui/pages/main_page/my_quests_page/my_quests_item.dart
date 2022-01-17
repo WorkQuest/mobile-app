@@ -169,180 +169,76 @@ class MyQuestsItem extends StatelessWidget {
     );
   }
 
+  Widget header(
+          {required Color color,
+          required String title,
+          Color textColor = Colors.white}) =>
+      Container(
+        width: double.maxFinite,
+        margin: const EdgeInsets.symmetric(
+          vertical: 16,
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 7.5,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: color,
+        ),
+        child: Text(
+          title.tr(),
+          style: TextStyle(color: textColor),
+        ),
+      );
+
   Widget getQuestHeader(QuestItemPriorityType itemType, BuildContext context) {
-    Widget returnWidget = Container();
     switch (itemType) {
       case QuestItemPriorityType.Active:
         if (questInfo.status == 3) {
-          returnWidget = Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: 16,
-            ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 7.5,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: Colors.red,
-            ),
-            child: Row(
-              children: [
-                Text(
-                  "quests.disputeQuest".tr(),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
+          return header(
+            color: Colors.red,
+            title: "quests.disputeQuest",
           );
         } else if (questInfo.status == 5) {
-          returnWidget = Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: 16,
-            ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 7.5,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: Colors.green,
-            ),
-            child: Row(
-              children: [
-                Text(
-                  "quests.employerConfirmationPending".tr(),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
+          return header(
+            color: Colors.green,
+            title: "quests.employerConfirmationPending",
           );
         } else {
-          returnWidget = Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: 16,
-            ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 7.5,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: AppColors.green,
-            ),
-            child: Row(
-              children: [
-                Text(
-                  "quests.active".tr(),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
+          return header(
+            color: AppColors.green,
+            title: "quests.active",
           );
         }
-        break;
       case QuestItemPriorityType.Invited:
-        returnWidget = Container(
-          margin: const EdgeInsets.symmetric(vertical: 16),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 7.5,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: Color(0xFFE8D20D),
-          ),
-          child: Row(
-            children: [
-              Text(
-                "quests.youInvited".tr(),
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
+        return header(
+          color: Color(0xFFE8D20D),
+          title: "quests.youInvited",
         );
-        break;
       case QuestItemPriorityType.Requested:
-        returnWidget = Container(
-          margin: const EdgeInsets.symmetric(vertical: 16),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 7.5,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
+        return header(
             color: Color(0xFFF7F8FA),
-          ),
-          child: Row(
-            children: [
-              Text(
-                "quests.requested".tr(),
-                style: TextStyle(
-                  color: Color(0xFFAAB0B9),
-                ),
-              ),
-              // ListView.builder(
-              //   shrinkWrap: true,
-              //     scrollDirection: Axis.horizontal,
-              //     itemCount: ,
-              //     itemBuilder: )
-            ],
-          ),
-        );
-        break;
+            title: "quests.requested",
+            textColor: Color(0xFFAAB0B9));
       case QuestItemPriorityType.Performed:
         if (questInfo.status == 5) {
-          returnWidget = Container(
-            margin: const EdgeInsets.symmetric(vertical: 16),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 7.5,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: Color(0xFF0083C7),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  "quests.waitConfirm".tr(),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
+          return header(
+            color: Color(0xFF0083C7),
+            title: "quests.waitConfirm",
           );
         } else {
-          returnWidget = Container(
-            margin: const EdgeInsets.symmetric(vertical: 16),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 7.5,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: Color(0xFF0083C7),
-            ),
-            child: Row(
-              children: [
-                questInfo.status == 5
-                    ? Text(
-                        "quests.employerConfirmationPending".tr(),
-                      )
-                    : Text(
-                        "quests.performed".tr(),
-                        style: TextStyle(color: Colors.white),
-                      ),
-              ],
-            ),
+          return header(
+            color: Color(0xFF0083C7),
+            title: questInfo.status == 5
+                ? "quests.employerConfirmationPending"
+                : "quests.performed",
           );
         }
-        break;
       case QuestItemPriorityType.Starred:
-        returnWidget = SizedBox(
+        return SizedBox(
           height: 16,
         );
-        break;
     }
-    return returnWidget;
   }
 }

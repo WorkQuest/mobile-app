@@ -26,7 +26,6 @@ class QuestEmployer extends QuestDetails {
 class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   late EmployerStore store;
   late MyQuestStore questStore;
-
   AnimationController? controller;
 
   @override
@@ -182,7 +181,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     return Observer(
       builder: (_) => (store.respondedList == null)
           ? Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator.adaptive(),
             )
           : widget.questInfo.status == 5
               ? TextButton(
