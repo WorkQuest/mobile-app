@@ -149,7 +149,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                         widget.questInfo.status == 4)
                 ? store.isLoading
                     ? Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator.adaptive(),
                       )
                     : TextButton(
                         onPressed: () {
@@ -184,7 +184,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               store.quest.value!.assignedWorker?.id == profile!.userData!.id)
             store.isLoading
                 ? Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator.adaptive(),
                   )
                 : TextButton(
                     onPressed: () {
@@ -215,7 +215,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           if (store.quest.value!.status == 1)
             store.isLoading
                 ? Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator.adaptive(),
                   )
                 : TextButton(
                     onPressed: () {

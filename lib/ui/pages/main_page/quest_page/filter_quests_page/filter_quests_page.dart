@@ -69,7 +69,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
             ? Center(
                 heightFactor: double.maxFinite,
                 child: SizedBox(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator.adaptive(),
                   width: 30,
                   height: 30,
                 ),

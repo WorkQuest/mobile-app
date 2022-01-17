@@ -78,7 +78,7 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
             )
           : Flexible(
               child: Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator.adaptive(),
               ),
             ),
     );

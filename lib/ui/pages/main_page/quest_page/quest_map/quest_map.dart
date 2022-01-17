@@ -38,7 +38,7 @@ class _QuestMapState extends State<QuestMap> {
     return Observer(
       builder: (_) => Scaffold(
         body: mapStore?.initialCameraPosition == null
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressIndicator.adaptive())
             : Visibility(
                 visible: hasPermission,
                 maintainState: false,
