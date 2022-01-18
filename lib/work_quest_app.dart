@@ -11,7 +11,6 @@ class WorkQuestApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(context.locale.toString());
     return MaterialApp(
       theme: _theme,
       debugShowCheckedModeBanner: false,
