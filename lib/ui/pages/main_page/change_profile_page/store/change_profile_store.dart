@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:app/keys.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
