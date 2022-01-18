@@ -304,59 +304,42 @@ Widget appBarTitle(String name, double padding, String status) {
   );
 }
 
+Widget tag({required String text, required Color color}) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 8,
+        ),
+      ),
+    );
+
 Widget tagStatus(String status) {
-  Widget returnWidget = Container();
   switch (status) {
     case "topRanked":
-      returnWidget = Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-        decoration: BoxDecoration(
-          color: Color(0xFFF6CF00),
-          borderRadius: BorderRadius.circular(3),
-        ),
-        child: Text(
-          "GOLD PLUS",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 8,
-          ),
-        ),
+      return tag(
+        text: "GOLD PLUS",
+        color: Color(0xFFF6CF00),
       );
-      break;
     case "reliable":
-      returnWidget = Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-        decoration: BoxDecoration(
-          color: Color(0xFFBBC0C7),
-          borderRadius: BorderRadius.circular(3),
-        ),
-        child: Text(
-          "SILVER",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 8,
-          ),
-        ),
+      return tag(
+        text: "SILVER",
+        color: Color(0xFFBBC0C7),
       );
-      break;
+
     case "verified":
-      returnWidget = Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-        decoration: BoxDecoration(
-          color: Color(0xFFB79768),
-          borderRadius: BorderRadius.circular(3),
-        ),
-        child: Text(
-          "BRONZE",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 8,
-          ),
-        ),
+      return tag(
+        text: "BRONZE",
+        color: Color(0xFFB79768),
       );
-      break;
+    default:
+      return SizedBox.shrink();
   }
-  return returnWidget;
 }
 
 ///Quest Rating Widget
@@ -469,6 +452,52 @@ Widget employerRating({
   );
 }
 
+Widget workerRatingCard({
+  required String title,
+  required String rate,
+  required String thirdLine,
+  Color textColor = const Color(0xFF00AA5B),
+}) =>
+    Flexible(
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        height: 140,
+        width: 161,
+        decoration: BoxDecoration(
+          color: Color(0xFFF7F8FA),
+          borderRadius: BorderRadius.all(
+            Radius.circular(6.0),
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title.tr(),
+              style: TextStyle(fontSize: 16.0),
+            ),
+            Text(
+              rate,
+              style: TextStyle(
+                color: textColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 20.0,
+              ),
+            ),
+            Text(
+              thirdLine,
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+                color: Color(0xFFD8DFE3),
+                fontSize: 12.0,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
 Widget workerRating({
   required String completedQuests,
   required String averageRating,
@@ -484,82 +513,15 @@ Widget workerRating({
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Flexible(
-              child: Container(
-                padding: EdgeInsets.all(16.0),
-                height: 140,
-                width: 161,
-                decoration: BoxDecoration(
-                  color: Color(0xFFF7F8FA),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6.0),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'quests.activeQuests'.tr(),
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                    Text(
-                      completedQuests,
-                      style: TextStyle(
-                        color: Color(0xFF00AA5B),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
-                      ),
-                    ),
-                    Text(
-                      'Show all',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Color(0xFFF7F8FA),
-                        fontSize: 12.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Flexible(
-              child: Container(
-                padding: EdgeInsets.all(16.0),
-                height: 140,
-                width: 161,
-                decoration: BoxDecoration(
-                  color: Color(0xFFF7F8FA),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6.0),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'quests.completedQuests'.tr(),
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                    Text(
-                      completedQuests,
-                      style: TextStyle(
-                        color: Color(0xFF0083C7),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
-                      ),
-                    ),
-                    Text(
-                      'workers.oneTime'.tr(),
-                      style: TextStyle(
-                        color: Color(0xFFD8DFE3),
-                        fontSize: 12.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            workerRatingCard(
+                title: 'quests.activeQuests',
+                rate: completedQuests,
+                thirdLine: 'Show all'),
+            workerRatingCard(
+              title: 'quests.completedQuests',
+              rate: completedQuests,
+              thirdLine: 'workers.oneTime'.tr(),
+              textColor: Color(0xFF0083C7),
             ),
           ],
         ),
