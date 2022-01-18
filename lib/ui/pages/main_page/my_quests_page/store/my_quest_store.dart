@@ -90,10 +90,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       return key1.createdAt.millisecondsSinceEpoch
           .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
-    // requested.sort((key1, key2) {
-    //   return key1.createdAt.millisecondsSinceEpoch
-    //       .compareTo(key2.createdAt.millisecondsSinceEpoch);
-    // });
     invited.sort((key1, key2) {
       return key1.createdAt.millisecondsSinceEpoch
           .compareTo(key2.createdAt.millisecondsSinceEpoch);
@@ -104,7 +100,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   deleteQuest(BaseQuestResponse quest) {
     active.removeWhere((element) => element.id == quest.id);
     performed.removeWhere((element) => element.id == quest.id);
-    // requested.removeWhere((element) => element.id == quest.id);
     invited.removeWhere((element) => element.id == quest.id);
     starred.removeWhere((element) => element.id == quest.id);
   }

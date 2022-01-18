@@ -72,8 +72,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
     var values = chats.values.toList();
 
     values.forEach((element) {
-      // if (idChatsForStar[element.chatModel.id] == null)
-      idChatsForStar[element.chatModel.id] = false;
+      if (idChatsForStar[element.chatModel.id] == null)
+        idChatsForStar[element.chatModel.id] = false;
     });
 
     keys.sort((key1, key2) {
