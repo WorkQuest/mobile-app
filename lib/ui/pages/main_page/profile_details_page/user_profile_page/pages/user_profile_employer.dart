@@ -22,12 +22,12 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
           height: 20,
         ),
         myQuests?.performed != null ||
-                (viewOtherUser?.userQuest.isNotEmpty ?? false)
+                (viewOtherUser?.quests.isNotEmpty ?? false)
             ? QuestsList(
                 QuestItemPriorityType.Performed,
                 widget.info == null
                     ? myQuests!.performed
-                    : viewOtherUser!.userQuest,
+                    : viewOtherUser!.quests,
                 physics: NeverScrollableScrollPhysics(),
                 isLoading: myQuests!.isLoading,
               )
@@ -58,8 +58,8 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
           ? userStore!.userData!.questsStatistic!.completed.toString()
           : widget.info!.questsStatistic!.completed.toString(),
       averageRating: widget.info == null
-          ? userStore!.userData!.ratingStatistic!.averageMark.toString()
-          : widget.info!.ratingStatistic!.averageMark.toString(),
+          ? userStore!.userData!.ratingStatistic!.averageMark
+          : widget.info!.ratingStatistic!.averageMark,
       reviews: widget.info == null
           ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
           : widget.info!.ratingStatistic!.reviewCount.toString(),

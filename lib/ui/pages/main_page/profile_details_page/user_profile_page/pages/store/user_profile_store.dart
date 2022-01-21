@@ -20,10 +20,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
   ProfileMeResponse? questHolder;
 
   @observable
-  ObservableList<BaseQuestResponse> userQuest = ObservableList.of([]);
-
-  @observable
-  ObservableList<BaseQuestResponse> questForWorker = ObservableList.of([]);
+  ObservableList<BaseQuestResponse> quests = ObservableList.of([]);
 
   _UserProfileStore(
     this._apiProvider,
@@ -75,22 +72,26 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
       this.onLoading();
       //TODO:offset scroll
       if (role == UserRole.Employer) {
-        final quests = await _apiProvider.getEmployerQuests(
+        quests.addAll(await _apiProvider.getEmployerQuests(
           userId: userId,
           offset: offset,
           statuses: [6],
-        );
-        userQuest.addAll(quests);
+        ));
       }
       if (role == UserRole.Worker) {
-        final quests = await _apiProvider.getEmployerQuests(
+        quests.addAll (await _apiProvider.getEmployerQuests(
           userId: userId,
           offset: offset,
           statuses: [0, 4],
-        );
-        questForWorker.addAll(quests);
+        ));
         removeOddQuests();
       }
+
+      quests.toList().sort((key1, key2) =>
+      key1.createdAt.millisecondsSinceEpoch <
+          key2.createdAt.millisecondsSinceEpoch
+          ? 1
+          : 0);
       offset += 10;
       this.onSuccess(true);
     } catch (e, trace) {

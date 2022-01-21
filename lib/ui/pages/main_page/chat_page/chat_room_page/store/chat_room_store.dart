@@ -350,7 +350,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
                     avatarId: element.avatarId,
                     firstName: element.firstName,
                     lastName: element.lastName,
-                    phone: element.phone,
+                    // phone: element.phone,
                     tempPhone: element.tempPhone,
                     email: element.email,
                     additionalInfo: element.additionalInfo,

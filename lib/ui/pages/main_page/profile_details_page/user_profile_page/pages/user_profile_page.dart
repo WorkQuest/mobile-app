@@ -55,6 +55,8 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
     if (widget.info == null) {
       role = userStore!.userData?.role ?? UserRole.Worker;
+      portfolioStore!.reviewsList.clear();
+      portfolioStore!.offsetReview = 0;
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(
           userId: userStore!.userData!.id,
@@ -66,8 +68,8 @@ class UserProfileState<T extends UserProfile> extends State<T>
       role = widget.info?.role ?? UserRole.Worker;
       viewOtherUser = context.read<UserProfileStore>();
       viewOtherUser!.offset = 0;
-      viewOtherUser!.questForWorker.clear();
-      if (viewOtherUser!.userQuest.isEmpty)
+      viewOtherUser!.quests.clear();
+      if (viewOtherUser!.quests.isEmpty)
         viewOtherUser!.getQuests(widget.info!.id, role);
 
       if (role == UserRole.Worker)
@@ -106,7 +108,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
             scrollNotification.metrics.maxScrollExtent) {
           if (widget.info == null) {
             //on your own profile
-            if (getReviews)
+            if (getReviews && !portfolioStore!.isLoading)
               portfolioStore!.getReviews(
                 userId: userStore!.userData!.id,
               );
@@ -117,9 +119,9 @@ class UserProfileState<T extends UserProfile> extends State<T>
           } else {
             //on another user profile
             //viewOtherUser = context.read<UserProfileStore>();
-            if (viewOtherUser!.userQuest.isEmpty)
+            if (viewOtherUser!.quests.isEmpty)
               viewOtherUser!.getQuests(widget.info!.id, role);
-            if (getReviews)
+            if (getReviews && !portfolioStore!.isLoading)
               portfolioStore!.getReviews(
                 userId: widget.info!.id,
               );
@@ -199,14 +201,15 @@ class UserProfileState<T extends UserProfile> extends State<T>
                             ? userStore!.userData?.additionalInfo?.address ??
                                 ' '
                             : widget.info!.additionalInfo?.address ?? " ",
-                        number: widget.info == null
-                            ? userStore!.userData?.phone ?? " "
-                            : widget.info!.phone ?? " ",
+                        // number: widget.info == null
+                        //     ? userStore!.userData?.phone?.fullPhone ?? " "
+                        //     : widget.info!.phone?.fullPhone ?? " ",
                         secondNumber: widget.info == null
                             ? userStore!.userData?.additionalInfo
-                                    ?.secondMobileNumber ??
+                                    ?.secondMobileNumber?.fullPhone ??
                                 ""
-                            : widget.info!.additionalInfo?.secondMobileNumber ??
+                            : widget.info!.additionalInfo?.secondMobileNumber
+                                    ?.fullPhone ??
                                 "",
                         email: widget.info == null
                             ? userStore!.userData?.email ?? " "

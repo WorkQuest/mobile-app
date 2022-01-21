@@ -32,7 +32,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   List<String> selectedSkill = [];
 
   @observable
-  String sort = "";
+  String sort = "sort[createdAt]=desc";
 
   @observable
   int offset = 0;
@@ -207,10 +207,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       questsList.addAll(
         ObservableList.of(responseData),
       );
-      questsList.sort((key1, key2) {
-        return key1.createdAt.millisecondsSinceEpoch
-            .compareTo(key2.createdAt.millisecondsSinceEpoch);
-      });
+      // questsList.sort((key1, key2) {
+      //   return key1.createdAt.millisecondsSinceEpoch
+      //       .compareTo(key2.createdAt.millisecondsSinceEpoch);
+      // });
       // if (offset < questsList.length)
       this.offset += 10;
       this.onSuccess(true);

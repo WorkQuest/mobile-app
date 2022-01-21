@@ -287,7 +287,7 @@ extension QuestService on ApiProvider {
     });
     String workplaces = "";
     workplace.forEach((text) {
-      workplaces += "workplaces[]=$text&";
+      workplaces += "workplace[]=$text&";
     });
     final responseData = await _httpClient.get(
       query:
@@ -536,10 +536,11 @@ extension UserInfoService on ApiProvider {
           "priority": userData.priority.index,
         if (userData.role == UserRole.Worker) "workplace": userData.workplace,
         "additionalInfo": {
-          "secondMobileNumber":
-              (userData.additionalInfo?.secondMobileNumber?.isNotEmpty ?? false)
-                  ? userData.additionalInfo?.secondMobileNumber
-                  : null,
+          "secondMobileNumber": (userData.additionalInfo?.secondMobileNumber
+                      ?.fullPhone.isNotEmpty ??
+                  false)
+              ? userData.additionalInfo?.secondMobileNumber
+              : null,
           "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
               ? userData.additionalInfo?.address
               : null,
@@ -1045,10 +1046,14 @@ extension Reviews on ApiProvider {
 
   Future<List<Review>> getReviews({
     required String userId,
+    required int offset,
   }) async {
     try {
       final response = await _httpClient.get(
         query: '/v1/user/$userId/reviews',
+        queryParameters: {
+          "offset": offset,
+        },
       );
       return List<Review>.from(
         response["reviews"].map(

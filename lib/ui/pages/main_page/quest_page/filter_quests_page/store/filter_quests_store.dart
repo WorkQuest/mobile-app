@@ -26,10 +26,10 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     List.generate(4, (index) => false),
   );
 
-  @observable
-  ObservableList<bool> workplace = ObservableList.of(
-    List.generate(3, (index) => false),
-  );
+  // @observable
+  // ObservableList<bool> workplace = ObservableList.of(
+  //   List.generate(3, (index) => false),
+  // );
 
   @observable
   ObservableList<bool> priority = ObservableList.of(
@@ -84,6 +84,10 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   @observable
   ObservableList<bool> selectEmployment =
+      ObservableList.of(List.generate(4, (index) => false));
+
+  @observable
+  ObservableList<bool> selectRating =
       ObservableList.of(List.generate(4, (index) => false));
 
   @observable
@@ -174,23 +178,23 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   }
 
   List<String> getWorkplaceValue() {
-    if (workplace[0] == true) {
+    if (selectWorkplace[0] == true) {
       workplaceValue.clear();
       workplaceValue.add("both");
       workplaceValue.add("distant");
       workplaceValue.add("office");
       return workplaceValue;
-    } else if (workplace[0] == false) {
+    } else if (selectWorkplace[0] == false) {
       workplaceValue.clear();
     }
-    if (workplace[1] == true) {
+    if (selectWorkplace[1] == true) {
       workplaceValue.add("distant");
-    } else if (workplace[1] == false) {
+    } else if (selectWorkplace[1] == false) {
       workplaceValue.remove("distant");
     }
-    if (workplace[2] == true) {
+    if (selectWorkplace[2] == true) {
       workplaceValue.add("office");
-    } else if (workplace[2] == false) {
+    } else if (selectWorkplace[2] == false) {
       workplaceValue.remove("office");
     }
     return workplaceValue;
@@ -364,18 +368,32 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   @action
   void initEmployments(List<String> value) {
     value.forEach((element) {
-      if (element == "fullTime") selectEmployment[1] = true;
-      if (element == "partTime") selectEmployment[2] = true;
-      if (element == "fixedTerm") selectEmployment[3] = true;
+      if (element == "fullTime") selectRating[1] = true;
+      if (element == "partTime") selectRating[2] = true;
+      if (element == "fixedTerm") selectRating[3] = true;
     });
-    if (selectEmployment[1] == true &&
-        selectEmployment[2] == true &&
-        selectEmployment[3] == true) selectEmployment[0] = true;
+    if (selectRating[1] == true &&
+        selectRating[2] == true &&
+        selectRating[3] == true) selectRating[0] = true;
+  }
+
+  @action
+  void initRating(List<String> value) {
+    value.forEach((element) {
+      if (element == "verified") selectEmployeeRating[1] = true;
+      if (element == "reliable") selectEmployeeRating[2] = true;
+      if (element == "topRanked") selectEmployeeRating[3] = true;
+    });
+    if (selectEmployeeRating[1] == true &&
+        selectEmployeeRating[2] == true &&
+        selectEmployeeRating[3] == true) selectEmployeeRating[0] = true;
   }
 
   @action
   void initWorkplace(List<String> value) {
+    print("length: ${value.length}");
     value.forEach((element) {
+      print("element: $element");
       if (element == "both") {
         selectWorkplace[0] = true;
         selectWorkplace[1] = true;

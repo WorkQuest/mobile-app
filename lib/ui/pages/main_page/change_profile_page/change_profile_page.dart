@@ -165,10 +165,11 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             ),
             inputBody(
               title: "modals.phoneNumber".tr(),
-              initialValue:
-                  pageStore.userData.additionalInfo?.secondMobileNumber ?? "",
-              onChanged: (text) =>
-                  pageStore.userData.additionalInfo?.secondMobileNumber = text,
+              initialValue: pageStore
+                      .userData.additionalInfo?.secondMobileNumber?.fullPhone ??
+                  "",
+              onChanged: (text) => pageStore.userData.additionalInfo
+                  ?.secondMobileNumber?.fullPhone = text,
               validator: Validators.phoneNumberValidator,
             ),
             inputBody(
@@ -340,6 +341,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
           decoration: InputDecoration(
             fillColor: Colors.white,
             focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              borderSide: BorderSide(
+                color: Colors.blue,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(6.0),
               borderSide: BorderSide(
                 color: Colors.blue,

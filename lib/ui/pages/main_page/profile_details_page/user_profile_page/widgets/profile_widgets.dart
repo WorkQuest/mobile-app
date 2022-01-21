@@ -160,15 +160,23 @@ class ReviewsWidget extends StatelessWidget {
                     Timer.periodic(Duration(milliseconds: 100), (timer) async {
                       if (profile.assignedWorker != null) {
                         timer.cancel();
+                        portfolioStore.reviewsList.clear();
+                        portfolioStore.offsetReview = 0;
+                        portfolioStore.offset = 0;
+                        portfolioStore.pagination = true;
                         await Navigator.of(context, rootNavigator: true)
                             .pushNamed(
                           UserProfile.routeName,
                           arguments: profile.assignedWorker,
                         );
+                        portfolioStore.pagination = true;
+                        portfolioStore.reviewsList.clear();
+                        portfolioStore.offsetReview = 0;
+                        portfolioStore.offset = 0;
                         if (role == UserRole.Worker)
                           portfolioStore.getPortfolio(userId: myId);
                         else {
-                          userProfileStore.userQuest.clear();
+                          userProfileStore.quests.clear();
                           userProfileStore.getQuests(myId, role);
                         }
                         portfolioStore.getReviews(userId: myId);
@@ -278,7 +286,7 @@ Widget appBarTitle(String name, double padding, String status) {
     child: Stack(
       children: [
         Positioned(
-          bottom: 18.0,
+          bottom: status != "noStatus" ? 18.0 : 0.0,
           left: 0.0,
           child: Text(
             name,
@@ -288,17 +296,18 @@ Widget appBarTitle(String name, double padding, String status) {
             ),
           ),
         ),
-        Positioned(
-          bottom: 0.0,
-          left: 0.0,
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 5.0,
-              vertical: 2.0,
+        if (status.isNotEmpty)
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 5.0,
+                vertical: 2.0,
+              ),
+              child: tagStatus(status),
             ),
-            child: tagStatus(status),
           ),
-        ),
       ],
     ),
   );
@@ -364,9 +373,10 @@ Widget tagStatus(String status) {
 
 Widget employerRating({
   required String completedQuests,
-  required String averageRating,
+  required double averageRating,
   required String reviews,
 }) {
+  final rating = ((averageRating * 10).round() / 10).toString();
   return Padding(
     padding: const EdgeInsets.only(top: 20.0),
     child: Row(
@@ -435,7 +445,7 @@ Widget employerRating({
                 Row(
                   children: [
                     Text(
-                      averageRating,
+                      rating,
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -471,10 +481,11 @@ Widget employerRating({
 
 Widget workerRating({
   required String completedQuests,
-  required String averageRating,
+  required double averageRating,
   required String reviews,
   required String activeQuests,
 }) {
+  final rating = ((averageRating * 10).round() / 10).toString();
   return Padding(
     padding: const EdgeInsets.only(top: 20.0),
     child: Column(
@@ -586,7 +597,7 @@ Widget workerRating({
               Row(
                 children: [
                   Text(
-                    averageRating,
+                    rating,
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -777,7 +788,7 @@ void _launchSocial(String url, String fallbackUrl) async {
 
 Widget contactDetails({
   required String location,
-  required String number,
+  // required String number,
   required String email,
   required String secondNumber,
 }) {
@@ -809,33 +820,33 @@ Widget contactDetails({
             ),
           ],
         ),
-        if (number.isNotEmpty)
-          Column(
-            children: [
-              const SizedBox(
-                height: 10.0,
-              ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.phone,
-                    size: 20.0,
-                    color: const Color(0xFF7C838D),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                      number,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF7C838D),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+        // if (number.isNotEmpty)
+        //   Column(
+        //     children: [
+        //       const SizedBox(
+        //         height: 10.0,
+        //       ),
+        //       Row(
+        //         children: [
+        //           Icon(
+        //             Icons.phone,
+        //             size: 20.0,
+        //             color: const Color(0xFF7C838D),
+        //           ),
+        //           Padding(
+        //             padding: const EdgeInsets.only(left: 8.0),
+        //             child: Text(
+        //               number,
+        //               style: const TextStyle(
+        //                 fontSize: 14,
+        //                 color: Color(0xFF7C838D),
+        //               ),
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
         if (secondNumber.isNotEmpty)
           Column(
             children: [

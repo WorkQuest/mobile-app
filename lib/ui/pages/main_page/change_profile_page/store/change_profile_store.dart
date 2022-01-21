@@ -89,7 +89,7 @@ abstract class ChangeProfileStoreBase with Store {
     if ((this.userData.additionalInfo!.address ?? "") !=
         (userData.additionalInfo!.address ?? "")) return true;
 
-    if ((this.userData.phone ?? "") != (userData.phone ?? "")) return true;
+    // if ((this.userData.phone ?? "") != (userData.phone ?? "")) return true;
 
     if ((this.userData.email ?? "") != (userData.email ?? "")) return true;
 

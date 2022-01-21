@@ -38,7 +38,7 @@ class _StarredMessageState extends State<StarredMessage> {
           ),
           centerTitle: true,
           title: Text(
-            "chat.starredMessages".tr(),
+            "chat.starredMessage".tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,

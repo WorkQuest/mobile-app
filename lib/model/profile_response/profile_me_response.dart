@@ -9,7 +9,7 @@ class ProfileMeResponse {
     required this.avatarId,
     required this.firstName,
     required this.lastName,
-    required this.phone,
+    // required this.phone,
     required this.tempPhone,
     required this.email,
     required this.additionalInfo,
@@ -30,8 +30,8 @@ class ProfileMeResponse {
   String avatarId;
   String firstName;
   String lastName;
-  String? phone;
-  String? tempPhone;
+  // Phone? phone;
+  Phone? tempPhone;
   String? email;
   AdditionalInfo? additionalInfo;
   UserRole role;
@@ -50,7 +50,7 @@ class ProfileMeResponse {
           avatarId: object.avatarId,
           firstName: object.firstName,
           lastName: object.lastName,
-          phone: object.phone,
+          // phone: object.phone,
           tempPhone: object.tempPhone,
           email: object.email,
           additionalInfo: object.additionalInfo != null
@@ -80,8 +80,8 @@ class ProfileMeResponse {
       avatarId: json["avatarId"] ?? "",
       firstName: json["firstName"] ?? "",
       lastName: json["lastName"] ?? "",
-      phone: json["phone"] ?? "",
-      tempPhone: json["tempPhone"] ?? "",
+      // phone: json["phone"] == null ? null : Phone.fromJson(json["phone"]),
+      tempPhone: json["tempPhone"] == null ? null : Phone.fromJson(json["tempPhone"]),
       email: json["email"],
       additionalInfo: json["additionalInfo"] == null
           ? null
@@ -125,7 +125,7 @@ class ProfileMeResponse {
         "avatarId": avatarId,
         "firstName": firstName,
         "lastName": lastName,
-        "phone": phone,
+        // "phone": phone,
         "tempPhone": tempPhone,
         "email": email,
         //"additionalInfo": additionalInfo!.toJson(),
@@ -271,5 +271,38 @@ class RatingStatistic {
         "status": status,
         // "createdAt": createdAt,
         // "updatedAt": updatedAt,
+      };
+}
+
+class Phone {
+  Phone({
+    required this.phone,
+    required this.fullPhone,
+    required this.codeRegion,
+  });
+
+  String phone;
+  String fullPhone;
+  String codeRegion;
+
+  Phone.clone(Phone object)
+      : this(
+          phone: object.phone,
+          fullPhone: object.fullPhone,
+          codeRegion: object.codeRegion,
+        );
+
+  factory Phone.fromJson(Map<String, dynamic> json) {
+    return Phone(
+      phone: json["phone"],
+      fullPhone: json["fullPhone"],
+      codeRegion: json["codeRegion"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "phone": phone,
+        "fullPhone": fullPhone,
+        "codeRegion": codeRegion,
       };
 }

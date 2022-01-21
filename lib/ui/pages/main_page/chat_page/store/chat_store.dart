@@ -71,12 +71,18 @@ abstract class _ChatStore extends IStore<bool> with Store {
     var keys = chats.keys.toList();
     var values = chats.values.toList();
 
+    chatSort();
+
     values.forEach((element) {
       if (idChatsForStar[element.chatModel.id] == null)
         idChatsForStar[element.chatModel.id] = false;
     });
+    return keys;
+  }
 
-    keys.sort((key1, key2) {
+  @action
+  void chatSort() {
+    chats.keys.toList().sort((key1, key2) {
       final chat1 = chats[key1]!.chatModel;
       final chat2 = chats[key2]!.chatModel;
 
@@ -85,7 +91,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
           ? 1
           : 0;
     });
-    return keys;
   }
 
   @action

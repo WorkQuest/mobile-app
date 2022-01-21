@@ -29,6 +29,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     storeQuest = context.read<QuestsStore>();
     storeFilter!.getFilters(storeQuest.selectedSkill);
     storeFilter!.initEmployments(storeQuest.employments);
+    storeFilter!.initRating(storeQuest.employeeRatings);
     storeFilter!.initWorkplace(storeQuest.workplaces);
     storeFilter!.initPriority(storeQuest.priorities);
     storeFilter!.initSort(storeQuest.sort);
@@ -94,7 +95,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                     onChange: storeFilter!.setSelectedPriority,
                                   ),
                                   _checkButton(
-                                    title: "quests.employment.title".tr(),
+                                    title: "quests.type".tr(),
                                     list: storeFilter!.sortByEmployment,
                                     selected: storeFilter!.selectEmployment,
                                     onChange: (bool? value, int index) {
@@ -115,7 +116,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                         value,
                                         index,
                                       );
-                                      storeFilter!.workplace[index] =
+                                      storeFilter!.selectWorkplace[index] =
                                           value ?? false;
                                     },
                                   ),
@@ -125,18 +126,17 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   _checkButton(
-                                    title: "quests.filter.priorityOfTheEmployee"
-                                        .tr(),
-                                    list: storeFilter!.sortByPriority,
-                                    selected: storeFilter!.priority,
-                                    onChange: storeFilter!.setSelectedPriority,
-                                  ),
-                                  _checkButton(
-                                    title: "quests.filter.employeeRating".tr(),
+                                    title: "quests.rating".tr(),
                                     list: storeFilter!.sortByEmployeeRating,
                                     selected: storeFilter!.selectEmployeeRating,
                                     onChange:
                                         storeFilter!.setSelectedEmployeeRating,
+                                  ),
+                                  _checkButton(
+                                    title: "settings.priority".tr(),
+                                    list: storeFilter!.sortByPriority,
+                                    selected: storeFilter!.priority,
+                                    onChange: storeFilter!.setSelectedPriority,
                                   ),
                                   _checkButton(
                                     title: "quests.workplace".tr(),
@@ -224,7 +224,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                 storeQuest.priorities.clear();
                 storeQuest.selectedSkill.clear();
                 storeQuest.employeeRatings.clear();
-                storeQuest.sort = "";
+                storeQuest.sort = "sort[createdAt]=desc";
                 profile!.userData!.role == UserRole.Employer
                     ? storeQuest.getWorkers(true)
                     : storeQuest.getQuests(true);
@@ -342,10 +342,11 @@ class _ExpansionCellState extends State<ExpansionCell> {
     return Column(
       children: <Widget>[
         Observer(
-          builder:(_) => ExpansionTile(
+          builder: (_) => ExpansionTile(
             collapsedBackgroundColor: widget
                     .storeFilter.selectedSkillFilters[widget.index - 1]!
-                    .firstWhere((element) => element == true, orElse: () => false)
+                    .firstWhere((element) => element == true,
+                        orElse: () => false)
                 ? Color(0xFF0083C7).withOpacity(0.1)
                 : Colors.white,
             maintainState: true,

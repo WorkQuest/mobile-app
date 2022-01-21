@@ -250,6 +250,7 @@ class _ChatPageState extends State<ChatPage> {
 
     final differenceTime =
         DateTime.now().difference(chatDetails.chatModel.lastMessageDate).inDays;
+    store.chatSort();
     return GestureDetector(
       onLongPress: () {
         store.setChatSelected(true);

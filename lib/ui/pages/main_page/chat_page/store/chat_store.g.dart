@@ -206,6 +206,17 @@ mixin _$ChatStore on _ChatStore, Store {
   final _$_ChatStoreActionController = ActionController(name: '_ChatStore');
 
   @override
+  void chatSort() {
+    final _$actionInfo =
+        _$_ChatStoreActionController.startAction(name: '_ChatStore.chatSort');
+    try {
+      return super.chatSort();
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic uncheck() {
     final _$actionInfo =
         _$_ChatStoreActionController.startAction(name: '_ChatStore.uncheck');
