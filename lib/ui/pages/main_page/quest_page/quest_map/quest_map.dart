@@ -23,7 +23,6 @@ class _QuestMapState extends State<QuestMap> {
   late GoogleMapController _controller;
   bool hasPermission = false;
   final GeolocatorPlatform _geoLocatorPlatform = GeolocatorPlatform.instance;
-  StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
 
   @override
   void initState() {

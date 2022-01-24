@@ -260,7 +260,11 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         await apiProvider.createQuest(
           quest: questModel,
         );
-        Web3().createNewQuestContract([description, price, 0, "$description"]);
+        Web3().createNewQuestContract(
+            jobHash: description,
+            cost: price,
+            deadline: 0.toString(),
+            nonce: "$description");
       }
 
       this.onSuccess(true);
