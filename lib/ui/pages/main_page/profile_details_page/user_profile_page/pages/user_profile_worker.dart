@@ -262,7 +262,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               ElevatedButton(
                 onPressed: () async {
                   viewOtherUser!.offset = 0;
-                  viewOtherUser!.questForWorker.clear();
+                  viewOtherUser!.quests.clear();
                   viewOtherUser!.questId = "";
                   viewOtherUser!.workerId = widget.info!.id;
                   viewOtherUser!
@@ -289,8 +289,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               ? userStore!.userData!.questsStatistic!.opened.toString()
               : widget.info!.questsStatistic!.opened.toString(),
           averageRating: widget.info == null
-              ? userStore!.userData!.ratingStatistic!.averageMark.toString()
-              : widget.info!.ratingStatistic!.averageMark.toString(),
+              ? userStore!.userData!.ratingStatistic!.averageMark
+              : widget.info!.ratingStatistic!.averageMark,
           reviews: widget.info == null
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
               : widget.info!.ratingStatistic!.reviewCount.toString(),

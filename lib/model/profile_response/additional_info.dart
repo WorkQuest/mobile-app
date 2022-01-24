@@ -1,3 +1,4 @@
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/social_network.dart';
 
 import 'avatar.dart';
@@ -16,7 +17,7 @@ class AdditionalInfo {
       required this.workExperiences,
       required this.avatar});
 
-  String? secondMobileNumber;
+  Phone? secondMobileNumber;
   String? address;
   SocialNetwork? socialNetwork;
   String? description;
@@ -46,7 +47,7 @@ class AdditionalInfo {
 
   factory AdditionalInfo.fromJson(Map<String, dynamic> json) {
     return AdditionalInfo(
-      secondMobileNumber: json["secondMobileNumber"],
+      secondMobileNumber: json["secondMobileNumber"] == null ? null : Phone.fromJson(json["secondMobileNumber"]),
       address: json["address"],
       socialNetwork: json["socialNetwork"] == null
           ? null

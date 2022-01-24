@@ -8,6 +8,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
+import 'package:app/web3/web3.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -84,7 +85,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   String description = '';
 
   @observable
-  String price = '';
+  String price = "";
 
   @observable
   int adType = 0;
@@ -127,7 +128,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   bool get canCreateQuest =>
       !isLoading &&
       locationPlaceName.isNotEmpty &&
-          mediaFile.isNotEmpty &&
+      mediaFile.isNotEmpty &&
       skillFilters.isNotEmpty;
 
   @computed
@@ -250,14 +251,18 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         price: price,
         adType: adType,
       );
-      isEdit
-          ? await apiProvider.editQuest(
-              quest: questModel,
-              questId: questId,
-            )
-          : await apiProvider.createQuest(
-              quest: questModel,
-            );
+      if (isEdit) {
+        await apiProvider.editQuest(
+          quest: questModel,
+          questId: questId,
+        );
+      } else {
+        await apiProvider.createQuest(
+          quest: questModel,
+        );
+        Web3().createNewQuestContract([description, price, 0, "$description"]);
+      }
+
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

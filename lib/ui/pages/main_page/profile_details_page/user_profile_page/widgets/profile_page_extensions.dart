@@ -51,7 +51,13 @@ extension CustomAppBar on UserProfileState {
                 fit: BoxFit.cover,
               ),
               Positioned(
-                bottom: 85.0,
+                bottom: info == null
+                    ? userStore!.userData!.ratingStatistic!.status != "noStatus"
+                        ? 85.0
+                        : 67.0
+                    : info.ratingStatistic!.status != "noStatus"
+                        ? 85.0
+                        : 67.0,
                 left: 15.0,
                 child: info == null
                     ? Row(

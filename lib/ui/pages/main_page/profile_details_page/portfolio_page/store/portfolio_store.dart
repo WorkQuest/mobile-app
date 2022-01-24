@@ -24,6 +24,10 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
 
   int offset = 0;
 
+  int offsetReview = 0;
+
+  bool pagination = true;
+
   @observable
   int pageNumber = 0;
 
@@ -140,12 +144,22 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
     required String userId,
   }) async {
     try {
+      if (!pagination) return;
       this.onLoading();
-      reviewsList = ObservableList.of(
+      final response = ObservableList.of(
         await _apiProvider.getReviews(
           userId: userId,
+          offset: offsetReview,
         ),
       );
+      reviewsList.addAll(response);
+      reviewsList.toList().sort((key1, key2) =>
+          key1.createdAt.millisecondsSinceEpoch <
+                  key2.createdAt.millisecondsSinceEpoch
+              ? 1
+              : 0);
+      if (response.length == 0 || response.length % 10 != 0) pagination = false;
+      offsetReview += 10;
       this.onSuccess(true);
     } catch (e) {
       this.onError(

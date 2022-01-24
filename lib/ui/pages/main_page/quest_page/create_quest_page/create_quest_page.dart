@@ -325,7 +325,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         child: TextFormField(
                           keyboardType: TextInputType.number,
                           onChanged: store.setPrice,
-                          initialValue: store.price,
+                          initialValue: store.price.toString(),
                           validator: Validators.zeroValidator,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(

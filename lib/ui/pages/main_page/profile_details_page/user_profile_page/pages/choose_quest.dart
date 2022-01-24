@@ -45,20 +45,20 @@ class ChooseQuest extends StatelessWidget {
                     Observer(
                       builder: (_) => RadioListTile<String>(
                         title: Text(
-                          store.questForWorker[index].title,
+                          store.quests[index].title,
                         ),
-                        value: store.questForWorker[index].title,
+                        value: store.quests[index].title,
                         groupValue: store.questName,
                         onChanged: (value) {
-                          store.setQuest(value, store.questForWorker[index].id);
+                          store.setQuest(value, store.quests[index].id);
                         },
                       ),
                     ),
-                    if (index == store.questForWorker.length - 1)
+                    if (index == store.quests.length - 1)
                       buttonRow(context, store),
                   ],
                 ),
-                itemCount: store.questForWorker.length,
+                itemCount: store.quests.length,
                 // ,
               ),
       ),

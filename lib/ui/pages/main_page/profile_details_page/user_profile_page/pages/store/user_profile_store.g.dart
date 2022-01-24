@@ -9,33 +9,18 @@ part of 'user_profile_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$UserProfileStore on _UserProfileStore, Store {
-  final _$userQuestAtom = Atom(name: '_UserProfileStore.userQuest');
+  final _$questsAtom = Atom(name: '_UserProfileStore.quests');
 
   @override
-  ObservableList<BaseQuestResponse> get userQuest {
-    _$userQuestAtom.reportRead();
-    return super.userQuest;
+  ObservableList<BaseQuestResponse> get quests {
+    _$questsAtom.reportRead();
+    return super.quests;
   }
 
   @override
-  set userQuest(ObservableList<BaseQuestResponse> value) {
-    _$userQuestAtom.reportWrite(value, super.userQuest, () {
-      super.userQuest = value;
-    });
-  }
-
-  final _$questForWorkerAtom = Atom(name: '_UserProfileStore.questForWorker');
-
-  @override
-  ObservableList<BaseQuestResponse> get questForWorker {
-    _$questForWorkerAtom.reportRead();
-    return super.questForWorker;
-  }
-
-  @override
-  set questForWorker(ObservableList<BaseQuestResponse> value) {
-    _$questForWorkerAtom.reportWrite(value, super.questForWorker, () {
-      super.questForWorker = value;
+  set quests(ObservableList<BaseQuestResponse> value) {
+    _$questsAtom.reportWrite(value, super.quests, () {
+      super.quests = value;
     });
   }
 
@@ -71,8 +56,7 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
   @override
   String toString() {
     return '''
-userQuest: ${userQuest},
-questForWorker: ${questForWorker},
+quests: ${quests},
 questName: ${questName}
     ''';
   }
