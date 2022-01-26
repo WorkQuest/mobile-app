@@ -63,3 +63,6 @@ enum WQFContractEvents {
   Upgraded,
   WorkQuestCreated
 }
+enum TYPE_COINS {
+  wusd, wqt
+}

@@ -1,5 +1,5 @@
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -85,14 +85,17 @@ class ApproveRolePage extends StatelessWidget {
                     onPressed: store.canApprove
                         ? () async {
                             await store.approveRole();
-                            Navigator.pushNamed(ctx, PinCodePage.routeName);
+                            Navigator.push(
+                                ctx,
+                                MaterialPageRoute(
+                                    builder: (_) => CreateWalletPage()));
+                            //Navigator.pushNamed(ctx, PinCodePage.routeName);
                           }
                         : null,
                     child: store.isLoading
                         ? CircularProgressIndicator.adaptive()
                         : Text(
-                            "meta.iAgree".tr(),
-                          ),
+                            "meta.iAgree".tr()),
                   ),
                 ),
                 SizedBox(

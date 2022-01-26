@@ -42,13 +42,13 @@ class ChooseRolePage extends StatelessWidget {
                 height: 20,
               ),
               Expanded(
-                child: getEmployerCard(context, store),
+                child: getCard(context, store,UserRole.Employer),
               ),
               SizedBox(
                 height: 0,
               ),
               Expanded(
-                child: getWorkerCard(context, store),
+                child: getCard(context, store,UserRole.Worker),
               ),
             ],
           ),
@@ -57,12 +57,12 @@ class ChooseRolePage extends StatelessWidget {
     );
   }
 
-  Widget getWorkerCard(BuildContext ctx, var store) {
+  Widget getCard(BuildContext ctx, var store,UserRole role) {
     return Observer(builder: (ctx) {
       return GestureDetector(
         onTap: () {
           try {
-            ctx.read<ChooseRoleStore>().setUserRole(UserRole.Worker);
+            ctx.read<ChooseRoleStore>().setUserRole(role);
           } catch (e, trace) {
             e.toString();
             trace.toString();
@@ -73,7 +73,7 @@ class ChooseRolePage extends StatelessWidget {
           child: Stack(
             children: [
               Image.asset(
-                "assets/worker.jpg",
+                "assets/${role.name.toLowerCase()}.jpg",
               ),
               Container(
                 margin: const EdgeInsets.only(left: 20, top: 20),
@@ -82,7 +82,7 @@ class ChooseRolePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "role.worker".tr(),
+                      "role.${role.name.toLowerCase()}".tr(),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -93,7 +93,7 @@ class ChooseRolePage extends StatelessWidget {
                       height: 12,
                     ),
                     Text(
-                      "role.workerWant".tr(),
+                      "role.${role.name.toLowerCase()}Want".tr(),
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -104,55 +104,5 @@ class ChooseRolePage extends StatelessWidget {
         ),
       );
     });
-  }
-
-  Widget getEmployerCard(BuildContext ctx, var store) {
-    return Observer(
-      builder: (ctx) {
-        return GestureDetector(
-          onTap: () {
-            ctx.read<ChooseRoleStore>().setUserRole(UserRole.Employer);
-            print('${ctx.read<ChooseRoleStore>().userRole}');
-            Navigator.pushNamed(ctx, ApproveRolePage.routeName,
-                arguments: store);
-          },
-          child: Center(
-            child: Stack(
-              children: [
-                Image.asset(
-                  "assets/employer.jpg",
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 20, top: 20),
-                  width: 146,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "role.employer".tr(),
-                        style: TextStyle(
-                          color: Color(0xFF1D2127),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 12,
-                      ),
-                      Text(
-                        "role.employerWant".tr(),
-                        style: TextStyle(
-                          color: Color(0xFF1D2127),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 }
