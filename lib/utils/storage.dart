@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:app/web3/wallet.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Storage {
@@ -44,5 +47,29 @@ class Storage {
 
   static deleteAllFromSecureStorage() async {
     await _secureStorage.deleteAll();
+  }
+
+  ///Wallets
+  static Future<void> write(String key, String value) async {
+    await _secureStorage.write(key: key, value: value);
+  }
+
+  static Future<String?> read(String key) async {
+    return await _secureStorage.read(key: key);
+  }
+
+  static Future<void> delete(String key) async {
+    return await _secureStorage.delete(key: key);
+  }
+
+  static Future<List<Wallet>> readWallets() async {
+    String? wallets = await _secureStorage.read(key: "wallets");
+    if (wallets == null || wallets.isEmpty) {
+      return [];
+    }
+
+    return List.from(jsonDecode(wallets)).map((json) {
+      return Wallet.fromJson(json);
+    }).toList();
   }
 }
