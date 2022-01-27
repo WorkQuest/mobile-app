@@ -9,6 +9,12 @@ Future successAlert(
     showDialog(
         context: context,
         builder: (_) {
+          Future.delayed(
+            const Duration(seconds: 1),
+                () {
+              Navigator.pop(context);
+            },
+          );
           return SuccessDialog(
             messageText: message,
           );
@@ -27,7 +33,7 @@ class SuccessDialog extends StatefulWidget {
 }
 
 class SuccessDialogState extends State<SuccessDialog>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   AnimationController? _scaleController;
   AnimationController? _sizeController;
 
@@ -93,11 +99,13 @@ class SuccessDialogState extends State<SuccessDialog>
             height: 15,
           ),
           Center(
-            child: Text(
-              widget.messageText,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
+            child: Material(
+              child: Text(
+                widget.messageText,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
               ),
             ),
           )

@@ -1,7 +1,6 @@
 import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
 import 'package:app/routes.dart';
-import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:flutter/cupertino.dart';

@@ -104,7 +104,6 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                     return false;
                   },
                   onSuccess: () async {
-                    print("here");
                     Navigator.of(context, rootNavigator: true).pop();
                     await successAlert(context, "message");
                     Navigator.pushNamed(
