@@ -55,6 +55,7 @@ import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import 'package:app/ui/pages/restore_password_page/store.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:app/ui/pages/start_page/start_page.dart';
 import 'package:app/ui/pages/start_page/store/start_store.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
@@ -648,6 +649,20 @@ class Routes {
         );
     }
   }
+
+  // static push(BuildContext ct, dynamic store, Widget widget) {
+  //   Navigator.of(ct).push(
+  //     MaterialPageRoute(
+  //       builder: (ct) => Directionality(
+  //         textDirection: checkDirection(ct),
+  //         child: Provider(
+  //           create: (_) => store,
+  //           child: widget,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   generateRouteEmployer(settings) {}
 

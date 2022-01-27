@@ -143,7 +143,6 @@ class SignUpPage extends StatelessWidget {
                   padding: _padding.copyWith(top: 30.0),
                   child: ObserverListener<SignUpStore>(
                     onSuccess: () {
-                      //println("SignUpPage => SignUp success!");
                       Navigator.pushNamed(
                         context,
                         ConfirmEmail.routeName,

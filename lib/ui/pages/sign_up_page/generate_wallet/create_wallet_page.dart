@@ -1,12 +1,16 @@
+import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/verify_wallet.dart';
+import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/snack_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import "package:provider/provider.dart";
-import '../../../../observer_consumer.dart';
+import 'package:provider/provider.dart';
+import '../../../../constants.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
-const _errorColor = Colors.red;
 
 class CreateWalletPage extends StatefulWidget {
   const CreateWalletPage({Key? key}) : super(key: key);
@@ -16,251 +20,172 @@ class CreateWalletPage extends StatefulWidget {
 }
 
 class _CreateWalletPageState extends State<CreateWalletPage> {
-  //final CreateWalletStore _store;
-
   @override
   void initState() {
     super.initState();
-    final store = context.read<CreateWalletStore>();
-    store.splitPhraseIntoWords();
+    final _store = context.read<CreateWalletStore>();
+    _store.generateMnemonic();
   }
 
   @override
   Widget build(BuildContext context) {
     final store = context.read<CreateWalletStore>();
     return Observer(
-        builder: (_) => Scaffold(
-            //   appBar:CupertinoNavigationBar(),
-            //   body: SingleChildScrollView(
-            //     child: Container(
-            //       color: Colors.white,
-            //       padding: _padding,
-            //       child: Column(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           const SizedBox(
-            //             height: 15,
-            //           ),
-            //           const Text(
-            //             'Choose the 3th and 7th words of your mnemonic',
-            //             style: TextStyle(
-            //               fontSize: 24,
-            //               color: Colors.black,
-            //               fontWeight: FontWeight.w600,
-            //             ),
-            //           ),
-            //           const SizedBox(
-            //             height: 30,
-            //           ),
-            //           const Text(
-            //             '3th word',
-            //             style: TextStyle(
-            //               fontSize: 18,
-            //               color: Colors.black,
-            //               fontWeight: FontWeight.w500,
-            //             ),
-            //           ),
-            //           const SizedBox(
-            //             height: 10,
-            //           ),
-            //           _WordsWidget(
-            //             words: store.setOfWords!.toList(),
-            //             onTab: _pressedOnWord,
-            //             isFirst: true,
-            //           ),
-            //           const SizedBox(
-            //             height: 30,
-            //           ),
-            //           const Text(
-            //             '7th word',
-            //             style: TextStyle(
-            //               fontSize: 18,
-            //               color: Colors.black,
-            //               fontWeight: FontWeight.w500,
-            //             ),
-            //           ),
-            //           const SizedBox(
-            //             height: 10,
-            //           ),
-            //           _WordsWidget(
-            //             words: store.setOfWords!.toList(),
-            //             onTab: _pressedOnWord,
-            //             isFirst: false,
-            //           ),
-            //           Expanded(child: Container()),
-            //           const SizedBox(height: 20,),
-            //           Container(
-            //             padding: EdgeInsets.only(
-            //                 bottom: MediaQuery.of(context).padding.bottom + 10.0),
-            //             width: double.infinity,
-            //             child: ObserverListener<CreateWalletStore>(
-            //               onFailure: () {
-            //                 Navigator.of(context, rootNavigator: true).pop();
-            //                 return false;
-            //               },
-            //               onSuccess: () async {
-            //                 Navigator.of(context, rootNavigator: true).pop();
-            //                 //await AlertDialogUtils.showSuccessDialog(context);
-            //                 // PageRouter.pushNewReplacementRoute(
-            //                 //     context, const PinCodePage());
-            //               },
-            //               child: DefaultButton(
-            //                 title: 'Open wallet',
-            //                 onPressed: store.statusGenerateButton ? () {
-            //                   AlertDialogUtils.showLoadingDialog(context);
-            //                   store.openWallet();
-            //                 } : null,
-            //               ),
-            //             ),
-            //           )
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            ));
+      builder: (_) => WillPopScope(
+        onWillPop: () {
+          //TODO: Correct
+          Future<bool> close = Future.value(false);
+          AlertDialogUtils.showAlertDialog(
+            context,
+            title: const Text('Warning!'),
+            content: const Text(
+                'If you leave the page, you will not link the wallet to your profile.\nAre you sure?'),
+            needCancel: true,
+            titleCancel: "Cancel",
+            titleOk: "Return",
+            onTabCancel: null,
+            onTabOk: () => Navigator.pop(context),
+            colorCancel: AppColor.enabledButton,
+            colorOk: Colors.red,
+          );
+          return close;
+        },
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: CupertinoNavigationBar(),
+          body: Padding(
+            padding: _padding,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 15,
+                ),
+                const Text(
+                  'Save this phrase to be able to login in next time',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                _YourPhrase(phrase: store.mnemonic),
+                const SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  children: [
+                    const Text(
+                      'I’ve saved mnemonic phrase',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const Spacer(),
+                    Switch.adaptive(
+                      value: store.isSaved,
+                      activeColor: AppColor.enabledButton,
+                      onChanged: (value) => store.setIsSaved(value),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const Spacer(),
+                Padding(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).padding.bottom + 10.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      child: Text('Next'),
+                      onPressed: store.isSaved
+                          ? () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => Provider(
+                                    create: (_) => store,
+                                    child: const VerifyWalletPage(),
+                                  ),
+                                ),
+                              );
+                            }
+                          : null,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
-
-// void _pressedOnWord(String word, bool isFirstWord) async {
-//   final store = context.read<CreateWalletStore>();
-//   if (isFirstWord) {
-//     if (store.selectedFirstWord == null) {
-//       store.selectFirstWord(word);
-//     }
-//     if (store.selectedFirstWord != store.firstWord) {
-//       await _openModalBottomSheet();
-//       store.selectFirstWord(null);
-//       store.selectSecondWord(null);
-//     }
-//   } else {
-//     if (store.selectedSecondWord == null) {
-//       store.selectSecondWord(word);
-//     }
-//     if (store.selectedSecondWord != store.secondWord) {
-//       await _openModalBottomSheet();
-//       store.selectFirstWord(null);
-//       store.selectSecondWord(null);
-//     }
-//   }
-// }
-//
-// Future<void> _openModalBottomSheet() async {
-//   await ModalBottomSheet.openModalBottomSheet(
-//     context,
-//     Column(
-//       children: [
-//         Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: const [
-//             Text(
-//               'Error',
-//               style: TextStyle(
-//                 fontSize: 18,
-//                 fontWeight: FontWeight.w500,
-//                 color: Colors.black,
-//               ),
-//             ),
-//             SizedBox(
-//               height: 11,
-//             ),
-//             Text(
-//               'You’ve chosen wrong words. Try again ',
-//               style: TextStyle(
-//                 fontSize: 16,
-//                 color: Colors.black,
-//               ),
-//             )
-//           ],
-//         ),
-//         const SizedBox(
-//           height: 20,
-//         ),
-//         Padding(
-//           padding:
-//           EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-//           child: SizedBox(
-//             width: double.infinity,
-//             child: DefaultButton(
-//               title: 'Ok',
-//               onPressed: () {
-//                 Navigator.pop(context);
-//               },
-//             ),
-//           ),
-//         )
-//       ],
-//     ),
-//   );
-// }
 }
 
-class _WordsWidget extends StatelessWidget {
-  final Function(String, bool) onTab;
-  final List<String> words;
-  final bool isFirst;
+class _YourPhrase extends StatelessWidget {
+  final String? phrase;
 
-  const _WordsWidget({
+  const _YourPhrase({
+    required this.phrase,
     Key? key,
-    required this.onTab,
-    required this.words,
-    required this.isFirst,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final store = context.read<CreateWalletStore>();
-
-    return Observer(
-      builder: (_) => Wrap(
-        children: words.map((word) {
-          bool selectedWord;
-          bool color;
-          if (isFirst) {
-            selectedWord = word == store.selectedFirstWord;
-            color = store.selectedFirstWord == store.firstWord;
-          } else {
-            selectedWord = word == store.selectedSecondWord;
-            color = store.selectedSecondWord == store.secondWord;
-          }
-          if (selectedWord) {
-            return Container(
-              margin: const EdgeInsets.only(right: 10.0, bottom: 10.0),
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6.0),
-                border: Border.all(
-                    //color: AppColor.disabledButton,
-                    ),
-                //color: color ? AppColor.enabledButton : _errorColor,
-              ),
-              child: Text(
-                word,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
-              ),
-            );
-          }
-          return GestureDetector(
-            onTap: () => onTab(word, isFirst),
-            child: Container(
-              margin: const EdgeInsets.only(right: 10.0, bottom: 10.0),
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6.0),
-                border: Border.all(
-                    //color: AppColor.disabledButton,
-                    ),
-              ),
-              child: Text(
-                word,
-                style: const TextStyle(fontSize: 16, color: Color(0xff4C5767)),
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Your phrase',
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 11.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6.0),
+            border: Border.all(
+              color: AppColor.disabledButton,
             ),
-          );
-        }).toList(),
-      ),
+          ),
+          child: Text(
+            phrase ?? "",
+            style: const TextStyle(
+              fontSize: 16,
+              color: Color(0xff1D2127),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        SizedBox(
+          width: 171,
+          child: ElevatedButton(
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: phrase));
+              SnackBarUtils.success(
+                context,
+                title: 'Copied!',
+                duration: const Duration(milliseconds: 250),
+              );
+            },
+            child: Text('Copy phrase'),
+          ),
+        ),
+      ],
     );
   }
 }

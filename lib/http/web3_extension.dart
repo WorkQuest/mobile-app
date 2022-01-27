@@ -21,7 +21,7 @@ extension Web3Requests on ApiProvider {
 
   Future<bool> registerWallet(String publicKey, String address) async {
     final response = await httpClient.post(
-      query: "v1/auth/register/wallet",
+      query: "/v1/auth/register/wallet",
       data: {
         "publicKey": publicKey,
         "address": address,

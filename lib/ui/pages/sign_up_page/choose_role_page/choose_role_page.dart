@@ -42,13 +42,13 @@ class ChooseRolePage extends StatelessWidget {
                 height: 20,
               ),
               Expanded(
-                child: getCard(context, store,UserRole.Employer),
+                child: getCard(context, store, UserRole.Employer,Color(0xFF1D2127)),
               ),
               SizedBox(
                 height: 0,
               ),
               Expanded(
-                child: getCard(context, store,UserRole.Worker),
+                child: getCard(context, store, UserRole.Worker),
               ),
             ],
           ),
@@ -57,7 +57,7 @@ class ChooseRolePage extends StatelessWidget {
     );
   }
 
-  Widget getCard(BuildContext ctx, var store,UserRole role) {
+  Widget getCard(BuildContext ctx, var store, UserRole role,[Color color= Colors.white]) {
     return Observer(builder: (ctx) {
       return GestureDetector(
         onTap: () {
@@ -67,7 +67,11 @@ class ChooseRolePage extends StatelessWidget {
             e.toString();
             trace.toString();
           }
-          Navigator.pushNamed(ctx, ApproveRolePage.routeName, arguments: store);
+          Navigator.pushNamed(
+            ctx,
+            ApproveRolePage.routeName,
+            arguments: store,
+          );
         },
         child: Center(
           child: Stack(
@@ -84,7 +88,7 @@ class ChooseRolePage extends StatelessWidget {
                     Text(
                       "role.${role.name.toLowerCase()}".tr(),
                       style: TextStyle(
-                        color: Colors.white,
+                        color: color,
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),
@@ -94,7 +98,7 @@ class ChooseRolePage extends StatelessWidget {
                     ),
                     Text(
                       "role.${role.name.toLowerCase()}Want".tr(),
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: color),
                     ),
                   ],
                 ),

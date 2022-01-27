@@ -1,8 +1,13 @@
+import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
+import 'package:app/routes.dart';
+import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -17,7 +22,6 @@ class ApproveRolePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext ctx) {
-    print('store: ${this.store.userRole}');
     return Scaffold(
       appBar: CupertinoNavigationBar(
         previousPageTitle: "  " + "meta.back".tr(),
@@ -43,9 +47,11 @@ class ApproveRolePage extends StatelessWidget {
                 const SizedBox(
                   height: 30,
                 ),
-                store.userRole == UserRole.Worker
-                    ? getWorkerCard()
-                    : getEmployerCard(),
+                getCard(
+                  store.userRole == UserRole.Worker
+                      ? UserRole.Worker
+                      : UserRole.Employer,
+                ),
                 CheckboxListTile(
                   contentPadding: const EdgeInsets.all(0),
                   value: store.privacyPolicy,
@@ -85,17 +91,28 @@ class ApproveRolePage extends StatelessWidget {
                     onPressed: store.canApprove
                         ? () async {
                             await store.approveRole();
+                            // Routes.push(
+                            //   ctx,
+                            //   getIt.get<CreateWalletStore>(),
+                            //   CreateWalletPage(),
+                            // );
                             Navigator.push(
-                                ctx,
-                                MaterialPageRoute(
-                                    builder: (_) => CreateWalletPage()));
+                              ctx,
+                              MaterialPageRoute(
+                                builder: (_) => Provider(
+                                  create: (context) =>
+                                      getIt.get<CreateWalletStore>(),
+                                  child: CreateWalletPage(),
+                                ),
+                              ),
+                            );
+
                             //Navigator.pushNamed(ctx, PinCodePage.routeName);
                           }
                         : null,
                     child: store.isLoading
                         ? CircularProgressIndicator.adaptive()
-                        : Text(
-                            "meta.iAgree".tr()),
+                        : Text("meta.iAgree".tr()),
                   ),
                 ),
                 SizedBox(
@@ -139,12 +156,12 @@ class ApproveRolePage extends StatelessWidget {
     );
   }
 
-  Widget getWorkerCard() {
+  Widget getCard(UserRole role) {
     return Center(
       child: Stack(
         children: [
           Image.asset(
-            "assets/worker.jpg",
+            "assets/${role.name.toLowerCase()}.jpg",
           ),
           Container(
             margin: const EdgeInsets.only(left: 20, top: 20),
@@ -153,9 +170,11 @@ class ApproveRolePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "role.worker".tr(),
+                  "role.${role.name.toLowerCase()}".tr(),
                   style: TextStyle(
-                      color: Colors.white,
+                      color: role == UserRole.Worker
+                          ? Colors.white
+                          : Color(0xFF1D2127),
                       fontSize: 20,
                       fontWeight: FontWeight.w600),
                 ),
@@ -163,43 +182,12 @@ class ApproveRolePage extends StatelessWidget {
                   height: 12,
                 ),
                 Text(
-                  "role.workerWant".tr(),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget getEmployerCard() {
-    return Center(
-      child: Stack(
-        children: [
-          Image.asset(
-            "assets/employer.jpg",
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 20, top: 20),
-            width: 146,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "role.employer".tr(),
+                  "role.${role.name.toLowerCase()}Want".tr(),
                   style: TextStyle(
-                      color: Color(0xFF1D2127),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600),
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                Text(
-                  "role.employerWant".tr(),
-                  style: TextStyle(color: Color(0xFF1D2127)),
+                    color: role == UserRole.Worker
+                        ? Colors.white
+                        : Color(0xFF1D2127),
+                  ),
                 ),
               ],
             ),
