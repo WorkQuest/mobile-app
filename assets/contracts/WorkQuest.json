@@ -48,7 +48,8 @@
       }
     ],
     "stateMutability": "nonpayable",
-    "type": "constructor"
+    "type": "constructor",
+    "outputs": []
   },
   {
     "anonymous": false,
@@ -443,13 +444,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "processJob",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

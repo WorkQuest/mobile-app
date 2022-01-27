@@ -4,6 +4,8 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
+import 'package:app/web3/contractEnums.dart';
+import 'package:app/web3/web3.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -54,6 +56,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptOnQuest(questId: quest.value!.id);
+      Web3().handleEvent(WQContractFunctions.acceptJob);
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -66,6 +69,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.rejectOnQuest(questId: quest.value!.id);
+      Web3().handleEvent(WQContractFunctions.declineJob);
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -78,6 +82,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.completeWork(questId: quest.value!.id);
+      Web3().handleEvent(WQContractFunctions.verificationJob);
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
