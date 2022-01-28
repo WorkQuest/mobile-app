@@ -8,7 +8,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/create_quest_model/location_model.dart';
 import 'package:app/model/quests_models/create_quest_model/media_model.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
-import 'package:app/web3/web3.dart';
+//import 'package:app/web3/web3.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -260,11 +260,12 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         await apiProvider.createQuest(
           quest: questModel,
         );
-        Web3().createNewQuestContract(
-            jobHash: description,
-            cost: price,
-            deadline: 0.toString(),
-            nonce: "$description");
+        // Web3().createNewContract(
+        //   jobHash: description,
+        //   cost: price,
+        //   deadline: 0.toString(),
+        //   nonce: description,
+        // );
       }
 
       this.onSuccess(true);

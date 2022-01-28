@@ -10,7 +10,7 @@ class WebSocket {
 
   late IOWebSocketChannel _channel;
 
-  String _url = "wss://app.workquest.co/api";
+  String _url = "wss://notifications.workquest.co/api";
 
   int _counter = 0;
 

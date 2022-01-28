@@ -49,8 +49,6 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
     return const SizedBox();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,12 +171,16 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       widget.questInfo.status == 5))
                 inProgressBy(),
               const SizedBox(height: 15),
-              Text(
-                widget.questInfo.title,
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1D2127),
+              GestureDetector(
+                onTap: () {
+                },
+                child: Text(
+                  widget.questInfo.title,
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1D2127),
+                  ),
                 ),
               ),
               const SizedBox(

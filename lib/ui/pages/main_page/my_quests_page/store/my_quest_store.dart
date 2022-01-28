@@ -22,7 +22,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   }
 
   @observable
-  String? sort = "";
+  String sort = "sort[createdAt]=desc";
 
   @observable
   int priority = -1;
@@ -78,19 +78,19 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   }
 
   void sortQuests() {
-    active.sort((key1, key2) {
+    active.sort((key2, key1) {
       return key1.createdAt.millisecondsSinceEpoch
           .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
-    starred.sort((key1, key2) {
+    starred.sort((key2, key1) {
       return key1.createdAt.millisecondsSinceEpoch
           .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
-    performed.sort((key1, key2) {
+    performed.sort((key2, key1) {
       return key1.createdAt.millisecondsSinceEpoch
           .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
-    invited.sort((key1, key2) {
+    invited.sort((key2, key1) {
       return key1.createdAt.millisecondsSinceEpoch
           .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
@@ -171,6 +171,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadActive)
           active.addAll(await _apiProvider.getEmployerQuests(
             userId: userId,
+            sort: sort,
             offset: this.offsetActive,
             statuses: [0, 1, 3, 5],
           ));
@@ -178,6 +179,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadInvited)
           invited.addAll(await _apiProvider.getEmployerQuests(
             userId: userId,
+            sort: sort,
             offset: this.offsetInvited,
             statuses: [4],
           ));
@@ -185,6 +187,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadPerformed) {
           performed.addAll(await _apiProvider.getEmployerQuests(
             userId: userId,
+            sort: sort,
             offset: this.offsetPerformed,
             statuses: [6],
           ));
@@ -193,6 +196,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadActive)
           active.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetActive,
+            sort: sort,
             userId: userId,
             statuses: [1, 3, 5],
           ));
@@ -200,6 +204,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadInvited)
           invited.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetInvited,
+            sort: sort,
             userId: userId,
             statuses: [4],
           ));
@@ -207,6 +212,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadPerformed)
           performed.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetPerformed,
+            sort: sort,
             userId: userId,
             statuses: [6],
           ));
@@ -214,6 +220,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadStarred)
           starred.addAll(await _apiProvider.getQuests(
             offset: this.offsetStarred,
+            sort: sort,
             starred: true,
           ));
       }
