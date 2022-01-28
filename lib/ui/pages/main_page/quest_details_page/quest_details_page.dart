@@ -172,8 +172,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                 inProgressBy(),
               const SizedBox(height: 15),
               GestureDetector(
-                onTap: () {
-                },
+                onTap: () {},
                 child: Text(
                   widget.questInfo.title,
                   style: TextStyle(

@@ -130,6 +130,7 @@ extension QuestService on ApiProvider {
     int limit = 10,
     int offset = 0,
     int? priority,
+    String sort = "",
     List<int> statuses = const [],
     bool? invited,
     bool? performing,
@@ -141,7 +142,7 @@ extension QuestService on ApiProvider {
         status += "statuses[]=$text&";
       });
       final responseData = await httpClient.get(
-        query: "/v1/employer/$userId/quests?$status",
+        query: "/v1/employer/$userId/quests?$status$sort",
         queryParameters: {
           "offset": offset,
           "limit": limit,
@@ -163,6 +164,7 @@ extension QuestService on ApiProvider {
     int limit = 10,
     int offset = 0,
     List<int> statuses = const [],
+    String sort = "",
     bool? invited,
     bool? performing,
     bool? starred,
@@ -174,7 +176,7 @@ extension QuestService on ApiProvider {
       status += "statuses[]=$text&";
     });
     final responseData = await httpClient.get(
-      query: '/v1/worker/$userId/quests?$status',
+      query: '/v1/worker/$userId/quests?$status$sort',
       queryParameters: {
         "offset": offset,
         "limit": limit,
