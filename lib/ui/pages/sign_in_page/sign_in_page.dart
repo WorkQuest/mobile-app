@@ -9,7 +9,6 @@ import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:app/utils/validator.dart';
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import 'package:flutter/services.dart';
 import "package:flutter_mobx/flutter_mobx.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:provider/provider.dart";
@@ -264,7 +263,7 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         Spacer(),
-                        const Text("Version 1.0.26"),
+                        //const Text("Version 1.0.26"),
                         const SizedBox(width: 15)
                       ],
                     ),

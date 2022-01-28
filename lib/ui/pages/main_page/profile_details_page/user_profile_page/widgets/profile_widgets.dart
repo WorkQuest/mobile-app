@@ -583,6 +583,47 @@ Widget workerRating({
 
 ///SocialMedia Accounts Widget
 ///
+Widget _socialMediaIcon({
+  required String iconPath,
+  required String? title,
+  required String launchUrl,
+  required String fallbackUrl,
+  required int color,
+}) =>
+    Flexible(
+      child: Container(
+        height: 50.0,
+        width: 74.0,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(6.0),
+          ),
+          color: Color(0xFFF7F8FA),
+        ),
+        child: IconButton(
+          onPressed: title != null
+              ? () {
+                  _launchSocial(launchUrl, fallbackUrl);
+                }
+              : null,
+          icon: title?.contains("instagram") != null
+              ? GradientIcon(
+                  SvgPicture.asset(
+                    "assets/instagram_disabled.svg",
+                  ),
+                  20.0,
+                  const <Color>[
+                    Color(0xFFAD00FF),
+                    Color(0xFFFF9900),
+                  ],
+                )
+              : SvgPicture.asset(
+                  "assets/$iconPath.svg",
+                  color: title != null ? Color(color) : null,
+                ),
+        ),
+      ),
+    );
 
 Widget socialAccounts({SocialNetwork? socialNetwork}) {
   final facebook = socialNetwork?.facebook;
@@ -598,113 +639,33 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Flexible(
-          child: Container(
-            height: 50.0,
-            width: 74.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(6.0),
-              ),
-              color: Color(0xFFF7F8FA),
-            ),
-            child: IconButton(
-              onPressed: facebook != null
-                  ? () {
-                      _launchSocial('fb://profile/$facebook',
-                          'https://www.facebook.com/$facebook');
-                    }
-                  : null,
-              icon: SvgPicture.asset(
-                "assets/facebook_icon_disabled.svg",
-                color: facebook != null ? Color(0xFF3B67D7) : null,
-              ),
-            ),
-          ),
+        _socialMediaIcon(
+          iconPath: "facebook_icon_disabled",
+          title: facebook,
+          fallbackUrl: 'https://www.facebook.com/$facebook',
+          launchUrl: 'fb://profile/$facebook',
+          color: 0xFF3B67D7,
         ),
-        Flexible(
-          child: Container(
-            height: 50.0,
-            width: 74.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(
-                  6.0,
-                ),
-              ),
-              color: Color(0xFFF7F8FA),
-            ),
-            child: IconButton(
-              onPressed: twitter != null
-                  ? () {
-                      _launchSocial("", 'https://twitter.com/$twitter');
-                    }
-                  : null,
-              icon: SvgPicture.asset(
-                "assets/twitter_icon_disabled.svg",
-                color: twitter != null ? Color(0xFF24CAFF) : null,
-              ),
-            ),
-          ),
+        _socialMediaIcon(
+          iconPath: "twitter_icon_disabled",
+          title: twitter,
+          fallbackUrl: 'https://twitter.com/$twitter',
+          launchUrl: '',
+          color: 0xFF24CAFF,
         ),
-        Flexible(
-          child: Container(
-            height: 50.0,
-            width: 74.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(6.0),
-              ),
-              color: Color(0xFFF7F8FA),
-            ),
-            child: IconButton(
-              onPressed: instagram != null
-                  ? () {
-                      _launchSocial(
-                        "",
-                        'https://www.instagram.com/$instagram',
-                      );
-                    }
-                  : null,
-              icon: instagram != null
-                  ? GradientIcon(
-                      SvgPicture.asset(
-                        "assets/instagram.svg",
-                      ),
-                      20.0,
-                      const <Color>[
-                        Color(0xFFAD00FF),
-                        Color(0xFFFF9900),
-                      ],
-                    )
-                  : SvgPicture.asset(
-                      "assets/instagram_disabled.svg",
-                    ),
-            ),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            height: 50.0,
-            width: 74.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(6.0),
-              ),
-              color: Color(0xFFF7F8FA),
-            ),
-            child: IconButton(
-              onPressed: linkedin != null
-                  ? () {
-                      _launchSocial("", 'https://linkedin.com/$linkedin');
-                    }
-                  : null,
-              icon: SvgPicture.asset(
-                "assets/linkedin_icon_disabled.svg",
-                color: linkedin != null ? Color(0xFF0A7EEA) : null,
-              ),
-            ),
-          ),
+        _socialMediaIcon(
+          iconPath: "instagram_disabled",
+          title: instagram,
+          fallbackUrl: 'https://www.instagram.com/$instagram',
+          launchUrl: '',
+          color: 0000000
+         ),
+        _socialMediaIcon(
+          iconPath: "linkedin_icon_disabled",
+          title: linkedin,
+          fallbackUrl: 'https://linkedin.com/$linkedin',
+          launchUrl: '',
+          color: 0xFF0A7EEA,
         ),
       ],
     ),

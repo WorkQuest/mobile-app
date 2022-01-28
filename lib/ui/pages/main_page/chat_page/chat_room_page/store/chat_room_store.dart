@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
@@ -13,6 +12,7 @@ import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:app/http/chat_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 part 'chat_room_store.g.dart';

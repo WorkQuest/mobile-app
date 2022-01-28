@@ -3,8 +3,6 @@ import 'dart:typed_data';
 import 'package:app/enums.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
-import 'package:app/model/chat_model/chat_model.dart';
-import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/create_quest_model/create_quest_request_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
@@ -18,9 +16,9 @@ import 'package:injectable/injectable.dart';
 
 @singleton
 class ApiProvider {
-  final IHttpClient _httpClient;
+  final IHttpClient httpClient;
 
-  ApiProvider(this._httpClient);
+  ApiProvider(this.httpClient);
 }
 
 final Dio _dio = Dio();
@@ -30,7 +28,7 @@ extension LoginService on ApiProvider {
     required String email,
     required String password,
   }) async {
-    final responseData = await _httpClient.post(
+    final responseData = await httpClient.post(
       query: '/v1/auth/login',
       data: {
         'email': email,
@@ -40,7 +38,7 @@ extension LoginService on ApiProvider {
     BearerToken bearerToken = BearerToken.fromJson(
       responseData,
     );
-    _httpClient.accessToken = bearerToken.access;
+    httpClient.accessToken = bearerToken.access;
     return bearerToken;
   }
 
@@ -50,7 +48,7 @@ extension LoginService on ApiProvider {
     required String email,
     required String password,
   }) async {
-    final responseData = await _httpClient.post(
+    final responseData = await httpClient.post(
       query: '/v1/auth/register',
       data: {
         'firstName': firstName,
@@ -62,21 +60,21 @@ extension LoginService on ApiProvider {
     BearerToken bearerToken = BearerToken.fromJson(
       responseData,
     );
-    _httpClient.accessToken = bearerToken.access;
+    httpClient.accessToken = bearerToken.access;
     return bearerToken;
   }
 
   Future<BearerToken> refreshToken(
     String refreshToken,
   ) async {
-    _httpClient.accessToken = refreshToken;
-    final responseData = await _httpClient.post(
+    httpClient.accessToken = refreshToken;
+    final responseData = await httpClient.post(
       query: '/v1/auth/refresh-tokens',
     );
     BearerToken bearerToken = BearerToken.fromJson(
       responseData,
     );
-    _httpClient.accessToken = bearerToken.access;
+    httpClient.accessToken = bearerToken.access;
     return bearerToken;
   }
 }
@@ -85,7 +83,7 @@ extension QuestService on ApiProvider {
   Future<void> createQuest({
     required CreateQuestRequestModel quest,
   }) async {
-    await _httpClient.post(
+    await httpClient.post(
       query: '/v1/quest/create',
       data: quest.toJson(),
     );
@@ -95,14 +93,14 @@ extension QuestService on ApiProvider {
     required CreateQuestRequestModel quest,
     required String questId,
   }) async {
-    await _httpClient.put(
+    await httpClient.put(
       query: '/v1/quest/$questId',
       data: quest.toJson(),
     );
   }
 
   Future<List<QuestMapPoint>> mapPoints(LatLngBounds bounds) async {
-    final response = await _httpClient.get(
+    final response = await httpClient.get(
       query: '/v1/quests/map/points' +
           '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
           'north[longitude]=${bounds.northeast.longitude.toString()}' +
@@ -110,7 +108,7 @@ extension QuestService on ApiProvider {
           'south[longitude]=${bounds.southwest.longitude.toString()}',
     );
 
-    final response2 = await _httpClient.get(
+    final response2 = await httpClient.get(
       query: '/v1/quests' +
           '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
           'north[longitude]=${bounds.northeast.longitude.toString()}' +
@@ -143,7 +141,7 @@ extension QuestService on ApiProvider {
       statuses.forEach((text) {
         status += "statuses[]=$text&";
       });
-      final responseData = await _httpClient.get(
+      final responseData = await httpClient.get(
         query: "/v1/employer/$userId/quests?$status$sort",
         queryParameters: {
           "offset": offset,
@@ -177,7 +175,7 @@ extension QuestService on ApiProvider {
     statuses.forEach((text) {
       status += "statuses[]=$text&";
     });
-    final responseData = await _httpClient.get(
+    final responseData = await httpClient.get(
       query: '/v1/worker/$userId/quests?$status$sort',
       queryParameters: {
         "offset": offset,
@@ -200,7 +198,7 @@ extension QuestService on ApiProvider {
   Future<BaseQuestResponse> getQuest({
     required String id,
   }) async {
-    final responseData = await _httpClient.get(query: '/v1/quest/$id');
+    final responseData = await httpClient.get(query: '/v1/quest/$id');
     return BaseQuestResponse.fromJson(responseData);
   }
 
@@ -240,7 +238,7 @@ extension QuestService on ApiProvider {
     employment.forEach((text) {
       employments += "employments[]=$text&";
     });
-    final responseData = await _httpClient.get(
+    final responseData = await httpClient.get(
       query:
           '/v1/quests?$workplaces$employments$status$specialization$priorities$sort',
       queryParameters: {
@@ -291,7 +289,7 @@ extension QuestService on ApiProvider {
     workplace.forEach((text) {
       workplaces += "workplace[]=$text&";
     });
-    final responseData = await _httpClient.get(
+    final responseData = await httpClient.get(
       query:
           '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort$specialization',
       queryParameters: {
@@ -315,14 +313,14 @@ extension QuestService on ApiProvider {
   Future<ProfileMeResponse> getProfileUser({
     required String userId,
   }) async {
-    final responseData = await _httpClient.get(
+    final responseData = await httpClient.get(
       query: '/v1/profile/$userId',
     );
     return ProfileMeResponse.fromJson(responseData);
   }
 
   Future<Map<int, List<int>>> getSkillFilters() async {
-    final responseData = await _httpClient.get(
+    final responseData = await httpClient.get(
       query: '/v1/skill-filters',
     );
     Map<int, List<int>> list = (responseData as Map).map((key, value) {
@@ -335,7 +333,7 @@ extension QuestService on ApiProvider {
   Future<bool> setStar({
     required String id,
   }) async {
-    final isSuccess = await _httpClient.post(
+    final isSuccess = await httpClient.post(
       query: '/v1/quest/$id/star',
     );
     return isSuccess == null;
@@ -344,7 +342,7 @@ extension QuestService on ApiProvider {
   Future<bool> removeStar({
     required String id,
   }) async {
-    final isSuccess = await _httpClient.delete(query: '/v1/quest/$id/star');
+    final isSuccess = await httpClient.delete(query: '/v1/quest/$id/star');
     return isSuccess == null;
   }
 
@@ -354,7 +352,7 @@ extension QuestService on ApiProvider {
     required List media,
   }) async {
     try {
-      final responseData = await _httpClient.post(
+      final responseData = await httpClient.post(
         query: '/v1/quest/$id/response',
         data: {
           "message": message,
@@ -370,7 +368,7 @@ extension QuestService on ApiProvider {
   Future<List<BaseQuestResponse>> responsesQuests() async {
     try {
       final responseData =
-          await _httpClient.get(query: '/v1/quest/responses/my');
+          await httpClient.get(query: '/v1/quest/responses/my');
       return List<BaseQuestResponse>.from(
         responseData["responses"].map(
           (x) => BaseQuestResponse.fromJson(x),
@@ -389,7 +387,7 @@ extension QuestService on ApiProvider {
       final body = {
         "assignedWorkerId": userId,
       };
-      final responseData = await _httpClient.post(
+      final responseData = await httpClient.post(
         query: '/v1/quest/$questId/start',
         data: body,
       );
@@ -405,7 +403,7 @@ extension QuestService on ApiProvider {
     required String message,
   }) async {
     try {
-      final responseData = await _httpClient.post(
+      final responseData = await httpClient.post(
         query: '/v1/quest/$questId/invite',
         data: {
           "invitedUserId": userId,
@@ -422,7 +420,7 @@ extension QuestService on ApiProvider {
     required String questId,
   }) async {
     try {
-      final responseData = await _httpClient.post(
+      final responseData = await httpClient.post(
           query: '/v1/quest/$questId/accept-completed-work');
       return responseData == null;
     } catch (e) {
@@ -434,7 +432,7 @@ extension QuestService on ApiProvider {
     required String questId,
   }) async {
     try {
-      final responseData = await _httpClient.post(
+      final responseData = await httpClient.post(
           query: '/v1/quest/$questId/reject-completed-work');
       return responseData == null;
     } catch (e) {
@@ -447,7 +445,7 @@ extension QuestService on ApiProvider {
   }) async {
     try {
       final responseData =
-          await _httpClient.post(query: '/v1/quest/$questId/accept-work');
+          await httpClient.post(query: '/v1/quest/$questId/accept-work');
       return responseData == null;
     } catch (e) {
       return false;
@@ -459,7 +457,7 @@ extension QuestService on ApiProvider {
   }) async {
     try {
       final responseData =
-          await _httpClient.post(query: '/v1/quest/$questId/reject-work');
+          await httpClient.post(query: '/v1/quest/$questId/reject-work');
       return responseData == null;
     } catch (e) {
       return false;
@@ -471,7 +469,7 @@ extension QuestService on ApiProvider {
   }) async {
     try {
       final responseData =
-          await _httpClient.post(query: '/v1/quest/$questId/complete-work');
+          await httpClient.post(query: '/v1/quest/$questId/complete-work');
       return responseData == null;
     } catch (e) {
       return false;
@@ -483,7 +481,7 @@ extension QuestService on ApiProvider {
   }) async {
     try {
       final responseData =
-          await _httpClient.delete(query: '/v1/quest/$questId');
+          await httpClient.delete(query: '/v1/quest/$questId');
       return responseData == null;
     } catch (e) {
       return false;
@@ -492,7 +490,7 @@ extension QuestService on ApiProvider {
 
   Future<List<RespondModel>> responsesQuest(String id) async {
     try {
-      final responseData = await _httpClient.get(
+      final responseData = await httpClient.get(
         query: '/v1/quest/$id/responses',
       );
       return List<RespondModel>.from(
@@ -509,14 +507,14 @@ extension QuestService on ApiProvider {
 extension UserInfoService on ApiProvider {
   Future<ProfileMeResponse> getProfileMe() async {
     try {
-      final responseData = await _httpClient.get(
+      final responseData = await httpClient.get(
         query: '/v1/profile/me',
       );
       return ProfileMeResponse.fromJson(responseData);
     } catch (e, trace) {
       print("ERROR: $e");
       print("ERROR: $trace");
-      final responseData = await _httpClient.get(
+      final responseData = await httpClient.get(
         query: '/v1/profile/me',
       );
       return ProfileMeResponse.fromJson(responseData);
@@ -601,9 +599,9 @@ extension UserInfoService on ApiProvider {
       final responseData;
       if (role == UserRole.Worker)
         responseData =
-            await _httpClient.put(query: '/v1/worker/profile/edit', data: body);
+            await httpClient.put(query: '/v1/worker/profile/edit', data: body);
       else
-        responseData = await _httpClient.put(
+        responseData = await httpClient.put(
             query: '/v1/employer/profile/edit', data: body);
       return ProfileMeResponse.fromJson(responseData);
     } catch (e) {
@@ -614,7 +612,7 @@ extension UserInfoService on ApiProvider {
 
 extension SetRoleService on ApiProvider {
   Future<void> setRole(String role) async {
-    await _httpClient.post(
+    await httpClient.post(
       query: '/v1/profile/set-role',
       data: {
         "role": role,
@@ -627,7 +625,7 @@ extension ConfirmEmailService on ApiProvider {
   Future<void> confirmEmail({
     required String code,
   }) async {
-    await _httpClient.post(
+    await httpClient.post(
       query: '/v1/auth/confirm-email',
       data: {
         "confirmCode": code,
@@ -641,7 +639,7 @@ extension ChangePassword on ApiProvider {
     required String oldPassword,
     required String newPassword,
   }) async {
-    await _httpClient.put(
+    await httpClient.put(
       query: '/v1/profile/change-password',
       data: {
         "oldPassword": oldPassword,
@@ -656,7 +654,7 @@ extension SMSVerification on ApiProvider {
   Future<void> submitPhoneNumber({
     required String phoneNumber,
   }) async {
-    await _httpClient.post(
+    await httpClient.post(
       query: '/v1/profile/phone/send-code',
       data: {
         "phoneNumber": phoneNumber,
@@ -667,7 +665,7 @@ extension SMSVerification on ApiProvider {
   Future<void> submitCode({
     required String confirmCode,
   }) async {
-    await _httpClient.post(
+    await httpClient.post(
       query: '/v1/profile/phone/confirm',
       data: {
         "confirmCode": confirmCode,
@@ -721,7 +719,7 @@ extension GetUploadLink on ApiProvider {
 
       bytes = media.readAsBytesSync();
 
-      final response = await _httpClient.post(
+      final response = await httpClient.post(
         query: '/v1/storage/get-upload-link',
         data: {
           "contentType": contentType,
@@ -908,7 +906,7 @@ extension ChatsService on ApiProvider {
 ///Two FA
 extension TwoFA on ApiProvider {
   Future<String> enable2FA() async {
-    final responseData = await _httpClient.post(
+    final responseData = await httpClient.post(
       query: '/v1/totp/enable',
     );
     return responseData;
@@ -917,7 +915,7 @@ extension TwoFA on ApiProvider {
   Future<void> disable2FA({
     required String totp,
   }) async {
-    await _httpClient.post(
+    await httpClient.post(
       query: '/v1/totp/disable',
       data: {
         "totp": totp,
@@ -929,7 +927,7 @@ extension TwoFA on ApiProvider {
     required String confirmCode,
     required String totp,
   }) async {
-    await _httpClient.post(
+    await httpClient.post(
       query: '/v1/totp/enable',
       data: {
         "confirmCode": confirmCode,
@@ -947,7 +945,7 @@ extension Portfolio on ApiProvider {
     required String description,
     required List<String> media,
   }) async {
-    await _httpClient.put(
+    await httpClient.put(
       query: '/v1/portfolio/$portfolioId',
       data: {
         "title": title,
@@ -962,7 +960,7 @@ extension Portfolio on ApiProvider {
     required String description,
     required List<String> media,
   }) async {
-    await _httpClient.post(
+    await httpClient.post(
       query: '/v1/portfolio/add-case',
       data: {
         "title": title,
@@ -975,7 +973,7 @@ extension Portfolio on ApiProvider {
   Future<void> deletePortfolio({
     required String portfolioId,
   }) async {
-    await _httpClient.delete(
+    await httpClient.delete(
       query: '/v1/portfolio/$portfolioId',
     );
   }
@@ -985,7 +983,7 @@ extension Portfolio on ApiProvider {
     required int offset,
   }) async {
     try {
-      final responseData = await _httpClient.get(
+      final responseData = await httpClient.get(
         query: '/v1/user/$userId/portfolio/cases',
         queryParameters: {
           "offset": offset,
@@ -1008,7 +1006,7 @@ extension RestorePassword on ApiProvider {
   Future<void> sendCodeToEmail({
     required String email,
   }) async {
-    await _httpClient.post(
+    await httpClient.post(
       query: '/v1/restore-password/send-code',
       data: {
         "email": email,
@@ -1020,7 +1018,7 @@ extension RestorePassword on ApiProvider {
     required String newPassword,
     required String token,
   }) async {
-    await _httpClient.post(
+    await httpClient.post(
       query: '/v1/restore-password/send-code',
       data: {
         "newPassword": newPassword,
@@ -1036,7 +1034,7 @@ extension Reviews on ApiProvider {
     required String message,
     required int mark,
   }) async {
-    await _httpClient.post(
+    await httpClient.post(
       query: '/v1/review/send',
       data: {
         "questId": questId,
@@ -1051,7 +1049,7 @@ extension Reviews on ApiProvider {
     required int offset,
   }) async {
     try {
-      final response = await _httpClient.get(
+      final response = await httpClient.get(
         query: '/v1/user/$userId/reviews',
         queryParameters: {
           "offset": offset,

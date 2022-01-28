@@ -10,7 +10,7 @@ import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
-
+import 'package:app/http/chat_extension.dart';
 import '../../../../../enums.dart';
 
 part 'chat_store.g.dart';

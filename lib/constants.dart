@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:flutter/material.dart';
 
 class Constants {
   static const Map<String, Locale> languageList = {
@@ -23,7 +22,14 @@ class Constants {
 
 }
 
-
-class AppColors{
+class AppColor {
+  static const blue = Color(0xff103D7C);
+  static const disabledText = Color(0xffD8DFE3);
+  static const subtitleText = Color(0xff7C838D);
+  static const enabledText = Colors.white;
+  static const enabledButton = Color(0xff0083C7);
+  static const disabledButton = Color(0xffF7F8FA);
+  static const unselectedBottomIcon = Color(0xffAAB0B9);
+  static const selectedBottomIcon = enabledButton;
 
 }
