@@ -2,6 +2,7 @@ import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.da
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,7 +43,7 @@ class WalletPage extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "0xu383d7g...dq9w",
+                    '${AccountRepository().userAddress!.substring(0, 9)}...${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
                     style: TextStyle(
                       color: Color(0xFF7C838D),
                     ),
@@ -57,7 +58,7 @@ class WalletPage extends StatelessWidget {
                     child: InkWell(
                       onTap: () => Clipboard.setData(
                         new ClipboardData(
-                          text: "0xu383d7g...dq9w",
+                          text: AccountRepository().userAddress,
                         ),
                       ).then(
                         (_) {

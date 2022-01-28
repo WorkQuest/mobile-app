@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:app/web3/contractEnums.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 import 'package:web3dart/web3dart.dart';
@@ -74,11 +73,11 @@ extension CreateQuestContract on Web3 {
 
       Timer.periodic(Duration(seconds: 10), (timer) async {
         timer.cancel();
-        TransactionReceipt transactionReceipt =
-            await _client.getTransactionReceipt(transactionHash);
+        TransactionReceipt? transactionReceipt =
+        await _client.getTransactionReceipt(transactionHash);
 
         print("Logs:");
-        transactionReceipt.logs.forEach((element) {
+        transactionReceipt?.logs.forEach((element) {
           print(element);
         });
         checkStatus();
@@ -102,7 +101,7 @@ extension CreateContract on Web3 {
         "private key");
     final contract = await getDeployedContract("WorkQuestFactory", _abiAddress);
     final ethFunction =
-        contract.function(WQFContractFunctions.newWorkQuest.name);
+    contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
     final depositAmount = (double.parse(cost) * 1.01) * pow(10, 18);
     handleContract(
@@ -122,9 +121,9 @@ extension CreateContract on Web3 {
 
 extension HandleEvent on Web3 {
   Future<void> handleEvent(
-    WQContractFunctions function, [
-    List<dynamic> params = const [],
-  ]) async {
+      WQContractFunctions function, [
+        List<dynamic> params = const [],
+      ]) async {
     final contract = await getDeployedContract(
         "WorkQuest", "contract address");
     final ethFunction = contract.function(function.name);
@@ -138,12 +137,12 @@ extension HandleEvent on Web3 {
 
 extension GetContract on Web3 {
   Future<DeployedContract> getDeployedContract(
-    String contractName,
-    String contractAddress,
-  ) async {
+      String contractName,
+      String contractAddress,
+      ) async {
     try {
       final _abiJson =
-          await rootBundle.loadString("assets/contracts/$contractName.json");
+      await rootBundle.loadString("assets/contracts/$contractName.json");
       final _contractAbi = ContractAbi.fromJson(_abiJson, contractName);
       final _contractAddress = EthereumAddress.fromHex(
         contractAddress,
@@ -161,9 +160,9 @@ extension CheckAddres on Web3 {
   Future<List<dynamic>> checkAdders(String address) async {
     try {
       final contract =
-          await getDeployedContract("WorkQuestFactory", _abiAddress);
+      await getDeployedContract("WorkQuestFactory", _abiAddress);
       final ethFunction =
-          contract.function(WQFContractFunctions.getWorkQuests.name);
+      contract.function(WQFContractFunctions.getWorkQuests.name);
       final outputs = await _client.call(
         contract: contract,
         function: ethFunction,

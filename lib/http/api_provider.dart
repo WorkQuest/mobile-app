@@ -127,10 +127,10 @@ extension QuestService on ApiProvider {
 
   Future<List<BaseQuestResponse>> getEmployerQuests({
     String userId = "",
-    String sort = "",
     int limit = 10,
     int offset = 0,
     int? priority,
+    String sort = "",
     List<int> statuses = const [],
     bool? invited,
     bool? performing,
