@@ -60,6 +60,13 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
     description = value;
   }
 
+  void clearData() {
+    reviewsList.clear();
+    offsetReview = 0;
+    offset = 0;
+    pagination = true;
+  }
+
   @action
   Future<void> createPortfolio({
     required String userId,

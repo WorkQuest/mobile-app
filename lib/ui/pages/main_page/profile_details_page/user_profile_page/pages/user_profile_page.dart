@@ -57,28 +57,24 @@ class UserProfileState<T extends UserProfile> extends State<T>
       role = userStore!.userData?.role ?? UserRole.Worker;
       portfolioStore!.reviewsList.clear();
       portfolioStore!.offsetReview = 0;
+
       if (role == UserRole.Worker)
-        portfolioStore!.getPortfolio(
-          userId: userStore!.userData!.id,
-        );
-      portfolioStore!.getReviews(
-        userId: userStore!.userData!.id,
-      );
+        portfolioStore!.getPortfolio(userId: userStore!.userData!.id);
+
+      portfolioStore!.getReviews(userId: userStore!.userData!.id);
+      myQuests!.getQuests(userStore!.userData!.id, role, true);
     } else {
       role = widget.info?.role ?? UserRole.Worker;
       viewOtherUser = context.read<UserProfileStore>();
       viewOtherUser!.offset = 0;
       viewOtherUser!.quests.clear();
+
       if (viewOtherUser!.quests.isEmpty)
         viewOtherUser!.getQuests(widget.info!.id, role);
 
       if (role == UserRole.Worker)
-        portfolioStore!.getPortfolio(
-          userId: widget.info!.id,
-        );
-      portfolioStore!.getReviews(
-        userId: widget.info!.id,
-      );
+        portfolioStore!.getPortfolio(userId: widget.info!.id);
+      portfolioStore!.getReviews(userId: widget.info!.id);
     }
   }
 
@@ -107,6 +103,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                 .metrics.pixels ==
             scrollNotification.metrics.maxScrollExtent) {
           if (widget.info == null) {
+            print("123123123");
             //on your own profile
             if (getReviews && !portfolioStore!.isLoading)
               portfolioStore!.getReviews(
@@ -116,11 +113,10 @@ class UserProfileState<T extends UserProfile> extends State<T>
               portfolioStore!.getPortfolio(
                 userId: userStore!.userData!.id,
               );
+            myQuests!.getQuests(userStore!.userData!.id, role, false);
           } else {
             //on another user profile
-            //viewOtherUser = context.read<UserProfileStore>();
-            if (viewOtherUser!.quests.isEmpty)
-              viewOtherUser!.getQuests(widget.info!.id, role);
+            viewOtherUser!.getQuests(widget.info!.id, role);
             if (getReviews && !portfolioStore!.isLoading)
               portfolioStore!.getReviews(
                 userId: widget.info!.id,

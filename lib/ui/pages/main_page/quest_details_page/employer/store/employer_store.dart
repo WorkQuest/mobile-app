@@ -70,7 +70,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      // await _apiProvider.acceptCompletedWork(questId: questId);
+      await _apiProvider.acceptCompletedWork(questId: questId);
       Web3().handleEvent(WQContractFunctions.acceptJobResult);
       await _getQuest();
       this.onSuccess(true);

@@ -175,6 +175,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
 
   Widget bottomButtons() => Padding(
         padding: EdgeInsets.only(
+          top: 16.0,
           left: 16.0,
           right: 16.0,
           bottom: 30.0,
@@ -286,27 +287,16 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
           title: Text(title),
           children: [
             for (int i = 0; i < list.length; i++)
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  children: [
-                    Observer(
-                      builder: (_) => Checkbox(
-                        checkColor: Colors.white,
-                        value: selected[i],
-                        onChanged: (bool? value) => onChange(value, i),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        list[i],
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        softWrap: false,
-                      ),
-                    ),
-                  ],
+              CheckboxListTile(
+                title: Text(
+                  list[i],
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  softWrap: false,
                 ),
+                value: selected[i],
+                onChanged: (bool? value) => onChange(value, i),
+                controlAffinity: ListTileControlAffinity.leading,
               ),
           ],
         ),
@@ -369,35 +359,24 @@ class _ExpansionCellState extends State<ExpansionCell> {
   }
 
   Widget getCheckbox(int index, String text, int spec, int skill) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Row(
-        children: [
-          Observer(
-            builder: (_) => Checkbox(
-              checkColor: Colors.white,
-              value: widget
-                  .storeFilter.selectedSkillFilters[widget.index - 1]![index],
-              onChanged: (bool? value) {
-                widget.storeFilter
-                    .selectedSkillFilters[widget.index - 1]![index] = value!;
-                if (value == true)
-                  widget.storeFilter.addSkill("$spec.$skill");
-                else
-                  widget.storeFilter.deleteSkill("$spec.$skill");
-              },
-            ),
-          ),
-          Expanded(
-            child: Text(
-              text,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              softWrap: false,
-            ),
-          ),
-        ],
+    return CheckboxListTile(
+      title: Text(
+        text,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+        softWrap: false,
       ),
+      value:
+          widget.storeFilter.selectedSkillFilters[widget.index - 1]![index],
+      onChanged: (bool? value) {
+        widget.storeFilter.selectedSkillFilters[widget.index - 1]![index] =
+            value!;
+        if (value == true)
+          widget.storeFilter.addSkill("$spec.$skill");
+        else
+          widget.storeFilter.deleteSkill("$spec.$skill");
+      },
+      controlAffinity: ListTileControlAffinity.leading,
     );
   }
 }

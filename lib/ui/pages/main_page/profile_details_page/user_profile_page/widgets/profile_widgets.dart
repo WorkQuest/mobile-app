@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app/model/profile_response/social_network.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
@@ -152,37 +150,28 @@ class ReviewsWidget extends StatelessWidget {
             children: [
               Flexible(
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     if (id != profile.userData!.id)
-                      profile.getAssignedWorker(id);
+                      await profile.getAssignedWorker(id);
                     else
                       profile.assignedWorker = profile.userData!;
-                    Timer.periodic(Duration(milliseconds: 100), (timer) async {
-                      if (profile.assignedWorker != null) {
-                        timer.cancel();
-                        portfolioStore.reviewsList.clear();
-                        portfolioStore.offsetReview = 0;
-                        portfolioStore.offset = 0;
-                        portfolioStore.pagination = true;
-                        await Navigator.of(context, rootNavigator: true)
-                            .pushNamed(
-                          UserProfile.routeName,
-                          arguments: profile.assignedWorker,
-                        );
-                        portfolioStore.pagination = true;
-                        portfolioStore.reviewsList.clear();
-                        portfolioStore.offsetReview = 0;
-                        portfolioStore.offset = 0;
-                        if (role == UserRole.Worker)
-                          portfolioStore.getPortfolio(userId: myId);
-                        else {
-                          userProfileStore.quests.clear();
-                          userProfileStore.getQuests(myId, role);
-                        }
-                        portfolioStore.getReviews(userId: myId);
+                    if (profile.assignedWorker != null) {
+                      portfolioStore.clearData();
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(
+                        UserProfile.routeName,
+                        arguments: profile.assignedWorker,
+                      );
+                      portfolioStore.clearData();
+                      if (role == UserRole.Worker)
+                        portfolioStore.getPortfolio(userId: myId);
+                      else {
+                        userProfileStore.quests.clear();
+                        userProfileStore.getQuests(myId, role);
                       }
-                      profile.assignedWorker = null;
-                    });
+                      portfolioStore.getReviews(userId: myId);
+                    }
+                    profile.assignedWorker = null;
                   },
                   child: ListTile(
                     leading: CircleAvatar(
