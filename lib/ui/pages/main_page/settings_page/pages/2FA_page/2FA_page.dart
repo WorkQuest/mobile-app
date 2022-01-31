@@ -5,6 +5,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 
 import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/utils/snack_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -132,7 +133,8 @@ class TwoFAPage extends StatelessWidget {
           const SizedBox(
             height: 10.0,
           ),
-          TextFormField(keyboardType: TextInputType.number,
+          TextFormField(
+            keyboardType: TextInputType.number,
             onChanged: store.setCodeFromAuthenticator,
             decoration: InputDecoration(
               hintText: "*****",
@@ -247,16 +249,10 @@ class Confirm2FAPages extends StatelessWidget {
                         text: store.googleAuthenticatorSecretCode,
                       ),
                     ).then(
-                      (_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            duration: Duration(seconds: 1),
-                            content: Text(
-                              "modals.codeCopy".tr(),
-                            ),
-                          ),
-                        );
-                      },
+                      (_) => SnackBarUtils.success(
+                        context,
+                        title: "modals.codeCopy".tr(),
+                      ),
                     ),
                     icon: SvgPicture.asset(
                       "assets/copy_icon.svg",

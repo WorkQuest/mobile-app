@@ -1,5 +1,6 @@
 import 'package:app/utils/push_notification_service.dart';
 import 'package:app/utils/storage.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -30,11 +31,24 @@ final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //_initialisePushNotification();
+  //init get_it
   injectDependencies(env: Environment.test);
   await Firebase.initializeApp().then(
     (value) => _initialisePushNotification(),
   );
+
   await EasyLocalization.ensureInitialized();
+
+  //Init Wallet
+  final addressActive = await Storage.read(Storage.activeAddress);
+  if (addressActive != null) {
+    final wallets = await Storage.readWallets();
+    if (wallets.isNotEmpty) {
+      AccountRepository().userAddresses = wallets;
+    }
+    AccountRepository().userAddress = addressActive;
+  }
+
   runApp(
     EasyLocalization(
       child: WorkQuestApp(await Storage.toLoginCheck()),
