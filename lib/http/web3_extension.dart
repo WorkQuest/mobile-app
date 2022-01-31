@@ -41,4 +41,15 @@ extension Web3Requests on ApiProvider {
     print("responsed $response");
     return TransactionResponse.fromJson(response).txs!;
   }
+
+  Future walletLogin(String signature, String address) async {
+    final response = await httpClient.post(
+      query: "/v1/auth/login/wallet",
+      data: {
+        "signature": signature,
+        "address": address,
+      },
+    );
+    print("Wallet Login$response");
+  }
 }

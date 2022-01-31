@@ -125,16 +125,32 @@ class SignInPage extends StatelessWidget {
                     ),
                   ),
                   Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
+                    child: TextFormField(
+                      onChanged: signInStore.setMnemonic,
+                      validator: Validators.mnemonicValidator,
+                      decoration: InputDecoration(
+                        prefixIconConstraints: _prefixConstraints,
+                        prefixIcon: SvgPicture.asset(
+                          "assets/lock.svg",
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        hintText: "signIn.enterMnemonicPhrase".tr(),
+                      ),
+                    ),
+                  ),
+                  Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
                     child: SizedBox(
                       width: double.infinity,
                       child: ObserverListener<SignInStore>(
                         onSuccess: () {
-                          Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            PinCodePage.routeName,
-                            (_) => false,
-                          );
+                          if (signInStore.walletSuccess)
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              PinCodePage.routeName,
+                              (_) => false,
+                            );
                         },
                         onFailure: () {
                           if (signInStore.errorMessage == "unconfirmed") {
@@ -151,10 +167,11 @@ class SignInPage extends StatelessWidget {
                                   ? () async {
                                       if (_formKey.currentState!.validate()) {
                                         await signInStore.signInWithUsername();
+                                        await signInStore.loginWallet();
                                       }
                                     }
                                   : null,
-                              child: signInStore.isLoading
+                              child: signInStore.isLoading || signInStore.walletLoading
                                   ? CircularProgressIndicator.adaptive()
                                   : Text(
                                       "signIn.login".tr(),

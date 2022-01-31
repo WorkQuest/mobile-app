@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:app/utils/snack_bar.dart';
@@ -14,7 +13,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import '../../../../constants.dart';
 import "package:provider/provider.dart";
-
 import 'list_transactions.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
@@ -22,7 +20,6 @@ const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 class WalletPage extends StatefulWidget {
   const WalletPage({Key? key}) : super(key: key);
   static const String routeName = "/WalletPage";
-
 
   @override
   _WalletPageState createState() => _WalletPageState();
@@ -35,7 +32,7 @@ class _WalletPageState extends State<WalletPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(),
+
       //
       // MainAppBar(
       //   title: 'wallet'.tr(gender: 'wallet'),
@@ -60,6 +57,14 @@ class _WalletPageState extends State<WalletPage> {
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 20,
+                ),
+              ),
+              CupertinoSliverNavigationBar(
+                largeTitle: Text("Wallet"),
+              ),
               if (Platform.isIOS)
                 CupertinoSliverRefreshControl(
                   onRefresh: _onRefresh,
@@ -70,6 +75,7 @@ class _WalletPageState extends State<WalletPage> {
             ],
           );
         }
+
         ///look here
         return Platform.isAndroid
             ? RefreshIndicator(onRefresh: _onRefresh, child: layout())
@@ -93,7 +99,8 @@ class _WalletPageState extends State<WalletPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    '${AccountRepository().userAddress!.substring(0, 9)}...${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
+                    '${AccountRepository().userAddress!.substring(0, 9)}...'
+                    '${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
@@ -146,7 +153,6 @@ class _WalletPageState extends State<WalletPage> {
                       padding: EdgeInsets.zero,
                       pressedOpacity: 0.2,
                       onPressed: () {
-
                         ///Route to withdraw [age
                         // PageRouter.pushNewRoute(
                         //     context, const WithdrawPage());
@@ -179,7 +185,7 @@ class _WalletPageState extends State<WalletPage> {
                       child: Text('wallet'.tr(gender: 'deposit')),
                       onPressed: () {
                         ///Route to withdraw [age
-                       // PageRouter.pushNewRoute(context, const DepositPage());
+                        // PageRouter.pushNewRoute(context, const DepositPage());
                       },
                     ),
                   )
@@ -199,7 +205,9 @@ class _WalletPageState extends State<WalletPage> {
             title: Text(
               'wallet.table.trx'.tr(),
               style: const TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black),
             ),
           ),
           centerTitle: false,
@@ -323,8 +331,11 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           border: isCurrency
                               ? null
                               : Border.all(
-                              color: AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
+                                  color:
+                                      AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency
+                              ? AppColor.enabledButton
+                              : Colors.transparent,
                         ),
                       ),
                     );
