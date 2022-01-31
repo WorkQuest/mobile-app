@@ -1,384 +1,358 @@
-import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
-import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
+import 'dart:io';
+
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
+import 'package:app/utils/snack_bar.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
+import '../../../../constants.dart';
 import "package:provider/provider.dart";
-import 'package:easy_localization/easy_localization.dart';
 
-final List<Tx> txsList =
-    List.generate(10, (index) => Tx(summa: 100, time: DateTime.now()));
-final _divider = const SizedBox(
-  height: 15.0,
-);
+import 'list_transactions.dart';
 
-class WalletPage extends StatelessWidget {
-  static const String routeName = "/walletPage";
+const _padding = EdgeInsets.symmetric(horizontal: 16.0);
+
+class WalletPage extends StatefulWidget {
+  const WalletPage({Key? key}) : super(key: key);
+  static const String routeName = "/WalletPage";
+
 
   @override
-  Widget build(context) {
+  _WalletPageState createState() => _WalletPageState();
+}
+
+class _WalletPageState extends State<WalletPage> {
+  @override
+  Widget build(BuildContext context) {
     final walletStore = context.read<WalletStore>();
+
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          CupertinoSliverNavigationBar(
-            largeTitle: Text(
-              "ui.wallet".tr(),
-            ),
-            automaticallyImplyLeading: false,
+      backgroundColor: Colors.white,
+      appBar: AppBar(),
+      //
+      // MainAppBar(
+      //   title: 'wallet'.tr(gender: 'wallet'),
+      // ),
+      body: Builder(
+        builder: (context) {
+          print('Builder wallet_page');
+          return Padding(
+            padding: _padding,
+            child: Platform.isIOS ? _mainLayout() : _mainLayout(),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _mainLayout() {
+    final store = GetIt.I.get<WalletStore>();
+    return Observer(
+      builder: (_) {
+        if (store.isLoading) {
+          return CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              if (Platform.isIOS)
+                CupertinoSliverRefreshControl(
+                  onRefresh: _onRefresh,
+                ),
+              const SliverFillRemaining(
+                child: Center(child: CircularProgressIndicator.adaptive()),
+              )
+            ],
+          );
+        }
+        ///look here
+        return Platform.isAndroid
+            ? RefreshIndicator(onRefresh: _onRefresh, child: layout())
+            : layout();
+      },
+    );
+  }
+
+  Widget layout() {
+    return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: [
+        if (Platform.isIOS)
+          CupertinoSliverRefreshControl(
+            onRefresh: _onRefresh,
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 16,
-                right: 16,
-                top: 30,
-                bottom: 20,
-              ),
-              child: Row(
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     '${AccountRepository().userAddress!.substring(0, 9)}...${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
-                    style: TextStyle(
-                      color: Color(0xFF7C838D),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: AppColor.subtitleText,
                     ),
                   ),
-                  Spacer(),
-                  Container(
-                    padding: const EdgeInsets.all(7),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF7F8FA),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: InkWell(
-                      onTap: () => Clipboard.setData(
-                        new ClipboardData(
-                          text: AccountRepository().userAddress,
-                        ),
-                      ).then(
-                        (_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              duration: Duration(
-                                seconds: 1,
-                              ),
-                              content: Text(
-                                "wallet.copy".tr(),
-                              ),
-                            ),
-                          );
-                        },
+                  const Spacer(),
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    pressedOpacity: 0.2,
+                    onPressed: () {
+                      Clipboard.setData(
+                          ClipboardData(text: AccountRepository().userAddress));
+                      SnackBarUtils.success(
+                        context,
+                        title: 'wallet'.tr(gender: 'copy'),
+                        duration: const Duration(milliseconds: 500),
+                      );
+                    },
+                    child: Container(
+                      height: 34,
+                      width: 34,
+                      padding: const EdgeInsets.all(7.0),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6.0),
+                          color: AppColor.disabledButton),
+                      child: SvgPicture.asset(
+                        "assets/copy_icon.svg",
+                        color: AppColor.enabledButton,
                       ),
-                      child: SvgPicture.asset("assets/copy_icon.svg"),
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: Color(0xFFF7F8FA),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "wallet.balance".tr(),
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Text(
-                      "1 600 WUSD",
-                      style: TextStyle(
-                        color: Color(0xFF0083C7),
-                        fontSize: 25,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Text(
-                      "\$ 120.34",
-                      style: TextStyle(
-                        color: Color(0xFFAAB0B9),
-                      ),
-                    )
-                  ],
-                ),
+              const SizedBox(
+                height: 20,
               ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 16,
-                right: 16,
-                top: 20,
-                bottom: 16,
+              const SizedBox(
+                width: double.infinity,
+                child: _InfoCardBalance(),
               ),
-              child: Row(
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
                 children: [
                   Expanded(
-                    child: SizedBox(
-                      height: 46,
-                      child: OutlinedButton(
-                        onPressed: () => bottomForm(
-                          context,
-                          walletStore,
+                    flex: 1,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.2,
+                      onPressed: () {
+
+                        ///Route to withdraw [age
+                        // PageRouter.pushNewRoute(
+                        //     context, const WithdrawPage());
+                      },
+                      child: Container(
+                        height: 43,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6.0),
+                          border: Border.all(
+                            color: Colors.blue.withOpacity(0.1),
+                          ),
                         ),
                         child: Text(
-                          "wallet.transfer".tr(),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(
-                            width: 1.0,
-                            color: Color(0xFF0083C7).withOpacity(0.1),
+                          'wallet'.tr(gender: 'withdraw'),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: AppColor.enabledButton,
                           ),
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(
-                    width: 10.0,
+                    width: 10,
                   ),
                   Expanded(
-                    child: SizedBox(
-                      height: 46,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true)
-                              .pushNamed(DepositPage.routeName);
-                        },
-                        child: Text(
-                          "wallet.deposit".tr(),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(
-                            width: 1.0,
-                            color: Color(0xFF0083C7).withOpacity(0.1),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  Expanded(
-                    child: SizedBox(
-                      height: 46,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context, rootNavigator: true)
-                              .pushNamed(WithdrawPage.routeName);
-                        },
-                        child: Text(
-                          "wallet.withdraw".tr(),
-                        ),
-                      ),
+                    flex: 1,
+                    child: ElevatedButton(
+                      child: Text('wallet'.tr(gender: 'deposit')),
+                      onPressed: () {
+                        ///Route to withdraw [age
+                       // PageRouter.pushNewRoute(context, const DepositPage());
+                      },
                     ),
                   )
                 ],
               ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: 6,
-              width: MediaQuery.of(context).size.width,
-              color: Color(0xFFF7F8FA),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                "mining.transactions".tr(),
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              children: txsList.map((e) => txItem(e.time.toString())).toList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget txItem(String time) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 20,
-        left: 16,
-        right: 16,
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Color(0xFF00AA5B).withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: SvgPicture.asset("assets/send_tx_arrow_icon.svg"),
-          ),
-          const SizedBox(
-            width: 16,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "wallet.receive".tr(),
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Text(
-                "14.01.20  14:34",
-                style: TextStyle(
-                  color: Color(0xFFAAB0B9),
-                ),
-              )
             ],
           ),
-          Spacer(),
-          Text(
-            "+1500 WUSD",
-            style: TextStyle(
-              fontSize: 16,
-              color: Color(0xFF00AA5B),
+        ),
+        SliverAppBar(
+          floating: true,
+          pinned: true,
+          snap: true,
+          expandedHeight: 50.0,
+          flexibleSpace: FlexibleSpaceBar(
+            centerTitle: false,
+            titlePadding: const EdgeInsets.only(bottom: 12.0),
+            title: Text(
+              'wallet.table.trx'.tr(),
+              style: const TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
             ),
-          )
-        ],
-      ),
+          ),
+          centerTitle: false,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+          shadowColor: Colors.transparent,
+        ),
+        const ListTransactions(),
+      ],
     );
   }
 
-  ///Transfer Widget
-  bottomForm(
-    BuildContext context,
-    WalletStore store,
-  ) =>
-      showModalBottomSheet(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
-            ),
-          ),
-          context: context,
-          isScrollControlled: true,
-          builder: (BuildContext context) {
-            return Observer(
-              builder: (context) => Padding(
-                padding: EdgeInsets.only(
-                  left: 16.0,
-                  right: 16.0,
-                  top: 10.0,
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        height: 5.0,
-                        width: 70.0,
-                        decoration: BoxDecoration(
-                          color: Colors.black12,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    _divider,
-                    Text(
-                      "wallet.recipientsAddress".tr(),
-                    ),
-                    _divider,
-                    TextFormField(
-                      onChanged: store.setRecipientAddress,
-                      decoration: InputDecoration(
-                        hintText: "wallet.enterAddress".tr(),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15.0,
-                    ),
-                    Text(
-                      'modals.amount'.tr(),
-                    ),
-                    _divider,
-                    TextFormField(
-                      maxLines: 1,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      ],
-                      onChanged: store.setAmount,
-                      decoration: InputDecoration(
-                        hintText: "0 WDX",
-                        suffixIcon: TextButton(
-                          onPressed: () {
-                            store.amount = "1600";
-                          },
-                          child: Text(
-                            "Max",
-                            style: TextStyle(
-                              color: Colors.blueAccent,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    _divider,
-                    ElevatedButton(
-                      onPressed: store.canSubmit
-                          ? () => confirmTransaction(
-                                context,
-                                transaction: "wallet.transfer".tr(),
-                                address: store.getAddress(),
-                                amount: store.getAmount(),
-                                fee: "0.15",
-                              )
-                          : null,
-                      child: Text(
-                        "wallet.transfer".tr(),
-                      ),
-                    ),
-                    _divider,
-                  ],
-                ),
-              ),
-            );
-          }).then((value) => store.clearValues());
+  Future _onRefresh() async {
+    // GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
+    // return GetIt.I.get<WalletStore>().getCoins();
+  }
 }
 
-class Tx {
-  late DateTime time;
-  late double summa;
+class _InfoCardBalance extends StatefulWidget {
+  const _InfoCardBalance({Key? key}) : super(key: key);
 
-  Tx({required this.time, required this.summa});
+  @override
+  State<_InfoCardBalance> createState() => _InfoCardBalanceState();
+}
+
+class _InfoCardBalanceState extends State<_InfoCardBalance> {
+  final CarouselController _controller = CarouselController();
+
+  int _currencyIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final store = GetIt.I.get<WalletStore>();
+    return Container(
+      height: 180,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      alignment: Alignment.topLeft,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6.0),
+        color: AppColor.disabledButton,
+      ),
+      child: Observer(
+        builder: (_) {
+          if (store.isSuccess) {
+            if (store.coins.isEmpty) {
+              return const Center(
+                child: Text(
+                  'You don\'t have any coins',
+                ),
+              );
+            }
+            return Column(
+              children: [
+                CarouselSlider(
+                  carouselController: _controller,
+                  items: store.coins.map((balance) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'wallet'.tr(gender: 'balance'),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            // '${num.parse(balance.amount).toInt()} ${balance.title}',
+                            '${num.parse(balance.amount).toDouble().toStringAsFixed(8)} ${balance.title}',
+                            style: const TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.w700,
+                              color: AppColor.enabledButton,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            balance.title == "WQT"
+                                ? '\$ ${(num.parse(balance.amount).toDouble() * 0.03431).toStringAsFixed(4)}'
+                                : '\$ ${num.parse(balance.amount).toDouble().toStringAsFixed(4)}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColor.unselectedBottomIcon,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  options: CarouselOptions(
+                      height: 120.0,
+                      autoPlay: true,
+                      viewportFraction: 1.0,
+                      disableCenter: true,
+                      onPageChanged: (int index, _) {
+                        setState(() {
+                          _currencyIndex = index;
+                        });
+                      }),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: store.coins.map((balance) {
+                    bool isCurrency = balance == store.coins[_currencyIndex];
+                    return GestureDetector(
+                      onTap: () => _controller.nextPage(),
+                      child: Container(
+                        width: 12.0,
+                        height: 12.0,
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: isCurrency
+                              ? null
+                              : Border.all(
+                              color: AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            );
+          }
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text(
+                  'Failed to get balance',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'Swipe to update',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 }

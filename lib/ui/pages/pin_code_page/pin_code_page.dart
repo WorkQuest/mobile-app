@@ -4,6 +4,7 @@ import "package:app/ui/pages/main_page/main_page.dart";
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
+import 'package:app/utils/snack_bar.dart';
 import "package:flutter/material.dart";
 import "package:flutter_mobx/flutter_mobx.dart";
 import 'package:flutter_svg/flutter_svg.dart';
@@ -75,8 +76,10 @@ class _PinCodePageState extends State<PinCodePage>
               context,
               SignInPage.routeName,
               (_) => false,
-            ).then((value) => ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Token Expired, Please login"))));
+            ).then((value) => SnackBarUtils.success(
+                  context,
+                  title: "Token Expired, Please login",
+                ));
           }
         },
         child: Scaffold(

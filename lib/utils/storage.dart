@@ -4,6 +4,11 @@ import 'package:app/web3/wallet.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Storage {
+
+  static const activeAddress = "address";
+  static const wallets = "wallets";
+
+
   static FlutterSecureStorage get _secureStorage => FlutterSecureStorage();
 
   static Future<void> writeToSecureStorage({

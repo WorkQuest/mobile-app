@@ -6,6 +6,7 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dar
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -258,15 +259,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               ),
             ).then(
               (_) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    duration: Duration(
-                      seconds: 1,
-                    ),
-                    content: Text(
-                      "chat.copy".tr(),
-                    ),
-                  ),
+                SnackBarUtils.success(
+                  context,
+                  title: "chat.copy".tr(),
                 );
               },
             );
@@ -306,8 +301,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               )
             : GestureDetector(
                 onTap: () async {
-                  _store.getCompanion(
-                      profile!.userData!.id != id1 ? id1 : id2);
+                  _store.getCompanion(profile!.userData!.id != id1 ? id1 : id2);
                   Timer.periodic(Duration(milliseconds: 100), (timer) {
                     if (_store.companion != null) {
                       timer.cancel();
@@ -345,8 +339,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 : SizedBox()
             : GestureDetector(
                 onTap: () async {
-                  _store.getCompanion(
-                      profile!.userData!.id != id1 ? id1 : id2);
+                  _store.getCompanion(profile!.userData!.id != id1 ? id1 : id2);
                   Timer.periodic(Duration(milliseconds: 100), (timer) {
                     if (_store.companion != null) {
                       timer.cancel();
