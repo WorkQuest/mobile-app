@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
-import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -32,11 +31,6 @@ class _WalletPageState extends State<WalletPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-
-      //
-      // MainAppBar(
-      //   title: 'wallet'.tr(gender: 'wallet'),
-      // ),
       body: Builder(
         builder: (context) {
           print('Builder wallet_page');
@@ -57,11 +51,6 @@ class _WalletPageState extends State<WalletPage> {
           return CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 20,
-                ),
-              ),
               CupertinoSliverNavigationBar(
                 largeTitle: Text("Wallet"),
               ),
@@ -88,6 +77,9 @@ class _WalletPageState extends State<WalletPage> {
     return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
+        CupertinoSliverNavigationBar(
+          largeTitle: Text("Wallet"),
+        ),
         if (Platform.isIOS)
           CupertinoSliverRefreshControl(
             onRefresh: _onRefresh,

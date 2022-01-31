@@ -29,9 +29,6 @@ abstract class _SignInStore extends IStore<bool> with Store {
   String _username = '';
 
   @observable
-  bool walletLoading = false;
-
-  @observable
   String _password = '';
 
   @observable
@@ -59,7 +56,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
   @action
   loginWallet() async {
     try {
-      walletLoading = true;
+      this.onLoading();
       Wallet? wallet = await Wallet.derive(mnemonic);
       final signature =
           await AccountRepository().client!.getSignature(wallet.privateKey!);
@@ -70,18 +67,18 @@ abstract class _SignInStore extends IStore<bool> with Store {
       AccountRepository().userAddress = wallet.address;
       AccountRepository().addWallet(wallet);
       walletSuccess = true;
-      walletLoading = false;
+      print("wallet sauccess$walletSuccess");
     } on FormatException catch (e) {
       onError(e.message);
-      walletLoading = false;
     } catch (e) {
+      print("wallet sauccess 2$walletSuccess");
       onError(e.toString());
-      walletLoading = false;
     }
   }
 
   @action
   Future signInWithUsername() async {
+    if (walletSuccess)
     try {
       this.onLoading();
       BearerToken bearerToken = await _apiProvider.login(

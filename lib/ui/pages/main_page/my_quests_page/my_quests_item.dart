@@ -7,6 +7,7 @@ import 'package:app/ui/widgets/running_line.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";
+import '../../../../constants.dart';
 import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -207,7 +208,7 @@ class MyQuestsItem extends StatelessWidget {
           );
         } else {
           return header(
-            color: AppColors.green,
+            color: AppColor.green,
             title: "quests.active",
           );
         }

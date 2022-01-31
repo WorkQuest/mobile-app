@@ -43,164 +43,166 @@ class SignUpPage extends StatelessWidget {
               kToolbarHeight -
               mq.padding.top -
               mq.padding.bottom,
-          child: Form(
-            key: _signUpPageFormKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: _padding.copyWith(top: 40.0),
-                  child: Text(
-                    "signIn.signUp".tr(),
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: _padding.copyWith(top: 30.0),
-                  child: TextFormField(
-                    onChanged: store.setFirstName,
-                    decoration: InputDecoration(
-                      prefixIconConstraints: _prefixConstraints,
-                      prefixIcon: SvgPicture.asset(
-                        "assets/user.svg",
-                        color: Theme.of(context).iconTheme.color,
+          child: AutofillGroup(
+            child: Form(
+              key: _signUpPageFormKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: _padding.copyWith(top: 40.0),
+                    child: Text(
+                      "signIn.signUp".tr(),
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
                       ),
-                      hintText: "labels.firstName".tr(),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: _padding,
-                  child: TextFormField(
-                    onChanged: store.setLastName,
-                    decoration: InputDecoration(
-                      prefixIconConstraints: _prefixConstraints,
-                      prefixIcon: SvgPicture.asset(
-                        "assets/user.svg",
-                        color: Theme.of(context).iconTheme.color,
+                  Padding(
+                    padding: _padding.copyWith(top: 30.0),
+                    child: TextFormField(
+                      onChanged: store.setFirstName,
+                      decoration: InputDecoration(
+                        prefixIconConstraints: _prefixConstraints,
+                        prefixIcon: SvgPicture.asset(
+                          "assets/user.svg",
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        hintText: "labels.firstName".tr(),
                       ),
-                      hintText: "labels.lastName".tr(),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: _padding,
-                  child: TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    onChanged: store.setEmail,
-                    validator: Validators.emailValidator,
-                    decoration: InputDecoration(
-                      prefixIconConstraints: _prefixConstraints,
-                      prefixIcon: SizedBox(
-                        height: 15,
-                        width: 15,
-                        child: SvgPicture.asset(
-                          "assets/email_icon.svg",
-                          fit: BoxFit.contain,
+                  Padding(
+                    padding: _padding,
+                    child: TextFormField(
+                      onChanged: store.setLastName,
+                      decoration: InputDecoration(
+                        prefixIconConstraints: _prefixConstraints,
+                        prefixIcon: SvgPicture.asset(
+                          "assets/user.svg",
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        hintText: "labels.lastName".tr(),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: _padding,
+                    child: TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: store.setEmail,
+                      validator: Validators.emailValidator,
+                      decoration: InputDecoration(
+                        prefixIconConstraints: _prefixConstraints,
+                        prefixIcon: SizedBox(
+                          height: 15,
+                          width: 15,
+                          child: SvgPicture.asset(
+                            "assets/email_icon.svg",
+                            fit: BoxFit.contain,
+                            color: Theme.of(context).iconTheme.color,
+                          ),
+                        ),
+                        hintText: "signUp.email".tr(),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: _padding,
+                    child: TextFormField(
+                      obscureText: true,
+                      validator: Validators.signUpPasswordValidator,
+                      onChanged: store.setPassword,
+                      decoration: InputDecoration(
+                        prefixIconConstraints: _prefixConstraints,
+                        hintText: "signUp.password".tr(),
+                        prefixIcon: SvgPicture.asset(
+                          "assets/lock.svg",
                           color: Theme.of(context).iconTheme.color,
                         ),
                       ),
-                      hintText: "signUp.email".tr(),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: _padding,
-                  child: TextFormField(
-                    obscureText: true,
-                    validator: Validators.signUpPasswordValidator,
-                    onChanged: store.setPassword,
-                    decoration: InputDecoration(
-                      prefixIconConstraints: _prefixConstraints,
-                      hintText: "signUp.password".tr(),
-                      prefixIcon: SvgPicture.asset(
-                        "assets/lock.svg",
-                        color: Theme.of(context).iconTheme.color,
+                  Padding(
+                    padding: _padding,
+                    child: TextFormField(
+                      obscureText: true,
+                      validator: store.signUpConfirmPasswordValidator,
+                      onChanged: store.setConfirmPassword,
+                      decoration: InputDecoration(
+                        prefixIcon: SvgPicture.asset(
+                          "assets/lock.svg",
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        prefixIconConstraints: _prefixConstraints,
+                        hintText: "signUp.confirmPassword".tr(),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: _padding,
-                  child: TextFormField(
-                    obscureText: true,
-                    validator: store.signUpConfirmPasswordValidator,
-                    onChanged: store.setConfirmPassword,
-                    decoration: InputDecoration(
-                      prefixIcon: SvgPicture.asset(
-                        "assets/lock.svg",
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      prefixIconConstraints: _prefixConstraints,
-                      hintText: "signUp.confirmPassword".tr(),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: _padding.copyWith(top: 30.0),
-                  child: ObserverListener<SignUpStore>(
-                    onSuccess: () {
-                      Navigator.pushNamed(
-                        context,
-                        ConfirmEmail.routeName,
-                        arguments: store.email
-                      );
-                    },
-                    child: Observer(
-                      builder: (context) {
-                        return ElevatedButton(
-                          onPressed: store.canSignUp
-                              ? () async {
-                                  if (_signUpPageFormKey.currentState!
-                                      .validate()) {
-                                    await store.register();
-                                  }
-                                }
-                              : null,
-                          child: store.isLoading
-                              ? CircularProgressIndicator.adaptive()
-                              : Text(
-                                  "signUp.create".tr(),
-                                ),
+                  Padding(
+                    padding: _padding.copyWith(top: 30.0),
+                    child: ObserverListener<SignUpStore>(
+                      onSuccess: () {
+                        Navigator.pushNamed(
+                          context,
+                          ConfirmEmail.routeName,
+                          arguments: store.email
                         );
                       },
+                      child: Observer(
+                        builder: (context) {
+                          return ElevatedButton(
+                            onPressed: store.canSignUp
+                                ? () async {
+                                    if (_signUpPageFormKey.currentState!
+                                        .validate()) {
+                                      await store.register();
+                                    }
+                                  }
+                                : null,
+                            child: store.isLoading
+                                ? CircularProgressIndicator.adaptive()
+                                : Text(
+                                    "signUp.create".tr(),
+                                  ),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16.0,
-                    bottom: 20.0,
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        "signUp.haveAccount".tr(),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 10.0,
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16.0,
+                      bottom: 20.0,
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          "signUp.haveAccount".tr(),
                         ),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            "signIn.title".tr(),
-                            style: TextStyle(
-                              color: Color(0xFF0083C7),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 10.0,
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              "signIn.title".tr(),
+                              style: TextStyle(
+                                color: Color(0xFF0083C7),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
