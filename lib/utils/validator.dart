@@ -23,6 +23,16 @@ class Validators {
     return regExp.hasMatch(email!.trim()) ? null : "Email invalid";
   }
 
+  static String? mnemonicValidator(String? value) {
+    if (value!.length <= 24) {
+      return "A small number of words";
+    }
+    if (value.split(' ').toList().length < 12) {
+      return "Incorrect mnemonic format";
+    }
+    return null;
+  }
+
   static String? signUpPasswordValidator(String? text) {
     return text!.length >= 8
         ? null

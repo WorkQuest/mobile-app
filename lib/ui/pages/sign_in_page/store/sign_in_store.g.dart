@@ -16,6 +16,21 @@ mixin _$SignInStore on _SignInStore, Store {
           Computed<bool>(() => super.canSignIn, name: '_SignInStore.canSignIn'))
       .value;
 
+  final _$walletSuccessAtom = Atom(name: '_SignInStore.walletSuccess');
+
+  @override
+  bool get walletSuccess {
+    _$walletSuccessAtom.reportRead();
+    return super.walletSuccess;
+  }
+
+  @override
+  set walletSuccess(bool value) {
+    _$walletSuccessAtom.reportWrite(value, super.walletSuccess, () {
+      super.walletSuccess = value;
+    });
+  }
+
   final _$_usernameAtom = Atom(name: '_SignInStore._username');
 
   @override
@@ -28,6 +43,21 @@ mixin _$SignInStore on _SignInStore, Store {
   set _username(String value) {
     _$_usernameAtom.reportWrite(value, super._username, () {
       super._username = value;
+    });
+  }
+
+  final _$walletLoadingAtom = Atom(name: '_SignInStore.walletLoading');
+
+  @override
+  bool get walletLoading {
+    _$walletLoadingAtom.reportRead();
+    return super.walletLoading;
+  }
+
+  @override
+  set walletLoading(bool value) {
+    _$walletLoadingAtom.reportWrite(value, super.walletLoading, () {
+      super.walletLoading = value;
     });
   }
 
@@ -46,6 +76,28 @@ mixin _$SignInStore on _SignInStore, Store {
     });
   }
 
+  final _$mnemonicAtom = Atom(name: '_SignInStore.mnemonic');
+
+  @override
+  String get mnemonic {
+    _$mnemonicAtom.reportRead();
+    return super.mnemonic;
+  }
+
+  @override
+  set mnemonic(String value) {
+    _$mnemonicAtom.reportWrite(value, super.mnemonic, () {
+      super.mnemonic = value;
+    });
+  }
+
+  final _$loginWalletAsyncAction = AsyncAction('_SignInStore.loginWallet');
+
+  @override
+  Future loginWallet() {
+    return _$loginWalletAsyncAction.run(() => super.loginWallet());
+  }
+
   final _$signInWithUsernameAsyncAction =
       AsyncAction('_SignInStore.signInWithUsername');
 
@@ -56,6 +108,17 @@ mixin _$SignInStore on _SignInStore, Store {
   }
 
   final _$_SignInStoreActionController = ActionController(name: '_SignInStore');
+
+  @override
+  dynamic setMnemonic(String value) {
+    final _$actionInfo = _$_SignInStoreActionController.startAction(
+        name: '_SignInStore.setMnemonic');
+    try {
+      return super.setMnemonic(value);
+    } finally {
+      _$_SignInStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setUsername(String value) {
@@ -93,6 +156,9 @@ mixin _$SignInStore on _SignInStore, Store {
   @override
   String toString() {
     return '''
+walletSuccess: ${walletSuccess},
+walletLoading: ${walletLoading},
+mnemonic: ${mnemonic},
 canSignIn: ${canSignIn}
     ''';
   }
