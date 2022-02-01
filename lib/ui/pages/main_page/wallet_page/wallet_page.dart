@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
+import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -139,43 +142,27 @@ class _WalletPageState extends State<WalletPage> {
               ),
               Row(
                 children: [
-                  Expanded(
-                    flex: 1,
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.2,
-                      onPressed: () {
-                        ///Route to withdraw [age
-                        // PageRouter.pushNewRoute(
-                        //     context, const WithdrawPage());
-                      },
-                      child: Container(
-                        height: 43,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6.0),
-                          border: Border.all(
-                            color: Colors.blue.withOpacity(0.1),
-                          ),
-                        ),
-                        child: Text(
-                          'wallet'.tr(gender: 'withdraw'),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: AppColor.enabledButton,
-                          ),
-                        ),
-                      ),
-                    ),
+                  outlinedButton(route: "", title: "withdraw"),
+                  const SizedBox(
+                    width: 10,
                   ),
+                  outlinedButton(route: "", title: "deposit"),
                   const SizedBox(
                     width: 10,
                   ),
                   Expanded(
                     flex: 1,
                     child: ElevatedButton(
-                      child: Text('wallet'.tr(gender: 'deposit')),
-                      onPressed: () {
+                      child: Text('wallet'.tr(gender: 'transfer')),
+                      onPressed: () async{
+                        await AlertDialogUtils.showSuccessDialog(context);
+                        //successAlert(context, "message");
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (_) => TransferPage(),
+                        //     ));
+
                         ///Route to withdraw [age
                         // PageRouter.pushNewRoute(context, const DepositPage());
                       },
@@ -209,6 +196,41 @@ class _WalletPageState extends State<WalletPage> {
         ),
         const ListTransactions(),
       ],
+    );
+  }
+
+  Widget outlinedButton({
+    required String title,
+    required String route,
+  }) {
+    return Expanded(
+      flex: 1,
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        pressedOpacity: 0.2,
+        onPressed: () {
+          ///Route to withdraw page
+          // PageRouter.pushNewRoute(
+          //     context, const WithdrawPage());
+        },
+        child: Container(
+          height: 43,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6.0),
+            border: Border.all(
+              color: Colors.blue.withOpacity(0.1),
+            ),
+          ),
+          child: Text(
+            'wallet'.tr(gender: title),
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppColor.enabledButton,
+            ),
+          ),
+        ),
+      ),
     );
   }
 

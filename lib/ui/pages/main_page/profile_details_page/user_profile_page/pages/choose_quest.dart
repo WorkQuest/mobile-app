@@ -1,5 +1,5 @@
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -97,10 +97,10 @@ class ChooseQuest extends StatelessWidget {
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: ()async {
                   store.startQuest(workerId);
                   Navigator.pop(context);
-                  successAlert(context, "modals.inviteSend".tr());
+                  await AlertDialogUtils.showSuccessDialog(context);
                 },
                 child: Text(
                   "quests.addToQuest".tr(),

@@ -7,6 +7,7 @@ import 'package:app/ui/widgets/media_upload_widget.dart';
 
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -362,12 +363,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               arguments: updatedQuest,
                             );
                           }
-                          await successAlert(
-                            context,
-                            isEdit
-                                ? "Quest Successfully Edited"
-                                : "modals.questCreated".tr(),
-                          );
+                          await AlertDialogUtils.showSuccessDialog(context);
+                          // await successAlert(
+                          //   context,
+                          //   isEdit
+                          //       ? "Quest Successfully Edited"
+                          //       : "modals.questCreated".tr(),
+                          // );
                         },
                         child: Observer(
                           builder: (context) => ElevatedButton(

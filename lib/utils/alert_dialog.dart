@@ -1,62 +1,44 @@
 import 'dart:io';
 
+import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AlertDialogUtils {
-  // static Future<void> showSuccessDialog(BuildContext context) async {
-  //   final content = Column(
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: [
-  //       const AlertSuccess(),
-  //       const SizedBox(
-  //         height: 15,
-  //       ),
-  //       const Text(
-  //         'meta',
-  //         style: TextStyle(
-  //           fontSize: 16,
-  //           color: Colors.black,
-  //         ),
-  //       ).tr(gender: 'success')
-  //     ],
-  //   );
-  //
-  //   if (Platform.isIOS) {
-  //     await showCupertinoDialog(
-  //       context: context,
-  //       barrierDismissible: false,
-  //       builder: (context) {
-  //         Future.delayed(
-  //           const Duration(seconds: 1),
-  //           () {
-  //             Navigator.pop(context);
-  //           },
-  //         );
-  //         return CupertinoAlertDialog(
-  //           content: content,
-  //         );
-  //       },
-  //     );
-  //   } else {
-  //     await showDialog(
-  //       context: context,
-  //       barrierDismissible: false,
-  //       builder: (context) {
-  //         Future.delayed(
-  //           const Duration(seconds: 1),
-  //           () {
-  //             Navigator.pop(context);
-  //           },
-  //         );
-  //         return AlertDialog(
-  //           content: content,
-  //         );
-  //       },
-  //     );
-  //   }
-  // }
+  static Future<void> showSuccessDialog(BuildContext context) async {
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SuccessDialog(),
+        const SizedBox(
+          height: 15,
+        ),
+        const Text(
+          'modals',
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.black,
+          ),
+        ).tr(gender: 'success')
+      ],
+    );
+    await showCupertinoDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            Navigator.pop(context);
+          },
+        );
+        return CupertinoAlertDialog(
+          content: content,
+        );
+      },
+    );
+  }
 
   static Future<void> showLoadingDialog(BuildContext context) async {
     final content = Column(

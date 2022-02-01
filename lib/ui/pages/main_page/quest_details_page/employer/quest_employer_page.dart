@@ -10,6 +10,7 @@ import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -255,7 +256,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         TextButton(
                           onPressed: store.selectedResponders == null
                               ? null
-                              : () {
+                              : ()async {
                                   store.startQuest(
                                     userId: store.selectedResponders!.workerId,
                                     questId: widget.questInfo.id,
@@ -273,10 +274,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                   questStore.deleteQuest(widget.questInfo);
                                   questStore.addQuest(widget.questInfo, true);
                                   Navigator.pop(context);
-                                  successAlert(
-                                    context,
-                                    "quests.workerInvited".tr(),
-                                  );
+                                  await AlertDialogUtils.showSuccessDialog(context);
                                 },
                           child: Text(
                             "quests.chooseWorker".tr(),
@@ -360,17 +358,18 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   ),
                   const SizedBox(height: 15),
                   TextButton(
-                    onPressed: () {
+                    onPressed: () async{
                       store.acceptCompletedWork(questId: widget.questInfo.id);
                       widget.questInfo.status = 6;
                       questStore.deleteQuest(widget.questInfo);
                       questStore.addQuest(widget.questInfo, true);
                       Navigator.pop(context);
                       Navigator.pop(context);
-                      successAlert(
-                        context,
-                        "quests.answerOnQuest.questCompleted".tr(),
-                      );
+                      await AlertDialogUtils.showSuccessDialog(context);
+                      // successAlert(
+                      //   context,
+                      //   "quests.answerOnQuest.questCompleted".tr(),
+                      // );
                     },
                     child: Text(
                       "quests.answerOnQuest.acceptCompleted".tr(),

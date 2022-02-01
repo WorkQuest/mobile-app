@@ -1,6 +1,5 @@
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/modal_bottom_sheet.dart';
 import 'package:flutter/cupertino.dart';
@@ -105,7 +104,7 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                   },
                   onSuccess: () async {
                     Navigator.of(context, rootNavigator: true).pop();
-                    await successAlert(context, "message");
+                    await AlertDialogUtils.showSuccessDialog(context);
                     Navigator.pushNamed(
                       context,
                       PinCodePage.routeName,
