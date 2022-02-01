@@ -58,7 +58,7 @@ import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
 import '../ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart'
     as _i12;
 import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i22;
-import '../web3/web3.dart' as _i28;
+import '../web3/service/client_service.dart' as _i28;
 
 const String _test = 'test';
 const String _dev = 'dev';
@@ -115,7 +115,7 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i25.WorkerStore(get<_i9.ApiProvider>()));
     gh.factory<_i26.ChatRoomStore>(() =>
         _i26.ChatRoomStore(get<_i9.ApiProvider>(), get<_i27.ChatStore>()));
-    gh.singleton<_i28.Web3>(_i28.Web3());
+    gh.singleton<_i28.ClientService>(_i28.ClientService());
     gh.singleton<_i9.ApiProvider>(_i9.ApiProvider(get<_i4.IHttpClient>()));
     gh.singleton<_i27.ChatStore>(_i27.ChatStore(get<_i9.ApiProvider>()));
     gh.singleton<_i29.MyQuestStore>(_i29.MyQuestStore(get<_i9.ApiProvider>()));

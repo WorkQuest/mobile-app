@@ -15,12 +15,12 @@ class AlertDialogUtils {
           height: 15,
         ),
         const Text(
-          'modals',
+          'Success',
           style: TextStyle(
             fontSize: 16,
             color: Colors.black,
           ),
-        ).tr(gender: 'success')
+        )
       ],
     );
     await showCupertinoDialog(

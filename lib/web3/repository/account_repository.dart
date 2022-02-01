@@ -25,7 +25,7 @@ class AccountRepository {
   }
 
   getAllBalances() async {
-    await client!.getAllBalance(userAddresses!.first.privateKey!);
+    await ClientService().getAllBalance(userAddresses!.first.privateKey!);
   }
 
   clearData() {

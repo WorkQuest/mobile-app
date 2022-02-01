@@ -70,185 +70,183 @@ class _TransferPageState extends State<TransferPage> {
           "wallet.transfer".tr(),
         ),
       ),
-      body: SingleChildScrollView(
-        child: DismissKeyboard(
-          child: Padding(
-            padding: _padding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 10,
+      body: DismissKeyboard(
+        child: Padding(
+          padding: _padding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 10,
+                width: double.infinity,
+              ),
+              Text(
+                'wallet.chooseCoin'.tr(),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              GestureDetector(
+                onTap: _chooseCoin,
+                child: Container(
+                  height: 46,
                   width: double.infinity,
-                ),
-                Text(
-                  'wallet.chooseCoin'.tr(),
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                GestureDetector(
-                  onTap: _chooseCoin,
-                  child: Container(
-                    height: 46,
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15.0, vertical: 12.5),
-                    decoration: BoxDecoration(
-                      color: _selectedCoin
-                          ? Colors.white
-                          : AppColor.disabledButton,
-                      borderRadius: BorderRadius.circular(6.0),
-                      border: Border.all(
-                        color: AppColor.disabledButton,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        if (_selectedCoin)
-                          Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  AppColor.enabledButton,
-                                  AppColor.blue,
-                                ],
-                              ),
-                            ),
-                            child: SizedBox(
-                              width: 32,
-                              height: 32,
-                              child: SvgPicture.asset(
-                                _currentCoin!.iconPath,
-                              ),
-                            ),
-                          ),
-                        Text(
-                          _selectedCoin
-                              ? _currentCoin!.title
-                              : 'wallet.enterCoin'.tr(),
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: _selectedCoin
-                                ? Colors.black
-                                : AppColor.disabledText,
-                          ),
-                        ),
-                        const Spacer(),
-                        Padding(
-                            padding: const EdgeInsets.only(right: 5.5),
-                            child: Icon(Icons.arrow_drop_down_outlined))
-                      ],
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 15.0, vertical: 12.5),
+                  decoration: BoxDecoration(
+                    color:
+                        _selectedCoin ? Colors.white : AppColor.disabledButton,
+                    borderRadius: BorderRadius.circular(6.0),
+                    border: Border.all(
+                      color: AppColor.disabledButton,
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'wallet.recipientsAddress'.tr(),
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Form(
-                  key: _key,
-                  child: TextFormField(
-                    controller: _addressController,
-                    decoration: InputDecoration(
-                      hintText: 'wallet.enterAddress'.tr(),
-                    ),
-                    inputFormatters: [
-                      MaskTextInputFormatter(
-                        mask: '0x########################################',
-                        filter: {"#": RegExp(r'[0-9a-fA-F]')},
-                        initialText: _addressController.text,
+                  child: Row(
+                    children: [
+                      if (_selectedCoin)
+                        Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                AppColor.enabledButton,
+                                AppColor.blue,
+                              ],
+                            ),
+                          ),
+                          child: SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: SvgPicture.asset(
+                              _currentCoin!.iconPath,
+                            ),
+                          ),
+                        ),
+                      Text(
+                        _selectedCoin
+                            ? _currentCoin!.title
+                            : 'wallet.enterCoin'.tr(),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: _selectedCoin
+                              ? Colors.black
+                              : AppColor.disabledText,
+                        ),
+                      ),
+                      const Spacer(),
+                      Icon(
+                        Icons.arrow_drop_down_outlined,
+                        size: 25.0,
                       )
                     ],
-                    validator: (value) {
-                      if (_addressController.text.length != 42) {
-                        return "Invalid format address";
-                      }
-                      return null;
-                    },
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'wallet.amount'.tr(),
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextFormField(
-                  controller: _amountController,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Text(
+                'wallet.recipientsAddress'.tr(),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Form(
+                key: _key,
+                child: TextFormField(
+                  controller: _addressController,
                   decoration: InputDecoration(
-                    hintText: 'wallet.enterAmount'.tr(),
-                    suffixIcon: ObserverListener<TransferStore>(
-                      onFailure: () => false,
-                      onSuccess: () {
-                        _amountController.text = store.amount;
-                      },
-                      child: CupertinoButton(
-                        padding: const EdgeInsets.only(right: 12.5),
-                        child: Text(
-                          'wallet.max'.tr(),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: AppColor.enabledButton,
-                          ),
-                        ),
-                        onPressed: () async {
-                          store.getMaxAmount();
-                        },
-                      ),
-                    ),
+                    hintText: 'wallet.enterAddress'.tr(),
                   ),
-                  // keyboardType: TextInputType.number,
-
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r'^\d+\.?\d{0,18}')),
+                    MaskTextInputFormatter(
+                      mask: '0x########################################',
+                      filter: {"#": RegExp(r'[0-9a-fA-F]')},
+                      initialText: _addressController.text,
+                    )
                   ],
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  validator: (value) {
+                    if (_addressController.text.length != 42) {
+                      return "Invalid format address";
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Expanded(
-                  child: Container(),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Observer(
-                      builder: (_) => CupertinoButton(
-                        pressedOpacity: 0.2,
-                        padding: EdgeInsets.zero,
-                        child: Text('wallet.transfer'.tr()),
-                        onPressed: store.statusButtonTransfer
-                            ? _pushConfirmTransferPage
-                            : null,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Text(
+                'wallet.amount'.tr(),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              TextFormField(
+                controller: _amountController,
+                decoration: InputDecoration(
+                  hintText: 'wallet.enterAmount'.tr(),
+                  suffixIcon: ObserverListener<TransferStore>(
+                    onFailure: () => false,
+                    onSuccess: () {
+                      _amountController.text = store.amount;
+                    },
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.only(right: 12.5),
+                      child: Text(
+                        'wallet.max'.tr(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColor.enabledButton,
+                        ),
                       ),
+                      onPressed: () async {
+                        await store.getMaxAmount();
+                      },
                     ),
                   ),
-                )
-              ],
-            ),
+                ),
+                // keyboardType: TextInputType.number,
+
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                ],
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                child: Container(),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Observer(
+                    builder: (_) => CupertinoButton(
+                      pressedOpacity: 0.2,
+                      color: AppColor.primary,
+                      padding: EdgeInsets.zero,
+                      child: Text('wallet.transfer'.tr()),
+                      onPressed: store.statusButtonTransfer
+                          ? _pushConfirmTransferPage
+                          : null,
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -343,8 +341,8 @@ class _TransferPageState extends State<TransferPage> {
                               (coin) => Column(
                                 children: [
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 6.5),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 6.5),
                                     child: GestureDetector(
                                       onTap: coin.isEnable
                                           ? () {

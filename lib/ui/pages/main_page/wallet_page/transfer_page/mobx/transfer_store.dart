@@ -4,8 +4,6 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/web3dart.dart';
-
-
 part 'transfer_store.g.dart';
 
 class TransferStore = TransferStoreBase with _$TransferStore;

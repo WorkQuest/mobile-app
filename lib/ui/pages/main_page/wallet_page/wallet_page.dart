@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
-import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -30,17 +30,12 @@ class WalletPage extends StatefulWidget {
 class _WalletPageState extends State<WalletPage> {
   @override
   Widget build(BuildContext context) {
-    final walletStore = context.read<WalletStore>();
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Builder(
         builder: (context) {
           print('Builder wallet_page');
-          return Padding(
-            padding: _padding,
-            child: Platform.isIOS ? _mainLayout() : _mainLayout(),
-          );
+          return Platform.isIOS ? _mainLayout() : _mainLayout();
         },
       ),
     );
@@ -88,113 +83,117 @@ class _WalletPageState extends State<WalletPage> {
             onRefresh: _onRefresh,
           ),
         SliverToBoxAdapter(
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    '${AccountRepository().userAddress!.substring(0, 9)}...'
-                    '${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.subtitleText,
-                    ),
-                  ),
-                  const Spacer(),
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    pressedOpacity: 0.2,
-                    onPressed: () {
-                      Clipboard.setData(
-                          ClipboardData(text: AccountRepository().userAddress));
-                      SnackBarUtils.success(
-                        context,
-                        title: 'wallet'.tr(gender: 'copy'),
-                        duration: const Duration(milliseconds: 500),
-                      );
-                    },
-                    child: Container(
-                      height: 34,
-                      width: 34,
-                      padding: const EdgeInsets.all(7.0),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6.0),
-                          color: AppColor.disabledButton),
-                      child: SvgPicture.asset(
-                        "assets/copy_icon.svg",
-                        color: AppColor.enabledButton,
+          child: Padding(
+            padding: _padding,
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${AccountRepository().userAddress!.substring(0, 9)}...'
+                      '${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.subtitleText,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const SizedBox(
-                width: double.infinity,
-                child: _InfoCardBalance(),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  outlinedButton(route: "", title: "withdraw"),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  outlinedButton(route: "", title: "deposit"),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: ElevatedButton(
-                      child: Text('wallet'.tr(gender: 'transfer')),
-                      onPressed: () async{
-                        await AlertDialogUtils.showSuccessDialog(context);
-                        //successAlert(context, "message");
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (_) => TransferPage(),
-                        //     ));
-
-                        ///Route to withdraw [age
-                        // PageRouter.pushNewRoute(context, const DepositPage());
+                    const Spacer(),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.2,
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(
+                            text: AccountRepository().userAddress));
+                        SnackBarUtils.success(
+                          context,
+                          title: 'wallet'.tr(gender: 'copy'),
+                          duration: const Duration(milliseconds: 500),
+                        );
                       },
+                      child: Container(
+                        height: 34,
+                        width: 34,
+                        padding: const EdgeInsets.all(7.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6.0),
+                            color: AppColor.disabledButton),
+                        child: SvgPicture.asset(
+                          "assets/copy_icon.svg",
+                          color: AppColor.enabledButton,
+                        ),
+                      ),
                     ),
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
-        SliverAppBar(
-          floating: true,
-          pinned: true,
-          snap: true,
-          expandedHeight: 50.0,
-          flexibleSpace: FlexibleSpaceBar(
-            centerTitle: false,
-            titlePadding: const EdgeInsets.only(bottom: 12.0),
-            title: Text(
-              'wallet.table.trx'.tr(),
-              style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const SizedBox(
+                  width: double.infinity,
+                  child: _InfoCardBalance(),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    outlinedButton(route: "", title: "withdraw"),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    outlinedButton(route: "", title: "deposit"),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: ElevatedButton(
+                        child: Text('wallet'.tr(gender: 'transfer')),
+                        onPressed: () async {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => Provider(
+                                  create: (context) => TransferStore(),
+                                  child: TransferPage(),
+                                ),
+                              ));
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ],
             ),
           ),
-          centerTitle: false,
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-          shadowColor: Colors.transparent,
         ),
-        const ListTransactions(),
+        SliverPadding(
+          padding: _padding,
+          sliver: SliverAppBar(
+            floating: true,
+            pinned: true,
+            snap: true,
+            expandedHeight: 50.0,
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: false,
+              titlePadding: const EdgeInsets.only(bottom: 12.0),
+              title: Text(
+                'wallet.table.trx'.tr(),
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
+              ),
+            ),
+            centerTitle: false,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            shadowColor: Colors.transparent,
+          ),
+        ),
+        SliverPadding(padding: _padding, sliver: const ListTransactions()),
       ],
     );
   }
@@ -235,8 +234,8 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Future _onRefresh() async {
-    // GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
-    // return GetIt.I.get<WalletStore>().getCoins();
+    GetIt.I.get<WalletStore>().getTransactions(isForce: true);
+    return GetIt.I.get<WalletStore>().getCoins();
   }
 }
 

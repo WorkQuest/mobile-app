@@ -19,6 +19,7 @@ class ProfileSettings extends StatelessWidget {
               largeTitle: Text(
                 "ui.profile.settings".tr(),
               ),
+
             ),
             SliverPadding(
               padding: EdgeInsets.all(10.0),
