@@ -3,7 +3,7 @@ abstract class IHttpClient {
 
   String? accessToken;
 
-  Future get({required query, Map<String, dynamic>? queryParameters});
+  Future get({required query, Map<String, dynamic>? queryParameters, bool useBaseUrl = true});
 
   Future post({required query, Map<String, dynamic>? data});
 

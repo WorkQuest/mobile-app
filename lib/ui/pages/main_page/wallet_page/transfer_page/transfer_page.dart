@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../../constants.dart';
 import '../../../../../observer_consumer.dart';
 import 'confirm_page/confirm_transfer_page.dart';
@@ -40,13 +40,14 @@ class _TransferPageState extends State<TransferPage> {
   final _key = GlobalKey<FormState>();
   _CoinItem? _currentCoin;
 
-  TransferStore store = TransferStore();
+  late TransferStore store;
 
   bool get _selectedCoin => _currentCoin != null;
 
   @override
   void initState() {
     super.initState();
+    store = context.read<TransferStore>();
     store.getFee();
     _amountController.addListener(() {
       store.setAmount(_amountController.text);
@@ -65,6 +66,7 @@ class _TransferPageState extends State<TransferPage> {
 
   @override
   Widget build(BuildContext context) {
+    final store = context.read<TransferStore>();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CupertinoNavigationBar(
@@ -194,7 +196,6 @@ class _TransferPageState extends State<TransferPage> {
                 decoration: InputDecoration(
                   hintText: 'wallet.enterAmount'.tr(),
                   suffixIcon: ObserverListener<TransferStore>(
-                    //onFailure: () => false,
                     onSuccess: () {
                       _amountController.text = store.amount;
                     },
@@ -236,10 +237,7 @@ class _TransferPageState extends State<TransferPage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: Observer(
-                    builder: (_) => CupertinoButton(
-                      pressedOpacity: 0.2,
-                      color: AppColor.primary,
-                      padding: EdgeInsets.zero,
+                    builder: (_) => ElevatedButton(
                       child: Text('wallet.transfer'.tr()),
                       onPressed: store.statusButtonTransfer
                           ? _pushConfirmTransferPage
@@ -264,13 +262,11 @@ class _TransferPageState extends State<TransferPage> {
       if (store.fee.isEmpty) {
         await store.getFee();
       }
-
-      ///Correct
-      final result = await Navigator.push(
-        context,
+      final result = await Navigator.of(
+        context,rootNavigator: true).push(
         MaterialPageRoute(
           builder: (_) => Provider(
-            create :(_)=> ConfirmTransferStore(),
+            create: (_) => getIt.get<ConfirmTransferStore>(),
             child: ConfirmTransferPage(
               fee: store.fee,
               titleCoin: store.titleSelectedCoin,

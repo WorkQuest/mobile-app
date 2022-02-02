@@ -13,7 +13,7 @@ class TestHttpClient extends _HttpClient {
       : super(
           Dio(
             BaseOptions(
-              baseUrl: 'https://app.workquest.co/api',
+              //baseUrl: 'https://app.workquest.co/api',
               connectTimeout: 20000,
               receiveTimeout: 20000,
               headers: {"content-type": "application/json"},
@@ -27,6 +27,7 @@ class TestHttpClient extends _HttpClient {
 
 class _HttpClient implements IHttpClient {
   final Dio _dio;
+  final String _baseUrl = "https://app.workquest.co/api";
 
   @override
   String? accessToken;
@@ -37,9 +38,13 @@ class _HttpClient implements IHttpClient {
   }
 
   @override
-  Future get({required query, Map<String, dynamic>? queryParameters}) async {
+  Future get(
+      {required query,
+      Map<String, dynamic>? queryParameters,
+      bool useBaseUrl = true}) async {
     return await _sendRequest(
-      _dio.get(query, queryParameters: queryParameters),
+      _dio.get(useBaseUrl ? _baseUrl + query : query,
+          queryParameters: queryParameters),
     );
   }
 
@@ -47,7 +52,7 @@ class _HttpClient implements IHttpClient {
   Future post({required query, Map<String, dynamic>? data}) async {
     return await _sendRequest(
       _dio.post(
-        query,
+        _baseUrl + query,
         data: data,
       ),
     );
@@ -57,7 +62,7 @@ class _HttpClient implements IHttpClient {
   Future put({required query, Map<String, dynamic>? data}) async {
     return await _sendRequest(
       _dio.put(
-        query,
+        _baseUrl + query,
         data: data,
       ),
     );
@@ -67,7 +72,7 @@ class _HttpClient implements IHttpClient {
   Future delete({required query, Map<String, dynamic>? data}) async {
     return await _sendRequest(
       _dio.delete(
-        query,
+        _baseUrl + query,
         data: data,
       ),
     );

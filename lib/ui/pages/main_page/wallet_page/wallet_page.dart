@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
@@ -93,7 +94,7 @@ class _WalletPageState extends State<WalletPage> {
                       '${AccountRepository().userAddress!.substring(0, 9)}...'
                       '${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
                       style: const TextStyle(
-                        fontSize: 9,
+                        fontSize: 15,
                         fontWeight: FontWeight.w500,
                         color: AppColor.subtitleText,
                       ),
@@ -154,7 +155,7 @@ class _WalletPageState extends State<WalletPage> {
                           Navigator.of(context, rootNavigator: true)
                               .push(MaterialPageRoute(
                             builder: (_) => Provider(
-                              create: (context) => TransferStore(),
+                              create: (context) => getIt.get<TransferStore>(),
                               child: TransferPage(),
                             ),
                           ));

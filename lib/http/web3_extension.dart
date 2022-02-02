@@ -37,6 +37,7 @@ extension Web3Requests on ApiProvider {
         "https://dev-explorer.workquest.co/api/v1/account/$address/txs";
     final response = await httpClient.get(
       query: '${_transactions(address)}?limit=$limit&offset=$offset',
+      useBaseUrl: false,
     );
     print("responsed $response");
     return TransactionResponse.fromJson(response).txs!;

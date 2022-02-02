@@ -49,14 +49,12 @@ import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import 'package:app/ui/pages/restore_password_page/store.dart';
-import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:app/ui/pages/start_page/start_page.dart';
 import 'package:app/ui/pages/start_page/store/start_store.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
@@ -160,9 +158,6 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
             providers: [
-              Provider(
-                create: (context) => getIt.get<TransferStore>(),
-              ),
               Provider(
                 create: (context) => getIt.get<QuestsStore>(),
               ),
@@ -414,15 +409,8 @@ class Routes {
 
       case WalletPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MultiProvider(
-            providers: [
-              Provider(
-                create: (context) => getIt.get<WalletStore>(),
-              ),
-              Provider(
-                create: (context) => getIt.get<TransferStore>(),
-              )
-            ],
+          builder: (context) => Provider(
+            create: (context) => getIt.get<WalletStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: WalletPage(),
