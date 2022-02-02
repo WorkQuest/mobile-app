@@ -8,8 +8,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/priority_view.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
-
+import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -340,7 +339,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             onPressed: store.opinion.isNotEmpty ||
                     store.mediaFile.isNotEmpty ||
                     store.mediaIds.isNotEmpty
-                ? () {
+                ? ()async {
                     store.sendRespondOnQuest(store.opinion);
                     widget.questInfo.responded = Responded(
                       id: "",
@@ -368,10 +367,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     myQuestStore.addQuest(widget.questInfo, true);
                     Navigator.pop(context);
                     Navigator.pop(context);
-                    successAlert(
-                      context,
-                      "modals.requestSend".tr(),
-                    );
+                    await AlertDialogUtils.showSuccessDialog(context);
+                    // successAlert(
+                    //   context,
+                    //   "modals.requestSend".tr(),
+                    // );
                   }
                 : null,
             child: Text(
@@ -416,17 +416,18 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         ),
         const SizedBox(height: 15),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             store.sendAcceptOnQuest();
             widget.questInfo.status = 1;
             myQuestStore.deleteQuest(widget.questInfo);
             myQuestStore.addQuest(widget.questInfo, true);
             Navigator.pop(context);
             Navigator.pop(context);
-            successAlert(
-              context,
-              "quests.answerOnQuest.questAccepted".tr(),
-            );
+            await AlertDialogUtils.showSuccessDialog(context);
+            // successAlert(
+            //   context,
+            //   "quests.answerOnQuest.questAccepted".tr(),
+            // );
           },
           child: Text(
             "quests.answerOnQuest.accept".tr(),
@@ -447,7 +448,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         ),
         const SizedBox(height: 15),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             store.sendRejectOnQuest();
             widget.questInfo.responded!.status = -1;
             widget.questInfo.status = 0;
@@ -456,10 +457,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             myQuestStore.addQuest(widget.questInfo, true);
             Navigator.pop(context);
             Navigator.pop(context);
-            successAlert(
-              context,
-              "quests.answerOnQuest.questRejected".tr(),
-            );
+            await AlertDialogUtils.showSuccessDialog(context);
+            // successAlert(
+            //   context,
+            //   "quests.answerOnQuest.questRejected".tr(),
+            // );
           },
           child: Text(
             "quests.answerOnQuest.reject".tr(),
@@ -497,17 +499,18 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         ),
         const SizedBox(height: 15),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             store.sendCompleteWork();
             widget.questInfo.status = 5;
             myQuestStore.deleteQuest(widget.questInfo);
             myQuestStore.addQuest(widget.questInfo, true);
             Navigator.pop(context);
             Navigator.pop(context);
-            successAlert(
-              context,
-              "quests.answerOnQuest.questCompleted".tr(),
-            );
+            await AlertDialogUtils.showSuccessDialog(context);
+            // successAlert(
+            //   context,
+            //   "quests.answerOnQuest.questCompleted".tr(),
+            // );
           },
           child: Text(
             "quests.completeTheQuest".tr(),

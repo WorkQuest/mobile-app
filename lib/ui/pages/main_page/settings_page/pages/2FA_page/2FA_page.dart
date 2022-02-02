@@ -5,6 +5,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 
 import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -409,10 +410,11 @@ class Confirm2FAPages extends StatelessWidget {
                         ? () async {
                             await store.confirm2FA();
                             if (store.isSuccess) {
-                              await successAlert(
-                                context,
-                                "settings.2FaEnabled".tr(),
-                              );
+                              await AlertDialogUtils.showSuccessDialog(context);
+                              // await successAlert(
+                              //   context,
+                              //   "settings.2FaEnabled".tr(),
+                              // );
                               Navigator.pop(context);
                               await userStore!.get2FAStatus();
                             }

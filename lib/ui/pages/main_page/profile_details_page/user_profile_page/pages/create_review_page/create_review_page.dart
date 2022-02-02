@@ -2,6 +2,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async{
                         if (_formKey.currentState?.validate() ?? false) {
                           store.addReview(widget.quest.id);
                           widget.quest.yourReview = YourReview(
@@ -116,10 +117,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                             updatedAt: DateTime.now(),
                           );
                           Navigator.pop(context);
-                          successAlert(
-                            context,
-                            "quests.reviewSent".tr(),
-                          );
+                          await AlertDialogUtils.showSuccessDialog(context);
                         }
                       },
                       child: Text(

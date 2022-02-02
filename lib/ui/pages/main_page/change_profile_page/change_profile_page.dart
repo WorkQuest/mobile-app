@@ -6,6 +6,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/validator.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -460,10 +461,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
         media: pageStore.media,
       );
       if (profile!.isSuccess) {
-        await successAlert(
-          context,
-          "settings.profileChanged".tr(),
-        );
+        await AlertDialogUtils.showSuccessDialog(context);
         Navigator.pop(context);
       }
     }

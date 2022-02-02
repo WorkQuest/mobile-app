@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import "package:app/observer_consumer.dart";
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
@@ -5,6 +6,7 @@ import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:app/utils/validator.dart';
 import "package:flutter/cupertino.dart";
@@ -27,6 +29,7 @@ class SignInPage extends StatelessWidget {
   static const String routeName = "/";
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController mnemonicController = new TextEditingController();
   SignInPage();
 
   @override
@@ -48,47 +51,49 @@ class SignInPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.bottomLeft,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(
-                            Color(0xFF103D7C),
-                            BlendMode.color,
-                          ),
-                          image: AssetImage(
-                            "assets/login_page_header.png",
+                  AutofillGroup(
+                    child: Expanded(
+                      child: Container(
+                        alignment: Alignment.bottomLeft,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            colorFilter: ColorFilter.mode(
+                              Color(0xFF103D7C),
+                              BlendMode.color,
+                            ),
+                            image: AssetImage(
+                              "assets/login_page_header.png",
+                            ),
                           ),
                         ),
-                      ),
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "modals.welcomeToWorkQuest".tr(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 34,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10.0),
-                              child: Text(
-                                "signIn.pleaseSignIn".tr(),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "modals.welcomeToWorkQuest".tr(),
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 34,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: Text(
+                                  "signIn.pleaseSignIn".tr(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -99,6 +104,7 @@ class SignInPage extends StatelessWidget {
                       keyboardType: TextInputType.emailAddress,
                       onChanged: signInStore.setUsername,
                       validator: Validators.emailValidator,
+                      autofillHints: [AutofillHints.email],
                       decoration: InputDecoration(
                         prefixIconConstraints: _prefixConstraints,
                         prefixIcon: SvgPicture.asset(
@@ -114,6 +120,7 @@ class SignInPage extends StatelessWidget {
                     child: TextFormField(
                       onChanged: signInStore.setPassword,
                       obscureText: true,
+                      autofillHints: [AutofillHints.password],
                       decoration: InputDecoration(
                         prefixIconConstraints: _prefixConstraints,
                         prefixIcon: SvgPicture.asset(
@@ -129,11 +136,21 @@ class SignInPage extends StatelessWidget {
                     child: TextFormField(
                       onChanged: signInStore.setMnemonic,
                       validator: Validators.mnemonicValidator,
+                      controller: mnemonicController,
                       decoration: InputDecoration(
-                        prefixIconConstraints: _prefixConstraints,
-                        prefixIcon: SvgPicture.asset(
-                          "assets/lock.svg",
-                          color: Theme.of(context).iconTheme.color,
+                        suffixIcon: CupertinoButton(
+                          minSize: 22.0,
+                          padding: EdgeInsets.zero,
+                          onPressed: () async {
+                            ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+                            mnemonicController.text=data?.text??"";
+                            signInStore.setMnemonic(data?.text??"");
+                          },
+                          child: Icon(
+                            Icons.paste,
+                            size: 22.0,
+                            color: AppColor.primary,
+                          ),
                         ),
                         hintText: "signIn.enterMnemonicPhrase".tr(),
                       ),
@@ -145,7 +162,6 @@ class SignInPage extends StatelessWidget {
                       width: double.infinity,
                       child: ObserverListener<SignInStore>(
                         onSuccess: () {
-                          if (signInStore.walletSuccess)
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               PinCodePage.routeName,
@@ -153,7 +169,9 @@ class SignInPage extends StatelessWidget {
                             );
                         },
                         onFailure: () {
+                          print("error");
                           if (signInStore.errorMessage == "unconfirmed") {
+                            print("error");
                             Navigator.pushNamed(context, ConfirmEmail.routeName,
                                 arguments: signInStore.getUsername());
                             return true;
@@ -166,12 +184,13 @@ class SignInPage extends StatelessWidget {
                               onPressed: signInStore.canSignIn
                                   ? () async {
                                       if (_formKey.currentState!.validate()) {
-                                        await signInStore.signInWithUsername();
                                         await signInStore.loginWallet();
+                                        await signInStore.signInWithUsername();
                                       }
                                     }
                                   : null,
-                              child: signInStore.isLoading || signInStore.walletLoading
+                              child:
+                                      signInStore.isLoading
                                   ? CircularProgressIndicator.adaptive()
                                   : Text(
                                       "signIn.login".tr(),

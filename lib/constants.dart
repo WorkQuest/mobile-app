@@ -22,7 +22,9 @@ class Constants {
 
 }
 
-class AppColor {
+abstract class AppColor {
+  static const Color primary = const Color(0xFF0083C7);
+  static const Color green = const Color(0xFF00AA5B);
   static const blue = Color(0xff103D7C);
   static const disabledText = Color(0xffD8DFE3);
   static const subtitleText = Color(0xff7C838D);

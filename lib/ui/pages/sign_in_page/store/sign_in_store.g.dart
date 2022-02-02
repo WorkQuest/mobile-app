@@ -46,21 +46,6 @@ mixin _$SignInStore on _SignInStore, Store {
     });
   }
 
-  final _$walletLoadingAtom = Atom(name: '_SignInStore.walletLoading');
-
-  @override
-  bool get walletLoading {
-    _$walletLoadingAtom.reportRead();
-    return super.walletLoading;
-  }
-
-  @override
-  set walletLoading(bool value) {
-    _$walletLoadingAtom.reportWrite(value, super.walletLoading, () {
-      super.walletLoading = value;
-    });
-  }
-
   final _$_passwordAtom = Atom(name: '_SignInStore._password');
 
   @override
@@ -157,7 +142,6 @@ mixin _$SignInStore on _SignInStore, Store {
   String toString() {
     return '''
 walletSuccess: ${walletSuccess},
-walletLoading: ${walletLoading},
 mnemonic: ${mnemonic},
 canSignIn: ${canSignIn}
     ''';
