@@ -968,7 +968,7 @@
     "uploadAImages": "Upload images or videos",
     "uploadADocuments": "Upload documents",
     "description": "Description",
-    "noDescriptionF": "No description",
+    "noDescription": "No description",
     "addCase": "Add case",
     "openADispute": "Begin Dispute",
     "disputeTheme": "Dispute Theme",
@@ -1161,6 +1161,11 @@
     "december": "December"
   },
   "wallet": {
+    "amount": "Amount",
+    "max": "Max",
+    "enterAmount": "Enter amount",
+    "chooseCoin": "Choose coin",
+    "enterCoin": "Enter coin",
     "WUSD": "WUSD Wallet",
     "cryptoWallet": "Wallet address",
     "bankCard": "Bank card",

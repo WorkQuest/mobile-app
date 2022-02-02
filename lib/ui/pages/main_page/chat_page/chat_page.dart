@@ -78,6 +78,7 @@ class _ChatPageState extends State<ChatPage> {
                           return true;
                         },
                         child: SingleChildScrollView(
+                          clipBehavior: Clip.none,
                           physics: const BouncingScrollPhysics(
                             parent: AlwaysScrollableScrollPhysics(),
                           ),
@@ -85,8 +86,8 @@ class _ChatPageState extends State<ChatPage> {
                             return Column(
                               children: !store.starred
                                   ? store.chatKeyList
-                                      .map(
-                                          (key) => _chatItem(store.chats[key]!))
+                                      .map((key) =>
+                                          _chatItem(store.chats[key]!))
                                       .toList()
                                   : store.starredChats
                                       .map((key) => _chatItem(key))

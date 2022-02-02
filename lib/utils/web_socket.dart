@@ -114,7 +114,6 @@ class WebSocket {
     String textPayload = json.encode(payload).toString();
     _channel.sink.add(textPayload);
     print("Send Message: $textPayload");
-    // ConversationRepository().sendMsg(message)
     _counter++;
   }
 

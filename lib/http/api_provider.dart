@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:app/enums.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
-import 'package:app/model/create_quest_model/create_quest_request_model.dart';
+import 'package:app/model/quests_models/create_quest_request_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/review.dart';
@@ -480,8 +480,7 @@ extension QuestService on ApiProvider {
     required String questId,
   }) async {
     try {
-      final responseData =
-          await httpClient.delete(query: '/v1/quest/$questId');
+      final responseData = await httpClient.delete(query: '/v1/quest/$questId');
       return responseData == null;
     } catch (e) {
       return false;
@@ -591,8 +590,8 @@ extension UserInfoService on ApiProvider {
         if (userData.role == UserRole.Worker)
           "specializationKeys": userData.userSpecializations,
         "location": {
-          "longitude": userData.location?.longitude ?? 0,
-          "latitude": userData.location?.latitude ?? 0,
+          "longitude": userData.locationFull?.locationCode.longitude ?? 0,
+          "latitude": userData.locationFull?.locationCode.latitude ?? 0,
         }
       };
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");
@@ -752,154 +751,6 @@ extension GetUploadLink on ApiProvider {
         },
       ),
     );
-  }
-}
-
-///Chat Service
-extension ChatsService on ApiProvider {
-  Future<List<ChatModel>> getChats({
-    required int offset,
-    required int limit,
-  }) async {
-    try {
-      final responseData = await _httpClient.get(
-        query: '/v1/user/me/chats',
-        queryParameters: {
-          "offset": offset,
-          "limit": limit,
-        },
-      );
-      return List<ChatModel>.from(
-        responseData["chats"].map(
-          (x) => ChatModel.fromJson(x),
-        ),
-      );
-    } catch (e, stack) {
-      print("ERROR $e");
-      print("ERROR $stack");
-      return [];
-    }
-  }
-
-  Future<List<ProfileMeResponse>> getUsersForGroupCHat() async {
-    try {
-      final responseData = await _httpClient.get(
-          query: '/v1/user/me/chat/members/users-by-chats');
-      return List<ProfileMeResponse>.from(
-        responseData["users"].map(
-          (x) => ProfileMeResponse.fromJson(x),
-        ),
-      );
-    } catch (e, trace) {
-      print("ERROR: $e");
-      print("ERROR: $trace");
-      return [];
-    }
-  }
-
-  Future<List<MessageModel>> getStarredMessage() async {
-    try {
-      final responseData =
-          await _httpClient.get(query: '/v1/user/me/chat/messages/star');
-      return List<MessageModel>.from(
-        responseData["messages"].map(
-          (x) => MessageModel.fromJson(x),
-        ),
-      );
-    } catch (e, trace) {
-      print("ERROR: $e");
-      print("ERROR: $trace");
-      return [];
-    }
-  }
-
-  Future<Map<String, dynamic>> createGroupChat({
-    required String chatName,
-    required List<String> usersId,
-  }) async {
-    final responseData = await _httpClient.post(
-      query: '/v1/user/me/chat/group/create',
-      data: {
-        "name": chatName,
-        "memberUserIds": usersId,
-      },
-    );
-    return responseData;
-  }
-
-  Future<void> addUsersInChat({
-    required String chatId,
-    required List<String> userIds,
-  }) async {
-    await _httpClient.post(
-      query: '/v1/user/me/chat/group/$chatId/add',
-      data: {"userIds": userIds},
-    );
-  }
-
-  Future<void> setMessageStar({
-    required String chatId,
-    required String messageId,
-  }) async {
-    await _httpClient.post(
-      query: '/v1/user/me/chat/$chatId/message/$messageId/star',
-    );
-  }
-
-  Future<void> setChatStar({
-    required String chatId,
-  }) async {
-    await _httpClient.post(
-      query: '/v1/user/me/chat/$chatId/star',
-    );
-  }
-
-  Future<void> removeStarFromMsg({
-    required String messageId,
-  }) async {
-    await _httpClient.delete(
-      query: '/v1/user/me/chat/message/$messageId/star',
-    );
-  }
-
-  Future<void> removeStarFromChat({
-    required String chatId,
-  }) async {
-    await _httpClient.delete(
-      query: '/v1/user/me/chat/$chatId/star',
-    );
-  }
-
-  Future<void> removeUser({
-    required String chatId,
-    required String userId,
-  }) async {
-    await _httpClient.delete(
-      query: '/v1/user/me/chat/group/$chatId/remove/$userId',
-    );
-  }
-
-  Future<void> setMessageRead({
-    required String chatId,
-    required String messageId,
-  }) async {
-    await _httpClient.post(
-        query: '/v1/read/message/$chatId', data: {"messageId": messageId});
-  }
-
-  Future<Map<String, dynamic>> getMessages({
-    required String chatId,
-    required int offset,
-    required int limit,
-  }) async {
-    final responseData = await _httpClient.get(
-      query: '/v1/user/me/chat/$chatId/messages',
-      queryParameters: {
-        "offset": offset,
-        "limit": limit,
-      },
-    );
-    return responseData;
   }
 }
 

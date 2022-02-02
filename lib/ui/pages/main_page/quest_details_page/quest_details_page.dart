@@ -212,8 +212,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
               InkWell(
                 onTap: () {
                   MapsLauncher.launchCoordinates(
-                    widget.questInfo.location.latitude,
-                    widget.questInfo.location.longitude,
+                    widget.questInfo.locationCode.latitude,
+                    widget.questInfo.locationCode.longitude,
                   );
                 },
                 child: Container(
@@ -231,8 +231,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         initialCameraPosition: CameraPosition(
                           bearing: 0,
                           target: LatLng(
-                            widget.questInfo.location.latitude,
-                            widget.questInfo.location.longitude,
+                            widget.questInfo.locationCode.latitude,
+                            widget.questInfo.locationCode.longitude,
                           ),
                           zoom: 15.0,
                         ),

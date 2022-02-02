@@ -1,6 +1,7 @@
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/avatar.dart';
+import 'package:app/model/quests_models/location_full.dart';
 // import 'package:app/model/profile_response/rating_statistic.dart';
 
 class ProfileMeResponse {
@@ -17,7 +18,7 @@ class ProfileMeResponse {
     required this.avatar,
     required this.userSpecializations,
     required this.ratingStatistic,
-    required this.location,
+    required this.locationFull,
     required this.wagePerHour,
     required this.workplace,
     required this.priority,
@@ -30,6 +31,7 @@ class ProfileMeResponse {
   String avatarId;
   String firstName;
   String lastName;
+
   // Phone? phone;
   Phone? tempPhone;
   String? email;
@@ -38,7 +40,7 @@ class ProfileMeResponse {
   Avatar? avatar;
   List<String> userSpecializations;
   RatingStatistic? ratingStatistic;
-  Location? location;
+  LocationFull? locationFull;
   String wagePerHour;
   String? workplace;
   QuestPriority priority;
@@ -62,8 +64,9 @@ class ProfileMeResponse {
           ratingStatistic: object.ratingStatistic != null
               ? RatingStatistic.clone(object.ratingStatistic!)
               : null,
-          location:
-              object.location != null ? Location.clone(object.location!) : null,
+          locationFull: object.locationFull != null
+              ? LocationFull.clone(object.locationFull!)
+              : null,
           wagePerHour: object.wagePerHour,
           workplace: object.workplace,
           priority: object.priority,
@@ -81,7 +84,8 @@ class ProfileMeResponse {
       firstName: json["firstName"] ?? "",
       lastName: json["lastName"] ?? "",
       // phone: json["phone"] == null ? null : Phone.fromJson(json["phone"]),
-      tempPhone: json["tempPhone"] == null ? null : Phone.fromJson(json["tempPhone"]),
+      tempPhone:
+          json["tempPhone"] == null ? null : Phone.fromJson(json["tempPhone"]),
       email: json["email"],
       additionalInfo: json["additionalInfo"] == null
           ? null
@@ -107,8 +111,9 @@ class ProfileMeResponse {
             // createdAt: createdAt,
             // updatedAt: updatedAt,
           }),
-      location:
-          json["location"] == null ? null : Location.fromJson(json["location"]),
+      locationFull: json["location"] == null
+          ? null
+          : LocationFull.fromJson(json["location"]),
       wagePerHour: json["wagePerHour"] ?? "0",
       workplace: json["workplace"],
       priority: QuestPriority.values[json["priority"] ?? 0],
@@ -134,7 +139,7 @@ class ProfileMeResponse {
         // "skillFilter": skillFilters.map((item) => item.toJson()),
         "ratingStatistic":
             ratingStatistic == null ? null : ratingStatistic!.toJson(),
-        "location": location == null ? null : location!.toJson(),
+        "location": locationFull == null ? null : locationFull!.toJson(),
         "wagePerHour": wagePerHour,
         "workplace": workplace,
         "priority": priority.index,
@@ -191,31 +196,6 @@ class UserSkillFilters {
   Map<String, String> toJson() => {
         "category": category,
         "skill": skill,
-      };
-}
-
-class Location {
-  Location({
-    required this.longitude,
-    required this.latitude,
-  });
-
-  double longitude;
-  double latitude;
-
-  Location.clone(Location object)
-      : this(longitude: object.longitude, latitude: object.latitude);
-
-  factory Location.fromJson(Map<String, dynamic> json) {
-    return Location(
-      latitude: json["latitude"] == 0 ? 0.0 : json["latitude"],
-      longitude: json["longitude"] == 0 ? 0.0 : json["longitude"],
-    );
-  }
-
-  Map<String, double> toJson() => {
-        "latitude": latitude,
-        "longitude": longitude,
       };
 }
 

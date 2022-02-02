@@ -12,6 +12,7 @@ enum WQContractFunctions {
   cost,
   deadline,
   declineJob,
+  editJob,
   employer,
   fee,
   feeReceiver,

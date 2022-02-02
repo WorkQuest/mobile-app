@@ -1,8 +1,9 @@
 import 'dart:io';
-import 'package:app/di/injector.dart';
+import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
+import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -139,11 +140,13 @@ class _WalletPageState extends State<WalletPage> {
                 ),
                 Row(
                   children: [
-                    outlinedButton(route: "", title: "withdraw"),
+                    outlinedButton(
+                        route: WithdrawPage.routeName, title: "withdraw"),
                     const SizedBox(
                       width: 10,
                     ),
-                    outlinedButton(route: "", title: "deposit"),
+                    outlinedButton(
+                        route: DepositPage.routeName, title: "deposit"),
                     const SizedBox(
                       width: 10,
                     ),
@@ -211,6 +214,7 @@ class _WalletPageState extends State<WalletPage> {
           ///Route to withdraw page
           // PageRouter.pushNewRoute(
           //     context, const WithdrawPage());
+          Navigator.of(context, rootNavigator: true).pushNamed(route);
         },
         child: Container(
           height: 43,
