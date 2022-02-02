@@ -1,7 +1,7 @@
 import 'package:app/model/chat_model/info_message.dart';
 import 'package:app/model/chat_model/star.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
-import 'package:app/model/quests_models/create_quest_model/media_model.dart';
+import 'package:app/model/quests_models/media_model.dart';
 
 class MessageModel {
   MessageModel({

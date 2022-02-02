@@ -1,10 +1,10 @@
 import 'package:app/model/quests_models/Responded.dart';
-import 'package:app/model/quests_models/create_quest_model/location_model.dart';
-import 'package:app/model/quests_models/create_quest_model/media_model.dart';
+import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/model/quests_models/your_review.dart';
 
 import '../user_model.dart';
 import 'assigned_worker.dart';
+import 'location_full.dart';
 
 class BaseQuestResponse {
   BaseQuestResponse({
@@ -15,7 +15,7 @@ class BaseQuestResponse {
     required this.category,
     required this.status,
     required this.priority,
-    required this.location,
+    required this.locationCode,
     required this.title,
     required this.description,
     required this.price,
@@ -39,7 +39,7 @@ class BaseQuestResponse {
   User user;
   int status;
   int priority;
-  LocationCode location;
+  LocationCode locationCode;
   String locationPlaceName;
   String title;
   String description;
@@ -66,7 +66,7 @@ class BaseQuestResponse {
       user: User.fromJson(json["user"]),
       status: json["status"],
       priority: json["priority"],
-      location: LocationCode.fromJson(json["location"]),
+      locationCode: LocationCode.fromJson(json["location"]),
       locationPlaceName: json["locationPlaceName"],
       title: json["title"],
       description: json["description"],
@@ -104,7 +104,7 @@ class BaseQuestResponse {
     this.user = updateQuest.user;
     this.status = updateQuest.status;
     this.priority = updateQuest.priority;
-    this.location = updateQuest.location;
+    this.locationCode = updateQuest.locationCode;
     this.title = updateQuest.title;
     this.description = updateQuest.description;
     this.price = updateQuest.price;
@@ -126,7 +126,7 @@ class BaseQuestResponse {
         "category": category,
         "status": status,
         "priority": priority,
-        "location": location.toJson(),
+        "location": locationCode.toJson(),
         "title": title,
         "description": description,
         "price": price,

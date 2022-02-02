@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
@@ -26,45 +24,39 @@ class ChatRoomPage extends StatefulWidget {
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
   late final ChatRoomStore _store;
+  final String defaultImageUrl =
+      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs";
   ProfileMeStore? profile;
-
-  String get id1 => _store.chat?.chatModel.userMembers[0].id ?? "--";
-
-  String get id2 => _store.chat?.chatModel.userMembers[1].id ?? "--";
-
-  String get ownersChatId => _store.chat?.chatModel.ownerUserId ?? "--";
-
-  String get firstName1 =>
-      _store.chat?.chatModel.userMembers[0].firstName ?? "--";
-
-  String get lastName1 =>
-      _store.chat?.chatModel.userMembers[0].lastName ?? "--";
-
-  String get firstName2 =>
-      _store.chat?.chatModel.userMembers[1].firstName ?? "--";
-
-  String get lastName2 =>
-      _store.chat?.chatModel.userMembers[1].lastName ?? "--";
-
-  String get url1 =>
-      _store.chat?.chatModel.userMembers[0].avatar?.url ??
-      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs";
-
-  String get url2 =>
-      _store.chat?.chatModel.userMembers[1].avatar?.url ??
-      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs";
-
-  String get chatType => _store.chat?.chatModel.type ?? "";
-
-  String get chatName => _store.chat?.chatModel.name ?? "--";
+  String? id1;
+  String? id2;
+  String? ownersChatId;
+  String? firstName1;
+  String? lastName1;
+  String? firstName2;
+  String? lastName2;
+  String? url1;
+  String? url2;
+  String? chatType;
+  String? chatName;
 
   @override
   void initState() {
+    super.initState();
     _store = context.read<ChatRoomStore>();
     profile = context.read<ProfileMeStore>();
     _store.idChat = widget.idChat;
     _store.getMessages(true);
-    super.initState();
+    id1 = _store.chat?.chatModel.userMembers[0].id ?? "--";
+    id2 = _store.chat?.chatModel.userMembers[1].id ?? "--";
+    ownersChatId = _store.chat?.chatModel.ownerUserId ?? "--";
+    firstName1 = _store.chat?.chatModel.userMembers[0].firstName ?? "--";
+    lastName1 = _store.chat?.chatModel.userMembers[0].lastName ?? "--";
+    firstName2 = _store.chat?.chatModel.userMembers[1].firstName ?? "--";
+    lastName2 = _store.chat?.chatModel.userMembers[1].lastName ?? "--";
+    url1 = _store.chat?.chatModel.userMembers[0].avatar?.url ?? defaultImageUrl;
+    url2 = _store.chat?.chatModel.userMembers[1].avatar?.url ?? defaultImageUrl;
+    chatType = _store.chat?.chatModel.type ?? "";
+    chatName = _store.chat?.chatModel.name ?? "--";
     if (_store.chat!.chatModel.type == "group") _store.generateListUserInChat();
   }
 
@@ -159,42 +151,35 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
                     child: Observer(
-                        builder: (_) => dataType == "jpeg" ||
-                                dataType == "png" ||
-                                dataType == "jpg"
-                            ? Image.memory(
-                                _store.media[index].readAsBytesSync(),
-                                fit: BoxFit.cover,
-                              )
-                            : Stack(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Color(0xFFE9EDF2),
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: SvgPicture.asset(
-                                        dataType == "mp4" || dataType == "mov"
-                                            ? 'assets/play.svg'
-                                            : 'assets/document.svg',
-                                        color: Color(0xFFAAB0B9),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.1,
-                                      ),
+                      builder: (_) => dataType == "jpeg" ||
+                              dataType == "png" ||
+                              dataType == "jpg"
+                          ? Image.memory(
+                              _store.media[index].readAsBytesSync(),
+                              fit: BoxFit.cover,
+                            )
+                          : Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Color(0xFFE9EDF2),
                                     ),
                                   ),
-                                ],
-                              )
-                        // _store.fileNameBytes == null
-                        //         ? CircularProgressIndicator()
-                        //         : Image.memory(
-                        //             _store.fileNameBytes!,
-                        //             fit: BoxFit.cover,
-                        //           ),
-                        ),
+                                  child: Center(
+                                    child: SvgPicture.asset(
+                                      dataType == "mp4" || dataType == "mov"
+                                          ? 'assets/play.svg'
+                                          : 'assets/document.svg',
+                                      color: Color(0xFFAAB0B9),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.1,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
                   ),
                   Positioned(
                     top: -15.0,
@@ -301,17 +286,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               )
             : GestureDetector(
                 onTap: () async {
-                  _store.getCompanion(profile!.userData!.id != id1 ? id1 : id2);
-                  Timer.periodic(Duration(milliseconds: 100), (timer) {
-                    if (_store.companion != null) {
-                      timer.cancel();
-                      Navigator.of(context, rootNavigator: true).pushNamed(
-                        UserProfile.routeName,
-                        arguments: _store.companion,
-                      );
-                      _store.companion = null;
-                    }
-                  });
+                  await _store.getCompanion(
+                      profile!.userData!.id != id1! ? id1! : id2!);
+                  Navigator.of(context, rootNavigator: true).pushNamed(
+                    UserProfile.routeName,
+                    arguments: _store.companion,
+                  );
+                  _store.companion = null;
                 },
                 child: Text(
                   profile!.userData!.id != id1
@@ -339,22 +320,18 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 : SizedBox()
             : GestureDetector(
                 onTap: () async {
-                  _store.getCompanion(profile!.userData!.id != id1 ? id1 : id2);
-                  Timer.periodic(Duration(milliseconds: 100), (timer) {
-                    if (_store.companion != null) {
-                      timer.cancel();
-                      Navigator.of(context, rootNavigator: true).pushNamed(
-                        UserProfile.routeName,
-                        arguments: _store.companion,
-                      );
-                      _store.companion = null;
-                    }
-                  });
+                  await _store.getCompanion(
+                      profile!.userData!.id != id1! ? id1! : id2!);
+                  Navigator.of(context, rootNavigator: true).pushNamed(
+                    UserProfile.routeName,
+                    arguments: _store.companion,
+                  );
+                  _store.companion = null;
                 },
                 child: Observer(
                   builder: (_) => CircleAvatar(
                     backgroundImage: NetworkImage(
-                      profile!.userData!.id != id1 ? url1 : url2,
+                      profile!.userData!.id != id1! ? url1! : url2!,
                     ),
                     maxRadius: 20,
                   ),

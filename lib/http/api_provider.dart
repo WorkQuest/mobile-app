@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:app/enums.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
-import 'package:app/model/create_quest_model/create_quest_request_model.dart';
+import 'package:app/model/quests_models/create_quest_request_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/review.dart';
@@ -480,8 +480,7 @@ extension QuestService on ApiProvider {
     required String questId,
   }) async {
     try {
-      final responseData =
-          await httpClient.delete(query: '/v1/quest/$questId');
+      final responseData = await httpClient.delete(query: '/v1/quest/$questId');
       return responseData == null;
     } catch (e) {
       return false;
@@ -591,8 +590,8 @@ extension UserInfoService on ApiProvider {
         if (userData.role == UserRole.Worker)
           "specializationKeys": userData.userSpecializations,
         "location": {
-          "longitude": userData.location?.longitude ?? 0,
-          "latitude": userData.location?.latitude ?? 0,
+          "longitude": userData.locationFull?.locationCode.longitude ?? 0,
+          "latitude": userData.locationFull?.locationCode.latitude ?? 0,
         }
       };
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");

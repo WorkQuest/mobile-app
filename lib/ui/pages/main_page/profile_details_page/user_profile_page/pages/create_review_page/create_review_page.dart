@@ -95,6 +95,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                         maxLines: null,
                         textAlignVertical: TextAlignVertical.top,
                         expands: true,
+                        maxLength: 200,
                         decoration: InputDecoration(
                           hintText: "chat.message".tr(),
                         ),

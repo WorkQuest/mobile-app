@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/model/quests_models/create_quest_model/media_model.dart';
+import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/service/client_service.dart';
 import 'package:injectable/injectable.dart';

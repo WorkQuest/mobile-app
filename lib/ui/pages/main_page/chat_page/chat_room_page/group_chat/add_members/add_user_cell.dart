@@ -18,48 +18,89 @@ class AddUserCell extends StatefulWidget {
 class _AddUserCellState extends State<AddUserCell> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: Image.network(
-              widget.user.avatar!.url,
-              width: 32,
-              height: 32,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(
-            width: 10.0,
-          ),
-          Expanded(
-            child: SizedBox(
-              height: 20,
-              child: RunningLine(
-                children: [
-                  Text(
-                    "${widget.user.firstName} ${widget.user.lastName}",
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                ],
+    return Observer(
+      builder:(_) => CheckboxListTile(
+        title: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: Image.network(
+                widget.user.avatar!.url,
+                width: 32,
+                height: 32,
+                fit: BoxFit.cover,
               ),
             ),
-          ),
-          Observer(
-            builder: (_) => Container(
-              width: 30.0,
-              child: Checkbox(
-                value: widget.store.selectedUsers[widget.index],
-                onChanged: (value) {
-                  widget.store.selectedUsers[widget.index] = value!;
-                  widget.store.selectUser(widget.index);
-                },
+            const SizedBox(
+              width: 10.0,
+            ),
+            Expanded(
+              child: SizedBox(
+                height: 20,
+                child: RunningLine(
+                  children: [
+                    Text(
+                      "${widget.user.firstName} ${widget.user.lastName}",
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
+        value: widget.store.selectedUsers[widget.index],
+        onChanged: (value) {
+          widget.store.selectedUsers[widget.index] = value!;
+          widget.store.selectUser(widget.index);
+        },
+        // controlAffinity: ListTileControlAffinity.leading,
       ),
     );
+
+    //   Container(
+    //   child:
+    //   Row(
+    //     children: [
+    //       ClipRRect(
+    //         borderRadius: BorderRadius.circular(100),
+    //         child: Image.network(
+    //           widget.user.avatar!.url,
+    //           width: 32,
+    //           height: 32,
+    //           fit: BoxFit.cover,
+    //         ),
+    //       ),
+    //       const SizedBox(
+    //         width: 10.0,
+    //       ),
+    //       Expanded(
+    //         child: SizedBox(
+    //           height: 20,
+    //           child: RunningLine(
+    //             children: [
+    //               Text(
+    //                 "${widget.user.firstName} ${widget.user.lastName}",
+    //                 style: TextStyle(fontSize: 18.0),
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+    //       ),
+    //       Observer(
+    //         builder: (_) => Container(
+    //           width: 30.0,
+    //           child: Checkbox(
+    //             value: widget.store.selectedUsers[widget.index],
+    //             onChanged: (value) {
+    //               widget.store.selectedUsers[widget.index] = value!;
+    //               widget.store.selectUser(widget.index);
+    //             },
+    //           ),
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 }

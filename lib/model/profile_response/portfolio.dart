@@ -1,4 +1,4 @@
-import 'package:app/model/quests_models/create_quest_model/media_model.dart';
+import 'package:app/model/quests_models/media_model.dart';
 
 class PortfolioModel {
   PortfolioModel({

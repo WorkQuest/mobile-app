@@ -185,7 +185,7 @@ class CreateGroupPage extends StatelessWidget {
                       context,
                       (route) => route.isFirst,
                     );
-                  if (store.index > 0) store.index--;
+                  if (store.index == 1) store.index--;
                 },
                 child: Text(back),
                 style: OutlinedButton.styleFrom(
@@ -203,12 +203,19 @@ class CreateGroupPage extends StatelessWidget {
           Expanded(
             child: Observer(
               builder: (_) => ElevatedButton(
-                onPressed: store.index == 0 && store.chatName.isNotEmpty
+                onPressed: store.index == 0 &&
+                        store.chatName.isNotEmpty &&
+                        !store.isLoading
                     ? () async {
-                        await store.getUsersForGroupCHat();
-                        store.index++;
+                        if (store.index == 0) {
+                          store.index++;
+                          await store.getUsersForGroupCHat();
+                        }
                       }
-                    : store.usersId.isNotEmpty && store.usersId.length > 1
+                    : store.usersId.isNotEmpty &&
+                            store.usersId.length > 1 &&
+                            !store.isLoading &&
+                            store.index == 1
                         ? () async {
                             await store.createGroupChat();
                             if (store.isSuccess) {

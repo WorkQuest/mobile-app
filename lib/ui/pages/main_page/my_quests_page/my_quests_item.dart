@@ -1,6 +1,5 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/running_line.dart';
@@ -23,16 +22,10 @@ class MyQuestsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        // final myQuestStore = context.read<MyQuestStore>();
-        final questStore = context.read<QuestsStore>();
-        // final profile = context.read<ProfileMeStore>();
         await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
           arguments: questInfo,
         );
-        // myQuestStore.getQuests(
-        //     profile.userData!.id, profile.userData!.role, true);
-        questStore.getQuests(true);
       },
       child: Container(
         color: Colors.white,

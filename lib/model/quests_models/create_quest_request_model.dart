@@ -1,12 +1,13 @@
-import 'package:app/model/quests_models/create_quest_model/location_model.dart';
+
+import 'location_full.dart';
 
 class CreateQuestRequestModel  {
   String category;
   int priority;
-  LocationCode location;
+  LocationFull location;
   String title;
   String description;
-  String locationPlaceName;
+  // String locationPlaceName;
   String workplace;
   String price;
   List media;
@@ -20,7 +21,7 @@ class CreateQuestRequestModel  {
     required this.priority,
     required this.employment,
     required this.specializationKeys,
-    required this.locationPlaceName,
+    // required this.locationPlaceName,
     required this.workplace,
     required this.title,
     required this.media,
@@ -34,8 +35,8 @@ class CreateQuestRequestModel  {
     questData['category'] = this.category;
     questData['priority'] = this.priority;
     questData['workplace'] = this.workplace;
-    questData['locationPlaceName'] = this.locationPlaceName;
-    questData['location'] = this.location.toJson();
+    // questData['locationPlaceName'] = this.locationPlaceName;
+    questData['locationFull'] = this.location.toJson();
     questData['title'] = this.title;
     questData['specializationKeys'] = this.specializationKeys;
     questData['medias'] = this.media;

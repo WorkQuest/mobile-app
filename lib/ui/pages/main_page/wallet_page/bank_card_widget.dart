@@ -159,7 +159,7 @@ class _BankCardTransactionState extends State<BankCardTransaction> {
             ),
             _divider,
             titledTextBox(
-              "wallet.table.trxFrr".tr(),
+              "wallet.table.trx".tr(),
               Container(
                 alignment: Alignment.centerLeft,
                 decoration: BoxDecoration(

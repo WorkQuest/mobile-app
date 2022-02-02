@@ -1,5 +1,6 @@
 import 'package:app/ui/pages/main_page/wallet_page/bank_card_widget.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -135,7 +136,10 @@ class _DepositPageState extends State<DepositPage>
                   color: Colors.black45.withOpacity(0.1),
                 ),
               ),
-              child: Text("0xu383d7g...dq9w"),
+              child: Text(
+                '${AccountRepository().userAddress!.substring(0, 9)}...'
+                '${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
+              ),
             ),
             Spacer(),
             Row(
@@ -146,8 +150,7 @@ class _DepositPageState extends State<DepositPage>
                   child: SizedBox(
                     height: 43.0,
                     child: OutlinedButton(
-                      onPressed: () => Share.share(
-                          "http://en.m.wikipedia.org"),
+                      onPressed: () => Share.share("http://en.m.wikipedia.org"),
                       child: Text(
                         "sharing.title".tr(),
                       ),
