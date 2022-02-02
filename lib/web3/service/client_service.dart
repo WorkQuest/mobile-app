@@ -9,6 +9,7 @@ import 'package:injectable/injectable.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
+import 'package:web_socket_channel/io.dart';
 import '../contractEnums.dart';
 import 'address_service.dart';
 
@@ -43,13 +44,15 @@ abstract class ClientServiceI {
 @singleton
 class ClientService implements ClientServiceI {
   static final apiUrl = "https://dev-node-nyc3.workquest.co";
-  final wsUrl = "wss://dev-node-nyc3.workquest.co";
+  static final wsUrl = "wss://dev-node-nyc3.workquest.co";
   final int _chainId = 20220112;
   final _abiAddress = '0xF38E33e7DD7e1a91c772aF51A366cd126e4552BB';
+  String addressNewContract = "";
 
   final Web3Client _client = Web3Client(
     apiUrl,
     Client(),
+    socketConnector: () => IOWebSocketChannel.connect(wsUrl).cast<String>(),
   );
 
   @override
@@ -244,10 +247,13 @@ extension CreateQuestContract on ClientService {
         TransactionReceipt? transactionReceipt =
             await _client.getTransactionReceipt(transactionHash);
 
-        print("Logs:");
-        transactionReceipt?.logs.forEach((element) {
-          print(element);
-        });
+        if (transactionReceipt != null) {
+          addressNewContract = transactionReceipt.logs[0].address.toString();
+          print("Logs:");
+          transactionReceipt.logs.forEach((element) {
+            print(element);
+          });
+        }
         checkStatus();
       });
       return [];
@@ -271,6 +277,16 @@ extension CreateContract on ClientService {
         contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
     final depositAmount = (double.parse(cost) * 1.01) * pow(10, 18);
+
+    final transferEvent =
+        contract.event(WQFContractEvents.WorkQuestCreated.name);
+    final subscription = _client
+        .events(FilterOptions.events(contract: contract, event: transferEvent))
+        .take(1)
+        .listen((event) {
+      addressNewContract = event.address.toString();
+    });
+
     handleContract(
       contract: contract,
       function: ethFunction,
@@ -283,6 +299,8 @@ extension CreateContract on ClientService {
       from: fromAddress,
       value: EtherAmount.inWei(BigInt.parse(depositAmount.ceil().toString())),
     );
+    await subscription.asFuture();
+    await subscription.cancel();
   }
 }
 
@@ -291,7 +309,7 @@ extension HandleEvent on ClientService {
     WQContractFunctions function, [
     List<dynamic> params = const [],
   ]) async {
-    final contract = await getDeployedContract("WorkQuest", "contract address");
+    final contract = await getDeployedContract("WorkQuest", addressNewContract);
     final ethFunction = contract.function(function.name);
     handleContract(
       contract: contract,
@@ -350,8 +368,8 @@ extension CheckAddres on ClientService {
 extension CheckStatus on ClientService {
   Future<List<dynamic>> checkStatus() async {
     try {
-      final contract = await getDeployedContract(
-          "WorkQuest", "0x29872f1b96d6ed0c118c93df23c8281de70cde04");
+      final contract =
+          await getDeployedContract("WorkQuest", addressNewContract);
       final ethFunction = contract.function(WQContractFunctions.status.name);
       final outputs = await _client.call(
         contract: contract,
