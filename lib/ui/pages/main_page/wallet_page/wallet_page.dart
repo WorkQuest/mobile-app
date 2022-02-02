@@ -104,8 +104,9 @@ class _WalletPageState extends State<WalletPage> {
                       padding: EdgeInsets.zero,
                       pressedOpacity: 0.2,
                       onPressed: () {
-                        Clipboard.setData(ClipboardData(
-                            text: AccountRepository().userAddress));
+                        Clipboard.setData(
+                          ClipboardData(text: AccountRepository().userAddress),
+                        );
                         SnackBarUtils.success(
                           context,
                           title: 'wallet'.tr(gender: 'copy'),
