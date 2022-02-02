@@ -61,7 +61,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     } on SocketException catch (_) {
       onError("Lost connection to server");
     } on FormatException catch (e) {
-      onError(e.message);
+      this.onError(e.message);
     } catch (e) {
       onError(e.toString());
     }

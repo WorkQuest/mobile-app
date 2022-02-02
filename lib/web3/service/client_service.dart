@@ -87,14 +87,15 @@ class ClientService implements ClientServiceI {
             bigInt,
           ),
         ),
-        chainId: 20220112,
+        chainId: _chainId,
       );
     } else if (coin == TYPE_COINS.wqt) {
       print('send wqt');
       final contract = Erc20(
-          address: EthereumAddress.fromHex(
-              '0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE'),
-          client: _client);
+        address: EthereumAddress.fromHex(
+            '0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE'),
+        client: _client,
+      );
       hash = await contract.transfer(
         EthereumAddress.fromHex(address),
         BigInt.from(double.parse(amount) * pow(10, 18)),

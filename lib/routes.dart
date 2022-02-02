@@ -161,6 +161,9 @@ class Routes {
           builder: (context) => MultiProvider(
             providers: [
               Provider(
+                create: (context) => getIt.get<TransferStore>(),
+              ),
+              Provider(
                 create: (context) => getIt.get<QuestsStore>(),
               ),
               Provider(

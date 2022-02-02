@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../constants.dart';
 import '../../../../../observer_consumer.dart';
@@ -192,7 +194,7 @@ class _TransferPageState extends State<TransferPage> {
                 decoration: InputDecoration(
                   hintText: 'wallet.enterAmount'.tr(),
                   suffixIcon: ObserverListener<TransferStore>(
-                    onFailure: () => false,
+                    //onFailure: () => false,
                     onSuccess: () {
                       _amountController.text = store.amount;
                     },
@@ -267,11 +269,14 @@ class _TransferPageState extends State<TransferPage> {
       final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => ConfirmTransferPage(
-            fee: store.fee,
-            titleCoin: store.titleSelectedCoin,
-            addressTo: store.addressTo,
-            amount: store.amount,
+          builder: (_) => Provider(
+            create :(_)=> ConfirmTransferStore(),
+            child: ConfirmTransferPage(
+              fee: store.fee,
+              titleCoin: store.titleSelectedCoin,
+              addressTo: store.addressTo,
+              amount: store.amount,
+            ),
           ),
         ),
       );

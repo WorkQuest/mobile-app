@@ -2,7 +2,7 @@ import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 import '../../../../../../constants.dart';
 import '../../../../../../observer_consumer.dart';
 import 'mobx/confirm_transfer_store.dart';
@@ -29,10 +29,10 @@ class ConfirmTransferPage extends StatefulWidget {
 }
 
 class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
-  ConfirmTransferStore store = ConfirmTransferStore();
 
   @override
   Widget build(BuildContext context) {
+    final store = context.read<ConfirmTransferStore>();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar:CupertinoNavigationBar(
@@ -64,8 +64,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                   },
                   onSuccess: () async {
                     Navigator.of(context, rootNavigator: true).pop();
-                    ///check
-                    //await AlertDialogUtils.showSuccessDialog(context);
+                    await AlertDialogUtils.showSuccessDialog(context);
                     Navigator.pop(context, true);
                   },
                   child: CupertinoButton(
