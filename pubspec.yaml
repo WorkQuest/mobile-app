@@ -61,6 +61,7 @@ dependencies:
   dots_indicator: ^2.0.0
   share: ^2.0.4
   mask_text_input_formatter: ^2.0.0
+  qr_flutter: ^4.0.0
 
   # Web3
   web3dart: ^2.3.3

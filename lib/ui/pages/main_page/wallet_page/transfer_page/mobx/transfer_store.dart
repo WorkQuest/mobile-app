@@ -67,7 +67,9 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     } on FormatException catch (e) {
       print("error reached${e.message}");
       this.onError(e.message);
-    } catch (e) {
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
       onError(e.toString());
     }
   }

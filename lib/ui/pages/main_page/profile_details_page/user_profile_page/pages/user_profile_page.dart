@@ -195,11 +195,15 @@ class UserProfileState<T extends UserProfile> extends State<T>
                       contactDetails(
                         location: widget.info == null
                             ? userStore!.userData?.additionalInfo?.address ??
-                                ' '
-                            : widget.info!.additionalInfo?.address ?? " ",
-                        // number: widget.info == null
-                        //     ? userStore!.userData?.phone?.fullPhone ?? " "
-                        //     : widget.info!.phone?.fullPhone ?? " ",
+                                ''
+                            : widget.info!.additionalInfo?.address ?? "",
+                        number: widget.info == null
+                            ? userStore!.userData?.tempPhone?.fullPhone ??
+                                userStore!.userData?.phone?.fullPhone ??
+                                ""
+                            : widget.info!.tempPhone?.fullPhone ??
+                                widget.info!.phone?.fullPhone ??
+                                "",
                         secondNumber: widget.info == null
                             ? userStore!.userData?.additionalInfo
                                     ?.secondMobileNumber?.fullPhone ??

@@ -7,118 +7,113 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 extension CustomAppBar on UserProfileState {
-  Widget sliverAppBar(ProfileMeResponse? info) => SliverAppBar(
-        backgroundColor: Color(0xFF0083C7),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
-          onPressed: () => Navigator.pop(context),
+  Widget sliverAppBar(ProfileMeResponse? info) {
+    final mark = info == null
+        ? userStore!.userData!.ratingStatistic!.averageMark
+        : info.ratingStatistic!.averageMark;
+    final markDev = mark.toInt();
+    final markMod = (mark % (markDev == 0 ? 1 : markDev) * 10).round() / 10;
+    return SliverAppBar(
+      backgroundColor: Color(0xFF0083C7),
+      automaticallyImplyLeading: false,
+      leading: IconButton(
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
         ),
-        actions: [
-          if (info == null)
-            IconButton(
-              icon: Icon(
-                Icons.edit,
-                color: Colors.white,
-              ),
-              onPressed: () =>
-                  Navigator.of(context, rootNavigator: true).pushNamed(
-                ChangeProfilePage.routeName,
+        onPressed: () => Navigator.pop(context),
+      ),
+      actions: [
+        if (info == null)
+          IconButton(
+            icon: Icon(
+              Icons.edit,
+              color: Colors.white,
+            ),
+            onPressed: () =>
+                Navigator.of(context, rootNavigator: true).pushNamed(
+              ChangeProfilePage.routeName,
+            ),
+          ),
+      ],
+      centerTitle: false,
+      pinned: true,
+      expandedHeight: 250,
+      flexibleSpace: FlexibleSpaceBar(
+        titlePadding: EdgeInsets.only(
+          left: 16.0,
+          bottom: 16.0,
+          top: 0.0,
+        ),
+        collapseMode: CollapseMode.pin,
+        centerTitle: false,
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(
+              info == null
+                  ? userStore!.userData!.avatar!.url
+                  : info.avatar!.url,
+              fit: BoxFit.cover,
+            ),
+            Positioned(
+              bottom: info == null
+                  ? userStore!.userData!.ratingStatistic!.status != "noStatus"
+                      ? 85.0
+                      : 67.0
+                  : info.ratingStatistic!.status != "noStatus"
+                      ? 85.0
+                      : 67.0,
+              left: 15.0,
+              child: Row(
+                children: [
+                  for (int i = 0; i < markDev; i++)
+                    Icon(
+                      Icons.star,
+                      color: Color(0xFFE8D20D),
+                      size: 20.0,
+                    ),
+                  ShaderMask(
+                    blendMode: BlendMode.srcATop,
+                    shaderCallback: (Rect rect) {
+                      return LinearGradient(
+                        stops: [0, markMod, markMod],
+                        colors: [
+                          Color(0xFFE8D20D),
+                          Color(0xFFE8D20D),
+                          Color(0xFFE8D20D).withOpacity(0)
+                        ],
+                      ).createShader(rect);
+                    },
+                    child: SizedBox(
+                      child: Icon(
+                        Icons.star,
+                        color: Color(0xFFE9EDF2),
+                        size: 20.0,
+                      ),
+                    ),
+                  ),
+                  for (int i = 0; i < 4 - markDev; i++)
+                    Icon(
+                      Icons.star,
+                      color: Color(0xFFE9EDF2),
+                      size: 20.0,
+                    ),
+                ],
               ),
             ),
-        ],
-        centerTitle: false,
-        pinned: true,
-        expandedHeight: 250,
-        flexibleSpace: FlexibleSpaceBar(
-          titlePadding: EdgeInsets.only(
-            left: 16.0,
-            bottom: 16.0,
-            top: 0.0,
-          ),
-          collapseMode: CollapseMode.pin,
-          centerTitle: false,
-          background: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.network(
-                info == null
-                    ? userStore!.userData!.avatar!.url
-                    : info.avatar!.url,
-                fit: BoxFit.cover,
-              ),
-              Positioned(
-                bottom: info == null
-                    ? userStore!.userData!.ratingStatistic!.status != "noStatus"
-                        ? 85.0
-                        : 67.0
-                    : info.ratingStatistic!.status != "noStatus"
-                        ? 85.0
-                        : 67.0,
-                left: 15.0,
-                child: info == null
-                    ? Row(
-                        children: [
-                          for (int i = 0;
-                              i <
-                                  userStore!
-                                      .userData!.ratingStatistic!.averageMark
-                                      .round();
-                              i++)
-                            Icon(
-                              Icons.star,
-                              color: Color(0xFFE8D20D),
-                              size: 20.0,
-                            ),
-                          for (int i = 0;
-                              i <
-                                  5 -
-                                      userStore!.userData!.ratingStatistic!
-                                          .averageMark
-                                          .round();
-                              i++)
-                            Icon(
-                              Icons.star,
-                              color: Color(0xFFE9EDF2),
-                              size: 20.0,
-                            ),
-                        ],
-                      )
-                    : Row(
-                        children: [
-                          for (int i = 0;
-                              i < info.ratingStatistic!.averageMark.round();
-                              i++)
-                            Icon(
-                              Icons.star,
-                              color: Color(0xFFE8D20D),
-                              size: 20.0,
-                            ),
-                          for (int i = 0;
-                              i < 5 - info.ratingStatistic!.averageMark.round();
-                              i++)
-                            Icon(
-                              Icons.star,
-                              color: Color(0xFFE9EDF2),
-                              size: 20.0,
-                            ),
-                        ],
-                      ),
-              ),
-            ],
-          ),
-          title: appBarTitle(
-            info == null
-                ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
-                : "${info.firstName} ${info.lastName}",
-            appBarPosition,
-            userStore!.userData!.ratingStatistic?.status ?? "noStatus",
-          ),
+          ],
         ),
-      );
+        title: appBarTitle(
+          info == null
+              ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
+              : "${info.firstName} ${info.lastName}",
+          appBarPosition,
+          userStore!.userData!.ratingStatistic?.status ?? "noStatus",
+        ),
+      ),
+    );
+  }
 }
 
 extension ReviewsTab on UserProfileState {

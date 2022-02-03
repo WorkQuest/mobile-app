@@ -700,7 +700,7 @@ void _launchSocial(String url, String fallbackUrl) async {
 
 Widget contactDetails({
   required String location,
-  // required String number,
+  required String number,
   required String email,
   required String secondNumber,
 }) {
@@ -710,6 +710,7 @@ Widget contactDetails({
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        if (location.isNotEmpty)
         Row(
           children: [
             Icon(
@@ -732,33 +733,33 @@ Widget contactDetails({
             ),
           ],
         ),
-        // if (number.isNotEmpty)
-        //   Column(
-        //     children: [
-        //       const SizedBox(
-        //         height: 10.0,
-        //       ),
-        //       Row(
-        //         children: [
-        //           Icon(
-        //             Icons.phone,
-        //             size: 20.0,
-        //             color: const Color(0xFF7C838D),
-        //           ),
-        //           Padding(
-        //             padding: const EdgeInsets.only(left: 8.0),
-        //             child: Text(
-        //               number,
-        //               style: const TextStyle(
-        //                 fontSize: 14,
-        //                 color: Color(0xFF7C838D),
-        //               ),
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ],
-        //   ),
+        if (number.isNotEmpty)
+          Column(
+            children: [
+              const SizedBox(
+                height: 10.0,
+              ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.phone,
+                    size: 20.0,
+                    color: const Color(0xFF7C838D),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      number,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF7C838D),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         if (secondNumber.isNotEmpty)
           Column(
             children: [

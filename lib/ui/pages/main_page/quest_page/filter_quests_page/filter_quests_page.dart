@@ -27,7 +27,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     storeFilter = context.read<FilterQuestsStore>();
     profile = context.read<ProfileMeStore>();
     storeQuest = context.read<QuestsStore>();
-    storeFilter!.getFilters(storeQuest.selectedSkill);
+    storeFilter!.initSkillFiltersValue(storeQuest.selectedSkillFilters);
+    storeFilter!.getFilters(storeQuest.selectedSkill, storeQuest.skillFilters);
     storeFilter!.initEmployments(storeQuest.employments);
     storeFilter!.initRating(storeQuest.employeeRatings);
     storeFilter!.initWorkplace(storeQuest.workplaces);
@@ -38,28 +39,33 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
 
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "quests.filter.btn".tr(),
-          style: TextStyle(
-            fontSize: 17,
-            color: Color(0xFF1D2127),
+    return WillPopScope(
+      onWillPop: () => storeQuest.skillFilters.isEmpty
+          ? storeQuest.saveSkillFilters(storeFilter!.skillFilters)
+          : null,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "quests.filter.btn".tr(),
+            style: TextStyle(
+              fontSize: 17,
+              color: Color(0xFF1D2127),
+            ),
+          ),
+          centerTitle: true,
+          leading: Row(
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_sharp,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
           ),
         ),
-        centerTitle: true,
-        leading: Row(
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_sharp,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
+        body: getBody(),
       ),
-      body: getBody(),
     );
   }
 
@@ -190,6 +196,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                 storeQuest.setSortBy(storeFilter!.getSortByValue());
                 storeQuest.setEmployeeRating(storeFilter!.getEmployeeRating());
                 storeQuest.setSkillFilters(storeFilter!.selectedSkill);
+                storeQuest
+                    .setSelectedSkillFilters(storeFilter!.selectedSkillFilters);
                 profile!.userData!.role == UserRole.Employer
                     ? storeQuest.getWorkers(true)
                     : storeQuest.getQuests(true);
@@ -225,6 +233,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                 storeQuest.priorities.clear();
                 storeQuest.selectedSkill.clear();
                 storeQuest.employeeRatings.clear();
+                storeQuest.clearSkillFilters();
                 storeQuest.sort = "sort[createdAt]=desc";
                 profile!.userData!.role == UserRole.Employer
                     ? storeQuest.getWorkers(true)
@@ -366,8 +375,7 @@ class _ExpansionCellState extends State<ExpansionCell> {
         maxLines: 2,
         softWrap: false,
       ),
-      value:
-          widget.storeFilter.selectedSkillFilters[widget.index - 1]![index],
+      value: widget.storeFilter.selectedSkillFilters[widget.index - 1]![index],
       onChanged: (bool? value) {
         widget.storeFilter.selectedSkillFilters[widget.index - 1]![index] =
             value!;

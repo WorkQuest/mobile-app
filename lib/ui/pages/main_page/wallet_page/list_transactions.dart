@@ -39,11 +39,12 @@ class ListTransactions extends StatelessWidget {
           return SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                if (store.isMoreLoading &&
-                    index == store.transactions.length) {
+                if (store.isMoreLoading && index == store.transactions.length) {
                   return Column(
                     children: const [
-                      SizedBox(height: 10,),
+                      SizedBox(
+                        height: 10,
+                      ),
                       CircularProgressIndicator.adaptive(),
                     ],
                   );
@@ -68,7 +69,9 @@ class ListTransactions extends StatelessWidget {
   Widget _infoElement(Tx transaction) {
     bool increase = transaction.fromAddress != AccountRepository().userAddress;
     Color color = increase ? Colors.green : Colors.red;
-    final score = BigInt.parse(transaction.value!).toDouble() * pow(10, -18);
+    final score =
+        (BigInt.parse(transaction.value!).toDouble() * pow(10, -13)).round() *
+            pow(10, -5);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 7.5),
       child: Row(
@@ -85,7 +88,7 @@ class ListTransactions extends StatelessWidget {
             child: Transform.rotate(
               angle: increase ? 0 : pi / 1,
               child: SvgPicture.asset(
-               "assets/send_tx_arrow_icon.svg",
+                "assets/send_tx_arrow_icon.svg",
                 color: color,
               ),
             ),
@@ -116,7 +119,9 @@ class ListTransactions extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(width: 20,),
+          // const SizedBox(
+          //   width: 20,
+          // ),
           const Spacer(),
           Text(
             '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${_getTitleCoin(transaction.coin!)}',
