@@ -7,11 +7,8 @@ class AccountRepository {
 
   factory AccountRepository() => _instance;
 
-  AccountRepository._internal() {
-    client = ClientService();
-  }
+  AccountRepository._internal();
 
-  ClientService? client;
   String? userAddress;
   List<Wallet>? userAddresses;
 

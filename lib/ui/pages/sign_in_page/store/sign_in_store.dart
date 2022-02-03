@@ -6,6 +6,7 @@ import 'package:app/http/web3_extension.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/service/client_service.dart';
 import 'package:app/web3/wallet.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -59,7 +60,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
       this.onLoading();
       Wallet? wallet = await Wallet.derive(mnemonic);
       final signature =
-          await AccountRepository().client!.getSignature(wallet.privateKey!);
+          await ClientService().getSignature(wallet.privateKey!);
       await _apiProvider.walletLogin(signature, wallet.address!);
       //await Storage.write(Storage.refreshKey, result!.data['result']['refresh']);
       await Storage.write(Storage.wallets, jsonEncode([wallet.toJson()]));

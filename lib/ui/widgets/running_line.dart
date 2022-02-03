@@ -34,6 +34,7 @@ class _RunningLineState extends State<RunningLine> {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      //shrinkWrap: true,
       controller: controller,
       physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
