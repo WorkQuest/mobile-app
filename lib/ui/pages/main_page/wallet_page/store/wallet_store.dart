@@ -29,16 +29,19 @@ abstract class _WalletStore extends IStore<bool> with Store {
   bool isMoreLoading = false;
 
   @action
-  getCoins() async {
-    onLoading();
+  getCoins({bool isForce = true}) async {
+    if (isForce) {
+      onLoading();
+    }
     try {
       print('getCoins');
-      if (coins.isNotEmpty) {
-        coins.clear();
-      }
+
       final list = await AccountRepository()
           .client!
           .getAllBalance(AccountRepository().privateKey);
+      if (coins.isNotEmpty) {
+        coins.clear();
+      }
       final ether = list. firstWhere((element) => element.title == 'ether');
       coins.add(BalanceItem(
         "WUSD",
@@ -49,7 +52,10 @@ abstract class _WalletStore extends IStore<bool> with Store {
         "WQT",
         wqt.toString(),
       ));
-      onSuccess(true);
+
+      if (isForce) {
+        onSuccess(true);
+      }
     } catch (e) {
       onError(e.toString());
     }
