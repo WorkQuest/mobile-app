@@ -31,6 +31,11 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   List<String> selectedSkill = [];
 
+  Map<int, List<int>> skillFilters = {};
+
+  ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
+      ObservableMap.of({});
+
   @observable
   String sort = "sort[createdAt]=desc";
 
@@ -80,8 +85,11 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   List<int> priorities = [];
 
-  ///API_KEY HERE
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
+
+  saveSkillFilters(Map<int, List<int>> value){
+    skillFilters = value;
+  }
 
   setEmployment(List<String> employment) {
     employments = employment;
@@ -105,6 +113,18 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   setSkillFilters(List<String> value) {
     selectedSkill = value;
+  }
+
+  clearSkillFilters() {
+    selectedSkillFilters.forEach((key, value) {
+      value.forEach((element) {
+        element = false;
+      });
+    });
+  }
+
+  setSelectedSkillFilters(ObservableMap<int, ObservableList<bool>> value) {
+    selectedSkillFilters = value;
   }
 
   @action

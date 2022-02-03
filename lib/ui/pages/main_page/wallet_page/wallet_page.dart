@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
@@ -93,8 +94,8 @@ class _WalletPageState extends State<WalletPage> {
                       '${AccountRepository().userAddress!.substring(0, 9)}...'
                       '${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
                       style: const TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        // fontWeight: FontWeight.w500,
                         color: AppColor.subtitleText,
                       ),
                     ),
@@ -142,7 +143,8 @@ class _WalletPageState extends State<WalletPage> {
                     const SizedBox(
                       width: 10,
                     ),
-                    outlinedButton(route: "", title: "deposit"),
+                    outlinedButton(
+                        route: DepositPage.routeName, title: "deposit"),
                     const SizedBox(
                       width: 10,
                     ),
@@ -207,8 +209,7 @@ class _WalletPageState extends State<WalletPage> {
         pressedOpacity: 0.2,
         onPressed: () {
           ///Route to withdraw page
-          // PageRouter.pushNewRoute(
-          //     context, const WithdrawPage());
+          Navigator.of(context, rootNavigator: true).pushNamed(route);
         },
         child: Container(
           height: 43,
@@ -343,7 +344,8 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                               ? null
                               : Border.all(
                                   color:
-                                      AppColor.enabledButton.withOpacity(0.1)),
+                                      AppColor.enabledButton.withOpacity(0.1),
+                                ),
                           color: isCurrency
                               ? AppColor.enabledButton
                               : Colors.transparent,

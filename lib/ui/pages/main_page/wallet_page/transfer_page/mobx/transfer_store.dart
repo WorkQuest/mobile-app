@@ -62,7 +62,9 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       onError("Lost connection to server");
     } on FormatException catch (e) {
       this.onError(e.message);
-    } catch (e) {
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
       onError(e.toString());
     }
   }

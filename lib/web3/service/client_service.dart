@@ -44,7 +44,7 @@ abstract class ClientServiceI {
 @singleton
 class ClientService implements ClientServiceI {
   static final apiUrl = "https://dev-node-nyc3.workquest.co";
-  static final wsUrl = "wss://dev-node-nyc3.workquest.co";
+  static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
   final int _chainId = 20220112;
   final _abiAddress = '0xF38E33e7DD7e1a91c772aF51A366cd126e4552BB';
   String addressNewContract = "";
@@ -52,7 +52,7 @@ class ClientService implements ClientServiceI {
   final Web3Client _client = Web3Client(
     apiUrl,
     Client(),
-    socketConnector: () => IOWebSocketChannel.connect(wsUrl).cast<String>(),
+    // socketConnector: () => IOWebSocketChannel.connect(wsUrl).cast<String>(),
   );
 
   @override
@@ -72,9 +72,13 @@ class ClientService implements ClientServiceI {
     print('TYPE_COINS $TYPE_COINS');
     address = address.toLowerCase();
     String? hash;
+    print("privateKey: $privateKey");
+
     final bigInt = BigInt.from(double.parse(amount) * pow(10, 18));
     final credentials = await getCredentials(privateKey);
     final myAddress = await AddressService().getPublicAddress(privateKey);
+
+    print("credentials: $credentials");
 
     if (coin == TYPE_COINS.wusd) {
       hash = await _client.sendTransaction(
@@ -225,7 +229,7 @@ extension CreateQuestContract on ClientService {
     EtherAmount? value,
   }) async {
     try {
-      final credentials = await getCredentials("privateKey");
+      final credentials = await getCredentials(AccountRepository().privateKey);
       final _gasPrice = await _client.getGasPrice();
       final transactionHash = await _client.sendTransaction(
         credentials,
@@ -272,7 +276,7 @@ extension CreateContract on ClientService {
     required String deadline,
     required String nonce,
   }) async {
-    final credentials = await getCredentials("privateKey");
+    final credentials = await getCredentials(AccountRepository().privateKey);
     final contract = await getDeployedContract("WorkQuestFactory", _abiAddress);
     final ethFunction =
         contract.function(WQFContractFunctions.newWorkQuest.name);

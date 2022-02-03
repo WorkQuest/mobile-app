@@ -7,7 +7,6 @@ import '../../../../../../constants.dart';
 import '../../../../../../observer_consumer.dart';
 import 'mobx/confirm_transfer_store.dart';
 
-
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 class ConfirmTransferPage extends StatefulWidget {
@@ -29,13 +28,12 @@ class ConfirmTransferPage extends StatefulWidget {
 }
 
 class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
-
   @override
   Widget build(BuildContext context) {
     final store = context.read<ConfirmTransferStore>();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar:CupertinoNavigationBar(
+      appBar: CupertinoNavigationBar(
         middle: Text('wallet.transfer'.tr()),
       ),
       body: Padding(
@@ -51,10 +49,11 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
               addressTo: widget.addressTo,
               amount: widget.amount,
             ),
-            Expanded(child: Container()),
+            Expanded(child: SizedBox()),
             Padding(
-              padding:
-                  EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).padding.bottom + 10.0,
+              ),
               child: SizedBox(
                 width: double.infinity,
                 child: ObserverListener<ConfirmTransferStore>(
@@ -106,7 +105,8 @@ class _InformationWidget extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0), color: AppColor.disabledButton),
+          borderRadius: BorderRadius.circular(5.0),
+          color: AppColor.disabledButton),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

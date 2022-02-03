@@ -43,11 +43,8 @@ abstract class ChangeProfileStoreBase with Store {
   @action
   Future<Null> displayPrediction(String? p) async {
     PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p!);
-    userData.locationFull!.locationCode.latitude =
-        detail.result.geometry!.location.lat;
-    userData.locationFull!.locationCode.longitude =
-        detail.result.geometry!.location.lng;
-    userData.locationFull!.locationPlaceName = address;
+    userData.location!.latitude = detail.result.geometry!.location.lat;
+    userData.location!.longitude = detail.result.geometry!.location.lng;
   }
 
   bool validationKnowledge(

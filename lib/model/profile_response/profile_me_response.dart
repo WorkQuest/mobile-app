@@ -10,7 +10,7 @@ class ProfileMeResponse {
     required this.avatarId,
     required this.firstName,
     required this.lastName,
-    // required this.phone,
+    required this.phone,
     required this.tempPhone,
     required this.email,
     required this.additionalInfo,
@@ -18,7 +18,7 @@ class ProfileMeResponse {
     required this.avatar,
     required this.userSpecializations,
     required this.ratingStatistic,
-    required this.locationFull,
+    required this.location,
     required this.wagePerHour,
     required this.workplace,
     required this.priority,
@@ -32,7 +32,7 @@ class ProfileMeResponse {
   String firstName;
   String lastName;
 
-  // Phone? phone;
+  Phone? phone;
   Phone? tempPhone;
   String? email;
   AdditionalInfo? additionalInfo;
@@ -40,7 +40,7 @@ class ProfileMeResponse {
   Avatar? avatar;
   List<String> userSpecializations;
   RatingStatistic? ratingStatistic;
-  LocationFull? locationFull;
+  LocationCode? location;
   String wagePerHour;
   String? workplace;
   QuestPriority priority;
@@ -52,7 +52,7 @@ class ProfileMeResponse {
           avatarId: object.avatarId,
           firstName: object.firstName,
           lastName: object.lastName,
-          // phone: object.phone,
+          phone: object.phone,
           tempPhone: object.tempPhone,
           email: object.email,
           additionalInfo: object.additionalInfo != null
@@ -64,8 +64,8 @@ class ProfileMeResponse {
           ratingStatistic: object.ratingStatistic != null
               ? RatingStatistic.clone(object.ratingStatistic!)
               : null,
-          locationFull: object.locationFull != null
-              ? LocationFull.clone(object.locationFull!)
+          location: object.location != null
+              ? LocationCode.clone(object.location!)
               : null,
           wagePerHour: object.wagePerHour,
           workplace: object.workplace,
@@ -83,7 +83,7 @@ class ProfileMeResponse {
       avatarId: json["avatarId"] ?? "",
       firstName: json["firstName"] ?? "",
       lastName: json["lastName"] ?? "",
-      // phone: json["phone"] == null ? null : Phone.fromJson(json["phone"]),
+      phone: json["phone"] == null ? null : Phone.fromJson(json["phone"]),
       tempPhone:
           json["tempPhone"] == null ? null : Phone.fromJson(json["tempPhone"]),
       email: json["email"],
@@ -111,9 +111,9 @@ class ProfileMeResponse {
             // createdAt: createdAt,
             // updatedAt: updatedAt,
           }),
-      locationFull: json["location"] == null
+      location: json["location"] == null
           ? null
-          : LocationFull.fromJson(json["location"]),
+          : LocationCode.fromJson(json["location"]),
       wagePerHour: json["wagePerHour"] ?? "0",
       workplace: json["workplace"],
       priority: QuestPriority.values[json["priority"] ?? 0],
@@ -139,7 +139,7 @@ class ProfileMeResponse {
         // "skillFilter": skillFilters.map((item) => item.toJson()),
         "ratingStatistic":
             ratingStatistic == null ? null : ratingStatistic!.toJson(),
-        "location": locationFull == null ? null : locationFull!.toJson(),
+        "location": location == null ? null : location!.toJson(),
         "wagePerHour": wagePerHour,
         "workplace": workplace,
         "priority": priority.index,

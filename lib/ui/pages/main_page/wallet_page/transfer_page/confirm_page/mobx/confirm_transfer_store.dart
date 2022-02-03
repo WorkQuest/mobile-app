@@ -16,6 +16,7 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
   sendTransaction(String addressTo, String amount, String titleCoin) async {
     onLoading();
     try {
+      print("privatekey: ${AccountRepository().privateKey}");
       await AccountRepository().client!.sendTransaction(
             privateKey: AccountRepository().privateKey,
             address: addressTo,

@@ -590,8 +590,8 @@ extension UserInfoService on ApiProvider {
         if (userData.role == UserRole.Worker)
           "specializationKeys": userData.userSpecializations,
         "location": {
-          "longitude": userData.locationFull?.locationCode.longitude ?? 0,
-          "latitude": userData.locationFull?.locationCode.latitude ?? 0,
+          "longitude": userData.location?.longitude ?? 0,
+          "latitude": userData.location?.latitude ?? 0,
         }
       };
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");

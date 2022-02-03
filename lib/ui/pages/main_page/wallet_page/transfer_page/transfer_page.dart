@@ -11,7 +11,6 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../constants.dart';
-import '../../../../../observer_consumer.dart';
 import 'confirm_page/confirm_transfer_page.dart';
 import 'mobx/transfer_store.dart';
 
@@ -193,30 +192,23 @@ class _TransferPageState extends State<TransferPage> {
                 controller: _amountController,
                 decoration: InputDecoration(
                   hintText: 'wallet.enterAmount'.tr(),
-                  suffixIcon: ObserverListener<TransferStore>(
-                    //onFailure: () => false,
-                    onSuccess: () {
+                  suffixIcon: CupertinoButton(
+                    padding: const EdgeInsets.only(right: 12.5),
+                    child: Text(
+                      'wallet.max'.tr(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColor.enabledButton,
+                      ),
+                    ),
+                    onPressed: () async {
+                      await store.getMaxAmount();
                       _amountController.text = store.amount;
                     },
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.only(right: 12.5),
-                      child: Text(
-                        'wallet.max'.tr(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColor.enabledButton,
-                        ),
-                      ),
-                      onPressed: () async {
-                        await store.getMaxAmount();
-                      },
-                    ),
                   ),
                 ),
-                // keyboardType: TextInputType.number,
-
-                inputFormatters: [
+                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                 ],
                 keyboardType:
@@ -270,7 +262,7 @@ class _TransferPageState extends State<TransferPage> {
         context,
         MaterialPageRoute(
           builder: (_) => Provider(
-            create :(_)=> ConfirmTransferStore(),
+            create: (_) => ConfirmTransferStore(),
             child: ConfirmTransferPage(
               fee: store.fee,
               titleCoin: store.titleSelectedCoin,

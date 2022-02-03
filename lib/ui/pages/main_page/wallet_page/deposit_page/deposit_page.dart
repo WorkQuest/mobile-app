@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share/share.dart';
 
 final _divider = const SizedBox(
@@ -106,9 +107,16 @@ class _DepositPageState extends State<DepositPage>
           mainAxisSize: MainAxisSize.min,
           children: [
             Center(
-              child: Image.asset(
-                "assets/qr_code_placeholder.jpg",
-              ),
+              child: AccountRepository().userAddress != null
+                  ? QrImage(
+                      data: AccountRepository().userAddress!,
+                      version: QrVersions.auto,
+                      size: 200.0,
+                    )
+                  : CircularProgressIndicator(),
+              // Image.asset(
+              //   "assets/qr_code_placeholder.jpg",
+              // ),
             ),
             _divider,
             Text(
@@ -150,7 +158,9 @@ class _DepositPageState extends State<DepositPage>
                   child: SizedBox(
                     height: 43.0,
                     child: OutlinedButton(
-                      onPressed: () => Share.share("http://en.m.wikipedia.org"),
+                      onPressed: () => AccountRepository().userAddress != null
+                          ? Share.share(AccountRepository().userAddress!)
+                          : null,
                       child: Text(
                         "sharing.title".tr(),
                       ),
@@ -168,20 +178,22 @@ class _DepositPageState extends State<DepositPage>
                 ),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => Clipboard.setData(
-                      new ClipboardData(
-                        text: "0xu383d7g...dq9w",
-                      ),
-                    ).then((_) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: Duration(seconds: 1),
-                          content: Text(
-                            "wallet.copy".tr(),
-                          ),
-                        ),
-                      );
-                    }),
+                    onPressed: () => AccountRepository().userAddress != null
+                        ? Clipboard.setData(
+                            new ClipboardData(
+                              text: AccountRepository().userAddress!,
+                            ),
+                          ).then((_) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: Duration(seconds: 1),
+                                content: Text(
+                                  "wallet.copy".tr(),
+                                ),
+                              ),
+                            );
+                          })
+                        : null,
                     child: Text(
                       "modals.copy".tr(),
                     ),

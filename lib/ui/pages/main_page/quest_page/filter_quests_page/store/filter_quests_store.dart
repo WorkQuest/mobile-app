@@ -8,8 +8,10 @@ import 'package:app/base_store/i_store.dart';
 
 part 'filter_quests_store.g.dart';
 
-@injectable
-class FilterQuestsStore = FilterQuestsStoreBase with _$FilterQuestsStore;
+@singleton
+class FilterQuestsStore extends FilterQuestsStoreBase with _$FilterQuestsStore {
+  FilterQuestsStore(ApiProvider apiProvider) : super(apiProvider);
+}
 
 abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
@@ -25,11 +27,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   ObservableList<bool> employment = ObservableList.of(
     List.generate(4, (index) => false),
   );
-
-  // @observable
-  // ObservableList<bool> workplace = ObservableList.of(
-  //   List.generate(3, (index) => false),
-  // );
 
   @observable
   ObservableList<bool> priority = ObservableList.of(
@@ -49,7 +46,8 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   String sort = "";
 
   @observable
-  ObservableMap<int, ObservableList<bool>> selectedSkillFilters = ObservableMap.of({});
+  ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
+      ObservableMap.of({});
 
   @observable
   List<String> sortBy = [
@@ -61,18 +59,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   @observable
   String selectSortBy = "";
-
-  // @observable
-  // List<String> sortByQuestDelivery = [
-  //   "quests.filter.sortByQuestDelivery.selectAll".tr(),
-  //   "quests.filter.sortByQuestDelivery.urgent".tr(),
-  //   "quests.filter.sortByQuestDelivery.shortTerm".tr(),
-  //   "quests.filter.sortByQuestDelivery.fixedDelivery".tr(),
-  // ];
-  //
-  // @observable
-  // ObservableList<bool> selectQuestDelivery =
-  // ObservableList.of(List.generate(4, (index) => false));
 
   @observable
   ObservableList<String> sortByEmployment = ObservableList.of([
@@ -97,10 +83,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     "quests.filter.sortByQuestDelivery.shortTerm".tr(),
     "quests.filter.sortByQuestDelivery.fixedDelivery".tr(),
   ]);
-
-  // @observable
-  // ObservableList<bool> selectPriority =
-  // ObservableList.of(List.generate(4, (index) => false));
 
   @observable
   ObservableList<String> sortByEmployeeRating = ObservableList.of([
@@ -309,33 +291,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     return employeeRatingValue;
   }
 
-  //
-  // @action
-  // void setSelectedQuestDelivery(bool? value, int index) {
-  //   switch (index) {
-  //     case 0:
-  //       for (int i = 0; i < selectQuestDelivery.length; i++)
-  //         selectQuestDelivery[i] = value ?? false;
-  //       break;
-  //     case 1:
-  //       selectQuestDelivery[1] = value ?? false;
-  //       break;
-  //     case 2:
-  //       selectQuestDelivery[2] = value ?? false;
-  //       break;
-  //     case 3:
-  //       selectQuestDelivery[3] = value ?? false;
-  //       break;
-  //   }
-  //   for (int i = 1; i < selectQuestDelivery.length; i++) {
-  //     if (selectQuestDelivery[i] == false) {
-  //       selectQuestDelivery[0] = false;
-  //       break;
-  //     }
-  //     if (i == selectQuestDelivery.length - 1) selectQuestDelivery[0] = true;
-  //   }
-  // }
-
   @computed
   bool get allSelected => false;
 
@@ -365,16 +320,20 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     }
   }
 
+  void initSkillFiltersValue(ObservableMap<int, ObservableList<bool>> value) {
+    selectedSkillFilters = value;
+  }
+
   @action
   void initEmployments(List<String> value) {
     value.forEach((element) {
-      if (element == "fullTime") selectRating[1] = true;
-      if (element == "partTime") selectRating[2] = true;
-      if (element == "fixedTerm") selectRating[3] = true;
+      if (element == "fullTime") selectEmployment[1] = true;
+      if (element == "partTime") selectEmployment[2] = true;
+      if (element == "fixedTerm") selectEmployment[3] = true;
     });
-    if (selectRating[1] == true &&
-        selectRating[2] == true &&
-        selectRating[3] == true) selectRating[0] = true;
+    if (selectEmployment[1] == true &&
+        selectEmployment[2] == true &&
+        selectEmployment[3] == true) selectEmployment[0] = true;
   }
 
   @action
@@ -432,8 +391,8 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   void initSkillFilters(List<String> value) {
     for (int i = 1; i < skillFilters.keys.length + 2; i++) {
       if (skillFilters[i] != null)
-        selectedSkillFilters[i - 1] = ObservableList.of
-            (List.generate(skillFilters[i]!.length, (index) => false));
+        selectedSkillFilters[i - 1] = ObservableList.of(
+            List.generate(skillFilters[i]!.length, (index) => false));
     }
     value.forEach((element) {
       String skill = element.split(".")[1];
@@ -456,9 +415,14 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   @action
   void setSortBy(String? index) => selectSortBy = index!;
 
-  Future getFilters(List<String> value) async {
-    skillFilters = await _apiProvider.getSkillFilters();
-    initSkillFilters(value);
-    isLoading = false;
+  Future getFilters(
+      List<String> selectedSkills, Map<int, List<int>> value) async {
+    this.onLoading();
+    if (value.isEmpty)
+      skillFilters = await _apiProvider.getSkillFilters();
+    else
+      skillFilters = value;
+    initSkillFilters(selectedSkills);
+    this.onSuccess(true);
   }
 }
