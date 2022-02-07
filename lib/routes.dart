@@ -140,17 +140,23 @@ class Routes {
 
       case ChangePasswordPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<SettingsPageStore>(),
-            child: ChangePasswordPage(),
+          builder: (context) => Directionality(
+            textDirection: checkDirection(context),
+            child: Provider(
+              create: (context) => getIt.get<SettingsPageStore>(),
+              child: ChangePasswordPage(),
+            ),
           ),
         );
 
       case SMSVerificationPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<SMSVerificationStore>(),
-            child: SMSVerificationPage(),
+          builder: (context) => Directionality(
+            textDirection: checkDirection(context),
+            child: Provider(
+              create: (context) => getIt.get<SMSVerificationStore>(),
+              child: SMSVerificationPage(),
+            ),
           ),
         );
 

@@ -28,6 +28,7 @@ class ConfirmTransferPage extends StatefulWidget {
 }
 
 class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
+
   @override
   Widget build(BuildContext context) {
     final store = context.read<ConfirmTransferStore>();

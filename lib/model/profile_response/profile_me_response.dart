@@ -5,28 +5,29 @@ import 'package:app/model/quests_models/location_full.dart';
 // import 'package:app/model/profile_response/rating_statistic.dart';
 
 class ProfileMeResponse {
-  ProfileMeResponse({
-    required this.id,
-    required this.avatarId,
-    required this.firstName,
-    required this.lastName,
-    required this.phone,
-    required this.tempPhone,
-    required this.email,
-    required this.additionalInfo,
-    required this.role,
-    required this.avatar,
-    required this.userSpecializations,
-    required this.ratingStatistic,
-    required this.location,
-    required this.wagePerHour,
-    required this.workplace,
-    required this.priority,
-    required this.questsStatistic,
-    required this.walletAddress,
-    // required this.createdAt,
-    // required this.updatedAt,
-  });
+  ProfileMeResponse(
+      {required this.id,
+      required this.avatarId,
+      required this.firstName,
+      required this.lastName,
+      required this.phone,
+      required this.tempPhone,
+      required this.email,
+      required this.additionalInfo,
+      required this.role,
+      required this.avatar,
+      required this.userSpecializations,
+      required this.ratingStatistic,
+      required this.location,
+      required this.wagePerHour,
+      required this.workplace,
+      required this.priority,
+      required this.questsStatistic,
+      required this.walletAddress,
+      required this.isTotpActive
+      // required this.createdAt,
+      // required this.updatedAt,
+      });
 
   String id;
   String avatarId;
@@ -47,6 +48,7 @@ class ProfileMeResponse {
   QuestPriority priority;
   QuestsStatistic? questsStatistic;
   String? walletAddress;
+  bool isTotpActive;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(
@@ -74,6 +76,7 @@ class ProfileMeResponse {
           priority: object.priority,
           questsStatistic: object.questsStatistic,
           walletAddress: object.walletAddress,
+          isTotpActive: object.isTotpActive,
         );
 
   //RatingStatistic? ratingStatistic;
@@ -123,7 +126,8 @@ class ProfileMeResponse {
       questsStatistic: json["questsStatistic"] == null
           ? null
           : QuestsStatistic.fromJson(json["questsStatistic"]),
-      walletAddress:json["wallet"]?["address"],
+      walletAddress: json["wallet"]?["address"],
+      isTotpActive: json["totpIsActive"],
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );

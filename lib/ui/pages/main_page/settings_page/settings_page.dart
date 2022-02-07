@@ -89,7 +89,7 @@ class SettingsPage extends StatelessWidget {
                                 icon: CupertinoSwitch(
                                   activeColor: const Color(0xFF0083C7),
                                   onChanged: (_) {},
-                                  value: userStore.twoFAStatus ?? false,
+                                  value: userStore.userData?.isTotpActive ?? false,
                                 ),
                                 title: "settings.2FA".tr(),
                                 onTap: () {

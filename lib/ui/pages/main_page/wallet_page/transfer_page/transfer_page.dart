@@ -38,6 +38,7 @@ class _TransferPageState extends State<TransferPage> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final _key = GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> _ey = GlobalKey<ScaffoldState>();
   _CoinItem? _currentCoin;
 
   late TransferStore store;
@@ -68,6 +69,7 @@ class _TransferPageState extends State<TransferPage> {
   Widget build(BuildContext context) {
     final store = context.read<TransferStore>();
     return Scaffold(
+      key: _ey,
       backgroundColor: Colors.white,
       appBar: CupertinoNavigationBar(
         middle: Text(

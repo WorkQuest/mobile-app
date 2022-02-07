@@ -92,8 +92,7 @@ class _WalletPageState extends State<WalletPage> {
                       padding: EdgeInsets.zero,
                       pressedOpacity: 0.2,
                       onPressed: () {
-                        Clipboard.setData(ClipboardData(
-                            text:address));
+                        Clipboard.setData(ClipboardData(text: address));
                         SnackBarUtils.success(
                           context,
                           title: 'wallet'.tr(gender: 'copy'),
@@ -181,7 +180,10 @@ class _WalletPageState extends State<WalletPage> {
             shadowColor: Colors.transparent,
           ),
         ),
-        SliverPadding(padding: _padding, sliver: const ListTransactions()),
+        SliverPadding(
+          padding: _padding,
+          sliver: const ListTransactions(),
+        ),
       ],
     );
   }
