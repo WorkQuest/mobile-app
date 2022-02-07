@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:app/base_store/i_store.dart';
 import 'package:app/di/injector.dart';
 import 'package:app/http/api_provider.dart';
@@ -65,12 +64,14 @@ abstract class _SignInStore extends IStore<bool> with Store {
       await _apiProvider.walletLogin(signature, wallet.address!);
       await Storage.write(Storage.wallets, jsonEncode([wallet.toJson()]));
       await Storage.write(Storage.activeAddress, wallet.address!);
+      AccountRepository().clearData();
       AccountRepository().userAddress = wallet.address;
       AccountRepository().addWallet(wallet);
       this.onSuccess(true);
     } on FormatException catch (e) {
       onError(e.message);
-    } catch (e) {
+    } catch (e,tr) {
+      print("error $e $tr");
       onError(e.toString());
     }
   }

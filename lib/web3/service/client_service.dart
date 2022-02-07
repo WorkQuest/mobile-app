@@ -155,7 +155,6 @@ class ClientService implements ClientServiceI {
   @override
   Future<EtherAmount> getBalance(String privateKey) async {
     final credentials = await getCredentials(privateKey);
-    print("balaance${_client.getBalance(credentials.address)}");
     return _client.getBalance(credentials.address);
   }
 
@@ -170,7 +169,6 @@ class ClientService implements ClientServiceI {
       final balance = await getBalanceInUnit(unit, privateKey);
       return BalanceItem(unit.name, balance.toString());
     }).toList();
-
     return list;
   }
 
@@ -181,7 +179,6 @@ class ClientService implements ClientServiceI {
       final balance = await getBalanceInUnit(unit, privateKey);
       return BalanceItem(unit.name, balance.toString());
     }).toList();
-    list.forEach(print);
     return list;
   }
 
@@ -359,11 +356,6 @@ extension CheckAddres on ClientService {
         function: ethFunction,
         params: [EthereumAddress.fromHex(address)],
       );
-
-      outputs.forEach((element) {
-        print(element);
-      });
-
       return outputs;
     } catch (e, tr) {
       print("Error: $e \n Trace: $tr");

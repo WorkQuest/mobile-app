@@ -27,7 +27,7 @@ class AccountRepository {
 
   clearData() {
     userAddress = null;
-    userAddresses!.clear();
+    userAddresses?.clear();
   }
 }
 

@@ -34,8 +34,6 @@ abstract class _WalletStore extends IStore<bool> with Store {
       onLoading();
     }
     try {
-      print('getCoins');
-
       final list =
           await ClientService().getAllBalance(AccountRepository().privateKey);
       if (coins.isNotEmpty) {
@@ -82,10 +80,10 @@ abstract class _WalletStore extends IStore<bool> with Store {
       result.map((tran) {
         if (tran.contractAddress != null) {
           tran.coin = TYPE_COINS.wqt;
-          final res = BigInt.parse(
-              tran.logs!.first.data.toString().substring(2),
-              radix: 16);
-          tran.value = res.toString();
+          // final res = BigInt.parse(
+          //     tran.logs!.first.data.toString().substring(2),
+          //     radix: 16);
+          // tran.value = res.toString();
         } else {
           tran.coin = TYPE_COINS.wusd;
         }
@@ -120,15 +118,14 @@ abstract class _WalletStore extends IStore<bool> with Store {
       result.map((tran) {
         if (tran.contractAddress != null) {
           tran.coin = TYPE_COINS.wqt;
-          final res = BigInt.parse(
-              tran.logs!.first.data.toString().substring(2),
-              radix: 16);
-          tran.value = res.toString();
+          // final res = BigInt.parse(
+          //     tran.logs!.first.data.toString().substring(2),
+          //     radix: 16);
+          //tran.value = res.toString();
         } else {
           tran.coin = TYPE_COINS.wusd;
         }
       }).toList();
-
       transactions.addAll(result);
       await Future.delayed(const Duration(milliseconds: 500));
       isMoreLoading = false;

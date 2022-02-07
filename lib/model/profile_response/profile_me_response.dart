@@ -123,7 +123,7 @@ class ProfileMeResponse {
       questsStatistic: json["questsStatistic"] == null
           ? null
           : QuestsStatistic.fromJson(json["questsStatistic"]),
-        walletAddress: json["wallet"]["address"],
+      walletAddress:json["wallet"]?["address"],
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );
