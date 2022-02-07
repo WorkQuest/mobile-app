@@ -16,21 +16,6 @@ mixin _$SignInStore on _SignInStore, Store {
           Computed<bool>(() => super.canSignIn, name: '_SignInStore.canSignIn'))
       .value;
 
-  final _$walletSuccessAtom = Atom(name: '_SignInStore.walletSuccess');
-
-  @override
-  bool get walletSuccess {
-    _$walletSuccessAtom.reportRead();
-    return super.walletSuccess;
-  }
-
-  @override
-  set walletSuccess(bool value) {
-    _$walletSuccessAtom.reportWrite(value, super.walletSuccess, () {
-      super.walletSuccess = value;
-    });
-  }
-
   final _$_usernameAtom = Atom(name: '_SignInStore._username');
 
   @override
@@ -76,20 +61,18 @@ mixin _$SignInStore on _SignInStore, Store {
     });
   }
 
-  final _$loginWalletAsyncAction = AsyncAction('_SignInStore.loginWallet');
+  final _$signInWalletAsyncAction = AsyncAction('_SignInStore.signInWallet');
 
   @override
-  Future loginWallet() {
-    return _$loginWalletAsyncAction.run(() => super.loginWallet());
+  Future signInWallet() {
+    return _$signInWalletAsyncAction.run(() => super.signInWallet());
   }
 
-  final _$signInWithUsernameAsyncAction =
-      AsyncAction('_SignInStore.signInWithUsername');
+  final _$signInAsyncAction = AsyncAction('_SignInStore.signIn');
 
   @override
-  Future<dynamic> signInWithUsername() {
-    return _$signInWithUsernameAsyncAction
-        .run(() => super.signInWithUsername());
+  Future<dynamic> signIn() {
+    return _$signInAsyncAction.run(() => super.signIn());
   }
 
   final _$_SignInStoreActionController = ActionController(name: '_SignInStore');
@@ -141,7 +124,6 @@ mixin _$SignInStore on _SignInStore, Store {
   @override
   String toString() {
     return '''
-walletSuccess: ${walletSuccess},
 mnemonic: ${mnemonic},
 canSignIn: ${canSignIn}
     ''';

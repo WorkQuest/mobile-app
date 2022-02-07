@@ -70,6 +70,15 @@ mixin _$WalletStore on _WalletStore, Store {
         .run(() => super.getTransactions(isForce: isForce));
   }
 
+  final _$getTransactionsMoreAsyncAction =
+      AsyncAction('_WalletStore.getTransactionsMore');
+
+  @override
+  Future getTransactionsMore() {
+    return _$getTransactionsMoreAsyncAction
+        .run(() => super.getTransactionsMore());
+  }
+
   @override
   String toString() {
     return '''

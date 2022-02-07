@@ -363,6 +363,7 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
                     workplace: element.workplace,
                     priority: element.priority,
                     questsStatistic: element.questsStatistic,
+                    walletAddress: element.walletAddress,
                   )),
                 }
             });

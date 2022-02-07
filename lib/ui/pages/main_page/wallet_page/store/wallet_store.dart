@@ -66,7 +66,6 @@ abstract class _WalletStore extends IStore<bool> with Store {
     if (isForce) {
       onLoading();
     }
-
     try {
       if (isForce) {
         if (transactions.isNotEmpty) {

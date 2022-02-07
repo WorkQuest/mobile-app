@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:app/model/web3/transactions_response.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
-import 'package:app/ui/widgets/running_line.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/material.dart';

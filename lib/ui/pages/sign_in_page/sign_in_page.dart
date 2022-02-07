@@ -184,8 +184,7 @@ class SignInPage extends StatelessWidget {
                               onPressed: signInStore.canSignIn
                                   ? () async {
                                       if (_formKey.currentState!.validate()) {
-                                        await signInStore.loginWallet();
-                                        await signInStore.signInWithUsername();
+                                        await signInStore.signIn();
                                       }
                                     }
                                   : null,
