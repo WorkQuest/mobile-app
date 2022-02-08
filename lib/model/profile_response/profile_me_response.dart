@@ -2,7 +2,6 @@ import 'package:app/enums.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/avatar.dart';
 import 'package:app/model/quests_models/location_full.dart';
-// import 'package:app/model/profile_response/rating_statistic.dart';
 
 class ProfileMeResponse {
   ProfileMeResponse({
@@ -24,6 +23,8 @@ class ProfileMeResponse {
     required this.workplace,
     required this.priority,
     required this.questsStatistic,
+    required this.walletAddress,
+    required this.isTotpActive,
     // required this.createdAt,
     // required this.updatedAt,
   });
