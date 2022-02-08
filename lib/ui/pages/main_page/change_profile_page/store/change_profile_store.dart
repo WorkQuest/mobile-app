@@ -4,6 +4,7 @@ import 'package:app/keys.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -25,6 +26,12 @@ abstract class ChangeProfileStoreBase with Store {
   @observable
   String address = "";
 
+  @observable
+  PhoneNumber? phoneNumber;
+
+  @observable
+  PhoneNumber? secondPhoneNumber;
+
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
@@ -41,10 +48,20 @@ abstract class ChangeProfileStoreBase with Store {
   }
 
   @action
+  Future<void> getInitCode(Phone firstPhone, Phone? secondPhone) async {
+    phoneNumber =
+        await PhoneNumber.getRegionInfoFromPhoneNumber(firstPhone.fullPhone);
+    if (secondPhone != null)
+      secondPhoneNumber =
+          await PhoneNumber.getRegionInfoFromPhoneNumber(secondPhone.fullPhone);
+  }
+
+  @action
   Future<Null> displayPrediction(String? p) async {
     PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p!);
-    userData.location!.latitude = detail.result.geometry!.location.lat;
-    userData.location!.longitude = detail.result.geometry!.location.lng;
+    userData.locationCode!.latitude = detail.result.geometry!.location.lat;
+    userData.locationCode!.longitude = detail.result.geometry!.location.lng;
+    userData.locationPlaceName = address;
   }
 
   bool validationKnowledge(

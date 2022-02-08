@@ -280,7 +280,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           ),
       ];
 
-  List<Widget> workerRateWidgets() => [
+  List<Widget> ratingsWidget() => [
         workerRating(
           completedQuests: widget.info == null
               ? userStore!.userData!.questsStatistic!.completed.toString()
@@ -294,6 +294,10 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           reviews: widget.info == null
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
               : widget.info!.ratingStatistic!.reviewCount.toString(),
+          userId: widget.info == null
+              ? userStore!.userData!.id
+              : widget.info!.id,
+          context: context,
         ),
       ];
 }

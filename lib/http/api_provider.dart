@@ -159,6 +159,20 @@ extension QuestService on ApiProvider {
     }
   }
 
+  Future<List<BaseQuestResponse>> getAvailableQuests({
+    String userId = "",
+  }) async {
+    try {
+      final responseData = await httpClient.get(
+        query: "/v1/worker/$userId/available-quests"
+      );
+      return List<BaseQuestResponse>.from(
+          responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)));
+    } catch (e) {
+      return [];
+    }
+  }
+
   Future<List<BaseQuestResponse>> getWorkerQuests({
     String userId = "",
     int limit = 10,
@@ -526,6 +540,11 @@ extension UserInfoService on ApiProvider {
     try {
       final body = {
         "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
+        "phoneNumber": {
+          "codeRegion": userData.phone.codeRegion,
+          "phone": userData.phone.phone,
+          "fullPhone": userData.phone.fullPhone
+        },
         "firstName": userData.firstName,
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
         if (userData.role == UserRole.Worker)
@@ -534,11 +553,12 @@ extension UserInfoService on ApiProvider {
           "priority": userData.priority.index,
         if (userData.role == UserRole.Worker) "workplace": userData.workplace,
         "additionalInfo": {
-          "secondMobileNumber": (userData.additionalInfo?.secondMobileNumber
-                      ?.fullPhone.isNotEmpty ??
-                  false)
-              ? userData.additionalInfo?.secondMobileNumber
-              : null,
+          "secondMobileNumber": {
+            "codeRegion":
+                userData.additionalInfo?.secondMobileNumber.codeRegion,
+            "phone": userData.additionalInfo?.secondMobileNumber.phone,
+            "fullPhone": userData.additionalInfo?.secondMobileNumber.fullPhone,
+          },
           "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
               ? userData.additionalInfo?.address
               : null,
@@ -588,9 +608,12 @@ extension UserInfoService on ApiProvider {
         },
         if (userData.role == UserRole.Worker)
           "specializationKeys": userData.userSpecializations,
-        "location": {
-          "longitude": userData.location?.longitude ?? 0,
-          "latitude": userData.location?.latitude ?? 0,
+        "locationFull": {
+          "location": {
+            "longitude": userData.locationCode?.longitude ?? 0,
+            "latitude": userData.locationCode?.latitude ?? 0
+          },
+          "locationPlaceName": userData.locationPlaceName ?? "",
         }
       };
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");

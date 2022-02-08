@@ -18,6 +18,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_employer.dart';
@@ -272,6 +273,21 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChooseRolePage(),
+            ),
+          ),
+        );
+
+      case ProfileQuestsPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ProfileQuestsPage(settings.arguments as ProfileMeStore),
             ),
           ),
         );

@@ -51,10 +51,10 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   @observable
   List<String> sortBy = [
-    "quests.filter.sortBy.addedTimeAscending".tr(),
-    "quests.filter.sortBy.addedTimeDescending".tr(),
-    "quests.filter.sortBy.priceAscending".tr(),
-    "quests.filter.sortBy.priceDescending".tr(),
+    "quests.filter.sortBy.addedTimeAscending",
+    "quests.filter.sortBy.addedTimeDescending",
+    "quests.filter.sortBy.priceAscending",
+    "quests.filter.sortBy.priceDescending",
   ];
 
   @observable
@@ -62,10 +62,10 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   @observable
   ObservableList<String> sortByEmployment = ObservableList.of([
-    "quests.filter.sortByEmployment.selectAll".tr(),
-    "quests.filter.sortByEmployment.fullTime".tr(),
-    "quests.filter.sortByEmployment.partTime".tr(),
-    "quests.filter.sortByEmployment.fixedTerm".tr(),
+    "quests.filter.sortByEmployment.selectAll",
+    "quests.filter.sortByEmployment.fullTime",
+    "quests.filter.sortByEmployment.partTime",
+    "quests.filter.sortByEmployment.fixedTerm",
   ]);
 
   @observable
@@ -78,18 +78,18 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   @observable
   ObservableList<String> sortByPriority = ObservableList.of([
-    "quests.filter.sortByQuestDelivery.selectAll".tr(),
-    "quests.filter.sortByQuestDelivery.urgent".tr(),
-    "quests.filter.sortByQuestDelivery.shortTerm".tr(),
-    "quests.filter.sortByQuestDelivery.fixedDelivery".tr(),
+    "quests.filter.sortByQuestDelivery.selectAll",
+    "quests.filter.sortByQuestDelivery.urgent",
+    "quests.filter.sortByQuestDelivery.shortTerm",
+    "quests.filter.sortByQuestDelivery.fixedDelivery",
   ]);
 
   @observable
   ObservableList<String> sortByEmployeeRating = ObservableList.of([
-    "quests.filter.sortByEmployeeRating.selectAll".tr(),
-    "quests.filter.sortByEmployeeRating.verifiedEmployee".tr(),
-    "quests.filter.sortByEmployeeRating.reliableEmployee".tr(),
-    "quests.filter.sortByEmployeeRating.aHigherLevelOfTrustEmployee".tr(),
+    "quests.filter.sortByEmployeeRating.selectAll",
+    "quests.filter.sortByEmployeeRating.verifiedEmployee",
+    "quests.filter.sortByEmployeeRating.reliableEmployee",
+    "quests.filter.sortByEmployeeRating.aHigherLevelOfTrustEmployee",
   ]);
 
   @observable
@@ -98,9 +98,9 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   @observable
   ObservableList<String> sortByWorkplace = ObservableList.of([
-    "quests.distantWork.bothVariant".tr(),
-    "quests.distantWork.distantWork".tr(),
-    "quests.distantWork.workInOffice".tr(),
+    "quests.distantWork.bothVariant",
+    "quests.distantWork.distantWork",
+    "quests.distantWork.workInOffice",
   ]);
 
   @observable

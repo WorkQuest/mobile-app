@@ -17,7 +17,7 @@ class AdditionalInfo {
       required this.workExperiences,
       required this.avatar});
 
-  Phone? secondMobileNumber;
+  Phone secondMobileNumber;
   String? address;
   SocialNetwork? socialNetwork;
   String? description;
@@ -47,7 +47,14 @@ class AdditionalInfo {
 
   factory AdditionalInfo.fromJson(Map<String, dynamic> json) {
     return AdditionalInfo(
-      secondMobileNumber: json["secondMobileNumber"] == null ? null : Phone.fromJson(json["secondMobileNumber"]),
+      secondMobileNumber: Phone.fromJson(
+        json["secondMobileNumber"] ??
+            {
+              "codeRegion": "",
+              "fullPhone": "",
+              "phone": "",
+            },
+      ),
       address: json["address"],
       socialNetwork: json["socialNetwork"] == null
           ? null

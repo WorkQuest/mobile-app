@@ -5,36 +5,35 @@ import 'package:app/model/quests_models/location_full.dart';
 // import 'package:app/model/profile_response/rating_statistic.dart';
 
 class ProfileMeResponse {
-  ProfileMeResponse(
-      {required this.id,
-      required this.avatarId,
-      required this.firstName,
-      required this.lastName,
-      required this.phone,
-      required this.tempPhone,
-      required this.email,
-      required this.additionalInfo,
-      required this.role,
-      required this.avatar,
-      required this.userSpecializations,
-      required this.ratingStatistic,
-      required this.location,
-      required this.wagePerHour,
-      required this.workplace,
-      required this.priority,
-      required this.questsStatistic,
-      required this.walletAddress,
-      required this.isTotpActive
-      // required this.createdAt,
-      // required this.updatedAt,
-      });
+  ProfileMeResponse({
+    required this.id,
+    required this.avatarId,
+    required this.firstName,
+    required this.lastName,
+    required this.phone,
+    required this.tempPhone,
+    required this.email,
+    required this.additionalInfo,
+    required this.role,
+    required this.avatar,
+    required this.userSpecializations,
+    required this.ratingStatistic,
+    required this.locationCode,
+    required this.locationPlaceName,
+    required this.wagePerHour,
+    required this.workplace,
+    required this.priority,
+    required this.questsStatistic,
+    // required this.createdAt,
+    // required this.updatedAt,
+  });
 
   String id;
   String avatarId;
   String firstName;
   String lastName;
 
-  Phone? phone;
+  Phone phone;
   Phone? tempPhone;
   String? email;
   AdditionalInfo? additionalInfo;
@@ -42,7 +41,8 @@ class ProfileMeResponse {
   Avatar? avatar;
   List<String> userSpecializations;
   RatingStatistic? ratingStatistic;
-  LocationCode? location;
+  LocationCode? locationCode;
+  String? locationPlaceName;
   String wagePerHour;
   String? workplace;
   QuestPriority priority;
@@ -68,9 +68,10 @@ class ProfileMeResponse {
           ratingStatistic: object.ratingStatistic != null
               ? RatingStatistic.clone(object.ratingStatistic!)
               : null,
-          location: object.location != null
-              ? LocationCode.clone(object.location!)
+          locationCode: object.locationCode != null
+              ? LocationCode.clone(object.locationCode!)
               : null,
+          locationPlaceName: object.locationPlaceName,
           wagePerHour: object.wagePerHour,
           workplace: object.workplace,
           priority: object.priority,
@@ -89,7 +90,14 @@ class ProfileMeResponse {
       avatarId: json["avatarId"] ?? "",
       firstName: json["firstName"] ?? "",
       lastName: json["lastName"] ?? "",
-      phone: json["phone"] == null ? null : Phone.fromJson(json["phone"]),
+      phone: Phone.fromJson(
+        json["phone"] ??
+            {
+              "codeRegion": "",
+              "fullPhone": "",
+              "phone": "",
+            },
+      ),
       tempPhone:
           json["tempPhone"] == null ? null : Phone.fromJson(json["tempPhone"]),
       email: json["email"],
@@ -117,9 +125,10 @@ class ProfileMeResponse {
             // createdAt: createdAt,
             // updatedAt: updatedAt,
           }),
-      location: json["location"] == null
+      locationCode: json["location"] == null
           ? null
           : LocationCode.fromJson(json["location"]),
+      locationPlaceName: json["locationPlaceName"] ?? "",
       wagePerHour: json["wagePerHour"] ?? "0",
       workplace: json["workplace"],
       priority: QuestPriority.values[json["priority"] ?? 0],
@@ -147,7 +156,8 @@ class ProfileMeResponse {
         // "skillFilter": skillFilters.map((item) => item.toJson()),
         "ratingStatistic":
             ratingStatistic == null ? null : ratingStatistic!.toJson(),
-        "location": location == null ? null : location!.toJson(),
+        "location": locationCode == null ? null : locationCode!.toJson(),
+        "locationPlaceName": locationPlaceName,
         "wagePerHour": wagePerHour,
         "workplace": workplace,
         "priority": priority.index,

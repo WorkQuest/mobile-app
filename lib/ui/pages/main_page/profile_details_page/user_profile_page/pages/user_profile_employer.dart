@@ -52,7 +52,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
         ),
       ];
 
-  List<Widget> employerRateWidgets() => [
+  List<Widget> ratingsWidget() => [
     employerRating(
       completedQuests: widget.info == null
           ? userStore!.userData!.questsStatistic!.completed.toString()
@@ -63,6 +63,10 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
       reviews: widget.info == null
           ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
           : widget.info!.ratingStatistic!.reviewCount.toString(),
+      userId: widget.info == null
+          ? userStore!.userData!.id
+          : widget.info!.id,
+      context: context,
     ),
   ];
 }

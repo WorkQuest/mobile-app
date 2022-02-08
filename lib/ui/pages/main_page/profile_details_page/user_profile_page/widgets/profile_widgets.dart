@@ -2,8 +2,10 @@ import 'package:app/model/profile_response/social_network.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/material.dart';
@@ -347,8 +349,11 @@ Widget employerRating({
   required String completedQuests,
   required double averageRating,
   required String reviews,
+  required String userId,
+  required BuildContext context,
 }) {
   final rating = ((averageRating * 10).round() / 10).toString();
+  final profile = context.read<ProfileMeStore>();
   return Padding(
     padding: const EdgeInsets.only(top: 20.0),
     child: Row(
@@ -383,14 +388,32 @@ Widget employerRating({
                     fontSize: 20.0,
                   ),
                 ),
-                // Text(
-                //   'Show all',
-                //   style: TextStyle(
-                //     decoration: TextDecoration.underline,
-                //     color: Color(0xFF00AA5B),
-                //     fontSize: 12.0,
-                //   ),
-                // ),
+                GestureDetector(
+                  onTap: () async {
+                    if (userId != profile.userData!.id &&
+                        completedQuests != "0") {
+                      profile.offset = 0;
+                      profile.setUserId(userId);
+                      await profile.getCompletedQuests();
+                      Navigator.pushNamed(
+                        context,
+                        ProfileQuestsPage.routeName,
+                        arguments: profile,
+                      );
+                    }
+                  },
+                  child: Text(
+                    "workers.showAll".tr(),
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: userId != profile.userData!.id &&
+                              completedQuests != "0"
+                          ? Color(0xFF00AA5B)
+                          : Color(0xFFF7F8FA),
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -451,11 +474,14 @@ Widget employerRating({
   );
 }
 
-Widget workerRatingCard({
+Widget workerQuestStats({
   required String title,
   required String rate,
   required String thirdLine,
+  String? userId,
+  ProfileMeStore? profile,
   Color textColor = const Color(0xFF00AA5B),
+  BuildContext? context,
 }) =>
     Flexible(
       child: Container(
@@ -484,12 +510,44 @@ Widget workerRatingCard({
                 fontSize: 20.0,
               ),
             ),
-            Text(
-              thirdLine,
-              style: TextStyle(
-                decoration: TextDecoration.underline,
-                color: Color(0xFFD8DFE3),
-                fontSize: 12.0,
+            GestureDetector(
+              onTap: () async {
+                print(userId);
+                print(profile?.userId);
+                print(context);
+                if (userId != null && profile != null && context != null) {
+                  if (userId != profile.userData!.id && thirdLine != "0") {
+                    profile.offset = 0;
+                    profile.setUserId(userId);
+                    await profile.getActiveQuests();
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => Provider(
+                          create: (_) => profile,
+                          child: ProfileQuestsPage(profile),
+                        ),
+                      ),
+                    );
+                    // Navigator.pushNamed(
+                    //   context,
+                    //   ProfileQuestsPage.routeName,
+                    //   arguments: profile,
+                    // );
+                  }
+                }
+              },
+              child: Text(
+                thirdLine,
+                style: TextStyle(
+                  decoration: title == "quests.activeQuests"
+                      ? TextDecoration.underline
+                      : null,
+                  color: title == "quests.activeQuests"
+                      ? textColor
+                      : Color(0xFFD8DFE3),
+                  fontSize: 12.0,
+                ),
               ),
             ),
           ],
@@ -502,8 +560,11 @@ Widget workerRating({
   required double averageRating,
   required String reviews,
   required String activeQuests,
+  required String userId,
+  required BuildContext context,
 }) {
   final rating = ((averageRating * 10).round() / 10).toString();
+  final profile = context.read<ProfileMeStore>();
   return Padding(
     padding: const EdgeInsets.only(top: 20.0),
     child: Column(
@@ -513,11 +574,15 @@ Widget workerRating({
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            workerRatingCard(
-                title: 'quests.activeQuests',
-                rate: completedQuests,
-                thirdLine: 'Show all'),
-            workerRatingCard(
+            workerQuestStats(
+              title: 'quests.activeQuests',
+              rate: completedQuests,
+              thirdLine: "workers.showAll".tr(),
+              userId: userId,
+              context: context,
+              profile: profile,
+            ),
+            workerQuestStats(
               title: 'quests.completedQuests',
               rate: completedQuests,
               thirdLine: 'workers.oneTime'.tr(),
@@ -584,11 +649,10 @@ Widget workerRating({
 ///SocialMedia Accounts Widget
 ///
 Widget _socialMediaIcon({
-  required String iconPath,
   required String? title,
   required String launchUrl,
   required String fallbackUrl,
-  required int color,
+  required Widget icon,
 }) =>
     Flexible(
       child: Container(
@@ -606,21 +670,7 @@ Widget _socialMediaIcon({
                   _launchSocial(launchUrl, fallbackUrl);
                 }
               : null,
-          icon: title?.contains("instagram") != null
-              ? GradientIcon(
-                  SvgPicture.asset(
-                    "assets/instagram_disabled.svg",
-                  ),
-                  20.0,
-                  const <Color>[
-                    Color(0xFFAD00FF),
-                    Color(0xFFFF9900),
-                  ],
-                )
-              : SvgPicture.asset(
-                  "assets/$iconPath.svg",
-                  color: title != null ? Color(color) : null,
-                ),
+          icon: icon,
         ),
       ),
     );
@@ -640,32 +690,50 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
       mainAxisSize: MainAxisSize.max,
       children: [
         _socialMediaIcon(
-          iconPath: "facebook_icon_disabled",
           title: facebook,
           fallbackUrl: 'https://www.facebook.com/$facebook',
           launchUrl: 'fb://profile/$facebook',
-          color: 0xFF3B67D7,
+          icon: SvgPicture.asset(
+            "assets/facebook_icon_disabled.svg",
+            color: facebook != null ? Color(0xFF3B67D7) : null,
+          ),
         ),
         _socialMediaIcon(
-          iconPath: "twitter_icon_disabled",
           title: twitter,
           fallbackUrl: 'https://twitter.com/$twitter',
           launchUrl: '',
-          color: 0xFF24CAFF,
+          icon: SvgPicture.asset(
+            "assets/twitter_icon_disabled.svg",
+            color: twitter != null ? Color(0xFF24CAFF) : null,
+          ),
         ),
         _socialMediaIcon(
-          iconPath: "instagram_disabled",
           title: instagram,
           fallbackUrl: 'https://www.instagram.com/$instagram',
           launchUrl: '',
-          color: 0000000
-         ),
+          icon: instagram != null
+              ? GradientIcon(
+                  SvgPicture.asset(
+                    "assets/instagram_disabled.svg",
+                  ),
+                  20.0,
+                  const <Color>[
+                    Color(0xFFAD00FF),
+                    Color(0xFFFF9900),
+                  ],
+                )
+              : SvgPicture.asset(
+                  "assets/instagram_disabled.svg",
+                ),
+        ),
         _socialMediaIcon(
-          iconPath: "linkedin_icon_disabled",
           title: linkedin,
           fallbackUrl: 'https://linkedin.com/$linkedin',
           launchUrl: '',
-          color: 0xFF0A7EEA,
+          icon: SvgPicture.asset(
+            "assets/linkedin_icon_disabled.svg",
+            color: linkedin != null ? Color(0xFF0A7EEA) : null,
+          ),
         ),
       ],
     ),
@@ -711,28 +779,28 @@ Widget contactDetails({
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         if (location.isNotEmpty)
-        Row(
-          children: [
-            Icon(
-              Icons.location_pin,
-              size: 20.0,
-              color: const Color(0xFF7C838D),
-            ),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Text(
-                  location,
-                  overflow: TextOverflow.fade,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: const Color(0xFF7C838D),
+          Row(
+            children: [
+              Icon(
+                Icons.location_pin,
+                size: 20.0,
+                color: const Color(0xFF7C838D),
+              ),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    location,
+                    overflow: TextOverflow.fade,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: const Color(0xFF7C838D),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         if (number.isNotEmpty)
           Column(
             children: [

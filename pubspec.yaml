@@ -62,6 +62,8 @@ dependencies:
   share: ^2.0.4
   mask_text_input_formatter: ^2.0.0
   qr_flutter: ^4.0.0
+  country_code: ^1.0.0
+  intl_phone_number_input: ^0.7.0+2
 
   # Web3
   web3dart: ^2.3.3
@@ -122,6 +124,7 @@ flutter:
     - assets/contracts/
     - assets/lang/
     - assets/coins/
+    - assets/flags/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
