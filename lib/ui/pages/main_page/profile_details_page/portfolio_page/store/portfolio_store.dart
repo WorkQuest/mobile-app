@@ -151,7 +151,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
     required String userId,
   }) async {
     try {
-      if (!pagination) return;
+      // if (!pagination) return;
       this.onLoading();
       final response = ObservableList.of(
         await _apiProvider.getReviews(

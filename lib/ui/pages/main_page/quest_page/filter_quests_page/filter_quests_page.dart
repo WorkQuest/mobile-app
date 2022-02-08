@@ -298,7 +298,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
             for (int i = 0; i < list.length; i++)
               CheckboxListTile(
                 title: Text(
-                  list[i],
+                  list[i].tr(),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   softWrap: false,

@@ -103,7 +103,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
                 .metrics.pixels ==
             scrollNotification.metrics.maxScrollExtent) {
           if (widget.info == null) {
-            print("123123123");
             //on your own profile
             if (getReviews && !portfolioStore!.isLoading)
               portfolioStore!.getReviews(
@@ -199,17 +198,16 @@ class UserProfileState<T extends UserProfile> extends State<T>
                             : widget.info!.additionalInfo?.address ?? "",
                         number: widget.info == null
                             ? userStore!.userData?.tempPhone?.fullPhone ??
-                                userStore!.userData?.phone?.fullPhone ??
+                                userStore!.userData?.phone.fullPhone ??
                                 ""
                             : widget.info!.tempPhone?.fullPhone ??
-                                widget.info!.phone?.fullPhone ??
-                                "",
+                                widget.info!.phone.fullPhone,
                         secondNumber: widget.info == null
                             ? userStore!.userData?.additionalInfo
-                                    ?.secondMobileNumber?.fullPhone ??
+                                    ?.secondMobileNumber.fullPhone ??
                                 ""
                             : widget.info!.additionalInfo?.secondMobileNumber
-                                    ?.fullPhone ??
+                                    .fullPhone ??
                                 "",
                         email: widget.info == null
                             ? userStore!.userData?.email ?? " "

@@ -73,6 +73,7 @@ extension CustomAppBar on UserProfileState {
                       color: Color(0xFFE8D20D),
                       size: 20.0,
                     ),
+                  if (markDev != 5)
                   ShaderMask(
                     blendMode: BlendMode.srcATop,
                     shaderCallback: (Rect rect) {

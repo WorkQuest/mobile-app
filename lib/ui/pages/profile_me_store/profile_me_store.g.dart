@@ -39,6 +39,21 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
     });
   }
 
+  final _$questsAtom = Atom(name: '_ProfileMeStore.quests');
+
+  @override
+  ObservableList<BaseQuestResponse> get quests {
+    _$questsAtom.reportRead();
+    return super.quests;
+  }
+
+  @override
+  set quests(ObservableList<BaseQuestResponse> value) {
+    _$questsAtom.reportWrite(value, super.quests, () {
+      super.quests = value;
+    });
+  }
+
   final _$distantWorkAtom = Atom(name: '_ProfileMeStore.distantWork');
 
   @override
@@ -74,6 +89,7 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
     return '''
 twoFAStatus: ${twoFAStatus},
 priorityValue: ${priorityValue},
+quests: ${quests},
 distantWork: ${distantWork},
 wagePerHour: ${wagePerHour}
     ''';

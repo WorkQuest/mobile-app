@@ -97,7 +97,7 @@ class ChooseQuest extends StatelessWidget {
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: ()async {
+                onPressed: () async {
                   store.startQuest(workerId);
                   Navigator.pop(context);
                   await AlertDialogUtils.showSuccessDialog(context);

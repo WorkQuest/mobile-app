@@ -54,14 +54,14 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
   }
 
   void removeOddQuests() {
-    // for (int i = 0; i < questForWorker.length; i++) {
-    //   if (questForWorker[i].responded?.workerId == workerId ||
-    //       questForWorker[i].invited?.workerId == workerId) {
-    //     questForWorker.removeAt(i);
-    //     i--;
-    //   }
-    // }
-    // questForWorker.removeWhere((element) => element.title == questName);
+    for (int i = 0; i < quests.length; i++) {
+      if (quests[i].responded?.workerId == workerId ||
+          quests[i].invited?.workerId == workerId) {
+        quests.removeAt(i);
+        i--;
+      }
+    }
+    quests.removeWhere((element) => element.title == questName);
   }
 
   Future<void> getQuests(
@@ -79,19 +79,15 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
         ));
       }
       if (role == UserRole.Worker) {
-        quests.addAll (await _apiProvider.getEmployerQuests(
-          userId: userId,
-          offset: offset,
-          statuses: [0, 4],
-        ));
+        quests.addAll(await _apiProvider.getAvailableQuests(userId: userId));
         removeOddQuests();
       }
 
       quests.toList().sort((key1, key2) =>
-      key1.createdAt.millisecondsSinceEpoch <
-          key2.createdAt.millisecondsSinceEpoch
-          ? 1
-          : 0);
+          key1.createdAt.millisecondsSinceEpoch <
+                  key2.createdAt.millisecondsSinceEpoch
+              ? 1
+              : 0);
       offset += 10;
       this.onSuccess(true);
     } catch (e, trace) {

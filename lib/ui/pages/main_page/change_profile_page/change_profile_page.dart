@@ -5,13 +5,13 @@ import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/validator.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../enums.dart';
@@ -27,6 +27,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     with AutomaticKeepAliveClientMixin {
   ProfileMeStore? profile;
   late ChangeProfileStore pageStore;
+
   final _formKey = GlobalKey<FormState>();
 
   SkillSpecializationController? _controller;
@@ -38,6 +39,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
+    pageStore.getInitCode(
+        pageStore.userData.tempPhone ?? pageStore.userData.phone,
+        pageStore.userData.additionalInfo?.secondMobileNumber);
     if (profile!.userData!.additionalInfo!.address != null)
       pageStore.address = profile!.userData!.additionalInfo!.address!;
     _controller = SkillSpecializationController(
@@ -164,14 +168,29 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             SizedBox(
               height: 20,
             ),
-            inputBody(
+            phoneNumber(
               title: "modals.phoneNumber".tr(),
-              initialValue: pageStore
-                      .userData.additionalInfo?.secondMobileNumber?.fullPhone ??
-                  "",
-              onChanged: (text) => pageStore.userData.additionalInfo
-                  ?.secondMobileNumber?.fullPhone = text,
-              validator: Validators.phoneNumberValidator,
+              initialValue: pageStore.phoneNumber,
+              onChanged: (PhoneNumber phone) {
+                pageStore.userData.phone.codeRegion = phone.dialCode ?? "";
+                pageStore.userData.phone.phone =
+                    phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ??
+                        "";
+                pageStore.userData.phone.fullPhone = phone.phoneNumber ?? "";
+              },
+            ),
+            phoneNumber(
+              title: "modals.secondPhoneNumber".tr(),
+              initialValue: pageStore.secondPhoneNumber,
+              onChanged: (PhoneNumber phone) {
+                pageStore.userData.additionalInfo?.secondMobileNumber
+                    .codeRegion = phone.dialCode ?? "";
+                pageStore.userData.additionalInfo?.secondMobileNumber.phone =
+                    phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ??
+                        "";
+                pageStore.userData.additionalInfo?.secondMobileNumber
+                    .fullPhone = phone.phoneNumber ?? "";
+              },
             ),
             inputBody(
               title: "signUp.email".tr(),
@@ -322,6 +341,81 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     );
   }
 
+  Widget phoneNumber({
+    required String title,
+    required PhoneNumber? initialValue,
+    required void Function(PhoneNumber)? onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title),
+        const SizedBox(height: 5),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Color(0xFFF7F8FA)),
+            borderRadius: BorderRadius.circular(6.0),
+          ),
+          child: Observer(
+            builder: (_) => InternationalPhoneNumberInput(
+              initialValue: initialValue != null
+                  ? PhoneNumber(
+                      phoneNumber: initialValue.phoneNumber,
+                      dialCode: initialValue.dialCode,
+                      isoCode: initialValue.isoCode,
+                    )
+                  : null,
+              errorMessage: "modals.invalidPhone".tr(),
+              onInputChanged: onChanged,
+              selectorConfig: SelectorConfig(
+                setSelectorButtonAsPrefixIcon: true,
+                selectorType: PhoneInputSelectorType.DROPDOWN,
+              ),
+              hintText: "modals.phoneNumber".tr(),
+              keyboardType: TextInputType.number,
+              inputBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: BorderSide(
+                  color: Colors.blue,
+                ),
+              ),
+              inputDecoration: InputDecoration(
+                fillColor: Colors.white,
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6.0),
+                  borderSide: BorderSide(
+                    color: Colors.blue,
+                  ),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6.0),
+                  borderSide: BorderSide(
+                    color: Colors.blue,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6.0),
+                  borderSide: BorderSide(
+                    color: Color(0xFFf7f8fa),
+                    width: 2.0,
+                  ),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6.0),
+                  borderSide: BorderSide(
+                    width: 1.0,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
   Widget inputBody({
     required String title,
     required String initialValue,
@@ -451,6 +545,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
       pageStore.userData.additionalInfo?.workExperiences =
           _controllerWork!.getListMap();
       pageStore.userData.additionalInfo!.address = pageStore.address;
+      pageStore.userData.locationPlaceName = pageStore.address;
       pageStore.userData.priority = profile!.userData!.priority;
       pageStore.userData.workplace = profile!.valueToWorkplace();
       if (!profile!.isLoading)

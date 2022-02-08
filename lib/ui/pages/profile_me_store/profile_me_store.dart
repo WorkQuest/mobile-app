@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,6 +35,9 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   QuestPriority priorityValue = QuestPriority.Normal;
 
   @observable
+  ObservableList<BaseQuestResponse> quests = ObservableList.of([]);
+
+  @observable
   String distantWork = "Distant work";
 
   @observable
@@ -44,6 +48,12 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     "Work in office",
     "Both options",
   ];
+
+  int offset = 0;
+
+  String sort = "sort[createdAt]=desc";
+
+  String userId = "";
 
   void setPriorityValue(String priority) =>
       priorityValue = QuestPriority.values.byName(priority);
@@ -113,8 +123,49 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> get2FAStatus() async {
+  void setUserId(String value) => userId = value;
 
+  Future<void> getCompletedQuests() async {
+    try {
+      if (offset == quests.length) {
+        this.onLoading();
+        quests.addAll(
+          await _apiProvider.getEmployerQuests(
+            offset: offset,
+            sort: sort,
+            userId: userId,
+            statuses: [6],
+          ),
+        );
+        offset += 10;
+        this.onSuccess(true);
+      }
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  Future<void> getActiveQuests() async {
+    try {
+      if (offset == quests.length) {
+        this.onLoading();
+        quests.addAll(
+          await _apiProvider.getWorkerQuests(
+            offset: offset,
+            sort: sort,
+            userId: userId,
+            statuses: [1],
+          ),
+        );
+        offset += 10;
+        this.onSuccess(true);
+      }
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  Future<void> get2FAStatus() async {
     await SharedPreferences.getInstance().then((sharedPrefs) {
       twoFAStatus = sharedPrefs.getBool("2FAStatus") ?? false;
     });

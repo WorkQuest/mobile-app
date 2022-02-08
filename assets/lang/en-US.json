@@ -916,6 +916,8 @@
     "haventSMS": "Did not receive the SMS message?",
     "SMSVerConnected": "SMS verification connected",
     "phoneNumber": "Phone",
+    "secondPhoneNumber": "Second phone",
+    "invalidPhone": "Invalid phone number",
     "enterPhone": "Enter phone number to confirm SMS verification",
     "enterSMSCode": "We have sent a verification code to your phone number. Type the code",
     "codeFromSMS": "SMS code",

@@ -54,12 +54,52 @@ mixin _$ChangeProfileStore on ChangeProfileStoreBase, Store {
     });
   }
 
+  final _$phoneNumberAtom = Atom(name: 'ChangeProfileStoreBase.phoneNumber');
+
+  @override
+  PhoneNumber? get phoneNumber {
+    _$phoneNumberAtom.reportRead();
+    return super.phoneNumber;
+  }
+
+  @override
+  set phoneNumber(PhoneNumber? value) {
+    _$phoneNumberAtom.reportWrite(value, super.phoneNumber, () {
+      super.phoneNumber = value;
+    });
+  }
+
+  final _$secondPhoneNumberAtom =
+      Atom(name: 'ChangeProfileStoreBase.secondPhoneNumber');
+
+  @override
+  PhoneNumber? get secondPhoneNumber {
+    _$secondPhoneNumberAtom.reportRead();
+    return super.secondPhoneNumber;
+  }
+
+  @override
+  set secondPhoneNumber(PhoneNumber? value) {
+    _$secondPhoneNumberAtom.reportWrite(value, super.secondPhoneNumber, () {
+      super.secondPhoneNumber = value;
+    });
+  }
+
   final _$getPredictionAsyncAction =
       AsyncAction('ChangeProfileStoreBase.getPrediction');
 
   @override
   Future<Null> getPrediction(BuildContext context) {
     return _$getPredictionAsyncAction.run(() => super.getPrediction(context));
+  }
+
+  final _$getInitCodeAsyncAction =
+      AsyncAction('ChangeProfileStoreBase.getInitCode');
+
+  @override
+  Future<void> getInitCode(Phone firstPhone, Phone? secondPhone) {
+    return _$getInitCodeAsyncAction
+        .run(() => super.getInitCode(firstPhone, secondPhone));
   }
 
   final _$displayPredictionAsyncAction =
@@ -75,7 +115,9 @@ mixin _$ChangeProfileStore on ChangeProfileStoreBase, Store {
     return '''
 userData: ${userData},
 media: ${media},
-address: ${address}
+address: ${address},
+phoneNumber: ${phoneNumber},
+secondPhoneNumber: ${secondPhoneNumber}
     ''';
   }
 }
