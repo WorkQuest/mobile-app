@@ -7,11 +7,8 @@ class AccountRepository {
 
   factory AccountRepository() => _instance;
 
-  AccountRepository._internal() {
-    client = ClientService();
-  }
+  AccountRepository._internal();
 
-  ClientService? client;
   String? userAddress;
   List<Wallet>? userAddresses;
 
@@ -30,7 +27,7 @@ class AccountRepository {
 
   clearData() {
     userAddress = null;
-    userAddresses!.clear();
+    userAddresses?.clear();
   }
 }
 

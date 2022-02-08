@@ -3,7 +3,6 @@ import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
-
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
@@ -52,7 +51,7 @@ class TwoFAPage extends StatelessWidget {
                   horizontal: 16.0,
                   vertical: 16.0,
                 ),
-                child: userStore.twoFAStatus!
+                child: userStore.userData?.isTotpActive ?? false
                     ? _disable2FA(
                         store,
                         context,
@@ -147,7 +146,6 @@ class TwoFAPage extends StatelessWidget {
             onPressed: store.codeFromAuthenticator.isNotEmpty
                 ? () async {
                     await store.disable2FA();
-                    await userStore.get2FAStatus();
                     Navigator.pop(context);
                   }
                 : null,
@@ -416,7 +414,6 @@ class Confirm2FAPages extends StatelessWidget {
                               //   "settings.2FaEnabled".tr(),
                               // );
                               Navigator.pop(context);
-                              await userStore!.get2FAStatus();
                             }
                           }
                         : null,

@@ -1,11 +1,13 @@
 import 'dart:convert';
-
 import 'package:app/base_store/i_store.dart';
+import 'package:app/di/injector.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/web3_extension.dart';
 import 'package:app/model/bearer_token.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/service/client_service.dart';
 import 'package:app/web3/wallet.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -23,9 +25,6 @@ abstract class _SignInStore extends IStore<bool> with Store {
   _SignInStore(this._apiProvider);
 
   @observable
-  bool walletSuccess = false;
-
-  @observable
   String _username = '';
 
   @observable
@@ -39,10 +38,10 @@ abstract class _SignInStore extends IStore<bool> with Store {
 
   @computed
   bool get canSignIn =>
-      !isLoading &&
-      _username.isNotEmpty &&
-      _password.isNotEmpty &&
-      mnemonic.isNotEmpty;
+      !isLoading && _username.isNotEmpty && _password.isNotEmpty
+          &&
+      mnemonic.isNotEmpty
+      ;
 
   @action
   void setUsername(String value) => _username = value;
@@ -54,31 +53,31 @@ abstract class _SignInStore extends IStore<bool> with Store {
   void setPassword(String value) => _password = value;
 
   @action
-  loginWallet() async {
+  signInWallet() async {
+    final walletAddress = getIt.get<ProfileMeStore>().userData?.walletAddress;
+    if (walletAddress == null) this.onError("Profile not found");
     try {
-      this.onLoading();
       Wallet? wallet = await Wallet.derive(mnemonic);
-      final signature =
-          await AccountRepository().client!.getSignature(wallet.privateKey!);
+      if (wallet.address != walletAddress)
+         throw FormatException("Incorrect mnemonic");
+      final signature = await ClientService().getSignature(wallet.privateKey!);
       await _apiProvider.walletLogin(signature, wallet.address!);
-      //await Storage.write(Storage.refreshKey, result!.data['result']['refresh']);
       await Storage.write(Storage.wallets, jsonEncode([wallet.toJson()]));
       await Storage.write(Storage.activeAddress, wallet.address!);
+      AccountRepository().clearData();
       AccountRepository().userAddress = wallet.address;
       AccountRepository().addWallet(wallet);
-      walletSuccess = true;
-      print("wallet sauccess$walletSuccess");
+      this.onSuccess(true);
     } on FormatException catch (e) {
       onError(e.message);
-    } catch (e) {
-      print("wallet sauccess 2$walletSuccess");
+    } catch (e,tr) {
+      print("error $e $tr");
       onError(e.toString());
     }
   }
 
   @action
-  Future signInWithUsername() async {
-    if (walletSuccess)
+  Future signIn() async {
     try {
       this.onLoading();
       BearerToken bearerToken = await _apiProvider.login(
@@ -91,7 +90,8 @@ abstract class _SignInStore extends IStore<bool> with Store {
       }
       Storage.writeRefreshToken(bearerToken.refresh);
       Storage.writeAccessToken(bearerToken.access);
-      this.onSuccess(true);
+      await getIt.get<ProfileMeStore>().getProfileMe();
+      await signInWallet();
     } catch (e) {
       this.onError(e.toString());
     }

@@ -169,7 +169,6 @@ class ClientService implements ClientServiceI {
       final balance = await getBalanceInUnit(unit, privateKey);
       return BalanceItem(unit.name, balance.toString());
     }).toList();
-
     return list;
   }
 
@@ -357,11 +356,6 @@ extension CheckAddres on ClientService {
         function: ethFunction,
         params: [EthereumAddress.fromHex(address)],
       );
-
-      outputs.forEach((element) {
-        print(element);
-      });
-
       return outputs;
     } catch (e, tr) {
       print("Error: $e \n Trace: $tr");

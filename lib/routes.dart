@@ -50,7 +50,6 @@ import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
@@ -142,17 +141,23 @@ class Routes {
 
       case ChangePasswordPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<SettingsPageStore>(),
-            child: ChangePasswordPage(),
+          builder: (context) => Directionality(
+            textDirection: checkDirection(context),
+            child: Provider(
+              create: (context) => getIt.get<SettingsPageStore>(),
+              child: ChangePasswordPage(),
+            ),
           ),
         );
 
       case SMSVerificationPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<SMSVerificationStore>(),
-            child: SMSVerificationPage(),
+          builder: (context) => Directionality(
+            textDirection: checkDirection(context),
+            child: Provider(
+              create: (context) => getIt.get<SMSVerificationStore>(),
+              child: SMSVerificationPage(),
+            ),
           ),
         );
 
@@ -160,9 +165,6 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
             providers: [
-              Provider(
-                create: (context) => getIt.get<TransferStore>(),
-              ),
               Provider(
                 create: (context) => getIt.get<QuestsStore>(),
               ),
@@ -429,15 +431,8 @@ class Routes {
 
       case WalletPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MultiProvider(
-            providers: [
-              Provider(
-                create: (context) => getIt.get<WalletStore>(),
-              ),
-              Provider(
-                create: (context) => getIt.get<TransferStore>(),
-              )
-            ],
+          builder: (context) => Provider(
+            create: (context) => getIt.get<WalletStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: WalletPage(),

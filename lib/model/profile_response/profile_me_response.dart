@@ -24,6 +24,8 @@ class ProfileMeResponse {
     required this.workplace,
     required this.priority,
     required this.questsStatistic,
+    required this.walletAddress,
+    required this.isTotpActive
     // required this.createdAt,
     // required this.updatedAt,
   });
@@ -47,6 +49,8 @@ class ProfileMeResponse {
   String? workplace;
   QuestPriority priority;
   QuestsStatistic? questsStatistic;
+  String? walletAddress;
+  bool isTotpActive;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(
@@ -74,6 +78,8 @@ class ProfileMeResponse {
           workplace: object.workplace,
           priority: object.priority,
           questsStatistic: object.questsStatistic,
+          walletAddress: object.walletAddress,
+          isTotpActive: object.isTotpActive,
         );
 
   //RatingStatistic? ratingStatistic;
@@ -131,6 +137,8 @@ class ProfileMeResponse {
       questsStatistic: json["questsStatistic"] == null
           ? null
           : QuestsStatistic.fromJson(json["questsStatistic"]),
+      walletAddress: json["wallet"]?["address"],
+      isTotpActive: json["totpIsActive"],
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );

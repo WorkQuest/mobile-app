@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
@@ -31,47 +32,34 @@ class _WalletPageState extends State<WalletPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Builder(
-        builder: (context) {
-          print('Builder wallet_page');
-          return Platform.isIOS ? _mainLayout() : _mainLayout();
-        },
-      ),
-    );
+        backgroundColor: Colors.white,
+        body: Platform.isIOS ? _mainLayout() : _mainLayout());
   }
 
   Widget _mainLayout() {
-    final store = GetIt.I.get<WalletStore>();
-    return Observer(
-      builder: (_) {
-        if (store.isLoading) {
-          return CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              CupertinoSliverNavigationBar(
-                largeTitle: Text("Wallet"),
-              ),
-              if (Platform.isIOS)
-                CupertinoSliverRefreshControl(
-                  onRefresh: _onRefresh,
-                ),
-              const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator.adaptive()),
-              )
-            ],
-          );
+    return NotificationListener<ScrollEndNotification>(
+      onNotification: (scrollEnd) {
+        if (scrollEnd.metrics.atEdge) if (scrollEnd.metrics.pixels ==
+            scrollEnd.metrics.maxScrollExtent) {
+          if (!GetIt.I.get<WalletStore>().isMoreLoading) {
+            GetIt.I.get<WalletStore>().getTransactionsMore();
+          }
         }
-
-        ///look here
-        return Platform.isAndroid
-            ? RefreshIndicator(onRefresh: _onRefresh, child: layout())
-            : layout();
+        setState(() {});
+        return true;
       },
+      child: Platform.isAndroid
+          ? RefreshIndicator(
+              displacement: 30,
+              triggerMode: RefreshIndicatorTriggerMode.anywhere,
+              onRefresh: _onRefresh,
+              child: layout())
+          : layout(),
     );
   }
 
   Widget layout() {
+    final address = AccountRepository().userAddress ?? '1234567890';
     return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
@@ -91,11 +79,11 @@ class _WalletPageState extends State<WalletPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      '${AccountRepository().userAddress!.substring(0, 9)}...'
-                      '${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
+                      '${address.substring(0, 9)}...'
+                      '${address.substring(address.length - 3, address.length)}',
                       style: const TextStyle(
-                        fontSize: 16,
-                        // fontWeight: FontWeight.w500,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
                         color: AppColor.subtitleText,
                       ),
                     ),
@@ -104,8 +92,7 @@ class _WalletPageState extends State<WalletPage> {
                       padding: EdgeInsets.zero,
                       pressedOpacity: 0.2,
                       onPressed: () {
-                        Clipboard.setData(ClipboardData(
-                            text: AccountRepository().userAddress));
+                        Clipboard.setData(ClipboardData(text: address));
                         SnackBarUtils.success(
                           context,
                           title: 'wallet'.tr(gender: 'copy'),
@@ -156,7 +143,7 @@ class _WalletPageState extends State<WalletPage> {
                           Navigator.of(context, rootNavigator: true)
                               .push(MaterialPageRoute(
                             builder: (_) => Provider(
-                              create: (context) => TransferStore(),
+                              create: (context) => getIt.get<TransferStore>(),
                               child: TransferPage(),
                             ),
                           ));
@@ -193,7 +180,10 @@ class _WalletPageState extends State<WalletPage> {
             shadowColor: Colors.transparent,
           ),
         ),
-        SliverPadding(padding: _padding, sliver: const ListTransactions()),
+        SliverPadding(
+          padding: _padding,
+          sliver: const ListTransactions(),
+        ),
       ],
     );
   }
@@ -234,7 +224,7 @@ class _WalletPageState extends State<WalletPage> {
 
   Future _onRefresh() async {
     GetIt.I.get<WalletStore>().getTransactions(isForce: true);
-    return GetIt.I.get<WalletStore>().getCoins();
+    return GetIt.I.get<WalletStore>().getCoins(isForce: true);
   }
 }
 

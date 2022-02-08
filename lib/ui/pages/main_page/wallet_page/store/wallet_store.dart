@@ -3,6 +3,7 @@ import 'package:app/http/web3_extension.dart';
 import 'package:app/model/web3/transactions_response.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/service/client_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
@@ -10,12 +11,11 @@ import 'package:app/base_store/i_store.dart';
 part 'wallet_store.g.dart';
 
 @singleton
-class WalletStore extends _WalletStore with _$WalletStore{
+class WalletStore extends _WalletStore with _$WalletStore {
   WalletStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
 abstract class _WalletStore extends IStore<bool> with Store {
-
   final ApiProvider _apiProvider;
 
   _WalletStore(this._apiProvider);
@@ -29,27 +29,31 @@ abstract class _WalletStore extends IStore<bool> with Store {
   bool isMoreLoading = false;
 
   @action
-  getCoins() async {
-    onLoading();
+  getCoins({bool isForce = true}) async {
+    if (isForce) {
+      onLoading();
+    }
     try {
-      print('getCoins');
+      final list =
+          await ClientService().getAllBalance(AccountRepository().privateKey);
       if (coins.isNotEmpty) {
         coins.clear();
       }
-      final list = await AccountRepository()
-          .client!
-          .getAllBalance(AccountRepository().privateKey);
-      final ether = list. firstWhere((element) => element.title == 'ether');
+      final ether = list.firstWhere((element) => element.title == 'ether');
       coins.add(BalanceItem(
         "WUSD",
         ether.amount,
       ));
-      final wqt = await AccountRepository().client!.getBalanceFromContract('0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE');
+      final wqt = await ClientService()
+          .getBalanceFromContract('0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE');
       coins.add(BalanceItem(
         "WQT",
         wqt.toString(),
       ));
-      onSuccess(true);
+
+      if (isForce) {
+        onSuccess(true);
+      }
     } catch (e) {
       onError(e.toString());
     }
@@ -59,8 +63,6 @@ abstract class _WalletStore extends IStore<bool> with Store {
   getTransactions({bool isForce = false}) async {
     if (isForce) {
       onLoading();
-    } else {
-      isMoreLoading = true;
     }
     try {
       if (isForce) {
@@ -69,28 +71,63 @@ abstract class _WalletStore extends IStore<bool> with Store {
         }
         isMoreLoading = false;
       }
-      final result = await _apiProvider.getTransactions(
+      var result = await _apiProvider.getTransactions(
         AccountRepository().userAddress!,
         limit: 10,
-        offset: transactions.length,
+        offset: isForce ? transactions.length : 0,
       );
-      // await Future.delayed(const Duration(seconds: 2));
-      // final result = List.generate(5, (index) {
-      //   return Tx(value: '${index % 2}100000000000000', createdAt: DateTime.now());
-      // });
 
       result.map((tran) {
         if (tran.contractAddress != null) {
           tran.coin = TYPE_COINS.wqt;
-          final res = BigInt.parse(tran.logs!.first.data.toString().substring(2), radix: 16);
-          tran.value = res.toString();
+          // final res = BigInt.parse(
+          //     tran.logs!.first.data.toString().substring(2),
+          //     radix: 16);
+          // tran.value = res.toString();
         } else {
           tran.coin = TYPE_COINS.wusd;
         }
       }).toList();
 
+      if (isForce) {
+        transactions.addAll(result);
+      } else {
+        result = result.reversed.toList();
+        result.map((tran) {
+          if (!transactions.contains(tran)) {
+            transactions.insert(0, tran);
+          }
+        }).toList();
+      }
+      onSuccess(true);
+    } catch (e, trace) {
+      print('$e\n$trace');
+      onError(e.toString());
+    }
+  }
+
+  @action
+  getTransactionsMore() async {
+    isMoreLoading = true;
+    try {
+      final result = await _apiProvider.getTransactions(
+        AccountRepository().userAddress!,
+        limit: 10,
+        offset: transactions.length,
+      );
+      result.map((tran) {
+        if (tran.contractAddress != null) {
+          tran.coin = TYPE_COINS.wqt;
+          // final res = BigInt.parse(
+          //     tran.logs!.first.data.toString().substring(2),
+          //     radix: 16);
+          //tran.value = res.toString();
+        } else {
+          tran.coin = TYPE_COINS.wusd;
+        }
+      }).toList();
       transactions.addAll(result);
-      await Future.delayed(const Duration( milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       isMoreLoading = false;
       onSuccess(true);
     } catch (e, trace) {

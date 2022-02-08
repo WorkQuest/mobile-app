@@ -398,8 +398,7 @@ extension QuestService on ApiProvider {
     required String userId,
   }) async {
     try {
-      final body = {
-        "assignedWorkerId": userId,
+      final body = {"assignedWorkerId": userId,
       };
       final responseData = await httpClient.post(
         query: '/v1/quest/$questId/start',

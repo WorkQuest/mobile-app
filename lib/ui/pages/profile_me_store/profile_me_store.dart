@@ -5,7 +5,6 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../enums.dart';
@@ -20,16 +19,10 @@ class ProfileMeStore extends _ProfileMeStore with _$ProfileMeStore {
 abstract class _ProfileMeStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _ProfileMeStore(this._apiProvider) {
-    get2FAStatus();
-  }
-
+  _ProfileMeStore(this._apiProvider) ;
   ProfileMeResponse? userData;
   ProfileMeResponse? questHolder;
   ProfileMeResponse? assignedWorker;
-
-  @observable
-  bool? twoFAStatus;
 
   @observable
   QuestPriority priorityValue = QuestPriority.Normal;
@@ -163,12 +156,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     } catch (e) {
       this.onError(e.toString());
     }
-  }
-
-  Future<void> get2FAStatus() async {
-    await SharedPreferences.getInstance().then((sharedPrefs) {
-      twoFAStatus = sharedPrefs.getBool("2FAStatus") ?? false;
-    });
   }
 
   Future getQuestHolder(String userId) async {

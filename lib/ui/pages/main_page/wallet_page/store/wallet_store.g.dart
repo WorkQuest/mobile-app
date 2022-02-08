@@ -57,8 +57,8 @@ mixin _$WalletStore on _WalletStore, Store {
   final _$getCoinsAsyncAction = AsyncAction('_WalletStore.getCoins');
 
   @override
-  Future getCoins() {
-    return _$getCoinsAsyncAction.run(() => super.getCoins());
+  Future getCoins({bool isForce = true}) {
+    return _$getCoinsAsyncAction.run(() => super.getCoins(isForce: isForce));
   }
 
   final _$getTransactionsAsyncAction =
@@ -68,6 +68,15 @@ mixin _$WalletStore on _WalletStore, Store {
   Future getTransactions({bool isForce = false}) {
     return _$getTransactionsAsyncAction
         .run(() => super.getTransactions(isForce: isForce));
+  }
+
+  final _$getTransactionsMoreAsyncAction =
+      AsyncAction('_WalletStore.getTransactionsMore');
+
+  @override
+  Future getTransactionsMore() {
+    return _$getTransactionsMoreAsyncAction
+        .run(() => super.getTransactionsMore());
   }
 
   @override

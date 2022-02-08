@@ -28,6 +28,7 @@ class ConfirmTransferPage extends StatefulWidget {
 }
 
 class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
+
   @override
   Widget build(BuildContext context) {
     final store = context.read<ConfirmTransferStore>();
@@ -62,12 +63,12 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                     return false;
                   },
                   onSuccess: () async {
-                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.pop(context, true);
                     await AlertDialogUtils.showSuccessDialog(context);
                     Navigator.pop(context, true);
+                    Navigator.pop(context, true);
                   },
-                  child: CupertinoButton(
-                    padding: EdgeInsets.zero,
+                  child: ElevatedButton(
                     onPressed: () {
                       AlertDialogUtils.showLoadingDialog(context);
                       store.sendTransaction(

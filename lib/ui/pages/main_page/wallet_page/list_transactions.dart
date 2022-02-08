@@ -40,13 +40,9 @@ class ListTransactions extends StatelessWidget {
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 if (store.isMoreLoading && index == store.transactions.length) {
-                  return Column(
-                    children: const [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      CircularProgressIndicator.adaptive(),
-                    ],
+                  return SizedBox(
+                    height: 30,
+                    child: Center(child: CircularProgressIndicator.adaptive()),
                   );
                 }
                 return _infoElement(store.transactions[index]);
@@ -119,16 +115,17 @@ class ListTransactions extends StatelessWidget {
               ),
             ],
           ),
-          // const SizedBox(
-          //   width: 20,
-          // ),
-          const Spacer(),
-          Text(
-            '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${_getTitleCoin(transaction.coin!)}',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: color,
+          const SizedBox(width: 20,),
+          Expanded(
+            child: Text(
+              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${_getTitleCoin(transaction.coin!)}',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: color,
+              ),
+              //\overflow: TextOverflow.clip,
+              textAlign: TextAlign.end,
             ),
           )
         ],

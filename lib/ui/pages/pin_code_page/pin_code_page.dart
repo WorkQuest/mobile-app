@@ -1,8 +1,6 @@
-import 'package:app/di/injector.dart';
 import "package:app/observer_consumer.dart";
 import "package:app/ui/pages/main_page/main_page.dart";
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
-import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/utils/snack_bar.dart';
 import "package:flutter/material.dart";
@@ -64,7 +62,6 @@ class _PinCodePageState extends State<PinCodePage>
             if (widget.isRecheck) {
               Navigator.pop(context);
             } else {
-              await getIt.get<ProfileMeStore>().getProfileMe();
               Navigator.pushNamedAndRemoveUntil(
                 context,
                 MainPage.routeName,
