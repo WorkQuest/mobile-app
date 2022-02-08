@@ -474,7 +474,7 @@ Widget employerRating({
   );
 }
 
-Widget workerRatingCard({
+Widget workerQuestStats({
   required String title,
   required String rate,
   required String thirdLine,
@@ -524,7 +524,7 @@ Widget workerRatingCard({
                       context,
                       MaterialPageRoute(
                         builder: (_) => Provider(
-                          create: (_) => QuestPage(),
+                          create: (_) => profile,
                           child: ProfileQuestsPage(profile),
                         ),
                       ),
@@ -574,7 +574,7 @@ Widget workerRating({
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            workerRatingCard(
+            workerQuestStats(
               title: 'quests.activeQuests',
               rate: completedQuests,
               thirdLine: "workers.showAll".tr(),
@@ -582,7 +582,7 @@ Widget workerRating({
               context: context,
               profile: profile,
             ),
-            workerRatingCard(
+            workerQuestStats(
               title: 'quests.completedQuests',
               rate: completedQuests,
               thirdLine: 'workers.oneTime'.tr(),

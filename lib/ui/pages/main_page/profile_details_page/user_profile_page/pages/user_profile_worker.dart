@@ -280,7 +280,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           ),
       ];
 
-  List<Widget> workerRateWidgets() => [
+  List<Widget> ratingsWidget() => [
         workerRating(
           completedQuests: widget.info == null
               ? userStore!.userData!.questsStatistic!.completed.toString()

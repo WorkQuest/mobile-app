@@ -88,10 +88,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
   List<Widget> addToQuest() => [];
 
   @protected
-  List<Widget> employerRateWidgets() => [];
-
-  @protected
-  List<Widget> workerRateWidgets() => [];
+  List<Widget> ratingsWidget() => [];
 
   Widget wrapperTabBar(
     List<Widget> body, [
@@ -141,7 +138,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   @override
   Widget build(BuildContext context) {
-    // final userStore = context.read<ProfileMeStore>();
+     //final userStore = context.read<ProfileMeStore>();
     return Scaffold(
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
@@ -193,8 +190,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                       ///Contact Details
                       contactDetails(
                         location: widget.info == null
-                            ? userStore!.userData?.additionalInfo?.address ??
-                                ''
+                            ? userStore!.userData?.additionalInfo?.address ?? ''
                             : widget.info!.additionalInfo?.address ?? "",
                         number: widget.info == null
                             ? userStore!.userData?.tempPhone?.fullPhone ??
@@ -214,9 +210,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                             : widget.info!.email ?? " ",
                       ),
 
-                      ...role == UserRole.Employer
-                          ? employerRateWidgets()
-                          : workerRateWidgets(),
+                      ...ratingsWidget(),
 
                       ...addToQuest(),
                       spacer,
