@@ -99,7 +99,7 @@ extension QuestService on ApiProvider {
     );
   }
 
-  Future<List<BaseQuestResponse>> mapPoints(LatLngBounds bounds) async {
+  Future<List<QuestMapPoint>> mapPoints(LatLngBounds bounds) async {
     final response = await httpClient.get(
       query: '/v1/quest/map/points'
               '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
@@ -118,9 +118,9 @@ extension QuestService on ApiProvider {
 
     //print("<-------------->$response <-------------->");
 
-    return List<BaseQuestResponse>.from(
+    return List<QuestMapPoint>.from(
       response["quests"].map(
-        (x) => BaseQuestResponse.fromJson(x),
+        (x) => QuestMapPoint.fromJson(x),
       ),
     );
   }
