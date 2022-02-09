@@ -47,8 +47,8 @@ class ChooseQuest extends StatelessWidget {
                         title: Text(
                           store.quests[index].title,
                         ),
-                        value: store.quests[index].title,
-                        groupValue: store.questName,
+                        value: store.quests[index].id,
+                        groupValue: store.questId,
                         onChanged: (value) {
                           store.setQuest(value, store.quests[index].id);
                         },

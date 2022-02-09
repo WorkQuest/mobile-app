@@ -263,7 +263,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
               getBody(),
               if (widget.questInfo.status == 6 &&
                   widget.questInfo.yourReview == null &&
-                  (widget.questInfo.userId == profile!.userData!.id))
+                  (widget.questInfo.userId == profile!.userData!.id ||
+                      widget.questInfo.assignedWorker?.id ==
+                          profile!.userData!.id))
                 isLoading
                     ? Center(
                         child: CircularProgressIndicator.adaptive(),

@@ -30,14 +30,15 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
 
   String workerId = "";
 
-  @observable
-  String questName = "";
+  // @observable
+  // String questName = "";
 
+  @observable
   String questId = "";
 
   @action
   void setQuest(String? index, String id) {
-    questName = index ?? "";
+    // questName = index ?? "";
     questId = id;
   }
 
@@ -53,16 +54,16 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
     }
   }
 
-  void removeOddQuests() {
-    for (int i = 0; i < quests.length; i++) {
-      if (quests[i].responded?.workerId == workerId ||
-          quests[i].invited?.workerId == workerId) {
-        quests.removeAt(i);
-        i--;
-      }
-    }
-    quests.removeWhere((element) => element.title == questName);
-  }
+  // void removeOddQuests() {
+  //   for (int i = 0; i < quests.length; i++) {
+  //     if (quests[i].responded?.workerId == workerId ||
+  //         quests[i].invited?.workerId == workerId) {
+  //       quests.removeAt(i);
+  //       i--;
+  //     }
+  //   }
+  //   quests.removeWhere((element) => element.title == questName);
+  // }
 
   Future<void> getQuests(
     String userId,
@@ -80,7 +81,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
       }
       if (role == UserRole.Worker) {
         quests.addAll(await _apiProvider.getAvailableQuests(userId: userId));
-        removeOddQuests();
+        // removeOddQuests();
       }
 
       quests.toList().sort((key1, key2) =>

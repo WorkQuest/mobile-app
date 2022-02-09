@@ -140,44 +140,43 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             ],
           ),
           const SizedBox(height: 20),
-          if (widget.questInfo.userId == profile!.userData!.id)
-            Observer(
-              builder: (_) => !store.response &&
-                      (widget.questInfo.status == 0 ||
-                          widget.questInfo.status == 4)
-                  ? store.isLoading
-                      ? Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        )
-                      : TextButton(
-                          onPressed: () {
-                            bottomForm(
-                              child: bottomRespond(),
-                            );
-                          },
-                          child: Text(
-                            "modals.sendARequest".tr(),
-                            style: TextStyle(color: Colors.white),
+          Observer(
+            builder: (_) => !store.response &&
+                    (widget.questInfo.status == 0 ||
+                        widget.questInfo.status == 4)
+                ? store.isLoading
+                    ? Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      )
+                    : TextButton(
+                        onPressed: () {
+                          bottomForm(
+                            child: bottomRespond(),
+                          );
+                        },
+                        child: Text(
+                          "modals.sendARequest".tr(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all(
+                            Size(double.maxFinite, 43),
                           ),
-                          style: ButtonStyle(
-                            fixedSize: MaterialStateProperty.all(
-                              Size(double.maxFinite, 43),
-                            ),
-                            backgroundColor:
-                                MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.pressed))
-                                  return Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.5);
-                                return const Color(0xFF0083C7);
-                              },
-                            ),
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.pressed))
+                                return Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.5);
+                              return const Color(0xFF0083C7);
+                            },
                           ),
-                        )
-                  : SizedBox(),
-            ),
+                        ),
+                      )
+                : SizedBox(),
+          ),
           if (store.quest.value!.status == 4 &&
               store.quest.value!.assignedWorker?.id == profile!.userData!.id)
             store.isLoading
@@ -210,7 +209,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       ),
                     ),
                   ),
-          if (store.quest.value!.status == 1)
+          if (store.quest.value!.status == 1 &&
+              store.quest.value!.assignedWorker?.id == profile!.userData!.id)
             store.isLoading
                 ? Center(
                     child: CircularProgressIndicator.adaptive(),
@@ -338,29 +338,30 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     store.mediaFile.isNotEmpty ||
                     store.mediaIds.isNotEmpty
                 ? () async {
-                    store.sendRespondOnQuest(store.opinion);
-                    widget.questInfo.responded = Responded(
-                      id: "",
-                      workerId: profile!.userData!.id,
-                      questId: widget.questInfo.id,
-                      status: 0,
-                      type: 0,
-                      message: store.opinion,
-                      createdAt: DateTime.now(),
-                      updatedAt: DateTime.now(),
-                    );
-                    for (int i = 0; i < questStore.questsList.length; i++)
-                      if (questStore.questsList[i].id == widget.questInfo.id)
-                        questStore.questsList[i].responded = Responded(
-                          id: "",
-                          workerId: profile!.userData!.id,
-                          questId: widget.questInfo.id,
-                          status: 0,
-                          type: 0,
-                          message: store.opinion,
-                          createdAt: DateTime.now(),
-                          updatedAt: DateTime.now(),
-                        );
+                    await store.sendRespondOnQuest(store.opinion);
+                    // widget.questInfo.responded = Responded(
+                    //   id: "",
+                    //   workerId: profile!.userData!.id,
+                    //   questId: widget.questInfo.id,
+                    //   status: 0,
+                    //   type: 0,
+                    //   message: store.opinion,
+                    //   createdAt: DateTime.now(),
+                    //   updatedAt: DateTime.now(),
+                    // );
+                    // for (int i = 0; i < questStore.questsList.length; i++)
+                    //   if (questStore.questsList[i].id == widget.questInfo.id)
+                    //     questStore.questsList[i].responded = Responded(
+                    //       id: "",
+                    //       workerId: profile!.userData!.id,
+                    //       questId: widget.questInfo.id,
+                    //       status: 0,
+                    //       type: 0,
+                    //       message: store.opinion,
+                    //       createdAt: DateTime.now(),
+                    //       updatedAt: DateTime.now(),
+                    //     );
+                    questStore.getQuests(true);
                     myQuestStore.deleteQuest(widget.questInfo);
                     myQuestStore.addQuest(widget.questInfo, true);
                     Navigator.pop(context);

@@ -544,9 +544,9 @@ Widget workerQuestStats({
                   decoration: title == "quests.activeQuests"
                       ? TextDecoration.underline
                       : null,
-                  color: title == "quests.activeQuests"
-                      ? textColor
-                      : Color(0xFFD8DFE3),
+                  color: title != "quests.activeQuests"
+                      ? Color(0xFFD8DFE3)
+                      : Color(0xFFF7F8FA),
                   fontSize: 12.0,
                 ),
               ),
