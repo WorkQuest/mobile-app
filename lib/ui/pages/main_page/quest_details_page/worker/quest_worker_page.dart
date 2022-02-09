@@ -30,7 +30,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   late WorkerStore store;
   late MyQuestStore myQuestStore;
   late QuestsStore questStore;
-  ProfileMeStore? profile;
   List<Responded?> respondedList = [];
 
   AnimationController? controller;
@@ -38,9 +37,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   @override
   void initState() {
     store = context.read<WorkerStore>();
-    profile = context.read<ProfileMeStore>();
     myQuestStore = context.read<MyQuestStore>();
     questStore = context.read<QuestsStore>();
+    profile = context.read<ProfileMeStore>();
+    profile!.getProfileMe();
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
@@ -75,8 +75,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       )
     ];
   }
-
-
 
   @override
   Widget getBody() {
@@ -142,43 +140,44 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             ],
           ),
           const SizedBox(height: 20),
-          Observer(
-            builder: (_) => !store.response &&
-                    (widget.questInfo.status == 0 ||
-                        widget.questInfo.status == 4)
-                ? store.isLoading
-                    ? Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      )
-                    : TextButton(
-                        onPressed: () {
-                          bottomForm(
-                            child: bottomRespond(),
-                          );
-                        },
-                        child: Text(
-                          "modals.sendARequest".tr(),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: ButtonStyle(
-                          fixedSize: MaterialStateProperty.all(
-                            Size(double.maxFinite, 43),
+          if (widget.questInfo.userId == profile!.userData!.id)
+            Observer(
+              builder: (_) => !store.response &&
+                      (widget.questInfo.status == 0 ||
+                          widget.questInfo.status == 4)
+                  ? store.isLoading
+                      ? Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        )
+                      : TextButton(
+                          onPressed: () {
+                            bottomForm(
+                              child: bottomRespond(),
+                            );
+                          },
+                          child: Text(
+                            "modals.sendARequest".tr(),
+                            style: TextStyle(color: Colors.white),
                           ),
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.pressed))
-                                return Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.5);
-                              return const Color(0xFF0083C7);
-                            },
+                          style: ButtonStyle(
+                            fixedSize: MaterialStateProperty.all(
+                              Size(double.maxFinite, 43),
+                            ),
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.pressed))
+                                  return Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.5);
+                                return const Color(0xFF0083C7);
+                              },
+                            ),
                           ),
-                        ),
-                      )
-                : SizedBox(),
-          ),
+                        )
+                  : SizedBox(),
+            ),
           if (store.quest.value!.status == 4 &&
               store.quest.value!.assignedWorker?.id == profile!.userData!.id)
             store.isLoading
@@ -301,7 +300,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-
       children: [
         const SizedBox(height: 23),
         Text(
@@ -339,7 +337,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             onPressed: store.opinion.isNotEmpty ||
                     store.mediaFile.isNotEmpty ||
                     store.mediaIds.isNotEmpty
-                ? ()async {
+                ? () async {
                     store.sendRespondOnQuest(store.opinion);
                     widget.questInfo.responded = Responded(
                       id: "",

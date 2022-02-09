@@ -136,9 +136,11 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   double appBarPosition = 0.0;
 
+  double appBarPositionVertical = 16.0;
+
   @override
   Widget build(BuildContext context) {
-     //final userStore = context.read<ProfileMeStore>();
+    //final userStore = context.read<ProfileMeStore>();
     return Scaffold(
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
@@ -146,10 +148,18 @@ class UserProfileState<T extends UserProfile> extends State<T>
           if (controllerMain.offset < 240)
             setState(() {
               appBarPosition = 0.0;
+              appBarPositionVertical = 16.0;
             });
           if (controllerMain.offset > 0 && controllerMain.offset < 240)
             setState(() {
               appBarPosition = controllerMain.offset < 120 ? 0.0 : 25.0;
+              widget.info != null
+                  ? widget.info!.ratingStatistic?.status != "noStatus"
+                      ? appBarPositionVertical = 7.0
+                      : appBarPositionVertical = 16.0
+                  : userStore!.userData!.ratingStatistic?.status != "noStatus"
+                      ? appBarPositionVertical = 7.0
+                      : appBarPositionVertical = 16.0;
             });
 
           return false;

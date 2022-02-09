@@ -5,7 +5,6 @@ import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
-import 'package:app/ui/pages/main_page/quest_page/quest_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/material.dart';
@@ -292,10 +291,10 @@ Widget appBarTitle(String name, double padding, String status) {
             bottom: 0.0,
             left: 0.0,
             child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 5.0,
-                vertical: 2.0,
-              ),
+              // padding: EdgeInsets.symmetric(
+              //   horizontal: 5.0,
+              //   vertical: 2.0,
+              // ),
               child: tagStatus(status),
             ),
           ),
@@ -392,14 +391,16 @@ Widget employerRating({
                   onTap: () async {
                     if (userId != profile.userData!.id &&
                         completedQuests != "0") {
-                      profile.offset = 0;
-                      profile.setUserId(userId);
-                      await profile.getCompletedQuests();
-                      Navigator.pushNamed(
+                      // profile.offset = 0;
+                      // profile.setUserId(userId);
+                      // await profile.getCompletedQuests();
+                      await Navigator.pushNamed(
                         context,
                         ProfileQuestsPage.routeName,
-                        arguments: profile,
+                        arguments: userId,
                       );
+                      // profile.quests.clear();
+                      // profile.offset = 0;
                     }
                   },
                   child: Text(
@@ -512,29 +513,29 @@ Widget workerQuestStats({
             ),
             GestureDetector(
               onTap: () async {
-                print(userId);
-                print(profile?.userId);
-                print(context);
-                if (userId != null && profile != null && context != null) {
-                  if (userId != profile.userData!.id && thirdLine != "0") {
-                    profile.offset = 0;
-                    profile.setUserId(userId);
-                    await profile.getActiveQuests();
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => Provider(
-                          create: (_) => profile,
-                          child: ProfileQuestsPage(profile),
-                        ),
-                      ),
-                    );
-                    // Navigator.pushNamed(
-                    //   context,
-                    //   ProfileQuestsPage.routeName,
-                    //   arguments: profile,
-                    // );
-                  }
+                if (userId != null &&
+                    context != null &&
+                    userId != profile?.userData?.id &&
+                    thirdLine != "0") {
+                  // profile.offset = 0;
+                  // profile.setUserId(userId);
+                  // await profile.getActiveQuests();
+                  // await Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (_) => Provider(
+                  //       create: (_) => profile,
+                  //       child: ProfileQuestsPage(userId),
+                  //     ),
+                  //   ),
+                  // );
+                  // profile.quests.clear();
+                  // profile.offset = 0;
+                  await Navigator.pushNamed(
+                    context,
+                    ProfileQuestsPage.routeName,
+                    arguments: userId,
+                  );
                 }
               },
               child: Text(
@@ -576,7 +577,7 @@ Widget workerRating({
           children: [
             workerQuestStats(
               title: 'quests.activeQuests',
-              rate: completedQuests,
+              rate: activeQuests,
               thirdLine: "workers.showAll".tr(),
               userId: userId,
               context: context,

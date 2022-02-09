@@ -293,19 +293,19 @@ extension QuestService on ApiProvider {
     });
     String priorities = "";
     priority.forEach((text) {
-      priorities += "priority[]=$text&";
+      priorities += "priorities[]=$text&";
     });
     String ratingStatuses = "";
     ratingStatus.forEach((text) {
-      ratingStatuses += "ratingStatus[]=$text&";
+      ratingStatuses += "ratingStatuses[]=$text&";
     });
     String workplaces = "";
     workplace.forEach((text) {
-      workplaces += "workplace[]=$text&";
+      workplaces += "workplaces[]=$text&";
     });
     final responseData = await httpClient.get(
       query:
-          '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort$specialization',
+          '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort&$specialization',
       queryParameters: {
         if (searchWord.isNotEmpty) "q": searchWord,
         "offset": offset,

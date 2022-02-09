@@ -50,7 +50,7 @@ class ProfileMeResponse {
   QuestPriority priority;
   QuestsStatistic? questsStatistic;
   String? walletAddress;
-  bool isTotpActive;
+  bool? isTotpActive;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(

@@ -267,7 +267,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
             Observer(
               builder: (_) => RadioListTile<String>(
                 title: Text(
-                  storeFilter!.sortBy[i],
+                  storeFilter!.sortBy[i].tr(),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   softWrap: false,

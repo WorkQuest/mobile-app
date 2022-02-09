@@ -19,10 +19,13 @@ class ProfileMeStore extends _ProfileMeStore with _$ProfileMeStore {
 abstract class _ProfileMeStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _ProfileMeStore(this._apiProvider) ;
+  _ProfileMeStore(this._apiProvider);
+
   ProfileMeResponse? userData;
-  ProfileMeResponse? questHolder;
   ProfileMeResponse? assignedWorker;
+
+  @observable
+  ProfileMeResponse? questHolder;
 
   @observable
   QuestPriority priorityValue = QuestPriority.Normal;
@@ -45,8 +48,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   int offset = 0;
 
   String sort = "sort[createdAt]=desc";
-
-  String userId = "";
 
   void setPriorityValue(String priority) =>
       priorityValue = QuestPriority.values.byName(priority);
@@ -116,9 +117,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  void setUserId(String value) => userId = value;
-
-  Future<void> getCompletedQuests() async {
+  Future<void> getCompletedQuests(String userId) async {
     try {
       if (offset == quests.length) {
         this.onLoading();
@@ -138,7 +137,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getActiveQuests() async {
+  Future<void> getActiveQuests(String userId) async {
     try {
       if (offset == quests.length) {
         this.onLoading();
@@ -147,7 +146,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
             offset: offset,
             sort: sort,
             userId: userId,
-            statuses: [1],
+            statuses: [1, 3, 5],
           ),
         );
         offset += 10;

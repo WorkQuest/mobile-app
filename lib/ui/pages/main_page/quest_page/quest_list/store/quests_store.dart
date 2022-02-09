@@ -113,6 +113,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   setSkillFilters(List<String> value) {
     selectedSkill = value;
+    print(value);
   }
 
   clearSkillFilters() {
@@ -255,6 +256,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         workplace: workplaces,
         priority: priorities,
         ratingStatus: employeeRatings,
+        specializations: selectedSkill,
         // north: this.latitude.toString(),
         // south: this.longitude.toString(),
       );
