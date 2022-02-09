@@ -14,7 +14,6 @@ class User {
   Avatar avatar;
 
   factory User.fromJson(Map<String, dynamic> json) {
-    print("User$json");
     try {
       return User(
         id: json["id"],

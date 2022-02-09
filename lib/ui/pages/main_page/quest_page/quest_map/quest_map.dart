@@ -67,7 +67,12 @@ class _QuestMapState extends State<QuestMap> {
                       myLocationEnabled: true,
                       initialCameraPosition: mapStore!.initialCameraPosition!,
                       myLocationButtonEnabled: false,
-                      markers: mapStore!.markers.toSet(),
+                      markers: mapStore!
+                          .getPoints()
+                          .clusters([-180, -85, 180, 85], 17)
+                          .map((cluster) => cluster.toMarker())
+                          .toSet(),
+                      //mapStore!.markers.toSet(),
                       onMapCreated: (GoogleMapController controller) async {
                         _controller = controller;
                         LatLngBounds bounds =

@@ -187,6 +187,7 @@ class StartPage extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              //TODO:Remove lib and rewrite
               child: Observer(
                 builder: (_) => DotsIndicator(
                   dotsCount: 3,

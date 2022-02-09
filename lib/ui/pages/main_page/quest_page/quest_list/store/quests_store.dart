@@ -113,7 +113,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   setSkillFilters(List<String> value) {
     selectedSkill = value;
-    print(value);
   }
 
   clearSkillFilters() {

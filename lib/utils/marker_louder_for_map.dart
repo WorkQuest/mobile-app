@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:fluster/fluster.dart';
 
 class MarkerLoader {
   late ui.Image _cluster;
@@ -99,4 +100,35 @@ class MarkerLoader {
     if (bytes == null) return BitmapDescriptor.defaultMarker;
     return BitmapDescriptor.fromBytes(bytes.buffer.asUint8List());
   }
+}
+
+class MapMarker extends Clusterable {
+  final String? id;
+  final LatLng position;
+  final BitmapDescriptor icon;
+  MapMarker({
+    required this.id,
+    required this.position,
+    required this.icon,
+    isCluster = false,
+    clusterId,
+    pointsSize,
+    childMarkerId,
+  }) : super(
+    markerId: id,
+    latitude: position.latitude,
+    longitude: position.longitude,
+    isCluster: isCluster,
+    clusterId: clusterId,
+    pointsSize: pointsSize,
+    childMarkerId: childMarkerId,
+  );
+  Marker toMarker() => Marker(
+    markerId: MarkerId(id!),
+    position: LatLng(
+      position.latitude,
+      position.longitude,
+    ),
+    icon: icon,
+  );
 }

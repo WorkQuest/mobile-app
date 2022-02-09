@@ -69,6 +69,36 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
+  final _$questsOnMapAtom = Atom(name: '_QuestMapStore.questsOnMap');
+
+  @override
+  ObservableList<BaseQuestResponse> get questsOnMap {
+    _$questsOnMapAtom.reportRead();
+    return super.questsOnMap;
+  }
+
+  @override
+  set questsOnMap(ObservableList<BaseQuestResponse> value) {
+    _$questsOnMapAtom.reportWrite(value, super.questsOnMap, () {
+      super.questsOnMap = value;
+    });
+  }
+
+  final _$workersOnMapAtom = Atom(name: '_QuestMapStore.workersOnMap');
+
+  @override
+  ObservableList<AssignedWorker> get workersOnMap {
+    _$workersOnMapAtom.reportRead();
+    return super.workersOnMap;
+  }
+
+  @override
+  set workersOnMap(ObservableList<AssignedWorker> value) {
+    _$workersOnMapAtom.reportWrite(value, super.workersOnMap, () {
+      super.workersOnMap = value;
+    });
+  }
+
   final _$initialCameraPositionAtom =
       Atom(name: '_QuestMapStore.initialCameraPosition');
 
@@ -104,13 +134,13 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   final _$markersAtom = Atom(name: '_QuestMapStore.markers');
 
   @override
-  List<Marker> get markers {
+  List<MapMarker> get markers {
     _$markersAtom.reportRead();
     return super.markers;
   }
 
   @override
-  set markers(List<Marker> value) {
+  set markers(List<MapMarker> value) {
     _$markersAtom.reportWrite(value, super.markers, () {
       super.markers = value;
     });
@@ -218,6 +248,8 @@ infoPanel: ${infoPanel},
 selectQuestInfo: ${selectQuestInfo},
 bufferQuests: ${bufferQuests},
 points: ${points},
+questsOnMap: ${questsOnMap},
+workersOnMap: ${workersOnMap},
 initialCameraPosition: ${initialCameraPosition},
 locationPosition: ${locationPosition},
 markers: ${markers},

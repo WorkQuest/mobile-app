@@ -2,9 +2,11 @@ import 'dart:async';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
+import 'package:app/model/quests_models/assigned_worker.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/quest_map_point.dart';
 import 'package:app/utils/marker_louder_for_map.dart';
+import 'package:fluster/fluster.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -40,13 +42,19 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   List<QuestMapPoint> points = [];
 
   @observable
+  ObservableList<BaseQuestResponse> questsOnMap = ObservableList();
+
+  @observable
+  ObservableList<AssignedWorker> workersOnMap = ObservableList();
+
+  @observable
   CameraPosition? initialCameraPosition;
 
   @observable
   Position? locationPosition;
 
   @observable
-  List<Marker> markers = [];
+  List<MapMarker> markers = [];
 
   @observable
   Timer? debounce;
@@ -93,7 +101,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   Future getQuestsOnMap(LatLngBounds bounds) async {
     try {
       this.onLoading();
-      points = await _apiProvider.mapPoints(bounds);
+      questsOnMap.addAll( await _apiProvider.mapPoints(bounds));
       markers = await getMarkerList();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -102,29 +110,63 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
     }
   }
 
-  Future<List<Marker>> getMarkerList() async {
+  Future<List<MapMarker>> getMarkerList() async {
     if (this.markerLoader == null) return [];
-    List<Marker> newMarkersList = [];
-    for (var item in points) {
+    List<MapMarker> newMarkersList = [];
+    for (var item in questsOnMap) {
       newMarkersList.add(
-        Marker(
-          onTap: item.type == TypeMarker.Cluster
-              ? () => this.infoPanel = InfoPanel.Cluster
-              : () => onTabQuest(item.questId!),
-          icon: item.type == TypeMarker.Cluster
-              ? await markerLoader!.getCluster(item.pointsCount)
-              : markerLoader!.icons[1],
-          markerId: MarkerId(
-            item.questId == null
-                ? item.location[0].toString() + item.location[1].toString()
-                : item.questId!,
-          ),
-          position: LatLng(56.4977100, 56.4977100),
+        MapMarker(
+          //onTap:(){},
+          //infoWindow:InfoWindow.noText,
+          // item.type == TypeMarker.Cluster
+          //     ? () => this.infoPanel = InfoPanel.Cluster
+          //     : () =>
+             // onTabQuest(item.title),
+          icon:BitmapDescriptor.defaultMarker,
+          //item.type == TypeMarker.Cluster
+          //     ? await markerLoader!.getCluster(item.pointsCount)
+          //     :
+          //markerLoader!.icons[1],
+          id: item.id,
+          // MarkerId(
+          //   item.id
+          //       // == null
+          //       // ? item.location[0].toString() + item.location[1].toString()
+          //       // : item.questId!
+          //   ,
+          // ),
+          position: LatLng(item.locationCode.latitude, item.locationCode.longitude),
         ),
       );
     }
     return newMarkersList;
   }
+
+  Fluster<MapMarker> getPoints(){
+    Fluster<MapMarker> fluster = Fluster<MapMarker>(
+      minZoom: 0, // The min zoom at clusters will show
+      maxZoom: 20, // The max zoom at clusters will show
+      radius: 150, // Cluster radius in pixels
+      extent: 2048, // Tile extent. Radius is calculated with it.
+      nodeSize: 64, // Size of the KD-tree leaf node.
+      points: markers, // The list of markers created before
+      createCluster: ( // Create cluster marker
+          BaseCluster? cluster,
+          double? lng,
+          double? lat,
+          ) => MapMarker(
+        id: cluster?.id.toString(),
+        position: LatLng(lat!, lng!),
+        icon: BitmapDescriptor.defaultMarker,
+        isCluster: cluster?.isCluster,
+        clusterId: cluster?.id,
+        pointsSize: cluster?.pointsSize,
+        childMarkerId: cluster?.childMarkerId,
+      ),
+    );
+    return fluster;
+  }
+
 
   @action
   onTabQuest(String id) async {
