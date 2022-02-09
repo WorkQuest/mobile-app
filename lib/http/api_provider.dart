@@ -99,28 +99,28 @@ extension QuestService on ApiProvider {
     );
   }
 
-  Future<List<QuestMapPoint>> mapPoints(LatLngBounds bounds) async {
+  Future<List<BaseQuestResponse>> mapPoints(LatLngBounds bounds) async {
     final response = await httpClient.get(
-      query: '/v1/quests/map/points' +
-          '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
-          'north[longitude]=${bounds.northeast.longitude.toString()}' +
-          '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
-          'south[longitude]=${bounds.southwest.longitude.toString()}',
+      query: '/v1/quest/map/points'
+              '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
+          'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
+          '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
+          'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}',
     );
 
-    final response2 = await httpClient.get(
-      query: '/v1/quests' +
-          '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
-          'north[longitude]=${bounds.northeast.longitude.toString()}' +
-          '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
-          'south[longitude]=${bounds.southwest.longitude.toString()}',
-    );
+    // final response2 = await httpClient.get(
+    //   query: '/v1/quests' +
+    //       '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
+    //       'north[longitude]=${bounds.northeast.longitude.toString()}' +
+    //       '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
+    //       'south[longitude]=${bounds.southwest.longitude.toString()}',
+    // );
 
-    print("<-------------->$response <-------------->$response2,");
+    //print("<-------------->$response <-------------->");
 
-    return List<QuestMapPoint>.from(
-      response.map(
-        (x) => QuestMapPoint.fromJson(x),
+    return List<BaseQuestResponse>.from(
+      response["quests"].map(
+        (x) => BaseQuestResponse.fromJson(x),
       ),
     );
   }
@@ -163,9 +163,8 @@ extension QuestService on ApiProvider {
     String userId = "",
   }) async {
     try {
-      final responseData = await httpClient.get(
-        query: "/v1/worker/$userId/available-quests"
-      );
+      final responseData =
+          await httpClient.get(query: "/v1/worker/$userId/available-quests");
       return List<BaseQuestResponse>.from(
           responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)));
     } catch (e) {
@@ -398,7 +397,8 @@ extension QuestService on ApiProvider {
     required String userId,
   }) async {
     try {
-      final body = {"assignedWorkerId": userId,
+      final body = {
+        "assignedWorkerId": userId,
       };
       final responseData = await httpClient.post(
         query: '/v1/quest/$questId/start',

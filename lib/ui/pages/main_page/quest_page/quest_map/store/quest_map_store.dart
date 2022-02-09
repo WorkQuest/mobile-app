@@ -93,7 +93,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   Future getQuestsOnMap(LatLngBounds bounds) async {
     try {
       this.onLoading();
-      points = await _apiProvider.mapPoints(bounds);
+      //points = await _apiProvider.mapPoints(bounds);
       markers = await getMarkerList();
       this.onSuccess(true);
     } catch (e, trace) {
