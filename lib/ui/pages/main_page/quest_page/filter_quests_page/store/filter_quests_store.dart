@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:app/http/api_provider.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:app/base_store/i_store.dart';
 
 part 'filter_quests_store.g.dart';
@@ -183,15 +182,15 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   }
 
   String getSortByValue() {
-    if (selectSortBy == "quests.filter.sortBy.addedTimeAscending".tr()) {
+    if (selectSortBy == "quests.filter.sortBy.addedTimeAscending") {
       return sort = "sort[createdAt]=asc";
     } else if (selectSortBy ==
-        "quests.filter.sortBy.addedTimeDescending".tr()) {
+        "quests.filter.sortBy.addedTimeDescending") {
       return sort = "sort[createdAt]=desc";
     }
-    if (selectSortBy == "quests.filter.sortBy.priceAscending".tr()) {
+    if (selectSortBy == "quests.filter.sortBy.priceAscending") {
       return sort = "sort[price]=asc";
-    } else if (selectSortBy == "quests.filter.sortBy.priceDescending".tr()) {
+    } else if (selectSortBy == "quests.filter.sortBy.priceDescending") {
       return sort = "sort[price]=desc";
     }
     return sort;

@@ -24,18 +24,18 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
     });
   }
 
-  final _$questNameAtom = Atom(name: '_UserProfileStore.questName');
+  final _$questIdAtom = Atom(name: '_UserProfileStore.questId');
 
   @override
-  String get questName {
-    _$questNameAtom.reportRead();
-    return super.questName;
+  String get questId {
+    _$questIdAtom.reportRead();
+    return super.questId;
   }
 
   @override
-  set questName(String value) {
-    _$questNameAtom.reportWrite(value, super.questName, () {
-      super.questName = value;
+  set questId(String value) {
+    _$questIdAtom.reportWrite(value, super.questId, () {
+      super.questId = value;
     });
   }
 
@@ -57,7 +57,7 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
   String toString() {
     return '''
 quests: ${quests},
-questName: ${questName}
+questId: ${questId}
     ''';
   }
 }

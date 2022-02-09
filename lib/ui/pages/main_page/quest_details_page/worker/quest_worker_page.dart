@@ -30,7 +30,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   late WorkerStore store;
   late MyQuestStore myQuestStore;
   late QuestsStore questStore;
-  ProfileMeStore? profile;
   List<Responded?> respondedList = [];
 
   AnimationController? controller;
@@ -38,9 +37,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   @override
   void initState() {
     store = context.read<WorkerStore>();
-    profile = context.read<ProfileMeStore>();
     myQuestStore = context.read<MyQuestStore>();
     questStore = context.read<QuestsStore>();
+    profile = context.read<ProfileMeStore>();
+    profile!.getProfileMe();
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
@@ -75,8 +75,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       )
     ];
   }
-
-
 
   @override
   Widget getBody() {
@@ -211,7 +209,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       ),
                     ),
                   ),
-          if (store.quest.value!.status == 1)
+          if (store.quest.value!.status == 1 &&
+              store.quest.value!.assignedWorker?.id == profile!.userData!.id)
             store.isLoading
                 ? Center(
                     child: CircularProgressIndicator.adaptive(),
@@ -301,7 +300,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-
       children: [
         const SizedBox(height: 23),
         Text(
@@ -339,30 +337,31 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             onPressed: store.opinion.isNotEmpty ||
                     store.mediaFile.isNotEmpty ||
                     store.mediaIds.isNotEmpty
-                ? ()async {
-                    store.sendRespondOnQuest(store.opinion);
-                    widget.questInfo.responded = Responded(
-                      id: "",
-                      workerId: profile!.userData!.id,
-                      questId: widget.questInfo.id,
-                      status: 0,
-                      type: 0,
-                      message: store.opinion,
-                      createdAt: DateTime.now(),
-                      updatedAt: DateTime.now(),
-                    );
-                    for (int i = 0; i < questStore.questsList.length; i++)
-                      if (questStore.questsList[i].id == widget.questInfo.id)
-                        questStore.questsList[i].responded = Responded(
-                          id: "",
-                          workerId: profile!.userData!.id,
-                          questId: widget.questInfo.id,
-                          status: 0,
-                          type: 0,
-                          message: store.opinion,
-                          createdAt: DateTime.now(),
-                          updatedAt: DateTime.now(),
-                        );
+                ? () async {
+                    await store.sendRespondOnQuest(store.opinion);
+                    // widget.questInfo.responded = Responded(
+                    //   id: "",
+                    //   workerId: profile!.userData!.id,
+                    //   questId: widget.questInfo.id,
+                    //   status: 0,
+                    //   type: 0,
+                    //   message: store.opinion,
+                    //   createdAt: DateTime.now(),
+                    //   updatedAt: DateTime.now(),
+                    // );
+                    // for (int i = 0; i < questStore.questsList.length; i++)
+                    //   if (questStore.questsList[i].id == widget.questInfo.id)
+                    //     questStore.questsList[i].responded = Responded(
+                    //       id: "",
+                    //       workerId: profile!.userData!.id,
+                    //       questId: widget.questInfo.id,
+                    //       status: 0,
+                    //       type: 0,
+                    //       message: store.opinion,
+                    //       createdAt: DateTime.now(),
+                    //       updatedAt: DateTime.now(),
+                    //     );
+                    questStore.getQuests(true);
                     myQuestStore.deleteQuest(widget.questInfo);
                     myQuestStore.addQuest(widget.questInfo, true);
                     Navigator.pop(context);

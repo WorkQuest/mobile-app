@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:app/model/quests_models/assigned_worker.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
@@ -8,8 +7,8 @@ import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employe
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -33,8 +32,12 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   void initState() {
     store = context.read<EmployerStore>();
     questStore = context.read<MyQuestStore>();
-    store.getRespondedList(
-        widget.questInfo.id, widget.questInfo.assignedWorker?.id ?? "");
+    profile = context.read<ProfileMeStore>();
+    profile!.getProfileMe().then((value) => {
+          if (widget.questInfo.userId == profile!.userData!.id)
+            store.getRespondedList(
+                widget.questInfo.id, widget.questInfo.assignedWorker?.id ?? ""),
+        });
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(
@@ -108,7 +111,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   @override
   Widget getBody() {
-    return respondedList();
+    return store.quest.value?.userId == (profile?.userData?.id ?? "myId")
+        ? respondedList()
+        : SizedBox();
   }
 
   @override
@@ -134,18 +139,16 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           const SizedBox(height: 10),
           GestureDetector(
             onTap: () async {
-              profile!.getAssignedWorker(widget.questInfo.assignedWorker!.id);
+              await profile!
+                  .getAssignedWorker(widget.questInfo.assignedWorker!.id);
               //ждем ответ с бэка
-              Timer.periodic(Duration(milliseconds: 100), (timer) {
-                if (profile!.assignedWorker?.id != null) {
-                  timer.cancel();
-                  Navigator.of(context, rootNavigator: true).pushNamed(
-                    UserProfile.routeName,
-                    arguments: profile!.assignedWorker,
-                  );
-                  profile!.assignedWorker = null;
-                }
-              });
+              if (profile!.assignedWorker?.id != null) {
+                Navigator.of(context, rootNavigator: true).pushNamed(
+                  UserProfile.routeName,
+                  arguments: profile!.assignedWorker,
+                );
+                profile!.assignedWorker = null;
+              }
             },
             child: Row(
               children: [
@@ -256,7 +259,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         TextButton(
                           onPressed: store.selectedResponders == null
                               ? null
-                              : ()async {
+                              : () async {
                                   store.startQuest(
                                     userId: store.selectedResponders!.workerId,
                                     questId: widget.questInfo.id,
@@ -274,7 +277,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                   questStore.deleteQuest(widget.questInfo);
                                   questStore.addQuest(widget.questInfo, true);
                                   Navigator.pop(context);
-                                  await AlertDialogUtils.showSuccessDialog(context);
+                                  await AlertDialogUtils.showSuccessDialog(
+                                      context);
                                 },
                           child: Text(
                             "quests.chooseWorker".tr(),
@@ -358,7 +362,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   ),
                   const SizedBox(height: 15),
                   TextButton(
-                    onPressed: () async{
+                    onPressed: () async {
                       store.acceptCompletedWork(questId: widget.questInfo.id);
                       widget.questInfo.status = 6;
                       questStore.deleteQuest(widget.questInfo);

@@ -42,7 +42,7 @@ extension CustomAppBar on UserProfileState {
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: EdgeInsets.only(
           left: 16.0,
-          bottom: 16.0,
+          bottom: appBarPositionVertical,
           top: 0.0,
         ),
         collapseMode: CollapseMode.pin,
@@ -74,26 +74,26 @@ extension CustomAppBar on UserProfileState {
                       size: 20.0,
                     ),
                   if (markDev != 5)
-                  ShaderMask(
-                    blendMode: BlendMode.srcATop,
-                    shaderCallback: (Rect rect) {
-                      return LinearGradient(
-                        stops: [0, markMod, markMod],
-                        colors: [
-                          Color(0xFFE8D20D),
-                          Color(0xFFE8D20D),
-                          Color(0xFFE8D20D).withOpacity(0)
-                        ],
-                      ).createShader(rect);
-                    },
-                    child: SizedBox(
-                      child: Icon(
-                        Icons.star,
-                        color: Color(0xFFE9EDF2),
-                        size: 20.0,
+                    ShaderMask(
+                      blendMode: BlendMode.srcATop,
+                      shaderCallback: (Rect rect) {
+                        return LinearGradient(
+                          stops: [0, markMod, markMod],
+                          colors: [
+                            Color(0xFFE8D20D),
+                            Color(0xFFE8D20D),
+                            Color(0xFFE8D20D).withOpacity(0)
+                          ],
+                        ).createShader(rect);
+                      },
+                      child: SizedBox(
+                        child: Icon(
+                          Icons.star,
+                          color: Color(0xFFE9EDF2),
+                          size: 20.0,
+                        ),
                       ),
                     ),
-                  ),
                   for (int i = 0; i < 4 - markDev; i++)
                     Icon(
                       Icons.star,
@@ -110,7 +110,9 @@ extension CustomAppBar on UserProfileState {
               ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
               : "${info.firstName} ${info.lastName}",
           appBarPosition,
-          userStore!.userData!.ratingStatistic?.status ?? "noStatus",
+          info == null
+              ? userStore!.userData!.ratingStatistic?.status ?? "noStatus"
+              : info.ratingStatistic?.status ?? "noStatus",
         ),
       ),
     );
