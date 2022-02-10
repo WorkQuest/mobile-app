@@ -1,5 +1,6 @@
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class SMSVerificationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final store = context.read<SMSVerificationStore>();
+    final profileMeStore = context.read<ProfileMeStore>();
     return ObserverListener<SMSVerificationStore>(
       onSuccess: () {},
       child: Observer(
@@ -139,6 +141,7 @@ class SMSVerificationPage extends StatelessWidget {
                                   : () async {
                                       await store.submitCode();
                                       if (store.isSuccess)
+                                        profileMeStore.getProfileMe();
                                         Navigator.pop(context);
                                     },
                               child: store.isLoading

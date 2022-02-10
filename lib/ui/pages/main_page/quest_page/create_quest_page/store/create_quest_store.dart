@@ -131,15 +131,11 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   bool get canCreateQuest =>
       !isLoading &&
       locationPlaceName.isNotEmpty &&
-      mediaFile.isNotEmpty &&
       skillFilters.isNotEmpty;
 
   @computed
   bool get canSubmitEditQuest =>
-      !isLoading &&
-      locationPlaceName.isNotEmpty &&
-      (mediaIds.isNotEmpty || mediaFile.isNotEmpty) &&
-      skillFilters.isNotEmpty;
+      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
 
   @action
   void emptyField(BuildContext context) {

@@ -80,6 +80,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
         ));
       }
       if (role == UserRole.Worker) {
+        quests.clear();
         quests.addAll(await _apiProvider.getAvailableQuests(userId: userId));
         // removeOddQuests();
       }

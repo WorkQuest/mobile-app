@@ -266,7 +266,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   viewOtherUser!.questId = "";
                   viewOtherUser!.workerId = widget.info!.id;
                   viewOtherUser!
-                      .getQuests(userStore!.userData!.id, widget.info!.role);
+                      .getQuests(widget.info!.id, widget.info!.role);
                   Navigator.of(context, rootNavigator: true).pushNamed(
                     ChooseQuest.routeName,
                     arguments: widget.info!.id,

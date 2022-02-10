@@ -87,7 +87,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
-  saveSkillFilters(Map<int, List<int>> value){
+  saveSkillFilters(Map<int, List<int>> value) {
     skillFilters = value;
   }
 
@@ -125,6 +125,16 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   setSelectedSkillFilters(ObservableMap<int, ObservableList<bool>> value) {
     selectedSkillFilters = value;
+  }
+
+  void clearFilters() {
+    employments.clear();
+    workplaces.clear();
+    priorities.clear();
+    selectedSkill.clear();
+    employeeRatings.clear();
+    sort = "sort[createdAt]=desc";
+    clearSkillFilters();
   }
 
   @action

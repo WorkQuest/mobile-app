@@ -876,6 +876,7 @@
     }
   },
   "modals": {
+    "exit": "Exit",
     "modals": {
       "title": "Create group chat",
       "edit": "Edit group chat",

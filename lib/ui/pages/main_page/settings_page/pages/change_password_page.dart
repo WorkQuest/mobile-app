@@ -1,4 +1,7 @@
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
+import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
+import 'package:app/ui/widgets/success_alert_dialog.dart';
+import 'package:app/utils/storage.dart';
 
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
@@ -71,6 +74,14 @@ class ChangePasswordPage extends StatelessWidget {
                                       if (_formKey.currentState?.validate() ??
                                           false) {
                                         await settingsStore.changePassword();
+                                        SuccessDialog();
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pushNamedAndRemoveUntil(
+                                          SignInPage.routeName,
+                                          (route) => false,
+                                        );
+                                        Storage.deleteAllFromSecureStorage();
                                       }
                                     }
                                   : null,

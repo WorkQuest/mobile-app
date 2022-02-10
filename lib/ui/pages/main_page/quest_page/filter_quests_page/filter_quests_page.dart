@@ -27,8 +27,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     storeFilter = context.read<FilterQuestsStore>();
     profile = context.read<ProfileMeStore>();
     storeQuest = context.read<QuestsStore>();
-    storeFilter!.initSkillFiltersValue(storeQuest.selectedSkillFilters);
     storeFilter!.getFilters(storeQuest.selectedSkill, storeQuest.skillFilters);
+    storeFilter!.initSkillFiltersValue(storeQuest.selectedSkillFilters);
     storeFilter!.initEmployments(storeQuest.employments);
     storeFilter!.initRating(storeQuest.employeeRatings);
     storeFilter!.initWorkplace(storeQuest.workplaces);
@@ -228,13 +228,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
             ),
             OutlinedButton(
               onPressed: () {
-                storeQuest.employments.clear();
-                storeQuest.workplaces.clear();
-                storeQuest.priorities.clear();
-                storeQuest.selectedSkill.clear();
-                storeQuest.employeeRatings.clear();
-                storeQuest.clearSkillFilters();
-                storeQuest.sort = "sort[createdAt]=desc";
+                storeQuest.clearFilters();
+                storeFilter!.clearFilters();
                 profile!.userData!.role == UserRole.Employer
                     ? storeQuest.getWorkers(true)
                     : storeQuest.getQuests(true);

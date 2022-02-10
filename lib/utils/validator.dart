@@ -52,8 +52,9 @@ class Validators {
   }
 
   static String? phoneNumberValidator(String? text) {
-    String pattern = r'(^(?:[+0])?[0-9]{11,13}$)';
+    String pattern = r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$';
     RegExp regExp = new RegExp(pattern);
+    print(text);
     if ((text?.length ?? 0) == 0) {
       return 'Please enter mobile number';
     } else if (!regExp.hasMatch(text ?? "")) {

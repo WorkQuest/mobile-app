@@ -550,12 +550,16 @@ extension UserInfoService on ApiProvider {
           "priority": userData.priority.index,
         if (userData.role == UserRole.Worker) "workplace": userData.workplace,
         "additionalInfo": {
-          "secondMobileNumber": {
-            "codeRegion":
-                userData.additionalInfo?.secondMobileNumber.codeRegion,
-            "phone": userData.additionalInfo?.secondMobileNumber.phone,
-            "fullPhone": userData.additionalInfo?.secondMobileNumber.fullPhone,
-          },
+          "secondMobileNumber": userData.additionalInfo?.secondMobileNumber !=
+                  null
+              ? {
+                  "codeRegion":
+                      userData.additionalInfo?.secondMobileNumber!.codeRegion,
+                  "phone": userData.additionalInfo?.secondMobileNumber!.phone,
+                  "fullPhone":
+                      userData.additionalInfo?.secondMobileNumber!.fullPhone,
+                }
+              : null,
           "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
               ? userData.additionalInfo?.address
               : null,

@@ -64,7 +64,7 @@ class _ChatPageState extends State<ChatPage> {
           notificationPredicate: (ScrollNotification notification) {
             return notification.depth == 0;
           },
-          onRefresh: () => store.loadChats(true),
+          onRefresh: () => store.loadChats(true, store.starred),
           child: Observer(
             builder: (_) => store.isLoading
                 ? Center(child: CircularProgressIndicator.adaptive())
@@ -73,7 +73,7 @@ class _ChatPageState extends State<ChatPage> {
                         onNotification: (scrollEnd) {
                           final metrics = scrollEnd.metrics;
                           if (metrics.maxScrollExtent < metrics.pixels) {
-                            store.loadChats(false);
+                            store.loadChats(false, store.starred);
                           }
                           return true;
                         },
@@ -84,14 +84,17 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                           child: Observer(builder: (_) {
                             return Column(
-                              children: !store.starred
-                                  ? store.chatKeyList
-                                      .map((key) =>
-                                          _chatItem(store.chats[key]!))
-                                      .toList()
-                                  : store.starredChats
-                                      .map((key) => _chatItem(key))
+                              children:
+                              // !store.starred
+                              //     ?
+                              store.chatKeyList
+                                      .map(
+                                          (key) => _chatItem(store.chats[key]!))
                                       .toList(),
+                                  // : store.starredChats
+                                  //     .map(
+                                  //         (key) => _chatItem(store.chats[key]!))
+                                  //     .toList(),
                             );
                           }),
                         ),
@@ -129,10 +132,12 @@ class _ChatPageState extends State<ChatPage> {
                         arguments: userData.userData!.id);
                     break;
                   case "chat.starredChat":
-                    store.openStarredChats(true);
+                    store.loadChats(true, true);
+                    store.starred = true;
                     break;
                   case "chat.allChat":
-                    store.openStarredChats(false);
+                    store.loadChats(true, false);
+                    store.starred = false;
                     break;
                   case "chat.report":
                     Navigator.of(context, rootNavigator: true).pushNamed(

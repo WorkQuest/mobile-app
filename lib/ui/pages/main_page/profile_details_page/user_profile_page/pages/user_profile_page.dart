@@ -210,9 +210,9 @@ class UserProfileState<T extends UserProfile> extends State<T>
                                 widget.info!.phone.fullPhone,
                         secondNumber: widget.info == null
                             ? userStore!.userData?.additionalInfo
-                                    ?.secondMobileNumber.fullPhone ??
+                                    ?.secondMobileNumber!.fullPhone ??
                                 ""
-                            : widget.info!.additionalInfo?.secondMobileNumber
+                            : widget.info!.additionalInfo?.secondMobileNumber!
                                     .fullPhone ??
                                 "",
                         email: widget.info == null

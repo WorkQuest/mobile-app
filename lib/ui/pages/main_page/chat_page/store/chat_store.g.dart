@@ -69,21 +69,6 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
-  final _$starredChatsAtom = Atom(name: '_ChatStore.starredChats');
-
-  @override
-  ObservableList<Chats> get starredChats {
-    _$starredChatsAtom.reportRead();
-    return super.starredChats;
-  }
-
-  @override
-  set starredChats(ObservableList<Chats> value) {
-    _$starredChatsAtom.reportWrite(value, super.starredChats, () {
-      super.starredChats = value;
-    });
-  }
-
   final _$chatsIdAtom = Atom(name: '_ChatStore.chatsId');
 
   @override
@@ -184,8 +169,9 @@ mixin _$ChatStore on _ChatStore, Store {
   final _$loadChatsAsyncAction = AsyncAction('_ChatStore.loadChats');
 
   @override
-  Future<dynamic> loadChats(bool isNewList) {
-    return _$loadChatsAsyncAction.run(() => super.loadChats(isNewList));
+  Future<dynamic> loadChats(bool isNewList, bool starred) {
+    return _$loadChatsAsyncAction
+        .run(() => super.loadChats(isNewList, starred));
   }
 
   final _$getUserDataAsyncAction = AsyncAction('_ChatStore.getUserData');
@@ -250,17 +236,6 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   @override
-  void openStarredChats(bool value) {
-    final _$actionInfo = _$_ChatStoreActionController.startAction(
-        name: '_ChatStore.openStarredChats');
-    try {
-      return super.openStarredChats(value);
-    } finally {
-      _$_ChatStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String setInfoMessage(String infoMessage) {
     final _$actionInfo = _$_ChatStoreActionController.startAction(
         name: '_ChatStore.setInfoMessage');
@@ -289,7 +264,6 @@ unread: ${unread},
 starred: ${starred},
 idChat: ${idChat},
 chatSelected: ${chatSelected},
-starredChats: ${starredChats},
 chatsId: ${chatsId},
 idChatsForStar: ${idChatsForStar},
 infoMessageValue: ${infoMessageValue},

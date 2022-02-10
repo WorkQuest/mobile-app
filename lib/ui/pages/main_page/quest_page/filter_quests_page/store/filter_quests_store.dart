@@ -42,7 +42,7 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   List<String> selectedSkill = [];
 
-  String sort = "";
+  String sort = "sort[createdAt]=desc";
 
   @observable
   ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
@@ -184,8 +184,7 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   String getSortByValue() {
     if (selectSortBy == "quests.filter.sortBy.addedTimeAscending") {
       return sort = "sort[createdAt]=asc";
-    } else if (selectSortBy ==
-        "quests.filter.sortBy.addedTimeDescending") {
+    } else if (selectSortBy == "quests.filter.sortBy.addedTimeDescending") {
       return sort = "sort[createdAt]=desc";
     }
     if (selectSortBy == "quests.filter.sortBy.priceAscending") {
@@ -323,6 +322,20 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     selectedSkillFilters = value;
   }
 
+  void clearFilters() {
+    for (int i = 0; i < selectEmployment.length; i++)
+      selectEmployment[i] = false;
+
+    for (int i = 0; i < selectEmployeeRating.length; i ++)
+      selectEmployeeRating[i] = false;
+
+    for (int i = 0; i < selectWorkplace.length; i++)
+      selectWorkplace[i] = false;
+
+    for (int i = 0; i < priority.length; i++)
+      priority[i] = false;
+  }
+
   @action
   void initEmployments(List<String> value) {
     value.forEach((element) {
@@ -349,9 +362,7 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   @action
   void initWorkplace(List<String> value) {
-    print("length: ${value.length}");
     value.forEach((element) {
-      print("element: $element");
       if (element == "both") {
         selectWorkplace[0] = true;
         selectWorkplace[1] = true;

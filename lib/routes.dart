@@ -152,10 +152,17 @@ class Routes {
 
       case SMSVerificationPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Directionality(
-            textDirection: checkDirection(context),
-            child: Provider(
-              create: (context) => getIt.get<SMSVerificationStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SMSVerificationStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
+            child: Directionality(
+              textDirection: checkDirection(context),
               child: SMSVerificationPage(),
             ),
           ),

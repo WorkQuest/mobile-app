@@ -169,7 +169,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
               height: 20,
             ),
             phoneNumber(
-              title: "modals.phoneNumber".tr(),
+              title: "modals.phoneNumber",
               initialValue: pageStore.phoneNumber,
               onChanged: (PhoneNumber phone) {
                 pageStore.userData.phone.codeRegion = phone.dialCode ?? "";
@@ -180,15 +180,15 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
               },
             ),
             phoneNumber(
-              title: "modals.secondPhoneNumber".tr(),
+              title: "modals.secondPhoneNumber",
               initialValue: pageStore.secondPhoneNumber,
               onChanged: (PhoneNumber phone) {
-                pageStore.userData.additionalInfo?.secondMobileNumber
+                pageStore.userData.additionalInfo?.secondMobileNumber!
                     .codeRegion = phone.dialCode ?? "";
-                pageStore.userData.additionalInfo?.secondMobileNumber.phone =
+                pageStore.userData.additionalInfo?.secondMobileNumber!.phone =
                     phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ??
                         "";
-                pageStore.userData.additionalInfo?.secondMobileNumber
+                pageStore.userData.additionalInfo?.secondMobileNumber!
                     .fullPhone = phone.phoneNumber ?? "";
               },
             ),
@@ -349,7 +349,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title),
+        Text(title.tr()),
         const SizedBox(height: 5),
         Container(
           decoration: BoxDecoration(
@@ -358,13 +358,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
           ),
           child: Observer(
             builder: (_) => InternationalPhoneNumberInput(
-              initialValue: initialValue != null
-                  ? PhoneNumber(
-                      phoneNumber: initialValue.phoneNumber,
-                      dialCode: initialValue.dialCode,
-                      isoCode: initialValue.isoCode,
-                    )
-                  : null,
+              validator: title == "modals.secondPhoneNumber"
+                  ? (value) {}
+                  : Validators.phoneNumberValidator,
+              initialValue: initialValue,
               errorMessage: "modals.invalidPhone".tr(),
               onInputChanged: onChanged,
               selectorConfig: SelectorConfig(
@@ -540,6 +537,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
           _controllerKnowledge!.getListMap(), context)) return;
       if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
         return;
+      if (pageStore.userData.additionalInfo?.secondMobileNumber?.phone == "")
+        pageStore.userData.additionalInfo?.secondMobileNumber = null;
       pageStore.userData.additionalInfo?.educations =
           _controllerKnowledge!.getListMap();
       pageStore.userData.additionalInfo?.workExperiences =

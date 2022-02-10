@@ -49,8 +49,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   Map<String, Chats> chats = {};
 
-  @observable
-  ObservableList<Chats> starredChats = ObservableList.of([]);
+  // @observable
+  // List<String> starredChats = [];
 
   @observable
   ObservableList<String> chatsId = ObservableList.of([]);
@@ -207,16 +207,22 @@ abstract class _ChatStore extends IStore<bool> with Store {
   @observable
   int _count = 0;
 
-  @action
-  void openStarredChats(bool value) {
-    starred = value;
-    starredChats.clear();
-    chats.forEach((key, value) {
-      if (value.chatModel.star != null) {
-        starredChats.add(value);
-      }
-    });
-  }
+  // @action
+  // void openStarredChats(bool value) async {
+  //   chats = {};
+  //   starred = value;
+  //   starredChats.clear();
+  //
+  //   final listChats = await _apiProvider.getChats(
+  //     offset: this.offset,
+  //     limit: this.limit,
+  //     starred: value
+  //   );
+  //   listChats.forEach((chat) {
+  //     chats[chat.id] = Chats(chat);
+  //   });
+  //   starredChats = chats.keys.toList();
+  // }
 
   @action
   String setInfoMessage(String infoMessage) {
@@ -240,7 +246,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   initialSetup(String myId) async {
     this._myId = myId;
-    await loadChats(true);
+    await loadChats(true, false);
     WebSocket().connect();
   }
 
@@ -265,10 +271,10 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   @action
-  Future loadChats(bool isNewList) async {
+  Future loadChats(bool isNewList, bool starred) async {
     if (isNewList) {
       chats = {};
-      starredChats.clear();
+      // starredChats.clear();
       this.offset = 0;
       refresh = false;
     }
@@ -281,11 +287,12 @@ abstract class _ChatStore extends IStore<bool> with Store {
       final listChats = await _apiProvider.getChats(
         offset: this.offset,
         limit: this.limit,
+        starred: starred,
       );
       listChats.forEach((chat) {
         chats[chat.id] = Chats(chat);
-        if (chats[chat.id]!.chatModel.star != null)
-          starredChats.add(chats[chat.id]!);
+        // if (chats[chat.id]!.chatModel.star != null)
+        //   starredChats.add(chats[chat.id]!);
       });
       this.offset = chats.length;
       refresh = true;

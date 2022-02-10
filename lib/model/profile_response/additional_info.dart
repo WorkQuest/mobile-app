@@ -17,7 +17,7 @@ class AdditionalInfo {
       required this.workExperiences,
       required this.avatar});
 
-  Phone secondMobileNumber;
+  Phone? secondMobileNumber;
   String? address;
   SocialNetwork? socialNetwork;
   String? description;

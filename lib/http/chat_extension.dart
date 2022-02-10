@@ -8,6 +8,7 @@ extension ChatsService on ApiProvider {
   Future<List<ChatModel>> getChats({
     required int offset,
     required int limit,
+    bool? starred,
   }) async {
     try {
       final responseData = await httpClient.get(
@@ -15,11 +16,12 @@ extension ChatsService on ApiProvider {
         queryParameters: {
           "offset": offset,
           "limit": limit,
+          if (starred != null) "starred": starred,
         },
       );
       return List<ChatModel>.from(
         responseData["chats"].map(
-              (x) => ChatModel.fromJson(x),
+          (x) => ChatModel.fromJson(x),
         ),
       );
     } catch (e, stack) {
@@ -35,7 +37,7 @@ extension ChatsService on ApiProvider {
           query: '/v1/user/me/chat/members/users-by-chats');
       return List<ProfileMeResponse>.from(
         responseData["users"].map(
-              (x) => ProfileMeResponse.fromJson(x),
+          (x) => ProfileMeResponse.fromJson(x),
         ),
       );
     } catch (e, trace) {
@@ -48,10 +50,10 @@ extension ChatsService on ApiProvider {
   Future<List<MessageModel>> getStarredMessage() async {
     try {
       final responseData =
-      await httpClient.get(query: '/v1/user/me/chat/messages/star');
+          await httpClient.get(query: '/v1/user/me/chat/messages/star');
       return List<MessageModel>.from(
         responseData["messages"].map(
-              (x) => MessageModel.fromJson(x),
+          (x) => MessageModel.fromJson(x),
         ),
       );
     } catch (e, trace) {
