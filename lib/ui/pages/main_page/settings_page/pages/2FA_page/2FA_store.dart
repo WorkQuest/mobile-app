@@ -68,8 +68,8 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await apiProvider.confirmEnabling2FA(
-        confirmCode: codeFromEmail,
-        totp: codeFromAuthenticator,
+        confirmCode: codeFromEmail.toUpperCase().trim(),
+        totp: codeFromAuthenticator.trim(),
       );
       this.onSuccess(true);
     } catch (e) {

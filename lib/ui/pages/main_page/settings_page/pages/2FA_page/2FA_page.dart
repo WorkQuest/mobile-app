@@ -69,9 +69,6 @@ class TwoFAPage extends StatelessWidget {
                   ),
                   child: userStore.userData?.isTotpActive ?? false
                       ? Disable2FA(store)
-                  // _disable2FA(
-                  //         context,
-                  //       )
                       : Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
