@@ -4,6 +4,7 @@ import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dar
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
+import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -41,7 +42,9 @@ class _WalletPageState extends State<WalletPage> {
       onNotification: (scrollEnd) {
         if (scrollEnd.metrics.atEdge) if (scrollEnd.metrics.pixels ==
             scrollEnd.metrics.maxScrollExtent) {
-          if (!GetIt.I.get<WalletStore>().isMoreLoading) {
+          if (!GetIt.I
+              .get<WalletStore>()
+              .isMoreLoading) {
             GetIt.I.get<WalletStore>().getTransactionsMore();
           }
         }
@@ -50,10 +53,10 @@ class _WalletPageState extends State<WalletPage> {
       },
       child: Platform.isAndroid
           ? RefreshIndicator(
-              displacement: 30,
-              triggerMode: RefreshIndicatorTriggerMode.anywhere,
-              onRefresh: _onRefresh,
-              child: layout())
+          displacement: 30,
+          triggerMode: RefreshIndicatorTriggerMode.anywhere,
+          onRefresh: _onRefresh,
+          child: layout())
           : layout(),
     );
   }
@@ -80,7 +83,8 @@ class _WalletPageState extends State<WalletPage> {
                   children: [
                     Text(
                       '${address.substring(0, 9)}...'
-                      '${address.substring(address.length - 3, address.length)}',
+                          '${address.substring(
+                          address.length - 3, address.length)}',
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
@@ -126,7 +130,8 @@ class _WalletPageState extends State<WalletPage> {
                 ),
                 Row(
                   children: [
-                    outlinedButton(route: "", title: "withdraw"),
+                    outlinedButton(
+                        route: WithdrawPage.routeName, title: "withdraw"),
                     const SizedBox(
                       width: 10,
                     ),
@@ -142,10 +147,12 @@ class _WalletPageState extends State<WalletPage> {
                         onPressed: () async {
                           Navigator.of(context, rootNavigator: true)
                               .push(MaterialPageRoute(
-                            builder: (_) => Provider(
-                              create: (context) => getIt.get<TransferStore>(),
-                              child: TransferPage(),
-                            ),
+                            builder: (_) =>
+                                Provider(
+                                  create: (context) =>
+                                      getIt.get<TransferStore>(),
+                                  child: TransferPage(),
+                                ),
                           ));
                         },
                       ),
@@ -284,7 +291,9 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           ),
                           Text(
                             // '${num.parse(balance.amount).toInt()} ${balance.title}',
-                            '${num.parse(balance.amount).toDouble().toStringAsFixed(8)} ${balance.title}',
+                            '${num.parse(balance.amount)
+                                .toDouble()
+                                .toStringAsFixed(8)} ${balance.title}',
                             style: const TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.w700,
@@ -296,8 +305,11 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           ),
                           Text(
                             balance.title == "WQT"
-                                ? '\$ ${(num.parse(balance.amount).toDouble() * 0.03431).toStringAsFixed(4)}'
-                                : '\$ ${num.parse(balance.amount).toDouble().toStringAsFixed(4)}',
+                                ? '\$ ${(num.parse(balance.amount).toDouble() *
+                                0.03431).toStringAsFixed(4)}'
+                                : '\$ ${num.parse(balance.amount)
+                                .toDouble()
+                                .toStringAsFixed(4)}',
                             style: const TextStyle(
                               fontSize: 14,
                               color: AppColor.unselectedBottomIcon,
@@ -333,9 +345,9 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           border: isCurrency
                               ? null
                               : Border.all(
-                                  color:
-                                      AppColor.enabledButton.withOpacity(0.1),
-                                ),
+                            color:
+                            AppColor.enabledButton.withOpacity(0.1),
+                          ),
                           color: isCurrency
                               ? AppColor.enabledButton
                               : Colors.transparent,

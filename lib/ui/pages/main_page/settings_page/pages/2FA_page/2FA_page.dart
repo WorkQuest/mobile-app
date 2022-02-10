@@ -1,9 +1,9 @@
 import 'dart:io';
+import 'package:app/di/injector.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
+import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -36,80 +37,95 @@ class TwoFAPage extends StatelessWidget {
       },
       child: ObserverListener<TwoFAStore>(
         onSuccess: () {},
-        child: Observer(
-          builder: (_) => Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: CupertinoNavigationBar(
-              automaticallyImplyLeading: true,
-              middle: Text(
-                "settings.2FA".tr(),
-              ),
-            ),
-            body: SafeArea(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 16.0,
+        child: WillPopScope(
+          onWillPop: () async {
+            await dialog(
+              context,
+              title: "modals.2FaActivation".tr(),
+              message: "modals.cancel2Fa".tr(),
+              confirmAction: () {
+                Navigator.popUntil(
+                  context,
+                  (route) => route.isFirst,
+                );
+              },
+            );
+            return false;
+          },
+          child: Observer(
+            builder: (_) => Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: CupertinoNavigationBar(
+                automaticallyImplyLeading: true,
+                middle: Text(
+                  "settings.2FA".tr(),
                 ),
-                child: userStore.userData?.isTotpActive ?? false
-                    ? _disable2FA(
-                        store,
-                        context,
-                        userStore,
-                      )
-                    : Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: 20.0,
-                            alignment: AlignmentDirectional.centerStart,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Color(0xFFF7F8FA),
-                            ),
-                            child: LayoutBuilder(
-                              builder: (context, constraints) => Observer(
-                                builder: (_) => AnimatedContainer(
-                                  width: constraints.maxWidth *
-                                      (store.index + 1) /
-                                      4,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.blue,
-                                  ),
-                                  duration: const Duration(
-                                    milliseconds: 150,
+              ),
+              body: SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 16.0,
+                  ),
+                  child: userStore.userData?.isTotpActive ?? false
+                      ? Disable2FA(store)
+                  // _disable2FA(
+                  //         context,
+                  //       )
+                      : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 20.0,
+                              alignment: AlignmentDirectional.centerStart,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Color(0xFFF7F8FA),
+                              ),
+                              child: LayoutBuilder(
+                                builder: (context, constraints) => Observer(
+                                  builder: (_) => AnimatedContainer(
+                                    width: constraints.maxWidth *
+                                        (store.index + 1) /
+                                        4,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.blue,
+                                    ),
+                                    duration: const Duration(
+                                      milliseconds: 150,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 10.0,
-                          ),
-                          Text(
-                            "modals.step".tr() + " ${store.index + 1}",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 23.0,
+                            const SizedBox(
+                              height: 10.0,
                             ),
-                          ),
-                          const SizedBox(
-                            height: 10.0,
-                          ),
-                          Expanded(
-                            child: Confirm2FAPages(
-                              store: store,
-                              userStore: userStore,
-                              mail: mail,
+                            Text(
+                              "modals.step".tr() + " ${store.index + 1}",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 23.0,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 10.0,
-                          ),
-                        ],
-                      ),
+                            const SizedBox(
+                              height: 10.0,
+                            ),
+                            Expanded(
+                              child: Confirm2FAPages(
+                                store: store,
+                                userStore: userStore,
+                                mail: mail,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10.0,
+                            ),
+                          ],
+                        ),
+                ),
               ),
             ),
           ),
@@ -117,14 +133,17 @@ class TwoFAPage extends StatelessWidget {
       ),
     );
   }
+}
 
-  ///Disable 2FA
-  Widget _disable2FA(
-    TwoFAStore store,
-    BuildContext context,
-    ProfileMeStore userStore,
-  ) =>
-      Column(
+class Disable2FA extends StatelessWidget {
+  final TwoFAStore store;
+  const Disable2FA( this.store) ;
+
+  @override
+  Widget build(BuildContext context) {
+    return ObserverListener<TwoFAStore>(
+      onSuccess: (){},
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -138,26 +157,33 @@ class TwoFAPage extends StatelessWidget {
             onChanged: store.setCodeFromAuthenticator,
             decoration: InputDecoration(
               hintText: "*****",
-              errorText: "InCorrect Code",
+              //errorText: "InCorrect Code",
             ),
           ),
           Spacer(),
-          ElevatedButton(
-            onPressed: store.codeFromAuthenticator.isNotEmpty
-                ? () async {
-                    await store.disable2FA();
-                    Navigator.pop(context);
-                  }
-                : null,
-            child: store.isLoading
-                ? CircularProgressIndicator.adaptive()
-                : Text(
-                    "meta.submit".tr(),
-                  ),
+          Observer(
+            builder: (_) => ElevatedButton(
+              onPressed: store.codeFromAuthenticator.isNotEmpty
+                  ? () async {
+                await store.disable2FA();
+                await getIt.get<ProfileMeStore>().getProfileMe();
+                await AlertDialogUtils.showSuccessDialog(context);
+                Navigator.pop(context);
+              }
+                  : null,
+              child: store.isLoading
+                  ? CircularProgressIndicator.adaptive()
+                  : Text(
+                "meta.submit".tr(),
+              ),
+            ),
           )
         ],
-      );
+      ),
+    );
+  }
 }
+
 
 class Confirm2FAPages extends StatelessWidget {
   final TwoFAStore store;
@@ -183,13 +209,11 @@ class Confirm2FAPages extends StatelessWidget {
               "modals.installGoogleAuth".tr(),
             ),
             CupertinoButton(
-              onPressed: () {
+              onPressed: () async {
                 try {
-                  Platform.isIOS
-                      ? launch("market://details?id=" + "id388497605")
-                      : launch(
-                          "https://play.google.com/store/apps/details?id=" +
-                              "com.google.android.apps.authenticator2");
+                  await StoreRedirect.redirect(
+                      androidAppId: "com.google.android.apps.authenticator2",
+                      iOSAppId: "388497605");
                 } catch (e) {
                   print(e);
                 }
@@ -367,9 +391,9 @@ class Confirm2FAPages extends StatelessWidget {
             child: SizedBox(
               height: 45.0,
               child: OutlinedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (store.index == 0)
-                    dialog(
+                    await dialog(
                       context,
                       title: "modals.2FaActivation".tr(),
                       message: "modals.cancel2Fa".tr(),
@@ -401,18 +425,20 @@ class Confirm2FAPages extends StatelessWidget {
                 onPressed: store.index < 3
                     ? () async {
                         if (store.index == 0) await store.enable2FA();
-                        if (store.index == 2) openGoogleAuth();
+                        if (store.index == 2) await openGoogleAuth();
                         store.index++;
                       }
                     : store.canFinish
                         ? () async {
                             await store.confirm2FA();
                             if (store.isSuccess) {
+                              await getIt.get<ProfileMeStore>().getProfileMe();
                               await AlertDialogUtils.showSuccessDialog(context);
                               // await successAlert(
                               //   context,
                               //   "settings.2FaEnabled".tr(),
                               // );
+                              Navigator.pop(context);
                               Navigator.pop(context);
                             }
                           }
@@ -430,15 +456,19 @@ class Confirm2FAPages extends StatelessWidget {
 
   Future<void> openGoogleAuth() async {
     try {
+      print("launch");
       if (!(await launch(
-          "otpauth://totp/$mail?secret=${store.googleAuthenticatorSecretCode}&issuer=Margex"))) {
+          "otpauth://totp/$mail?secret=${store.googleAuthenticatorSecretCode}&issuer=WorkQuest"))) {
         Platform.isIOS
             ? launch(
                 "https://apps.apple.com/ru/app/google-authenticator/id388497605")
             : launch("https://play.google.com/store/apps/details?id=" +
                 "com.google.android.apps.authenticator2");
       }
+      print("launch3");
     } catch (e) {
+      print("launch");
+      print(e);
       Platform.isIOS
           ? launch(
               "https://apps.apple.com/ru/app/google-authenticator/id388497605")

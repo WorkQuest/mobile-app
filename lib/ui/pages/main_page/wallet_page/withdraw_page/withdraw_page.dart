@@ -3,7 +3,6 @@ import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -127,7 +126,6 @@ class _WithdrawPageState extends State<WithdrawPage>
               TextFormField(
                 onChanged: withdrawStore.setAmount,
                 keyboardType: TextInputType.number,
-                initialValue: "1234",
                 inputFormatters: <TextInputFormatter>[
                   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                 ],

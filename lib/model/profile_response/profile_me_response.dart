@@ -137,7 +137,7 @@ class ProfileMeResponse {
           ? null
           : QuestsStatistic.fromJson(json["questsStatistic"]),
       walletAddress: json["wallet"]?["address"],
-      isTotpActive: json["totpIsActive"],
+      isTotpActive: json["totpIsActive"] == null ? false : json["totpIsActive"],
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );

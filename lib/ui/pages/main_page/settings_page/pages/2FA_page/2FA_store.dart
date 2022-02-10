@@ -4,7 +4,6 @@ import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
 part '2FA_store.g.dart';
 
-@injectable
 @singleton
 class TwoFAStore extends _TwoFAStore with _$TwoFAStore {
   TwoFAStore(ApiProvider apiProvider) : super(apiProvider);
