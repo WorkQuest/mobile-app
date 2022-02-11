@@ -168,7 +168,7 @@ class ReviewsWidget extends StatelessWidget {
                         portfolioStore.getPortfolio(userId: myId);
                       else {
                         userProfileStore.quests.clear();
-                        userProfileStore.getQuests(myId, role);
+                        userProfileStore.getQuests(myId, role, true);
                       }
                       portfolioStore.getReviews(userId: myId);
                     }

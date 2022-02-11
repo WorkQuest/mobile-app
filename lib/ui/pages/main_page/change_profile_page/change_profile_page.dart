@@ -550,10 +550,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
       if (!profile!.isLoading)
         pageStore.userData.userSpecializations =
             _controller!.getSkillAndSpecialization();
-      profile!.changeProfile(
+      await profile!.changeProfile(
         pageStore.userData,
         media: pageStore.media,
       );
+      if (pageStore.numberChanged(profile!.userData!.phone))
+        await profile!.submitPhoneNumber();
       if (profile!.isSuccess) {
         await AlertDialogUtils.showSuccessDialog(context);
         Navigator.pop(context);

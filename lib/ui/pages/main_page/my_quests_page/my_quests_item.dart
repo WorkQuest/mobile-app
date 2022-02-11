@@ -3,7 +3,6 @@ import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dar
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/running_line.dart';
-import 'package:app/work_quest_app.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";
 import '../../../../constants.dart';
@@ -68,8 +67,10 @@ class MyQuestsItem extends StatelessWidget {
                 ),
                 if (questInfo.responded != null)
                   if (questInfo.responded!.workerId ==
-                          context.read<ProfileMeStore>().userData!.id &&
-                      (questInfo.status == 0 || questInfo.status == 4))
+                              context.read<ProfileMeStore>().userData!.id &&
+                          (questInfo.status == 0 || questInfo.status == 4) ||
+                      questInfo.invited != null &&
+                          questInfo.invited?.status == 1)
                     Row(
                       children: [
                         const SizedBox(
@@ -80,6 +81,17 @@ class MyQuestsItem extends StatelessWidget {
                         ),
                       ],
                     ),
+                if (questInfo.invited != null && questInfo.invited?.status == 0)
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        "quests.youInvited".tr(),
+                      ),
+                    ],
+                  ),
               ],
             ),
             const SizedBox(

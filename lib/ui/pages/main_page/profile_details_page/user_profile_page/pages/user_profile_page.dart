@@ -70,7 +70,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
       viewOtherUser!.quests.clear();
 
       if (viewOtherUser!.quests.isEmpty)
-        viewOtherUser!.getQuests(widget.info!.id, role);
+        viewOtherUser!.getQuests(widget.info!.id, role, true);
 
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(userId: widget.info!.id);
@@ -112,7 +112,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
             myQuests!.getQuests(userStore!.userData!.id, role, false);
           } else {
             //on another user profile
-            viewOtherUser!.getQuests(widget.info!.id, role);
+            viewOtherUser!.getQuests(widget.info!.id, role, false);
             if (getReviews && !portfolioStore!.isLoading)
               portfolioStore!.getReviews(
                 userId: widget.info!.id,

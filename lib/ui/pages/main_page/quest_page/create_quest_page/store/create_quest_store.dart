@@ -140,7 +140,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @action
   void emptyField(BuildContext context) {
     if (locationPlaceName.isEmpty) errorAlert(context, "Address is empty");
-    if (mediaFile.isEmpty) errorAlert(context, "Media is empty");
     if (skillFilters.isEmpty) errorAlert(context, "Skills are empty");
   }
 
