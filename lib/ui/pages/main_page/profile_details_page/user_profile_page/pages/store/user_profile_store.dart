@@ -68,30 +68,36 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
   Future<void> getQuests(
     String userId,
     UserRole role,
+    bool newList,
   ) async {
     try {
-      this.onLoading();
-      //TODO:offset scroll
-      if (role == UserRole.Employer) {
-        quests.addAll(await _apiProvider.getEmployerQuests(
-          userId: userId,
-          offset: offset,
-          statuses: [6],
-        ));
-      }
-      if (role == UserRole.Worker) {
-        quests.clear();
-        quests.addAll(await _apiProvider.getAvailableQuests(userId: userId));
-        // removeOddQuests();
-      }
+      if (newList) quests.clear();
+      if (offset == quests.length) {
+        this.onLoading();
+        //TODO:offset scroll
+        if (role == UserRole.Employer) {
+          quests.addAll(await _apiProvider.getEmployerQuests(
+            userId: userId,
+            offset: offset,
+            statuses: [6],
+          ));
+        }
+        if (role == UserRole.Worker) {
+          quests.addAll(await _apiProvider.getAvailableQuests(
+            userId: userId,
+            offset: offset,
+          ));
+          // removeOddQuests();
+        }
 
-      quests.toList().sort((key1, key2) =>
-          key1.createdAt.millisecondsSinceEpoch <
-                  key2.createdAt.millisecondsSinceEpoch
-              ? 1
-              : 0);
-      offset += 10;
-      this.onSuccess(true);
+        quests.toList().sort((key1, key2) =>
+            key1.createdAt.millisecondsSinceEpoch <
+                    key2.createdAt.millisecondsSinceEpoch
+                ? 1
+                : 0);
+        offset += 10;
+        this.onSuccess(true);
+      }
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());

@@ -1244,6 +1244,8 @@
     }
   },
   "settings": {
+    "enterSMS": "Please enter the code from SMS to SMS Verification",
+    "success": "Success",
     "profileChanged": "Profile changed successfully",
     "changeProfile": "Change profile",
     "placeOfStudying": "Place of study",

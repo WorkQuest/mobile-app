@@ -265,12 +265,12 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   viewOtherUser!.quests.clear();
                   viewOtherUser!.questId = "";
                   viewOtherUser!.workerId = widget.info!.id;
-                  viewOtherUser!
-                      .getQuests(widget.info!.id, widget.info!.role);
-                  Navigator.of(context, rootNavigator: true).pushNamed(
+                  await Navigator.of(context, rootNavigator: true).pushNamed(
                     ChooseQuest.routeName,
                     arguments: widget.info!.id,
                   );
+                  viewOtherUser!.quests.clear();
+                  viewOtherUser!.offset = 0;
                 },
                 child: Text(
                   "quests.addToQuest".tr(),
@@ -294,9 +294,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           reviews: widget.info == null
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
               : widget.info!.ratingStatistic!.reviewCount.toString(),
-          userId: widget.info == null
-              ? userStore!.userData!.id
-              : widget.info!.id,
+          userId:
+              widget.info == null ? userStore!.userData!.id : widget.info!.id,
           context: context,
         ),
       ];

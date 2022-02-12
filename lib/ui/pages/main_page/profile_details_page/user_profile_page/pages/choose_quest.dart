@@ -1,3 +1,4 @@
+import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-class ChooseQuest extends StatelessWidget {
+class ChooseQuest extends StatefulWidget {
   static const String routeName = '/chooseQuest';
 
   const ChooseQuest(this.workerId);
@@ -13,9 +14,25 @@ class ChooseQuest extends StatelessWidget {
   final String workerId;
 
   @override
+  State<ChooseQuest> createState() => _ChooseQuestState();
+}
+
+class _ChooseQuestState extends State<ChooseQuest> {
+  late UserProfileStore store;
+
+  @override
+  void initState() {
+    store = context.read<UserProfileStore>();
+    store.getQuests(widget.workerId, UserRole.Worker, true);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final store = context.read<UserProfileStore>();
     return Scaffold(
+      persistentFooterButtons: [
+        buttonRow(context, store),
+      ],
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -35,31 +52,35 @@ class ChooseQuest extends StatelessWidget {
         ),
       ),
       body: Observer(
-        builder: (_) => store.isLoading
+        builder: (_) => store.quests.isEmpty && store.isLoading
             ? Center(
                 child: CircularProgressIndicator.adaptive(),
               )
-            : ListView.builder(
-                itemBuilder: (context, index) => Column(
-                  children: [
-                    Observer(
-                      builder: (_) => RadioListTile<String>(
-                        title: Text(
-                          store.quests[index].title,
-                        ),
-                        value: store.quests[index].id,
-                        groupValue: store.questId,
-                        onChanged: (value) {
-                          store.setQuest(value, store.quests[index].id);
-                        },
+            : NotificationListener<ScrollEndNotification>(
+                onNotification: (scrollEnd) {
+                  final metrics = scrollEnd.metrics;
+                  if ((metrics.atEdge ||
+                          metrics.maxScrollExtent < metrics.pixels) &&
+                      !store.isLoading) {
+                    store.getQuests(widget.workerId, UserRole.Worker, false);
+                  }
+                  return true;
+                },
+                child: ListView.builder(
+                  itemBuilder: (context, index) => Observer(
+                    builder: (_) => RadioListTile<String>(
+                      title: Text(
+                        store.quests[index].title,
                       ),
+                      value: store.quests[index].id,
+                      groupValue: store.questId,
+                      onChanged: (value) {
+                        store.setQuest(value, store.quests[index].id);
+                      },
                     ),
-                    if (index == store.quests.length - 1)
-                      buttonRow(context, store),
-                  ],
+                  ),
+                  itemCount: store.quests.length,
                 ),
-                itemCount: store.quests.length,
-                // ,
               ),
       ),
     );
@@ -98,7 +119,7 @@ class ChooseQuest extends StatelessWidget {
             Expanded(
               child: ElevatedButton(
                 onPressed: () async {
-                  store.startQuest(workerId);
+                  store.startQuest(widget.workerId);
                   Navigator.pop(context);
                   await AlertDialogUtils.showSuccessDialog(context);
                 },

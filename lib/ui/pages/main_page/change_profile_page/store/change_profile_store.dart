@@ -91,6 +91,11 @@ abstract class ChangeProfileStoreBase with Store {
     return chek;
   }
 
+  bool numberChanged(Phone phone){
+    if (this.userData.phone != phone) return true;
+    return false;
+  }
+
   bool areThereAnyChanges(ProfileMeResponse? userData) {
     if (userData == null) return false;
 
@@ -106,7 +111,10 @@ abstract class ChangeProfileStoreBase with Store {
     if ((this.userData.additionalInfo!.address ?? "") !=
         (userData.additionalInfo!.address ?? "")) return true;
 
-    // if ((this.userData.phone ?? "") != (userData.phone ?? "")) return true;
+    if (this.userData.phone != userData.phone) return true;
+
+    if (this.userData.additionalInfo?.secondMobileNumber !=
+        userData.additionalInfo?.secondMobileNumber) return true;
 
     if ((this.userData.email ?? "") != (userData.email ?? "")) return true;
 

@@ -4,6 +4,7 @@ import 'package:app/model/quests_models/your_review.dart';
 
 import '../user_model.dart';
 import 'assigned_worker.dart';
+import 'invited.dart';
 import 'location_full.dart';
 
 class BaseQuestResponse {
@@ -51,7 +52,7 @@ class BaseQuestResponse {
   String employment;
   List<String> questSpecializations;
   String workplace;
-  dynamic invited;
+  Invited? invited;
   Responded? responded;
   YourReview? yourReview;
 
@@ -86,7 +87,7 @@ class BaseQuestResponse {
         return skillsString;
       }([...json["questSpecializations"]]),
       workplace: json["workplace"],
-      invited: json["invited"],
+      invited: json["invited"] == null ? null : Invited.fromJson(json["invited"]),
       responded: json["responded"] == null
           ? null
           : Responded.fromJson(json["responded"]),

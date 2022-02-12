@@ -213,8 +213,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   ),
                 )
               : (store.respondedList!.isNotEmpty &&
-                      (widget.questInfo.status == 0 ||
-                          widget.questInfo.status == 4))
+                      (widget.questInfo.status == 0 ))
+                          // ||
+                          // widget.questInfo.status == 4))
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

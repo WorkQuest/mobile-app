@@ -143,7 +143,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           Observer(
             builder: (_) => !store.response &&
                     (widget.questInfo.status == 0 ||
-                        widget.questInfo.status == 4)
+                        widget.questInfo.status == 4) &&
+                    widget.questInfo.invited == null
                 ? store.isLoading
                     ? Center(
                         child: CircularProgressIndicator.adaptive(),
@@ -178,7 +179,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 : SizedBox(),
           ),
           if (store.quest.value!.status == 4 &&
-              store.quest.value!.assignedWorker?.id == profile!.userData!.id)
+                  store.quest.value!.assignedWorker?.id ==
+                      profile!.userData!.id ||
+              (widget.questInfo.invited != null &&
+                  widget.questInfo.invited?.status == 0))
             store.isLoading
                 ? Center(
                     child: CircularProgressIndicator.adaptive(),
@@ -416,17 +420,18 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         const SizedBox(height: 15),
         TextButton(
           onPressed: () async {
-            store.sendAcceptOnQuest();
-            widget.questInfo.status = 1;
-            myQuestStore.deleteQuest(widget.questInfo);
-            myQuestStore.addQuest(widget.questInfo, true);
+            if (widget.questInfo.invited == null) {
+              await store.sendAcceptOnQuest();
+              widget.questInfo.status = 1;
+              myQuestStore.deleteQuest(widget.questInfo);
+              myQuestStore.addQuest(widget.questInfo, true);
+            } else {
+              await store.acceptInvite(widget.questInfo.invited!.id);
+              questStore.getQuests(true);
+            }
             Navigator.pop(context);
             Navigator.pop(context);
             await AlertDialogUtils.showSuccessDialog(context);
-            // successAlert(
-            //   context,
-            //   "quests.answerOnQuest.questAccepted".tr(),
-            // );
           },
           child: Text(
             "quests.answerOnQuest.accept".tr(),
@@ -448,19 +453,20 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         const SizedBox(height: 15),
         TextButton(
           onPressed: () async {
-            store.sendRejectOnQuest();
-            widget.questInfo.responded!.status = -1;
-            widget.questInfo.status = 0;
-            widget.questInfo.assignedWorker = null;
-            myQuestStore.deleteQuest(widget.questInfo);
-            myQuestStore.addQuest(widget.questInfo, true);
+            if (widget.questInfo.invited == null) {
+              await store.sendRejectOnQuest();
+              widget.questInfo.responded!.status = -1;
+              widget.questInfo.status = 0;
+              widget.questInfo.assignedWorker = null;
+              myQuestStore.deleteQuest(widget.questInfo);
+              myQuestStore.addQuest(widget.questInfo, true);
+            } else {
+              await store.rejectInvite(widget.questInfo.invited!.id);
+              questStore.getQuests(true);
+            }
             Navigator.pop(context);
             Navigator.pop(context);
             await AlertDialogUtils.showSuccessDialog(context);
-            // successAlert(
-            //   context,
-            //   "quests.answerOnQuest.questRejected".tr(),
-            // );
           },
           child: Text(
             "quests.answerOnQuest.reject".tr(),

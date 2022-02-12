@@ -8,7 +8,6 @@ import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/review.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/model/quests_models/quest_map_point.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -170,10 +169,15 @@ extension QuestService on ApiProvider {
 
   Future<List<BaseQuestResponse>> getAvailableQuests({
     String userId = "",
+    int offset = 0,
   }) async {
     try {
-      final responseData =
-          await httpClient.get(query: "/v1/worker/$userId/available-quests");
+      final responseData = await httpClient.get(
+        query: "/v1/worker/$userId/available-quests",
+        queryParameters: {
+          "offset": offset,
+        },
+      );
       return List<BaseQuestResponse>.from(
           responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)));
     } catch (e) {
@@ -474,12 +478,36 @@ extension QuestService on ApiProvider {
     }
   }
 
+  Future<bool> acceptInvite({
+    required String responseId,
+  }) async {
+    try {
+      final responseData =
+          await httpClient.post(query: '/v1/quest/response/$responseId/accept');
+      return responseData == null;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<bool> rejectOnQuest({
     required String questId,
   }) async {
     try {
       final responseData =
           await httpClient.post(query: '/v1/quest/$questId/reject-work');
+      return responseData == null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> rejectInvite({
+    required String responseId,
+  }) async {
+    try {
+      final responseData =
+          await httpClient.post(query: '/v1/quest/response/$responseId/reject');
       return responseData == null;
     } catch (e) {
       return false;
@@ -685,15 +713,8 @@ extension ChangePassword on ApiProvider {
 
 ///SMSVerification
 extension SMSVerification on ApiProvider {
-  Future<void> submitPhoneNumber({
-    required String phoneNumber,
-  }) async {
-    await httpClient.post(
-      query: '/v1/profile/phone/send-code',
-      data: {
-        "phoneNumber": phoneNumber,
-      },
-    );
+  Future<void> submitPhoneNumber() async {
+    await httpClient.post(query: '/v1/profile/phone/send-code');
   }
 
   Future<void> submitCode({
