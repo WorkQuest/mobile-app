@@ -1,6 +1,8 @@
 import 'package:app/base_store/i_store.dart';
+import 'package:app/di/injector.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/bearer_token.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:local_auth/local_auth.dart';
@@ -144,7 +146,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       BearerToken bearerToken = await _apiProvider.refreshToken(token);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
-
+      await getIt.get<ProfileMeStore>().getProfileMe();
       this.onSuccess(StatePinCode.Success);
     } catch (e) {
       if (e.toString() == "Token invalid" ||

@@ -42,6 +42,18 @@ extension LoginService on ApiProvider {
     return bearerToken;
   }
 
+  Future<bool> validateTotp({
+    required String totp,
+  }) async {
+    final responseData = await httpClient.post(
+      query: '/v1/auth/validate-totp',
+      data: {
+        'token': totp,
+      },
+    );
+    return responseData["isValid"];
+  }
+
   Future<BearerToken> register({
     required String firstName,
     required String lastName,

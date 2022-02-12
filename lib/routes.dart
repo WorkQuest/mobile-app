@@ -85,7 +85,6 @@ class Routes {
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final role = getIt.get<ProfileMeStore>().userData?.role;
     switch (settings.name) {
       case SignInPage.routeName:
         return MaterialPageRoute(
@@ -169,6 +168,7 @@ class Routes {
         );
 
       case MainPage.routeName:
+        final role = getIt.get<ProfileMeStore>().userData?.role;
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
             providers: [
@@ -329,6 +329,7 @@ class Routes {
         );
 
       case UserProfile.routeName:
+        final role = getIt.get<ProfileMeStore>().userData?.role;
         final arguments = settings.arguments as ProfileMeResponse?;
         final isViewProfile;
         if (settings.arguments == null)

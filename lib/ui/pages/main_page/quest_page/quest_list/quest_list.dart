@@ -85,10 +85,12 @@ class _QuestListState extends State<QuestList> {
   }
 
   Widget getBody() {
+    final role = profileMeStore?.userData?.role;
+    print("printrole$role");
     return RefreshIndicator(
       triggerMode: RefreshIndicatorTriggerMode.anywhere,
       onRefresh: () async {
-        return profileMeStore!.userData!.role == UserRole.Worker
+        return role == UserRole.Worker
             ? questsStore!.getQuests(true)
             : questsStore!.getWorkers(true);
       },
@@ -103,7 +105,7 @@ class _QuestListState extends State<QuestList> {
               children: [
                 Expanded(
                   child: Text(
-                    profileMeStore!.userData?.role == UserRole.Worker
+                    role == UserRole.Worker
                         ? "quests.quests".tr()
                         : "workers.workers".tr(),
                   ),
@@ -126,8 +128,7 @@ class _QuestListState extends State<QuestList> {
             pinned: true,
             title: GestureDetector(
               onTap: () {
-                questsStore!
-                    .getPrediction(context, profileMeStore!.userData!.role);
+                questsStore!.getPrediction(context, role!);
               },
               child: Container(
                 height: 50,
@@ -226,7 +227,7 @@ class _QuestListState extends State<QuestList> {
                             ],
                           ),
                         )
-                      : profileMeStore!.userData?.role == UserRole.Worker
+                      : role == UserRole.Worker
                           ? ListView.separated(
                               key: scrollKey,
                               shrinkWrap: true,

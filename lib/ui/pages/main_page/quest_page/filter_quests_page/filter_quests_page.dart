@@ -39,33 +39,31 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
 
   Widget build(BuildContext context) {
     super.build(context);
-    return WillPopScope(
-      onWillPop: () => storeQuest.skillFilters.isEmpty
-          ? storeQuest.saveSkillFilters(storeFilter!.skillFilters)
-          : null,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "quests.filter.btn".tr(),
-            style: TextStyle(
-              fontSize: 17,
-              color: Color(0xFF1D2127),
-            ),
-          ),
-          centerTitle: true,
-          leading: Row(
-            children: [
-              IconButton(
-                icon: Icon(
-                  Icons.arrow_back_ios_sharp,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
+    return Scaffold(
+      persistentFooterButtons: [
+        bottomButtons()
+      ],
+      appBar: AppBar(
+        title: Text(
+          "quests.filter.btn".tr(),
+          style: TextStyle(
+            fontSize: 17,
+            color: Color(0xFF1D2127),
           ),
         ),
-        body: getBody(),
+        centerTitle: true,
+        leading: Row(
+          children: [
+            IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios_sharp,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
       ),
+      body: getBody(),
     );
   }
 
@@ -169,8 +167,6 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                           storeQuest,
                           storeFilter!,
                         ),
-                      if (index == storeFilter!.skillFilters.length + 3)
-                        bottomButtons(),
                     ],
                   );
                 },
@@ -181,14 +177,12 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
 
   Widget bottomButtons() => Padding(
         padding: EdgeInsets.only(
-          top: 16.0,
           left: 16.0,
           right: 16.0,
-          bottom: 30.0,
         ),
         child: Column(
           children: [
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 storeQuest.setEmployment(storeFilter!.getEmploymentValue());
                 storeQuest.setWorkplace(storeFilter!.getWorkplaceValue());
@@ -207,24 +201,9 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                 "meta.accept".tr(),
                 style: TextStyle(color: Colors.white),
               ),
-              style: ButtonStyle(
-                fixedSize: MaterialStateProperty.all(
-                  Size(double.maxFinite, 43),
-                ),
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.pressed))
-                      return Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.5);
-                    return const Color(0xFF0083C7);
-                  },
-                ),
-              ),
             ),
             const SizedBox(
-              height: 16.0,
+              height: 10.0,
             ),
             OutlinedButton(
               onPressed: () {

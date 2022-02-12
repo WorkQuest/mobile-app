@@ -192,7 +192,8 @@
     "makingMoneyIsFast": "WorkQuest:\n The decentralized labour market\n of the world",
     "dontHaveAnAccount": "Don't have an account?",
     "signUp": "Sign Up",
-    "forgotYourPass": "Forgot your password?"
+    "forgotYourPass": "Forgot your password?",
+    "totp": "TOTP"
   },
   "signWorkQuest": {
     "title": "WorkQuest social Network",

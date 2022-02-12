@@ -91,7 +91,8 @@ class UserProfileState<T extends UserProfile> extends State<T>
   List<Widget> ratingsWidget() => [];
 
   Widget wrapperTabBar(
-    List<Widget> body, [
+    List<Widget> body,
+    String name, [
     bool getReviews = true,
   ]) {
     return NotificationListener<ScrollEndNotification>(
@@ -125,9 +126,19 @@ class UserProfileState<T extends UserProfile> extends State<T>
         }
         return false;
       },
-      child: ListView(
-        children: body,
-      ),
+      child: Builder(builder: (context) {
+        return CustomScrollView(
+            key: PageStorageKey<String>(name),
+            slivers: <Widget>[
+              SliverOverlapInjector(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              ),
+              SliverList(delegate: SliverChildListDelegate(body))
+            ]
+            //children: body,
+            );
+      }),
     );
   }
 
@@ -166,7 +177,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
         },
         child: NestedScrollView(
           controller: controllerMain,
-          physics: ClampingScrollPhysics(),
           headerSliverBuilder: (
             BuildContext context,
             bool innerBoxIsScrolled,
@@ -181,81 +191,85 @@ class UserProfileState<T extends UserProfile> extends State<T>
                   16.0,
                   0.0,
                 ),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: listWidgets(),
-                      ),
+                sliver: SliverOverlapAbsorber(
+                  handle:
+                  NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: listWidgets(),
+                        ),
 
-                      ///Social Accounts
-                      socialAccounts(
-                        socialNetwork: widget.info == null
-                            ? userStore!.userData?.additionalInfo?.socialNetwork
-                            : widget.info!.additionalInfo?.socialNetwork,
-                      ),
+                        ///Social Accounts
+                        socialAccounts(
+                          socialNetwork: widget.info == null
+                              ? userStore!.userData?.additionalInfo?.socialNetwork
+                              : widget.info!.additionalInfo?.socialNetwork,
+                        ),
 
-                      ///Contact Details
-                      contactDetails(
-                        location: widget.info == null
-                            ? userStore!.userData?.additionalInfo?.address ?? ''
-                            : widget.info!.additionalInfo?.address ?? "",
-                        number: widget.info == null
-                            ? userStore!.userData?.tempPhone?.fullPhone ??
-                                userStore!.userData?.phone.fullPhone ??
-                                ""
-                            : widget.info!.tempPhone?.fullPhone ??
-                                widget.info!.phone.fullPhone,
-                        secondNumber: widget.info == null
-                            ? userStore!.userData?.additionalInfo
-                                    ?.secondMobileNumber!.fullPhone ??
-                                ""
-                            : widget.info!.additionalInfo?.secondMobileNumber!
-                                    .fullPhone ??
-                                "",
-                        email: widget.info == null
-                            ? userStore!.userData?.email ?? " "
-                            : widget.info!.email ?? " ",
-                      ),
+                        ///Contact Details
+                        contactDetails(
+                          location: widget.info == null
+                              ? userStore!.userData?.additionalInfo?.address ?? ''
+                              : widget.info!.additionalInfo?.address ?? "",
+                          number: widget.info == null
+                              ? userStore!.userData?.tempPhone?.fullPhone ??
+                                  userStore!.userData?.phone.fullPhone ??
+                                  ""
+                              : widget.info!.tempPhone?.fullPhone ??
+                                  widget.info!.phone.fullPhone,
+                          secondNumber: widget.info == null
+                              ? userStore!.userData?.additionalInfo
+                                      ?.secondMobileNumber!.fullPhone ??
+                                  ""
+                              : widget.info!.additionalInfo?.secondMobileNumber!
+                                      .fullPhone ??
+                                  "",
+                          email: widget.info == null
+                              ? userStore!.userData?.email ?? " "
+                              : widget.info!.email ?? " ",
+                        ),
 
-                      ...ratingsWidget(),
+                        ...ratingsWidget(),
 
-                      ...addToQuest(),
-                      spacer,
-                    ],
-                  ),
-                ),
-              ),
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: StickyTabBarDelegate(
-                  child: TabBar(
-                    unselectedLabelColor: Color(0xFF8D96A1),
-                    indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6.0),
-                      color: Colors.white,
+                        ...addToQuest(),
+                        spacer,
+                      ],
                     ),
-                    labelColor: Colors.black,
-                    controller: this._tabController,
-                    tabs: <Widget>[
-                      Tab(
-                        child: Text(
-                          "profiler.reviews".tr(),
-                          style: TextStyle(fontSize: 14.0),
-                        ),
-                      ),
-                      Tab(
-                        child: Text(
-                          tabTitle,
-                          style: TextStyle(fontSize: 14.0),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),
+        SliverPersistentHeader(
+                  pinned: true,
+                  delegate: StickyTabBarDelegate(
+                    child: TabBar(
+                      unselectedLabelColor: Color(0xFF8D96A1),
+                      indicator: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.0),
+                        color: Colors.white,
+                      ),
+                      labelColor: Colors.black,
+                      controller: this._tabController,
+                      tabs: <Widget>[
+                        Tab(
+                          child: Text(
+                            "profiler.reviews".tr(),
+                            style: TextStyle(fontSize: 14.0),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            tabTitle,
+                            style: TextStyle(fontSize: 14.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ];
           },
           body: Observer(
@@ -263,15 +277,10 @@ class UserProfileState<T extends UserProfile> extends State<T>
               controller: this._tabController,
               children: <Widget>[
                 ///Reviews Tab
-                wrapperTabBar(
-                  reviewsTab(),
-                ),
+                wrapperTabBar(reviewsTab(), "reviews"),
 
                 ///Portfolio and Quests
-                wrapperTabBar(
-                  questPortfolio(),
-                  false,
-                ),
+                wrapperTabBar(questPortfolio(), "quest", false),
               ],
             ),
           ),

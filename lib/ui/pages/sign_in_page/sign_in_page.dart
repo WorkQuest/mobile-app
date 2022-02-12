@@ -131,6 +131,23 @@ class SignInPage extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
+                    child: TextFormField(
+                      onChanged: signInStore.setTotp,
+                      obscureText: true,
+                      autofillHints: [AutofillHints.password],
+                      decoration: InputDecoration(
+                        prefixIconConstraints: _prefixConstraints,
+                        prefixIcon: SvgPicture.asset(
+                          "assets/lock.svg",
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        hintText: "signIn.totp".tr(),
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
                     child: TextFormField(

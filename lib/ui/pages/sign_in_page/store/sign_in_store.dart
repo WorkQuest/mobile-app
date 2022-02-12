@@ -33,15 +33,21 @@ abstract class _SignInStore extends IStore<bool> with Store {
   @observable
   String mnemonic = '';
 
+  @observable
+  String totp = '';
+
   @action
   setMnemonic(String value) => mnemonic = value;
 
+  @action
+  setTotp(String value) => totp = value;
+
   @computed
   bool get canSignIn =>
-      !isLoading && _username.isNotEmpty && _password.isNotEmpty
-          &&
-      mnemonic.isNotEmpty
-      ;
+      !isLoading &&
+      _username.isNotEmpty &&
+      _password.isNotEmpty &&
+      mnemonic.isNotEmpty;
 
   @action
   void setUsername(String value) => _username = value;
@@ -59,7 +65,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
     try {
       Wallet? wallet = await Wallet.derive(mnemonic);
       if (wallet.address != walletAddress)
-         throw FormatException("Incorrect mnemonic");
+        throw FormatException("Incorrect mnemonic");
       final signature = await ClientService().getSignature(wallet.privateKey!);
       await _apiProvider.walletLogin(signature, wallet.address!);
       await Storage.write(Storage.wallets, jsonEncode([wallet.toJson()]));
@@ -70,7 +76,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
       this.onSuccess(true);
     } on FormatException catch (e) {
       onError(e.message);
-    } catch (e,tr) {
+    } catch (e, tr) {
       print("error $e $tr");
       onError(e.toString());
     }
@@ -88,8 +94,10 @@ abstract class _SignInStore extends IStore<bool> with Store {
         this.onError("unconfirmed");
         return;
       }
-      Storage.writeRefreshToken(bearerToken.refresh);
-      Storage.writeAccessToken(bearerToken.access);
+      await Storage.writeRefreshToken(bearerToken.refresh);
+      await Storage.writeAccessToken(bearerToken.access);
+      if (!await _apiProvider.validateTotp(totp: totp))
+        throw FormatException("Invalid TOTP");
       await getIt.get<ProfileMeStore>().getProfileMe();
       await signInWallet();
     } catch (e) {

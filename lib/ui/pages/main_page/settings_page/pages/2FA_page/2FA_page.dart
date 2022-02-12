@@ -4,6 +4,7 @@ import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
+import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,19 +27,14 @@ class TwoFAPage extends StatelessWidget {
     final store = context.read<TwoFAStore>();
     final userStore = context.read<ProfileMeStore>();
     final mail = userStore.userData!.email!.split("@");
+    final isActiveTotp = userStore.userData?.isTotpActive;
 
-    return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus &&
-            currentFocus.focusedChild != null) {
-          FocusManager.instance.primaryFocus?.unfocus();
-        }
-      },
+    return DismissKeyboard(
       child: ObserverListener<TwoFAStore>(
         onSuccess: () {},
         child: WillPopScope(
           onWillPop: () async {
+            if (isActiveTotp ?? false) return true;
             await dialog(
               context,
               title: "modals.2FaActivation".tr(),
@@ -67,7 +63,7 @@ class TwoFAPage extends StatelessWidget {
                     horizontal: 16.0,
                     vertical: 16.0,
                   ),
-                  child: userStore.userData?.isTotpActive ?? false
+                  child: isActiveTotp ?? false
                       ? Disable2FA(store)
                       : Column(
                           mainAxisSize: MainAxisSize.min,
@@ -134,12 +130,13 @@ class TwoFAPage extends StatelessWidget {
 
 class Disable2FA extends StatelessWidget {
   final TwoFAStore store;
-  const Disable2FA( this.store) ;
+
+  const Disable2FA(this.store);
 
   @override
   Widget build(BuildContext context) {
     return ObserverListener<TwoFAStore>(
-      onSuccess: (){},
+      onSuccess: () {},
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -162,17 +159,19 @@ class Disable2FA extends StatelessWidget {
             builder: (_) => ElevatedButton(
               onPressed: store.codeFromAuthenticator.isNotEmpty
                   ? () async {
-                await store.disable2FA();
-                await getIt.get<ProfileMeStore>().getProfileMe();
-                await AlertDialogUtils.showSuccessDialog(context);
-                Navigator.pop(context);
-              }
+                      await store.disable2FA();
+                      if (store.isSuccess) {
+                        await getIt.get<ProfileMeStore>().getProfileMe();
+                        Navigator.pop(context);
+                        await AlertDialogUtils.showSuccessDialog(context);
+                      }
+                    }
                   : null,
               child: store.isLoading
                   ? CircularProgressIndicator.adaptive()
                   : Text(
-                "meta.submit".tr(),
-              ),
+                      "meta.submit".tr(),
+                    ),
             ),
           )
         ],
@@ -180,7 +179,6 @@ class Disable2FA extends StatelessWidget {
     );
   }
 }
-
 
 class Confirm2FAPages extends StatelessWidget {
   final TwoFAStore store;
@@ -430,13 +428,12 @@ class Confirm2FAPages extends StatelessWidget {
                             await store.confirm2FA();
                             if (store.isSuccess) {
                               await getIt.get<ProfileMeStore>().getProfileMe();
+                              Navigator.pop(context);
                               await AlertDialogUtils.showSuccessDialog(context);
                               // await successAlert(
                               //   context,
                               //   "settings.2FaEnabled".tr(),
                               // );
-                              Navigator.pop(context);
-                              Navigator.pop(context);
                             }
                           }
                         : null,
@@ -453,7 +450,6 @@ class Confirm2FAPages extends StatelessWidget {
 
   Future<void> openGoogleAuth() async {
     try {
-      print("launch");
       if (!(await launch(
           "otpauth://totp/$mail?secret=${store.googleAuthenticatorSecretCode}&issuer=WorkQuest"))) {
         Platform.isIOS
@@ -462,9 +458,7 @@ class Confirm2FAPages extends StatelessWidget {
             : launch("https://play.google.com/store/apps/details?id=" +
                 "com.google.android.apps.authenticator2");
       }
-      print("launch3");
     } catch (e) {
-      print("launch");
       print(e);
       Platform.isIOS
           ? launch(
