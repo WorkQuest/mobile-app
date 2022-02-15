@@ -61,6 +61,21 @@ mixin _$SignInStore on _SignInStore, Store {
     });
   }
 
+  final _$totpAtom = Atom(name: '_SignInStore.totp');
+
+  @override
+  String get totp {
+    _$totpAtom.reportRead();
+    return super.totp;
+  }
+
+  @override
+  set totp(String value) {
+    _$totpAtom.reportWrite(value, super.totp, () {
+      super.totp = value;
+    });
+  }
+
   final _$signInWalletAsyncAction = AsyncAction('_SignInStore.signInWallet');
 
   @override
@@ -83,6 +98,17 @@ mixin _$SignInStore on _SignInStore, Store {
         name: '_SignInStore.setMnemonic');
     try {
       return super.setMnemonic(value);
+    } finally {
+      _$_SignInStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setTotp(String value) {
+    final _$actionInfo = _$_SignInStoreActionController.startAction(
+        name: '_SignInStore.setTotp');
+    try {
+      return super.setTotp(value);
     } finally {
       _$_SignInStoreActionController.endAction(_$actionInfo);
     }
@@ -125,6 +151,7 @@ mixin _$SignInStore on _SignInStore, Store {
   String toString() {
     return '''
 mnemonic: ${mnemonic},
+totp: ${totp},
 canSignIn: ${canSignIn}
     ''';
   }

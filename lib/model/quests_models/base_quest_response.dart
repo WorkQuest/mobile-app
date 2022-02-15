@@ -1,13 +1,14 @@
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/model/quests_models/your_review.dart';
-
+import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../user_model.dart';
 import 'assigned_worker.dart';
 import 'invited.dart';
 import 'location_full.dart';
 
-class BaseQuestResponse {
+class BaseQuestResponse with ClusterItem {
   BaseQuestResponse({
     required this.id,
     required this.userId,
@@ -87,7 +88,8 @@ class BaseQuestResponse {
         return skillsString;
       }([...json["questSpecializations"]]),
       workplace: json["workplace"],
-      invited: json["invited"] == null ? null : Invited.fromJson(json["invited"]),
+      invited:
+          json["invited"] == null ? null : Invited.fromJson(json["invited"]),
       responded: json["responded"] == null
           ? null
           : Responded.fromJson(json["responded"]),
@@ -134,4 +136,7 @@ class BaseQuestResponse {
         "adType": adType,
         "createdAt": createdAt.toIso8601String(),
       };
+
+  @override
+  LatLng get location => LatLng(locationCode.latitude, locationCode.longitude);
 }

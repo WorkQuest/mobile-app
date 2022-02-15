@@ -12,13 +12,13 @@ import '../http/core/http_client.dart' as _i6;
 import '../http/core/i_http_client.dart' as _i5;
 import '../log_service.dart' as _i7;
 import '../ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart'
-    as _i26;
+    as _i25;
 import '../ui/pages/main_page/chat_page/dispute_page/store/dispute_store.dart'
     as _i4;
-import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i27;
-import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i31;
+import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i26;
+import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i30;
 import '../ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart'
-    as _i33;
+    as _i32;
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart'
     as _i12;
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart'
@@ -26,21 +26,21 @@ import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/store
 import '../ui/pages/main_page/quest_details_page/employer/store/employer_store.dart'
     as _i15;
 import '../ui/pages/main_page/quest_details_page/worker/store/worker_store.dart'
-    as _i25;
+    as _i24;
 import '../ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart'
     as _i11;
 import '../ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart'
-    as _i30;
+    as _i29;
 import '../ui/pages/main_page/quest_page/notification_page/store/notification_store.dart'
     as _i8;
 import '../ui/pages/main_page/quest_page/quest_list/store/quests_store.dart'
-    as _i35;
+    as _i34;
 import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
     as _i16;
 import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
     as _i17;
 import '../ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart'
-    as _i23;
+    as _i35;
 import '../ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart'
     as _i19;
 import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i20;
@@ -50,11 +50,11 @@ import '../ui/pages/main_page/wallet_page/store/wallet_store.dart' as _i37;
 import '../ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart'
     as _i3;
 import '../ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart'
-    as _i29;
+    as _i28;
 import '../ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart'
-    as _i24;
-import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i32;
-import '../ui/pages/profile_me_store/profile_me_store.dart' as _i34;
+    as _i23;
+import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i31;
+import '../ui/pages/profile_me_store/profile_me_store.dart' as _i33;
 import '../ui/pages/restore_password_page/store.dart' as _i18;
 import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i21;
 import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
@@ -62,7 +62,7 @@ import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
 import '../ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart'
     as _i13;
 import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i22;
-import '../web3/service/client_service.dart' as _i28;
+import '../web3/service/client_service.dart' as _i27;
 
 const String _test = 'test';
 const String _prod = 'prod';
@@ -111,26 +111,26 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i21.SignInStore(get<_i10.ApiProvider>()));
     gh.factory<_i22.SignUpStore>(
         () => _i22.SignUpStore(get<_i10.ApiProvider>()));
-    gh.factory<_i23.TwoFAStore>(() => _i23.TwoFAStore(get<_i10.ApiProvider>()));
-    gh.factory<_i24.WithdrawPageStore>(
-        () => _i24.WithdrawPageStore(get<_i10.ApiProvider>()));
-    gh.factory<_i25.WorkerStore>(
-        () => _i25.WorkerStore(get<_i10.ApiProvider>()));
-    gh.factory<_i26.ChatRoomStore>(() =>
-        _i26.ChatRoomStore(get<_i10.ApiProvider>(), get<_i27.ChatStore>()));
-    gh.singleton<_i28.ClientService>(_i28.ClientService());
-    gh.singleton<_i29.TransferStore>(_i29.TransferStore());
+    gh.factory<_i23.WithdrawPageStore>(
+        () => _i23.WithdrawPageStore(get<_i10.ApiProvider>()));
+    gh.factory<_i24.WorkerStore>(
+        () => _i24.WorkerStore(get<_i10.ApiProvider>()));
+    gh.factory<_i25.ChatRoomStore>(() =>
+        _i25.ChatRoomStore(get<_i10.ApiProvider>(), get<_i26.ChatStore>()));
+    gh.singleton<_i27.ClientService>(_i27.ClientService());
+    gh.singleton<_i28.TransferStore>(_i28.TransferStore());
     gh.singleton<_i10.ApiProvider>(_i10.ApiProvider(get<_i5.IHttpClient>()));
-    gh.singleton<_i27.ChatStore>(_i27.ChatStore(get<_i10.ApiProvider>()));
-    gh.singleton<_i30.FilterQuestsStore>(
-        _i30.FilterQuestsStore(get<_i10.ApiProvider>()));
-    gh.singleton<_i31.MyQuestStore>(_i31.MyQuestStore(get<_i10.ApiProvider>()));
-    gh.singleton<_i32.PinCodeStore>(_i32.PinCodeStore(get<_i10.ApiProvider>()));
-    gh.singleton<_i33.PortfolioStore>(
-        _i33.PortfolioStore(get<_i10.ApiProvider>()));
-    gh.singleton<_i34.ProfileMeStore>(
-        _i34.ProfileMeStore(get<_i10.ApiProvider>()));
-    gh.singleton<_i35.QuestsStore>(_i35.QuestsStore(get<_i10.ApiProvider>()));
+    gh.singleton<_i26.ChatStore>(_i26.ChatStore(get<_i10.ApiProvider>()));
+    gh.singleton<_i29.FilterQuestsStore>(
+        _i29.FilterQuestsStore(get<_i10.ApiProvider>()));
+    gh.singleton<_i30.MyQuestStore>(_i30.MyQuestStore(get<_i10.ApiProvider>()));
+    gh.singleton<_i31.PinCodeStore>(_i31.PinCodeStore(get<_i10.ApiProvider>()));
+    gh.singleton<_i32.PortfolioStore>(
+        _i32.PortfolioStore(get<_i10.ApiProvider>()));
+    gh.singleton<_i33.ProfileMeStore>(
+        _i33.ProfileMeStore(get<_i10.ApiProvider>()));
+    gh.singleton<_i34.QuestsStore>(_i34.QuestsStore(get<_i10.ApiProvider>()));
+    gh.singleton<_i35.TwoFAStore>(_i35.TwoFAStore(get<_i10.ApiProvider>()));
     gh.singleton<_i36.UserProfileStore>(
         _i36.UserProfileStore(get<_i10.ApiProvider>()));
     gh.singleton<_i37.WalletStore>(_i37.WalletStore(get<_i10.ApiProvider>()));

@@ -2,13 +2,11 @@ import 'dart:async';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
-import 'package:app/model/quests_models/assigned_worker.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/model/quests_models/quest_map_point.dart';
-import 'package:app/utils/marker_louder_for_map.dart';
-import 'package:fluster/fluster.dart';
+import 'package:app/utils/marker_loader_for_map.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -39,22 +37,13 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   Map<String, BaseQuestResponse> bufferQuests = {};
 
   @observable
-  List<QuestMapPoint> points = [];
-
-  @observable
   ObservableList<BaseQuestResponse> questsOnMap = ObservableList();
-
-  @observable
-  ObservableList<AssignedWorker> workersOnMap = ObservableList();
 
   @observable
   CameraPosition? initialCameraPosition;
 
   @observable
   Position? locationPosition;
-
-  @observable
-  List<MapMarker> markers = [];
 
   @observable
   Timer? debounce;
@@ -101,8 +90,8 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   Future getQuestsOnMap(LatLngBounds bounds) async {
     try {
       this.onLoading();
-      questsOnMap.addAll( await _apiProvider.mapPoints(bounds));
-      markers = await getMarkerList();
+      questsOnMap.addAll(await _apiProvider.mapPoints(bounds));
+      //markers = await getMarkerList();
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -110,63 +99,25 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
     }
   }
 
-  Future<List<MapMarker>> getMarkerList() async {
-    if (this.markerLoader == null) return [];
-    List<MapMarker> newMarkersList = [];
-    for (var item in questsOnMap) {
-      newMarkersList.add(
-        MapMarker(
-          //onTap:(){},
-          //infoWindow:InfoWindow.noText,
-          // item.type == TypeMarker.Cluster
-          //     ? () => this.infoPanel = InfoPanel.Cluster
-          //     : () =>
-             // onTabQuest(item.title),
-          icon:BitmapDescriptor.defaultMarker,
-          //item.type == TypeMarker.Cluster
-          //     ? await markerLoader!.getCluster(item.pointsCount)
-          //     :
-          //markerLoader!.icons[1],
-          id: item.id,
-          // MarkerId(
-          //   item.id
-          //       // == null
-          //       // ? item.location[0].toString() + item.location[1].toString()
-          //       // : item.questId!
-          //   ,
-          // ),
-          position: LatLng(item.locationCode.latitude, item.locationCode.longitude),
-        ),
-      );
-    }
-    return newMarkersList;
+  ClusterManager createClusters() {
+    return ClusterManager(questsOnMap,
+        (marker) {}, // Method to be called when markers are updated
+        markerBuilder: MarkerLoader.markerBuilder,
+        // Optional : Method to implement if you want to customize markers
+        levels: const [1, 4.25, 6.75, 8.25, 11.5, 14.5, 16.0, 16.5, 20.0],
+        // Optional : Configure this if you want to change zoom levels at which the clustering precision change
+        extraPercent: 0.2,
+        // Optional : This number represents the percentage (0.2 for 20%) of latitude and longitude (in each direction) to be considered on top of the visible map bounds to render clusters. This way, clusters don't "pop out" when you cross the map.
+        stopClusteringZoom:
+            17.0 // Optional : The zoom level to stop clustering, so it's only rendering single item "clusters"
+        );
   }
 
-  Fluster<MapMarker> getPoints(){
-    Fluster<MapMarker> fluster = Fluster<MapMarker>(
-      minZoom: 0, // The min zoom at clusters will show
-      maxZoom: 20, // The max zoom at clusters will show
-      radius: 150, // Cluster radius in pixels
-      extent: 2048, // Tile extent. Radius is calculated with it.
-      nodeSize: 64, // Size of the KD-tree leaf node.
-      points: markers, // The list of markers created before
-      createCluster: ( // Create cluster marker
-          BaseCluster? cluster,
-          double? lng,
-          double? lat,
-          ) => MapMarker(
-        id: cluster?.id.toString(),
-        position: LatLng(lat!, lng!),
-        icon: BitmapDescriptor.defaultMarker,
-        isCluster: cluster?.isCluster,
-        clusterId: cluster?.id,
-        pointsSize: cluster?.pointsSize,
-        childMarkerId: cluster?.childMarkerId,
-      ),
-    );
-    return fluster;
+  Set<Marker> getMarkerSet() {
+    Set<Marker> markers = Set();
+    return markers;
+    //return createClusters().setItems(questsOnMap)
   }
-
 
   @action
   onTabQuest(String id) async {

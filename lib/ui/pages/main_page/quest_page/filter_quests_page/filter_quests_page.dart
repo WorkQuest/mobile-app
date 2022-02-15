@@ -207,7 +207,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
             ),
             OutlinedButton(
               onPressed: () {
-                storeQuest.clearFilters();
+                 storeQuest.clearFilters();
                 storeFilter!.clearFilters();
                 profile!.userData!.role == UserRole.Employer
                     ? storeQuest.getWorkers(true)
