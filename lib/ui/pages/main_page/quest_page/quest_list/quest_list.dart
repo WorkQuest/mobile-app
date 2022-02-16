@@ -86,7 +86,6 @@ class _QuestListState extends State<QuestList> {
 
   Widget getBody() {
     final role = profileMeStore?.userData?.role;
-    print("printrole$role");
     return RefreshIndicator(
       triggerMode: RefreshIndicatorTriggerMode.anywhere,
       onRefresh: () async {

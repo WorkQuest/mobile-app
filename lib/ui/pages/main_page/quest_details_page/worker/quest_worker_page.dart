@@ -1,6 +1,7 @@
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
@@ -56,7 +57,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   List<Widget>? actionAppBar() {
-    return [
+    return <Widget>[
       Observer(
         builder: (_) => IconButton(
           icon: Icon(
@@ -72,7 +73,36 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 : myQuestStore.setStar(store.quest.value!, true);
           },
         ),
-      )
+      ),
+      if (widget.questInfo.assignedWorker?.id == profile!.userData!.id &&
+          (widget.questInfo.status == 1 || widget.questInfo.status == 5))
+        PopupMenuButton<String>(
+          elevation: 10,
+          icon: Icon(Icons.more_vert),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6.0),
+          ),
+          onSelected: (value) async {
+            if ((widget.questInfo.status == 1 ||
+                    widget.questInfo.status == 5) &&
+                value == "chat.report")
+              await Navigator.of(context, rootNavigator: true).pushNamed(
+                OpenDisputePage.routeName,
+                arguments: widget.questInfo,
+              );
+          },
+          itemBuilder: (BuildContext context) {
+            return {
+              if (widget.questInfo.status == 1 || widget.questInfo.status == 5)
+                "chat.report",
+            }.map((String choice) {
+              return PopupMenuItem<String>(
+                value: choice,
+                child: Text(choice.tr()),
+              );
+            }).toList();
+          },
+        ),
     ];
   }
 

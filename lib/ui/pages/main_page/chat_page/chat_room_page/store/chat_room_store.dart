@@ -454,10 +454,13 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
 
   Future sendMessage(String text, String chatId, String userId) async {
     this.onLoading();
+    print("text: $text");
+
     WebSocket().sendMessage(
-        chatId: chatId,
-        text: text,
-        medias: await _apiProvider.uploadMedia(medias: media));
+      chatId: chatId,
+      text: text,
+      medias: await _apiProvider.uploadMedia(medias: media),
+    );
     media.clear();
     this.onSuccess(true);
     _atomSendMessage.reportChanged();

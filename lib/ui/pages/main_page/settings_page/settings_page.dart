@@ -2,6 +2,7 @@ import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dar
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
@@ -89,7 +90,8 @@ class SettingsPage extends StatelessWidget {
                                 icon: CupertinoSwitch(
                                   activeColor: const Color(0xFF0083C7),
                                   onChanged: (_) {},
-                                  value: userStore.userData?.isTotpActive ?? false,
+                                  value:
+                                      userStore.userData?.isTotpActive ?? false,
                                 ),
                                 title: "settings.2FA".tr(),
                                 onTap: () {
@@ -105,7 +107,6 @@ class SettingsPage extends StatelessWidget {
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-
                                 ///SMS Verification
                                 SettingsCard(
                                   icon: GradientIcon(
@@ -145,6 +146,29 @@ class SettingsPage extends StatelessWidget {
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                ///My Disputes
+                                SettingsCard(
+                                  icon: GradientIcon(
+                                    SvgPicture.asset(
+                                      "assets/unread_chat.svg",
+                                    ),
+                                    20.0,
+                                  ),
+                                  title: "btn.myDisputes".tr(),
+                                  onTap: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pushNamed(MyDisputesPage.routeName);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
                                 ///Change Language
                                 SettingsCard(
                                   icon: GradientIcon(
@@ -162,8 +186,7 @@ class SettingsPage extends StatelessWidget {
                                   onTap: () {
                                     Navigator.of(context, rootNavigator: true)
                                         .pushNamed(
-                                      ChangeLanguagePage.routeName
-                                    );
+                                            ChangeLanguagePage.routeName);
                                   },
                                 ),
                               ],
