@@ -8,11 +8,13 @@ class WebSocket {
   void Function(dynamic)? handlerChats;
   void Function(dynamic)? handlerQuests;
 
-  // late IOWebSocketChannel _channelListener;
+  late IOWebSocketChannel _channelListener;
+  late List<IOWebSocketChannel> _channels = [];
   late IOWebSocketChannel _channelSender;
 
-  // String _urlListener = "wss://notifications.workquest.co/api/v1/notifications";
-  String _urlSender = "wss://app.workquest.co/api";
+  final String _urlSender = "wss://app.workquest.co/api";
+  final String _urlListener =
+      "wss://notifications.workquest.co/api/v1/notifications";
 
   int _counter = 0;
 
@@ -24,24 +26,39 @@ class WebSocket {
     return _singleton;
   }
 
+  void getChannels() {
+    List<String> _url = [_urlListener, _urlSender];
+    _channels = _url.map((url) => IOWebSocketChannel.connect(url)).toList();
+  }
+
   void connect() async {
     shouldReconnectFlag = true;
     _counter = 0;
     String? token = await Storage.readAccessToken();
     print("[WebSocket]  connecting ...");
-
-    // this._channelListener = IOWebSocketChannel.connect(_urlListener);
+    //getChannels();
+    this._channelListener = IOWebSocketChannel.connect(_urlListener);
     this._channelSender = IOWebSocketChannel.connect(_urlSender);
 
-    // this._channelListener.sink.add("""{
+    // this._channels.forEach((element) {
+    //   element.sink.add("""{
     //       "type": "hello",
     //       "id": 1,
     //       "version": "2",
     //       "auth": {
     //         "headers": {"authorization": "Bearer $token"}
     //       },
-    //       "sub": "/notifications/chat"
+    //       "sub": element"/notifications/chat"
     //     }""");
+    // });
+    //
+    // this._channels.forEach((element) {
+    //   element.stream.listen(
+    //     this._onData,
+    //     onError: this._onError,
+    //     onDone: this._onDone,
+    //   );
+    // });
 
     this._channelSender.sink.add("""{
           "type": "hello",
@@ -53,11 +70,21 @@ class WebSocket {
           "sub": "/notifications/chat"
         }""");
 
-    // this._channelListener.stream.listen(
-    //       this._onData,
-    //       onError: this._onError,
-    //       onDone: this._onDone,
-    //     );
+    this._channelListener.sink.add("""{
+          "type": "hello",
+          "id": 1,
+          "version": "2",
+          "auth": {
+            "headers": {"authorization": "Bearer $token"}
+          },
+          "sub": "/notifications/chat"
+        }""");
+
+    this._channelListener.stream.listen(
+          this._onData,
+          onError: this._onError,
+          onDone: this._onDone,
+        );
 
     this._channelSender.stream.listen(
           this._onData,
@@ -67,18 +94,24 @@ class WebSocket {
   }
 
   void _onData(message) {
-    print("WebSocket message: $message");
-    final json = jsonDecode(message.toString());
-    switch (json["type"]) {
-      case "pub":
-        _handleSubscription(json);
-        break;
-      case "ping":
-        _ping();
-        break;
-      case "request":
-        getMessage(json);
-        break;
+    try {
+      print("WebSocket message: $message");
+      final json = jsonDecode(message.toString());
+      switch (json["type"]) {
+        case "pub":
+          print("pub_object");
+          _handleSubscription(json);
+          break;
+        case "ping":
+          _ping();
+          break;
+        case "request":
+          getMessage(json);
+          break;
+      }
+    } catch (e, tr) {
+      print(e);
+      print(tr);
     }
   }
 
@@ -88,6 +121,9 @@ class WebSocket {
         getMessage(json);
       } else if (json["path"] == "/notifications/quest") {
         questNotification(json["message"]["data"]);
+      } else if (json["path"] == "/notifications/chat") {
+        print("new${json["message"]["data"]}");
+        //questNotification(json["message"]["data"]);
       }
     } catch (e, trace) {
       print("ERROR: $e");
@@ -132,6 +168,7 @@ class WebSocket {
     };
     String textPayload = json.encode(payload).toString();
     _channelSender.sink.add(textPayload);
+    //_channels[1].sink.add(textPayload);
     print("Send Message: $textPayload");
     _counter++;
   }
@@ -142,7 +179,7 @@ class WebSocket {
       "id": "$_counter",
     };
     String textPayload = json.encode(payload).toString();
-    // _channelListener.sink.add(textPayload);
+     _channelListener.sink.add(textPayload);
     _channelSender.sink.add(textPayload);
     _counter++;
   }
@@ -153,7 +190,8 @@ class WebSocket {
 
   void _onDone() {
     if (shouldReconnectFlag) connect();
-    // print("WebSocket onDone ${_channelListener.closeReason}");
+    print("WebSocket onDone ${_channelListener.closeReason}");
+    _channels.forEach((element) {element.closeReason;});
     print("WebSocket onDone ${_channelSender.closeReason}");
   }
 

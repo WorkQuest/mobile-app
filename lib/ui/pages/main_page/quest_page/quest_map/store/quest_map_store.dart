@@ -115,8 +115,12 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
 
   Set<Marker> getMarkerSet() {
     Set<Marker> markers = Set();
-    return markers;
-    //return createClusters().setItems(questsOnMap)
+
+    //return markers;
+    return createClusters()
+        .items
+        .map((e) => Marker(markerId: MarkerId(e.geohash), position: e.location))
+        .toSet();
   }
 
   @action
