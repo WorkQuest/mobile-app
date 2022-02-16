@@ -53,10 +53,10 @@ class UserProfileState<T extends UserProfile> extends State<T>
     myQuests = context.read<MyQuestStore>();
     userStore = context.read<ProfileMeStore>();
 
+    portfolioStore!.clearData();
+
     if (widget.info == null) {
       role = userStore!.userData?.role ?? UserRole.Worker;
-      portfolioStore!.reviewsList.clear();
-      portfolioStore!.offsetReview = 0;
 
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(userId: userStore!.userData!.id);
@@ -193,7 +193,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                 ),
                 sliver: SliverOverlapAbsorber(
                   handle:
-                  NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate(
                       [
@@ -206,14 +206,16 @@ class UserProfileState<T extends UserProfile> extends State<T>
                         ///Social Accounts
                         socialAccounts(
                           socialNetwork: widget.info == null
-                              ? userStore!.userData?.additionalInfo?.socialNetwork
+                              ? userStore!
+                                  .userData?.additionalInfo?.socialNetwork
                               : widget.info!.additionalInfo?.socialNetwork,
                         ),
 
                         ///Contact Details
                         contactDetails(
                           location: widget.info == null
-                              ? userStore!.userData?.additionalInfo?.address ?? ''
+                              ? userStore!.userData?.additionalInfo?.address ??
+                                  ''
                               : widget.info!.additionalInfo?.address ?? "",
                           number: widget.info == null
                               ? userStore!.userData?.tempPhone?.fullPhone ??
@@ -242,34 +244,34 @@ class UserProfileState<T extends UserProfile> extends State<T>
                   ),
                 ),
               ),
-        SliverPersistentHeader(
-                  pinned: true,
-                  delegate: StickyTabBarDelegate(
-                    child: TabBar(
-                      unselectedLabelColor: Color(0xFF8D96A1),
-                      indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.0),
-                        color: Colors.white,
-                      ),
-                      labelColor: Colors.black,
-                      controller: this._tabController,
-                      tabs: <Widget>[
-                        Tab(
-                          child: Text(
-                            "profiler.reviews".tr(),
-                            style: TextStyle(fontSize: 14.0),
-                          ),
-                        ),
-                        Tab(
-                          child: Text(
-                            tabTitle,
-                            style: TextStyle(fontSize: 14.0),
-                          ),
-                        ),
-                      ],
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: StickyTabBarDelegate(
+                  child: TabBar(
+                    unselectedLabelColor: Color(0xFF8D96A1),
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.0),
+                      color: Colors.white,
                     ),
+                    labelColor: Colors.black,
+                    controller: this._tabController,
+                    tabs: <Widget>[
+                      Tab(
+                        child: Text(
+                          "profiler.reviews".tr(),
+                          style: TextStyle(fontSize: 14.0),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          tabTitle,
+                          style: TextStyle(fontSize: 14.0),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+              ),
             ];
           },
           body: Observer(

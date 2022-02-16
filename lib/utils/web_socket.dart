@@ -8,9 +8,11 @@ class WebSocket {
   void Function(dynamic)? handlerChats;
   void Function(dynamic)? handlerQuests;
 
-  late IOWebSocketChannel _channel;
+  // late IOWebSocketChannel _channelListener;
+  late IOWebSocketChannel _channelSender;
 
-  String _url = "wss://notifications.workquest.co/api";
+  // String _urlListener = "wss://notifications.workquest.co/api/v1/notifications";
+  String _urlSender = "wss://app.workquest.co/api";
 
   int _counter = 0;
 
@@ -27,20 +29,37 @@ class WebSocket {
     _counter = 0;
     String? token = await Storage.readAccessToken();
     print("[WebSocket]  connecting ...");
-    this._channel = IOWebSocketChannel.connect(_url);
 
-    this._channel.sink.add("""{
+    // this._channelListener = IOWebSocketChannel.connect(_urlListener);
+    this._channelSender = IOWebSocketChannel.connect(_urlSender);
+
+    // this._channelListener.sink.add("""{
+    //       "type": "hello",
+    //       "id": 1,
+    //       "version": "2",
+    //       "auth": {
+    //         "headers": {"authorization": "Bearer $token"}
+    //       },
+    //       "sub": "/notifications/chat"
+    //     }""");
+
+    this._channelSender.sink.add("""{
           "type": "hello",
           "id": 1,
           "version": "2",
           "auth": {
             "headers": {"authorization": "Bearer $token"}
           },
-          "subs": ["/notifications/chat",
-          "/notifications/quest"]
+          "sub": "/notifications/chat"
         }""");
 
-    this._channel.stream.listen(
+    // this._channelListener.stream.listen(
+    //       this._onData,
+    //       onError: this._onError,
+    //       onDone: this._onDone,
+    //     );
+
+    this._channelSender.stream.listen(
           this._onData,
           onError: this._onError,
           onDone: this._onDone,
@@ -65,7 +84,7 @@ class WebSocket {
 
   void _handleSubscription(dynamic json) async {
     try {
-      if (json["path"] == "/notifications/chat") {
+      if (json["path"].toString().contains("/api/v1/chat/")) {
         getMessage(json);
       } else if (json["path"] == "/notifications/quest") {
         questNotification(json["message"]["data"]);
@@ -112,7 +131,7 @@ class WebSocket {
       }
     };
     String textPayload = json.encode(payload).toString();
-    _channel.sink.add(textPayload);
+    _channelSender.sink.add(textPayload);
     print("Send Message: $textPayload");
     _counter++;
   }
@@ -123,7 +142,8 @@ class WebSocket {
       "id": "$_counter",
     };
     String textPayload = json.encode(payload).toString();
-    _channel.sink.add(textPayload);
+    // _channelListener.sink.add(textPayload);
+    _channelSender.sink.add(textPayload);
     _counter++;
   }
 
@@ -133,7 +153,8 @@ class WebSocket {
 
   void _onDone() {
     if (shouldReconnectFlag) connect();
-    print("WebSocket onDone ${_channel.closeReason}");
+    // print("WebSocket onDone ${_channelListener.closeReason}");
+    print("WebSocket onDone ${_channelSender.closeReason}");
   }
 
   WebSocket._internal();

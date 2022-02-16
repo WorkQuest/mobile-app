@@ -1,24 +1,35 @@
+import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
-import 'store/dispute_store.dart';
+import 'store/open_dispute_store.dart';
 
-class DisputePage extends StatefulWidget {
-  static const String routeName = '/disputePage';
+class OpenDisputePage extends StatefulWidget {
+  static const String routeName = '/openDisputePage';
 
-  const DisputePage();
+  final BaseQuestResponse quest;
+
+  OpenDisputePage(this.quest);
 
   @override
-  _DisputePageState createState() => _DisputePageState();
+  _OpenDisputePageState createState() => _OpenDisputePageState();
 }
 
-class _DisputePageState extends State<DisputePage> {
+class _OpenDisputePageState extends State<OpenDisputePage> {
+  late OpenDisputeStore store;
+
+  @override
+  void initState() {
+    store = context.read<OpenDisputeStore>();
+    super.initState();
+  }
+
   @override
   Widget build(context) {
-    final store = context.read<DisputeStore>();
     return Scaffold(
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
@@ -26,6 +37,26 @@ class _DisputePageState extends State<DisputePage> {
           "modals.openADispute".tr(),
         ),
       ),
+      persistentFooterButtons: [
+        Observer(
+          builder: (_) => ElevatedButton(
+            onPressed: store.isButtonEnable()
+                ? () async {
+                    await store.openDispute(widget.quest.id);
+                    if (store.isSuccess) {
+                      await AlertDialogUtils.showSuccessDialog(context);
+                      widget.quest.status = 3;
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    }
+                  }
+                : null,
+            child: Text(
+              "modals.openADispute".tr(),
+            ),
+          ),
+        ),
+      ],
       body: CustomScrollView(
         slivers: [
           SliverPadding(
@@ -52,24 +83,24 @@ class _DisputePageState extends State<DisputePage> {
                         ),
                       ),
                       alignment: Alignment.centerLeft,
-                      child: Observer(
-                        builder: (_) => InkWell(
-                          onTap: () => modalBottomSheet(store),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
+                      child: InkWell(
+                        onTap: () => modalBottomSheet(store),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Observer(
+                                builder: (_) => Text(
                                   store.theme.tr(),
                                   maxLines: 2,
                                 ),
                               ),
-                              Icon(
-                                Icons.arrow_drop_down,
-                                size: 30,
-                                color: Colors.blueAccent,
-                              ),
-                            ],
-                          ),
+                            ),
+                            Icon(
+                              Icons.arrow_drop_down,
+                              size: 30,
+                              color: Colors.blueAccent,
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -87,22 +118,16 @@ class _DisputePageState extends State<DisputePage> {
                       ),
                       alignment: Alignment.centerLeft,
                       child: TextField(
+                        textAlign: TextAlign.start,
                         onChanged: (text) => store.setDescription(text),
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         textAlignVertical: TextAlignVertical.top,
                         expands: true,
                         decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 10),
                           hintText: "modals.description".tr(),
                         ),
-                      ),
-                    ),
-                  ),
-                  Observer(
-                    builder: (_) => ElevatedButton(
-                      onPressed: store.isButtonEnable ? () {} : null,
-                      child: Text(
-                        "modals.openADispute".tr(),
                       ),
                     ),
                   ),
@@ -136,7 +161,7 @@ class _DisputePageState extends State<DisputePage> {
         ],
       );
 
-  modalBottomSheet(DisputeStore store) => showModalBottomSheet(
+  modalBottomSheet(OpenDisputeStore store) => showModalBottomSheet(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
@@ -163,16 +188,19 @@ class _DisputePageState extends State<DisputePage> {
               controller: scrollController,
               shrinkWrap: false,
               itemCount: store.disputeCategoriesList.length,
-              itemBuilder: (context, index) => SizedBox(
+              itemBuilder: (context, index) => Container(
                 height: 45.0,
-                width: double.maxFinite,
+                width: double.infinity,
                 child: InkWell(
                   onTap: () {
                     store.changeTheme(store.disputeCategoriesList[index]);
                     Navigator.pop(context);
                   },
-                  child: new Text(
-                    store.disputeCategoriesList[index].tr(),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      store.disputeCategoriesList[index].tr(),
+                    ),
                   ),
                 ),
               ),

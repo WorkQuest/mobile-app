@@ -96,7 +96,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
       }
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
-      if (!await _apiProvider.validateTotp(totp: totp))
+      if (totp.isNotEmpty) if (!await _apiProvider.validateTotp(totp: totp))
         throw FormatException("Invalid TOTP");
       await getIt.get<ProfileMeStore>().getProfileMe();
       await signInWallet();

@@ -274,39 +274,37 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         ),
       ),
       centerTitle: true,
-      title: Observer(
-        builder: (_) => chatType == "group"
-            ? Text(
-                "$chatName",
+      title: chatType == "group"
+          ? Text(
+              "$chatName",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            )
+          : GestureDetector(
+              onTap: () async {
+                await _store
+                    .getCompanion(profile!.userData!.id != id1! ? id1! : id2!);
+                Navigator.of(context, rootNavigator: true).pushNamed(
+                  UserProfile.routeName,
+                  arguments: _store.companion,
+                );
+                _store.companion = null;
+              },
+              child: Text(
+                profile!.userData!.id != id1
+                    ? "$firstName1 $lastName1"
+                    : "$firstName2 $lastName2",
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
                 ),
-              )
-            : GestureDetector(
-                onTap: () async {
-                  await _store.getCompanion(
-                      profile!.userData!.id != id1! ? id1! : id2!);
-                  Navigator.of(context, rootNavigator: true).pushNamed(
-                    UserProfile.routeName,
-                    arguments: _store.companion,
-                  );
-                  _store.companion = null;
-                },
-                child: Text(
-                  profile!.userData!.id != id1
-                      ? "$firstName1 $lastName1"
-                      : "$firstName2 $lastName2",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                  overflow: TextOverflow.fade,
-                ),
+                overflow: TextOverflow.fade,
               ),
-      ),
+            ),
       actions: [
         chatType == "group"
             ? profile!.userData!.id == ownersChatId
@@ -328,13 +326,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   );
                   _store.companion = null;
                 },
-                child: Observer(
-                  builder: (_) => CircleAvatar(
-                    backgroundImage: NetworkImage(
-                      profile!.userData!.id != id1! ? url1! : url2!,
-                    ),
-                    maxRadius: 20,
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    profile!.userData!.id != id1! ? url1! : url2!,
                   ),
+                  maxRadius: 20,
                 ),
               ),
         const SizedBox(width: 16),

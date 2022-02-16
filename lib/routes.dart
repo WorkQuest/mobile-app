@@ -1,4 +1,5 @@
 import 'package:app/enums.dart';
+import 'package:app/model/dispute_model.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_page.dart';
@@ -8,7 +9,6 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/creat
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/dispute_page/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -23,6 +23,8 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_employer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_worker.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/store/open_dispute_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/quest_employer_page.dart';
@@ -45,6 +47,10 @@ import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/dispute_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
@@ -74,7 +80,6 @@ import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
 import 'di/injector.dart';
 import 'model/profile_response/profile_me_response.dart';
-import 'ui/pages/main_page/chat_page/dispute_page/dispute_page.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
@@ -324,6 +329,17 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChooseQuest(settings.arguments as String),
+            ),
+          ),
+        );
+
+      case MyDisputesPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<MyDisputesStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: MyDisputesPage(),
             ),
           ),
         );
@@ -600,13 +616,24 @@ class Routes {
           ),
         );
 
+      case OpenDisputePage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<OpenDisputeStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: OpenDisputePage(settings.arguments as BaseQuestResponse),
+            ),
+          ),
+        );
+
       case DisputePage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<DisputeStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: DisputePage(),
+              child: DisputePage(settings.arguments as DisputeModel),
             ),
           ),
         );

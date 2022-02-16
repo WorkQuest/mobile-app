@@ -13,8 +13,6 @@ import "package:provider/provider.dart";
 import 'chat_room_page/chat_room_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'dispute_page/dispute_page.dart';
-
 class ChatPage extends StatefulWidget {
   static const String routeName = "/chatPage";
 
@@ -27,7 +25,6 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   late ChatStore store;
   late ProfileMeStore userData;
-  ScrollController controller = ScrollController();
 
   // static const _indicatorSize = 150.0;
   // final _helper = IndicatorStateHelper();
@@ -139,11 +136,6 @@ class _ChatPageState extends State<ChatPage> {
                     store.loadChats(true, false);
                     store.starred = false;
                     break;
-                  case "chat.report":
-                    Navigator.of(context, rootNavigator: true).pushNamed(
-                      DisputePage.routeName,
-                    );
-                    break;
                   case "chat.createGroupChat":
                     Navigator.of(context, rootNavigator: true).pushNamed(
                       CreateGroupPage.routeName,
@@ -157,7 +149,6 @@ class _ChatPageState extends State<ChatPage> {
                       return {
                         "chat.starredMessage",
                         "chat.starredChat",
-                        "chat.report",
                         "chat.createGroupChat",
                       }.map((String choice) {
                         return PopupMenuItem<String>(
@@ -172,7 +163,6 @@ class _ChatPageState extends State<ChatPage> {
                       return {
                         "chat.starredMessage",
                         "chat.allChat",
-                        "chat.report",
                         "chat.createGroupChat",
                       }.map((String choice) {
                         return PopupMenuItem<String>(

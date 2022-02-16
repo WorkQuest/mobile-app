@@ -3,6 +3,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
@@ -52,12 +53,14 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share(
-              "https://app-ver1.workquest.co/quests/${widget.questInfo.id}");
+          Share.share("https://app.workquest.co/quests/${widget.questInfo.id}");
         },
       ),
       if (widget.questInfo.userId == profile!.userData!.id &&
-          (widget.questInfo.status == 0 || widget.questInfo.status == 4))
+          (widget.questInfo.status == 0 ||
+              widget.questInfo.status == 1 ||
+              widget.questInfo.status == 4 ||
+              widget.questInfo.status == 5))
         PopupMenuButton<String>(
           elevation: 10,
           icon: Icon(Icons.more_vert),
@@ -65,40 +68,56 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            switch (value) {
-              case "quests.raiseViews":
-                Navigator.pushNamed(
-                  context,
-                  RaiseViews.routeName,
-                  arguments: widget.questInfo,
-                );
-                break;
-              case "registration.edit":
-                Navigator.pushNamed(
-                  context,
-                  CreateQuestPage.routeName,
-                  arguments: widget.questInfo,
-                );
-                break;
-              case "settings.delete":
-                dialog(
-                  context,
-                  title: "quests.deleteQuest".tr(),
-                  message: "quests.deleteQuestMessage".tr(),
-                  confirmAction: () async {
-                    await store.deleteQuest(questId: widget.questInfo.id);
-                    questStore.deleteQuest(widget.questInfo);
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  },
-                );
-                break;
-              default:
-            }
+            if (widget.questInfo.status == 0 || widget.questInfo.status == 4)
+              switch (value) {
+                case "quests.raiseViews":
+                  await Navigator.pushNamed(
+                    context,
+                    RaiseViews.routeName,
+                    arguments: widget.questInfo,
+                  );
+                  break;
+                case "registration.edit":
+                  await Navigator.pushNamed(
+                    context,
+                    CreateQuestPage.routeName,
+                    arguments: widget.questInfo,
+                  );
+                  break;
+                case "settings.delete":
+                  dialog(
+                    context,
+                    title: "quests.deleteQuest".tr(),
+                    message: "quests.deleteQuestMessage".tr(),
+                    confirmAction: () async {
+                      await store.deleteQuest(questId: widget.questInfo.id);
+                      questStore.deleteQuest(widget.questInfo);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                  );
+                  break;
+                default:
+              }
+            if ((widget.questInfo.status == 1 ||
+                    widget.questInfo.status == 5) &&
+                value == "chat.report")
+              await Navigator.of(context, rootNavigator: true).pushNamed(
+                OpenDisputePage.routeName,
+                arguments: widget.questInfo,
+              );
           },
           itemBuilder: (BuildContext context) {
-            return {'quests.raiseViews', 'registration.edit', 'settings.delete'}
-                .map((String choice) {
+            return {
+              if (widget.questInfo.status == 0 || widget.questInfo.status == 4)
+                'quests.raiseViews',
+              if (widget.questInfo.status == 0 || widget.questInfo.status == 4)
+                'registration.edit',
+              if (widget.questInfo.status == 0 || widget.questInfo.status == 4)
+                'settings.delete',
+              if (widget.questInfo.status == 1 || widget.questInfo.status == 5)
+                "chat.report",
+            }.map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,
                 child: Text(choice.tr()),
@@ -213,9 +232,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   ),
                 )
               : (store.respondedList!.isNotEmpty &&
-                      (widget.questInfo.status == 0 ))
-                          // ||
-                          // widget.questInfo.status == 4))
+                      (widget.questInfo.status == 0))
+                  // ||
+                  // widget.questInfo.status == 4))
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

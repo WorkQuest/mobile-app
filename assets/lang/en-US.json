@@ -25,6 +25,7 @@
     "agree": "Agree",
     "goToChat": "Access instant messaging",
     "dispute": "Open dispute",
+    "myDisputes": "My disputes",
     "responded": "Reply sent",
     "sendARequest": "Send a request",
     "view": "View"
@@ -266,6 +267,15 @@
     "noSkills": "No skills"
   },
   "quests": {
+    "statuses": {
+      "created": "Created",
+      "active": "Active",
+      "closed": "Closed",
+      "dispute": "Dispute",
+      "waitWorker": "Wait worker",
+      "waitConfirm": "Wait confirm",
+      "done": "Done"
+    },
     "inviteToQuest": "Hello! I invite you to the quest",
     "addToQuest": "Add to quest",
     "notification": {
@@ -976,6 +986,8 @@
     "addCase": "Add case",
     "openADispute": "Begin Dispute",
     "disputeTheme": "Dispute Theme",
+    "noDisputes": "You haven’t disputes",
+    "numberDispute": "Dispute №:",
     "reason": "Reason",
     "lorem": "",
     "withdraw": "Withdrawal",
@@ -1337,13 +1349,20 @@
     "chooseLevel": "Select level"
   },
   "dispute": {
+    "statuses": {
+      "pending": "Pending",
+      "inProgress": "In progress",
+      "closed": "Completed"
+    },
+    "myDispute" : "My Dispute",
+    "theme": "Dispute Theme",
     "disputes": "Disputes",
     "dispute": "Number of disputes:",
     "quest": "Quest:",
     "employer": "Employer:",
     "questSalary": "Quest salary:",
     "status": "Status:",
-    "decision": "Decision",
+    "decision": "Decision:",
     "Dispute": "Dispute",
     "pending": "Pending",
     "chatHistory": "Chat history",

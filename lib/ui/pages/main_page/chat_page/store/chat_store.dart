@@ -162,7 +162,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
       var message;
       if (json["type"] == "request") {
         message = MessageModel.fromJson(json["payload"]["result"]);
-      } else if (json["message"]["action"] == "groupChatCreate") {
+      } else
+        if (json["message"]["action"] == "groupChatCreate") {
         message = MessageModel.fromJson(json["message"]["data"]["lastMessage"]);
         setMessages(
             [MessageModel.fromJson(json["message"]["data"]["lastMessage"])],
