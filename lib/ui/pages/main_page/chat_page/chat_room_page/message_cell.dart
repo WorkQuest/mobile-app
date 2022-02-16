@@ -10,9 +10,8 @@ class MessageCell extends StatefulWidget {
   final LocalKey key;
   final MessageModel mess;
   final String userId;
-  final ChatRoomStore store;
 
-  MessageCell(this.key, this.mess, this.userId, this.store);
+  MessageCell(this.key, this.mess, this.userId);
 
   @override
   _MessageCellState createState() => _MessageCellState();

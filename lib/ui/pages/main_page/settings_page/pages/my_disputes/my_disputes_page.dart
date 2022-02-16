@@ -19,6 +19,11 @@ class MyDisputesPage extends StatefulWidget {
 class _MyDisputesPageState extends State<MyDisputesPage> {
   late MyDisputesStore store;
 
+  double leftPos = 0.0;
+  double bottomPos = 0.0;
+
+  ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     store = context.read<MyDisputesStore>();
@@ -29,29 +34,72 @@ class _MyDisputesPageState extends State<MyDisputesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        physics: const ClampingScrollPhysics(),
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            CupertinoSliverNavigationBar(
-              backgroundColor: Colors.white,
-              largeTitle: Text(
-                "btn.myDisputes".tr(),
-              ),
-              border: const Border.fromBorderSide(BorderSide.none),
-            ),
-          ];
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (scrollNotification) {
+          //Animate Padding
+          if (scrollController.offset < 240)
+            setState(() {
+              leftPos = 0.0;
+              bottomPos = 0.0;
+            });
+          if (scrollController.offset > 0 && scrollController.offset < 240)
+            setState(() {
+              leftPos = 25.0;
+              bottomPos = 9.0;
+            });
+
+          return false;
         },
-        body: Container(
-          color: Color(0xFFF7F8FA),
-          child: Observer(
-            builder: (_) => store.disputes.isEmpty
-                ? Center(
-                    child: store.isLoading
-                        ? getLoadingBody()
-                        : getEmptyBody(context),
-                  )
-                : getBody(),
+        child: NestedScrollView(
+          controller: scrollController,
+          physics: const ClampingScrollPhysics(),
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                expandedHeight: 100.0,
+                pinned: true,
+                leading: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: Color(0xFF0083C7),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                flexibleSpace: FlexibleSpaceBar(
+                  titlePadding: EdgeInsets.only(
+                    left: 16.0,
+                    bottom: 8.0,
+                    top: 0.0,
+                  ),
+                  collapseMode: CollapseMode.pin,
+                  centerTitle: false,
+                  title: AnimatedPadding(
+                    padding: EdgeInsets.only(left: leftPos, bottom: bottomPos),
+                    duration: Duration(milliseconds: 100),
+                    child: Text(
+                      "btn.myDisputes".tr(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1D2127),
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ];
+          },
+          body: Container(
+            color: Color(0xFFF7F8FA),
+            child: Observer(
+              builder: (_) => store.disputes.isEmpty
+                  ? Center(
+                      child: store.isLoading
+                          ? getLoadingBody()
+                          : getEmptyBody(context),
+                    )
+                  : getBody(),
+            ),
           ),
         ),
       ),
@@ -65,16 +113,32 @@ class _MyDisputesPageState extends State<MyDisputesPage> {
         right: 16.0,
         bottom: 16.0,
       ),
-      child: ListView.builder(
-        physics: BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        shrinkWrap: true,
-        itemCount: store.disputes.length,
-        padding: EdgeInsets.zero,
-        itemBuilder: (BuildContext context, index) {
-          return MyDisputesItem(store, index);
+      child: NotificationListener<ScrollEndNotification>(
+        onNotification: (scrollEnd) {
+          final metrics = scrollEnd.metrics;
+          if (metrics.maxScrollExtent < metrics.pixels && !store.isLoading) {
+            store.getDisputes();
+          }
+          return true;
         },
+        child: ListView.builder(
+          physics: BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          shrinkWrap: true,
+          itemCount: store.disputes.length,
+          padding: EdgeInsets.zero,
+          itemBuilder: (BuildContext context, index) {
+            return Column(
+              children: [
+                const SizedBox(
+                  height: 16,
+                ),
+                MyDisputesItem(store, index),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

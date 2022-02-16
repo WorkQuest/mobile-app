@@ -825,7 +825,7 @@ extension Disputes on ApiProvider {
       );
       return List<DisputeModel>.from(
         responseData["disputes"].map(
-              (x) => DisputeModel.fromJson(x),
+          (x) => DisputeModel.fromJson(x),
         ),
       );
     } on Exception catch (e, trace) {
@@ -834,6 +834,23 @@ extension Disputes on ApiProvider {
       return [];
     }
   }
+
+  Future<DisputeModel> getDispute({String disputeId = ""}) async {
+    try {
+      final responseData = await httpClient.get(
+        query: '/v1/quest/dispute/$disputeId',
+      );
+      return DisputeModel.fromJson(responseData);
+    } on Exception catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      final responseData = await httpClient.get(
+        query: '/v1/quest/dispute/$disputeId',
+      );
+      return DisputeModel.fromJson(responseData);
+    }
+  }
+
   Future<void> openDispute({
     String questId = "",
     String reason = "",

@@ -2,6 +2,7 @@ import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/model/quests_models/your_review.dart';
 
+import '../dispute_model.dart';
 import '../user_model.dart';
 import 'assigned_worker.dart';
 import 'invited.dart';
@@ -31,6 +32,7 @@ class BaseQuestResponse {
     required this.invited,
     required this.responded,
     required this.yourReview,
+    required this.questChat,
   });
 
   String id;
@@ -55,6 +57,7 @@ class BaseQuestResponse {
   Invited? invited;
   Responded? responded;
   YourReview? yourReview;
+  QuestChat? questChat;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(
@@ -87,13 +90,17 @@ class BaseQuestResponse {
         return skillsString;
       }([...json["questSpecializations"]]),
       workplace: json["workplace"],
-      invited: json["invited"] == null ? null : Invited.fromJson(json["invited"]),
+      invited:
+          json["invited"] == null ? null : Invited.fromJson(json["invited"]),
       responded: json["responded"] == null
           ? null
           : Responded.fromJson(json["responded"]),
       yourReview: json["yourReview"] == null
           ? null
           : YourReview.fromJson(json["yourReview"]),
+      questChat: json["questChat"] == null
+          ? null
+          : QuestChat.fromJson(json["questChat"]),
     );
   }
 
@@ -120,6 +127,7 @@ class BaseQuestResponse {
     this.invited = updateQuest.invited;
     this.responded = updateQuest.responded;
     this.yourReview = updateQuest.yourReview;
+    this.questChat = updateQuest.questChat;
   }
 
   Map<String, dynamic> toJson() => {
@@ -133,5 +141,6 @@ class BaseQuestResponse {
         "price": price,
         "adType": adType,
         "createdAt": createdAt.toIso8601String(),
+        "questChat": questChat,
       };
 }

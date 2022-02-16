@@ -131,7 +131,8 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
 
   @action
   void setMessageHighlighted(MessageModel message) {
-    idMessagesForStar[message.id] = !idMessagesForStar[message.id]!;
+    if (idMessagesForStar[message.id] != null)
+      idMessagesForStar[message.id] = !idMessagesForStar[message.id]!;
     for (int i = 0; i < idMessages.length; i++)
       if (idMessages[i] == message.id) {
         idMessages.removeAt(i);
@@ -282,6 +283,18 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
         return infoMessageValue = "chat.infoMessage.groupChatDeleteUser".tr();
       case "groupChatLeaveUser":
         return infoMessageValue = "chat.infoMessage.groupChatLeaveUser".tr();
+      case "workerRejectedQuest":
+        return infoMessageValue = "chat.infoMessage.workerRejectedQuest".tr();
+      case "workerAcceptedQuest":
+        return infoMessageValue = "chat.infoMessage.workerAcceptedQuest".tr();
+      case "workerCompletedQuest":
+        return infoMessageValue = "chat.infoMessage.workerCompletedQuest".tr();
+      case "workerAcceptedInvitationToQuest":
+        return infoMessageValue =
+            "chat.infoMessage.workerAcceptedInvitationToQuest".tr();
+      case "workerRejectedInvitationToQuest":
+        return infoMessageValue =
+            "chat.infoMessage.workerRejectedInvitationToQuest".tr();
     }
     return infoMessage;
   }
