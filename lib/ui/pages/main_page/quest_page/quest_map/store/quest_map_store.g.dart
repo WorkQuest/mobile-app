@@ -54,21 +54,6 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
-  final _$pointsAtom = Atom(name: '_QuestMapStore.points');
-
-  @override
-  List<QuestMapPoint> get points {
-    _$pointsAtom.reportRead();
-    return super.points;
-  }
-
-  @override
-  set points(List<QuestMapPoint> value) {
-    _$pointsAtom.reportWrite(value, super.points, () {
-      super.points = value;
-    });
-  }
-
   final _$questsOnMapAtom = Atom(name: '_QuestMapStore.questsOnMap');
 
   @override
@@ -81,21 +66,6 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   set questsOnMap(ObservableList<BaseQuestResponse> value) {
     _$questsOnMapAtom.reportWrite(value, super.questsOnMap, () {
       super.questsOnMap = value;
-    });
-  }
-
-  final _$workersOnMapAtom = Atom(name: '_QuestMapStore.workersOnMap');
-
-  @override
-  ObservableList<AssignedWorker> get workersOnMap {
-    _$workersOnMapAtom.reportRead();
-    return super.workersOnMap;
-  }
-
-  @override
-  set workersOnMap(ObservableList<AssignedWorker> value) {
-    _$workersOnMapAtom.reportWrite(value, super.workersOnMap, () {
-      super.workersOnMap = value;
     });
   }
 
@@ -128,21 +98,6 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   set locationPosition(Position? value) {
     _$locationPositionAtom.reportWrite(value, super.locationPosition, () {
       super.locationPosition = value;
-    });
-  }
-
-  final _$markersAtom = Atom(name: '_QuestMapStore.markers');
-
-  @override
-  List<MapMarker> get markers {
-    _$markersAtom.reportRead();
-    return super.markers;
-  }
-
-  @override
-  set markers(List<MapMarker> value) {
-    _$markersAtom.reportWrite(value, super.markers, () {
-      super.markers = value;
     });
   }
 
@@ -247,12 +202,9 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
 infoPanel: ${infoPanel},
 selectQuestInfo: ${selectQuestInfo},
 bufferQuests: ${bufferQuests},
-points: ${points},
 questsOnMap: ${questsOnMap},
-workersOnMap: ${workersOnMap},
 initialCameraPosition: ${initialCameraPosition},
 locationPosition: ${locationPosition},
-markers: ${markers},
 debounce: ${debounce},
 markerLoader: ${markerLoader},
 address: ${address}

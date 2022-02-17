@@ -52,7 +52,7 @@ dependencies:
   flutter_google_places_hoc081098: ^1.0.0-nullsafety.5
   geolocator: ^8.0.1
   maps_launcher: ^2.0.1
-  fluster: ^1.2.0
+  google_maps_cluster_manager: ^3.0.0+1
 
   permission_handler: ^8.1.4
   flutter_secure_storage: ^4.2.0
