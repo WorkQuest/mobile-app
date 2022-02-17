@@ -46,6 +46,7 @@ class WebSocket {
         }""");
     });
 
+    print(_channels.length);
     this._channels.forEach((path, channel) {
       channel.stream.listen(
         this._onData,

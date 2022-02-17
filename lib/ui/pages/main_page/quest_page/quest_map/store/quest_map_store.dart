@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'package:app/base_store/i_store.dart';
+import 'package:app/di/injector.dart';
+import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/marker_loader_for_map.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,9 +28,7 @@ class QuestMapStore extends _QuestMapStore with _$QuestMapStore {
 abstract class _QuestMapStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _QuestMapStore(this._apiProvider) {
-    clusterManager = initClusterManager();
-  }
+  _QuestMapStore(this._apiProvider);
 
   @observable
   InfoPanel infoPanel = InfoPanel.Nope;
@@ -35,9 +37,14 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   BaseQuestResponse? selectQuestInfo;
 
   @observable
+  bool? isWorker;
+
+  @observable
   Map<String, BaseQuestResponse> bufferQuests = {};
 
   List<BaseQuestResponse> questsOnMap = [];
+
+  List<ProfileMeResponse> workersOnMap = [];
 
   @observable
   ObservableSet<Marker> markers = ObservableSet();
@@ -95,8 +102,14 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   Future getQuestsOnMap(LatLngBounds bounds) async {
     try {
       this.onLoading();
-      questsOnMap = await _apiProvider.mapPoints(bounds);
-      clusterManager.setItems(questsOnMap);
+      if (isWorker!) {
+        questsOnMap = await _apiProvider.questMapPoints(bounds);
+        clusterManager.setItems(questsOnMap);
+      } else {
+        workersOnMap = await _apiProvider.workerMapPoints(bounds);
+        clusterManager.setItems(workersOnMap);
+      }
+
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -104,35 +117,36 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
     }
   }
 
-  ClusterManager initClusterManager() {
-    return ClusterManager(questsOnMap,
-        _updateMarkers, // Method to be called when markers are updated
-        markerBuilder: MarkerLoader.markerBuilder,
-        // Optional : Method to implement if you want to customize markers
-        levels: const [1, 4.25, 6.75, 8.25, 11.5, 14.5, 16.0, 16.5, 20.0],
-        // Optional : Configure this if you want to change zoom levels at which the clustering precision change
+  ClusterManager<ClusterItem> initClusterManager() {
+    final List<double> level = const [
+      1,
+      4.25,
+      6.75,
+      8.25,
+      11.5,
+      14.5,
+      16.0,
+      16.5,
+      20.0
+    ];
+    final extraPercent = 0.2;
+    final clusteringZoom = 17.0;
+    if (isWorker!)
+      return ClusterManager<BaseQuestResponse>(questsOnMap, _updateMarkers,
+          markerBuilder: questMarkerBuilder,
+          levels: level,
+          extraPercent: 0.2,
+          stopClusteringZoom: 17.0);
+    return ClusterManager<ProfileMeResponse>(workersOnMap, _updateMarkers,
+        markerBuilder: workersMarkerBuilder,
+        levels: level,
         extraPercent: 0.2,
-        // Optional : This number represents the percentage (0.2 for 20%) of latitude and longitude (in each direction) to be considered on top of the visible map bounds to render clusters. This way, clusters don't "pop out" when you cross the map.
-        stopClusteringZoom:
-            17.0 // Optional : The zoom level to stop clustering, so it's only rendering single item "clusters"
-        );
+        stopClusteringZoom: 17.0);
   }
 
   void _updateMarkers(Set<Marker> markers) {
-    print('Updated ${markers.length} markers');
-    print('Updated add ${this.markers.length} ');
     this.markers = ObservableSet.of(markers);
   }
-
-  // Set<Marker> getMarkerSet() {
-  //   Set<Marker> markers = Set();
-  //
-  //   //return markers;
-  //   return c
-  //       .items
-  //       .map((e) => Marker(markerId: MarkerId(e.geohash), position: e.location))
-  //       .toSet();
-  // }
 
   @action
   onTabQuest(String id) async {
@@ -153,8 +167,45 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   }
 
   @action
-  createMarkerLoader(BuildContext context) =>
-      this.markerLoader = new MarkerLoader(context);
+  createMarkerLoader(BuildContext context) {
+    this.markerLoader = new MarkerLoader(context);
+    // assign value here, null if assigned in constructor
+    isWorker = getIt.get<ProfileMeStore>().userData?.role == UserRole.Worker;
+    clusterManager = initClusterManager();
+  }
+
+   Future<Marker> Function(Cluster<BaseQuestResponse>) get questMarkerBuilder =>
+      (cluster) async {
+        return Marker(
+          markerId: MarkerId(cluster.getId()),
+          position: cluster.location,
+          onTap: () {
+            print('---- $cluster');
+            cluster.items.forEach((p) => print(p));
+          },
+          icon: cluster.isMultiple
+              ? await MarkerLoader.getClusterMarkerBitmap(
+                  cluster.count.toString())
+              : markerLoader!.icons[cluster.items.toList()[0].priority],
+        );
+      };
+
+  Future<Marker> Function(Cluster<ProfileMeResponse>) get workersMarkerBuilder =>
+          (cluster) async {
+        return Marker(
+          markerId: MarkerId(cluster.getId()),
+          position: cluster.location,
+          onTap: () {
+            print('---- $cluster');
+            cluster.items.forEach((p) => print(p));
+          },
+          icon: cluster.isMultiple
+              ? await MarkerLoader.getClusterMarkerBitmap(
+              cluster.count.toString())
+              : BitmapDescriptor.defaultMarker
+          //markerLoader!.icons[cluster.items.toList()[0].priority],
+        );
+      };
 }
 
 enum InfoPanel { Nope, Point, Cluster }

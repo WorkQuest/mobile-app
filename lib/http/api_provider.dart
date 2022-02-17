@@ -111,7 +111,8 @@ extension QuestService on ApiProvider {
     );
   }
 
-  Future<List<BaseQuestResponse>> mapPoints(LatLngBounds bounds) async {
+  Future<List<BaseQuestResponse>> questMapPoints(
+      LatLngBounds bounds,) async {
     final response = await httpClient.get(
       query: '/v1/quest/map/points'
               '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
@@ -119,7 +120,6 @@ extension QuestService on ApiProvider {
           '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
           'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}',
     );
-
     // final response2 = await httpClient.get(
     //   query: '/v1/quests' +
     //       '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
@@ -127,9 +127,25 @@ extension QuestService on ApiProvider {
     //       '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
     //       'south[longitude]=${bounds.southwest.longitude.toString()}',
     // );
-    return List<BaseQuestResponse>.from(
-      response["quests"].map(
-        (x) => BaseQuestResponse.fromJson(x),
+      return List<BaseQuestResponse>.from(
+        response["quests"].map(
+          (x) => BaseQuestResponse.fromJson(x),
+        ),
+      );
+  }
+
+  Future<List<ProfileMeResponse>> workerMapPoints(
+      LatLngBounds bounds,) async {
+    final response = await httpClient.get(
+      query: '/v1/profile/worker/map/points'
+          '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
+          'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
+          '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
+          'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}',
+    );
+    return List<ProfileMeResponse>.from(
+      response["users"].map(
+            (x) => ProfileMeResponse.fromJson(x),
       ),
     );
   }

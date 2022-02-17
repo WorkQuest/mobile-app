@@ -39,6 +39,21 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
+  final _$isWorkerAtom = Atom(name: '_QuestMapStore.isWorker');
+
+  @override
+  bool? get isWorker {
+    _$isWorkerAtom.reportRead();
+    return super.isWorker;
+  }
+
+  @override
+  set isWorker(bool? value) {
+    _$isWorkerAtom.reportWrite(value, super.isWorker, () {
+      super.isWorker = value;
+    });
+  }
+
   final _$bufferQuestsAtom = Atom(name: '_QuestMapStore.bufferQuests');
 
   @override
@@ -201,6 +216,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     return '''
 infoPanel: ${infoPanel},
 selectQuestInfo: ${selectQuestInfo},
+isWorker: ${isWorker},
 bufferQuests: ${bufferQuests},
 markers: ${markers},
 initialCameraPosition: ${initialCameraPosition},
