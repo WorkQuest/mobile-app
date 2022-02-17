@@ -11,59 +11,57 @@ class MyDisputesItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      key: UniqueKey(),
-      padding: EdgeInsets.only(top: 16.0),
-      child: GestureDetector(
-        onTap: () async => await Navigator.pushNamed(
+    return GestureDetector(
+      onTap: () async {
+        await Navigator.pushNamed(
           context,
           DisputePage.routeName,
-          arguments: store.disputes[index],
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(
-              Radius.circular(6.0),
-            ),
+          arguments: store.disputes[index].id,
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(
+            Radius.circular(6.0),
           ),
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                row(
-                  title: "modals.numberDispute",
-                  disputeInfo: store.disputes[index].disputeNumber.toString(),
-                ),
-                space(),
-                row(
-                  title: "dispute.quest",
-                  disputeInfo: store.disputes[index].quest.title,
-                ),
-                space(),
-                row(
-                  title: "dispute.employer",
-                  disputeInfo: store.disputes[index].quest.user.firstName +
-                      " " +
-                      store.disputes[index].quest.user.lastName,
-                ),
-                space(),
-                row(
-                  title: "dispute.questSalary",
-                  disputeInfo: store.disputes[index].quest.price,
-                ),
-                space(),
-                row(
-                  title: "dispute.status",
-                  disputeInfo:
-                      store.getStatus(store.disputes[index].quest.status).tr(),
-                  color: getColor(store.disputes[index].quest.status),
-                ),
-                if (store.disputes[index].decisionDescription != null &&
-                    store.disputes[index].decisionDescription != "")
-                  decision(),
-              ],
-            ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              row(
+                title: "modals.numberDispute",
+                disputeInfo: store.disputes[index].disputeNumber.toString(),
+              ),
+              space(),
+              row(
+                title: "dispute.quest",
+                disputeInfo: store.disputes[index].quest.title,
+              ),
+              space(),
+              row(
+                title: "dispute.employer",
+                disputeInfo: store.disputes[index].quest.user.firstName +
+                    " " +
+                    store.disputes[index].quest.user.lastName,
+              ),
+              space(),
+              row(
+                title: "dispute.questSalary",
+                disputeInfo: store.disputes[index].quest.price,
+              ),
+              space(),
+              row(
+                title: "dispute.status",
+                disputeInfo:
+                    store.getStatus(store.disputes[index].quest.status).tr(),
+                color: getColor(store.disputes[index].quest.status),
+              ),
+              if (store.disputes[index].decisionDescription != null &&
+                  store.disputes[index].decisionDescription != "")
+                decision(),
+            ],
           ),
         ),
       ),

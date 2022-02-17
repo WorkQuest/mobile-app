@@ -24,26 +24,56 @@ mixin _$DisputeStore on _DisputeStore, Store {
     });
   }
 
-  final _$disputesAtom = Atom(name: '_DisputeStore.disputes');
+  final _$disputeAtom = Atom(name: '_DisputeStore.dispute');
 
   @override
-  ObservableList<DisputeModel> get disputes {
-    _$disputesAtom.reportRead();
-    return super.disputes;
+  DisputeModel? get dispute {
+    _$disputeAtom.reportRead();
+    return super.dispute;
   }
 
   @override
-  set disputes(ObservableList<DisputeModel> value) {
-    _$disputesAtom.reportWrite(value, super.disputes, () {
-      super.disputes = value;
+  set dispute(DisputeModel? value) {
+    _$disputeAtom.reportWrite(value, super.dispute, () {
+      super.dispute = value;
     });
+  }
+
+  final _$messagesAtom = Atom(name: '_DisputeStore.messages');
+
+  @override
+  ObservableList<MessageModel> get messages {
+    _$messagesAtom.reportRead();
+    return super.messages;
+  }
+
+  @override
+  set messages(ObservableList<MessageModel> value) {
+    _$messagesAtom.reportWrite(value, super.messages, () {
+      super.messages = value;
+    });
+  }
+
+  final _$getDisputeAsyncAction = AsyncAction('_DisputeStore.getDispute');
+
+  @override
+  Future<void> getDispute(String disputeId) {
+    return _$getDisputeAsyncAction.run(() => super.getDispute(disputeId));
+  }
+
+  final _$getMessagesAsyncAction = AsyncAction('_DisputeStore.getMessages');
+
+  @override
+  Future<void> getMessages(String chatId) {
+    return _$getMessagesAsyncAction.run(() => super.getMessages(chatId));
   }
 
   @override
   String toString() {
     return '''
 status: ${status},
-disputes: ${disputes}
+dispute: ${dispute},
+messages: ${messages}
     ''';
   }
 }

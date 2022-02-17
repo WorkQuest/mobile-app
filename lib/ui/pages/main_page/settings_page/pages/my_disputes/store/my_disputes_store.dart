@@ -16,6 +16,8 @@ abstract class _MyDisputesStore extends IStore<bool> with Store {
 
   _MyDisputesStore(this._apiProvider);
 
+  int _offset = 0;
+
   @observable
   ObservableList<DisputeModel> disputes = ObservableList.of([]);
 
@@ -35,9 +37,12 @@ abstract class _MyDisputesStore extends IStore<bool> with Store {
 
   Future<void> getDisputes() async {
     try {
-      this.onLoading();
-      disputes.addAll(await _apiProvider.getDisputes());
-      this.onSuccess(true);
+      if (disputes.length >= _offset) {
+        this.onLoading();
+        disputes.addAll(await _apiProvider.getDisputes(offset: _offset));
+        _offset += 10;
+        this.onSuccess(true);
+      }
     } catch (e, trace) {
       print("ERROR: $e");
       print("ERROR: $trace");

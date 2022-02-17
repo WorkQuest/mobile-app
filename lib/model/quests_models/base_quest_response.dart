@@ -1,8 +1,7 @@
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/model/quests_models/your_review.dart';
-import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import '../user_model.dart';
 import 'assigned_worker.dart';
 import 'invited.dart';
@@ -32,6 +31,7 @@ class BaseQuestResponse with ClusterItem {
     required this.invited,
     required this.responded,
     required this.yourReview,
+    required this.questChat,
   });
 
   String id;
@@ -56,6 +56,7 @@ class BaseQuestResponse with ClusterItem {
   Invited? invited;
   Responded? responded;
   YourReview? yourReview;
+  QuestChat? questChat;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(
@@ -96,6 +97,9 @@ class BaseQuestResponse with ClusterItem {
       yourReview: json["yourReview"] == null
           ? null
           : YourReview.fromJson(json["yourReview"]),
+      questChat: json["questChat"] == null
+          ? null
+          : QuestChat.fromJson(json["questChat"]),
     );
   }
 
@@ -122,6 +126,7 @@ class BaseQuestResponse with ClusterItem {
     this.invited = updateQuest.invited;
     this.responded = updateQuest.responded;
     this.yourReview = updateQuest.yourReview;
+    this.questChat = updateQuest.questChat;
   }
 
   Map<String, dynamic> toJson() => {
@@ -135,6 +140,7 @@ class BaseQuestResponse with ClusterItem {
         "price": price,
         "adType": adType,
         "createdAt": createdAt.toIso8601String(),
+        "questChat": questChat,
       };
 
   @override
