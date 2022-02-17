@@ -169,13 +169,13 @@ class QuestChat {
     required this.status,
   });
 
-  String id;
-  String employerId;
-  String workerId;
-  String questId;
-  String responseId;
-  String chatId;
-  int status;
+  String? id;
+  String? employerId;
+  String? workerId;
+  String? questId;
+  String? responseId;
+  String? chatId;
+  int? status;
 
   factory QuestChat.fromJson(Map<String, dynamic> json) => QuestChat(
         id: json["id"],

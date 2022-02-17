@@ -32,7 +32,7 @@ class _DisputePageState extends State<DisputePage> {
     store = context.read<DisputeStore>();
     store.getDispute(widget.disputeId).then((value) {
       if (store.dispute != null) {
-        store.getMessages(store.dispute!.quest.questChat!.chatId);
+        store.getMessages(store.dispute!.quest.questChat!.chatId!);
       }
     });
     super.initState();
@@ -74,7 +74,7 @@ class _DisputePageState extends State<DisputePage> {
                         if (metrics.maxScrollExtent < metrics.pixels &&
                             !store.isLoading) {
                           store.getMessages(
-                              store.dispute!.quest.questChat!.chatId);
+                              store.dispute!.quest.questChat!.chatId!);
                         }
                         return true;
                       },
