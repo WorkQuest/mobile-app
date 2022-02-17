@@ -61,22 +61,21 @@ class _QuestMapState extends State<QuestMap> {
                             mapStore!.getQuestsOnMap(bounds);
                           },
                         );
-                        mapStore!.createClusters(
-                        ).onCameraMove(position);
+                        mapStore!.clusterManager.onCameraMove(position);
                       },
                       mapType: MapType.normal,
                       rotateGesturesEnabled: false,
                       myLocationEnabled: true,
                       initialCameraPosition: mapStore!.initialCameraPosition!,
                       myLocationButtonEnabled: false,
-                      markers: mapStore!.getMarkerSet(),
-                      //mapStore!.markers.toSet(),
+                      markers: mapStore!.markers,
+                      onCameraIdle: mapStore!.clusterManager.updateMap ,
                       onMapCreated: (GoogleMapController controller) async {
                         _controller = controller;
                         LatLngBounds bounds =
                             await _controller.getVisibleRegion();
                         await mapStore!.getQuestsOnMap(bounds);
-                        mapStore!.createClusters().setMapId(controller.mapId);
+                        mapStore!.clusterManager.setMapId(controller.mapId);
                         _onMyLocationPressed();
                       },
                       onTap: (point) {

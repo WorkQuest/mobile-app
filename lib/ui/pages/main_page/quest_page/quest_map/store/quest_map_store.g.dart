@@ -54,18 +54,18 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
-  final _$questsOnMapAtom = Atom(name: '_QuestMapStore.questsOnMap');
+  final _$markersAtom = Atom(name: '_QuestMapStore.markers');
 
   @override
-  ObservableList<BaseQuestResponse> get questsOnMap {
-    _$questsOnMapAtom.reportRead();
-    return super.questsOnMap;
+  ObservableSet<Marker> get markers {
+    _$markersAtom.reportRead();
+    return super.markers;
   }
 
   @override
-  set questsOnMap(ObservableList<BaseQuestResponse> value) {
-    _$questsOnMapAtom.reportWrite(value, super.questsOnMap, () {
-      super.questsOnMap = value;
+  set markers(ObservableSet<Marker> value) {
+    _$markersAtom.reportWrite(value, super.markers, () {
+      super.markers = value;
     });
   }
 
@@ -202,7 +202,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
 infoPanel: ${infoPanel},
 selectQuestInfo: ${selectQuestInfo},
 bufferQuests: ${bufferQuests},
-questsOnMap: ${questsOnMap},
+markers: ${markers},
 initialCameraPosition: ${initialCameraPosition},
 locationPosition: ${locationPosition},
 debounce: ${debounce},

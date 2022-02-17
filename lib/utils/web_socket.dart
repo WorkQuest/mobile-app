@@ -46,7 +46,6 @@ class WebSocket {
         }""");
     });
 
-    print("listen${_channels.length}");
     this._channels.forEach((path, channel) {
       channel.stream.listen(
         this._onData,
@@ -155,6 +154,7 @@ class WebSocket {
     _channels.forEach((path, channel) {
       print("WebSocket onDone ${channel.closeReason}");
     });
+    _channels.clear();
     if (shouldReconnectFlag) connect();
   }
 

@@ -16,7 +16,6 @@ import 'package:easy_localization/easy_localization.dart';
 
 part 'quest_map_store.g.dart';
 
-@injectable
 @singleton
 class QuestMapStore extends _QuestMapStore with _$QuestMapStore {
   QuestMapStore(ApiProvider apiProvider) : super(apiProvider);
@@ -25,7 +24,9 @@ class QuestMapStore extends _QuestMapStore with _$QuestMapStore {
 abstract class _QuestMapStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _QuestMapStore(this._apiProvider);
+  _QuestMapStore(this._apiProvider) {
+    clusterManager = initClusterManager();
+  }
 
   @observable
   InfoPanel infoPanel = InfoPanel.Nope;
@@ -36,8 +37,10 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   @observable
   Map<String, BaseQuestResponse> bufferQuests = {};
 
+  List<BaseQuestResponse> questsOnMap = [];
+
   @observable
-  ObservableList<BaseQuestResponse> questsOnMap = ObservableList();
+  ObservableSet<Marker> markers = ObservableSet();
 
   @observable
   CameraPosition? initialCameraPosition;
@@ -50,6 +53,8 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
 
   @observable
   MarkerLoader? markerLoader;
+
+  late final ClusterManager clusterManager;
 
   @observable
   String address = "";
@@ -90,8 +95,8 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   Future getQuestsOnMap(LatLngBounds bounds) async {
     try {
       this.onLoading();
-      questsOnMap.addAll(await _apiProvider.mapPoints(bounds));
-      //markers = await getMarkerList();
+      questsOnMap = await _apiProvider.mapPoints(bounds);
+      clusterManager.setItems(questsOnMap);
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -99,9 +104,9 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
     }
   }
 
-  ClusterManager createClusters() {
+  ClusterManager initClusterManager() {
     return ClusterManager(questsOnMap,
-        (marker) {}, // Method to be called when markers are updated
+        _updateMarkers, // Method to be called when markers are updated
         markerBuilder: MarkerLoader.markerBuilder,
         // Optional : Method to implement if you want to customize markers
         levels: const [1, 4.25, 6.75, 8.25, 11.5, 14.5, 16.0, 16.5, 20.0],
@@ -113,15 +118,21 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
         );
   }
 
-  Set<Marker> getMarkerSet() {
-    Set<Marker> markers = Set();
-
-    //return markers;
-    return createClusters()
-        .items
-        .map((e) => Marker(markerId: MarkerId(e.geohash), position: e.location))
-        .toSet();
+  void _updateMarkers(Set<Marker> markers) {
+    print('Updated ${markers.length} markers');
+    print('Updated add ${this.markers.length} ');
+    this.markers = ObservableSet.of(markers);
   }
+
+  // Set<Marker> getMarkerSet() {
+  //   Set<Marker> markers = Set();
+  //
+  //   //return markers;
+  //   return c
+  //       .items
+  //       .map((e) => Marker(markerId: MarkerId(e.geohash), position: e.location))
+  //       .toSet();
+  // }
 
   @action
   onTabQuest(String id) async {
