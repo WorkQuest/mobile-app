@@ -8,13 +8,11 @@ class WebSocket {
   void Function(dynamic)? handlerChats;
   void Function(dynamic)? handlerQuests;
 
-  late IOWebSocketChannel _channelListener;
-  late List<IOWebSocketChannel> _channels = [];
-  late IOWebSocketChannel _channelSender;
-
-  final String _urlSender = "wss://app.workquest.co/api";
-  final String _urlListener =
+  String _channelListener =
       "wss://notifications.workquest.co/api/v1/notifications";
+  String _channelSender = "wss://app.workquest.co/api";
+
+  late Map<String, IOWebSocketChannel> _channels = {};
 
   int _counter = 0;
 
@@ -26,71 +24,36 @@ class WebSocket {
     return _singleton;
   }
 
-  void getChannels() {
-    List<String> _url = [_urlListener, _urlSender];
-    _channels = _url.map((url) => IOWebSocketChannel.connect(url)).toList();
-  }
-
   void connect() async {
     shouldReconnectFlag = true;
+    _channels = {
+      "": IOWebSocketChannel.connect(_channelSender),
+      "/notifications/chat": IOWebSocketChannel.connect(_channelListener),
+    };
     _counter = 0;
     String? token = await Storage.readAccessToken();
     print("[WebSocket]  connecting ...");
-    //getChannels();
-    this._channelListener = IOWebSocketChannel.connect(_urlListener);
-    this._channelSender = IOWebSocketChannel.connect(_urlSender);
 
-    // this._channels.forEach((element) {
-    //   element.sink.add("""{
-    //       "type": "hello",
-    //       "id": 1,
-    //       "version": "2",
-    //       "auth": {
-    //         "headers": {"authorization": "Bearer $token"}
-    //       },
-    //       "sub": element"/notifications/chat"
-    //     }""");
-    // });
-    //
-    // this._channels.forEach((element) {
-    //   element.stream.listen(
-    //     this._onData,
-    //     onError: this._onError,
-    //     onDone: this._onDone,
-    //   );
-    // });
-
-    this._channelSender.sink.add("""{
+    this._channels.forEach((path, channel) {
+      channel.sink.add("""{
           "type": "hello",
           "id": 1,
           "version": "2",
           "auth": {
             "headers": {"authorization": "Bearer $token"}
           },
-          "sub": "/notifications/chat"
+          "sub": "$path"
         }""");
+    });
 
-    this._channelListener.sink.add("""{
-          "type": "hello",
-          "id": 1,
-          "version": "2",
-          "auth": {
-            "headers": {"authorization": "Bearer $token"}
-          },
-          "sub": "/notifications/chat"
-        }""");
-
-    this._channelListener.stream.listen(
-          this._onData,
-          onError: this._onError,
-          onDone: this._onDone,
-        );
-
-    this._channelSender.stream.listen(
-          this._onData,
-          onError: this._onError,
-          onDone: this._onDone,
-        );
+    print("listen${_channels.length}");
+    this._channels.forEach((path, channel) {
+      channel.stream.listen(
+        this._onData,
+        onError: this._onError,
+        onDone: this._onDone,
+      );
+    });
   }
 
   void _onData(message) {
@@ -167,8 +130,7 @@ class WebSocket {
       }
     };
     String textPayload = json.encode(payload).toString();
-    _channelSender.sink.add(textPayload);
-    //_channels[1].sink.add(textPayload);
+    _channels[""]?.sink.add(textPayload);
     print("Send Message: $textPayload");
     _counter++;
   }
@@ -179,8 +141,9 @@ class WebSocket {
       "id": "$_counter",
     };
     String textPayload = json.encode(payload).toString();
-     _channelListener.sink.add(textPayload);
-    _channelSender.sink.add(textPayload);
+    _channels.forEach((path, channel) {
+      channel.sink.add(textPayload);
+    });
     _counter++;
   }
 
@@ -189,10 +152,10 @@ class WebSocket {
   }
 
   void _onDone() {
+    _channels.forEach((path, channel) {
+      print("WebSocket onDone ${channel.closeReason}");
+    });
     if (shouldReconnectFlag) connect();
-    print("WebSocket onDone ${_channelListener.closeReason}");
-    _channels.forEach((element) {element.closeReason;});
-    print("WebSocket onDone ${_channelSender.closeReason}");
   }
 
   WebSocket._internal();
