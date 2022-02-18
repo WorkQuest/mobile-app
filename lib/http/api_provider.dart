@@ -707,6 +707,19 @@ extension SetRoleService on ApiProvider {
       },
     );
   }
+
+  Future<void> changeRole(String totp) async {
+    try {
+      await httpClient.put(
+        query: '/v1/profile/change-role',
+        data: {
+          "totp": totp,
+        },
+      );
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
 
 extension ConfirmEmailService on ApiProvider {

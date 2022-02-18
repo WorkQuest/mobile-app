@@ -1,5 +1,6 @@
 import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
+import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:flutter/cupertino.dart';
@@ -96,25 +97,25 @@ class ApproveRolePage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: store.canApprove
                         ? () async {
-                            await store.approveRole();
+                            if (!store.isChange) await store.approveRole();
                             // Routes.push(
                             //   ctx,
                             //   getIt.get<CreateWalletStore>(),
                             //   CreateWalletPage(),
                             // );
-                            // !store.isChange
-                            // ?
-                            Navigator.push(
-                              ctx,
-                              MaterialPageRoute(
-                                builder: (_) => Provider(
-                                  create: (context) =>
-                                      getIt.get<CreateWalletStore>(),
-                                  child: CreateWalletPage(),
-                                ),
-                              ),
-                            );
-                            // :;
+                            !store.isChange
+                                ? Navigator.push(
+                                    ctx,
+                                    MaterialPageRoute(
+                                      builder: (_) => Provider(
+                                        create: (context) =>
+                                            getIt.get<CreateWalletStore>(),
+                                        child: CreateWalletPage(),
+                                      ),
+                                    ),
+                                  )
+                                : Navigator.of(ctx, rootNavigator: true)
+                                    .pushNamed(EnterTotpPage.routeName);
 
                             //Navigator.pushNamed(ctx, PinCodePage.routeName);
                           }

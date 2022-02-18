@@ -888,6 +888,7 @@
     }
   },
   "modals": {
+    "enter2FaCode": "Enter TOTP",
     "exit": "Exit",
     "modals": {
       "title": "Create group chat",

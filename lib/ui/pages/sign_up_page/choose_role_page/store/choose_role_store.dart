@@ -23,6 +23,9 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   bool isChange = false;
 
   @observable
+  String totp = "";
+
+  @observable
   String _codeFromEmail = "";
 
   @observable
@@ -40,6 +43,9 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
     else
       return UserRole.Employer.name;
   }
+
+  @action
+  void setTotp(String value) => totp = value;
 
   @action
   void setCode(String value) => _codeFromEmail = value;
@@ -69,6 +75,17 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
                 ? "worker"
                 : "employer",
       );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future changeRole() async {
+    try{
+      this.onLoading();
+      await _apiProvider.changeRole(totp);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
