@@ -2,8 +2,10 @@ import 'package:app/enums.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/avatar.dart';
 import 'package:app/model/quests_models/location_full.dart';
+import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class ProfileMeResponse {
+class ProfileMeResponse with ClusterItem {
   ProfileMeResponse({
     required this.id,
     required this.avatarId,
@@ -166,6 +168,10 @@ class ProfileMeResponse {
         // "createdAt": createdAt.toIso8601String(),
         // "updatedAt": updatedAt.toIso8601String(),
       };
+
+  @override
+  // TODO: implement location
+  LatLng get location => LatLng(locationCode!.latitude, locationCode!.longitude);
 }
 
 class QuestsStatistic {

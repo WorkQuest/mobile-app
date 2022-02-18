@@ -8,11 +8,11 @@ class WebSocket {
   void Function(dynamic)? handlerChats;
   void Function(dynamic)? handlerQuests;
 
-  // late IOWebSocketChannel _channelListener;
-  late IOWebSocketChannel _channelSender;
+  String _channelListener =
+      "wss://notifications.workquest.co/api/v1/notifications";
+  String _channelSender = "wss://app.workquest.co/api";
 
-  // String _urlListener = "wss://notifications.workquest.co/api/v1/notifications";
-  String _urlSender = "wss://app.workquest.co/api";
+  late Map<String, IOWebSocketChannel> _channels = {};
 
   int _counter = 0;
 
@@ -26,59 +26,55 @@ class WebSocket {
 
   void connect() async {
     shouldReconnectFlag = true;
+    _channels = {
+      "": IOWebSocketChannel.connect(_channelSender),
+      "/notifications/chat": IOWebSocketChannel.connect(_channelListener),
+    };
     _counter = 0;
     String? token = await Storage.readAccessToken();
     print("[WebSocket]  connecting ...");
 
-    // this._channelListener = IOWebSocketChannel.connect(_urlListener);
-    this._channelSender = IOWebSocketChannel.connect(_urlSender);
-
-    // this._channelListener.sink.add("""{
-    //       "type": "hello",
-    //       "id": 1,
-    //       "version": "2",
-    //       "auth": {
-    //         "headers": {"authorization": "Bearer $token"}
-    //       },
-    //       "sub": "/notifications/chat"
-    //     }""");
-
-    this._channelSender.sink.add("""{
+    this._channels.forEach((path, channel) {
+      channel.sink.add("""{
           "type": "hello",
           "id": 1,
           "version": "2",
           "auth": {
             "headers": {"authorization": "Bearer $token"}
           },
-          "sub": "/notifications/chat"
+          "sub": "$path"
         }""");
+    });
 
-    // this._channelListener.stream.listen(
-    //       this._onData,
-    //       onError: this._onError,
-    //       onDone: this._onDone,
-    //     );
-
-    this._channelSender.stream.listen(
-          this._onData,
-          onError: this._onError,
-          onDone: this._onDone,
-        );
+    print(_channels.length);
+    this._channels.forEach((path, channel) {
+      channel.stream.listen(
+        this._onData,
+        onError: this._onError,
+        onDone: this._onDone,
+      );
+    });
   }
 
   void _onData(message) {
-    print("WebSocket message: $message");
-    final json = jsonDecode(message.toString());
-    switch (json["type"]) {
-      case "pub":
-        _handleSubscription(json);
-        break;
-      case "ping":
-        _ping();
-        break;
-      case "request":
-        getMessage(json);
-        break;
+    try {
+      print("WebSocket message: $message");
+      final json = jsonDecode(message.toString());
+      switch (json["type"]) {
+        case "pub":
+          print("pub_object");
+          _handleSubscription(json);
+          break;
+        case "ping":
+          _ping();
+          break;
+        case "request":
+          getMessage(json);
+          break;
+      }
+    } catch (e, tr) {
+      print(e);
+      print(tr);
     }
   }
 
@@ -88,6 +84,9 @@ class WebSocket {
         getMessage(json);
       } else if (json["path"] == "/notifications/quest") {
         questNotification(json["message"]["data"]);
+      } else if (json["path"] == "/notifications/chat") {
+        print("new${json["message"]["data"]}");
+        //questNotification(json["message"]["data"]);
       }
     } catch (e, trace) {
       print("ERROR: $e");
@@ -131,7 +130,7 @@ class WebSocket {
       }
     };
     String textPayload = json.encode(payload).toString();
-    _channelSender.sink.add(textPayload);
+    _channels[""]?.sink.add(textPayload);
     print("Send Message: $textPayload");
     _counter++;
   }
@@ -142,8 +141,9 @@ class WebSocket {
       "id": "$_counter",
     };
     String textPayload = json.encode(payload).toString();
-    // _channelListener.sink.add(textPayload);
-    _channelSender.sink.add(textPayload);
+    _channels.forEach((path, channel) {
+      channel.sink.add(textPayload);
+    });
     _counter++;
   }
 
@@ -152,9 +152,11 @@ class WebSocket {
   }
 
   void _onDone() {
+    _channels.forEach((path, channel) {
+      print("WebSocket onDone ${channel.closeReason}");
+    });
+    _channels.clear();
     if (shouldReconnectFlag) connect();
-    // print("WebSocket onDone ${_channelListener.closeReason}");
-    print("WebSocket onDone ${_channelSender.closeReason}");
   }
 
   WebSocket._internal();

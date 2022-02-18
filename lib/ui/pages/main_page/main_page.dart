@@ -33,7 +33,6 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<ChatStore>().initialStore();
-
     return WillPopScope(
       onWillPop: () async {
         dialog(

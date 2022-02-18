@@ -86,12 +86,12 @@ class Tx {
             ? null
             : List<Logs>.from(json["logs"].map((x) => Logs.fromJson(x))),
         input: json["input"],
-        createdAt: json["createdAt"] == null
+        createdAt: json["inserted_at"] == null
             ? null
-            : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null
+            : DateTime.parse(json["inserted_at"]),
+        updatedAt: json["updated_at"] == null
             ? null
-            : DateTime.parse(json["updatedAt"]),
+            : DateTime.parse(json["updated_at"]),
       );
 
   Map<String, dynamic> toJson() => {

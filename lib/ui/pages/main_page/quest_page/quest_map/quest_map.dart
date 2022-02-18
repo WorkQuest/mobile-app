@@ -61,27 +61,22 @@ class _QuestMapState extends State<QuestMap> {
                             mapStore!.getQuestsOnMap(bounds);
                           },
                         );
-                        mapStore!.createClusters(
-                        ).onCameraMove(position);
+                        mapStore!.clusterManager.onCameraMove(position);
                       },
                       mapType: MapType.normal,
                       rotateGesturesEnabled: false,
                       myLocationEnabled: true,
                       initialCameraPosition: mapStore!.initialCameraPosition!,
                       myLocationButtonEnabled: false,
-                      markers: mapStore!.getMarkerSet(),
-                      //mapStore!.markers.toSet(),
+                      markers: mapStore!.markers,
+                      onCameraIdle: mapStore!.clusterManager.updateMap ,
                       onMapCreated: (GoogleMapController controller) async {
                         _controller = controller;
                         LatLngBounds bounds =
                             await _controller.getVisibleRegion();
                         await mapStore!.getQuestsOnMap(bounds);
-                        mapStore!.createClusters().setMapId(controller.mapId);
+                        mapStore!.clusterManager.setMapId(controller.mapId);
                         _onMyLocationPressed();
-                      },
-                      onTap: (point) {
-                        if (mapStore!.infoPanel != InfoPanel.Nope)
-                          mapStore!.onCloseQuest();
                       },
                     ),
                     QuestQuickInfo(),
@@ -90,10 +85,10 @@ class _QuestMapState extends State<QuestMap> {
                 ),
               ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-        floatingActionButton: AnimatedContainer(
+        floatingActionButton: AnimatedPadding(
           padding: EdgeInsets.only(
             left: 25,
-            bottom: mapStore!.infoPanel != InfoPanel.Nope ? 324.0 : 0.0,
+            bottom: mapStore!.hideInfo ? 0.0 : 324.0,
           ),
           duration: const Duration(milliseconds: 300),
           curve: Curves.fastOutSlowIn,
@@ -110,11 +105,11 @@ class _QuestMapState extends State<QuestMap> {
               ),
               FloatingActionButton(
                 heroTag: "QuestMapRightActionButton",
-                onPressed: mapStore!.infoPanel == InfoPanel.Nope
+                onPressed: mapStore!.hideInfo
                     ? _onMyLocationPressed
-                    : mapStore!.onCloseQuest,
+                    : mapStore!.closeInfo,
                 child: Icon(
-                  mapStore!.infoPanel == InfoPanel.Nope
+                  mapStore!.hideInfo
                       ? Icons.location_on
                       : Icons.close,
                 ),
@@ -248,7 +243,6 @@ class _QuestMapState extends State<QuestMap> {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
-
       return false;
     }
 
@@ -261,7 +255,6 @@ class _QuestMapState extends State<QuestMap> {
         // Android's shouldShowRequestPermissionRationale
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
-
         return false;
       }
     }
@@ -270,10 +263,8 @@ class _QuestMapState extends State<QuestMap> {
       _requestPermissionDialog();
       return false;
     }
-
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-
     return true;
   }
 
