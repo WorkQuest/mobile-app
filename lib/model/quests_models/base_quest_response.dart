@@ -1,3 +1,4 @@
+import 'package:app/model/dispute_model.dart';
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/model/quests_models/your_review.dart';
@@ -32,6 +33,7 @@ class BaseQuestResponse with ClusterItem {
     required this.invited,
     required this.responded,
     required this.yourReview,
+    required this.questChat,
   });
 
   String id;
@@ -56,6 +58,7 @@ class BaseQuestResponse with ClusterItem {
   Invited? invited;
   Responded? responded;
   YourReview? yourReview;
+  QuestChat? questChat;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(

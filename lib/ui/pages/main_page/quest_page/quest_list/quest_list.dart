@@ -2,6 +2,7 @@ import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
@@ -30,6 +31,8 @@ class _QuestListState extends State<QuestList> {
 
   ProfileMeStore? profileMeStore;
 
+  FilterQuestsStore? filterQuestsStore;
+
   final QuestItemPriorityType questItemPriorityType =
       QuestItemPriorityType.Starred;
   final scrollKey = new GlobalKey();
@@ -39,6 +42,8 @@ class _QuestListState extends State<QuestList> {
     super.initState();
     controller = ScrollController()..addListener(_scrollListener);
     questsStore = context.read<QuestsStore>();
+    filterQuestsStore = context.read<FilterQuestsStore>();
+    filterQuestsStore!.getFilters([], {});
     profileMeStore = context.read<ProfileMeStore>();
     profileMeStore!.getProfileMe().then((value) {
       context.read<ChatStore>().initialSetup(
@@ -186,7 +191,8 @@ class _QuestListState extends State<QuestList> {
                   child: OutlinedButton(
                     onPressed: () async {
                       await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(FilterQuestsPage.routeName);
+                          .pushNamed(FilterQuestsPage.routeName,
+                              arguments: filterQuestsStore!.skillFilters);
                       // questsStore!.offset = 0;
                       // questsStore!.getQuests(true);
                     },

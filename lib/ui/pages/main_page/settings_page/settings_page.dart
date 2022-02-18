@@ -7,6 +7,8 @@ import 'package:app/ui/pages/main_page/settings_page/pages/profile_settings_page
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
+import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +26,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(context) {
     final settingStore = context.read<SettingsPageStore>();
     final userStore = context.read<ProfileMeStore>();
+    final chooseRoleStore = context.read<ChooseRoleStore>();
 
     return Scaffold(
       body: Observer(
@@ -128,15 +131,21 @@ class SettingsPage extends StatelessWidget {
 
                                 ///Change Role
                                 SettingsCard(
-                                  icon: GradientIcon(
-                                    SvgPicture.asset(
-                                      "assets/settings_role_icon.svg",
+                                    icon: GradientIcon(
+                                      SvgPicture.asset(
+                                        "assets/settings_role_icon.svg",
+                                      ),
+                                      20.0,
                                     ),
-                                    20.0,
-                                  ),
-                                  title: "settings.changeRole".tr(),
-                                  onTap: () {},
-                                ),
+                                    title: "settings.changeRole".tr(),
+                                    onTap: () {
+                                      chooseRoleStore.isChange = true;
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pushNamed(
+                                        ApproveRolePage.routeName,
+                                        arguments: chooseRoleStore,
+                                      );
+                                    }),
                               ],
                             ),
                           ),

@@ -247,28 +247,37 @@ extension QuestService on ApiProvider {
   }) async {
     String specialization = "";
     specializations.forEach((text) {
+      print(text);
       specialization += "specializations[]=$text&";
     });
     String status = "";
     statuses.forEach((text) {
+      print(text);
       status += "statuses[]=$text&";
     });
     String priorities = "";
     priority.forEach((text) {
+      print(text);
       priorities += "priorities[]=$text&";
     });
     String workplaces = "";
     workplace.forEach((text) {
+      print(text);
       workplaces += "workplaces[]=$text&";
     });
     String employments = "";
     employment.forEach((text) {
+      print(text);
       employments += "employments[]=$text&";
     });
-    final responseData = await httpClient.get(
-      query:
-          '/v1/quests?$workplaces$employments$status$specialization$priorities$sort',
-      queryParameters: {
+    final responseData = await httpClient.post(
+      query: '/v1/quests(payload)',
+      data: {
+        "workplaces": workplace,
+        "employments": employment,
+        "statuses": statuses,
+        "specializations": specializations,
+        "priorities": priority,
         "offset": offset,
         "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,

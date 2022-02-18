@@ -162,8 +162,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
       var message;
       if (json["type"] == "request") {
         message = MessageModel.fromJson(json["payload"]["result"]);
-      } else
-        if (json["message"]["action"] == "groupChatCreate") {
+      } else if (json["message"]["action"] == "groupChatCreate") {
         message = MessageModel.fromJson(json["message"]["data"]["lastMessage"]);
         setMessages(
             [MessageModel.fromJson(json["message"]["data"]["lastMessage"])],
@@ -253,17 +252,22 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   @action
   void checkMessage() {
-    chats.values.forEach((element) {
-      if (element.chatModel.lastMessage.senderStatus == "unread" &&
-          element.chatModel.lastMessage.senderUserId != this._myId) {
+    int i = 0;
+    unread = false;
+    while (i != chats.values.length && unread == false) {
+      if (chats.values.toList()[i].chatModel.lastMessage.senderStatus ==
+              "unread" &&
+          chats.values.toList()[i].chatModel.lastMessage.senderUserId !=
+              this._myId) {
         streamChatNotification!.sink.add(true);
         unread = true;
+        print("unread");
         return;
-      } else {
-        streamChatNotification!.sink.add(false);
-        unread = false;
       }
-    });
+      i++;
+    }
+    print("read");
+    streamChatNotification!.sink.add(false);
   }
 
   void initialStore() async {
@@ -295,6 +299,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
         // if (chats[chat.id]!.chatModel.star != null)
         //   starredChats.add(chats[chat.id]!);
       });
+      checkMessage();
       this.offset = chats.length;
       refresh = true;
       this.onSuccess(true);

@@ -1,6 +1,5 @@
 import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
-import 'package:app/routes.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,7 +16,7 @@ class ApproveRolePage extends StatelessWidget {
 
   static const String routeName = '/approveRolePage';
 
-  final String _baseUrl = "https://app-ver1.workquest.co/";
+  final String _baseUrl = "https://app.workquest.co/";
 
   @override
   Widget build(BuildContext ctx) {
@@ -35,9 +34,13 @@ class ApproveRolePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "role.yourRole".tr() +
-                      " ${store.userRole.toString().split(".").last} " +
-                      "role.right".tr(),
+                  !store.isChange
+                      ? "role.yourRole".tr() +
+                          " ${store.userRole.toString().split(".").last} " +
+                          "role.right".tr()
+                      : "role.change".tr() +
+                          " ${store.getRole()} " +
+                          "role.right".tr(),
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -47,9 +50,13 @@ class ApproveRolePage extends StatelessWidget {
                   height: 30,
                 ),
                 getCard(
-                  store.userRole == UserRole.Worker
-                      ? UserRole.Worker
-                      : UserRole.Employer,
+                  store.isChange
+                      ? store.userRole == UserRole.Worker
+                          ? UserRole.Employer
+                          : UserRole.Worker
+                      : store.userRole == UserRole.Worker
+                          ? UserRole.Worker
+                          : UserRole.Employer,
                 ),
                 CheckboxListTile(
                   contentPadding: const EdgeInsets.all(0),
@@ -95,6 +102,8 @@ class ApproveRolePage extends StatelessWidget {
                             //   getIt.get<CreateWalletStore>(),
                             //   CreateWalletPage(),
                             // );
+                            // !store.isChange
+                            // ?
                             Navigator.push(
                               ctx,
                               MaterialPageRoute(
@@ -105,6 +114,7 @@ class ApproveRolePage extends StatelessWidget {
                                 ),
                               ),
                             );
+                            // :;
 
                             //Navigator.pushNamed(ctx, PinCodePage.routeName);
                           }

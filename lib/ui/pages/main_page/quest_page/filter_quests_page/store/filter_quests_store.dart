@@ -318,22 +318,20 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     }
   }
 
-  void initSkillFiltersValue(ObservableMap<int, ObservableList<bool>> value) {
-    selectedSkillFilters = value;
-  }
+  // void initSkillFiltersValue(ObservableMap<int, ObservableList<bool>> value) {
+  //   selectedSkillFilters = value;
+  // }
 
   void clearFilters() {
     for (int i = 0; i < selectEmployment.length; i++)
       selectEmployment[i] = false;
 
-    for (int i = 0; i < selectEmployeeRating.length; i ++)
+    for (int i = 0; i < selectEmployeeRating.length; i++)
       selectEmployeeRating[i] = false;
 
-    for (int i = 0; i < selectWorkplace.length; i++)
-      selectWorkplace[i] = false;
+    for (int i = 0; i < selectWorkplace.length; i++) selectWorkplace[i] = false;
 
-    for (int i = 0; i < priority.length; i++)
-      priority[i] = false;
+    for (int i = 0; i < priority.length; i++) priority[i] = false;
   }
 
   @action
@@ -400,10 +398,12 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   @action
   void initSkillFilters(List<String> value) {
     for (int i = 1; i < skillFilters.keys.length + 2; i++) {
-      if (skillFilters[i] != null)
+      if (skillFilters[i] != null && i != 4)
         selectedSkillFilters[i - 1] = ObservableList.of(
             List.generate(skillFilters[i]!.length, (index) => false));
     }
+    selectedSkillFilters[3] = ObservableList.of(
+        List.generate(skillFilters[4]!.length + 1, (index) => false));
     value.forEach((element) {
       String skill = element.split(".")[1];
       if (skill.length == 3) skill = skill[1] + skill[2];
@@ -427,12 +427,18 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   Future getFilters(
       List<String> selectedSkills, Map<int, List<int>> value) async {
-    this.onLoading();
-    if (value.isEmpty)
-      skillFilters = await _apiProvider.getSkillFilters();
-    else
-      skillFilters = value;
-    initSkillFilters(selectedSkills);
-    this.onSuccess(true);
+    try {
+      this.onLoading();
+      if (value.isEmpty)
+        skillFilters = await _apiProvider.getSkillFilters();
+      else
+        skillFilters = value;
+      print(value.toString());
+      initSkillFilters(selectedSkills);
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+    }
   }
 }

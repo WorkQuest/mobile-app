@@ -189,6 +189,12 @@ class Routes {
                 create: (context) => getIt.get<SettingsPageStore>(),
               ),
               Provider(
+                create: (context) => getIt.get<FilterQuestsStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChooseRoleStore>(),
+              ),
+              Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
               Provider(
@@ -272,7 +278,8 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: FilterQuestsPage(),
+              child:
+                  FilterQuestsPage(settings.arguments as Map<int, List<int>>),
             ),
           ),
         );

@@ -20,6 +20,8 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   @observable
   bool _privacyPolicy = false;
 
+  bool isChange = false;
+
   @observable
   String _codeFromEmail = "";
 
@@ -31,6 +33,13 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
 
   @observable
   UserRole _userRole = UserRole.Employer;
+
+  String getRole() {
+    if (userRole == UserRole.Employer)
+      return UserRole.Worker.name;
+    else
+      return UserRole.Employer.name;
+  }
 
   @action
   void setCode(String value) => _codeFromEmail = value;
@@ -51,8 +60,15 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   Future approveRole() async {
     try {
       this.onLoading();
-      await _apiProvider
-          .setRole(_userRole == UserRole.Worker ? "worker" : "employer");
+      await _apiProvider.setRole(
+        isChange
+            ? _userRole == UserRole.Worker
+                ? "employer"
+                : "worker"
+            : _userRole == UserRole.Worker
+                ? "worker"
+                : "employer",
+      );
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
@@ -63,7 +79,8 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   Future confirmEmail() async {
     try {
       this.onLoading();
-      await _apiProvider.confirmEmail(code: _codeFromEmail.trim(),
+      await _apiProvider.confirmEmail(
+        code: _codeFromEmail.trim(),
       );
       this.onSuccess(true);
     } catch (e) {
