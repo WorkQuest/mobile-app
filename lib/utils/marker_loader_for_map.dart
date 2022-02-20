@@ -95,44 +95,32 @@ class MarkerLoader {
   }) async {
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
-    final double radius = size / 2;
     final Paint paint1 = Paint()..color = Colors.blueAccent;
     final Uint8List imageUint8List = await imageFile.readAsBytes();
     final ui.Codec codec = await ui.instantiateImageCodec(imageUint8List);
     final ui.FrameInfo imageFI = await codec.getNextFrame();
 
+    final center = Offset(40, 40);
 
-    final center = Offset(50, 50);
 
     // The circle should be paint before or it will be hidden by the path
-    Paint paintCircle = Paint()..color = Colors.black;
-    Paint paintBorder = Paint()
-      ..color = Colors.white
-      ..strokeWidth = size/36
-      ..style = PaintingStyle.stroke;
-    canvas.drawCircle(center, radius, paintCircle);
-    canvas.drawCircle(center, radius, paintBorder);
+    canvas.drawCircle(center, 40, paint1);
     //make canvas clip path to prevent image drawing over the circle
-    final Path clipPath = Path();
-    canvas.drawCircle(Offset(size / 2, size / 2), size * 2.0, paint1);
-    clipPath.addRRect(RRect.fromRectAndRadius(
-        Rect.fromLTWH(0, 0, size.toDouble(), size.toDouble()),
-        Radius.circular(100)));
-    clipPath.addRRect(RRect.fromRectAndRadius(
-        Rect.fromLTWH(size / 2.toDouble(), size + 20.toDouble(), 10, 10),
-        Radius.circular(100)));
+    final Path clipPath = Path()
+      ..addOval(Rect.fromCircle(radius: 30, center: center));
     canvas.clipPath(clipPath);
 
     //paintImage
     paintImage(
-        canvas: canvas,
-        rect: Rect.fromLTWH(0, 0, size.toDouble(), size.toDouble()),
-        image: imageFI.image,);
+      canvas: canvas,
+      rect: Rect.fromCircle(center:center, radius: 40),
+      image: imageFI.image,
+    );
 
     //convert canvas as PNG bytes
     final _image = await pictureRecorder
         .endRecording()
-        .toImage(size, (size * 1.1).toInt());
+        .toImage(size, size);
 
     //convert canvas as PNG bytes
     final data = await _image.toByteData(format: ui.ImageByteFormat.png);
