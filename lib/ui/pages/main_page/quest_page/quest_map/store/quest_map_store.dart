@@ -17,6 +17,7 @@ import 'package:mobx/mobx.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:easy_localization/easy_localization.dart';
+
 part 'quest_map_store.g.dart';
 
 @singleton
@@ -54,7 +55,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
 
   List<ProfileMeResponse> workersOnMap = [];
 
-  late final ClusterManager clusterManager;
+  late ClusterManager clusterManager;
 
   @observable
   Map<String, BaseQuestResponse> bufferQuests = {};
@@ -134,13 +135,13 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
       return ClusterManager<BaseQuestResponse>(questsOnMap, _updateMarkers,
           markerBuilder: questMarkerBuilder,
           levels: level,
-          extraPercent: 0.2,
-          stopClusteringZoom: 15.0);
+          extraPercent: 0.5,
+          stopClusteringZoom: 25.0);
     return ClusterManager<ProfileMeResponse>(workersOnMap, _updateMarkers,
         markerBuilder: workersMarkerBuilder,
         levels: level,
-        extraPercent: 0.2,
-        stopClusteringZoom: 15.0);
+        extraPercent: 0.5,
+        stopClusteringZoom: 25.0);
   }
 
   void _updateMarkers(Set<Marker> markers) {
@@ -180,13 +181,14 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
                 position: cluster.location,
                 onTap: () {
                   hideInfo = false;
-                  currentWorkerCluster = ObservableList.of(cluster.items.toList());
+                  currentWorkerCluster =
+                      ObservableList.of(cluster.items.toList());
                 },
                 icon: cluster.isMultiple
                     ? await MarkerLoader.getClusterMarkerBitmap(
                         cluster.count.toString())
-                    : BitmapDescriptor.defaultMarker
-                //markerLoader!.icons[cluster.items.toList()[0].priority],
-                );
+                    : await MarkerLoader.getMarkerImageFromUrl(
+                        cluster.items.toList()[0].avatar!.url,
+                        targetWidth: 10));
           };
 }

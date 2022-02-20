@@ -20,6 +20,8 @@ import '../../../../constants.dart';
 class SettingsPage extends StatelessWidget {
   static const String routeName = "/settingsPageEmployer";
 
+  final _spacer = SizedBox(width: 10.0);
+
   @override
   Widget build(context) {
     final settingStore = context.read<SettingsPageStore>();
@@ -81,9 +83,7 @@ class SettingsPage extends StatelessWidget {
                                   );
                                 },
                               ),
-                              const SizedBox(
-                                width: 10.0,
-                              ),
+                              _spacer,
 
                               ///2FA
                               SettingsCard(
@@ -122,9 +122,7 @@ class SettingsPage extends StatelessWidget {
                                     SMSVerificationPage.routeName,
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 10.0,
-                                ),
+                                _spacer,
 
                                 ///Change Role
                                 SettingsCard(
@@ -160,15 +158,7 @@ class SettingsPage extends StatelessWidget {
                                         .pushNamed(MyDisputesPage.routeName);
                                   },
                                 ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
+                                _spacer,
                                 ///Change Language
                                 SettingsCard(
                                   icon: GradientIcon(
