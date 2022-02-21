@@ -69,7 +69,7 @@ class _QuestMapState extends State<QuestMap> {
                       initialCameraPosition: mapStore!.initialCameraPosition!,
                       myLocationButtonEnabled: false,
                       markers: mapStore!.markers,
-                      onCameraIdle: mapStore!.clusterManager.updateMap ,
+                      onCameraIdle: mapStore!.clusterManager.updateMap,
                       onMapCreated: (GoogleMapController controller) async {
                         _controller = controller;
                         LatLngBounds bounds =
@@ -109,9 +109,7 @@ class _QuestMapState extends State<QuestMap> {
                     ? _onMyLocationPressed
                     : mapStore!.closeInfo,
                 child: Icon(
-                  mapStore!.hideInfo
-                      ? Icons.location_on
-                      : Icons.close,
+                  mapStore!.hideInfo ? Icons.location_on : Icons.close,
                 ),
               ),
             ],
