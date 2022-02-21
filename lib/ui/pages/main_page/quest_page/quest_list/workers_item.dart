@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class WorkersItem extends StatelessWidget {
-  const WorkersItem(this.workersInfo, this.questsStore);
+  const WorkersItem(this.workersInfo, this.questsStore,
+      {this.showRating = false});
 
   final ProfileMeResponse workersInfo;
   final QuestsStore questsStore;
+  final bool showRating;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +68,7 @@ class WorkersItem extends StatelessWidget {
                     ],
                   ),
                 ),
+                if(showRating)
                 Align(
                   alignment: Alignment.topRight,
                   child: Row(
@@ -75,13 +78,16 @@ class WorkersItem extends StatelessWidget {
                     children: [
                       Text(
                         "${workersInfo.ratingStatistic?.averageMark.toStringAsFixed(1) ?? 0.0}",
-                        style:
-                            TextStyle(fontWeight: FontWeight.w700, fontSize: 23),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 23),
                       ),
                       const SizedBox(
                         width: 5,
                       ),
-                      Icon(Icons.star,color: AppColor.star,)
+                      Icon(
+                        Icons.star,
+                        color: AppColor.star,
+                      )
                     ],
                   ),
                 )
