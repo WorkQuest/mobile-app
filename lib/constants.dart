@@ -20,6 +20,11 @@ class Constants {
     Color.fromRGBO(223, 51, 51, 1),
   ];
 
+  static const Map<String, WorkerBadge> workerRatingTag = {
+    "topRanked": WorkerBadge("GOLD PLUS", Color(0xFFF6CF00)),
+    "reliable": WorkerBadge("SILVER", Color(0xFFBBC0C7)),
+    "verified": WorkerBadge("BRONZE", Color(0xFFB79768)),
+  };
 }
 
 abstract class AppColor {
@@ -33,5 +38,11 @@ abstract class AppColor {
   static const disabledButton = Color(0xffF7F8FA);
   static const unselectedBottomIcon = Color(0xffAAB0B9);
   static const selectedBottomIcon = enabledButton;
+}
 
+class WorkerBadge {
+  final String title;
+  final Color color;
+
+  const WorkerBadge(this.title, this.color);
 }

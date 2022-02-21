@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
@@ -34,24 +35,27 @@ class WorkersItem extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.network(
-                        workersInfo.avatar!.url,
-                        width: 61,
-                        height: 61,
-                        fit: BoxFit.cover,
+                    Flexible(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Image.network(
+                          workersInfo.avatar!.url,
+                          width: 61,
+                          height: 61,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(
                       width: 15,
                     ),
-                    Column(
+                    Flexible(child:Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           workersInfo.firstName + " " + workersInfo.lastName,
-                          style: TextStyle(fontSize: 18),
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(
                           height: 5,
@@ -59,7 +63,13 @@ class WorkersItem extends StatelessWidget {
                         tagStatus(
                             workersInfo.ratingStatistic?.status ?? "noStatus"),
                       ],
-                    ),
+                    )),
+                    Flexible(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [Text("4.5"), Icon(Icons.star)],
+                      ),
+                    )
                   ],
                 ),
               ],
@@ -125,57 +135,19 @@ class WorkersItem extends StatelessWidget {
   }
 
   Widget tagStatus(String status) {
-    Widget returnWidget = Container();
-    switch (status) {
-      case "topRanked":
-        returnWidget = Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFF6CF00),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text(
-            "GOLD PLUS",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-            ),
-          ),
-        );
-        break;
-      case "reliable":
-        returnWidget = Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFBBC0C7),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text(
-            "SILVER",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-            ),
-          ),
-        );
-        break;
-      case "verified":
-        returnWidget = Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFB79768),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text(
-            "BRONZE",
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        );
-        break;
-    }
-    return returnWidget;
+    WorkerBadge? badge = Constants.workerRatingTag[status];
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      decoration: BoxDecoration(
+        color: badge?.color,
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        badge?.title ?? "",
+        style: TextStyle(
+            color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+      ),
+    );
   }
 
   Widget tagSkills(List<String> skills) {

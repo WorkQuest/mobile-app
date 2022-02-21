@@ -18,6 +18,8 @@ import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.
 import 'package:google_maps_webservice/places.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../../../constants.dart';
+
 part 'quest_map_store.g.dart';
 
 @singleton
@@ -189,6 +191,11 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
                         cluster.count.toString())
                     : await MarkerLoader.getMarkerImageFromUrl(
                         cluster.items.toList()[0].avatar!.url,
-                        targetWidth: 10));
+                        Constants
+                                .workerRatingTag[cluster.items
+                                    .toList()[0]
+                                    .ratingStatistic
+                                    ?.status]
+                                ?.color));
           };
 }

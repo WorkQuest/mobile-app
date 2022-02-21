@@ -57,8 +57,10 @@ class MarkerLoader {
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
     final Paint paint1 = Paint()..color = Colors.blueAccent;
-    final Paint paint2 = Paint()..color = Colors.white;
-    canvas.drawCircle(Offset(size / 2, size / 2), size / 2.0, paint1);
+    final Paint paint2 = Paint()
+      ..color = Colors.blueAccent
+      ..strokeWidth = 5
+      ..style = PaintingStyle.stroke;
     canvas.drawCircle(Offset(size / 2, size / 2), size / 2.2, paint2);
     canvas.drawCircle(Offset(size / 2, size / 2), size / 2.8, paint1);
 
@@ -82,49 +84,38 @@ class MarkerLoader {
   }
 
   static Future<BitmapDescriptor> getMarkerImageFromUrl(
-    String url, {
-    required int targetWidth,
-  }) async {
-    final File markerImageFile = await DefaultCacheManager().getSingleFile(url);
-    return convertImageFileToBitmapDescriptor(markerImageFile);
-  }
-
-  static Future<BitmapDescriptor> convertImageFileToBitmapDescriptor(
-    File imageFile, {
-    int size = 80,
-  }) async {
+      String url, Color? color) async {
+    final File imageFile = await DefaultCacheManager().getSingleFile(url);
+    final int size = 80;
+    final center = Offset(40, 40);
+    final transparent = Colors.transparent;
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
-    final Paint paint1 = Paint()..color = Colors.blueAccent;
+    final Paint paint1 = Paint()
+      ..color = color ?? transparent
+      ..strokeWidth = 5
+      ..style = PaintingStyle.stroke;
+    final Paint paint2 = Paint()..color = transparent;
     final Uint8List imageUint8List = await imageFile.readAsBytes();
     final ui.Codec codec = await ui.instantiateImageCodec(imageUint8List);
     final ui.FrameInfo imageFI = await codec.getNextFrame();
 
-    final center = Offset(40, 40);
-
-
     // The circle should be paint before or it will be hidden by the path
-    canvas.drawCircle(center, 40, paint1);
+    canvas.drawCircle(center, 37, paint1);
     //make canvas clip path to prevent image drawing over the circle
     final Path clipPath = Path()
       ..addOval(Rect.fromCircle(radius: 30, center: center));
     canvas.clipPath(clipPath);
-
     //paintImage
     paintImage(
       canvas: canvas,
-      rect: Rect.fromCircle(center:center, radius: 40),
+      rect: Rect.fromCircle(center: center, radius: 40),
       image: imageFI.image,
     );
-
     //convert canvas as PNG bytes
-    final _image = await pictureRecorder
-        .endRecording()
-        .toImage(size, size);
-
+    final _image = await pictureRecorder.endRecording().toImage(size, size);
     //convert canvas as PNG bytes
     final data = await _image.toByteData(format: ui.ImageByteFormat.png);
-
     //convert PNG bytes as BitmapDescriptor
     return BitmapDescriptor.fromBytes(data!.buffer.asUint8List());
   }
