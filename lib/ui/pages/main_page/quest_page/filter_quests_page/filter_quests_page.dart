@@ -31,7 +31,6 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     storeQuest = context.read<QuestsStore>();
     storeFilter!.getFilters(storeQuest.selectedSkill, widget.filters);
     // storeFilter!.initSkillFiltersValue(storeQuest.selectedSkillFilters);
-    print("TAG: ${storeFilter!.selectedSkillFilters.length}");
     storeFilter!.initEmployments(storeQuest.employments);
     storeFilter!.initRating(storeQuest.employeeRatings);
     storeFilter!.initWorkplace(storeQuest.workplaces);
@@ -106,12 +105,13 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                     list: storeFilter!.sortByEmployment,
                                     selected: storeFilter!.selectEmployment,
                                     onChange: (bool? value, int index) {
+                                      print("TAG");
+                                      print(value);
+                                      print(index);
                                       storeFilter!.setSelectedEmployment(
                                         value,
                                         index,
                                       );
-                                      storeFilter!.employment[index] =
-                                          value ?? false;
                                     },
                                   ),
                                   _checkButton(

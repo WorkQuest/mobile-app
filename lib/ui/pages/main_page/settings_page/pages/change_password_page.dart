@@ -74,14 +74,16 @@ class ChangePasswordPage extends StatelessWidget {
                                       if (_formKey.currentState?.validate() ??
                                           false) {
                                         await settingsStore.changePassword();
-                                        SuccessDialog();
-                                        Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pushNamedAndRemoveUntil(
-                                          SignInPage.routeName,
-                                          (route) => false,
-                                        );
-                                        Storage.deleteAllFromSecureStorage();
+                                        if (settingsStore.isSuccess) {
+                                          SuccessDialog();
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pushNamedAndRemoveUntil(
+                                            SignInPage.routeName,
+                                            (route) => false,
+                                          );
+                                          Storage.deleteAllFromSecureStorage();
+                                        }
                                       }
                                     }
                                   : null,

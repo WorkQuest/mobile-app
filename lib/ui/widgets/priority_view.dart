@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // 0 - low; 1 - normal; 2 - urgent
 class PriorityView extends StatelessWidget {
@@ -10,7 +11,7 @@ class PriorityView extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget returnWidget = Container();
     switch (priority) {
-      case 0:
+      case 1:
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(
@@ -18,24 +19,9 @@ class PriorityView extends StatelessWidget {
             borderRadius: BorderRadius.circular(3),
           ),
           child: Text(
-            "Low priority",
+            "priority.lowPriority".tr(),
             style: TextStyle(
               color: Color(0xFF22CC14),
-            ),
-          ),
-        );
-        break;
-      case 1:
-        returnWidget = Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFE8D20D).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text(
-            "Normal priority",
-            style: TextStyle(
-              color: Color(0xFFE8D20D),
             ),
           ),
         );
@@ -44,11 +30,26 @@ class PriorityView extends StatelessWidget {
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(
+            color: Color(0xFFE8D20D).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(3),
+          ),
+          child: Text(
+            "priority.normalPriority".tr(),
+            style: TextStyle(
+              color: Color(0xFFE8D20D),
+            ),
+          ),
+        );
+        break;
+      case 3:
+        returnWidget = Container(
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+          decoration: BoxDecoration(
             color: Color(0xFFDF3333).withOpacity(0.1),
             borderRadius: BorderRadius.circular(3),
           ),
           child: Text(
-            "Urgent ",
+            "priority.urgent".tr(),
             style: TextStyle(color: Color(0xFFDF3333)),
           ),
         );

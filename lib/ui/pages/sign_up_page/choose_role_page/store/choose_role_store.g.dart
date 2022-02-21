@@ -170,6 +170,17 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
       ActionController(name: '_ChooseRoleStore');
 
   @override
+  void setTotp(String value) {
+    final _$actionInfo = _$_ChooseRoleStoreActionController.startAction(
+        name: '_ChooseRoleStore.setTotp');
+    try {
+      return super.setTotp(value);
+    } finally {
+      _$_ChooseRoleStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setCode(String value) {
     final _$actionInfo = _$_ChooseRoleStoreActionController.startAction(
         name: '_ChooseRoleStore.setCode');

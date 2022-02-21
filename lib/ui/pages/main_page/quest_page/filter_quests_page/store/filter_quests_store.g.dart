@@ -32,21 +32,6 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     });
   }
 
-  final _$employmentAtom = Atom(name: 'FilterQuestsStoreBase.employment');
-
-  @override
-  ObservableList<bool> get employment {
-    _$employmentAtom.reportRead();
-    return super.employment;
-  }
-
-  @override
-  set employment(ObservableList<bool> value) {
-    _$employmentAtom.reportWrite(value, super.employment, () {
-      super.employment = value;
-    });
-  }
-
   final _$priorityAtom = Atom(name: 'FilterQuestsStoreBase.priority');
 
   @override
@@ -366,7 +351,6 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
   String toString() {
     return '''
 isLoading: ${isLoading},
-employment: ${employment},
 priority: ${priority},
 selectedSkillFilters: ${selectedSkillFilters},
 sortBy: ${sortBy},

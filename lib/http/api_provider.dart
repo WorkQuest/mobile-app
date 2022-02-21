@@ -112,7 +112,8 @@ extension QuestService on ApiProvider {
   }
 
   Future<List<BaseQuestResponse>> questMapPoints(
-      LatLngBounds bounds,) async {
+    LatLngBounds bounds,
+  ) async {
     final response = await httpClient.get(
       query: '/v1/quest/map/points'
               '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
@@ -127,25 +128,26 @@ extension QuestService on ApiProvider {
     //       '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
     //       'south[longitude]=${bounds.southwest.longitude.toString()}',
     // );
-      return List<BaseQuestResponse>.from(
-        response["quests"].map(
-          (x) => BaseQuestResponse.fromJson(x),
-        ),
-      );
+    return List<BaseQuestResponse>.from(
+      response["quests"].map(
+        (x) => BaseQuestResponse.fromJson(x),
+      ),
+    );
   }
 
   Future<List<ProfileMeResponse>> workerMapPoints(
-      LatLngBounds bounds,) async {
+    LatLngBounds bounds,
+  ) async {
     final response = await httpClient.get(
       query: '/v1/profile/worker/map/points'
-          '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
+              '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
           'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
           '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
           'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}',
     );
     return List<ProfileMeResponse>.from(
       response["users"].map(
-            (x) => ProfileMeResponse.fromJson(x),
+        (x) => ProfileMeResponse.fromJson(x),
       ),
     );
   }
@@ -289,11 +291,11 @@ extension QuestService on ApiProvider {
     final responseData = await httpClient.post(
       query: '/v1/quests(payload)',
       data: {
-        "workplaces": workplace,
-        "employments": employment,
-        "statuses": statuses,
-        "specializations": specializations,
-        "priorities": priority,
+        if (workplace.isNotEmpty) "workplaces": workplace,
+        if (employment.isNotEmpty) "employments": employment,
+        if (statuses.isNotEmpty) "statuses": statuses,
+        if (specializations.isNotEmpty) "specializations": specializations,
+        if (priority.isNotEmpty) "priorities": priority,
         "offset": offset,
         "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
