@@ -9,7 +9,6 @@ class WorkersItem extends StatelessWidget {
   const WorkersItem(this.workersInfo, this.questsStore);
 
   final ProfileMeResponse workersInfo;
-
   final QuestsStore questsStore;
 
   @override
@@ -29,49 +28,63 @@ class WorkersItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Flexible(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: Image.network(
-                          workersInfo.avatar!.url,
-                          width: 61,
-                          height: 61,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Flexible(child:Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          workersInfo.firstName + " " + workersInfo.lastName,
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w500),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        tagStatus(
-                            workersInfo.ratingStatistic?.status ?? "noStatus"),
-                      ],
-                    )),
-                    Flexible(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [Text("4.5"), Icon(Icons.star)],
-                      ),
-                    )
-                  ],
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Image.network(
+                    workersInfo.avatar!.url,
+                    width: 61,
+                    height: 61,
+                    fit: BoxFit.cover,
+                  ),
                 ),
+                const SizedBox(
+                  width: 15,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        workersInfo.firstName + " " + workersInfo.lastName,
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      tagStatus(
+                          workersInfo.ratingStatistic?.status ?? "noStatus"),
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "${workersInfo.ratingStatistic?.averageMark.toStringAsFixed(1) ?? 0.0}",
+                        style:
+                            TextStyle(fontWeight: FontWeight.w700, fontSize: 23),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Icon(Icons.star,color: AppColor.star,)
+                    ],
+                  ),
+                )
               ],
             ),
             const SizedBox(
@@ -145,7 +158,10 @@ class WorkersItem extends StatelessWidget {
       child: Text(
         badge?.title ?? "",
         style: TextStyle(
-            color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

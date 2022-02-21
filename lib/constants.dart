@@ -38,6 +38,7 @@ abstract class AppColor {
   static const disabledButton = Color(0xffF7F8FA);
   static const unselectedBottomIcon = Color(0xffAAB0B9);
   static const selectedBottomIcon = enabledButton;
+  static const star = Color(0xffE8D20D);
 }
 
 class WorkerBadge {

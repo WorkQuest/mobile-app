@@ -564,7 +564,7 @@ Widget workerRating({
   required String userId,
   required BuildContext context,
 }) {
-  final rating = ((averageRating * 10).round() / 10).toString();
+  final rating = averageRating.toStringAsFixed(1);
   final profile = context.read<ProfileMeStore>();
   return Padding(
     padding: const EdgeInsets.only(top: 20.0),
