@@ -61,6 +61,7 @@ import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import 'package:app/ui/pages/restore_password_page/store.dart';
+import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
 import 'package:app/ui/pages/start_page/start_page.dart';
 import 'package:app/ui/pages/start_page/store/start_store.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
@@ -189,6 +190,12 @@ class Routes {
                 create: (context) => getIt.get<SettingsPageStore>(),
               ),
               Provider(
+                create: (context) => getIt.get<FilterQuestsStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChooseRoleStore>(),
+              ),
+              Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
               Provider(
@@ -272,7 +279,8 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: FilterQuestsPage(),
+              child:
+                  FilterQuestsPage(settings.arguments as Map<int, List<int>>),
             ),
           ),
         );
@@ -418,6 +426,17 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChangeProfilePage(),
+            ),
+          ),
+        );
+
+      case EnterTotpPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChooseRoleStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: EnterTotpPage(),
             ),
           ),
         );

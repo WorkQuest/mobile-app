@@ -172,7 +172,9 @@
     "all": "All priorities",
     "low": "Fixed delivery",
     "normal": "Short term",
-    "urgent": "Urgent"
+    "urgent": "Urgent",
+    "lowPriority": "Low priority",
+    "normalPriority": "Normal priority"
   },
   "signIn": {
     "title": "Sign in",
@@ -239,6 +241,7 @@
     "workerWant": "I want to search a tasks and working on freelance",
     "chooseThis": "Select this role",
     "yourRole": "Your role is",
+    "change": "You want to change role on ",
     "right": "right?"
   },
   "privacy": {
@@ -887,6 +890,7 @@
     }
   },
   "modals": {
+    "enter2FaCode": "Enter TOTP",
     "exit": "Exit",
     "modals": {
       "title": "Create group chat",

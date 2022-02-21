@@ -376,12 +376,12 @@ class SignInPage extends StatelessWidget {
         ),
         onPressed: () async => await launch(
               link == "google"
-                  ? 'https://app-ver1.workquest.co/api/v1/auth/login/google/token'
+                  ? 'https://app.workquest.co/api/v1/auth/login/google/token'
                   : link == "twitter"
-                      ? 'https://app-ver1.workquest.co/api/v1/auth/login/twitter/token'
+                      ? 'https://app.workquest.co/api/v1/auth/login/twitter/token'
                       : link == "facebook"
-                          ? 'https://app-ver1.workquest.co/api/v1/auth/login/facebook/token'
-                          : 'https://app-ver1.workquest.co/api/v1/auth/login/linkedin/token',
+                          ? 'https://app.workquest.co/api/v1/auth/login/facebook/token'
+                          : 'https://app.workquest.co/api/v1/auth/login/linkedin/token',
               customTabsOption: CustomTabsOption(
                 toolbarColor: Theme.of(context).primaryColor,
                 enableDefaultShare: true,

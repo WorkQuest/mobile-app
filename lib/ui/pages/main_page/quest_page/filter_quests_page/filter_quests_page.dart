@@ -9,7 +9,9 @@ import 'package:mobx/mobx.dart';
 import "package:provider/provider.dart";
 
 class FilterQuestsPage extends StatefulWidget {
-  const FilterQuestsPage({Key? key}) : super(key: key);
+  const FilterQuestsPage(this.filters);
+
+  final Map<int, List<int>> filters;
   static const String routeName = '/filterQuestPage';
 
   @override
@@ -27,8 +29,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     storeFilter = context.read<FilterQuestsStore>();
     profile = context.read<ProfileMeStore>();
     storeQuest = context.read<QuestsStore>();
-    storeFilter!.getFilters(storeQuest.selectedSkill, storeQuest.skillFilters);
-    storeFilter!.initSkillFiltersValue(storeQuest.selectedSkillFilters);
+    storeFilter!.getFilters(storeQuest.selectedSkill, widget.filters);
+    // storeFilter!.initSkillFiltersValue(storeQuest.selectedSkillFilters);
     storeFilter!.initEmployments(storeQuest.employments);
     storeFilter!.initRating(storeQuest.employeeRatings);
     storeFilter!.initWorkplace(storeQuest.workplaces);
@@ -41,7 +43,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     super.build(context);
     return Scaffold(
       persistentFooterButtons: [
-        bottomButtons()
+        bottomButtons(),
       ],
       appBar: AppBar(
         title: Text(
@@ -103,12 +105,13 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                     list: storeFilter!.sortByEmployment,
                                     selected: storeFilter!.selectEmployment,
                                     onChange: (bool? value, int index) {
+                                      print("TAG");
+                                      print(value);
+                                      print(index);
                                       storeFilter!.setSelectedEmployment(
                                         value,
                                         index,
                                       );
-                                      storeFilter!.employment[index] =
-                                          value ?? false;
                                     },
                                   ),
                                   _checkButton(
@@ -207,7 +210,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
             ),
             OutlinedButton(
               onPressed: () {
-                 storeQuest.clearFilters();
+                storeQuest.clearFilters();
                 storeFilter!.clearFilters();
                 profile!.userData!.role == UserRole.Employer
                     ? storeQuest.getWorkers(true)
@@ -316,12 +319,15 @@ class _ExpansionCellState extends State<ExpansionCell> {
       children: <Widget>[
         Observer(
           builder: (_) => ExpansionTile(
-            collapsedBackgroundColor: widget
-                    .storeFilter.selectedSkillFilters[widget.index - 1]!
-                    .firstWhere((element) => element == true,
-                        orElse: () => false)
-                ? Color(0xFF0083C7).withOpacity(0.1)
-                : Colors.white,
+            collapsedBackgroundColor:
+                widget.storeFilter.selectedSkillFilters[widget.index - 1] !=
+                        null
+                    ? widget.storeFilter.selectedSkillFilters[widget.index - 1]!
+                            .firstWhere((element) => element == true,
+                                orElse: () => false)
+                        ? Color(0xFF0083C7).withOpacity(0.1)
+                        : Colors.white
+                    : Colors.white,
             maintainState: true,
             title: Text(
               "filters.items.${widget.index}.title".tr(),

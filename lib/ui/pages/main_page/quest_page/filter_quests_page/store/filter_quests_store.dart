@@ -23,11 +23,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   Map<int, List<int>> skillFilters = {};
 
   @observable
-  ObservableList<bool> employment = ObservableList.of(
-    List.generate(4, (index) => false),
-  );
-
-  @observable
   ObservableList<bool> priority = ObservableList.of(
     List.generate(4, (index) => false),
   );
@@ -107,28 +102,28 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
       ObservableList.of(List.generate(3, (index) => false));
 
   List<String> getEmploymentValue() {
-    if (employment[0] == true) {
+    if (selectEmployment[0] == true) {
       employmentValue.clear();
       employmentValue.add("fullTime");
       employmentValue.add("partTime");
       employmentValue.add("fixedTerm");
       return employmentValue;
-    } else if (employment[0] == false) {
+    } else if (selectEmployment[0] == false) {
       employmentValue.clear();
     }
-    if (employment[1] == true) {
+    if (selectEmployment[1] == true) {
       employmentValue.add("fullTime");
-    } else if (employment[1] == false) {
+    } else if (selectEmployment[1] == false) {
       employmentValue.remove("fullTime");
     }
-    if (employment[2] == true) {
+    if (selectEmployment[2] == true) {
       employmentValue.add("partTime");
-    } else if (employment[2] == false) {
+    } else if (selectEmployment[2] == false) {
       employmentValue.remove("partTime");
     }
-    if (employment[3] == true) {
+    if (selectEmployment[3] == true) {
       employmentValue.add("fixedTerm");
-    } else if (employment[3] == false) {
+    } else if (selectEmployment[3] == false) {
       employmentValue.remove("fixedTerm");
     }
     return employmentValue;
@@ -140,9 +135,9 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     } else if (priority[0] == false) {
       priorityValue.remove(0);
     }
-    if (priority[1] == true) {
+    if (priority[3] == true) {
       priorityValue.add(1);
-    } else if (priority[1] == false) {
+    } else if (priority[3] == false) {
       priorityValue.remove(1);
     }
     if (priority[2] == true) {
@@ -150,9 +145,9 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     } else if (priority[2] == false) {
       priorityValue.remove(2);
     }
-    if (priority[3] == true) {
+    if (priority[1] == true) {
       priorityValue.add(3);
-    } else if (priority[3] == false) {
+    } else if (priority[1] == false) {
       priorityValue.remove(3);
     }
     return priorityValue;
@@ -309,6 +304,7 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
         selectEmployment[3] = value ?? false;
         break;
     }
+
     for (int i = 1; i < selectEmployment.length; i++) {
       if (selectEmployment[i] == false) {
         selectEmployment[0] = false;
@@ -318,22 +314,20 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     }
   }
 
-  void initSkillFiltersValue(ObservableMap<int, ObservableList<bool>> value) {
-    selectedSkillFilters = value;
-  }
+  // void initSkillFiltersValue(ObservableMap<int, ObservableList<bool>> value) {
+  //   selectedSkillFilters = value;
+  // }
 
   void clearFilters() {
     for (int i = 0; i < selectEmployment.length; i++)
       selectEmployment[i] = false;
 
-    for (int i = 0; i < selectEmployeeRating.length; i ++)
+    for (int i = 0; i < selectEmployeeRating.length; i++)
       selectEmployeeRating[i] = false;
 
-    for (int i = 0; i < selectWorkplace.length; i++)
-      selectWorkplace[i] = false;
+    for (int i = 0; i < selectWorkplace.length; i++) selectWorkplace[i] = false;
 
-    for (int i = 0; i < priority.length; i++)
-      priority[i] = false;
+    for (int i = 0; i < priority.length; i++) priority[i] = false;
   }
 
   @action
@@ -383,9 +377,9 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
         priority[3] = true;
         return;
       }
-      if (element == 1) priority[1] = true;
+      if (element == 1) priority[3] = true;
       if (element == 2) priority[2] = true;
-      if (element == 3) priority[3] = true;
+      if (element == 3) priority[1] = true;
     });
   }
 
@@ -400,10 +394,12 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   @action
   void initSkillFilters(List<String> value) {
     for (int i = 1; i < skillFilters.keys.length + 2; i++) {
-      if (skillFilters[i] != null)
+      if (skillFilters[i] != null && i != 4)
         selectedSkillFilters[i - 1] = ObservableList.of(
             List.generate(skillFilters[i]!.length, (index) => false));
     }
+    selectedSkillFilters[3] = ObservableList.of(
+        List.generate(skillFilters[4]!.length + 1, (index) => false));
     value.forEach((element) {
       String skill = element.split(".")[1];
       if (skill.length == 3) skill = skill[1] + skill[2];
@@ -427,12 +423,17 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   Future getFilters(
       List<String> selectedSkills, Map<int, List<int>> value) async {
-    this.onLoading();
-    if (value.isEmpty)
-      skillFilters = await _apiProvider.getSkillFilters();
-    else
-      skillFilters = value;
-    initSkillFilters(selectedSkills);
-    this.onSuccess(true);
+    try {
+      this.onLoading();
+      if (value.isEmpty)
+        skillFilters = await _apiProvider.getSkillFilters();
+      else
+        skillFilters = value;
+      initSkillFilters(selectedSkills);
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+    }
   }
 }

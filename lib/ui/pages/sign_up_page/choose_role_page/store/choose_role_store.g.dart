@@ -67,6 +67,21 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     });
   }
 
+  final _$totpAtom = Atom(name: '_ChooseRoleStore.totp');
+
+  @override
+  String get totp {
+    _$totpAtom.reportRead();
+    return super.totp;
+  }
+
+  @override
+  set totp(String value) {
+    _$totpAtom.reportWrite(value, super.totp, () {
+      super.totp = value;
+    });
+  }
+
   final _$_codeFromEmailAtom = Atom(name: '_ChooseRoleStore._codeFromEmail');
 
   @override
@@ -136,6 +151,13 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     return _$approveRoleAsyncAction.run(() => super.approveRole());
   }
 
+  final _$changeRoleAsyncAction = AsyncAction('_ChooseRoleStore.changeRole');
+
+  @override
+  Future<dynamic> changeRole() {
+    return _$changeRoleAsyncAction.run(() => super.changeRole());
+  }
+
   final _$confirmEmailAsyncAction =
       AsyncAction('_ChooseRoleStore.confirmEmail');
 
@@ -146,6 +168,17 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
 
   final _$_ChooseRoleStoreActionController =
       ActionController(name: '_ChooseRoleStore');
+
+  @override
+  void setTotp(String value) {
+    final _$actionInfo = _$_ChooseRoleStoreActionController.startAction(
+        name: '_ChooseRoleStore.setTotp');
+    try {
+      return super.setTotp(value);
+    } finally {
+      _$_ChooseRoleStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setCode(String value) {
@@ -205,6 +238,7 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   @override
   String toString() {
     return '''
+totp: ${totp},
 canSubmitCode: ${canSubmitCode},
 privacyPolicy: ${privacyPolicy},
 termsAndConditions: ${termsAndConditions},

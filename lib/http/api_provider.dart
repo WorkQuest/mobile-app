@@ -112,7 +112,8 @@ extension QuestService on ApiProvider {
   }
 
   Future<List<BaseQuestResponse>> questMapPoints(
-      LatLngBounds bounds,) async {
+    LatLngBounds bounds,
+  ) async {
     final response = await httpClient.get(
       query: '/v1/quest/map/points'
               '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
@@ -127,25 +128,26 @@ extension QuestService on ApiProvider {
     //       '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
     //       'south[longitude]=${bounds.southwest.longitude.toString()}',
     // );
-      return List<BaseQuestResponse>.from(
-        response["quests"].map(
-          (x) => BaseQuestResponse.fromJson(x),
-        ),
-      );
+    return List<BaseQuestResponse>.from(
+      response["quests"].map(
+        (x) => BaseQuestResponse.fromJson(x),
+      ),
+    );
   }
 
   Future<List<ProfileMeResponse>> workerMapPoints(
-      LatLngBounds bounds,) async {
+    LatLngBounds bounds,
+  ) async {
     final response = await httpClient.get(
       query: '/v1/profile/worker/map/points'
-          '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
+              '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
           'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
           '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
           'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}',
     );
     return List<ProfileMeResponse>.from(
       response["users"].map(
-            (x) => ProfileMeResponse.fromJson(x),
+        (x) => ProfileMeResponse.fromJson(x),
       ),
     );
   }
@@ -263,28 +265,37 @@ extension QuestService on ApiProvider {
   }) async {
     String specialization = "";
     specializations.forEach((text) {
+      print(text);
       specialization += "specializations[]=$text&";
     });
     String status = "";
     statuses.forEach((text) {
+      print(text);
       status += "statuses[]=$text&";
     });
     String priorities = "";
     priority.forEach((text) {
+      print(text);
       priorities += "priorities[]=$text&";
     });
     String workplaces = "";
     workplace.forEach((text) {
+      print(text);
       workplaces += "workplaces[]=$text&";
     });
     String employments = "";
     employment.forEach((text) {
+      print(text);
       employments += "employments[]=$text&";
     });
-    final responseData = await httpClient.get(
-      query:
-          '/v1/quests?$workplaces$employments$status$specialization$priorities$sort',
-      queryParameters: {
+    final responseData = await httpClient.post(
+      query: '/v1/quests(payload)',
+      data: {
+        if (workplace.isNotEmpty) "workplaces": workplace,
+        if (employment.isNotEmpty) "employments": employment,
+        if (statuses.isNotEmpty) "statuses": statuses,
+        if (specializations.isNotEmpty) "specializations": specializations,
+        if (priority.isNotEmpty) "priorities": priority,
         "offset": offset,
         "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
@@ -697,6 +708,19 @@ extension SetRoleService on ApiProvider {
         "role": role,
       },
     );
+  }
+
+  Future<void> changeRole(String totp) async {
+    try {
+      await httpClient.put(
+        query: '/v1/profile/change-role',
+        data: {
+          "totp": totp,
+        },
+      );
+    } catch (e) {
+      throw Exception(e.toString());
+    }
   }
 }
 
