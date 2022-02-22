@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
@@ -5,11 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class WorkersItem extends StatelessWidget {
-  const WorkersItem(this.workersInfo, this.questsStore);
+  const WorkersItem(this.workersInfo, this.questsStore,
+      {this.showRating = false});
 
   final ProfileMeResponse workersInfo;
-
   final QuestsStore questsStore;
+  final bool showRating;
 
   @override
   Widget build(BuildContext context) {
@@ -28,40 +30,67 @@ class WorkersItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.network(
-                        workersInfo.avatar!.url,
-                        width: 61,
-                        height: 61,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          workersInfo.firstName + " " + workersInfo.lastName,
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        tagStatus(
-                            workersInfo.ratingStatistic?.status ?? "noStatus"),
-                      ],
-                    ),
-                  ],
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Image.network(
+                    workersInfo.avatar!.url,
+                    width: 61,
+                    height: 61,
+                    fit: BoxFit.cover,
+                  ),
                 ),
+                const SizedBox(
+                  width: 15,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        workersInfo.firstName + " " + workersInfo.lastName,
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      tagStatus(
+                          workersInfo.ratingStatistic?.status ?? "noStatus"),
+                    ],
+                  ),
+                ),
+                if(showRating)
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "${workersInfo.ratingStatistic?.averageMark.toStringAsFixed(1) ?? 0.0}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 23),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Icon(
+                        Icons.star,
+                        color: AppColor.star,
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
             const SizedBox(
@@ -125,57 +154,22 @@ class WorkersItem extends StatelessWidget {
   }
 
   Widget tagStatus(String status) {
-    Widget returnWidget = Container();
-    switch (status) {
-      case "topRanked":
-        returnWidget = Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFF6CF00),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text(
-            "GOLD PLUS",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-            ),
-          ),
-        );
-        break;
-      case "reliable":
-        returnWidget = Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFBBC0C7),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text(
-            "SILVER",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-            ),
-          ),
-        );
-        break;
-      case "verified":
-        returnWidget = Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFB79768),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text(
-            "BRONZE",
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        );
-        break;
-    }
-    return returnWidget;
+    WorkerBadge? badge = Constants.workerRatingTag[status];
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      decoration: BoxDecoration(
+        color: badge?.color,
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        badge?.title ?? "",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
   }
 
   Widget tagSkills(List<String> skills) {

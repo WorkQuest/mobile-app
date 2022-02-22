@@ -41,6 +41,7 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
               return WorkersItem(
                 mapStore.currentWorkerCluster[index],
                 context.read<QuestsStore>(),
+                showRating: true,
               );
             }),
       ),
