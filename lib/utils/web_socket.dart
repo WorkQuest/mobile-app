@@ -27,7 +27,7 @@ class WebSocket {
   void connect() async {
     shouldReconnectFlag = true;
     _channels = {
-      "": IOWebSocketChannel.connect(_channelSender),
+      // "": IOWebSocketChannel.connect(_channelSender),
       "/notifications/chat": IOWebSocketChannel.connect(_channelListener),
     };
     _counter = 0;

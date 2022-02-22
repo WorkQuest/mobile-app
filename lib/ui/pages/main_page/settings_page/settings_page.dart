@@ -129,21 +129,26 @@ class SettingsPage extends StatelessWidget {
 
                                 ///Change Role
                                 SettingsCard(
-                                    icon: GradientIcon(
-                                      SvgPicture.asset(
-                                        "assets/settings_role_icon.svg",
-                                      ),
-                                      20.0,
+                                  icon: GradientIcon(
+                                    SvgPicture.asset(
+                                      "assets/settings_role_icon.svg",
                                     ),
-                                    title: "settings.changeRole".tr(),
-                                    onTap: () {
-                                      chooseRoleStore.isChange = true;
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pushNamed(
-                                        ApproveRolePage.routeName,
-                                        arguments: chooseRoleStore,
-                                      );
-                                    }),
+                                    20.0,
+                                  ),
+                                  title: "settings.changeRole".tr(),
+                                  onTap:
+                                      userStore.userData?.isTotpActive == true
+                                          ? () {
+                                              chooseRoleStore.isChange = true;
+                                              Navigator.of(context,
+                                                      rootNavigator: true)
+                                                  .pushNamed(
+                                                ApproveRolePage.routeName,
+                                                arguments: chooseRoleStore,
+                                              );
+                                            }
+                                          : () {},
+                                ),
                               ],
                             ),
                           ),
@@ -168,6 +173,7 @@ class SettingsPage extends StatelessWidget {
                                   },
                                 ),
                                 _spacer,
+
                                 ///Change Language
                                 SettingsCard(
                                   icon: GradientIcon(

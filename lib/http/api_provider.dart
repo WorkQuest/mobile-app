@@ -288,18 +288,19 @@ extension QuestService on ApiProvider {
       print(text);
       employments += "employments[]=$text&";
     });
-    final responseData = await httpClient.post(
-      query: '/v1/quests(payload)',
-      data: {
-        if (workplace.isNotEmpty) "workplaces": workplace,
-        if (employment.isNotEmpty) "employments": employment,
-        if (statuses.isNotEmpty) "statuses": statuses,
-        if (specializations.isNotEmpty) "specializations": specializations,
-        if (priority.isNotEmpty) "priorities": priority,
+    final responseData = await httpClient.get(
+      query:
+          '/v1/quests?$workplaces$employments$status$specialization$priorities',
+      queryParameters: {
+        // if (workplace.isNotEmpty) "workplaces": workplaces,
+        // if (employment.isNotEmpty) "employments": employments,
+        // if (statuses.isNotEmpty) "statuses": status,
+        // if (specializations.isNotEmpty) "specializations": specialization,
+        // if (priority.isNotEmpty) "priorities": priorities,
+        // "sort": sort,
         "offset": offset,
         "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
-        // if (sort.isNotEmpty) "sort": sort,
         if (invited != null) "invited": invited,
         if (performing != null) "performing": performing,
         if (starred != null) "starred": starred,

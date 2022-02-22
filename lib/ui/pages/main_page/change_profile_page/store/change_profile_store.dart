@@ -92,7 +92,7 @@ abstract class ChangeProfileStoreBase with Store {
   }
 
   bool numberChanged(Phone phone){
-    if (this.userData.phone != phone) return true;
+    if ((this.userData.tempPhone ?? this.userData.phone) != phone) return true;
     return false;
   }
 

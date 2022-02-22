@@ -1,4 +1,5 @@
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
+import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +57,8 @@ class EnterTotpPage extends StatelessWidget {
                               Navigator.pop(context);
                               Navigator.pop(context);
                             }
+                            else
+                              await errorAlert(context, "Wrong code");
                           }
                         : null,
                     child: store.isLoading

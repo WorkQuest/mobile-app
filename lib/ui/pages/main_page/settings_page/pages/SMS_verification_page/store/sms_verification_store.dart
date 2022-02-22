@@ -61,6 +61,7 @@ abstract class _SMSVerificationStore extends IStore<bool> with Store {
       );
       this.onSuccess(true);
     } catch (e) {
+      print("ERROR: $e");
       this.onError(e.toString());
     }
   }

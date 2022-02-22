@@ -23,7 +23,16 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   @observable
   RespondModel? selectedResponders;
 
+  @observable
+  bool isValid = false;
+
+  @observable
+  String totp = "";
+
   Observable<BaseQuestResponse?> quest = Observable(null);
+
+  @action
+  setTotp(String value) => totp = value;
 
   @action
   getRespondedList(String id, String idWorker) async {
@@ -90,6 +99,22 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       this.onSuccess(true);
     } catch (e, trace) {
       print("accept error: $e\n$trace");
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future<void> validateTotp() async {
+    try {
+      this.onLoading();
+      isValid = await _apiProvider.validateTotp(totp: totp);
+      print("valid: $isValid");
+      if (isValid == false) {
+        this.onError("Invalid TOTP");
+        return;
+      }
+      this.onSuccess(true);
+    } catch (e) {
       this.onError(e.toString());
     }
   }

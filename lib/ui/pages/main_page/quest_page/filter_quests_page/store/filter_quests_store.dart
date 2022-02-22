@@ -130,6 +130,7 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   }
 
   List<int> getPriorityValue() {
+    priorityValue.clear();
     if (priority[0] == true) {
       priorityValue.add(0);
     } else if (priority[0] == false) {

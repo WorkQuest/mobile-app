@@ -557,7 +557,11 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
       if (pageStore.numberChanged(profile!.userData!.phone))
         await profile!.submitPhoneNumber();
       if (profile!.isSuccess) {
-        await AlertDialogUtils.showSuccessDialog(context);
+        if (!pageStore.numberChanged(profile!.userData!.phone))
+          await AlertDialogUtils.showSuccessDialog(context);
+        else
+          await AlertDialogUtils.showSuccessDialog(context,
+              text: 'Enter code from SMS in SMS Verification');
         Navigator.pop(context);
       }
     }
