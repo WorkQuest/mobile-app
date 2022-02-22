@@ -194,6 +194,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             ),
             inputBody(
               title: "signUp.email".tr(),
+              readOnly: true,
               initialValue: pageStore.userData.email ?? "",
               onChanged: (text) => pageStore.userData.email,
               validator: Validators.emailValidator,
@@ -418,6 +419,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     required String initialValue,
     required void Function(String)? onChanged,
     required String? Function(String?) validator,
+    bool readOnly = false,
     int? maxLines = 1,
   }) {
     return Column(
@@ -428,6 +430,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
         TextFormField(
           initialValue: initialValue,
           maxLines: maxLines,
+          readOnly: readOnly,
           onChanged: onChanged,
           validator: validator,
           decoration: InputDecoration(

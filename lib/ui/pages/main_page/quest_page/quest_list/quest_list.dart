@@ -129,58 +129,17 @@ class _QuestListState extends State<QuestList> {
             ),
           ),
           SliverAppBar(
-            pinned: true,
-            title: GestureDetector(
-              onTap: () {
-                questsStore!.getPrediction(context, role!);
-              },
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Color(0xFFF7F8FA),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6.0),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Icon(
+              pinned: true,
+              title: TextFormField(
+                onChanged: questsStore!.setSearchWord,
+                decoration: InputDecoration(
+                    fillColor: Color(0xFFF7F8FA),
+                    hintText: "Employer / Title / Description",
+                    prefixIcon: Icon(
                       Icons.search,
                       size: 25.0,
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Flexible(
-                      child: questsStore!.locationPlaceName.isEmpty
-                          ? Text(
-                              "quests.ui.search".tr(),
-                              style: TextStyle(
-                                color: Color(
-                                  0xFFD8DFE3,
-                                ),
-                                fontSize: 16,
-                              ),
-                              overflow: TextOverflow.fade,
-                            )
-                          : Text(
-                              questsStore!.locationPlaceName,
-                              overflow: TextOverflow.fade,
-                              style: TextStyle(
-                                color: Color(0xFF1D2127),
-                                fontSize: 16,
-                                height: 1,
-                              ),
-                            ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+                    )),
+              )),
           SliverList(
             delegate: SliverChildListDelegate(
               [
