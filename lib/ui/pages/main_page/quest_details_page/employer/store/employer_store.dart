@@ -108,7 +108,6 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       isValid = await _apiProvider.validateTotp(totp: totp);
-      print("valid: $isValid");
       if (isValid == false) {
         this.onError("Invalid TOTP");
         return;

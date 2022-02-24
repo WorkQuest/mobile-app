@@ -10,6 +10,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -136,18 +137,50 @@ class SettingsPage extends StatelessWidget {
                                     20.0,
                                   ),
                                   title: "settings.changeRole".tr(),
-                                  onTap:
-                                      userStore.userData?.isTotpActive == true
-                                          ? () {
-                                              chooseRoleStore.isChange = true;
-                                              Navigator.of(context,
-                                                      rootNavigator: true)
-                                                  .pushNamed(
-                                                ApproveRolePage.routeName,
-                                                arguments: chooseRoleStore,
-                                              );
-                                            }
-                                          : () {},
+                                  onTap: userStore.userData?.isTotpActive ==
+                                          true
+                                      ? () {
+                                          if (userStore.userData!
+                                                  .questsStatistic!.opened !=
+                                              0) {
+                                            AlertDialogUtils.showAlertDialog(
+                                              context,
+                                              title: Text("Warning"),
+                                              content: Text(
+                                                "There are active quests",
+                                              ),
+                                              needCancel: false,
+                                              titleCancel: null,
+                                              titleOk: "Ok",
+                                              onTabCancel: null,
+                                              onTabOk: null,
+                                              colorCancel: null,
+                                              colorOk: Colors.blue,
+                                            );
+                                          } else {
+                                            chooseRoleStore.isChange = true;
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pushNamed(
+                                              ApproveRolePage.routeName,
+                                              arguments: chooseRoleStore,
+                                            );
+                                          }
+                                        }
+                                      : () {
+                                          AlertDialogUtils.showAlertDialog(
+                                            context,
+                                            title: Text("Warning"),
+                                            content: Text("2FA disabled"),
+                                            needCancel: false,
+                                            titleCancel: null,
+                                            titleOk: "Ok",
+                                            onTabCancel: null,
+                                            onTabOk: null,
+                                            colorCancel: null,
+                                            colorOk: Colors.blue,
+                                          );
+                                        },
                                 ),
                               ],
                             ),

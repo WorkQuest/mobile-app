@@ -36,7 +36,7 @@ class ProfileMeResponse with ClusterItem {
   String firstName;
   String lastName;
 
-  Phone phone;
+  Phone? phone;
   Phone? tempPhone;
   String? email;
   AdditionalInfo? additionalInfo;
@@ -93,16 +93,15 @@ class ProfileMeResponse with ClusterItem {
       avatarId: json["avatarId"] ?? "",
       firstName: json["firstName"] ?? "",
       lastName: json["lastName"] ?? "",
-      phone: Phone.fromJson(
-        json["phone"] ??
+      phone: json["phone"] == null ? null : Phone.fromJson(json["phone"]),
+      tempPhone: Phone.fromJson(
+        json["tempPhone"] ??
             {
               "codeRegion": "",
               "fullPhone": "",
               "phone": "",
             },
       ),
-      tempPhone:
-          json["tempPhone"] == null ? null : Phone.fromJson(json["tempPhone"]),
       email: json["email"],
       additionalInfo: json["additionalInfo"] == null
           ? null
@@ -171,7 +170,8 @@ class ProfileMeResponse with ClusterItem {
 
   @override
   // TODO: implement location
-  LatLng get location => LatLng(locationCode!.latitude, locationCode!.longitude);
+  LatLng get location =>
+      LatLng(locationCode!.latitude, locationCode!.longitude);
 }
 
 class QuestsStatistic {

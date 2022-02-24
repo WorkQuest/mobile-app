@@ -26,6 +26,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   _QuestsStore(this._apiProvider);
 
+  UserRole role = UserRole.Worker;
+
   @observable
   String searchWord = "";
 
@@ -58,10 +60,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   ObservableList<ProfileMeResponse> workersList = ObservableList.of([]);
 
   @observable
-  List<BaseQuestResponse>? searchResultList = [];
+  ObservableList<BaseQuestResponse> searchResultList = ObservableList.of([]);
 
   @observable
-  List<ProfileMeResponse>? searchWorkersList = [];
+  ObservableList<ProfileMeResponse> searchWorkersList = ObservableList.of([]);
 
   @observable
   ObservableList<BaseQuestResponse> loadQuestsList = ObservableList.of([]);
@@ -191,27 +193,54 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   void setSearchWord(String value) {
+    role == UserRole.Worker
+        ? searchResultList.clear()
+        : searchWorkersList.clear();
+    this.offset = 0;
     searchWord = value.trim();
     if (debounce != null) {
       debounce!.cancel();
       this.onSuccess(true);
     }
-    if (searchWord.length > 2) getSearchedQuests();
+    if (searchWord.length > 2)
+      role == UserRole.Worker ? getSearchedQuests() : getSearchedWorkers();
   }
 
   @computed
   bool get emptySearch =>
-      searchWord.length > 2 && searchResultList!.isEmpty && !this.isLoading;
+      searchWord.length > 2 &&
+      searchResultList.isEmpty &&
+      searchWorkersList.isEmpty &&
+      !this.isLoading;
 
   @action
   Future getSearchedQuests() async {
-    this.onLoading();
-    debounce = Timer(const Duration(milliseconds: 300), () async {
-      final searchResultList = await _apiProvider.getQuests(
-        searchWord: this.searchWord,
-      );
-      this.onSuccess(true);
-    });
+    if (this.offset == searchResultList.length) {
+      this.onLoading();
+      debounce = Timer(const Duration(milliseconds: 300), () async {
+        searchResultList.addAll(await _apiProvider.getQuests(
+          searchWord: this.searchWord,
+          offset: this.offset,
+        ));
+        this.onSuccess(true);
+      });
+      this.offset += 10;
+    }
+  }
+
+  @action
+  Future getSearchedWorkers() async {
+    if (this.offset == searchResultList.length) {
+      this.onLoading();
+      debounce = Timer(const Duration(milliseconds: 300), () async {
+        searchWorkersList.addAll(await _apiProvider.getWorkers(
+          searchWord: this.searchWord,
+          offset: this.offset,
+        ));
+        this.onSuccess(true);
+      });
+      this.offset += 10;
+    }
   }
 
   @action
@@ -222,27 +251,21 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         this.offset = 0;
         questsList.clear();
       }
-      final responseData = await _apiProvider.getQuests(
-        statuses: [0, 1],
-        employment: employments,
-        workplace: workplaces,
-        priority: priorities,
-        offset: this.offset,
-        limit: this.limit,
-        sort: this.sort,
-        specializations: selectedSkill,
-        // north: this.latitude.toString(),
-        // south: this.longitude.toString(),
-      );
-      questsList.addAll(
-        ObservableList.of(responseData),
-      );
-      // questsList.sort((key1, key2) {
-      //   return key1.createdAt.millisecondsSinceEpoch
-      //       .compareTo(key2.createdAt.millisecondsSinceEpoch);
-      // });
-      // if (offset < questsList.length)
-      this.offset += 10;
+      if (this.offset == questsList.length) {
+        questsList.addAll(await _apiProvider.getQuests(
+          statuses: [0, 1],
+          employment: employments,
+          workplace: workplaces,
+          priority: priorities,
+          offset: this.offset,
+          limit: this.limit,
+          sort: this.sort,
+          specializations: selectedSkill,
+          // north: this.latitude.toString(),
+          // south: this.longitude.toString(),
+        ));
+        this.offset += 10;
+      }
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -253,25 +276,25 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getWorkers(bool newList) async {
     try {
+      this.onLoading();
       if (newList) {
         workersList.clear();
         offsetWorkers = 0;
       }
-      this.onLoading();
-      final responseData = await _apiProvider.getWorkers(
-        sort: this.sort,
-        offset: this.offsetWorkers,
-        limit: this.limit,
-        workplace: workplaces,
-        priority: priorities,
-        ratingStatus: employeeRatings,
-        specializations: selectedSkill,
-        // north: this.latitude.toString(),
-        // south: this.longitude.toString(),
-      );
-      workersList.addAll(ObservableList.of(List<ProfileMeResponse>.from(
-          responseData["users"].map((x) => ProfileMeResponse.fromJson(x)))));
-      if (responseData["count"] > offsetWorkers) offsetWorkers += 10;
+      if (this.offset == workersList.length) {
+        workersList.addAll(await _apiProvider.getWorkers(
+          sort: this.sort,
+          offset: this.offsetWorkers,
+          limit: this.limit,
+          workplace: workplaces,
+          priority: priorities,
+          ratingStatus: employeeRatings,
+          specializations: selectedSkill,
+          // north: this.latitude.toString(),
+          // south: this.longitude.toString(),
+        ));
+        offsetWorkers += 10;
+      }
       this.onSuccess(true);
     } catch (e, trace) {
       print("getWorkers error: $e\n$trace");

@@ -43,6 +43,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
   UserProfileStore? viewOtherUser;
   MyQuestStore? myQuests;
   late UserRole role;
+  late bool isVerify;
 
   void initState() {
     super.initState();
@@ -76,6 +77,9 @@ class UserProfileState<T extends UserProfile> extends State<T>
         portfolioStore!.getPortfolio(userId: widget.info!.id);
       portfolioStore!.getReviews(userId: widget.info!.id);
     }
+    isVerify = widget.info == null
+        ? userStore!.userData?.phone != null
+        : widget.info?.phone != null;
   }
 
   @protected
@@ -218,11 +222,12 @@ class UserProfileState<T extends UserProfile> extends State<T>
                                   ''
                               : widget.info!.additionalInfo?.address ?? "",
                           number: widget.info == null
-                              ? userStore!.userData?.tempPhone?.fullPhone ??
-                                  userStore!.userData?.phone.fullPhone ??
+                              ? userStore!.userData?.phone?.fullPhone ??
+                                  userStore!.userData?.tempPhone?.fullPhone ??
                                   ""
-                              : widget.info!.tempPhone?.fullPhone ??
-                                  widget.info!.phone.fullPhone,
+                              : widget.info?.phone?.fullPhone ??
+                                  widget.info!.tempPhone?.fullPhone ??
+                                  "",
                           secondNumber: widget.info == null
                               ? userStore!.userData?.additionalInfo
                                       ?.secondMobileNumber!.fullPhone ??
@@ -233,6 +238,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                           email: widget.info == null
                               ? userStore!.userData?.email ?? " "
                               : widget.info!.email ?? " ",
+                          isVerify: isVerify,
                         ),
 
                         ...ratingsWidget(),

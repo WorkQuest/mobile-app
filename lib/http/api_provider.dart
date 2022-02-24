@@ -316,7 +316,7 @@ extension QuestService on ApiProvider {
     );
   }
 
-  Future<Map<String, dynamic>> getWorkers({
+  Future<List<ProfileMeResponse>> getWorkers({
     String searchWord = "",
     String sort = "",
     int limit = 10,
@@ -357,12 +357,11 @@ extension QuestService on ApiProvider {
       },
     );
 
-    return responseData;
-    //   List<ProfileMeResponse>.from(
-    //   responseData["users"].map(
-    //     (x) => ProfileMeResponse.fromJson(x),
-    //   ),
-    // );
+    return List<ProfileMeResponse>.from(
+      responseData["users"].map(
+        (x) => ProfileMeResponse.fromJson(x),
+      ),
+    );
   }
 
   Future<ProfileMeResponse> getProfileUser({
@@ -607,9 +606,9 @@ extension UserInfoService on ApiProvider {
       final body = {
         "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
         "phoneNumber": {
-          "codeRegion": userData.phone.codeRegion,
-          "phone": userData.phone.phone,
-          "fullPhone": userData.phone.fullPhone
+          "codeRegion": userData.tempPhone!.codeRegion,
+          "phone": userData.tempPhone!.phone,
+          "fullPhone": userData.tempPhone!.fullPhone
         },
         "firstName": userData.firstName,
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,

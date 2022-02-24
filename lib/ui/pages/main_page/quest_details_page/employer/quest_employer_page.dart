@@ -11,6 +11,7 @@ import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
+import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -108,14 +109,18 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       needCancel: true,
                       titleCancel: "Cancel",
                       titleOk: "Send",
-                      onTabCancel: () => Navigator.pop(context),
+                      onTabCancel: null,
                       onTabOk: () async {
                         await store.validateTotp();
-                        await Navigator.pushNamed(
-                          context,
-                          CreateQuestPage.routeName,
-                          arguments: widget.questInfo,
-                        );
+                        if (store.isValid) {
+                          await Navigator.pushNamed(
+                            context,
+                            CreateQuestPage.routeName,
+                            arguments: widget.questInfo,
+                          );
+                        } else {
+                          await errorAlert(context, "Invalid TOTP");
+                        }
                       },
                       colorCancel: AppColor.enabledButton,
                       colorOk: Colors.red,
@@ -153,7 +158,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       needCancel: true,
                       titleCancel: "Cancel",
                       titleOk: "Send",
-                      onTabCancel: () => Navigator.pop(context),
+                      onTabCancel: null,
                       onTabOk: () async {
                         await store.validateTotp();
                         if (store.isValid)
@@ -652,22 +657,23 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 5),
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF6CF00),
-              borderRadius: BorderRadius.circular(3),
-            ),
-            child: Text(
-              "levels.higher".tr(),
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
+          UserRating(respond.worker.ratingStatistic.status),
+          // Container(
+          //   margin: const EdgeInsets.only(top: 5),
+          //   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+          //   decoration: BoxDecoration(
+          //     color: const Color(0xFFF6CF00),
+          //     borderRadius: BorderRadius.circular(3),
+          //   ),
+          //   child: Text(
+          //     "levels.higher".tr(),
+          //     style: TextStyle(
+          //       color: Colors.white,
+          //       fontSize: 12,
+          //       fontWeight: FontWeight.w500,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     ];
