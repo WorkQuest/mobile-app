@@ -467,8 +467,6 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
 
   Future sendMessage(String text, String chatId, String userId) async {
     this.onLoading();
-    print("text: $text");
-
     WebSocket().sendMessage(
       chatId: chatId,
       text: text,
