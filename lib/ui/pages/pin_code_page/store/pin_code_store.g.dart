@@ -9,6 +9,21 @@ part of 'pin_code_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$PinCodeStore on _PinCodeStore, Store {
+  final _$totpValidAtom = Atom(name: '_PinCodeStore.totpValid');
+
+  @override
+  bool get totpValid {
+    _$totpValidAtom.reportRead();
+    return super.totpValid;
+  }
+
+  @override
+  set totpValid(bool value) {
+    _$totpValidAtom.reportWrite(value, super.totpValid, () {
+      super.totpValid = value;
+    });
+  }
+
   final _$pinAtom = Atom(name: '_PinCodeStore.pin');
 
   @override
@@ -132,6 +147,7 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
   @override
   String toString() {
     return '''
+totpValid: ${totpValid},
 pin: ${pin},
 attempts: ${attempts},
 statePin: ${statePin},

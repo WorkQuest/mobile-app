@@ -45,6 +45,9 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   }
 
   @observable
+  bool totpValid = false;
+
+  @observable
   String pin = "";
 
   @observable
@@ -147,6 +150,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
       await getIt.get<ProfileMeStore>().getProfileMe();
+      totpValid = true;
       this.onSuccess(StatePinCode.Success);
     } catch (e) {
       if (e.toString() == "Token invalid" ||
@@ -155,6 +159,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         this.onSuccess(StatePinCode.ToLogin);
         return;
       }
+      totpValid = false;
       this.onError(e.toString());
     }
   }

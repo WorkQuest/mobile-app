@@ -182,6 +182,7 @@ class ReviewsWidget extends StatelessWidget {
                     title: Text(
                       name,
                       style: TextStyle(fontSize: 16.0),
+                      overflow: TextOverflow.ellipsis,
                     ),
                     subtitle: Text(
                       userRole.tr(),
@@ -279,11 +280,15 @@ Widget appBarTitle(String name, double padding, String status) {
         Positioned(
           bottom: status != "noStatus" ? 18.0 : 0.0,
           left: 0.0,
-          child: Text(
-            name,
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.white,
+          child: Container(
+            width: 290,
+            child: Text(
+              name,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
@@ -835,7 +840,7 @@ Widget contactDetails({
                   child: Padding(
                     padding: const EdgeInsets.only(left: 30.0),
                     child: Text(
-                      "Number Confirmation",
+                      "Number Confirmed",
                       style: TextStyle(
                         color: Color(0xFF0083C7),
                         fontSize: 8,
