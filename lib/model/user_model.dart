@@ -18,15 +18,16 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     try {
+      print("user $json");
       return User(
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
         avatar: Avatar.fromJson(json["avatar"]),
-        ratingStatistic: RatingStatistic.fromJson(json["ratingStatistic"]),
+        ratingStatistic:  RatingStatistic.fromJson(json["ratingStatistic"]),
       );
-    } catch (e) {
-      throw Exception("User don't parse");
+    } catch (e, tr) {
+      throw Exception("User don't parse $e $tr");
     }
   }
 }

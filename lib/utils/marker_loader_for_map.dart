@@ -45,7 +45,7 @@ class MarkerLoader {
   }
 
   static Future<BitmapDescriptor> getClusterMarkerBitmap(String text) async {
-    int size = 80;
+    final int size = Platform.isIOS ? 80 : 100;
     // double fontSize = Platform.isIOS
     //     ? (clusterSize >= 1000 ? 20 : 30)
     //     : (clusterSize >= 1000 ? 35 : 40);
@@ -86,7 +86,7 @@ class MarkerLoader {
   static Future<BitmapDescriptor> getMarkerImageFromUrl(
       String url, Color? color) async {
     final File imageFile = await DefaultCacheManager().getSingleFile(url);
-    final int size = 80;
+    final int size = Platform.isIOS ? 80 : 100;
     final center = Offset(40, 40);
     final transparent = Colors.transparent;
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
@@ -95,7 +95,6 @@ class MarkerLoader {
       ..color = color ?? transparent
       ..strokeWidth = 5
       ..style = PaintingStyle.stroke;
-    final Paint paint2 = Paint()..color = transparent;
     final Uint8List imageUint8List = await imageFile.readAsBytes();
     final ui.Codec codec = await ui.instantiateImageCodec(imageUint8List);
     final ui.FrameInfo imageFI = await codec.getNextFrame();
@@ -114,7 +113,7 @@ class MarkerLoader {
     );
     //convert canvas as PNG bytes
     final _image = await pictureRecorder.endRecording().toImage(size, size);
-    //convert canvas as PNG bytes
+
     final data = await _image.toByteData(format: ui.ImageByteFormat.png);
     //convert PNG bytes as BitmapDescriptor
     return BitmapDescriptor.fromBytes(data!.buffer.asUint8List());
