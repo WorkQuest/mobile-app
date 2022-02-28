@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:app/base_store/i_store.dart';
+import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/client_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/web3dart.dart';
+
+import '../../../../../../constants.dart';
 
 part 'transfer_store.g.dart';
 
@@ -14,7 +17,7 @@ class TransferStore = TransferStoreBase with _$TransferStore;
 
 abstract class TransferStoreBase extends IStore<bool> with Store {
   @observable
-  String titleSelectedCoin = '';
+  TYPE_COINS? typeCoin;
 
   @observable
   String addressTo = '';
@@ -27,7 +30,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
 
   @computed
   bool get statusButtonTransfer =>
-      titleSelectedCoin.isNotEmpty && addressTo.isNotEmpty && amount.isNotEmpty;
+      typeCoin!=null && addressTo.isNotEmpty && amount.isNotEmpty;
 
   @action
   setAddressTo(String value) => addressTo = value;
@@ -36,26 +39,30 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   setAmount(String value) => amount = value;
 
   @action
-  setTitleSelectedCoin(String value) => titleSelectedCoin = value;
+  setTitleSelectedCoin(TYPE_COINS? value) => typeCoin = value;
 
   @action
   getMaxAmount() async {
     this.onLoading();
     try {
-      if (titleSelectedCoin.isEmpty) {
-        throw const FormatException('Choose a coin');
-      }
       final balance =
           await ClientService().getBalance(AccountRepository().privateKey);
       final gas = await ClientService().getGas();
-      switch (titleSelectedCoin) {
-        case "WUSD":
+      switch (typeCoin) {
+        case TYPE_COINS.WUSD:
           final count = balance.getValueInUnitBI(EtherUnit.ether);
           amount = (count - gas.getInEther).toString();
           break;
-        case "WQT":
-          final count = await ClientService().getBalanceFromContract(
-              '0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE');
+        case TYPE_COINS.WQT:
+          final count = await ClientService().getBalanceFromContract(AddressCoins.wqt);
+          amount = (count - gas.getInEther.toDouble() * 0.3).toString();
+          break;
+        case TYPE_COINS.wETH:
+          final count = await ClientService().getBalanceFromContract(AddressCoins.wEth);
+          amount = (count - gas.getInEther.toDouble() * 0.3).toString();
+          break;
+        case TYPE_COINS.wBNB:
+          final count = await ClientService().getBalanceFromContract(AddressCoins.wBnb);
           amount = (count - gas.getInEther.toDouble() * 0.3).toString();
           break;
         default:

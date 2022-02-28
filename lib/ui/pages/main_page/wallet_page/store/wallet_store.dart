@@ -8,6 +8,8 @@ import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
 
+import '../../../../../constants.dart';
+
 part 'wallet_store.g.dart';
 
 @singleton
@@ -20,6 +22,10 @@ abstract class _WalletStore extends IStore<bool> with Store {
 
   _WalletStore(this._apiProvider);
 
+  @observable
+  TYPE_COINS type = TYPE_COINS.WUSD;
+  @action
+  setType(TYPE_COINS value) => type = value;
   @observable
   ObservableList<BalanceItem> coins = ObservableList.of([]);
   @observable
@@ -71,21 +77,72 @@ abstract class _WalletStore extends IStore<bool> with Store {
         }
         isMoreLoading = false;
       }
-      var result = await _apiProvider.getTransactions(
-        AccountRepository().userAddress!,
-        limit: 10,
-        offset: isForce ? transactions.length : 0,
-      );
+      List<Tx>? result;
+      switch (type) {
+        case TYPE_COINS.WUSD:
+          result = await _apiProvider.getTransactions(
+            AccountRepository().userAddress!,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+        case TYPE_COINS.WQT:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wqt,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+        case TYPE_COINS.wBNB:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wBnb,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+        case TYPE_COINS.wETH:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wEth,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+      }
 
-      result.map((tran) {
-        if (tran.contractAddress != null) {
-          tran.coin = TYPE_COINS.wqt;
-          // final res = BigInt.parse(
-          //     tran.logs!.first.data.toString().substring(2),
-          //     radix: 16);
-          // tran.value = res.toString();
+      result!.map((tran) {
+        if (tran.toAddressHash!.hex! == AccountRepository().userAddress) {
+          switch (tran.fromAddressHash!.hex!) {
+            case AddressCoins.wqt:
+              tran.coin = TYPE_COINS.WQT;
+              break;
+            case AddressCoins.wEth:
+              tran.coin = TYPE_COINS.wETH;
+              break;
+            case AddressCoins.wBnb:
+              tran.coin = TYPE_COINS.wBNB;
+              break;
+            default:
+              tran.coin = TYPE_COINS.WUSD;
+              break;
+          }
         } else {
-          tran.coin = TYPE_COINS.wusd;
+          switch (tran.toAddressHash!.hex!) {
+            case AddressCoins.wqt:
+              tran.coin = TYPE_COINS.WQT;
+              break;
+            case AddressCoins.wEth:
+              tran.coin = TYPE_COINS.wETH;
+              break;
+            case AddressCoins.wBnb:
+              tran.coin = TYPE_COINS.wBNB;
+              break;
+            default:
+              tran.coin = TYPE_COINS.WUSD;
+              break;
+          }
         }
       }).toList();
 
@@ -110,22 +167,44 @@ abstract class _WalletStore extends IStore<bool> with Store {
   getTransactionsMore() async {
     isMoreLoading = true;
     try {
-      final result = await _apiProvider.getTransactions(
-        AccountRepository().userAddress!,
-        limit: 10,
-        offset: transactions.length,
-      );
-      result.map((tran) {
-        if (tran.contractAddress != null) {
-          tran.coin = TYPE_COINS.wqt;
-          // final res = BigInt.parse(
-          //     tran.logs!.first.data.toString().substring(2),
-          //     radix: 16);
-          //tran.value = res.toString();
-        } else {
-          tran.coin = TYPE_COINS.wusd;
-        }
+      List<Tx>? result;
+      switch (type) {
+        case TYPE_COINS.WUSD:
+          result = await _apiProvider.getTransactions(
+            AccountRepository().userAddress!,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+        case TYPE_COINS.WQT:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wqt,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+        case TYPE_COINS.wBNB:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wBnb,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+        case TYPE_COINS.wETH:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wEth,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+      }
+      result!.map((tran) {
+
       }).toList();
+
       transactions.addAll(result);
       await Future.delayed(const Duration(milliseconds: 500));
       isMoreLoading = false;

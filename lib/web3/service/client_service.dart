@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
-import 'package:web_socket_channel/io.dart';
+import '../../constants.dart';
 import '../contractEnums.dart';
 import 'address_service.dart';
 
@@ -52,7 +52,6 @@ class ClientService implements ClientServiceI {
   final Web3Client _client = Web3Client(
     apiUrl,
     Client(),
-    // socketConnector: () => IOWebSocketChannel.connect(wsUrl).cast<String>(),
   );
 
   @override
@@ -80,7 +79,7 @@ class ClientService implements ClientServiceI {
 
     print("credentials: $credentials");
 
-    if (coin == TYPE_COINS.wusd) {
+    if (coin == TYPE_COINS.WUSD) {
       hash = await _client.sendTransaction(
         credentials,
         Transaction(
@@ -93,25 +92,36 @@ class ClientService implements ClientServiceI {
         ),
         chainId: _chainId,
       );
-    } else if (coin == TYPE_COINS.wqt) {
-      print('send wqt');
-      final contract = Erc20(
-        address: EthereumAddress.fromHex(
-            '0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE'),
-        client: _client,
-      );
+    } else {
+      String addressToken = '';
+      switch (coin) {
+        case TYPE_COINS.WUSD:
+          break;
+        case TYPE_COINS.WQT:
+          addressToken = AddressCoins.wqt;
+          break;
+        case TYPE_COINS.wBNB:
+          addressToken = AddressCoins.wBnb;
+          break;
+        case TYPE_COINS.wETH:
+          addressToken = AddressCoins.wEth;
+          break;
+      }
+      final contract =
+      Erc20(address: EthereumAddress.fromHex(addressToken), client: _client);
       hash = await contract.transfer(
+        // myAddress,
         EthereumAddress.fromHex(address),
         BigInt.from(double.parse(amount) * pow(10, 18)),
         credentials: credentials,
       );
-      print('wqt hash - $hash');
+      print('${coin.toString()} hash - $hash');
     }
 
     int attempts = 0;
     TransactionReceipt? result;
     while (result == null) {
-      result = await _client.getTransactionReceipt(hash!);
+      result = await _client.getTransactionReceipt(hash);
       if (result != null) {
         print('result - ${result.blockNumber}');
       }

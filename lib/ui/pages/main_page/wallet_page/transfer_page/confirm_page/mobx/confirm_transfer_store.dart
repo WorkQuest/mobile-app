@@ -16,14 +16,14 @@ class ConfirmTransferStore = ConfirmTransferStoreBase
 
 abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
   @action
-  sendTransaction(String addressTo, String amount, String titleCoin) async {
+  sendTransaction(String addressTo, String amount,  TYPE_COINS typeCoin) async {
     onLoading();
     try {
       await ClientService().sendTransaction(
             privateKey: AccountRepository().privateKey,
             address: addressTo,
             amount: amount,
-            coin: _getType(titleCoin),
+            coin: typeCoin,
           );
       GetIt.I.get<WalletStore>().getCoins();
       GetIt.I.get<WalletStore>().getTransactions(isForce: true);
@@ -32,17 +32,6 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
       onError("Lost connection to server");
     } catch (e) {
       onError(e.toString());
-    }
-  }
-
-  TYPE_COINS _getType(String title) {
-    switch (title) {
-      case "WUSD":
-        return TYPE_COINS.wusd;
-      case "WQT":
-        return TYPE_COINS.wqt;
-      default:
-        return TYPE_COINS.wqt;
     }
   }
 }
