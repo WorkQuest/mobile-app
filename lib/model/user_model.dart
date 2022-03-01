@@ -14,7 +14,7 @@ class User {
   String firstName;
   String lastName;
   Avatar avatar;
-  RatingStatistic ratingStatistic;
+  RatingStatistic? ratingStatistic;
 
   factory User.fromJson(Map<String, dynamic> json) {
     try {
@@ -24,7 +24,9 @@ class User {
         firstName: json["firstName"],
         lastName: json["lastName"],
         avatar: Avatar.fromJson(json["avatar"]),
-        ratingStatistic:  RatingStatistic.fromJson(json["ratingStatistic"]),
+        ratingStatistic: json["ratingStatistic"] == null
+            ? null
+            : RatingStatistic.fromJson(json["ratingStatistic"]),
       );
     } catch (e, tr) {
       throw Exception("User don't parse $e $tr");

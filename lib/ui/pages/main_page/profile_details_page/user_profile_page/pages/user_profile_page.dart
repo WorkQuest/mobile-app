@@ -151,6 +151,8 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   double appBarPosition = 0.0;
 
+  double width = 240.0;
+
   double appBarPositionVertical = 16.0;
 
   @override
@@ -164,6 +166,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
             setState(() {
               appBarPosition = 0.0;
               appBarPositionVertical = 16.0;
+              width = 240.0;
             });
           if (controllerMain.offset > 0 && controllerMain.offset < 240)
             setState(() {
@@ -175,6 +178,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                   : userStore!.userData!.ratingStatistic?.status != "noStatus"
                       ? appBarPositionVertical = 7.0
                       : appBarPositionVertical = 16.0;
+              width = 300.0;
             });
 
           return false;

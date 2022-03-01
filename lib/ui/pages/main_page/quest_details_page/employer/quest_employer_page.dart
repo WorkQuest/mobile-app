@@ -657,7 +657,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          UserRating(respond.worker.ratingStatistic.status),
+          if (respond.worker.ratingStatistic?.status != null)
+            UserRating(respond.worker.ratingStatistic!.status),
           // Container(
           //   margin: const EdgeInsets.only(top: 5),
           //   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),

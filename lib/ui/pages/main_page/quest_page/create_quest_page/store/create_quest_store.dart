@@ -63,8 +63,8 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @observable
   String workplace = "Distant work";
 
-  @observable
-  String category = 'Choose';
+  // @observable
+  // String category = 'Choose';
 
   @observable
   String categoryValue = 'other';

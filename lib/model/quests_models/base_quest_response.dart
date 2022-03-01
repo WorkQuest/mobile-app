@@ -18,7 +18,7 @@ class BaseQuestResponse with ClusterItem {
     required this.userId,
     required this.medias,
     required this.user,
-    required this.category,
+    // required this.category,
     required this.status,
     required this.priority,
     required this.locationCode,
@@ -41,7 +41,7 @@ class BaseQuestResponse with ClusterItem {
 
   String id;
   String userId;
-  String category;
+  // String category;
   List<Media> medias;
   User user;
   int status;
@@ -67,7 +67,7 @@ class BaseQuestResponse with ClusterItem {
     return BaseQuestResponse(
       id: json["id"],
       userId: json["userId"],
-      category: json["category"],
+      // category: json["category"],
       medias: (json["medias"] as List<dynamic>)
           .map((e) => Media.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -111,7 +111,7 @@ class BaseQuestResponse with ClusterItem {
   update(BaseQuestResponse updateQuest) {
     this.id = updateQuest.id;
     this.userId = updateQuest.userId;
-    this.category = updateQuest.category;
+    // this.category = updateQuest.category;
     this.medias = updateQuest.medias;
     this.user = updateQuest.user;
     this.status = updateQuest.status;
@@ -136,7 +136,7 @@ class BaseQuestResponse with ClusterItem {
 
   Map<String, dynamic> toJson() => {
         "userId": userId,
-        "category": category,
+        // "category": category,
         "status": status,
         "priority": priority,
         "location": locationCode.toJson(),

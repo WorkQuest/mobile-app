@@ -84,21 +84,6 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
-  final _$categoryAtom = Atom(name: '_CreateQuestStore.category');
-
-  @override
-  String get category {
-    _$categoryAtom.reportRead();
-    return super.category;
-  }
-
-  @override
-  set category(String value) {
-    _$categoryAtom.reportWrite(value, super.category, () {
-      super.category = value;
-    });
-  }
-
   final _$categoryValueAtom = Atom(name: '_CreateQuestStore.categoryValue');
 
   @override
@@ -406,7 +391,6 @@ employment: ${employment},
 employmentValue: ${employmentValue},
 workplaceValue: ${workplaceValue},
 workplace: ${workplace},
-category: ${category},
 categoryValue: ${categoryValue},
 priority: ${priority},
 dateTime: ${dateTime},

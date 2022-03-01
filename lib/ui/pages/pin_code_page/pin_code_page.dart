@@ -1,11 +1,7 @@
-import 'package:app/constants.dart';
 import "package:app/observer_consumer.dart";
 import "package:app/ui/pages/main_page/main_page.dart";
-import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
-import 'package:app/ui/widgets/error_dialog.dart';
-import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
 import "package:flutter/material.dart";
 import "package:flutter_mobx/flutter_mobx.dart";
@@ -40,7 +36,6 @@ class _PinCodePageState extends State<PinCodePage>
   @override
   Widget build(BuildContext context) {
     final pinCodeStore = context.read<PinCodeStore>();
-    // final store = context.read<EmployerStore>();
     final Animation<double> offsetAnimation = Tween(begin: 0.0, end: 24.0)
         .chain(CurveTween(curve: Curves.elasticIn))
         .animate(controller!)
@@ -57,45 +52,6 @@ class _PinCodePageState extends State<PinCodePage>
       },
       child: ObserverListener<PinCodeStore>(
         onFailure: () {
-          // if (!pinCodeStore.totpValid) {
-          //   AlertDialogUtils.showAlertDialog(
-          //     context,
-          //     title: const Text("Security check"),
-          //     content: Column(
-          //       crossAxisAlignment: CrossAxisAlignment.start,
-          //       children: [
-          //         Text("Google confirmation code"),
-          //         const SizedBox(
-          //           height: 15,
-          //         ),
-          //         Observer(
-          //           builder: (_) => TextFormField(
-          //             onChanged: store.setTotp,
-          //           ),
-          //         ),
-          //         const SizedBox(
-          //           height: 15,
-          //         ),
-          //         Text(
-          //           "Enter the 6-digit code from the Google Authentication app",
-          //         ),
-          //       ],
-          //     ),
-          //     needCancel: true,
-          //     titleCancel: "Cancel",
-          //     titleOk: "Send",
-          //     onTabCancel: null,
-          //     onTabOk: () async {
-          //       await store.validateTotp();
-          //       if (!store.isValid) {
-          //         await errorAlert(context, "Invalid TOTP");
-          //       }
-          //     },
-          //     colorCancel: AppColor.enabledButton,
-          //     colorOk: Colors.red,
-          //   );
-          //   pinCodeStore.signIn();
-          // }
           controller!.forward(from: 0.0);
           if (pinCodeStore.errorMessage != null) if (pinCodeStore
               .errorMessage!.isNotEmpty) return false;

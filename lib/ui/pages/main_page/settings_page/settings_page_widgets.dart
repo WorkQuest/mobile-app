@@ -206,11 +206,15 @@ class MyProfileImage extends StatelessWidget {
             Positioned(
               bottom: 16.0,
               left: 16.0,
-              child: Text(
-                " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
+              child: Container(
+                width: 300,
+                child: Text(
+                  " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                  ),
+                  overflow: TextOverflow.clip,
                 ),
               ),
             ),

@@ -4,9 +4,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dar
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
-
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,7 +41,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       this.isEdit = true;
       final store = context.read<CreateQuestStore>();
       store.priority = store.priorityList[widget.questInfo!.priority];
-      store.category = widget.questInfo!.category;
+      // store.category = widget.questInfo!.category;
       store.questTitle = widget.questInfo!.title;
       store.getWorkplace(widget.questInfo!.workplace);
       store.getEmployment(widget.questInfo!.employment);

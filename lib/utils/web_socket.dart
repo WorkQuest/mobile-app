@@ -9,10 +9,10 @@ class WebSocket {
   void Function(dynamic)? handlerQuests;
 
   String _channelListener =
-      "wss://notifications.workquest.co/api/";
+      "wss://notifications.workquest.co/api/v1/notifications";
   String _channelSender = "wss://app.workquest.co/api";
 
-  Map<String, IOWebSocketChannel> _channels = {};
+  late Map<String, IOWebSocketChannel> _channels = {};
 
   int _counter = 0;
 
@@ -26,49 +26,29 @@ class WebSocket {
 
   void connect() async {
     shouldReconnectFlag = true;
-    String? token = await Storage.readAccessToken();
-     _channels = {
+    _channels = {
       "": IOWebSocketChannel.connect(_channelSender),
       "/notifications/chat": IOWebSocketChannel.connect(_channelListener),
     };
-
     _counter = 0;
-
+    String? token = await Storage.readAccessToken();
     print("[WebSocket]  connecting ...");
 
-    _channels[""]?.sink.add("""{
-          "type": "hello",
-          "id": 1,
-          "version": "2",
-          "auth": {
-            "headers": {"authorization": "Bearer $token"}
-          }
-        }""");
-
-    _channels["/notifications/chat"]?.sink.add("""{
+    this._channels.forEach((path, channel) {
+      channel.sink.add("""{
           "type": "hello",
           "id": 1,
           "version": "2",
           "auth": {
             "headers": {"authorization": "Bearer $token"}
           },
-          "subs": ["/notifications/chat","/notifications/quest"]
+          "sub": "$path"
         }""");
+    });
 
-    // this._channels.forEach((path, channel) {
-    //   channel.sink.add("""{
-    //       "type": "hello",
-    //       "id": 1,
-    //       "version": "2",
-    //       "auth": {
-    //         "headers": {"authorization": "Bearer $token"}
-    //       },
-    //       "subs": ["$path"]
-    //     }""");
-    // });
-
+    print(_channels.length);
     this._channels.forEach((path, channel) {
-      channel.stream.asBroadcastStream().listen(
+      channel.stream.listen(
         this._onData,
         onError: this._onError,
         onDone: this._onDone,
@@ -91,9 +71,6 @@ class WebSocket {
         case "request":
           getMessage(json);
           break;
-        default:
-          print("default${json["type"]}");
-          print(json);
       }
     } catch (e, tr) {
       print(e);
@@ -102,18 +79,15 @@ class WebSocket {
   }
 
   void _handleSubscription(dynamic json) async {
-    print("123$json");
     try {
       if (json["path"].toString().contains("/api/v1/chat/")) {
         getMessage(json);
       } else if (json["path"] == "/notifications/quest") {
-        print(json["message"]["data"]);
         questNotification(json["message"]["data"]);
       } else if (json["path"] == "/notifications/chat") {
         print("new${json["message"]["data"]}");
         //questNotification(json["message"]["data"]);
       }
-      else print("new message");
     } catch (e, trace) {
       print("ERROR: $e");
       print("ERROR: $trace");
