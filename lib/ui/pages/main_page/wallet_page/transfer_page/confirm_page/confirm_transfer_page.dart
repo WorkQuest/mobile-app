@@ -1,4 +1,5 @@
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/web3/contractEnums.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,14 +11,14 @@ import 'mobx/confirm_transfer_store.dart';
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 class ConfirmTransferPage extends StatefulWidget {
-  final String titleCoin;
+  final TYPE_COINS typeCoin;
   final String addressTo;
   final String amount;
   final String fee;
 
   const ConfirmTransferPage({
     Key? key,
-    required this.titleCoin,
+    required this.typeCoin,
     required this.addressTo,
     required this.amount,
     required this.fee,
@@ -46,7 +47,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
             ),
             _InformationWidget(
               fee: widget.fee,
-              titleCoin: widget.titleCoin,
+              typeCoins: widget.typeCoin,
               addressTo: widget.addressTo,
               amount: widget.amount,
             ),
@@ -72,7 +73,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                     onPressed: () {
                       AlertDialogUtils.showLoadingDialog(context);
                       store.sendTransaction(
-                          widget.addressTo, widget.amount, widget.titleCoin);
+                          widget.addressTo, widget.amount, widget.typeCoin);
                     },
                     child: Text('meta.confirm'.tr()),
                   ),
@@ -88,14 +89,14 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
 
 class _InformationWidget extends StatelessWidget {
   final String addressTo;
-  final String titleCoin;
+  final TYPE_COINS typeCoins;
   final String amount;
   final String fee;
 
   const _InformationWidget({
     Key? key,
     required this.addressTo,
-    required this.titleCoin,
+    required this.typeCoins,
     required this.amount,
     required this.fee,
   }) : super(key: key);
@@ -142,7 +143,7 @@ class _InformationWidget extends StatelessWidget {
             height: 5,
           ),
           Text(
-            '$amount $titleCoin',
+            '$amount ${typeCoins.name}',
             style: const TextStyle(
               fontSize: 14,
               color: AppColor.subtitleText,

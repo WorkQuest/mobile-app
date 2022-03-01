@@ -65,5 +65,5 @@ enum WQFContractEvents {
   WorkQuestCreated
 }
 enum TYPE_COINS {
-  wusd, wqt
+  WUSD, WQT, wBNB, wETH
 }

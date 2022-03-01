@@ -45,6 +45,10 @@ class ListTransactions extends StatelessWidget {
                     child: Center(child: CircularProgressIndicator.adaptive()),
                   );
                 }
+                if (store.type == TYPE_COINS.WUSD &&
+                    store.transactions[index].value == "0") {
+                  return Container();
+                }
                 return _infoElement(store.transactions[index]);
               },
               childCount: store.isMoreLoading
@@ -53,9 +57,9 @@ class ListTransactions extends StatelessWidget {
             ),
           );
         }
-        return const SliverFillRemaining(
+        return  SliverFillRemaining(
           child: Center(
-            child: Text("Error"),
+            child: Text(store.errorMessage!),
           ),
         );
       },
@@ -63,7 +67,7 @@ class ListTransactions extends StatelessWidget {
   }
 
   Widget _infoElement(Tx transaction) {
-    bool increase = transaction.fromAddress != AccountRepository().userAddress;
+    bool increase = transaction.fromAddressHash!.hex != AccountRepository().userAddress;
     Color color = increase ? Colors.green : Colors.red;
     final score =
         (BigInt.parse(transaction.value!).toDouble() * pow(10, -13)).round() *
@@ -106,7 +110,7 @@ class ListTransactions extends StatelessWidget {
               ),
               Text(
                 DateFormat('dd.MM.yy HH:mm')
-                    .format(transaction.createdAt!.toLocal())
+                    .format(transaction.insertedAt!.toLocal())
                     .toString(),
                 style: const TextStyle(
                   fontSize: 14,
@@ -118,7 +122,7 @@ class ListTransactions extends StatelessWidget {
           const SizedBox(width: 20,),
           Expanded(
             child: Text(
-              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${_getTitleCoin(transaction.coin!)}',
+              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${transaction.coin?.name??"unknown coin"}',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -131,17 +135,6 @@ class ListTransactions extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _getTitleCoin(TYPE_COINS coin) {
-    switch (coin) {
-      case TYPE_COINS.wqt:
-        return "WQT";
-      case TYPE_COINS.wusd:
-        return "WUSD";
-      default:
-        return "WUSD";
-    }
   }
 }
 

@@ -8,6 +8,8 @@ import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
 
+import '../../../../../constants.dart';
+
 part 'wallet_store.g.dart';
 
 @singleton
@@ -20,6 +22,10 @@ abstract class _WalletStore extends IStore<bool> with Store {
 
   _WalletStore(this._apiProvider);
 
+  @observable
+  TYPE_COINS type = TYPE_COINS.WUSD;
+  @action
+  setType(TYPE_COINS value) => type = value;
   @observable
   ObservableList<BalanceItem> coins = ObservableList.of([]);
   @observable
@@ -71,33 +77,42 @@ abstract class _WalletStore extends IStore<bool> with Store {
         }
         isMoreLoading = false;
       }
-      var result = await _apiProvider.getTransactions(
-        AccountRepository().userAddress!,
-        limit: 10,
-        offset: isForce ? transactions.length : 0,
-      );
-
-      result.map((tran) {
-        if (tran.contractAddress != null) {
-          tran.coin = TYPE_COINS.wqt;
-          // final res = BigInt.parse(
-          //     tran.logs!.first.data.toString().substring(2),
-          //     radix: 16);
-          // tran.value = res.toString();
-        } else {
-          tran.coin = TYPE_COINS.wusd;
-        }
-      }).toList();
-
+      List<Tx>? result;
+      switch (type) {
+        case TYPE_COINS.WUSD:
+          result = await _apiProvider.getTransactions(
+            AccountRepository().userAddress!,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+        case TYPE_COINS.WQT:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wqt,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+        case TYPE_COINS.wBNB:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wBnb,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+        case TYPE_COINS.wETH:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wEth,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
+      }
       if (isForce) {
-        transactions.addAll(result);
-      } else {
-        result = result.reversed.toList();
-        result.map((tran) {
-          if (!transactions.contains(tran)) {
-            transactions.insert(0, tran);
-          }
-        }).toList();
+        transactions.addAll(result!);
       }
       onSuccess(true);
     } catch (e, trace) {
@@ -110,23 +125,41 @@ abstract class _WalletStore extends IStore<bool> with Store {
   getTransactionsMore() async {
     isMoreLoading = true;
     try {
-      final result = await _apiProvider.getTransactions(
-        AccountRepository().userAddress!,
-        limit: 10,
-        offset: transactions.length,
-      );
-      result.map((tran) {
-        if (tran.contractAddress != null) {
-          tran.coin = TYPE_COINS.wqt;
-          // final res = BigInt.parse(
-          //     tran.logs!.first.data.toString().substring(2),
-          //     radix: 16);
-          //tran.value = res.toString();
-        } else {
-          tran.coin = TYPE_COINS.wusd;
-        }
-      }).toList();
-      transactions.addAll(result);
+      List<Tx>? result;
+      switch (type) {
+        case TYPE_COINS.WUSD:
+          result = await _apiProvider.getTransactions(
+            AccountRepository().userAddress!,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+        case TYPE_COINS.WQT:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wqt,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+        case TYPE_COINS.wBNB:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wBnb,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+        case TYPE_COINS.wETH:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.wEth,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+      }
+      transactions.addAll(result!);
       await Future.delayed(const Duration(milliseconds: 500));
       isMoreLoading = false;
       onSuccess(true);

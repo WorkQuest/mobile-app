@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
+import 'package:app/utils/alert_dialog.dart';
+import 'package:app/web3/contractEnums.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +22,10 @@ const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 final String coinsPath = "assets/coins";
 List<_CoinItem> _coins = [
-  _CoinItem("$coinsPath/wusd.svg", 'WUSD', true),
-  _CoinItem("$coinsPath/wqt.svg", 'WQT', true),
-  _CoinItem("$coinsPath/wbnb.svg", 'wBNB', false),
-  _CoinItem("$coinsPath/weth.svg", 'wETH', false),
+  _CoinItem("$coinsPath/wusd.svg", 'WUSD', TYPE_COINS.WUSD, true),
+  _CoinItem("$coinsPath/wqt.svg", 'WQT', TYPE_COINS.WQT, true),
+  _CoinItem("$coinsPath/wbnb.svg", 'wBNB', TYPE_COINS.wBNB, true),
+  _CoinItem("$coinsPath/weth.svg", 'wETH', TYPE_COINS.wETH, true),
 ];
 
 class TransferPage extends StatefulWidget {
@@ -212,7 +215,7 @@ class _TransferPageState extends State<TransferPage> {
                         ),
                       ),
                       onPressed: () async {
-                        await store.getMaxAmount();
+                          store.getMaxAmount();
                       },
                     ),
                   ),
@@ -264,6 +267,12 @@ class _TransferPageState extends State<TransferPage> {
       if (store.fee.isEmpty) {
         await store.getFee();
       }
+      // if (store.addressTo.toLowerCase() ==
+      //     AccountRepository().userAddress!.toLowerCase()) {
+      //   AlertDialogUtils.showInfoAlertDialog(context,
+      //       title: 'meta.error'.tr(), content: 'You have provided your address.');
+      //   return;
+      // }
       final result = await Navigator.of(
         context,rootNavigator: true).push(
         MaterialPageRoute(
@@ -271,7 +280,7 @@ class _TransferPageState extends State<TransferPage> {
             create: (_) => getIt.get<ConfirmTransferStore>(),
             child: ConfirmTransferPage(
               fee: store.fee,
-              titleCoin: store.titleSelectedCoin,
+              typeCoin: store.typeCoin!,
               addressTo: store.addressTo,
               amount: store.amount,
             ),
@@ -280,7 +289,7 @@ class _TransferPageState extends State<TransferPage> {
       );
       if (result != null && result) {
         setState(() {
-          store.setTitleSelectedCoin('');
+          store.setTitleSelectedCoin(null);
           store.setAddressTo('');
           store.setAmount('');
           _amountController.clear();
@@ -422,7 +431,7 @@ class _TransferPageState extends State<TransferPage> {
     setState(() {
       _currentCoin = coin;
     });
-    store.setTitleSelectedCoin(coin.title);
+    store.setTitleSelectedCoin(coin.typeCoin);
   }
 }
 
@@ -430,6 +439,7 @@ class _CoinItem {
   String iconPath;
   String title;
   bool isEnable;
+  TYPE_COINS typeCoin;
 
-  _CoinItem(this.iconPath, this.title, this.isEnable);
+  _CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);
 }

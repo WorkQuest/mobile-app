@@ -17,19 +17,18 @@ mixin _$TransferStore on TransferStoreBase, Store {
               name: 'TransferStoreBase.statusButtonTransfer'))
       .value;
 
-  final _$titleSelectedCoinAtom =
-      Atom(name: 'TransferStoreBase.titleSelectedCoin');
+  final _$typeCoinAtom = Atom(name: 'TransferStoreBase.typeCoin');
 
   @override
-  String get titleSelectedCoin {
-    _$titleSelectedCoinAtom.reportRead();
-    return super.titleSelectedCoin;
+  TYPE_COINS? get typeCoin {
+    _$typeCoinAtom.reportRead();
+    return super.typeCoin;
   }
 
   @override
-  set titleSelectedCoin(String value) {
-    _$titleSelectedCoinAtom.reportWrite(value, super.titleSelectedCoin, () {
-      super.titleSelectedCoin = value;
+  set typeCoin(TYPE_COINS? value) {
+    _$typeCoinAtom.reportWrite(value, super.typeCoin, () {
+      super.typeCoin = value;
     });
   }
 
@@ -119,7 +118,7 @@ mixin _$TransferStore on TransferStoreBase, Store {
   }
 
   @override
-  dynamic setTitleSelectedCoin(String value) {
+  dynamic setTitleSelectedCoin(TYPE_COINS? value) {
     final _$actionInfo = _$TransferStoreBaseActionController.startAction(
         name: 'TransferStoreBase.setTitleSelectedCoin');
     try {
@@ -132,7 +131,7 @@ mixin _$TransferStore on TransferStoreBase, Store {
   @override
   String toString() {
     return '''
-titleSelectedCoin: ${titleSelectedCoin},
+typeCoin: ${typeCoin},
 addressTo: ${addressTo},
 amount: ${amount},
 fee: ${fee},

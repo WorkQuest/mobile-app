@@ -1,8 +1,10 @@
 import 'package:app/web3/contractEnums.dart';
-import 'package:intl/intl.dart';
+import 'package:app/web3/repository/account_repository.dart';
 
-class TransactionResponse {
-  TransactionResponse({
+import '../../constants.dart';
+
+class TransactionsResponse {
+  TransactionsResponse({
     this.count,
     this.txs,
   });
@@ -10,7 +12,8 @@ class TransactionResponse {
   int? count;
   List<Tx>? txs;
 
-  factory TransactionResponse.fromJson(Map<String, dynamic> json) => TransactionResponse(
+  factory TransactionsResponse.fromJson(Map<String, dynamic> json) =>
+      TransactionsResponse(
         count: json["count"],
         txs: json["txs"] == null
             ? null
@@ -27,138 +30,189 @@ class TransactionResponse {
 
 class Tx {
   Tx({
-    this.id,
-    this.blockNumber,
-    this.timestamp,
-    this.fromAddress,
-    this.toAddress,
-    this.gasUsed,
-    this.gasPrice,
-    this.gasLimit,
-    this.value,
-    this.status,
-    this.contractAddress,
-    this.tokenId,
-    this.logs,
+    this.hash,
     this.input,
-    this.createdAt,
+    this.blockHash,
+    this.fromAddressHash,
+    this.toAddressHash,
+    this.createdContractAddressHash,
+    this.oldBlockHash,
+    this.cumulativeGasUsed,
+    this.error,
+    this.gas,
+    this.gasPrice,
+    this.gasUsed,
+    this.index,
+    this.nonce,
+    this.r,
+    this.s,
+    this.status,
+    this.v,
+    this.value,
+    this.amount,
+    this.insertedAt,
     this.updatedAt,
+    this.blockNumber,
+    this.createdContractCodeIndexedAt,
+    this.earliestProcessingStart,
+    this.revertReason,
+    this.maxPriorityFeePerGas,
+    this.maxFeePerGas,
+    this.type,
+    this.coin,
   });
 
-  String? id;
-  int? blockNumber;
-  DateTime? timestamp;
-  String? fromAddress;
-  String? toAddress;
-  String? gasUsed;
-  String? gasPrice;
-  dynamic gasLimit;
-  String? value;
-  int? status;
-  dynamic contractAddress;
-  dynamic tokenId;
-  List<Logs>? logs;
+  String? hash;
   String? input;
-  DateTime? createdAt;
+  String? blockHash;
+  AddressHash? fromAddressHash;
+  AddressHash? toAddressHash;
+  dynamic createdContractAddressHash;
+  dynamic oldBlockHash;
+  String? cumulativeGasUsed;
+  dynamic error;
+  String? gas;
+  String? gasPrice;
+  String? gasUsed;
+  int? index;
+  int? nonce;
+  String? r;
+  String? s;
+  int? status;
+  String? v;
+  String? value;
+  String? amount;
+  DateTime? insertedAt;
   DateTime? updatedAt;
+  int? blockNumber;
+  dynamic createdContractCodeIndexedAt;
+  dynamic earliestProcessingStart;
+  dynamic revertReason;
+  dynamic maxPriorityFeePerGas;
+  dynamic maxFeePerGas;
+  int? type;
   TYPE_COINS? coin;
 
-  String getDate() {
-    return DateFormat("HH:mm").format(createdAt!.toLocal());
-  }
-
   factory Tx.fromJson(Map<String, dynamic> json) => Tx(
-        id: json["id"],
-        blockNumber: json["blockNumber"],
-        timestamp: json["timestamp"] == null
-            ? null
-            : DateTime.parse(json["timestamp"]),
-        fromAddress: json["fromAddress"],
-        toAddress: json["toAddress"],
-        gasUsed: json["gasUsed"],
-        gasPrice: json["gasPrice"],
-        gasLimit: json["gasLimit"],
-        value: json["value"],
-        status: json["status"],
-        contractAddress: json["contractAddress"],
-        tokenId: json["tokenId"],
-        logs: json["logs"] == null
-            ? null
-            : List<Logs>.from(json["logs"].map((x) => Logs.fromJson(x))),
+        hash: json["hash"],
         input: json["input"],
-        createdAt: json["inserted_at"] == null
+        blockHash: json["block_hash"],
+        fromAddressHash: json["from_address_hash"] == null
+            ? null
+            : AddressHash.fromJson(json["from_address_hash"]),
+        toAddressHash: json["to_address_hash"] == null
+            ? null
+            : AddressHash.fromJson(json["to_address_hash"]),
+        createdContractAddressHash: json["created_contract_address_hash"],
+        oldBlockHash: json["old_block_hash"],
+        cumulativeGasUsed: json["cumulative_gas_used"],
+        error: json["error"],
+        gas: json["gas"],
+        gasPrice: json["gas_price"],
+        gasUsed: json["gas_used"],
+        index: json["index"],
+        nonce: json["nonce"],
+        r: json["r"],
+        s: json["s"],
+        status: json["status"],
+        v: json["v"],
+        value: json["value"],
+        amount: json["amount"],
+        insertedAt: json["inserted_at"] == null
             ? null
             : DateTime.parse(json["inserted_at"]),
         updatedAt: json["updated_at"] == null
             ? null
             : DateTime.parse(json["updated_at"]),
+        blockNumber: json["block_number"],
+        createdContractCodeIndexedAt: json["created_contract_code_indexed_at"],
+        earliestProcessingStart: json["earliest_processing_start"],
+        revertReason: json["revert_reason"],
+        maxPriorityFeePerGas: json["max_priority_fee_per_gas"],
+        maxFeePerGas: json["max_fee_per_gas"],
+        type: json["type"],
+        coin: getCoin(
+            json["to_address_hash"]["hex"], json["from_address_hash"]["hex"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "blockNumber": blockNumber,
-        "timestamp": timestamp == null ? null : timestamp!.toIso8601String(),
-        "fromAddress": fromAddress,
-        "toAddress": toAddress,
-        "gasUsed": gasUsed,
-        "gasPrice": gasPrice,
-        "gasLimit": gasLimit,
-        "value": value,
-        "status": status,
-        "contractAddress": contractAddress,
-        "tokenId": tokenId,
-        "logs": logs == null ? null : List<dynamic>.from(logs!.map((x) => x)),
+        "hash": hash,
         "input": input,
-        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
-        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
+        "block_hash": blockHash,
+        "from_address_hash":
+            fromAddressHash == null ? null : fromAddressHash!.toJson(),
+        "to_address_hash":
+            toAddressHash == null ? null : toAddressHash!.toJson(),
+        "created_contract_address_hash": createdContractAddressHash,
+        "old_block_hash": oldBlockHash,
+        "cumulative_gas_used": cumulativeGasUsed,
+        "error": error,
+        "gas": gas,
+        "gas_price": gasPrice,
+        "gas_used": gasUsed,
+        "index": index,
+        "nonce": nonce,
+        "r": r,
+        "s": s,
+        "status": status,
+        "v": v,
+        "value": value,
+        "amount": amount,
+        "inserted_at":
+            insertedAt == null ? null : insertedAt!.toIso8601String(),
+        "updated_at": updatedAt == null ? null : updatedAt!.toIso8601String(),
+        "block_number": blockNumber,
+        "created_contract_code_indexed_at": createdContractCodeIndexedAt,
+        "earliest_processing_start": earliestProcessingStart,
+        "revert_reason": revertReason,
+        "max_priority_fee_per_gas": maxPriorityFeePerGas,
+        "max_fee_per_gas": maxFeePerGas,
+        "type": type,
       };
+
+  static TYPE_COINS getCoin(String toAddressHex, String fromAddressHex) {
+    if (toAddressHex == AccountRepository().userAddress) {
+      switch (fromAddressHex) {
+        case AddressCoins.wqt:
+          return TYPE_COINS.WQT;
+        case AddressCoins.wEth:
+          return TYPE_COINS.wETH;
+        case AddressCoins.wBnb:
+          return TYPE_COINS.wBNB;
+        default:
+          return TYPE_COINS.WUSD;
+      }
+    } else {
+      switch (toAddressHex) {
+        case AddressCoins.wqt:
+          return TYPE_COINS.WQT;
+        case AddressCoins.wEth:
+          return TYPE_COINS.wETH;
+        case AddressCoins.wBnb:
+          return TYPE_COINS.wBNB;
+        default:
+          return TYPE_COINS.WUSD;
+      }
+    }
+  }
 }
 
-class Logs {
-  String? data;
-  List<String>? topics;
-  String? address;
-  bool? removed;
-  String? logIndex;
-  String? blockHash;
-  String? blockNumber;
-  String? transactionHash;
-  String? transactionIndex;
+class AddressHash {
+  AddressHash({
+    this.hex,
+    this.bech32,
+  });
 
-  Logs(
-      {this.data,
-        this.topics,
-        this.address,
-        this.removed,
-        this.logIndex,
-        this.blockHash,
-        this.blockNumber,
-        this.transactionHash,
-        this.transactionIndex});
+  String? hex;
+  String? bech32;
 
-  Logs.fromJson(Map<String, dynamic> json) {
-    data = json['data'];
-    topics = json['topics'].cast<String>();
-    address = json['address'];
-    removed = json['removed'];
-    logIndex = json['logIndex'];
-    blockHash = json['blockHash'];
-    blockNumber = json['blockNumber'];
-    transactionHash = json['transactionHash'];
-    transactionIndex = json['transactionIndex'];
-  }
+  factory AddressHash.fromJson(Map<String, dynamic> json) => AddressHash(
+        hex: json["hex"],
+        bech32: json["bech32"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['data'] = this.data;
-    data['topics'] = this.topics;
-    data['address'] = this.address;
-    data['removed'] = this.removed;
-    data['logIndex'] = this.logIndex;
-    data['blockHash'] = this.blockHash;
-    data['blockNumber'] = this.blockNumber;
-    data['transactionHash'] = this.transactionHash;
-    data['transactionIndex'] = this.transactionIndex;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "hex": hex,
+        "bech32": bech32,
+      };
 }

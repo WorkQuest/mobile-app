@@ -13,9 +13,9 @@ mixin _$ConfirmTransferStore on ConfirmTransferStoreBase, Store {
       AsyncAction('ConfirmTransferStoreBase.sendTransaction');
 
   @override
-  Future sendTransaction(String addressTo, String amount, String titleCoin) {
+  Future sendTransaction(String addressTo, String amount, TYPE_COINS typeCoin) {
     return _$sendTransactionAsyncAction
-        .run(() => super.sendTransaction(addressTo, amount, titleCoin));
+        .run(() => super.sendTransaction(addressTo, amount, typeCoin));
   }
 
   @override
