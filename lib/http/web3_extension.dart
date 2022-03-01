@@ -27,7 +27,6 @@ extension Web3Requests on ApiProvider {
       query: '${_transactions(address)}?limit=$limit&offset=$offset',
       useBaseUrl: false,
     );
-    print("responsed $response");
     return TransactionsResponse.fromJson(response).txs!;
   }
 
@@ -38,12 +37,12 @@ extension Web3Requests on ApiProvider {
     int offset = 0,
   }) async {
     try {
+      print("Called Tansaction By roken");
       final response = await httpClient.get(
           query: '${_transactionsByToken(
         address: address,
         addressToken: addressToken,
       )}?limit=$limit&offset=$offset');
-
       return TransactionsResponse.fromJson(response).txs!;
     } catch (e, tr) {
       print("$e $tr");

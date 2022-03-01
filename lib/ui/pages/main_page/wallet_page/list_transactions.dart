@@ -72,11 +72,6 @@ class ListTransactions extends StatelessWidget {
     final score =
         (BigInt.parse(transaction.value!).toDouble() * pow(10, -13)).round() *
             pow(10, -5);
-
-    print("coin :${transaction.type}");
-    print("coin :${transaction.fromAddressHash}");
-    print("coin :${transaction.coin}");
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 7.5),
       child: Row(
@@ -127,7 +122,7 @@ class ListTransactions extends StatelessWidget {
           const SizedBox(width: 20,),
           Expanded(
             child: Text(
-              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${transaction.coin!.name}',
+              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${transaction.coin?.name??"unknown coin"}',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,

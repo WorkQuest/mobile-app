@@ -111,50 +111,8 @@ abstract class _WalletStore extends IStore<bool> with Store {
           );
           break;
       }
-
-      result!.map((tran) {
-        if (tran.toAddressHash!.hex! == AccountRepository().userAddress) {
-          switch (tran.fromAddressHash!.hex!) {
-            case AddressCoins.wqt:
-              tran.coin = TYPE_COINS.WQT;
-              break;
-            case AddressCoins.wEth:
-              tran.coin = TYPE_COINS.wETH;
-              break;
-            case AddressCoins.wBnb:
-              tran.coin = TYPE_COINS.wBNB;
-              break;
-            default:
-              tran.coin = TYPE_COINS.WUSD;
-              break;
-          }
-        } else {
-          switch (tran.toAddressHash!.hex!) {
-            case AddressCoins.wqt:
-              tran.coin = TYPE_COINS.WQT;
-              break;
-            case AddressCoins.wEth:
-              tran.coin = TYPE_COINS.wETH;
-              break;
-            case AddressCoins.wBnb:
-              tran.coin = TYPE_COINS.wBNB;
-              break;
-            default:
-              tran.coin = TYPE_COINS.WUSD;
-              break;
-          }
-        }
-      }).toList();
-
       if (isForce) {
-        transactions.addAll(result);
-      } else {
-        result = result.reversed.toList();
-        result.map((tran) {
-          if (!transactions.contains(tran)) {
-            transactions.insert(0, tran);
-          }
-        }).toList();
+        transactions.addAll(result!);
       }
       onSuccess(true);
     } catch (e, trace) {
@@ -201,11 +159,7 @@ abstract class _WalletStore extends IStore<bool> with Store {
           );
           break;
       }
-      result!.map((tran) {
-
-      }).toList();
-
-      transactions.addAll(result);
+      transactions.addAll(result!);
       await Future.delayed(const Duration(milliseconds: 500));
       isMoreLoading = false;
       onSuccess(true);
