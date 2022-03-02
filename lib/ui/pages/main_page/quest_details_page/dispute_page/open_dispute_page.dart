@@ -118,6 +118,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                       ),
                       alignment: Alignment.centerLeft,
                       child: TextField(
+                        maxLength: 1000,
                         textAlign: TextAlign.start,
                         onChanged: (text) => store.setDescription(text),
                         keyboardType: TextInputType.multiline,

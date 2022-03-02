@@ -11,7 +11,7 @@ class PriorityView extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget returnWidget = Container();
     switch (priority) {
-      case 1:
+      case 0:
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(
@@ -26,7 +26,7 @@ class PriorityView extends StatelessWidget {
           ),
         );
         break;
-      case 2:
+      case 1:
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(
@@ -41,7 +41,7 @@ class PriorityView extends StatelessWidget {
           ),
         );
         break;
-      case 3:
+      case 2:
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(

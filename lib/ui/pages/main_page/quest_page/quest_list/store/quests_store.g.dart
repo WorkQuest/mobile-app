@@ -140,13 +140,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$searchResultListAtom = Atom(name: '_QuestsStore.searchResultList');
 
   @override
-  List<BaseQuestResponse>? get searchResultList {
+  ObservableList<BaseQuestResponse> get searchResultList {
     _$searchResultListAtom.reportRead();
     return super.searchResultList;
   }
 
   @override
-  set searchResultList(List<BaseQuestResponse>? value) {
+  set searchResultList(ObservableList<BaseQuestResponse> value) {
     _$searchResultListAtom.reportWrite(value, super.searchResultList, () {
       super.searchResultList = value;
     });
@@ -155,13 +155,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$searchWorkersListAtom = Atom(name: '_QuestsStore.searchWorkersList');
 
   @override
-  List<ProfileMeResponse>? get searchWorkersList {
+  ObservableList<ProfileMeResponse> get searchWorkersList {
     _$searchWorkersListAtom.reportRead();
     return super.searchWorkersList;
   }
 
   @override
-  set searchWorkersList(List<ProfileMeResponse>? value) {
+  set searchWorkersList(ObservableList<ProfileMeResponse> value) {
     _$searchWorkersListAtom.reportWrite(value, super.searchWorkersList, () {
       super.searchWorkersList = value;
     });
@@ -249,6 +249,15 @@ mixin _$QuestsStore on _QuestsStore, Store {
   @override
   Future<dynamic> getSearchedQuests() {
     return _$getSearchedQuestsAsyncAction.run(() => super.getSearchedQuests());
+  }
+
+  final _$getSearchedWorkersAsyncAction =
+      AsyncAction('_QuestsStore.getSearchedWorkers');
+
+  @override
+  Future<dynamic> getSearchedWorkers() {
+    return _$getSearchedWorkersAsyncAction
+        .run(() => super.getSearchedWorkers());
   }
 
   final _$getQuestsAsyncAction = AsyncAction('_QuestsStore.getQuests');

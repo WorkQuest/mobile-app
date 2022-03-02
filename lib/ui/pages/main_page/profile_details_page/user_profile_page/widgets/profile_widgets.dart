@@ -7,6 +7,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
+import 'package:app/ui/widgets/user_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -181,6 +182,7 @@ class ReviewsWidget extends StatelessWidget {
                     title: Text(
                       name,
                       style: TextStyle(fontSize: 16.0),
+                      overflow: TextOverflow.ellipsis,
                     ),
                     subtitle: Text(
                       userRole.tr(),
@@ -269,77 +271,83 @@ class ReviewsWidget extends StatelessWidget {
 }
 
 ///AppBar Title
-Widget appBarTitle(String name, double padding, String status) {
-  return AnimatedPadding(
-    padding: EdgeInsets.only(left: padding),
-    duration: Duration(milliseconds: 100),
-    child: Stack(
-      children: [
-        Positioned(
-          bottom: status != "noStatus" ? 18.0 : 0.0,
-          left: 0.0,
-          child: Text(
-            name,
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        if (status.isNotEmpty)
+Widget appBarTitle(String name, double padding, String status, double width) {
+  return Container(
+    child: AnimatedPadding(
+      padding: EdgeInsets.only(left: padding),
+      duration: Duration(milliseconds: 100),
+      child: Stack(
+        children: [
           Positioned(
-            bottom: 0.0,
+            bottom: status != "noStatus" ? 18.0 : 0.0,
             left: 0.0,
             child: Container(
-              // padding: EdgeInsets.symmetric(
-              //   horizontal: 5.0,
-              //   vertical: 2.0,
-              // ),
-              child: tagStatus(status),
+              width: width,
+              child: Text(
+                name,
+                style: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.white,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
-      ],
+          if (status.isNotEmpty)
+            Positioned(
+              bottom: 0.0,
+              left: 0.0,
+              child: Container(
+                // padding: EdgeInsets.symmetric(
+                //   horizontal: 5.0,
+                //   vertical: 2.0,
+                // ),
+                child: UserRating(status),
+              ),
+            ),
+        ],
+      ),
     ),
   );
 }
 
-Widget tag({required String text, required Color color}) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 8,
-        ),
-      ),
-    );
-
-Widget tagStatus(String status) {
-  switch (status) {
-    case "topRanked":
-      return tag(
-        text: "GOLD PLUS",
-        color: Color(0xFFF6CF00),
-      );
-    case "reliable":
-      return tag(
-        text: "SILVER",
-        color: Color(0xFFBBC0C7),
-      );
-
-    case "verified":
-      return tag(
-        text: "BRONZE",
-        color: Color(0xFFB79768),
-      );
-    default:
-      return SizedBox.shrink();
-  }
-}
+// Widget tag({required String text, required Color color}) => Container(
+//       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+//       decoration: BoxDecoration(
+//         color: color,
+//         borderRadius: BorderRadius.circular(3),
+//       ),
+//       child: Text(
+//         text,
+//         style: TextStyle(
+//           color: Colors.white,
+//           fontSize: 8,
+//         ),
+//       ),
+//     );
+//
+// Widget tagStatus(String status) {
+//   switch (status) {
+//     case "topRanked":
+//       return tag(
+//         text: "GOLD PLUS",
+//         color: Color(0xFFF6CF00),
+//       );
+//     case "reliable":
+//       return tag(
+//         text: "SILVER",
+//         color: Color(0xFFBBC0C7),
+//       );
+//
+//     case "verified":
+//       return tag(
+//         text: "BRONZE",
+//         color: Color(0xFFB79768),
+//       );
+//     default:
+//       return SizedBox.shrink();
+//   }
+// }
 
 ///Quest Rating Widget
 ///
@@ -772,6 +780,7 @@ Widget contactDetails({
   required String number,
   required String email,
   required String secondNumber,
+  required bool isVerify,
 }) {
   return Padding(
     padding: const EdgeInsets.only(top: 20.0),
@@ -827,6 +836,20 @@ Widget contactDetails({
                   ),
                 ],
               ),
+              if (isVerify)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 30.0),
+                    child: Text(
+                      "Number Confirmed",
+                      style: TextStyle(
+                        color: Color(0xFF0083C7),
+                        fontSize: 8,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         if (secondNumber.isNotEmpty)

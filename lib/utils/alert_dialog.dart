@@ -6,7 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AlertDialogUtils {
-  static Future<void> showSuccessDialog(BuildContext context) async {
+  static Future<void> showSuccessDialog(BuildContext context,
+      {String text = 'Success'}) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -14,8 +15,8 @@ class AlertDialogUtils {
         const SizedBox(
           height: 15,
         ),
-        const Text(
-          'Success',
+        Text(
+          text,
           style: TextStyle(
             fontSize: 16,
             color: Colors.black,
@@ -89,7 +90,7 @@ class AlertDialogUtils {
     }
   }
 
-  static void showAlertDialog(
+  static Future<void> showAlertDialog(
     BuildContext context, {
     required Widget title,
     required Widget? content,
@@ -100,7 +101,7 @@ class AlertDialogUtils {
     required Function()? onTabOk,
     required Color? colorCancel,
     required Color? colorOk,
-  }) {
+  }) async {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -124,11 +125,11 @@ class AlertDialogUtils {
                     ),
                   ),
                 CupertinoButton(
-                  onPressed: () {
-                    Navigator.pop(context);
+                  onPressed: () async {
                     if (onTabOk != null) {
-                      onTabOk.call();
+                      await onTabOk.call();
                     }
+                    Navigator.pop(context);
                   },
                   child: Text(
                     titleOk ?? 'Ok',
@@ -139,6 +140,7 @@ class AlertDialogUtils {
             );
           }
           return AlertDialog(
+            scrollable: true,
             title: title,
             content: content,
             actions: [
@@ -156,11 +158,11 @@ class AlertDialogUtils {
                   ),
                 ),
               TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
+                onPressed: () async {
                   if (onTabOk != null) {
-                    onTabOk.call();
+                    await onTabOk.call();
                   }
+                  Navigator.pop(context);
                 },
                 child: Text(
                   titleOk ?? 'Ok',

@@ -53,6 +53,7 @@ class _QuestListState extends State<QuestList> {
       profileMeStore!.userData!.role == UserRole.Worker
           ? questsStore!.getQuests(true)
           : questsStore!.getWorkers(true);
+      questsStore!.role = profileMeStore!.userData!.role;
     });
   }
 
@@ -129,17 +130,21 @@ class _QuestListState extends State<QuestList> {
             ),
           ),
           SliverAppBar(
-              pinned: true,
-              title: TextFormField(
-                onChanged: questsStore!.setSearchWord,
-                decoration: InputDecoration(
-                    fillColor: Color(0xFFF7F8FA),
-                    hintText: "Employer / Title / Description",
-                    prefixIcon: Icon(
-                      Icons.search,
-                      size: 25.0,
-                    )),
-              )),
+            pinned: true,
+            title: TextFormField(
+              onChanged: questsStore!.setSearchWord,
+              decoration: InputDecoration(
+                fillColor: Color(0xFFF7F8FA),
+                hintText: profileMeStore!.userData!.role == UserRole.Worker
+                    ? "Employer / Title / Description"
+                    : "Employee / City",
+                prefixIcon: Icon(
+                  Icons.search,
+                  size: 25.0,
+                ),
+              ),
+            ),
+          ),
           SliverList(
             delegate: SliverChildListDelegate(
               [
@@ -186,7 +191,10 @@ class _QuestListState extends State<QuestList> {
                                 "assets/empty_quest_icon.svg",
                               ),
                               Text(
-                                "quest.noQuest".tr(),
+                                profileMeStore!.userData!.role ==
+                                        UserRole.Worker
+                                    ? "quests.noQuest".tr()
+                                    : "Worker not wound",
                               ),
                             ],
                           ),
@@ -201,13 +209,13 @@ class _QuestListState extends State<QuestList> {
                               },
                               padding: EdgeInsets.zero,
                               itemCount: questsStore!.searchWord.length > 2
-                                  ? questsStore!.searchResultList?.length ?? 0
+                                  ? questsStore!.searchResultList.length
                                   : questsStore!.questsList.length,
                               itemBuilder: (_, index) {
                                 return Observer(
                                   builder: (_) => MyQuestsItem(
                                     questsStore!.searchWord.length > 2
-                                        ? questsStore!.searchResultList![index]
+                                        ? questsStore!.searchResultList[index]
                                         : questsStore!.questsList[index],
                                     itemType: this.questItemPriorityType,
                                   ),
@@ -223,13 +231,13 @@ class _QuestListState extends State<QuestList> {
                               },
                               padding: EdgeInsets.zero,
                               itemCount: questsStore!.searchWord.length > 2
-                                  ? questsStore!.searchResultList?.length ?? 0
+                                  ? questsStore!.searchWorkersList.length
                                   : questsStore!.workersList.length,
                               itemBuilder: (_, index) {
                                 return Observer(
                                   builder: (_) => WorkersItem(
                                     questsStore!.searchWord.length > 2
-                                        ? questsStore!.searchWorkersList![index]
+                                        ? questsStore!.searchWorkersList[index]
                                         : questsStore!.workersList[index],
                                     questsStore!,
                                   ),
@@ -268,9 +276,13 @@ class _QuestListState extends State<QuestList> {
       if (questsStore != null) {
         if (questsStore!.isLoading) return;
         if (profileMeStore!.userData!.role == UserRole.Worker)
-          questsStore!.getQuests(false);
+          questsStore!.searchWord.length > 2
+              ? questsStore!.getSearchedQuests()
+              : questsStore!.getQuests(false);
         else
-          questsStore!.getWorkers(false);
+          questsStore!.searchWord.length > 2
+              ? questsStore!.getSearchedWorkers()
+              : questsStore!.getWorkers(false);
       }
     }
   }

@@ -113,6 +113,7 @@ extension CustomAppBar on UserProfileState {
           info == null
               ? userStore!.userData!.ratingStatistic?.status ?? "noStatus"
               : info.ratingStatistic?.status ?? "noStatus",
+            width,
         ),
       ),
     );

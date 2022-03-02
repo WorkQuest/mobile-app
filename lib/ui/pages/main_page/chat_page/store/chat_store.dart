@@ -182,9 +182,11 @@ abstract class _ChatStore extends IStore<bool> with Store {
       chat.chatModel.lastMessage = message;
       chat.messages.insert(0, message);
 
-      final saveChat = chats.remove(message.chatId);
+      // final saveChat = chats.remove(message.chatId);
 
-      chats[message.chatId] = saveChat!;
+      // chats[message.chatId] = saveChat!;
+
+      chatSort();
 
       checkMessage();
       _atomChats.reportChanged();
@@ -206,23 +208,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   @observable
   int _count = 0;
-
-  // @action
-  // void openStarredChats(bool value) async {
-  //   chats = {};
-  //   starred = value;
-  //   starredChats.clear();
-  //
-  //   final listChats = await _apiProvider.getChats(
-  //     offset: this.offset,
-  //     limit: this.limit,
-  //     starred: value
-  //   );
-  //   listChats.forEach((chat) {
-  //     chats[chat.id] = Chats(chat);
-  //   });
-  //   starredChats = chats.keys.toList();
-  // }
 
   @action
   String setInfoMessage(String infoMessage) {

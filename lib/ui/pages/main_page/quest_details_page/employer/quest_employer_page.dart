@@ -10,12 +10,16 @@ import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
+import 'package:app/ui/widgets/error_dialog.dart';
+import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import 'package:share/share.dart';
+
+import '../../../../../constants.dart';
 
 class QuestEmployer extends QuestDetails {
   QuestEmployer(BaseQuestResponse questInfo) : super(questInfo);
@@ -78,24 +82,106 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   );
                   break;
                 case "registration.edit":
-                  await Navigator.pushNamed(
-                    context,
-                    CreateQuestPage.routeName,
-                    arguments: widget.questInfo,
-                  );
+                  if (profile?.userData?.isTotpActive == true) {
+                    AlertDialogUtils.showAlertDialog(
+                      context,
+                      title: const Text("Security check"),
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Google confirmation code"),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Observer(
+                            builder: (_) => TextFormField(
+                              onChanged: store.setTotp,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            "Enter the 6-digit code from the Google Authentication app",
+                          ),
+                        ],
+                      ),
+                      needCancel: true,
+                      titleCancel: "Cancel",
+                      titleOk: "Send",
+                      onTabCancel: null,
+                      onTabOk: () async {
+                        await store.validateTotp();
+                        if (store.isValid) {
+                          await Navigator.pushNamed(
+                            context,
+                            CreateQuestPage.routeName,
+                            arguments: widget.questInfo,
+                          );
+                        } else {
+                          await errorAlert(context, "Invalid TOTP");
+                        }
+                      },
+                      colorCancel: AppColor.enabledButton,
+                      colorOk: Colors.red,
+                    );
+                  } else {
+                    errorAlert(
+                        context, "You can't edit quest without connected 2FA");
+                  }
                   break;
                 case "settings.delete":
-                  dialog(
-                    context,
-                    title: "quests.deleteQuest".tr(),
-                    message: "quests.deleteQuestMessage".tr(),
-                    confirmAction: () async {
-                      await store.deleteQuest(questId: widget.questInfo.id);
-                      questStore.deleteQuest(widget.questInfo);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                  );
+                  if (profile?.userData?.isTotpActive == true) {
+                    AlertDialogUtils.showAlertDialog(
+                      context,
+                      title: const Text("Security check"),
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Google confirmation code"),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Observer(
+                            builder: (_) => TextFormField(
+                              onChanged: store.setTotp,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            "Enter the 6-digit code from the Google Authentication app",
+                          ),
+                        ],
+                      ),
+                      needCancel: true,
+                      titleCancel: "Cancel",
+                      titleOk: "Send",
+                      onTabCancel: null,
+                      onTabOk: () async {
+                        await store.validateTotp();
+                        if (store.isValid)
+                          await dialog(
+                            context,
+                            title: "quests.deleteQuest".tr(),
+                            message: "quests.deleteQuestMessage".tr(),
+                            confirmAction: () async {
+                              await store.deleteQuest(
+                                  questId: widget.questInfo.id);
+                              questStore.deleteQuest(widget.questInfo);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            },
+                          );
+                      },
+                      colorCancel: AppColor.enabledButton,
+                      colorOk: Colors.red,
+                    );
+                  } else {
+                    errorAlert(context,
+                        "You can't delete quest without connected 2FA");
+                  }
                   break;
                 default:
               }
@@ -126,6 +212,40 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           },
         ),
     ];
+  }
+
+  Future<void> validate() {
+    return AlertDialogUtils.showAlertDialog(
+      context,
+      title: const Text("Security check"),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Google confirmation code"),
+          const SizedBox(
+            height: 15,
+          ),
+          Observer(
+            builder: (_) => TextFormField(
+              onChanged: store.setTotp,
+            ),
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Text(
+            "Enter the 6-digit code from the Google Authentication app",
+          ),
+        ],
+      ),
+      needCancel: true,
+      titleCancel: "Cancel",
+      titleOk: "Send",
+      onTabCancel: () => Navigator.pop(context),
+      onTabOk: () => store.validateTotp(),
+      colorCancel: AppColor.enabledButton,
+      colorOk: Colors.red,
+    );
   }
 
   @override
@@ -537,22 +657,24 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 5),
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF6CF00),
-              borderRadius: BorderRadius.circular(3),
-            ),
-            child: Text(
-              "levels.higher".tr(),
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
+          if (respond.worker.ratingStatistic?.status != null)
+            UserRating(respond.worker.ratingStatistic!.status),
+          // Container(
+          //   margin: const EdgeInsets.only(top: 5),
+          //   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+          //   decoration: BoxDecoration(
+          //     color: const Color(0xFFF6CF00),
+          //     borderRadius: BorderRadius.circular(3),
+          //   ),
+          //   child: Text(
+          //     "levels.higher".tr(),
+          //     style: TextStyle(
+          //       color: Colors.white,
+          //       fontSize: 12,
+          //       fontWeight: FontWeight.w500,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     ];

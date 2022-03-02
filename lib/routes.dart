@@ -126,8 +126,15 @@ class Routes {
 
       case PinCodePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<PinCodeStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<PinCodeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<EmployerStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: PinCodePage(),

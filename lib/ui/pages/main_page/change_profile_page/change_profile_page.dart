@@ -40,7 +40,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
     pageStore.getInitCode(
-        pageStore.userData.tempPhone ?? pageStore.userData.phone,
+        pageStore.userData.phone ?? pageStore.userData.tempPhone!,
         pageStore.userData.additionalInfo?.secondMobileNumber);
     if (profile!.userData!.additionalInfo!.address != null)
       pageStore.address = profile!.userData!.additionalInfo!.address!;
@@ -172,11 +172,11 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
               title: "modals.phoneNumber",
               initialValue: pageStore.phoneNumber,
               onChanged: (PhoneNumber phone) {
-                pageStore.userData.phone.codeRegion = phone.dialCode ?? "";
-                pageStore.userData.phone.phone =
+                pageStore.userData.tempPhone?.codeRegion = phone.dialCode ?? "";
+                pageStore.userData.tempPhone?.phone =
                     phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ??
                         "";
-                pageStore.userData.phone.fullPhone = phone.phoneNumber ?? "";
+                pageStore.userData.tempPhone?.fullPhone = phone.phoneNumber ?? "";
               },
             ),
             phoneNumber(
@@ -557,10 +557,16 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
         pageStore.userData,
         media: pageStore.media,
       );
-      if (pageStore.numberChanged(profile!.userData!.phone))
+      if (pageStore.numberChanged(profile!.userData!.tempPhone!)) {
         await profile!.submitPhoneNumber();
+        profile!.userData?.phone = null;
+      }
       if (profile!.isSuccess) {
-        await AlertDialogUtils.showSuccessDialog(context);
+        if (!pageStore.numberChanged(profile!.userData!.tempPhone!))
+          await AlertDialogUtils.showSuccessDialog(context);
+        else
+          await AlertDialogUtils.showSuccessDialog(context,
+              text: 'Enter code from SMS in SMS Verification');
         Navigator.pop(context);
       }
     }

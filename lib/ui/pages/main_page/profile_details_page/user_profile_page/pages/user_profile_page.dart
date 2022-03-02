@@ -43,6 +43,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
   UserProfileStore? viewOtherUser;
   MyQuestStore? myQuests;
   late UserRole role;
+  late bool isVerify;
 
   void initState() {
     super.initState();
@@ -76,6 +77,9 @@ class UserProfileState<T extends UserProfile> extends State<T>
         portfolioStore!.getPortfolio(userId: widget.info!.id);
       portfolioStore!.getReviews(userId: widget.info!.id);
     }
+    isVerify = widget.info == null
+        ? userStore!.userData?.phone != null
+        : widget.info?.phone != null;
   }
 
   @protected
@@ -147,6 +151,8 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   double appBarPosition = 0.0;
 
+  double width = 240.0;
+
   double appBarPositionVertical = 16.0;
 
   @override
@@ -160,6 +166,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
             setState(() {
               appBarPosition = 0.0;
               appBarPositionVertical = 16.0;
+              width = 240.0;
             });
           if (controllerMain.offset > 0 && controllerMain.offset < 240)
             setState(() {
@@ -171,6 +178,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                   : userStore!.userData!.ratingStatistic?.status != "noStatus"
                       ? appBarPositionVertical = 7.0
                       : appBarPositionVertical = 16.0;
+              width = 300.0;
             });
 
           return false;
@@ -218,11 +226,12 @@ class UserProfileState<T extends UserProfile> extends State<T>
                                   ''
                               : widget.info!.additionalInfo?.address ?? "",
                           number: widget.info == null
-                              ? userStore!.userData?.tempPhone?.fullPhone ??
-                                  userStore!.userData?.phone.fullPhone ??
+                              ? userStore!.userData?.phone?.fullPhone ??
+                                  userStore!.userData?.tempPhone?.fullPhone ??
                                   ""
-                              : widget.info!.tempPhone?.fullPhone ??
-                                  widget.info!.phone.fullPhone,
+                              : widget.info?.phone?.fullPhone ??
+                                  widget.info!.tempPhone?.fullPhone ??
+                                  "",
                           secondNumber: widget.info == null
                               ? userStore!.userData?.additionalInfo
                                       ?.secondMobileNumber!.fullPhone ??
@@ -233,6 +242,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                           email: widget.info == null
                               ? userStore!.userData?.email ?? " "
                               : widget.info!.email ?? " ",
+                          isVerify: isVerify,
                         ),
 
                         ...ratingsWidget(),
