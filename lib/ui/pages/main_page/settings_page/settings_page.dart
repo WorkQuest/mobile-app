@@ -29,6 +29,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(context) {
     final settingStore = context.read<SettingsPageStore>();
     final userStore = context.read<ProfileMeStore>();
+    userStore.getProfileMe();
     final chooseRoleStore = context.read<ChooseRoleStore>();
 
     return Scaffold(
@@ -141,7 +142,7 @@ class SettingsPage extends StatelessWidget {
                                           true
                                       ? () {
                                           if (userStore.userData!
-                                                  .questsStatistic!.opened !=
+                                                  .questsStatistic!.opened!=
                                               0) {
                                             AlertDialogUtils.showAlertDialog(
                                               context,

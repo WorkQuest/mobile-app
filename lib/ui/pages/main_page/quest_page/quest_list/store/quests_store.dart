@@ -196,7 +196,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     role == UserRole.Worker
         ? searchResultList.clear()
         : searchWorkersList.clear();
-    this.offset = 0;
+    offset = 0;
     searchWord = value.trim();
     if (debounce != null) {
       debounce!.cancel();
@@ -215,16 +215,17 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   Future getSearchedQuests() async {
-    if (this.offset == searchResultList.length) {
+    if (offset == searchResultList.length) {
       this.onLoading();
       debounce = Timer(const Duration(milliseconds: 300), () async {
         searchResultList.addAll(await _apiProvider.getQuests(
-          searchWord: this.searchWord,
-          offset: this.offset,
+          searchWord:searchWord,
+          offset: offset,
         ));
+        //offset review
+        offset += 10;
         this.onSuccess(true);
       });
-      this.offset += 10;
     }
   }
 
@@ -237,9 +238,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
           searchWord: this.searchWord,
           offset: this.offset,
         ));
+        this.offset += 10;
         this.onSuccess(true);
       });
-      this.offset += 10;
     }
   }
 

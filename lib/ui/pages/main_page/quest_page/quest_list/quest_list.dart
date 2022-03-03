@@ -199,51 +199,41 @@ class _QuestListState extends State<QuestList> {
                             ],
                           ),
                         )
-                      : role == UserRole.Worker
-                          ? ListView.separated(
-                              key: scrollKey,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              separatorBuilder: (context, index) {
-                                return _getDivider();
-                              },
-                              padding: EdgeInsets.zero,
-                              itemCount: questsStore!.searchWord.length > 2
+                      : ListView.separated(
+                          key: scrollKey,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          separatorBuilder: (context, index) {
+                            return _getDivider();
+                          },
+                          padding: EdgeInsets.zero,
+                          itemCount: () {
+                            if (role == UserRole.Worker)
+                              return questsStore!.searchWord.length > 2
                                   ? questsStore!.searchResultList.length
-                                  : questsStore!.questsList.length,
-                              itemBuilder: (_, index) {
-                                return Observer(
-                                  builder: (_) => MyQuestsItem(
-                                    questsStore!.searchWord.length > 2
-                                        ? questsStore!.searchResultList[index]
-                                        : questsStore!.questsList[index],
-                                    itemType: this.questItemPriorityType,
-                                  ),
+                                  : questsStore!.questsList.length;
+                            return questsStore!.searchWord.length > 2
+                                ? questsStore!.searchWorkersList.length
+                                : questsStore!.workersList.length;
+                          }(),
+                          itemBuilder: (_, index) {
+                            return Observer(builder: (_) {
+                              if (role == UserRole.Worker)
+                                return MyQuestsItem(
+                                  questsStore!.searchWord.length > 2
+                                      ? questsStore!.searchResultList[index]
+                                      : questsStore!.questsList[index],
+                                  itemType: this.questItemPriorityType,
                                 );
-                              },
-                            )
-                          : ListView.separated(
-                              key: scrollKey,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              separatorBuilder: (context, index) {
-                                return _getDivider();
-                              },
-                              padding: EdgeInsets.zero,
-                              itemCount: questsStore!.searchWord.length > 2
-                                  ? questsStore!.searchWorkersList.length
-                                  : questsStore!.workersList.length,
-                              itemBuilder: (_, index) {
-                                return Observer(
-                                  builder: (_) => WorkersItem(
-                                    questsStore!.searchWord.length > 2
-                                        ? questsStore!.searchWorkersList[index]
-                                        : questsStore!.workersList[index],
-                                    questsStore!,
-                                  ),
-                                );
-                              },
-                            ),
+                              return WorkersItem(
+                                questsStore!.searchWord.length > 2
+                                    ? questsStore!.searchWorkersList[index]
+                                    : questsStore!.workersList[index],
+                                questsStore!,
+                              );
+                            });
+                          },
+                        ),
                 ),
               ],
             ),
