@@ -125,48 +125,20 @@ class _QuestMapState extends State<QuestMap> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Observer(
-              builder: (_) => GestureDetector(
-                onTap: () {
+              builder: (_) => TextFormField(
+                onTap: (){
                   mapStore!.getPrediction(context, _controller);
                 },
-                child: Container(
-                  height: 60,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFF7F8FA),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(6.0),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Icon(
-                          Icons.search,
-                          size: 25.0,
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Flexible(
-                          child: mapStore!.address.isNotEmpty
-                              ? Text(
-                                  mapStore!.address,
-                                  overflow: TextOverflow.fade,
-                                )
-                              : Text(
-                                  "quests.ui.search".tr(),
-                                  overflow: TextOverflow.fade,
-                                  style: TextStyle(
-                                    color: Color(0xFFD8DFE3),
-                                    fontSize: 16,
-                                  ),
-                                ),
-                        ),
-                      ],
-                    ),
+                readOnly: true,
+                decoration: InputDecoration(
+                  fillColor: Color(0xFFF7F8FA),
+
+                  hintText:mapStore!.address.isNotEmpty
+                      ?  mapStore!.address
+                      : "quests.ui.search".tr(),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    size: 25.0,
                   ),
                 ),
               ),
