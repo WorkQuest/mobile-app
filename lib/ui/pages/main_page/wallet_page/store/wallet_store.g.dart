@@ -39,16 +39,12 @@ mixin _$WalletStore on _WalletStore, Store {
     });
   }
 
-  final _$isMoreLoadingAtom = Atom(name: '_WalletStore.isMoreLoading');
-
-
   final _$getCoinsAsyncAction = AsyncAction('_WalletStore.getCoins');
 
   @override
   Future getCoins({bool isForce = true}) {
     return _$getCoinsAsyncAction.run(() => super.getCoins(isForce: isForce));
   }
-
 
   final _$_WalletStoreActionController = ActionController(name: '_WalletStore');
 
@@ -67,7 +63,7 @@ mixin _$WalletStore on _WalletStore, Store {
   String toString() {
     return '''
 type: ${type},
-coins: ${coins},
+coins: ${coins}
     ''';
   }
 }

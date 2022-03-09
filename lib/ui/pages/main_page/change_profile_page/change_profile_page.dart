@@ -153,7 +153,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                             ),
                             Flexible(
                               child: Text(
-                                pageStore.address,
+                                pageStore.userData.locationPlaceName??"",
                                 overflow: TextOverflow.fade,
                               ),
                             ),
@@ -172,16 +172,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
               title: "modals.phoneNumber",
               initialValue: pageStore.phoneNumber,
               onChanged: (PhoneNumber phone) {
-                pageStore.userData.tempPhone?.codeRegion = phone.dialCode ?? "";
-                pageStore.userData.tempPhone?.phone =
-                    phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ??
-                        "";
-                pageStore.userData.tempPhone?.fullPhone =
-                    phone.phoneNumber ?? "";
-
-                print(pageStore.userData.tempPhone?.codeRegion);
-                print(pageStore.userData.tempPhone?.phone);
-                print(pageStore.userData.tempPhone?.fullPhone);
+                // pageStore.userData.tempPhone?.codeRegion = phone.dialCode ?? "";
+                // pageStore.userData.tempPhone?.phone =
+                //     phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ??
+                //         "";
+                // pageStore.userData.tempPhone?.fullPhone =
+                //     phone.phoneNumber ?? "";
               },
             ),
             phoneNumber(

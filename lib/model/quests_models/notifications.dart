@@ -38,6 +38,7 @@ class NotificationElement {
 
   String id;
   String userId;
+
   // String queueName;
   NotificationNotification notification;
   bool seen;
@@ -101,16 +102,22 @@ class Data {
   String questId;
   User user;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-        id: json["id"],
-        title: json["title"] ?? json["quest"]["title"],
-        questId: json["questId"] ?? "",
-        user: json["fromUser"] == null
-            ? json["user"] == null
-                ? User.fromJson(json["quest"]["user"])
-                : User.fromJson(json["user"])
-            : User.fromJson(json["fromUser"]),
-      );
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
+      id: json["quest"] == null ? json["id"] : json["quest"]["id"],
+      title: json["title"] == null
+          ? json["quest"] == null
+              ? json["message"]
+              : json["quest"]["title"]
+          : json["title"],
+      questId: json["questId"] ?? "",
+      user: json["fromUser"] == null
+          ? json["user"] == null
+              ? User.fromJson(json["quest"]["user"])
+              : User.fromJson(json["user"])
+          : User.fromJson(json["fromUser"]),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "id": id,

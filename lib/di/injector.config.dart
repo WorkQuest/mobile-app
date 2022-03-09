@@ -20,7 +20,7 @@ import '../ui/pages/main_page/profile_details_page/portfolio_page/store/portfoli
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart'
     as _i10;
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart'
-    as _i38;
+    as _i39;
 import '../ui/pages/main_page/quest_details_page/dispute_page/store/open_dispute_store.dart'
     as _i17;
 import '../ui/pages/main_page/quest_details_page/employer/store/employer_store.dart'
@@ -40,7 +40,7 @@ import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
 import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
     as _i18;
 import '../ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart'
-    as _i37;
+    as _i38;
 import '../ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/dispute_store.dart'
     as _i13;
 import '../ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_store.dart'
@@ -50,7 +50,9 @@ import '../ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sm
 import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i21;
 import '../ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart'
     as _i12;
-import '../ui/pages/main_page/wallet_page/store/wallet_store.dart' as _i39;
+import '../ui/pages/main_page/wallet_page/store/wallet_store.dart' as _i40;
+import '../ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart'
+    as _i37;
 import '../ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart'
     as _i3;
 import '../ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart'
@@ -140,11 +142,12 @@ extension GetItInjectableX on _i1.GetIt {
     gh.singleton<_i35.QuestMapStore>(
         _i35.QuestMapStore(get<_i8.ApiProvider>()));
     gh.singleton<_i36.QuestsStore>(_i36.QuestsStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i37.TwoFAStore>(_i37.TwoFAStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i38.UserProfileStore>(
-        _i38.UserProfileStore(get<_i9.ApiProvider>()));
-    gh.singleton<_i39.WalletStore>(_i39.WalletStore(get<_i9.ApiProvider>()));
-    gh.singleton<_i40.TransactionsStore>(_i40.TransactionsStore(get<_i9.ApiProvider>()));
+    gh.singleton<_i37.TransactionsStore>(
+        _i37.TransactionsStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i38.TwoFAStore>(_i38.TwoFAStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i39.UserProfileStore>(
+        _i39.UserProfileStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i40.WalletStore>(_i40.WalletStore(get<_i8.ApiProvider>()));
     return this;
   }
 }

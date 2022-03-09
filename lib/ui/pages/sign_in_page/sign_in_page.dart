@@ -373,12 +373,12 @@ class SignInPage extends StatelessWidget {
   //   );
   // }
 
-  Future<void> _errorMessage(BuildContext context, msg) =>
+  Future<void> _errorMessage(BuildContext context, String? msg) =>
       AlertDialogUtils.showAlertDialog(
         context,
         title: Text("Error"),
         content: Text(
-          msg,
+          msg??"",
         ),
         needCancel: false,
         titleCancel: null,

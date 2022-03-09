@@ -205,30 +205,28 @@ class _NotificationPageState extends State<NotificationPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Align(
+                  Expanded(
                     child: Text(
                       body.notification.data.title,
-                      overflow: TextOverflow.fade,
+                      overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
-                  Align(
-                    child: InkWell(
-                      child: Icon(
-                        Icons.arrow_forward_ios_sharp,
-                        color: Colors.blueAccent,
-                        size: 20,
-                      ),
-                      onTap: () async {
-                        await store.getQuest(body.notification.data.id);
-                        await Navigator.of(context, rootNavigator: true)
-                            .pushNamed(
-                          QuestDetails.routeName,
-                          arguments: store.quest,
-                        );
-                      },
+                  InkWell(
+                    child: Icon(
+                      Icons.arrow_forward_ios_sharp,
+                      color: Colors.blueAccent,
+                      size: 20,
                     ),
+                    onTap: () async {
+                      await store.getQuest(body.notification.data.id);
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(
+                        QuestDetails.routeName,
+                        arguments: store.quest,
+                      );
+                    },
                   ),
                 ],
               ),
