@@ -90,6 +90,40 @@ class AlertDialogUtils {
     }
   }
 
+  static void showInfoAlertDialog(
+      BuildContext context, {
+        required String title,
+        required String content,
+      }) {
+    showCupertinoDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) {
+        return Platform.isIOS
+            ? CupertinoAlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text("OK"),
+              onPressed: Navigator.of(context, rootNavigator: true).pop,
+            )
+          ],
+        )
+            : AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            CupertinoDialogAction(
+              child: const Text("OK"),
+              onPressed: Navigator.of(context, rootNavigator: true).pop,
+            )
+          ],
+        );
+      },
+    );
+  }
+
   static Future<void> showAlertDialog(
     BuildContext context, {
     required Widget title,
