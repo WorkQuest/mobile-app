@@ -1,3 +1,4 @@
+
 import 'package:app/model/web3/transactions_response.dart';
 
 import 'api_provider.dart';
@@ -7,7 +8,7 @@ extension Web3Requests on ApiProvider {
     required String address,
     required String addressToken,
   }) =>
-      "https://dev-explorer.workquest.co/api/token/$addressToken/account/$address/transfers";
+      "https://dev-explorer.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
 
   Future<void> registerWallet(String publicKey, String address) async {
     await httpClient.post(
@@ -22,12 +23,12 @@ extension Web3Requests on ApiProvider {
   Future<List<Tx>> getTransactions(String address,
       {int limit = 10, int offset = 0}) async {
     String _transactions(String address) =>
-        "https://dev-explorer.workquest.co/api/v1/account/$address/txs";
+        "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
     final response = await httpClient.get(
       query: '${_transactions(address)}?limit=$limit&offset=$offset',
       useBaseUrl: false,
     );
-    return TransactionsResponse.fromJson(response).txs!;
+    return TransactionsResponse.fromJson(response).transactions!;
   }
 
   Future<List<Tx>?> getTransactionsByToken({
@@ -40,10 +41,11 @@ extension Web3Requests on ApiProvider {
       print("Called Tansaction By roken");
       final response = await httpClient.get(
           query: '${_transactionsByToken(
-        address: address,
-        addressToken: addressToken,
-      )}?limit=$limit&offset=$offset');
-      return TransactionsResponse.fromJson(response).txs!;
+            address: address,
+            addressToken: addressToken,
+          )}?limit=$limit&offset=$offset',
+          useBaseUrl: false);
+      return TransactionsResponse.fromJsonToken(response).transactions!;
     } catch (e, tr) {
       print("$e $tr");
     }

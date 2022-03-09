@@ -1795,7 +1795,15 @@
           "btnText": "Respond to the quest!"
         }
       }
-    }
+    },
+    "fieldEmpty": "Field is empty",
+    "incorrectFormat": "Incorrect format",
+    "passwordsNotMatch": "Passwords don't match",
+    "smallNumberWords": "A small number of words",
+    "incorrectMnemonicFormat": "Incorrect mnemonic format",
+    "notInternet": "No internet access",
+    "provideYourAddress": "You have provided your address.",
+    "invalidAmount": "Invalid value amount."
   },
   "sharing": {
     "title": "Share",

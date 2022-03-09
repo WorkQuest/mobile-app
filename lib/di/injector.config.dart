@@ -142,8 +142,9 @@ extension GetItInjectableX on _i1.GetIt {
     gh.singleton<_i36.QuestsStore>(_i36.QuestsStore(get<_i8.ApiProvider>()));
     gh.singleton<_i37.TwoFAStore>(_i37.TwoFAStore(get<_i8.ApiProvider>()));
     gh.singleton<_i38.UserProfileStore>(
-        _i38.UserProfileStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i39.WalletStore>(_i39.WalletStore(get<_i8.ApiProvider>()));
+        _i38.UserProfileStore(get<_i9.ApiProvider>()));
+    gh.singleton<_i39.WalletStore>(_i39.WalletStore(get<_i9.ApiProvider>()));
+    gh.singleton<_i40.TransactionsStore>(_i40.TransactionsStore(get<_i9.ApiProvider>()));
     return this;
   }
 }

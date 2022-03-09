@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:app/model/web3/transactions_response.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/material.dart';
@@ -8,14 +9,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
-import '../../../../constants.dart';
+import '../../../../../constants.dart';
 
 class ListTransactions extends StatelessWidget {
   const ListTransactions({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final store = GetIt.I.get<WalletStore>();
+    final store = GetIt.I.get<TransactionsStore>();
     return Observer(
       builder: (_) {
         if (store.isLoading) {
@@ -69,9 +70,18 @@ class ListTransactions extends StatelessWidget {
   Widget _infoElement(Tx transaction) {
     bool increase = transaction.fromAddressHash!.hex != AccountRepository().userAddress;
     Color color = increase ? Colors.green : Colors.red;
-    final score =
-        (BigInt.parse(transaction.value!).toDouble() * pow(10, -13)).round() *
-            pow(10, -5);
+    double score;
+    if (transaction.tokenTransfers != null && transaction.tokenTransfers!.isEmpty) {
+      score = BigInt.parse(transaction.value!).toDouble() * pow(10, -18);
+    } else {
+      if (transaction.amount != null) {
+        score = BigInt.parse(transaction.amount!).toDouble() *
+            pow(10, -18);
+      } else {
+        score = BigInt.parse(transaction.tokenTransfers!.first.amount!).toDouble() *
+            pow(10, -18);
+      }
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 7.5),
       child: Row(
@@ -110,7 +120,7 @@ class ListTransactions extends StatelessWidget {
               ),
               Text(
                 DateFormat('dd.MM.yy HH:mm')
-                    .format(transaction.insertedAt!.toLocal())
+                    .format(transaction.amount != null ? transaction.insertedAt!.toLocal() : transaction.block!.timestamp!.toLocal())
                     .toString(),
                 style: const TextStyle(
                   fontSize: 14,
@@ -122,7 +132,7 @@ class ListTransactions extends StatelessWidget {
           const SizedBox(width: 20,),
           Expanded(
             child: Text(
-              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${transaction.coin?.name??"unknown coin"}',
+              '${increase ? '+' : '-'}${score.toStringAsFixed(5)} ${_getTitleCoin()}',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -135,6 +145,21 @@ class ListTransactions extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getTitleCoin() {
+    switch (GetIt.I.get<WalletStore>().type) {
+      case TYPE_COINS.WQT:
+        return "WQT";
+      case TYPE_COINS.WUSD:
+        return "WUSD";
+      case TYPE_COINS.wBNB:
+        return "wBNB";
+      case TYPE_COINS.wETH:
+        return "wETH";
+      default:
+        return "WUSD";
+    }
   }
 }
 
