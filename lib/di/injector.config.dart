@@ -51,6 +51,7 @@ import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i21;
 import '../ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart'
     as _i13;
 import '../ui/pages/main_page/wallet_page/store/wallet_store.dart' as _i39;
+import '../ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart' as _i40;
 import '../ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart'
     as _i3;
 import '../ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart'
@@ -143,6 +144,7 @@ extension GetItInjectableX on _i1.GetIt {
     gh.singleton<_i38.UserProfileStore>(
         _i38.UserProfileStore(get<_i9.ApiProvider>()));
     gh.singleton<_i39.WalletStore>(_i39.WalletStore(get<_i9.ApiProvider>()));
+    gh.singleton<_i40.TransactionsStore>(_i40.TransactionsStore(get<_i9.ApiProvider>()));
     return this;
   }
 }

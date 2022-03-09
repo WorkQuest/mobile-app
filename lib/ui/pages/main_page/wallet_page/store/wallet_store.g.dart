@@ -39,35 +39,8 @@ mixin _$WalletStore on _WalletStore, Store {
     });
   }
 
-  final _$transactionsAtom = Atom(name: '_WalletStore.transactions');
-
-  @override
-  ObservableList<Tx> get transactions {
-    _$transactionsAtom.reportRead();
-    return super.transactions;
-  }
-
-  @override
-  set transactions(ObservableList<Tx> value) {
-    _$transactionsAtom.reportWrite(value, super.transactions, () {
-      super.transactions = value;
-    });
-  }
-
   final _$isMoreLoadingAtom = Atom(name: '_WalletStore.isMoreLoading');
 
-  @override
-  bool get isMoreLoading {
-    _$isMoreLoadingAtom.reportRead();
-    return super.isMoreLoading;
-  }
-
-  @override
-  set isMoreLoading(bool value) {
-    _$isMoreLoadingAtom.reportWrite(value, super.isMoreLoading, () {
-      super.isMoreLoading = value;
-    });
-  }
 
   final _$getCoinsAsyncAction = AsyncAction('_WalletStore.getCoins');
 
@@ -76,23 +49,6 @@ mixin _$WalletStore on _WalletStore, Store {
     return _$getCoinsAsyncAction.run(() => super.getCoins(isForce: isForce));
   }
 
-  final _$getTransactionsAsyncAction =
-      AsyncAction('_WalletStore.getTransactions');
-
-  @override
-  Future getTransactions({bool isForce = false}) {
-    return _$getTransactionsAsyncAction
-        .run(() => super.getTransactions(isForce: isForce));
-  }
-
-  final _$getTransactionsMoreAsyncAction =
-      AsyncAction('_WalletStore.getTransactionsMore');
-
-  @override
-  Future getTransactionsMore() {
-    return _$getTransactionsMoreAsyncAction
-        .run(() => super.getTransactionsMore());
-  }
 
   final _$_WalletStoreActionController = ActionController(name: '_WalletStore');
 
@@ -112,8 +68,6 @@ mixin _$WalletStore on _WalletStore, Store {
     return '''
 type: ${type},
 coins: ${coins},
-transactions: ${transactions},
-isMoreLoading: ${isMoreLoading}
     ''';
   }
 }

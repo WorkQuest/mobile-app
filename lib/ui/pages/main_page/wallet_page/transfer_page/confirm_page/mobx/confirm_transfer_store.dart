@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/client_service.dart';
@@ -26,7 +27,7 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
             coin: typeCoin,
           );
       GetIt.I.get<WalletStore>().getCoins();
-      GetIt.I.get<WalletStore>().getTransactions(isForce: true);
+      GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
       onSuccess(true);
     } on SocketException catch (_) {
       onError("Lost connection to server");

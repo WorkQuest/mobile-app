@@ -441,5 +441,15 @@
                 "3": "Full-time"
             }
         }
+    },
+    "errors": {
+        "fieldEmpty": "Поле пустое",
+        "incorrectFormat": "Неверный формат",
+        "passwordsNotMatch": "Пароли не совпадают",
+        "smallNumberWords": "Малое количество слов",
+        "incorrectMnemonicFormat": "Неправильный формат мнемоника",
+        "notInternet": "Нет доступа в Интернет",
+        "provideYourAddress": "Вы указали свой адрес.",
+        "invalidAmount": "Некорректное значение суммы."
     }
 }
