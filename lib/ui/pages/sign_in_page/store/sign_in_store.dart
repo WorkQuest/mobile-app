@@ -104,8 +104,8 @@ abstract class _SignInStore extends IStore<bool> with Store {
       }
       this.onSuccess(true);
         // throw FormatException("Invalid TOTP");
-      // await getIt.get<ProfileMeStore>().getProfileMe();
-      // await signInWallet();
+      await getIt.get<ProfileMeStore>().getProfileMe();
+      await signInWallet();
     } catch (e) {
       this.onError(e.toString());
     }
