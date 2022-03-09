@@ -8,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
 import 'chat_room_page/chat_room_page.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -213,13 +212,13 @@ class _ChatPageState extends State<ChatPage> {
                   color: Colors.white,
                 ),
               ),
-              IconButton(
-                onPressed: () {},
-                icon: SvgPicture.asset(
-                  "assets/trash.svg",
-                  color: Colors.white,
-                ),
-              ),
+              // IconButton(
+              //   onPressed: () {},
+              //   icon: SvgPicture.asset(
+              //     "assets/trash.svg",
+              //     color: Colors.white,
+              //   ),
+              // ),
             ],
           ),
         ],

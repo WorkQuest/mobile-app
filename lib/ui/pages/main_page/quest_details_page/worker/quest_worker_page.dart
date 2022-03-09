@@ -166,7 +166,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   ),
                 ),
               ),
-              PriorityView(widget.questInfo.priority),
+              PriorityView(widget.questInfo.priority, false),
             ],
           ),
           const SizedBox(height: 20),

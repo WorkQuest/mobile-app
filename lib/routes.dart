@@ -93,8 +93,15 @@ class Routes {
     switch (settings.name) {
       case SignInPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<SignInStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SignInStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: SignInPage(),
@@ -117,10 +124,6 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<SignUpStore>(),
-            child: Directionality(
-              textDirection: checkDirection(context),
-              child: SignUpPage(),
-            ),
           ),
         );
 
@@ -327,8 +330,18 @@ class Routes {
 
       case NotificationPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<NotificationStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<NotificationStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChatStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: NotificationPage(settings.arguments as String),

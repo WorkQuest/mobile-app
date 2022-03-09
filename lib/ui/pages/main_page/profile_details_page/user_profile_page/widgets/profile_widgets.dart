@@ -525,20 +525,6 @@ Widget workerQuestStats({
                     context != null &&
                     userId != profile?.userData?.id &&
                     thirdLine != "0") {
-                  // profile.offset = 0;
-                  // profile.setUserId(userId);
-                  // await profile.getActiveQuests();
-                  // await Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (_) => Provider(
-                  //       create: (_) => profile,
-                  //       child: ProfileQuestsPage(userId),
-                  //     ),
-                  //   ),
-                  // );
-                  // profile.quests.clear();
-                  // profile.offset = 0;
                   await Navigator.pushNamed(
                     context,
                     ProfileQuestsPage.routeName,
@@ -547,14 +533,12 @@ Widget workerQuestStats({
                 }
               },
               child: Text(
-                thirdLine,
+                thirdLine.tr(),
                 style: TextStyle(
                   decoration: title == "quests.activeQuests"
                       ? TextDecoration.underline
                       : null,
-                  color: title != "quests.activeQuests"
-                      ? Color(0xFFD8DFE3)
-                      : Color(0xFFF7F8FA),
+                  color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
                 ),
               ),
@@ -584,9 +568,9 @@ Widget workerRating({
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             workerQuestStats(
-              title: 'quests.activeQuests',
+              title: "quests.activeQuests",
               rate: activeQuests,
-              thirdLine: "workers.showAll".tr(),
+              thirdLine: "workers.showAll",
               userId: userId,
               context: context,
               profile: profile,
@@ -594,7 +578,7 @@ Widget workerRating({
             workerQuestStats(
               title: 'quests.completedQuests',
               rate: completedQuests,
-              thirdLine: 'workers.oneTime'.tr(),
+              thirdLine: 'workers.oneTime',
               textColor: Color(0xFF0083C7),
             ),
           ],

@@ -1,77 +1,94 @@
-import 'package:app/model/chat_model/message_model.dart';
+import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/quest_page/notification_page/notifications.dart';
+import 'package:app/model/quests_models/notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
-import 'package:app/utils/web_socket.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 part 'notification_store.g.dart';
 
 @injectable
 class NotificationStore extends _NotificationStore with _$NotificationStore {
+  NotificationStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
 abstract class _NotificationStore extends IStore<bool> with Store {
+  final ApiProvider _apiProvider;
 
-  _NotificationStore() {
-    WebSocket().handlerQuests = this.changeQuests;
-    WebSocket().handlerChats = this.changeChats;
+  _NotificationStore(this._apiProvider) {
+    // WebSocket().handlerQuests = this.changeQuests;
   }
+
+  int offset = 0;
+
+  BaseQuestResponse? quest;
 
   @observable
-  ObservableList<Notifications> listOfNotifications = ObservableList.of([]);
+  ObservableList<NotificationElement> listOfNotifications =
+      ObservableList.of([]);
 
-  @action
-  void changeQuests(dynamic json) {
-    var quest = BaseQuestResponse.fromJson(json["data"]);
-    listOfNotifications.insert(
-        0,
-        Notifications(
-            firstName: quest.user.firstName,
-            lastName: quest.user.lastName,
-            avatar: quest.user.avatar,
-            date: DateTime.now(),
-            idEvent: quest.id,
-            idUser: quest.user.id,
-            type: "quests.notification.${json["action"]}",
-            message: "quests.notification.${json["action"]}".tr()));
+  // @action
+  // void changeQuests(dynamic json) {
+  //   try {
+  //     final id = DateTime.now().millisecond.toString();
+  //     final recipients = json["recipients"];
+  //     listOfNotifications.insert(
+  //       0,
+  //       NotificationElement(
+  //         id: id,
+  //         userId: recipients[0],
+  //         notification: NotificationNotification(
+  //           data: Data.fromJson(json["data"]),
+  //           action: json["action"],
+  //           recipients: recipients,
+  //         ),
+  //         seen: false,
+  //         createdAt: DateTime.now(),
+  //       ),
+  //     );
+  //   } catch (e, trace) {
+  //     print("ERROR: $e");
+  //     print("ERROR: $trace");
+  //   }
+  // }
+
+  Future<void> getQuest(String questId) async {
+    try {
+      this.onLoading();
+      quest = await _apiProvider.getQuest(id: questId);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
   }
 
   @action
-  void changeChats(dynamic json) {
-    var message;
-    if (json["type"] == "request") {
-      message = MessageModel.fromJson(json["payload"]["result"]);
-    } else if (json["message"]["action"] == "groupChatCreate") {
-      message = MessageModel.fromJson(json["message"]["data"]["lastMessage"]);
-      listOfNotifications.insert(
-          0,
-          Notifications(
-              firstName: message.sender.firstName,
-              lastName: message.sender.lastName,
-              avatar: message.sender.avatar,
-              date: message.createdAt,
-              idEvent: message.chatId,
-              idUser: message.senderUserId,
-              type: "chat.infoMessage.groupChatCreate",
-              message: "chat.infoMessage.groupChatCreate".tr()));
-    } else if (json["message"]["action"] == "newMessage") {
-      message = MessageModel.fromJson(json["message"]["data"]);
-      listOfNotifications.insert(
-          0,
-          Notifications(
-              firstName: message.sender.firstName,
-              lastName: message.sender.lastName,
-              avatar: message.sender.avatar,
-              date: message.createdAt,
-              idEvent: message.chatId,
-              idUser: message.senderUserId,
-              type: "modals.newMessage",
-              message: message.text != null
-                  ? message.text
-                  : message.infoMessage.messageAction));
+  Future<void> getNotification(bool newList) async {
+    try {
+      if (newList) offset = 0;
+      if (offset == listOfNotifications.length) {
+        this.onLoading();
+        final responseData =
+            await _apiProvider.getNotifications(offset: offset);
+        listOfNotifications.addAll(responseData.notifications);
+        offset += 10;
+        this.onSuccess(true);
+      }
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future<void> deleteNotification(String notificationId) async {
+    try {
+      this.onLoading();
+      await _apiProvider.deleteNotification(notificationId: notificationId);
+      listOfNotifications
+          .removeWhere((element) => element.id == notificationId);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
     }
   }
 }

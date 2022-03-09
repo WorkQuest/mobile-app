@@ -1,10 +1,11 @@
 import 'package:app/constants.dart';
-import "package:app/observer_consumer.dart";
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
+import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
@@ -30,12 +31,14 @@ class SignInPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController mnemonicController = new TextEditingController();
+
   SignInPage();
 
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
     final signInStore = context.read<SignInStore>();
+    final profile = context.read<ProfileMeStore>();
 
     return Form(
       key: _formKey,
@@ -131,7 +134,6 @@ class SignInPage extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
                     child: TextFormField(
@@ -159,9 +161,10 @@ class SignInPage extends StatelessWidget {
                           minSize: 22.0,
                           padding: EdgeInsets.zero,
                           onPressed: () async {
-                            ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
-                            mnemonicController.text=data?.text??"";
-                            signInStore.setMnemonic(data?.text??"");
+                            ClipboardData? data =
+                                await Clipboard.getData(Clipboard.kTextPlain);
+                            mnemonicController.text = data?.text ?? "";
+                            signInStore.setMnemonic(data?.text ?? "");
                           },
                           child: Icon(
                             Icons.paste,
@@ -177,43 +180,52 @@ class SignInPage extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
                     child: SizedBox(
                       width: double.infinity,
-                      child: ObserverListener<SignInStore>(
-                        onSuccess: () {
-                            Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              PinCodePage.routeName,
-                              (_) => false,
-                            );
-                        },
-                        onFailure: () {
-                          print("error");
-                          if (signInStore.errorMessage == "unconfirmed") {
-                            print("error");
-                            Navigator.pushNamed(context, ConfirmEmail.routeName,
-                                arguments: signInStore.getUsername());
-                            return true;
-                          }
-                          return false;
-                        },
-                        child: Observer(
-                          builder: (context) {
-                            return ElevatedButton(
-                              onPressed: signInStore.canSignIn
-                                  ? () async {
-                                      if (_formKey.currentState!.validate()) {
-                                        await signInStore.signIn();
+                      child: Observer(
+                        builder: (context) {
+                          return ElevatedButton(
+                            onPressed: signInStore.canSignIn
+                                ? () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      await signInStore.signIn();
+                                      if (signInStore.isSuccess)
+                                        await profile.getProfileMe();
+                                      else {
+                                        signInStore.onSuccess(false);
+                                        _errorMessage(
+                                            context, signInStore.errorMessage);
+                                        return;
+                                      }
+                                      if (profile.isSuccess)
+                                        await signInStore.signInWallet();
+                                      if (signInStore.isSuccess) {
+                                        Navigator.pushNamedAndRemoveUntil(
+                                          context,
+                                          PinCodePage.routeName,
+                                          (_) => false,
+                                        );
+                                      } else {
+                                        signInStore.onSuccess(false);
+                                        _errorMessage(
+                                            context, profile.errorMessage);
+                                        if (signInStore.errorMessage ==
+                                            "unconfirmed") {
+                                          print("error");
+                                          Navigator.pushNamed(
+                                              context, ConfirmEmail.routeName,
+                                              arguments:
+                                                  signInStore.getUsername());
+                                        }
                                       }
                                     }
-                                  : null,
-                              child:
-                                      signInStore.isLoading
-                                  ? CircularProgressIndicator.adaptive()
-                                  : Text(
-                                      "signIn.login".tr(),
-                                    ),
-                            );
-                          },
-                        ),
+                                  }
+                                : null,
+                            child: signInStore.isLoading
+                                ? CircularProgressIndicator.adaptive()
+                                : Text(
+                                    "signIn.login".tr(),
+                                  ),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -360,6 +372,22 @@ class SignInPage extends StatelessWidget {
   //     ],
   //   );
   // }
+
+  Future<void> _errorMessage(BuildContext context, msg) =>
+      AlertDialogUtils.showAlertDialog(
+        context,
+        title: Text("Error"),
+        content: Text(
+          msg,
+        ),
+        needCancel: false,
+        titleCancel: null,
+        titleOk: null,
+        onTabCancel: null,
+        onTabOk: null,
+        colorCancel: null,
+        colorOk: null,
+      );
 
   Widget _iconButton(
     String iconPath,

@@ -73,7 +73,7 @@ class BaseQuestResponse with ClusterItem {
           .toList(),
       user: User.fromJson(json["user"]),
       status: json["status"],
-      priority: json["priority"],
+      priority: json["priority"] + 1,
       locationCode: LocationCode.fromJson(json["location"]),
       locationPlaceName: json["locationPlaceName"],
       title: json["title"],

@@ -38,10 +38,11 @@ class _HttpClient implements IHttpClient {
   }
 
   @override
-  Future get(
-      {required query,
-      Map<String, dynamic>? queryParameters,
-      bool useBaseUrl = true}) async {
+  Future get({
+    required query,
+    Map<String, dynamic>? queryParameters,
+    bool useBaseUrl = true,
+  }) async {
     return await _sendRequest(
       _dio.get(useBaseUrl ? _baseUrl + query : query,
           queryParameters: queryParameters),
@@ -49,30 +50,42 @@ class _HttpClient implements IHttpClient {
   }
 
   @override
-  Future post({required query, Map<String, dynamic>? data}) async {
+  Future post({
+    required query,
+    Map<String, dynamic>? data,
+    bool useBaseUrl = true,
+  }) async {
     return await _sendRequest(
       _dio.post(
-        _baseUrl + query,
+        useBaseUrl ? _baseUrl + query : query,
         data: data,
       ),
     );
   }
 
   @override
-  Future put({required query, Map<String, dynamic>? data}) async {
+  Future put({
+    required query,
+    Map<String, dynamic>? data,
+    bool useBaseUrl = true,
+  }) async {
     return await _sendRequest(
       _dio.put(
-        _baseUrl + query,
+        useBaseUrl ? _baseUrl + query : query,
         data: data,
       ),
     );
   }
 
   @override
-  Future delete({required query, Map<String, dynamic>? data}) async {
+  Future delete({
+    required query,
+    Map<String, dynamic>? data,
+    bool useBaseUrl = true,
+  }) async {
     return await _sendRequest(
       _dio.delete(
-        _baseUrl + query,
+        useBaseUrl ? _baseUrl + query : query,
         data: data,
       ),
     );

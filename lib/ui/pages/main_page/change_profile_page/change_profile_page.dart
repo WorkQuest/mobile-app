@@ -176,7 +176,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                 pageStore.userData.tempPhone?.phone =
                     phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ??
                         "";
-                pageStore.userData.tempPhone?.fullPhone = phone.phoneNumber ?? "";
+                pageStore.userData.tempPhone?.fullPhone =
+                    phone.phoneNumber ?? "";
+
+                print(pageStore.userData.tempPhone?.codeRegion);
+                print(pageStore.userData.tempPhone?.phone);
+                print(pageStore.userData.tempPhone?.fullPhone);
               },
             ),
             phoneNumber(

@@ -142,6 +142,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
   void setMessages(List<MessageModel> messages, ChatModel chat) {
     if (chats[chat.id] == null) chats[chat.id] = Chats(chat);
     chats[chat.id]!.messages = messages;
+    print("qweqweqweqweqweqweqw");
+    print(chats[chat.id]?.chatModel.lastMessage.infoMessage);
     chats[chat.id]!.update();
     _atomChats.reportChanged();
   }
@@ -163,10 +165,14 @@ abstract class _ChatStore extends IStore<bool> with Store {
       if (json["type"] == "request") {
         message = MessageModel.fromJson(json["payload"]["result"]);
       } else if (json["message"]["action"] == "groupChatCreate") {
+        print(json["message"]["data"]);
+        print(json["message"]["data"]["lastMessage"]);
         message = MessageModel.fromJson(json["message"]["data"]["lastMessage"]);
         setMessages(
             [MessageModel.fromJson(json["message"]["data"]["lastMessage"])],
             ChatModel.fromJson(json["message"]["data"]));
+        print("Message:");
+        print(chats[message.id]?.chatModel.lastMessage.infoMessage);
         _atomChats.reportChanged();
         return;
       } else if (json["message"]["action"] == "newMessage") {

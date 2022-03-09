@@ -18,7 +18,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   _EmployerStore(this._apiProvider);
 
   @observable
-  List<RespondModel>? respondedList;
+  List<RespondModel> respondedList = [];
 
   @observable
   RespondModel? selectedResponders;
@@ -37,13 +37,12 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   @action
   getRespondedList(String id, String idWorker) async {
     respondedList = await _apiProvider.responsesQuest(id);
-    if (respondedList != null)
-      for (int index = 0; index < (respondedList?.length ?? 0); index++)
-        if (respondedList![index].workerId == idWorker ||
-            respondedList![index].status == -1 ||
-            (respondedList![index].type == 1 &&
-                respondedList![index].status != 1))
-          respondedList!.removeAt(index);
+    for (int index = 0; index < respondedList.length; index++)
+      if (respondedList[index].workerId == idWorker ||
+          respondedList[index].status == -1 ||
+          respondedList[index].status == 0 ||
+          (respondedList[index].type == 1 && respondedList[index].status != 1))
+        respondedList.removeAt(index);
   }
 
   _getQuest() async {
@@ -95,6 +94,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.deleteQuest(questId: questId);
+      await _getQuest();
       // ClientService().handleEvent(WQContractFunctions.cancelJob);
       this.onSuccess(true);
     } catch (e, trace) {

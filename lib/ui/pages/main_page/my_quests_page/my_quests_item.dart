@@ -152,7 +152,10 @@ class MyQuestsItem extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                PriorityView(questInfo.priority),
+                PriorityView(
+                  questInfo.priority != 0 ? questInfo.priority - 1 : 0,
+                  true,
+                ),
                 SizedBox(width: 50),
                 Flexible(
                   child: Text(
