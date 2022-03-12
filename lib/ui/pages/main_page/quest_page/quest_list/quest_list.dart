@@ -95,9 +95,10 @@ class _QuestListState extends State<QuestList> {
     return RefreshIndicator(
       triggerMode: RefreshIndicatorTriggerMode.anywhere,
       onRefresh: () async {
-        return role == UserRole.Worker
-            ? questsStore!.getQuests(true)
-            : questsStore!.getWorkers(true);
+        if (role == UserRole.Worker && !questsStore!.isLoading)
+          return questsStore!.getQuests(true);
+        else
+          return questsStore!.getWorkers(true);
       },
       displacement: 50,
       edgeOffset: 300,
@@ -132,7 +133,11 @@ class _QuestListState extends State<QuestList> {
           SliverAppBar(
             pinned: true,
             title: TextFormField(
-              onChanged: questsStore!.setSearchWord,
+              onChanged: (value) => value.isNotEmpty
+                  ? questsStore!.setSearchWord(value)
+                  : profileMeStore!.userData!.role == UserRole.Worker
+                      ? questsStore!.getQuests(true)
+                      : questsStore!.getWorkers(true),
               decoration: InputDecoration(
                 fillColor: Color(0xFFF7F8FA),
                 hintText: profileMeStore!.userData!.role == UserRole.Worker
@@ -209,10 +214,10 @@ class _QuestListState extends State<QuestList> {
                           padding: EdgeInsets.zero,
                           itemCount: () {
                             if (role == UserRole.Worker)
-                              return questsStore!.searchWord.length > 2
+                              return questsStore!.searchWord.isNotEmpty
                                   ? questsStore!.searchResultList.length
                                   : questsStore!.questsList.length;
-                            return questsStore!.searchWord.length > 2
+                            return questsStore!.searchWord.isNotEmpty
                                 ? questsStore!.searchWorkersList.length
                                 : questsStore!.workersList.length;
                           }(),
@@ -220,13 +225,13 @@ class _QuestListState extends State<QuestList> {
                             return Observer(builder: (_) {
                               if (role == UserRole.Worker)
                                 return MyQuestsItem(
-                                  questsStore!.searchWord.length > 2
+                                  questsStore!.searchWord.isNotEmpty
                                       ? questsStore!.searchResultList[index]
                                       : questsStore!.questsList[index],
                                   itemType: this.questItemPriorityType,
                                 );
                               return WorkersItem(
-                                questsStore!.searchWord.length > 2
+                                questsStore!.searchWord.isNotEmpty
                                     ? questsStore!.searchWorkersList[index]
                                     : questsStore!.workersList[index],
                                 questsStore!,

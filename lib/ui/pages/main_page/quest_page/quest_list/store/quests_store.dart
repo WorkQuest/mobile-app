@@ -202,30 +202,34 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       debounce!.cancel();
       this.onSuccess(true);
     }
-    if (searchWord.length > 2)
+    if (searchWord.length > 0)
       role == UserRole.Worker ? getSearchedQuests() : getSearchedWorkers();
   }
 
   @computed
   bool get emptySearch =>
-      searchWord.length > 2 &&
+      searchWord.isNotEmpty &&
       searchResultList.isEmpty &&
       searchWorkersList.isEmpty &&
       !this.isLoading;
 
   @action
   Future getSearchedQuests() async {
-    if (offset == searchResultList.length) {
-      this.onLoading();
-      debounce = Timer(const Duration(milliseconds: 300), () async {
-        searchResultList.addAll(await _apiProvider.getQuests(
-          searchWord:searchWord,
-          offset: offset,
-        ));
-        //offset review
-        offset += 10;
-        this.onSuccess(true);
-      });
+    try {
+      if (offset == searchResultList.length) {
+        this.onLoading();
+        debounce = Timer(const Duration(milliseconds: 300), () async {
+          searchResultList.addAll(await _apiProvider.getQuests(
+            searchWord: searchWord,
+            offset: offset,
+          ));
+          //offset review
+          offset += 10;
+          this.onSuccess(true);
+        });
+      }
+    } catch (e) {
+      this.onError(e.toString());
     }
   }
 
@@ -282,7 +286,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         workersList.clear();
         offsetWorkers = 0;
       }
-      if (this.offset == workersList.length) {
+      if (offsetWorkers == workersList.length) {
         workersList.addAll(await _apiProvider.getWorkers(
           sort: this.sort,
           offset: this.offsetWorkers,

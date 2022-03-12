@@ -104,7 +104,9 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) {
     return Data(
-      id: json["quest"] == null ? json["id"] : json["quest"]["id"],
+      id: json["quest"] == null
+          ? (json["questId"] ?? json["id"])
+          : json["quest"]["id"],
       title: json["title"] == null
           ? json["quest"] == null
               ? json["message"]

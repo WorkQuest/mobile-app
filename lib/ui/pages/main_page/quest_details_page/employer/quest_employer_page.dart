@@ -170,6 +170,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                               await store.deleteQuest(
                                   questId: widget.questInfo.id);
                               questStore.deleteQuest(widget.questInfo);
+                              if (profile!.userData!.questsStatistic != null)
+                                profile!.userData!.questsStatistic!.opened -= 1;
                               Navigator.pop(context);
                               Navigator.pop(context);
                             },
@@ -365,8 +367,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           ),
                         ),
                         if (store.respondedList.isNotEmpty)
-                            for (final respond in store.respondedList)
-                              selectableMember(respond),
+                          for (final respond in store.respondedList)
+                            selectableMember(respond),
                         const SizedBox(height: 15),
                         TextButton(
                           onPressed: store.selectedResponders == null

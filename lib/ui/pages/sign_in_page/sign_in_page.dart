@@ -192,21 +192,27 @@ class SignInPage extends StatelessWidget {
                                       else {
                                         signInStore.onSuccess(false);
                                         _errorMessage(
-                                            context, signInStore.errorMessage);
+                                            context, signInStore.error);
                                         return;
                                       }
-                                      if (profile.isSuccess)
+                                      if (profile.isSuccess &&
+                                          profile.error.isEmpty)
                                         await signInStore.signInWallet();
-                                      if (signInStore.isSuccess) {
+                                      else {
+                                        _errorMessage(context, profile.error);
+                                        return;
+                                      }
+                                      if (signInStore.isSuccess &&
+                                          signInStore.error.isEmpty) {
                                         Navigator.pushNamedAndRemoveUntil(
                                           context,
                                           PinCodePage.routeName,
                                           (_) => false,
                                         );
                                       } else {
-                                        signInStore.onSuccess(false);
+                                        // signInStore.onSuccess(false);
                                         _errorMessage(
-                                            context, profile.errorMessage);
+                                            context, "Wrong mnemonic phrase");
                                         if (signInStore.errorMessage ==
                                             "unconfirmed") {
                                           print("error");
@@ -373,12 +379,12 @@ class SignInPage extends StatelessWidget {
   //   );
   // }
 
-  Future<void> _errorMessage(BuildContext context, String? msg) =>
+  Future<void> _errorMessage(BuildContext context, String msg) =>
       AlertDialogUtils.showAlertDialog(
         context,
         title: Text("Error"),
         content: Text(
-          msg??"",
+          msg,
         ),
         needCancel: false,
         titleCancel: null,

@@ -44,13 +44,6 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
       (_$canApproveComputed ??= Computed<bool>(() => super.canApprove,
               name: '_ChooseRoleStore.canApprove'))
           .value;
-  Computed<UserRole>? _$userRoleComputed;
-
-  @override
-  UserRole get userRole =>
-      (_$userRoleComputed ??= Computed<UserRole>(() => super.userRole,
-              name: '_ChooseRoleStore.userRole'))
-          .value;
 
   final _$_privacyPolicyAtom = Atom(name: '_ChooseRoleStore._privacyPolicy');
 
@@ -129,18 +122,18 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     });
   }
 
-  final _$_userRoleAtom = Atom(name: '_ChooseRoleStore._userRole');
+  final _$userRoleAtom = Atom(name: '_ChooseRoleStore.userRole');
 
   @override
-  UserRole get _userRole {
-    _$_userRoleAtom.reportRead();
-    return super._userRole;
+  UserRole get userRole {
+    _$userRoleAtom.reportRead();
+    return super.userRole;
   }
 
   @override
-  set _userRole(UserRole value) {
-    _$_userRoleAtom.reportWrite(value, super._userRole, () {
-      super._userRole = value;
+  set userRole(UserRole value) {
+    _$userRoleAtom.reportWrite(value, super.userRole, () {
+      super.userRole = value;
     });
   }
 
@@ -239,12 +232,12 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   String toString() {
     return '''
 totp: ${totp},
+userRole: ${userRole},
 canSubmitCode: ${canSubmitCode},
 privacyPolicy: ${privacyPolicy},
 termsAndConditions: ${termsAndConditions},
 amlAndCtfPolicy: ${amlAndCtfPolicy},
-canApprove: ${canApprove},
-userRole: ${userRole}
+canApprove: ${canApprove}
     ''';
   }
 }

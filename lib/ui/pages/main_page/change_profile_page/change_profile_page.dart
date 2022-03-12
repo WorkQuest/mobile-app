@@ -42,8 +42,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     pageStore.getInitCode(
         pageStore.userData.phone ?? pageStore.userData.tempPhone!,
         pageStore.userData.additionalInfo?.secondMobileNumber);
-    if (profile!.userData!.additionalInfo!.address != null)
-      pageStore.address = profile!.userData!.additionalInfo!.address!;
+    if (profile!.userData!.locationPlaceName != null)
+      pageStore.address = profile!.userData!.locationPlaceName!;
     _controller = SkillSpecializationController(
         initialValue: pageStore.userData.userSpecializations);
     _controllerKnowledge = KnowledgeWorkSelectionController();
@@ -153,7 +153,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                             ),
                             Flexible(
                               child: Text(
-                                pageStore.userData.locationPlaceName??"",
+                                pageStore.address,
                                 overflow: TextOverflow.fade,
                               ),
                             ),
@@ -172,27 +172,29 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
               title: "modals.phoneNumber",
               initialValue: pageStore.phoneNumber,
               onChanged: (PhoneNumber phone) {
-                // pageStore.userData.tempPhone?.codeRegion = phone.dialCode ?? "";
-                // pageStore.userData.tempPhone?.phone =
-                //     phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ??
-                //         "";
-                // pageStore.userData.tempPhone?.fullPhone =
-                //     phone.phoneNumber ?? "";
-              },
-            ),
-            phoneNumber(
-              title: "modals.secondPhoneNumber",
-              initialValue: pageStore.secondPhoneNumber,
-              onChanged: (PhoneNumber phone) {
-                pageStore.userData.additionalInfo?.secondMobileNumber!
-                    .codeRegion = phone.dialCode ?? "";
-                pageStore.userData.additionalInfo?.secondMobileNumber!.phone =
+                pageStore.userData.tempPhone?.codeRegion = phone.dialCode ?? "";
+                pageStore.userData.tempPhone?.phone =
                     phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ??
                         "";
-                pageStore.userData.additionalInfo?.secondMobileNumber!
-                    .fullPhone = phone.phoneNumber ?? "";
+                pageStore.userData.tempPhone?.fullPhone =
+                    phone.phoneNumber ?? "";
               },
             ),
+            if (profile!.userData!.role == UserRole.Worker)
+              phoneNumber(
+                title: "modals.secondPhoneNumber",
+                initialValue: pageStore.secondPhoneNumber,
+                onChanged: (PhoneNumber phone) {
+                  pageStore.userData.additionalInfo?.secondMobileNumber!
+                      .codeRegion = phone.dialCode ?? "";
+                  pageStore.userData.additionalInfo?.secondMobileNumber!.phone =
+                      phone.phoneNumber
+                              ?.replaceAll((phone.dialCode ?? ""), "") ??
+                          "";
+                  pageStore.userData.additionalInfo?.secondMobileNumber!
+                      .fullPhone = phone.phoneNumber ?? "";
+                },
+              ),
             inputBody(
               title: "signUp.email".tr(),
               readOnly: true,
