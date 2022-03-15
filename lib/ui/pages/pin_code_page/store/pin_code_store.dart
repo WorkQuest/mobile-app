@@ -60,6 +60,12 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   String newPinCode = "";
 
   @observable
+  bool startSwitch = false;
+
+  @observable
+  bool startAnimation = false;
+
+  @observable
   bool canCheckBiometrics = false;
 
   @action
@@ -115,29 +121,48 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       this.onLoading();
       if (isBiometric) {
         pin = "";
-      } else if (statePin == StatePinCode.Create) {
-        newPinCode = pin;
-        pin = "";
-        changeState(StatePinCode.Repeat);
-        return;
-      } else if (statePin == StatePinCode.Repeat) {
-        if (pin != newPinCode) {
-          pin = "";
-          changeState(StatePinCode.Create, errorAnimation: true);
-          return;
-        }
-        await Storage.writePinCode(pin);
       } else {
-        if (await Storage.readPinCode() != pin) {
-          pin = "";
-          attempts += 1;
-          if (attempts >= 3) {
-            await Storage.deleteAllFromSecureStorage();
-            this.onSuccess(StatePinCode.ToLogin);
+        switch (statePin) {
+          case StatePinCode.Create:
+            newPinCode = pin;
+            pin = "";
+            changeState(StatePinCode.Repeat);
+            startSwitch = true;
             return;
-          }
-          changeState(StatePinCode.Check, errorAnimation: true);
-          return;
+          case StatePinCode.Repeat:
+            if (pin != newPinCode) {
+              pin = "";
+              changeState(StatePinCode.Create, errorAnimation: true);
+              return;
+            }
+            await Storage.writePinCode(pin);
+            startAnimation = true;
+            await Future.delayed(const Duration(seconds: 2));
+            break;
+          case StatePinCode.Check:
+            if (await Storage.readPinCode() != pin) {
+              pin = "";
+              attempts += 1;
+              if (attempts >= 3) {
+                await Storage.deleteAllFromSecureStorage();
+                this.onSuccess(StatePinCode.ToLogin);
+                return;
+              }
+              changeState(StatePinCode.Check, errorAnimation: true);
+              return;
+            }
+            startAnimation = true;
+            await Future.delayed(const Duration(seconds: 2));
+            break;
+          case StatePinCode.ToLogin:
+          // TODO: Handle this case.
+            break;
+          case StatePinCode.Success:
+          // TODO: Handle this case.
+            break;
+          case StatePinCode.NaN:
+          // TODO: Handle this case.
+            break;
         }
       }
       String? token = await Storage.readRefreshToken();
@@ -152,6 +177,9 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       await getIt.get<ProfileMeStore>().getProfileMe();
       totpValid = true;
       this.onSuccess(StatePinCode.Success);
+      await Future.delayed(const Duration(milliseconds: 500));
+      startAnimation = false;
+      startSwitch = false;
     } catch (e) {
       if (e.toString() == "Token invalid" ||
           e.toString() == "Session not found") {

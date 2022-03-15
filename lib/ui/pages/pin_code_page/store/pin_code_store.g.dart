@@ -54,6 +54,36 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
     });
   }
 
+  final _$startSwitchAtom = Atom(name: 'PinCodeStoreBase.startSwitch');
+
+  @override
+  bool get startSwitch {
+    _$startSwitchAtom.reportRead();
+    return super.startSwitch;
+  }
+
+  @override
+  set startSwitch(bool value) {
+    _$startSwitchAtom.reportWrite(value, super.startSwitch, () {
+      super.startSwitch = value;
+    });
+  }
+
+  final _$startAnimationAtom = Atom(name: 'PinCodeStoreBase.startAnimation');
+
+  @override
+  bool get startAnimation {
+    _$startAnimationAtom.reportRead();
+    return super.startAnimation;
+  }
+
+  @override
+  set startAnimation(bool value) {
+    _$startAnimationAtom.reportWrite(value, super.startAnimation, () {
+      super.startAnimation = value;
+    });
+  }
+
   final _$statePinAtom = Atom(name: '_PinCodeStore.statePin');
 
   @override

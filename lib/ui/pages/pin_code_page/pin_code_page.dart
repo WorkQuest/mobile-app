@@ -1,13 +1,20 @@
+import 'dart:math';
+
 import "package:app/observer_consumer.dart";
 import "package:app/ui/pages/main_page/main_page.dart";
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
+import 'package:app/ui/widgets/animation_compression.dart';
+import 'package:app/ui/widgets/animation_switch.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
 import "package:flutter/material.dart";
 import "package:flutter_mobx/flutter_mobx.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+
+import '../../../constants.dart';
 
 class PinCodePage extends StatefulWidget {
   static const String routeName = "/PinCode";
@@ -35,40 +42,34 @@ class _PinCodePageState extends State<PinCodePage>
 
   @override
   Widget build(BuildContext context) {
-    final pinCodeStore = context.read<PinCodeStore>();
-    final Animation<double> offsetAnimation = Tween(begin: 0.0, end: 24.0)
-        .chain(CurveTween(curve: Curves.elasticIn))
-        .animate(controller!)
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          controller!.reverse();
-        }
-      });
+    final store = context.read<PinCodeStore>();
+
     return WillPopScope(
       onWillPop: () async {
         if (widget.isRecheck) return false;
-        pinCodeStore.onWillPop();
+        store.onWillPop();
         return true;
       },
       child: ObserverListener<PinCodeStore>(
         onFailure: () {
           controller!.forward(from: 0.0);
-          if (pinCodeStore.errorMessage != null) if (pinCodeStore
+          if (store.errorMessage != null) if (store
               .errorMessage!.isNotEmpty) return false;
           return true;
         },
         onSuccess: () async {
-          if (pinCodeStore.successData == StatePinCode.Success) {
+          if (store.successData == StatePinCode.Success) {
             if (widget.isRecheck) {
               Navigator.pop(context);
             } else {
+              await AlertDialogUtils.showSuccessDialog(context);
               Navigator.pushNamedAndRemoveUntil(
                 context,
                 MainPage.routeName,
                 (_) => false,
               );
             }
-          } else if (pinCodeStore.successData == StatePinCode.ToLogin) {
+          } else if (store.successData == StatePinCode.ToLogin) {
             Navigator.pushNamedAndRemoveUntil(
               context,
               SignInPage.routeName,
@@ -80,89 +81,171 @@ class _PinCodePageState extends State<PinCodePage>
           }
         },
         child: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.fromLTRB(59.0, 114.0, 59.0, 0.0),
-            child: Observer(
-              builder: (_) {
-                return pinCodeStore.statePin == StatePinCode.NaN
-                    ? Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      )
-                    : Column(
-                        children: [
-                          Text(
-                            pinCodeStore.statePin == StatePinCode.Create
-                                ? "pinCode.comeUp".tr()
-                                : pinCodeStore.statePin == StatePinCode.Repeat
-                                    ? "pinCode.repeat".tr()
-                                    : "pinCode.writePinCode".tr(),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 40),
-                          pinCodeStore.isLoading
-                              ? CircularProgressIndicator.adaptive()
-                              : AnimatedBuilder(
-                                  animation: offsetAnimation,
-                                  builder: (buildContext, child) {
-                                    return Container(
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: 24.0,
-                                      ),
-                                      padding: EdgeInsets.only(
-                                        left: offsetAnimation.value + 24.0,
-                                        right: 24.0 - offsetAnimation.value,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          for (int i = 1; i < 5; i++)
-                                            Observer(
-                                              builder: (_) => Container(
-                                                height: 10,
-                                                width: 10,
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                  horizontal: 7.5,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: !offsetAnimation
-                                                          .isDismissed
-                                                      ? Colors.red
-                                                      : pinCodeStore
-                                                                  .pin.length >=
-                                                              i
-                                                          ? Color(0xFF0083C7)
-                                                          : Color(0xFFE9EDF2),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                    Radius.circular(5.0),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                          PinCodeKeyboard(
-                            pinCodeStore.inputPin,
-                            onTabRemove: pinCodeStore.popPin,
-                            onTabSensor:
-                                (pinCodeStore.statePin == StatePinCode.Check &&
-                                        pinCodeStore.canCheckBiometrics)
-                                    ? pinCodeStore.biometricScan
-                                    : null,
-                            canBiometric: pinCodeStore.canCheckBiometrics,
-                          ),
-                        ],
-                      );
-              },
+          backgroundColor: Colors.white,
+          body: Observer(
+            builder: (_) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 60.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    width: double.infinity,
+                    height: 110,
+                  ),
+                  if (store.statePin == StatePinCode.Check)
+                    _elementField(
+                      title: 'pinCode.comeUp'.tr(),
+                      pinCode: store.pin,
+                      isLoading: store.startAnimation,
+                      activateAnimation: true,
+                    )
+                  else
+                    AnimationSwitchWidget(
+                      first: _elementField(
+                        title: 'pinCode.comeUp'.tr(),
+                        pinCode: store.pin,
+                        isLoading: store.startAnimation,
+                      ),
+                      second: _elementField(
+                        title: 'pinCode.repeat'.tr(),
+                        pinCode: store.pin,
+                        isLoading: store.startAnimation,
+                        activateAnimation: true,
+                      ),
+                      enabled: store.startSwitch,
+                    ),
+                  if (store.attempts != 0)
+                    SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        '${'pinCode.attempts_left'.tr()}: ${3 - store.attempts}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  SizedBox(
+                    height: store.attempts != 0 ? 15 : 20,
+                  ),
+                  PinCodeKeyboard(
+                    store.inputPin,
+                    onTabRemove: store.popPin,
+                    onTabSensor:
+                    (store.statePin == StatePinCode.Check &&
+                        store.canCheckBiometrics)
+                        ? store.biometricScan
+                        : null,
+                    canBiometric: store.canCheckBiometrics,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _elementField({
+    required String title,
+    required String pinCode,
+    required bool isLoading,
+    bool activateAnimation = false,
+  }) {
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Color(0xff353C47),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 40,
+        ),
+        if (activateAnimation)
+          AnimationCompression(
+            first: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: PasswordField(
+                animationController: controller,
+                pinCode: pinCode,
+              ),
+            ),
+            second: const CircularProgressIndicator(),
+            enabled: isLoading,
+          )
+        else
+          PasswordField(
+            animationController: controller,
+            pinCode: pinCode,
+          ),
+        const SizedBox(
+          height: 20,
+        ),
+      ],
+    );
+  }
+}
+
+class PasswordField extends StatefulWidget {
+  final AnimationController? animationController;
+  final String pinCode;
+
+  const PasswordField({
+    Key? key,
+    required this.animationController,
+    required this.pinCode,
+  }) : super(key: key);
+
+  @override
+  _PasswordFieldState createState() => _PasswordFieldState();
+}
+
+class _PasswordFieldState extends State<PasswordField> {
+  @override
+  Widget build(BuildContext context) {
+    final add = widget.pinCode.length != 4;
+    if (add) {
+      widget.animationController!
+          .forward()
+          .then((value) => widget.animationController!.reverse());
+    }
+    return AnimatedBuilder(
+      animation: widget.animationController!,
+      builder: (context, child) {
+        final sineValue = sin(4 * 2 * pi * widget.animationController!.value);
+        return Transform.translate(
+          offset: add
+              ? Offset(0, -2.5 * widget.animationController!.value)
+              : Offset(sineValue * 10, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (int i = 1; i < 5; i++)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  height: 10,
+                  width: 10,
+                  margin: const EdgeInsets.symmetric(horizontal: 7.5),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: widget.pinCode.length >= i
+                        ? AppColor.enabledButton
+                        : const Color(0xffE9EDF2),
+                  ),
+                )
+            ],
+          ),
+        );
+      },
     );
   }
 }

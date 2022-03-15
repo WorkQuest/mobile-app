@@ -111,8 +111,8 @@ extension CustomAppBar on UserProfileState {
               : "${info.firstName} ${info.lastName}",
           appBarPosition,
           info == null
-              ? userStore!.userData!.ratingStatistic?.status ?? "noStatus"
-              : info.ratingStatistic?.status ?? "noStatus",
+              ? userStore!.userData!.ratingStatistic?.status.toString() ?? "noStatus"
+              : info.ratingStatistic?.status.toString() ?? "noStatus",
             width,
         ),
       ),
