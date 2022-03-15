@@ -47,9 +47,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   @observable
   ObservableList<BaseQuestResponse> performed = ObservableList.of([]);
 
-  // @observable
-  // ObservableList<BaseQuestResponse> requested = ObservableList.of([]);
-
   @observable
   ObservableList<BaseQuestResponse> invited = ObservableList.of([]);
 
@@ -71,10 +68,14 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   bool loadStarred = true;
 
   void changeQuest(dynamic json) {
-    print("WebSocket quests");
-    var quest = BaseQuestResponse.fromJson(json);
-    deleteQuest(quest);
-    addQuest(quest, true);
+    try {
+      print("TAG my_quest_store");
+      var quest = BaseQuestResponse.fromJson(json["data"]["quest"]);
+      deleteQuest(quest);
+      addQuest(quest, true);
+    } catch (e) {
+      print("ERROR: $e");
+    }
   }
 
   void sortQuests() {

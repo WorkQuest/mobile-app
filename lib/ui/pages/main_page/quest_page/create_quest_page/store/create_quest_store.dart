@@ -63,12 +63,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @observable
   String workplace = "Distant work";
 
-  // @observable
-  // String category = 'Choose';
-
-  @observable
-  String categoryValue = 'other';
-
   @observable
   String priority = "quests.priority.low".tr();
 
@@ -236,7 +230,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         ),
       );
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
-        category: categoryValue,
         employment: getEmploymentValue(),
         // locationPlaceName: locationPlaceName,
         workplace: getWorkplaceValue(),

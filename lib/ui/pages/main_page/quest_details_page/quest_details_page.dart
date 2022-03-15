@@ -258,7 +258,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
               if (profile!.userData!.role == UserRole.Employer)
                 Align(
                   alignment: Alignment.topRight,
-                  child: PriorityView(widget.questInfo.priority),
+                  child: PriorityView(widget.questInfo.priority, true),
                 ),
               getBody(),
               if (widget.questInfo.status == 6 &&

@@ -49,6 +49,8 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   String sort = "sort[createdAt]=desc";
 
+  String error = "";
+
   void setPriorityValue(String priority) =>
       priorityValue = QuestPriority.values.byName(priority);
 
@@ -108,11 +110,13 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   Future getProfileMe() async {
     try {
-      this.onLoading();
+      // this.onLoading();
+      error = "";
       userData = await _apiProvider.getProfileMe();
-      this.onSuccess(true);
+      // this.onSuccess(true);
     } catch (e, trace) {
       print(trace);
+      error = e.toString();
       this.onError(e.toString());
     }
   }
@@ -185,8 +189,10 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       if (media != null)
         userData.avatarId = (await _apiProvider.uploadMedia(
             medias: ObservableList.of([media])))[0];
+      final isTotpActive = this.userData?.isTotpActive;
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
+      this.userData?.isTotpActive = isTotpActive;
       this.onSuccess(true);
     } catch (e, trace) {
       print(trace);

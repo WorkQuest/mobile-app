@@ -1,6 +1,8 @@
+import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -54,10 +56,13 @@ class EnterTotpPage extends StatelessWidget {
                             await store.changeRole();
                             if (store.isSuccess) {
                               await AlertDialogUtils.showSuccessDialog(context);
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            }
-                            else
+                              Navigator.of(context, rootNavigator: true)
+                                  .pushNamedAndRemoveUntil(
+                                SignInPage.routeName,
+                                (route) => false,
+                              );
+                              Storage.deleteAllFromSecureStorage();
+                            } else
                               await errorAlert(context, "Wrong code");
                           }
                         : null,

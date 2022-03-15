@@ -170,6 +170,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                               await store.deleteQuest(
                                   questId: widget.questInfo.id);
                               questStore.deleteQuest(widget.questInfo);
+                              if (profile!.userData!.questsStatistic != null)
+                                profile!.userData!.questsStatistic!.opened -= 1;
                               Navigator.pop(context);
                               Navigator.pop(context);
                             },
@@ -280,9 +282,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             onTap: () async {
               await profile!
                   .getAssignedWorker(widget.questInfo.assignedWorker!.id);
-              //ждем ответ с бэка
               if (profile!.assignedWorker?.id != null) {
-                Navigator.of(context, rootNavigator: true).pushNamed(
+                await Navigator.of(context, rootNavigator: true).pushNamed(
                   UserProfile.routeName,
                   arguments: profile!.assignedWorker,
                 );
@@ -351,10 +352,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     ),
                   ),
                 )
-              : (store.respondedList!.isNotEmpty &&
+              : (store.respondedList.isNotEmpty &&
                       (widget.questInfo.status == 0))
-                  // ||
-                  // widget.questInfo.status == 4))
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -367,40 +366,15 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        if (store.respondedList!.isNotEmpty)
-                          for (final respond in store.respondedList ?? [])
+                        if (store.respondedList.isNotEmpty)
+                          for (final respond in store.respondedList)
                             selectableMember(respond),
-                        // const SizedBox(height: 10),
-                        // const Text(
-                        //   "You invited",
-                        //   style: TextStyle(
-                        //       fontSize: 18,
-                        //       color: Color(0xFF1D2127),
-                        //       fontWeight: FontWeight.w500),
-                        // ),
-                        // for (var i = 0; i < 3; i++)
-                        //   selectableMember(
-                        //     RespondModel(
-                        //       createdAt: DateTime.now(),
-                        //       id: "user$i",
-                        //       type: 1,
-                        //       status: 1,
-                        //       message: "",
-                        //       questId: "",
-                        //       workerId: "",
-                        //       worker: User(
-                        //           id: "id",
-                        //           firstName: "firstName $i",
-                        //           lastName: "lastName $i",
-                        //           avatar: Avatar.fromJson(null)),
-                        //     ),
-                        //   ),
                         const SizedBox(height: 15),
                         TextButton(
                           onPressed: store.selectedResponders == null
                               ? null
                               : () async {
-                                  store.startQuest(
+                                  await store.startQuest(
                                     userId: store.selectedResponders!.workerId,
                                     questId: widget.questInfo.id,
                                   );
@@ -510,10 +484,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       Navigator.pop(context);
                       Navigator.pop(context);
                       await AlertDialogUtils.showSuccessDialog(context);
-                      // successAlert(
-                      //   context,
-                      //   "quests.answerOnQuest.questCompleted".tr(),
-                      // );
                     },
                     child: Text(
                       "quests.answerOnQuest.acceptCompleted".tr(),
@@ -536,40 +506,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  // TextButton(
-                  //   onPressed: () {
-                  //     store.rejectCompletedWork(questId: widget.questInfo.id);
-                  //     widget.questInfo.status = 5;
-                  //     questStore.deleteQuest(widget.questInfo);
-                  //     questStore.addQuest(widget.questInfo, true);
-                  //     Navigator.pop(context);
-                  //     Navigator.pop(context);
-                  //     successAlert(
-                  //       context,
-                  //       "quests.answerOnQuest.rejectCompletedQuest".tr(),
-                  //     );
-                  //   },
-                  //   child: Text(
-                  //     "quests.answerOnQuest.rejectCompleted".tr(),
-                  //     style: TextStyle(color: Colors.white),
-                  //   ),
-                  //   style: ButtonStyle(
-                  //     fixedSize: MaterialStateProperty.all(
-                  //       Size(double.maxFinite, 43),
-                  //     ),
-                  //     backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  //       (Set<MaterialState> states) {
-                  //         if (states.contains(MaterialState.pressed))
-                  //           return Theme.of(context)
-                  //               .colorScheme
-                  //               .primary
-                  //               .withOpacity(0.5);
-                  //         return const Color(0xFF0083C7);
-                  //       },
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 15),
                 ],
               ),
             ],
@@ -658,23 +594,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             ),
           ),
           if (respond.worker.ratingStatistic?.status != null)
-            UserRating(respond.worker.ratingStatistic!.status.toString()),
-          // Container(
-          //   margin: const EdgeInsets.only(top: 5),
-          //   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-          //   decoration: BoxDecoration(
-          //     color: const Color(0xFFF6CF00),
-          //     borderRadius: BorderRadius.circular(3),
-          //   ),
-          //   child: Text(
-          //     "levels.higher".tr(),
-          //     style: TextStyle(
-          //       color: Colors.white,
-          //       fontSize: 12,
-          //       fontWeight: FontWeight.w500,
-          //     ),
-          //   ),
-          // ),
+            UserRating(respond.worker.ratingStatistic!.status),
         ],
       ),
     ];

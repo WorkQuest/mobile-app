@@ -108,6 +108,7 @@ class ReviewsWidget extends StatelessWidget {
   final String id;
   final String myId;
   final UserRole role;
+  final bool last;
 
   const ReviewsWidget({
     required this.avatar,
@@ -119,6 +120,7 @@ class ReviewsWidget extends StatelessWidget {
     required this.id,
     required this.myId,
     required this.role,
+    required this.last,
   });
 
   @override
@@ -126,146 +128,174 @@ class ReviewsWidget extends StatelessWidget {
     final profile = context.read<ProfileMeStore>();
     final portfolioStore = context.read<PortfolioStore>();
     final userProfileStore = context.read<UserProfileStore>();
-    return Column(
-      children: [
-        Container(
-          height: 10,
-          decoration: BoxDecoration(
-            color: Color(0xFFF7F8FA),
-          ),
-        ),
-        Container(
-          // margin: EdgeInsets.only(
-          //   left: 16.0,
-          //   right: 16.0,
-          //   top: 10.0,
-          // ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(
-              Radius.circular(6.0),
+    return Container(
+      constraints: const BoxConstraints(
+        maxHeight: 210,
+      ),
+      child: Column(
+        children: [
+          Container(
+            height: 10,
+            decoration: BoxDecoration(
+              color: Color(0xFFF7F8FA),
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: GestureDetector(
-                  onTap: () async {
-                    if (id != profile.userData!.id)
-                      await profile.getAssignedWorker(id);
-                    else
-                      profile.assignedWorker = profile.userData!;
-                    if (profile.assignedWorker != null) {
-                      portfolioStore.clearData();
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(
-                        UserProfile.routeName,
-                        arguments: profile.assignedWorker,
-                      );
-                      portfolioStore.clearData();
-                      if (role == UserRole.Worker)
-                        portfolioStore.getPortfolio(userId: myId);
-                      else {
-                        userProfileStore.quests.clear();
-                        userProfileStore.getQuests(myId, role, true);
+          Container(
+            // margin: EdgeInsets.only(
+            //   left: 16.0,
+            //   right: 16.0,
+            //   top: 10.0,
+            // ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(6.0),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: GestureDetector(
+                    onTap: () async {
+                      if (id != profile.userData!.id)
+                        await profile.getAssignedWorker(id);
+                      else
+                        profile.assignedWorker = profile.userData!;
+                      if (profile.assignedWorker != null) {
+                        portfolioStore.clearData();
+                        await Navigator.of(context, rootNavigator: true)
+                            .pushNamed(
+                          UserProfile.routeName,
+                          arguments: profile.assignedWorker,
+                        );
+                        portfolioStore.clearData();
+                        if (role == UserRole.Worker)
+                          portfolioStore.getPortfolio(userId: myId);
+                        else {
+                          userProfileStore.quests.clear();
+                          userProfileStore.getQuests(myId, role, true);
+                        }
+                        portfolioStore.getReviews(userId: myId);
                       }
-                      portfolioStore.getReviews(userId: myId);
-                    }
-                    profile.assignedWorker = null;
-                  },
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(avatar),
-                    ),
-                    title: Text(
-                      name,
-                      style: TextStyle(fontSize: 16.0),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: Text(
-                      userRole.tr(),
-                      style:
-                          TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
+                      profile.assignedWorker = null;
+                    },
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(avatar),
+                      ),
+                      title: Text(
+                        name,
+                        style: TextStyle(fontSize: 16.0),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        userRole.tr(),
+                        style:
+                            TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16.0,
-                    right: 16.0,
-                    bottom: 15.0,
-                  ),
-                  child: Row(
-                    children: [
-                      for (int i = 0; i < mark; i++)
-                        Icon(
-                          Icons.star,
-                          color: Color(0xFFE8D20D),
-                          size: 19.0,
-                        ),
-                      for (int i = 0; i < 5 - mark; i++)
-                        Icon(
-                          Icons.star,
-                          color: Color(0xFFE9EDF2),
-                          size: 19.0,
-                        ),
-                      const SizedBox(width: 13),
-                      Text("$mark"),
-                    ],
-                  ),
-                ),
-              ),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16.0,
-                    right: 16.0,
-                    bottom: 15.0,
-                  ),
-                  child: RichText(
-                    text: TextSpan(
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      bottom: 15.0,
+                    ),
+                    child: Row(
                       children: [
-                        TextSpan(
-                          text: "Quest    ",
-                          style: TextStyle(
-                            color: Colors.black,
+                        for (int i = 0; i < mark; i++)
+                          Icon(
+                            Icons.star,
+                            color: Color(0xFFE8D20D),
+                            size: 19.0,
                           ),
-                        ),
-                        TextSpan(
-                          text: questTitle,
-                          style: TextStyle(
-                            color: Color(0xFF7C838D),
+                        for (int i = 0; i < 5 - mark; i++)
+                          Icon(
+                            Icons.star,
+                            color: Color(0xFFE9EDF2),
+                            size: 19.0,
                           ),
-                        ),
+                        const SizedBox(width: 13),
+                        Text("$mark"),
                       ],
                     ),
                   ),
                 ),
-              ),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16.0,
-                    right: 16.0,
-                    bottom: 15.0,
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      bottom: 15.0,
+                    ),
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Quest    ",
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                          TextSpan(
+                            text: questTitle,
+                            style: TextStyle(
+                              color: Color(0xFF7C838D),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  child: Text(message),
                 ),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      bottom: 15.0,
+                    ),
+                    child: Text(
+                      message,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                // Flexible(
+                //   child: Padding(
+                //     padding: const EdgeInsets.only(
+                //       left: 16.0,
+                //       right: 16.0,
+                //     ),
+                //     child: GestureDetector(
+                //       onTap: () {
+                //       },
+                //       child: Text(
+                //         "See more",
+                //         style: TextStyle(
+                //           color: AppColor.blue,
+                //           decoration: TextDecoration.underline,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
+          ),
+          if (last)
+            Container(
+              height: 10,
+              decoration: BoxDecoration(
+                color: Color(0xFFF7F8FA),
               ),
-            ],
-          ),
-        ),
-        Container(
-          height: 10,
-          decoration: BoxDecoration(
-            color: Color(0xFFF7F8FA),
-          ),
-        ),
-      ],
+            ),
+        ],
+      ),
     );
   }
 }
@@ -522,20 +552,6 @@ Widget workerQuestStats({
                     context != null &&
                     userId != profile?.userData?.id &&
                     thirdLine != "0") {
-                  // profile.offset = 0;
-                  // profile.setUserId(userId);
-                  // await profile.getActiveQuests();
-                  // await Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (_) => Provider(
-                  //       create: (_) => profile,
-                  //       child: ProfileQuestsPage(userId),
-                  //     ),
-                  //   ),
-                  // );
-                  // profile.quests.clear();
-                  // profile.offset = 0;
                   await Navigator.pushNamed(
                     context,
                     ProfileQuestsPage.routeName,
@@ -544,14 +560,12 @@ Widget workerQuestStats({
                 }
               },
               child: Text(
-                thirdLine,
+                thirdLine.tr(),
                 style: TextStyle(
                   decoration: title == "quests.activeQuests"
                       ? TextDecoration.underline
                       : null,
-                  color: title != "quests.activeQuests"
-                      ? Color(0xFFD8DFE3)
-                      : Color(0xFFF7F8FA),
+                  color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
                 ),
               ),
@@ -581,9 +595,9 @@ Widget workerRating({
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             workerQuestStats(
-              title: 'quests.activeQuests',
+              title: "quests.activeQuests",
               rate: activeQuests,
-              thirdLine: "workers.showAll".tr(),
+              thirdLine: "workers.showAll",
               userId: userId,
               context: context,
               profile: profile,
@@ -591,7 +605,7 @@ Widget workerRating({
             workerQuestStats(
               title: 'quests.completedQuests',
               rate: completedQuests,
-              thirdLine: 'workers.oneTime'.tr(),
+              thirdLine: 'workers.oneTime',
               textColor: Color(0xFF0083C7),
             ),
           ],

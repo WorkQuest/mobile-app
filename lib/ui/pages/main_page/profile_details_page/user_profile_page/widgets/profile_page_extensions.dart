@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
@@ -162,6 +160,9 @@ extension ReviewsTab on UserProfileState {
                         role: widget.info == null
                             ? userStore!.userData!.role
                             : widget.info!.role,
+                        last: index == portfolioStore!.reviewsList.length - 1
+                            ? true
+                            : false,
                       ),
                   ],
                 ),

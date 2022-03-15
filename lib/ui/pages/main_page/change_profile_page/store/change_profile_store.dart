@@ -91,10 +91,8 @@ abstract class ChangeProfileStoreBase with Store {
     return chek;
   }
 
-  bool numberChanged(Phone phone){
-    if ((this.userData.tempPhone ?? this.userData.phone) != phone) return true;
-    return false;
-  }
+  bool numberChanged(Phone phone) =>
+      (this.userData.phone != phone && phone.fullPhone.isNotEmpty);
 
   bool areThereAnyChanges(ProfileMeResponse? userData) {
     if (userData == null) return false;

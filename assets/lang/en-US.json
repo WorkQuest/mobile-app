@@ -292,7 +292,10 @@
       "workerAcceptedInvitationToQuest": "Worker accepted invitation to quest",
       "workerRejectedInvitationToQuest": "Worker rejected invitation to quest",
       "employerRejectedWorkersResponse": "Employer rejected workers response",
-      "userLeftReviewAboutQuest": "User left review about quest"
+      "userLeftReviewAboutQuest": "User left review about quest",
+      "waitWorker": "Wait worker",
+      "waitConfirm": "Wait confirm",
+      "questEdited": "Quest edited"
     },
     "youResponded": "You responded",
     "title": "Quest Title",

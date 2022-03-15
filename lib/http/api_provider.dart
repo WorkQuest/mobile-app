@@ -9,6 +9,7 @@ import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/review.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/model/quests_models/notifications.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -577,6 +578,91 @@ extension QuestService on ApiProvider {
       );
     } catch (e) {
       return [];
+    }
+  }
+}
+
+extension Notification on ApiProvider {
+  Future<Notifications> getNotifications({
+    required int offset,
+  }) async {
+    try {
+      // String workplaces = "";
+      // workplace.forEach((text) {
+      //   workplaces += "workplaces[]=$text&";
+      // });
+      // final responseData = await httpClient.get(
+      //   query:
+      //   '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort&$specialization',
+      final responseData = await httpClient.get(
+        query: 'https://notifications.workquest.co/api/notifications',
+        queryParameters: {
+          "offset": offset,
+          "exclude": [
+            "dao",
+            "bridge",
+            "proposal",
+            "referral",
+            "pensionFund",
+            "dailyLiquidity"
+          ],
+        },
+        useBaseUrl: false,
+      );
+      return Notifications.fromJson(responseData);
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+
+      final responseData = await httpClient.get(
+        query: 'https://notifications.workquest.co/api/notifications',
+        queryParameters: {
+          "offset": offset,
+          "exclude": [
+            "dao",
+            "bridge",
+            "proposal",
+            "referral",
+            "pensionFund",
+            "dailyLiquidity",
+          ],
+        },
+      );
+      return Notifications.fromJson(responseData);
+    }
+  }
+
+  Future<bool> deleteNotification({
+    required String notificationId,
+  }) async {
+    try {
+      final responseData = await httpClient.delete(
+        query:
+            'https://notifications.workquest.co/api/notifications/delete/$notificationId',
+        useBaseUrl: false,
+      );
+      return responseData == null;
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      return false;
+    }
+  }
+
+  Future<void> readNotifications({
+    required List<String> notificationId,
+  }) async {
+    try {
+      await httpClient.post(
+        query: 'https://notifications.workquest.co/api/notifications/mark-read',
+        data: {
+          "notificationId": notificationId,
+        },
+        useBaseUrl: false,
+      );
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
     }
   }
 }

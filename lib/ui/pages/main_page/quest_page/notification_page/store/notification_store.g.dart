@@ -13,41 +13,34 @@ mixin _$NotificationStore on _NotificationStore, Store {
       Atom(name: '_NotificationStore.listOfNotifications');
 
   @override
-  ObservableList<Notifications> get listOfNotifications {
+  ObservableList<NotificationElement> get listOfNotifications {
     _$listOfNotificationsAtom.reportRead();
     return super.listOfNotifications;
   }
 
   @override
-  set listOfNotifications(ObservableList<Notifications> value) {
+  set listOfNotifications(ObservableList<NotificationElement> value) {
     _$listOfNotificationsAtom.reportWrite(value, super.listOfNotifications, () {
       super.listOfNotifications = value;
     });
   }
 
-  final _$_NotificationStoreActionController =
-      ActionController(name: '_NotificationStore');
+  final _$getNotificationAsyncAction =
+      AsyncAction('_NotificationStore.getNotification');
 
   @override
-  void changeQuests(dynamic json) {
-    final _$actionInfo = _$_NotificationStoreActionController.startAction(
-        name: '_NotificationStore.changeQuests');
-    try {
-      return super.changeQuests(json);
-    } finally {
-      _$_NotificationStoreActionController.endAction(_$actionInfo);
-    }
+  Future<void> getNotification(bool newList) {
+    return _$getNotificationAsyncAction
+        .run(() => super.getNotification(newList));
   }
 
+  final _$deleteNotificationAsyncAction =
+      AsyncAction('_NotificationStore.deleteNotification');
+
   @override
-  void changeChats(dynamic json) {
-    final _$actionInfo = _$_NotificationStoreActionController.startAction(
-        name: '_NotificationStore.changeChats');
-    try {
-      return super.changeChats(json);
-    } finally {
-      _$_NotificationStoreActionController.endAction(_$actionInfo);
-    }
+  Future<void> deleteNotification(String notificationId) {
+    return _$deleteNotificationAsyncAction
+        .run(() => super.deleteNotification(notificationId));
   }
 
   @override

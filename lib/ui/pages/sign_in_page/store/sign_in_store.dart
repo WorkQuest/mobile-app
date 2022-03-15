@@ -36,6 +36,9 @@ abstract class _SignInStore extends IStore<bool> with Store {
   @observable
   String totp = '';
 
+  @observable
+  String error = "";
+
   @action
   setMnemonic(String value) => mnemonic = value;
 
@@ -60,6 +63,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
 
   @action
   signInWallet() async {
+    error = "";
     final walletAddress = getIt.get<ProfileMeStore>().userData?.walletAddress;
     if (walletAddress == null) this.onError("Profile not found");
     try {
@@ -75,10 +79,11 @@ abstract class _SignInStore extends IStore<bool> with Store {
       AccountRepository().addWallet(wallet);
       this.onSuccess(true);
     } on FormatException catch (e) {
-      onError(e.message);
+      this.onError(e.message);
+      error = e.toString();
     } catch (e, tr) {
       print("error $e $tr");
-      onError(e.toString());
+      this.onError(e.toString());
     }
   }
 
@@ -87,6 +92,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await Future.delayed(const Duration(seconds: 1));
+      error = "";
       BearerToken bearerToken = await _apiProvider.login(
         email: _username.trim(),
         password: _password,
@@ -96,12 +102,19 @@ abstract class _SignInStore extends IStore<bool> with Store {
         return;
       }
       await Storage.writeRefreshToken(bearerToken.refresh);
+      await Storage.writeNotificationToken(bearerToken.access);
       await Storage.writeAccessToken(bearerToken.access);
-      if (totp.isNotEmpty) if (!await _apiProvider.validateTotp(totp: totp))
-        throw FormatException("Invalid TOTP");
-      await getIt.get<ProfileMeStore>().getProfileMe();
-      await signInWallet();
+      if (totp.isNotEmpty) if (!await _apiProvider.validateTotp(totp: totp)) {
+        error = "Invalid TOTP";
+        this.onError("Invalid TOTP");
+        return;
+      }
+      // throw FormatException("Invalid TOTP");
+      // await getIt.get<ProfileMeStore>().getProfileMe();
+      // await signInWallet();
+      this.onSuccess(true);
     } catch (e) {
+      error = e.toString();
       this.onError(e.toString());
     }
   }

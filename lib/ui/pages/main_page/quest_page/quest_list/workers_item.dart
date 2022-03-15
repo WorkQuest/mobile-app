@@ -64,7 +64,7 @@ class WorkersItem extends StatelessWidget {
                         height: 5,
                       ),
                       tagStatus(
-                          workersInfo.ratingStatistic?.status.toString() ?? "noStatus"),
+                          workersInfo.ratingStatistic?.status ?? 3),
                     ],
                   ),
                 ),
@@ -151,7 +151,7 @@ class WorkersItem extends StatelessWidget {
     );
   }
 
-  Widget tagStatus(String status) {
+  Widget tagStatus(int status) {
     WorkerBadge? badge = Constants.workerRatingTag[status];
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
