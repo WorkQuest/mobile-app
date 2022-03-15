@@ -110,6 +110,31 @@ mixin _$ChangeProfileStore on ChangeProfileStoreBase, Store {
     return _$displayPredictionAsyncAction.run(() => super.displayPrediction(p));
   }
 
+  final _$ChangeProfileStoreBaseActionController =
+      ActionController(name: 'ChangeProfileStoreBase');
+
+  @override
+  dynamic setPhoneNumber(PhoneNumber phone) {
+    final _$actionInfo = _$ChangeProfileStoreBaseActionController.startAction(
+        name: 'ChangeProfileStoreBase.setPhoneNumber');
+    try {
+      return super.setPhoneNumber(phone);
+    } finally {
+      _$ChangeProfileStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setSecondPhoneNumber(PhoneNumber phone) {
+    final _$actionInfo = _$ChangeProfileStoreBaseActionController.startAction(
+        name: 'ChangeProfileStoreBase.setSecondPhoneNumber');
+    try {
+      return super.setSecondPhoneNumber(phone);
+    } finally {
+      _$ChangeProfileStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

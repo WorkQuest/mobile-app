@@ -83,7 +83,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   List<String> workplaces = [];
 
-  List<String> employeeRatings = [];
+  List<int> employeeRatings = [];
 
   List<int> priorities = [];
 
@@ -97,7 +97,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     employments = employment;
   }
 
-  setEmployeeRating(List<String> employeeRating) {
+  setEmployeeRating(List<int> employeeRating) {
     employeeRatings = employeeRating;
   }
 

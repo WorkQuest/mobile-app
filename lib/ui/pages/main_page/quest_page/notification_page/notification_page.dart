@@ -121,8 +121,10 @@ class _NotificationPageState extends State<NotificationPage> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (body.userId != profileMeStore.userData?.id)
-                      await chatStore.getUserData(body.userId);
+                    if (body.notification.data.user.id !=
+                        profileMeStore.userData?.id)
+                      await chatStore
+                          .getUserData(body.notification.data.user.id);
                     else
                       chatStore.userData = profileMeStore.userData;
                     if (chatStore.userData != null) {
@@ -200,35 +202,34 @@ class _NotificationPageState extends State<NotificationPage> {
                 borderRadius: BorderRadius.all(Radius.circular(6.0)),
               ),
               alignment: Alignment.centerLeft,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      body.notification.data.title!,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: TextStyle(fontSize: 15),
+              child: GestureDetector(
+                onTap: () async {
+                  await store.getQuest(body.notification.data.id);
+                  await Navigator.of(context, rootNavigator: true).pushNamed(
+                    QuestDetails.routeName,
+                    arguments: store.quest,
+                  );
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        body.notification.data.title!,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ),
-                  ),
-                  InkWell(
-                    child: Icon(
+                    Icon(
                       Icons.arrow_forward_ios_sharp,
                       color: Colors.blueAccent,
                       size: 20,
                     ),
-                    onTap: () async {
-                      await store.getQuest(body.notification.data.id);
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(
-                        QuestDetails.routeName,
-                        arguments: store.quest,
-                      );
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

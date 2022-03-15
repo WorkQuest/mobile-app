@@ -31,7 +31,7 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   List<String> workplaceValue = [];
 
-  List<String> employeeRatingValue = [];
+  List<int> employeeRatingValue = [];
 
   List<int> priorityValue = [];
 
@@ -265,22 +265,23 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     }
   }
 
-  List<String> getEmployeeRating() {
+  List<int> getEmployeeRating() {
     employeeRatingValue.clear();
     if (selectEmployeeRating[0] == true) {
-      employeeRatingValue.add("verified");
-      employeeRatingValue.add("reliable");
-      employeeRatingValue.add("topRanked");
+      employeeRatingValue.add(0);
+      employeeRatingValue.add(1);
+      employeeRatingValue.add(2);
+      employeeRatingValue.add(3);
       return employeeRatingValue;
     }
     if (selectEmployeeRating[1] == true) {
-      employeeRatingValue.add("verified");
+      employeeRatingValue.add(2);
     }
     if (selectEmployeeRating[2] == true) {
-      employeeRatingValue.add("reliable");
+      employeeRatingValue.add(1);
     }
     if (selectEmployeeRating[3] == true) {
-      employeeRatingValue.add("topRanked");
+      employeeRatingValue.add(0);
     }
     return employeeRatingValue;
   }
@@ -344,11 +345,11 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   }
 
   @action
-  void initRating(List<String> value) {
+  void initRating(List<int> value) {
     value.forEach((element) {
-      if (element == "verified") selectEmployeeRating[1] = true;
-      if (element == "reliable") selectEmployeeRating[2] = true;
-      if (element == "topRanked") selectEmployeeRating[3] = true;
+      if (element == 2) selectEmployeeRating[1] = true;
+      if (element == 1) selectEmployeeRating[2] = true;
+      if (element == 1) selectEmployeeRating[3] = true;
     });
     if (selectEmployeeRating[1] == true &&
         selectEmployeeRating[2] == true &&

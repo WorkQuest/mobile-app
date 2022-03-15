@@ -29,7 +29,6 @@ class Notifications {
 class NotificationElement {
   NotificationElement({
     required this.id,
-    required this.userId,
     required this.queueName,
     required this.notification,
     required this.seen,
@@ -37,7 +36,6 @@ class NotificationElement {
   });
 
   String id;
-  String userId;
   String queueName;
   NotificationNotification notification;
   bool seen;
@@ -46,7 +44,6 @@ class NotificationElement {
   factory NotificationElement.fromJson(Map<String, dynamic> json) =>
       NotificationElement(
         id: json["id"],
-        userId: json["userId"],
         queueName: json["queueName"],
         notification: NotificationNotification.fromJson(json["notification"]),
         seen: json["seen"],
@@ -55,8 +52,7 @@ class NotificationElement {
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "userId": userId,
-        // "queueName": queueName,
+        "queueName": queueName,
         "notification": notification.toJson(),
         "seen": seen,
         "createdAt": createdAt.toIso8601String(),

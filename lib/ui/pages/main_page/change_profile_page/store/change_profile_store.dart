@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app/enums.dart';
 import 'package:app/keys.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
@@ -54,6 +55,9 @@ abstract class ChangeProfileStoreBase with Store {
     if (secondPhone != null)
       secondPhoneNumber =
           await PhoneNumber.getRegionInfoFromPhoneNumber(secondPhone.fullPhone);
+    else
+      userData.additionalInfo?.secondMobileNumber =
+          Phone(phone: "", fullPhone: "", codeRegion: "");
   }
 
   @action
@@ -62,6 +66,24 @@ abstract class ChangeProfileStoreBase with Store {
     userData.locationCode!.latitude = detail.result.geometry!.location.lat;
     userData.locationCode!.longitude = detail.result.geometry!.location.lng;
     userData.locationPlaceName = address;
+  }
+
+  @action
+  setPhoneNumber(PhoneNumber phone) {
+    userData.tempPhone?.codeRegion = phone.dialCode ?? "";
+    userData.tempPhone?.phone =
+        phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "";
+    userData.tempPhone?.fullPhone = phone.phoneNumber ?? "";
+  }
+
+  @action
+  setSecondPhoneNumber(PhoneNumber phone) {
+    userData.additionalInfo?.secondMobileNumber?.codeRegion =
+        phone.dialCode ?? "";
+    userData.additionalInfo?.secondMobileNumber?.phone =
+        phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "";
+    userData.additionalInfo?.secondMobileNumber?.fullPhone =
+        phone.phoneNumber ?? "";
   }
 
   bool validationKnowledge(
@@ -97,8 +119,10 @@ abstract class ChangeProfileStoreBase with Store {
   bool areThereAnyChanges(ProfileMeResponse? userData) {
     if (userData == null) return false;
 
-    if (this.userData.userSpecializations != userData.userSpecializations)
-      return true;
+    if (this.userData.role == UserRole.Worker) if (this
+            .userData
+            .userSpecializations !=
+        userData.userSpecializations) return true;
 
     if (this.userData.wagePerHour != userData.wagePerHour) return true;
 
@@ -109,9 +133,22 @@ abstract class ChangeProfileStoreBase with Store {
     if ((this.userData.additionalInfo!.address ?? "") !=
         (userData.additionalInfo!.address ?? "")) return true;
 
-    if (this.userData.phone != userData.phone) return true;
+    if (this.userData.phone != userData.phone) {
+      if (this.userData.phone!.phone == userData.phone!.phone &&
+          this.userData.phone!.fullPhone == userData.phone!.fullPhone &&
+          this.userData.phone!.codeRegion == userData.phone!.codeRegion)
+        print("number hasn't changed");
+      else
+        return true;
+    }
 
-    if (this.userData.additionalInfo?.secondMobileNumber !=
+    if (this.userData.additionalInfo?.secondMobileNumber?.phone == "")
+      this.userData.additionalInfo?.secondMobileNumber = null;
+
+    if (this.userData.role == UserRole.Employer) if (this
+            .userData
+            .additionalInfo
+            ?.secondMobileNumber !=
         userData.additionalInfo?.secondMobileNumber) return true;
 
     if ((this.userData.email ?? "") != (userData.email ?? "")) return true;
@@ -131,10 +168,18 @@ abstract class ChangeProfileStoreBase with Store {
     if ((this.userData.additionalInfo?.socialNetwork?.twitter ?? "") !=
         (userData.additionalInfo?.socialNetwork?.twitter ?? "")) return true;
 
-    if ((this.userData.additionalInfo?.workExperiences ?? "") !=
+    if (this.userData.role == UserRole.Worker) if ((this
+                .userData
+                .additionalInfo
+                ?.workExperiences ??
+            "") !=
         (userData.additionalInfo?.workExperiences ?? "")) return true;
 
-    if ((this.userData.additionalInfo?.educations ?? "") !=
+    if (this.userData.role == UserRole.Worker) if ((this
+                .userData
+                .additionalInfo
+                ?.educations ??
+            "") !=
         (userData.additionalInfo?.educations ?? "")) return true;
 
     if (media != null) return true;

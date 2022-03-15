@@ -171,29 +171,14 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             phoneNumber(
               title: "modals.phoneNumber",
               initialValue: pageStore.phoneNumber,
-              onChanged: (PhoneNumber phone) {
-                pageStore.userData.tempPhone?.codeRegion = phone.dialCode ?? "";
-                pageStore.userData.tempPhone?.phone =
-                    phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ??
-                        "";
-                pageStore.userData.tempPhone?.fullPhone =
-                    phone.phoneNumber ?? "";
-              },
+              onChanged: (PhoneNumber phone) => pageStore.setPhoneNumber(phone),
             ),
-            if (profile!.userData!.role == UserRole.Worker)
+            if (profile!.userData!.role == UserRole.Employer)
               phoneNumber(
                 title: "modals.secondPhoneNumber",
                 initialValue: pageStore.secondPhoneNumber,
-                onChanged: (PhoneNumber phone) {
-                  pageStore.userData.additionalInfo?.secondMobileNumber!
-                      .codeRegion = phone.dialCode ?? "";
-                  pageStore.userData.additionalInfo?.secondMobileNumber!.phone =
-                      phone.phoneNumber
-                              ?.replaceAll((phone.dialCode ?? ""), "") ??
-                          "";
-                  pageStore.userData.additionalInfo?.secondMobileNumber!
-                      .fullPhone = phone.phoneNumber ?? "";
-                },
+                onChanged: (PhoneNumber phone) =>
+                    pageStore.setSecondPhoneNumber(phone),
               ),
             inputBody(
               title: "signUp.email".tr(),
@@ -362,7 +347,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
           ),
           child: InternationalPhoneNumberInput(
             validator: title == "modals.secondPhoneNumber"
-                ? null
+                ? (value) {
+                    return null;
+                  }
                 : Validators.phoneNumberValidator,
             initialValue: initialValue,
             errorMessage: "modals.invalidPhone".tr(),

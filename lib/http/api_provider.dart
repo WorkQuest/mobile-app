@@ -325,7 +325,7 @@ extension QuestService on ApiProvider {
     String? north,
     String? south,
     List<int> priority = const [],
-    List<String> ratingStatus = const [],
+    List<int> ratingStatus = const [],
     List<String> workplace = const [],
     List<String> specializations = const [],
   }) async {
