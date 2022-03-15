@@ -272,41 +272,38 @@ class ReviewsWidget extends StatelessWidget {
 
 ///AppBar Title
 Widget appBarTitle(String name, double padding, String status, double width) {
-  return Container(
-    child: AnimatedPadding(
-      padding: EdgeInsets.only(left: padding),
-      duration: Duration(milliseconds: 100),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: status != "noStatus" ? 18.0 : 0.0,
-            left: 0.0,
-            child: Container(
-              width: width,
-              child: Text(
-                name,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
-                ),
-                overflow: TextOverflow.ellipsis,
+  return Padding(
+    padding: EdgeInsets.only(left: padding),
+    child: Stack(
+      children: [
+        Positioned(
+          bottom: status != "noStatus" ? 18.0 : 0.0,
+          left: 0.0,
+          child: Container(
+            // width: width,
+            child: Text(
+              name,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          if (status.isNotEmpty)
-            Positioned(
-              bottom: 0.0,
-              left: 0.0,
-              child: Container(
-                // padding: EdgeInsets.symmetric(
-                //   horizontal: 5.0,
-                //   vertical: 2.0,
-                // ),
-                child: UserRating(status),
-              ),
+        ),
+        if (status.isNotEmpty)
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            child: Container(
+              // padding: EdgeInsets.symmetric(
+              //   horizontal: 5.0,
+              //   vertical: 2.0,
+              // ),
+              child: UserRating(status),
             ),
-        ],
-      ),
+          ),
+      ],
     ),
   );
 }

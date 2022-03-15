@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -37,6 +39,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
   late TabController _tabController;
 
   ScrollController controllerMain = ScrollController();
+  late StreamController<AppBarParams> _streamController;
 
   ProfileMeStore? userStore;
   PortfolioStore? portfolioStore;
@@ -49,6 +52,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
     super.initState();
 
     _tabController = TabController(vsync: this, length: 2);
+    _streamController = StreamController<AppBarParams>();
 
     portfolioStore = context.read<PortfolioStore>();
     myQuests = context.read<MyQuestStore>();
@@ -161,26 +165,13 @@ class UserProfileState<T extends UserProfile> extends State<T>
     return Scaffold(
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
-          //Animate Padding
-          if (controllerMain.offset < 240)
-            setState(() {
-              appBarPosition = 0.0;
-              appBarPositionVertical = 16.0;
-              width = 240.0;
-            });
-          if (controllerMain.offset > 0 && controllerMain.offset < 240)
-            setState(() {
-              appBarPosition = controllerMain.offset < 120 ? 0.0 : 25.0;
-              widget.info != null
-                  ? widget.info!.ratingStatistic?.status != "noStatus"
-                      ? appBarPositionVertical = 7.0
-                      : appBarPositionVertical = 16.0
-                  : userStore!.userData!.ratingStatistic?.status != "noStatus"
-                      ? appBarPositionVertical = 7.0
-                      : appBarPositionVertical = 16.0;
-              width = 300.0;
-            });
-
+          if (controllerMain.offset < 180) {
+            double width = 240 + (controllerMain.offset.round() / 200 * 60);
+            double appBarPosition = controllerMain.offset.round() / 200 * 28;
+            double appBarPositionVertical = (controllerMain.offset.round() / 200 * 10);
+            _streamController.sink.add(
+                AppBarParams(width, appBarPosition, appBarPositionVertical));
+          }
           return false;
         },
         child: NestedScrollView(
@@ -191,7 +182,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
           ) {
             return <Widget>[
               //__________AppBar__________//
-              sliverAppBar(widget.info),
+              sliverAppBar(widget.info, _streamController),
               SliverPadding(
                 padding: EdgeInsets.fromLTRB(
                   16.0,
@@ -299,5 +290,17 @@ class UserProfileState<T extends UserProfile> extends State<T>
         ),
       ),
     );
+  }
+}
+
+class AppBarParams {
+  double width;
+  double appBarPosition;
+  double appBarPositionVertical;
+
+  AppBarParams(this.width, this.appBarPosition, this.appBarPositionVertical);
+
+  factory AppBarParams.initial() {
+    return AppBarParams(240.0, 0.0, 16.0);
   }
 }

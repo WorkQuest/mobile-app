@@ -52,6 +52,7 @@ class ProfileMeResponse with ClusterItem {
   QuestsStatistic? questsStatistic;
   String? walletAddress;
   bool? isTotpActive;
+  bool showAnimation = true;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(
@@ -123,7 +124,7 @@ class ProfileMeResponse with ClusterItem {
             "userId": json["id"],
             "reviewCount": 0,
             "averageMark": 0,
-            "status": "",
+            "status": 0,
             // createdAt: createdAt,
             // updatedAt: updatedAt,
           }),
@@ -256,6 +257,7 @@ class RatingStatistic {
         );
 
   factory RatingStatistic.fromJson(Map<String, dynamic> json) {
+    print('json["status"] -> ${json["status"].runtimeType}');
     return RatingStatistic(
       id: json["id"],
       userId: json["userId"],

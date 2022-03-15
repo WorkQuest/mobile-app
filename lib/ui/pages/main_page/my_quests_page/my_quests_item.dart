@@ -40,11 +40,12 @@ class MyQuestsItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: Image.network(
-                    questInfo.user.avatar.url,
+                  child: FadeInImage.assetNetwork(
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
+                    image: questInfo.user.avatar.url,
+                    placeholder: 'assets/white_back.jpeg',
                   ),
                 ),
                 const SizedBox(
