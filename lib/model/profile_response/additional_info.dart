@@ -47,14 +47,9 @@ class AdditionalInfo {
 
   factory AdditionalInfo.fromJson(Map<String, dynamic> json) {
     return AdditionalInfo(
-      secondMobileNumber: Phone.fromJson(
-        json["secondMobileNumber"] ??
-            {
-              "codeRegion": "",
-              "fullPhone": "",
-              "phone": "",
-            },
-      ),
+      secondMobileNumber: json["secondMobileNumber"] == null
+          ? null
+          : Phone.fromJson(json["secondMobileNumber"]),
       address: json["address"],
       socialNetwork: json["socialNetwork"] == null
           ? null

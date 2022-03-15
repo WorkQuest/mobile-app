@@ -195,8 +195,7 @@ class SignInPage extends StatelessWidget {
                                             context, signInStore.error);
                                         return;
                                       }
-                                      if (profile.isSuccess &&
-                                          profile.error.isEmpty)
+                                      if (profile.error.isEmpty)
                                         await signInStore.signInWallet();
                                       else {
                                         _errorMessage(context, profile.error);
@@ -212,7 +211,7 @@ class SignInPage extends StatelessWidget {
                                       } else {
                                         // signInStore.onSuccess(false);
                                         _errorMessage(
-                                            context, "Wrong mnemonic phrase");
+                                            context, signInStore.error);
                                         if (signInStore.errorMessage ==
                                             "unconfirmed") {
                                           print("error");

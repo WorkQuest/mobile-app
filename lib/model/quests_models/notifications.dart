@@ -30,7 +30,7 @@ class NotificationElement {
   NotificationElement({
     required this.id,
     required this.userId,
-    // required this.queueName,
+    required this.queueName,
     required this.notification,
     required this.seen,
     required this.createdAt,
@@ -38,8 +38,7 @@ class NotificationElement {
 
   String id;
   String userId;
-
-  // String queueName;
+  String queueName;
   NotificationNotification notification;
   bool seen;
   DateTime createdAt;
@@ -48,7 +47,7 @@ class NotificationElement {
       NotificationElement(
         id: json["id"],
         userId: json["userId"],
-        // queueName: json["queueName"],
+        queueName: json["queueName"],
         notification: NotificationNotification.fromJson(json["notification"]),
         seen: json["seen"],
         createdAt: DateTime.parse(json["createdAt"]),
@@ -98,7 +97,7 @@ class Data {
   });
 
   String id;
-  String title;
+  String? title;
   String questId;
   User user;
 
@@ -109,7 +108,9 @@ class Data {
           : json["quest"]["id"],
       title: json["title"] == null
           ? json["quest"] == null
-              ? json["message"]
+              ? json["message"] == null
+                  ? json["text"]
+                  : json["message"]
               : json["quest"]["title"]
           : json["title"],
       questId: json["questId"] ?? "",

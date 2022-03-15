@@ -360,53 +360,51 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             border: Border.all(color: Color(0xFFF7F8FA)),
             borderRadius: BorderRadius.circular(6.0),
           ),
-          child: Observer(
-            builder: (_) => InternationalPhoneNumberInput(
-              validator: title == "modals.secondPhoneNumber"
-                  ? (value) {}
-                  : Validators.phoneNumberValidator,
-              initialValue: initialValue,
-              errorMessage: "modals.invalidPhone".tr(),
-              onInputChanged: onChanged,
-              selectorConfig: SelectorConfig(
-                setSelectorButtonAsPrefixIcon: true,
-                selectorType: PhoneInputSelectorType.DROPDOWN,
+          child: InternationalPhoneNumberInput(
+            validator: title == "modals.secondPhoneNumber"
+                ? null
+                : Validators.phoneNumberValidator,
+            initialValue: initialValue,
+            errorMessage: "modals.invalidPhone".tr(),
+            onInputChanged: onChanged,
+            selectorConfig: SelectorConfig(
+              setSelectorButtonAsPrefixIcon: true,
+              selectorType: PhoneInputSelectorType.DROPDOWN,
+            ),
+            hintText: "modals.phoneNumber".tr(),
+            keyboardType: TextInputType.number,
+            inputBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              borderSide: BorderSide(
+                color: Colors.blue,
               ),
-              hintText: "modals.phoneNumber".tr(),
-              keyboardType: TextInputType.number,
-              inputBorder: OutlineInputBorder(
+            ),
+            inputDecoration: InputDecoration(
+              fillColor: Colors.white,
+              focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6.0),
                 borderSide: BorderSide(
                   color: Colors.blue,
                 ),
               ),
-              inputDecoration: InputDecoration(
-                fillColor: Colors.white,
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                  borderSide: BorderSide(
-                    color: Colors.blue,
-                  ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: BorderSide(
+                  color: Colors.blue,
                 ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                  borderSide: BorderSide(
-                    color: Colors.blue,
-                  ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: BorderSide(
+                  color: Color(0xFFf7f8fa),
+                  width: 2.0,
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                  borderSide: BorderSide(
-                    color: Color(0xFFf7f8fa),
-                    width: 2.0,
-                  ),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                  borderSide: BorderSide(
-                    width: 1.0,
-                    color: Colors.red,
-                  ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: BorderSide(
+                  width: 1.0,
+                  color: Colors.red,
                 ),
               ),
             ),

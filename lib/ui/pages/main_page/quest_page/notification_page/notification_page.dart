@@ -207,7 +207,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 children: [
                   Expanded(
                     child: Text(
-                      body.notification.data.title,
+                      body.notification.data.title!,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(fontSize: 15),

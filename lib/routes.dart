@@ -124,6 +124,10 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => Provider(
             create: (context) => getIt.get<SignUpStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: SignUpPage(),
+            ),
           ),
         );
 

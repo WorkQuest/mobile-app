@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 class UserRating extends StatelessWidget {
   UserRating(this.status);
 
-  final String status;
+  final int status;
 
   @override
   Widget build(BuildContext context) {
     switch (status) {
-      case "topRanked":
+      case 0:
         return tag(
           text: "GOLD PLUS",
           color: Color(0xFFF6CF00),
         );
-      case "reliable":
+      case 1:
         return tag(
           text: "SILVER",
           color: Color(0xFFBBC0C7),
         );
 
-      case "verified":
+      case 2:
         return tag(
           text: "BRONZE",
           color: Color(0xFFB79768),

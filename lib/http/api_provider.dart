@@ -587,10 +587,25 @@ extension Notification on ApiProvider {
     required int offset,
   }) async {
     try {
+      // String workplaces = "";
+      // workplace.forEach((text) {
+      //   workplaces += "workplaces[]=$text&";
+      // });
+      // final responseData = await httpClient.get(
+      //   query:
+      //   '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort&$specialization',
       final responseData = await httpClient.get(
         query: 'https://notifications.workquest.co/api/notifications',
         queryParameters: {
           "offset": offset,
+          "exclude": [
+            "dao",
+            "bridge",
+            "proposal",
+            "referral",
+            "pensionFund",
+            "dailyLiquidity"
+          ],
         },
         useBaseUrl: false,
       );
@@ -603,6 +618,14 @@ extension Notification on ApiProvider {
         query: 'https://notifications.workquest.co/api/notifications',
         queryParameters: {
           "offset": offset,
+          "exclude": [
+            "dao",
+            "bridge",
+            "proposal",
+            "referral",
+            "pensionFund",
+            "dailyLiquidity",
+          ],
         },
       );
       return Notifications.fromJson(responseData);

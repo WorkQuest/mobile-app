@@ -132,7 +132,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
       },
       child: Builder(builder: (context) {
         return CustomScrollView(
-            key: PageStorageKey<String>(name),
+            // key: PageStorageKey<String>(name),
             slivers: <Widget>[
               SliverOverlapInjector(
                 handle:
@@ -172,10 +172,10 @@ class UserProfileState<T extends UserProfile> extends State<T>
             setState(() {
               appBarPosition = controllerMain.offset < 120 ? 0.0 : 25.0;
               widget.info != null
-                  ? widget.info!.ratingStatistic?.status != "noStatus"
+                  ? widget.info!.ratingStatistic?.status != 3
                       ? appBarPositionVertical = 7.0
                       : appBarPositionVertical = 16.0
-                  : userStore!.userData!.ratingStatistic?.status != "noStatus"
+                  : userStore!.userData!.ratingStatistic?.status != 3
                       ? appBarPositionVertical = 7.0
                       : appBarPositionVertical = 16.0;
               width = 300.0;
@@ -234,10 +234,10 @@ class UserProfileState<T extends UserProfile> extends State<T>
                                   "",
                           secondNumber: widget.info == null
                               ? userStore!.userData?.additionalInfo
-                                      ?.secondMobileNumber!.fullPhone ??
+                                      ?.secondMobileNumber?.fullPhone ??
                                   ""
-                              : widget.info!.additionalInfo?.secondMobileNumber!
-                                      .fullPhone ??
+                              : widget.info!.additionalInfo?.secondMobileNumber
+                                      ?.fullPhone ??
                                   "",
                           email: widget.info == null
                               ? userStore!.userData?.email ?? " "

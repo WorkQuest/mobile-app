@@ -239,7 +239,7 @@ class RatingStatistic {
   String userId;
   int reviewCount;
   double averageMark;
-  String status;
+  int status;
 
   // String createdAt;
   // String updatedAt;

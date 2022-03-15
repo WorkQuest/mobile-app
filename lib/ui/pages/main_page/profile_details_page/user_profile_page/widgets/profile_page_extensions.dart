@@ -58,10 +58,10 @@ extension CustomAppBar on UserProfileState {
             ),
             Positioned(
               bottom: info == null
-                  ? userStore!.userData!.ratingStatistic!.status != "noStatus"
+                  ? userStore!.userData!.ratingStatistic!.status != 3
                       ? 85.0
                       : 67.0
-                  : info.ratingStatistic!.status != "noStatus"
+                  : info.ratingStatistic!.status != 3
                       ? 85.0
                       : 67.0,
               left: 15.0,
@@ -111,9 +111,9 @@ extension CustomAppBar on UserProfileState {
               : "${info.firstName} ${info.lastName}",
           appBarPosition,
           info == null
-              ? userStore!.userData!.ratingStatistic?.status ?? "noStatus"
-              : info.ratingStatistic?.status ?? "noStatus",
-            width,
+              ? userStore!.userData!.ratingStatistic?.status ?? 3
+              : info.ratingStatistic?.status ?? 3,
+          width,
         ),
       ),
     );
@@ -156,6 +156,9 @@ extension ReviewsTab on UserProfileState {
                         role: widget.info == null
                             ? userStore!.userData!.role
                             : widget.info!.role,
+                        last: index == portfolioStore!.reviewsList.length - 1
+                            ? true
+                            : false,
                       ),
                   ],
                 ),
