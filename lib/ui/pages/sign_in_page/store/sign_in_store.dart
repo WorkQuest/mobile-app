@@ -86,6 +86,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
   Future signIn() async {
     try {
       this.onLoading();
+      await Future.delayed(const Duration(seconds: 1));
       BearerToken bearerToken = await _apiProvider.login(
         email: _username.trim(),
         password: _password,

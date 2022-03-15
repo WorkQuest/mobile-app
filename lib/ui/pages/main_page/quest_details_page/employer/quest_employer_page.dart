@@ -658,7 +658,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             ),
           ),
           if (respond.worker.ratingStatistic?.status != null)
-            UserRating(respond.worker.ratingStatistic!.status),
+            UserRating(respond.worker.ratingStatistic!.status.toString()),
           // Container(
           //   margin: const EdgeInsets.only(top: 5),
           //   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),

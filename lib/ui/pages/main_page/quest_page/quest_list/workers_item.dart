@@ -64,7 +64,7 @@ class WorkersItem extends StatelessWidget {
                         height: 5,
                       ),
                       tagStatus(
-                          workersInfo.ratingStatistic?.status ?? "noStatus"),
+                          workersInfo.ratingStatistic?.status.toString() ?? "noStatus"),
                     ],
                   ),
                 ),

@@ -5,6 +5,7 @@ import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
@@ -30,6 +31,7 @@ class SignInPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController mnemonicController = new TextEditingController();
+
   SignInPage();
 
   @override
@@ -49,7 +51,7 @@ class SignInPage extends StatelessWidget {
               bottom: false,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   AutofillGroup(
                     child: Expanded(
@@ -68,8 +70,7 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         child: Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
+                          padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +132,6 @@ class SignInPage extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
                     child: TextFormField(
@@ -159,9 +159,10 @@ class SignInPage extends StatelessWidget {
                           minSize: 22.0,
                           padding: EdgeInsets.zero,
                           onPressed: () async {
-                            ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
-                            mnemonicController.text=data?.text??"";
-                            signInStore.setMnemonic(data?.text??"");
+                            ClipboardData? data =
+                                await Clipboard.getData(Clipboard.kTextPlain);
+                            mnemonicController.text = data?.text ?? "";
+                            signInStore.setMnemonic(data?.text ?? "");
                           },
                           child: Icon(
                             Icons.paste,
@@ -175,45 +176,49 @@ class SignInPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ObserverListener<SignInStore>(
-                        onSuccess: () {
-                            Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              PinCodePage.routeName,
-                              (_) => false,
-                            );
-                        },
-                        onFailure: () {
+                    child: ObserverListener<SignInStore>(
+                      onSuccess: () {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          PinCodePage.routeName,
+                          (_) => false,
+                        );
+                      },
+                      onFailure: () {
+                        print("error");
+                        if (signInStore.errorMessage == "unconfirmed") {
                           print("error");
-                          if (signInStore.errorMessage == "unconfirmed") {
-                            print("error");
-                            Navigator.pushNamed(context, ConfirmEmail.routeName,
-                                arguments: signInStore.getUsername());
-                            return true;
-                          }
-                          return false;
-                        },
-                        child: Observer(
-                          builder: (context) {
-                            return ElevatedButton(
-                              onPressed: signInStore.canSignIn
-                                  ? () async {
-                                      if (_formKey.currentState!.validate()) {
-                                        await signInStore.signIn();
-                                      }
+                          Navigator.pushNamed(context, ConfirmEmail.routeName,
+                              arguments: signInStore.getUsername());
+                          return true;
+                        }
+                        return false;
+                      },
+                      child: Observer(
+                        builder: (context) {
+                          final function = signInStore.canSignIn
+                              ? () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    await signInStore.signIn();
+                                  }
+                                } : null;
+                          return LoginButton(
+                              title: "signIn.login".tr(),
+                              onTap: function,
+                          enabled: signInStore.isLoading,);
+                          return ElevatedButton(
+                            onPressed: signInStore.canSignIn
+                                ? () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      await signInStore.signIn();
                                     }
-                                  : null,
-                              child:
-                                      signInStore.isLoading
-                                  ? CircularProgressIndicator.adaptive()
-                                  : Text(
-                                      "signIn.login".tr(),
-                                    ),
-                            );
-                          },
-                        ),
+                                  }
+                                : null,
+                            child: signInStore.isLoading
+                                ? CircularProgressIndicator.adaptive()
+                                : Text("signIn.login".tr()),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -280,8 +285,7 @@ class SignInPage extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10.0),
                           child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(
-                                  context, SignUpPage.routeName);
+                              Navigator.pushNamed(context, SignUpPage.routeName);
                             },
                             child: Text(
                               "signIn.signUp".tr(),
@@ -407,8 +411,7 @@ class SignInPage extends StatelessWidget {
                 preferredControlTintColor: Colors.white,
                 barCollapsingEnabled: true,
                 entersReaderIfAvailable: false,
-                dismissButtonStyle:
-                    SafariViewControllerDismissButtonStyle.close,
+                dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
               ),
             )
         // } catch (e) {
