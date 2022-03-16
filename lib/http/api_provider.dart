@@ -291,7 +291,7 @@ extension QuestService on ApiProvider {
     });
     final responseData = await httpClient.get(
       query:
-          '/v1/quests?$workplaces$employments$status$specialization$priorities',
+          '/v1/quests?$workplaces$employments$status$specialization$priorities$sort',
       queryParameters: {
         // if (workplace.isNotEmpty) "workplaces": workplaces,
         // if (employment.isNotEmpty) "employments": employments,

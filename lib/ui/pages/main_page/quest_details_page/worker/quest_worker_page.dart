@@ -395,12 +395,16 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     //       createdAt: DateTime.now(),
                     //       updatedAt: DateTime.now(),
                     //     );
-                    questStore.getQuests(true);
-                    myQuestStore.deleteQuest(widget.questInfo);
-                    myQuestStore.addQuest(widget.questInfo, true);
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                    await AlertDialogUtils.showSuccessDialog(context);
+                    if (store.isSuccess) {
+                      questStore.searchWord.isEmpty
+                          ? questStore.getQuests(true)
+                          : questStore.setSearchWord(questStore.searchWord);
+                      myQuestStore.deleteQuest(widget.questInfo);
+                      myQuestStore.addQuest(widget.questInfo, true);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      await AlertDialogUtils.showSuccessDialog(context);
+                    }
                     // successAlert(
                     //   context,
                     //   "modals.requestSend".tr(),

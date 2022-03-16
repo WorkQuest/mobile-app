@@ -138,7 +138,7 @@ class SettingsPage extends StatelessWidget {
                                     20.0,
                                   ),
                                   title: "settings.changeRole".tr(),
-                                  onTap: userStore.userData?.isTotpActive !=
+                                  onTap: userStore.userData?.isTotpActive ==
                                           true
                                       ? () async {
                                           if (userStore.userData!

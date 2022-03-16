@@ -222,6 +222,13 @@ abstract class _QuestsStore extends IStore<bool> with Store {
           searchResultList.addAll(await _apiProvider.getQuests(
             searchWord: searchWord,
             offset: offset,
+            statuses: [0, 1],
+            employment: employments,
+            workplace: workplaces,
+            priority: priorities,
+            limit: this.limit,
+            sort: this.sort,
+            specializations: selectedSkill,
           ));
           //offset review
           offset += 10;
@@ -241,6 +248,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         searchWorkersList.addAll(await _apiProvider.getWorkers(
           searchWord: this.searchWord,
           offset: this.offset,
+          sort: this.sort,
+          limit: this.limit,
+          workplace: workplaces,
+          priority: priorities,
+          ratingStatus: employeeRatings,
+          specializations: selectedSkill,
         ));
         this.offset += 10;
         this.onSuccess(true);

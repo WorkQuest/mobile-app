@@ -37,7 +37,7 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   List<String> selectedSkill = [];
 
-  String sort = "sort[createdAt]=desc";
+  String sort = "";
 
   @observable
   ObservableMap<int, ObservableList<bool>> selectedSkillFilters =

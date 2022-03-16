@@ -40,7 +40,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     for (int index = 0; index < respondedList.length; index++)
       if (respondedList[index].workerId == idWorker ||
           respondedList[index].status == -1 ||
-          respondedList[index].status == 0 ||
+          // respondedList[index].status == 0 ||
           (respondedList[index].type == 1 && respondedList[index].status != 1))
         respondedList.removeAt(index);
   }
