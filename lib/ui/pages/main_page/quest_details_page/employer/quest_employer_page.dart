@@ -297,19 +297,23 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     Radius.circular(15),
                   ),
                   child: Image.network(
-                    widget.questInfo.assignedWorker!.avatar.url,
+                    widget.questInfo.assignedWorker?.avatar?.url ??
+                        "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                     width: 30,
                     height: 30,
                     fit: BoxFit.fitHeight,
                   ),
                 ),
                 const SizedBox(width: 10),
-                Text(
-                  "${widget.questInfo.assignedWorker!.firstName} " +
-                      "${widget.questInfo.assignedWorker!.lastName}",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                Flexible(
+                  child: Text(
+                    "${widget.questInfo.assignedWorker!.firstName} " +
+                        "${widget.questInfo.assignedWorker!.lastName}",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -323,7 +327,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   Widget respondedList() {
     return Observer(
-      builder: (_) => (store.respondedList == null)
+      builder: (_) => (store.respondedList.isEmpty && store.isLoading)
           ? Center(
               child: CircularProgressIndicator.adaptive(),
             )
@@ -531,7 +535,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ...respondedUser(respond),
-              Spacer(),
+              // Spacer(),
               Transform.scale(
                 scale: 1.5,
                 child: Radio(
@@ -576,26 +580,30 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           Radius.circular(25),
         ),
         child: Image.network(
-          respond.worker.avatar.url,
+          respond.worker.avatar?.url ??
+              "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
           fit: BoxFit.cover,
           height: 50,
           width: 50,
         ),
       ),
       const SizedBox(width: 15),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "${respond.worker.firstName} ${respond.worker.lastName}",
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+      Flexible(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "${respond.worker.firstName} ${respond.worker.lastName}",
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-          if (respond.worker.ratingStatistic?.status != null)
-            UserRating(respond.worker.ratingStatistic!.status),
-        ],
+            if (respond.worker.ratingStatistic?.status != null)
+              UserRating(respond.worker.ratingStatistic!.status),
+          ],
+        ),
       ),
     ];
   }

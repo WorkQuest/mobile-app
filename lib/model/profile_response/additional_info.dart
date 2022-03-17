@@ -27,7 +27,7 @@ class AdditionalInfo {
   List<String>? skills;
   List<Map<String, String>> educations = [];
   List<Map<String, String>> workExperiences = [];
-  Avatar avatar;
+  Avatar? avatar;
 
   AdditionalInfo.clone(AdditionalInfo object)
       : this(
@@ -81,15 +81,7 @@ class AdditionalInfo {
             })).toList()
           : [],
       description: json["description"],
-      avatar: Avatar.fromJson(
-        json["avatar"] ??
-            {
-              "id": "",
-              "url":
-                  "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-              "contentType": "",
-            },
-      ),
+      avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
     );
   }
 

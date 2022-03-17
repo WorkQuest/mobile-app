@@ -107,7 +107,7 @@ class ProfileMeResponse with ClusterItem {
           ? null
           : AdditionalInfo.fromJson(json["additionalInfo"]),
       role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
-      avatar: Avatar.fromJson(json["avatar"]),
+      avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
       userSpecializations: json["userSpecializations"] == null
           ? []
           : (List<Map<String, dynamic>> skills) {

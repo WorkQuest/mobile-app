@@ -1,7 +1,6 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
@@ -105,7 +104,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                     ElevatedButton(
                       onPressed: () async{
                         if (_formKey.currentState?.validate() ?? false) {
-                          store.addReview(widget.quest.id);
+                          await store.addReview(widget.quest.id);
                           widget.quest.yourReview = YourReview(
                             id: "",
                             questId: widget.quest.id,

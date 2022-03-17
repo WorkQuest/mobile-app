@@ -192,7 +192,8 @@ class MyProfileImage extends StatelessWidget {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-              userStore.userData!.avatar!.url,
+              userStore.userData!.avatar?.url ??
+                  "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
             ),
             fit: BoxFit.cover,
           ),

@@ -182,7 +182,9 @@ extension QuestService on ApiProvider {
       );
       return List<BaseQuestResponse>.from(
           responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)));
-    } catch (e) {
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
       return [];
     }
   }

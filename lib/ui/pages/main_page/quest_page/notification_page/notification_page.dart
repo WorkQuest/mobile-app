@@ -5,7 +5,6 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/store/notification_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
-import 'package:app/ui/widgets/running_line.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -142,7 +141,8 @@ class _NotificationPageState extends State<NotificationPage> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: Image.network(
-                          body.notification.data.user.avatar.url,
+                          body.notification.data.user.avatar?.url ??
+                              "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                           width: 40,
                           height: 40,
                           fit: BoxFit.cover,
@@ -150,17 +150,11 @@ class _NotificationPageState extends State<NotificationPage> {
                       ),
                       SizedBox(width: 10),
                       Expanded(
-                        child: SizedBox(
-                          height: 20,
-                          child: RunningLine(
-                            children: [
-                              Text(
-                                body.notification.data.user.firstName +
-                                    " " +
-                                    body.notification.data.user.lastName,
-                              ),
-                            ],
-                          ),
+                        child: Text(
+                          body.notification.data.user.firstName +
+                              " " +
+                              body.notification.data.user.lastName,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       SizedBox(

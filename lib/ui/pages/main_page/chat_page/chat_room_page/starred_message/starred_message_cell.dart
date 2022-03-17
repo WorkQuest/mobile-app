@@ -39,7 +39,8 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: Image.network(
-                          widget.message.sender!.avatar!.url,
+                          widget.message.sender!.avatar?.url ??
+                              "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                           width: 30,
                           height: 30,
                           fit: BoxFit.cover,

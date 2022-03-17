@@ -28,6 +28,9 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   ProfileMeResponse? questHolder;
 
   @observable
+  bool review = false;
+
+  @observable
   QuestPriority priorityValue = QuestPriority.Normal;
 
   @observable

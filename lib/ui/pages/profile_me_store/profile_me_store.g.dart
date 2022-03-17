@@ -24,6 +24,21 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
     });
   }
 
+  final _$reviewAtom = Atom(name: '_ProfileMeStore.review');
+
+  @override
+  bool get review {
+    _$reviewAtom.reportRead();
+    return super.review;
+  }
+
+  @override
+  set review(bool value) {
+    _$reviewAtom.reportWrite(value, super.review, () {
+      super.review = value;
+    });
+  }
+
   final _$priorityValueAtom = Atom(name: '_ProfileMeStore.priorityValue');
 
   @override
@@ -88,6 +103,7 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
   String toString() {
     return '''
 questHolder: ${questHolder},
+review: ${review},
 priorityValue: ${priorityValue},
 quests: ${quests},
 distantWork: ${distantWork},

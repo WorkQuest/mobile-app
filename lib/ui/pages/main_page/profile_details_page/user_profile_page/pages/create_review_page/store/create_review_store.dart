@@ -37,7 +37,8 @@ abstract class _CreateReviewStore extends IStore<bool> with Store {
   @action
   void setMessage(String value) => message = value;
 
-  void addReview(String questId) async {
+  @action
+  Future<void> addReview(String questId) async {
     try {
       this.onLoading();
       await _apiProvider.sendReview(

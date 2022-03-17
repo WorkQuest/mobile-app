@@ -52,8 +52,10 @@ extension CustomAppBar on UserProfileState {
           children: [
             Image.network(
               info == null
-                  ? userStore!.userData!.avatar!.url
-                  : info.avatar!.url,
+                  ? userStore!.userData!.avatar?.url ??
+                      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs"
+                  : info.avatar?.url ??
+                      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
               fit: BoxFit.cover,
             ),
             Positioned(
@@ -134,7 +136,8 @@ extension ReviewsTab on UserProfileState {
                         index++)
                       ReviewsWidget(
                         avatar: portfolioStore!
-                            .reviewsList[index].fromUser.avatar.url,
+                                .reviewsList[index].fromUser.avatar?.url ??
+                            "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                         name: portfolioStore!
                                 .reviewsList[index].fromUser.firstName +
                             " " +

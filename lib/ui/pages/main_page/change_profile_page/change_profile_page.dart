@@ -250,7 +250,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
               borderRadius: BorderRadius.circular(65),
               child: pageStore.media == null
                   ? Image.network(
-                      profile!.userData!.avatar!.url,
+                      profile!.userData!.avatar?.url ??
+                          "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                       height: 130,
                       width: 130,
                       fit: BoxFit.cover,

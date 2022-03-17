@@ -136,7 +136,7 @@ class DisputeUser {
   String avatarId;
   String firstName;
   String lastName;
-  Avatar avatar;
+  Avatar? avatar;
   RatingStatistic ratingStatistic;
 
   factory DisputeUser.fromJson(Map<String, dynamic> json) => DisputeUser(
@@ -144,7 +144,7 @@ class DisputeUser {
         avatarId: json["avatarId"] ?? "",
         firstName: json["firstName"],
         lastName: json["lastName"],
-        avatar: Avatar.fromJson(json["avatar"]),
+        avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
         ratingStatistic: RatingStatistic.fromJson(json["ratingStatistic"]),
       );
 
@@ -153,7 +153,7 @@ class DisputeUser {
         "avatarId": avatarId,
         "firstName": firstName,
         "lastName": lastName,
-        "avatar": avatar.toJson(),
+        "avatar": avatar == null ? null :avatar!.toJson(),
         "ratingStatistic": ratingStatistic.toJson(),
       };
 }

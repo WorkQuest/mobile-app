@@ -39,7 +39,8 @@ class WorkersItem extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
                   child: Image.network(
-                    workersInfo.avatar!.url,
+                    workersInfo.avatar?.url ??
+                        "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                     width: 61,
                     height: 61,
                     fit: BoxFit.cover,
@@ -63,34 +64,33 @@ class WorkersItem extends StatelessWidget {
                       const SizedBox(
                         height: 5,
                       ),
-                      tagStatus(
-                          workersInfo.ratingStatistic?.status ?? 3),
+                      tagStatus(workersInfo.ratingStatistic?.status ?? 3),
                     ],
                   ),
                 ),
-                if(showRating)
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "${workersInfo.ratingStatistic?.averageMark.toStringAsFixed(1) ?? 0.0}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 23),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Icon(
-                        Icons.star,
-                        color: AppColor.star,
-                      )
-                    ],
-                  ),
-                )
+                if (showRating)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "${workersInfo.ratingStatistic?.averageMark.toStringAsFixed(1) ?? 0.0}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 23),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: AppColor.star,
+                        )
+                      ],
+                    ),
+                  )
               ],
             ),
             const SizedBox(

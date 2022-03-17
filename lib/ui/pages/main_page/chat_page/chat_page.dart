@@ -81,16 +81,16 @@ class _ChatPageState extends State<ChatPage> {
                           child: Observer(builder: (_) {
                             return Column(
                               children:
-                              // !store.starred
-                              //     ?
-                              store.chatKeyList
+                                  // !store.starred
+                                  //     ?
+                                  store.chatKeyList
                                       .map(
                                           (key) => _chatItem(store.chats[key]!))
                                       .toList(),
-                                  // : store.starredChats
-                                  //     .map(
-                                  //         (key) => _chatItem(store.chats[key]!))
-                                  //     .toList(),
+                              // : store.starredChats
+                              //     .map(
+                              //         (key) => _chatItem(store.chats[key]!))
+                              //     .toList(),
                             );
                           }),
                         ),
@@ -297,8 +297,8 @@ class _ChatPageState extends State<ChatPage> {
                               ? Image.network(
                                   chatDetails.chatModel.userMembers[0].id !=
                                           userData.userData!.id
-                                      ? "${chatDetails.chatModel.userMembers[0].avatar!.url}"
-                                      : "${chatDetails.chatModel.userMembers[1].avatar!.url}",
+                                      ? "${chatDetails.chatModel.userMembers[0].avatar?.url ?? "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs"}"
+                                      : "${chatDetails.chatModel.userMembers[1].avatar?.url ?? "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs"}",
                                   width: 56,
                                   height: 56,
                                   fit: BoxFit.cover,

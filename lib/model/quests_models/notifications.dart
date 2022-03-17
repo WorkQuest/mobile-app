@@ -136,12 +136,12 @@ class User {
   String id;
   String firstName;
   String lastName;
-  Avatar avatar;
+  Avatar? avatar;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        avatar: Avatar.fromJson(json["avatar"]),
+        avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
       );
 }

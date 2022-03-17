@@ -54,6 +54,13 @@ mixin _$CreateReviewStore on _CreateReviewStore, Store {
     });
   }
 
+  final _$addReviewAsyncAction = AsyncAction('_CreateReviewStore.addReview');
+
+  @override
+  Future<void> addReview(String questId) {
+    return _$addReviewAsyncAction.run(() => super.addReview(questId));
+  }
+
   final _$_CreateReviewStoreActionController =
       ActionController(name: '_CreateReviewStore');
 
