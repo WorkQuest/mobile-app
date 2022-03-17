@@ -117,14 +117,20 @@ class _ChooseQuestState extends State<ChooseQuest> {
               width: 20.0,
             ),
             Expanded(
-              child: ElevatedButton(
-                onPressed: () async {
-                  store.startQuest(widget.workerId);
-                  Navigator.pop(context);
-                  await AlertDialogUtils.showSuccessDialog(context);
-                },
-                child: Text(
-                  "quests.addToQuest".tr(),
+              child: Observer(
+                builder:(_) => ElevatedButton(
+                  onPressed: store.questId.isNotEmpty
+                      ? () async {
+                          await store.startQuest(widget.workerId);
+                          if (store.isSuccess) {
+                            Navigator.pop(context);
+                            await AlertDialogUtils.showSuccessDialog(context);
+                          }
+                        }
+                      : null,
+                  child: Text(
+                    "quests.addToQuest".tr(),
+                  ),
                 ),
               ),
             ),

@@ -70,7 +70,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   void changeQuest(dynamic json) {
     try {
       print("TAG my_quest_store");
-      var quest = BaseQuestResponse.fromJson(json["data"]["quest"]);
+      var quest =
+          BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
       deleteQuest(quest);
       addQuest(quest, true);
     } catch (e) {

@@ -132,7 +132,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
       },
       child: Builder(builder: (context) {
         return CustomScrollView(
-            // key: PageStorageKey<String>(name),
+            key: PageStorageKey<String>(name),
             slivers: <Widget>[
               SliverOverlapInjector(
                 handle:

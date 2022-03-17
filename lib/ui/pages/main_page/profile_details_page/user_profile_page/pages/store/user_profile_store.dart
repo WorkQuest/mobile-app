@@ -42,12 +42,15 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
     questId = id;
   }
 
+  @action
   Future<void> startQuest(String userId) async {
     try {
+      this.onLoading();
       await _apiProvider.inviteOnQuest(
           questId: questId,
           userId: userId,
           message: "quests.inviteToQuest".tr());
+      this.onSuccess(true);
     } catch (e) {
       print("getQuests error: $e");
       this.onError(e.toString());

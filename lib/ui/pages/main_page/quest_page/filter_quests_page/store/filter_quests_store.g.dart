@@ -282,6 +282,17 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
   }
 
   @override
+  void initRating(List<int> value) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.initRating');
+    try {
+      return super.initRating(value);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void initWorkplace(List<String> value) {
     final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
         name: 'FilterQuestsStoreBase.initWorkplace');
