@@ -123,7 +123,7 @@ class ProfileMeResponse with ClusterItem {
             "userId": json["id"],
             "reviewCount": 0,
             "averageMark": 0,
-            "status": "",
+            "status": 0,
             // createdAt: createdAt,
             // updatedAt: updatedAt,
           }),

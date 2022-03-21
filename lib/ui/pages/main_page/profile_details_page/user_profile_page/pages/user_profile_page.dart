@@ -146,6 +146,8 @@ class UserProfileState<T extends UserProfile> extends State<T>
     );
   }
 
+  ScrollController scrollController = ScrollController();
+
   @protected
   String tabTitle = "";
 
@@ -180,6 +182,13 @@ class UserProfileState<T extends UserProfile> extends State<T>
                       : appBarPositionVertical = 16.0;
               width = 300.0;
             });
+
+          if (controllerMain.offset >
+              scrollNotification.metrics.maxScrollExtent) {
+            print("TAG!");
+            scrollController
+                .jumpTo(scrollController.positions.last.maxScrollExtent);
+          }
 
           return false;
         },

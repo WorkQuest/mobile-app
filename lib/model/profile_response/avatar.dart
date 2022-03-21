@@ -4,8 +4,8 @@ class Avatar {
     required this.url,
   });
 
-  String id;
-  String url;
+  String? id;
+  String? url;
 
   factory Avatar.fromJson(Map<String, dynamic> json) {
     return Avatar(

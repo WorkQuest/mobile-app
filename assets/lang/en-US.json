@@ -307,6 +307,7 @@
     "yourQuest": "Your quest",
     "distantWork": {
       "title": "Distant work",
+      "allWorkplaces": "All workplaces",
       "distantWork": "Distant work",
       "workInOffice": "Work in the office",
       "bothVariant": "Both options"
