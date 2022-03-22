@@ -1,6 +1,7 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
@@ -67,11 +68,28 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   bool loadStarred = true;
 
+  String myId = "";
+
+  void setId(String value) => myId = value;
+
   void changeQuest(dynamic json) {
     try {
       print("TAG my_quest_store");
       var quest =
           BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+      (json["recipients"] as List).forEach((element) {
+        if (element == myId)
+          quest.responded = Responded(
+            id: "",
+            workerId: myId,
+            questId: quest.id,
+            status: 0,
+            type: 0,
+            message: "message",
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          );
+      });
       deleteQuest(quest);
       addQuest(quest, true);
     } catch (e) {

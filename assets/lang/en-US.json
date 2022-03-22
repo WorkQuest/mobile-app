@@ -545,8 +545,8 @@
       "6": {
         "title": "Data Science & Analytics",
         "sub": {
-          "600": "Data Extraction / ETL",
-          "601": "A / B Testing",
+          "601": "Data Extraction / ETL",
+          "600": "A / B Testing",
           "602": "Data Mining & Management",
           "603": "Data Visualization",
           "604": "Machine Learning",

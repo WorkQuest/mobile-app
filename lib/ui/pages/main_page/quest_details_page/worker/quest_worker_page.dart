@@ -8,7 +8,6 @@ import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
-import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -166,7 +165,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   ),
                 ),
               ),
-              PriorityView(widget.questInfo.priority, true),
+              // PriorityView(widget.questInfo.priority, true),
             ],
           ),
           const SizedBox(height: 20),

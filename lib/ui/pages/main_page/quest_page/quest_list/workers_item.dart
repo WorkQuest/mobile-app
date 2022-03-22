@@ -5,6 +5,8 @@ import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../widgets/user_rating.dart';
+
 class WorkersItem extends StatelessWidget {
   const WorkersItem(this.workersInfo, this.questsStore,
       {this.showRating = false});
@@ -59,12 +61,14 @@ class WorkersItem extends StatelessWidget {
                       Text(
                         workersInfo.firstName + " " + workersInfo.lastName,
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       const SizedBox(
                         height: 5,
                       ),
-                      tagStatus(workersInfo.ratingStatistic?.status ?? 3),
+                      UserRating(workersInfo.ratingStatistic?.status ?? 3),
                     ],
                   ),
                 ),
@@ -153,24 +157,24 @@ class WorkersItem extends StatelessWidget {
     );
   }
 
-  Widget tagStatus(int status) {
-    WorkerBadge? badge = Constants.workerRatingTag[status];
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-      decoration: BoxDecoration(
-        color: badge?.color,
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(
-        badge?.title ?? "",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
+  // Widget tagStatus(int status) {
+  //   WorkerBadge? badge = Constants.workerRatingTag[status+1];
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+  //     decoration: BoxDecoration(
+  //       color: badge?.color,
+  //       borderRadius: BorderRadius.circular(3),
+  //     ),
+  //     child: Text(
+  //       badge?.title ?? "",
+  //       style: TextStyle(
+  //         color: Colors.white,
+  //         fontSize: 12,
+  //         fontWeight: FontWeight.w500,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget tagSkills(List<String> skills) {
     return Column(

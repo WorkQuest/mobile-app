@@ -183,7 +183,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
               width = 300.0;
             });
 
-          if (controllerMain.offset >
+          if (controllerMain.offset <
               scrollNotification.metrics.maxScrollExtent) {
             print("TAG!");
             scrollController

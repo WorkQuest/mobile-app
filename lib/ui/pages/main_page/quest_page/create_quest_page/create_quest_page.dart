@@ -105,8 +105,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   .map<DropdownMenuItem<String>>(
                                 (String value) {
                                   return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: new Text(value),
+                                    value: value.tr(),
+                                    child: Text(value.tr()),
                                   );
                                 },
                               ).toList(),

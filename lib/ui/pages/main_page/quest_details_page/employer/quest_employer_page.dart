@@ -534,7 +534,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ...respondedUser(respond),
+              Expanded(
+                child: respondedUser(respond),
+              ),
               // Spacer(),
               Transform.scale(
                 scale: 1.5,
@@ -573,39 +575,53 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     );
   }
 
-  List<Widget> respondedUser(RespondModel respond) {
-    return [
-      ClipRRect(
-        borderRadius: BorderRadius.all(
-          Radius.circular(25),
-        ),
-        child: Image.network(
-          respond.worker.avatar?.url ??
-              "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-          fit: BoxFit.cover,
-          height: 50,
-          width: 50,
-        ),
-      ),
-      const SizedBox(width: 15),
-      Flexible(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "${respond.worker.firstName} ${respond.worker.lastName}",
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                overflow: TextOverflow.ellipsis,
-              ),
+  Widget respondedUser(RespondModel respond) {
+    return GestureDetector(
+      onTap: () async {
+        await profile!.getAssignedWorker(respond.worker.id);
+        if (profile!.assignedWorker?.id != null) {
+          await Navigator.of(context, rootNavigator: true).pushNamed(
+            UserProfile.routeName,
+            arguments: profile!.assignedWorker,
+          );
+          profile!.assignedWorker = null;
+        }
+      },
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.all(
+              Radius.circular(25),
             ),
-            if (respond.worker.ratingStatistic?.status != null)
-              UserRating(respond.worker.ratingStatistic!.status),
-          ],
-        ),
+            child: Image.network(
+              respond.worker.avatar?.url ??
+                  "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+              fit: BoxFit.cover,
+              height: 50,
+              width: 50,
+            ),
+          ),
+          const SizedBox(width: 15),
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "${respond.worker.firstName} ${respond.worker.lastName}",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (respond.worker.ratingStatistic?.status != null)
+                  UserRating(respond.worker.ratingStatistic!.status),
+              ],
+            ),
+          ),
+        ],
       ),
-    ];
+    );
   }
 
   showMore(RespondModel respond) {
@@ -627,9 +643,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           ),
           child: Column(
             children: <Widget>[
-              Row(
-                children: respondedUser(respond),
-              ),
+              respondedUser(respond),
               const SizedBox(height: 15),
               Expanded(
                 child: ListView(
