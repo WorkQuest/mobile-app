@@ -96,7 +96,9 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   Widget wrapperTabBar(
     List<Widget> body,
-    String name, [
+    String name,
+    ScrollController _enabledController,
+    ScrollController _disabledController, [
     bool getReviews = true,
   ]) {
     return NotificationListener<ScrollEndNotification>(
@@ -128,25 +130,23 @@ class UserProfileState<T extends UserProfile> extends State<T>
               );
           }
         }
+        setState(() {});
         return false;
       },
-      child: Builder(builder: (context) {
-        return CustomScrollView(
-            key: PageStorageKey<String>(name),
-            slivers: <Widget>[
-              SliverOverlapInjector(
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+      child: Observer(
+        builder: (_) => portfolioStore!.tabBarScrolling
+            ? ListView(
+                controller: _enabledController,
+                children: body,
+              )
+            : ListView(
+                physics: NeverScrollableScrollPhysics(),
+                controller: _disabledController,
+                children: body,
               ),
-              SliverList(delegate: SliverChildListDelegate(body))
-            ]
-            //children: body,
-            );
-      }),
+      ),
     );
   }
-
-  ScrollController scrollController = ScrollController();
 
   @protected
   String tabTitle = "";
@@ -157,9 +157,15 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   double appBarPositionVertical = 16.0;
 
+  double pastPosition = 0.0;
+  double presentPosition = 0.0;
+
+  ScrollController reviewController = ScrollController();
+  ScrollController questController = ScrollController();
+  ScrollController disabledController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
-    //final userStore = context.read<ProfileMeStore>();
     return Scaffold(
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
@@ -183,12 +189,29 @@ class UserProfileState<T extends UserProfile> extends State<T>
               width = 300.0;
             });
 
-          if (controllerMain.offset <
-              scrollNotification.metrics.maxScrollExtent) {
-            print("TAG!");
-            scrollController
-                .jumpTo(scrollController.positions.last.maxScrollExtent);
+          ///SCROLL COMPENSATION
+          if (reviewController.hasClients)
+            presentPosition = reviewController.offset;
+
+          if (presentPosition == 0.0 && pastPosition > presentPosition) {
+            portfolioStore!.setScrolling(false);
+            controllerMain.animateTo(1215,
+                duration: Duration(seconds: 1),
+                curve: Curves.fastLinearToSlowEaseIn);
+            setState(() {});
+          } else if (controllerMain.offset > 1217) {
+            if (!portfolioStore!.tabBarScrolling) setState(() {});
+            portfolioStore!.setScrolling(true);
+            if (presentPosition == 0.0)
+              reviewController.animateTo(50,
+                  duration: Duration(seconds: 1), curve: Curves.bounceIn);
+          } else {
+            if (portfolioStore!.tabBarScrolling) setState(() {});
+            portfolioStore!.setScrolling(false);
           }
+
+          if (reviewController.hasClients)
+            pastPosition = reviewController.offset;
 
           return false;
         },
@@ -298,10 +321,12 @@ class UserProfileState<T extends UserProfile> extends State<T>
               controller: this._tabController,
               children: <Widget>[
                 ///Reviews Tab
-                wrapperTabBar(reviewsTab(), "reviews"),
+                wrapperTabBar(reviewsTab(), "reviews", reviewController,
+                    disabledController),
 
                 ///Portfolio and Quests
-                wrapperTabBar(questPortfolio(), "quest", false),
+                wrapperTabBar(questPortfolio(), "quest", questController,
+                    disabledController, false),
               ],
             ),
           ),

@@ -151,6 +151,7 @@ extension ReviewsTab on UserProfileState {
                             : "role.worker",
                         questTitle:
                             portfolioStore!.reviewsList[index].quest.title,
+                        cutMessage: portfolioStore!.messages[index],
                         message: portfolioStore!.reviewsList[index].message,
                         id: portfolioStore!.reviewsList[index].fromUserId,
                         myId: widget.info == null

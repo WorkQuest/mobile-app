@@ -189,7 +189,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     top: -15.0,
                     right: -15.0,
                     child: IconButton(
-                      onPressed: () => _store.media.removeAt(index),
+                      onPressed: () => !_store.isLoading
+                          ? _store.media.removeAt(index)
+                          : null,
                       icon: Icon(Icons.cancel_outlined),
                       color: Colors.black,
                     ),

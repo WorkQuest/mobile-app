@@ -868,13 +868,15 @@ extension GetUploadLink on ApiProvider {
 
     for (var media in medias) {
       String contentType = "";
-      switch (media.path
+      final type = media.path
           .split("/")
           .reversed
           .first
           .split(".")
           .reversed
-          .toList()[0]) {
+          .toList()[0]
+          .toLowerCase();
+      switch (type) {
         case "mp4":
           contentType = "video/mp4";
           break;

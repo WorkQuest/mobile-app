@@ -29,6 +29,9 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   bool pagination = true;
 
   @observable
+  bool tabBarScrolling = false;
+
+  @observable
   int pageNumber = 0;
 
   @observable
@@ -49,6 +52,11 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   @observable
   ObservableList<File> media = ObservableList();
 
+  List<String> messages = [];
+
+  @action
+  void setScrolling(bool value) => tabBarScrolling = value;
+
   @action
   void changePageNumber(int value) => pageNumber = value;
 
@@ -58,6 +66,15 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   @action
   void setDescription(String value) {
     description = value;
+  }
+
+  void cutMessages() {
+    List<String> splitMessage = [];
+    messages.clear();
+    reviewsList.forEach((element) {
+      splitMessage = element.message.split("\n");
+      messages.add(splitMessage[0] + (splitMessage.length > 1 ? "..." : ""));
+    });
   }
 
   void clearData() {
@@ -165,6 +182,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
                   key2.createdAt.millisecondsSinceEpoch
               ? 1
               : 0);
+      cutMessages();
       if (response.length == 0 || response.length % 10 != 0) pagination = false;
       offsetReview += 10;
       this.onSuccess(true);

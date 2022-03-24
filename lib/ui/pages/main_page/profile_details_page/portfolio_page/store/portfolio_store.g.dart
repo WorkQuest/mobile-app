@@ -17,6 +17,21 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
               name: '_PortfolioStore.canSubmit'))
           .value;
 
+  final _$tabBarScrollingAtom = Atom(name: '_PortfolioStore.tabBarScrolling');
+
+  @override
+  bool get tabBarScrolling {
+    _$tabBarScrollingAtom.reportRead();
+    return super.tabBarScrolling;
+  }
+
+  @override
+  set tabBarScrolling(bool value) {
+    _$tabBarScrollingAtom.reportWrite(value, super.tabBarScrolling, () {
+      super.tabBarScrolling = value;
+    });
+  }
+
   final _$pageNumberAtom = Atom(name: '_PortfolioStore.pageNumber');
 
   @override
@@ -170,6 +185,17 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
       ActionController(name: '_PortfolioStore');
 
   @override
+  void setScrolling(bool value) {
+    final _$actionInfo = _$_PortfolioStoreActionController.startAction(
+        name: '_PortfolioStore.setScrolling');
+    try {
+      return super.setScrolling(value);
+    } finally {
+      _$_PortfolioStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void changePageNumber(int value) {
     final _$actionInfo = _$_PortfolioStoreActionController.startAction(
         name: '_PortfolioStore.changePageNumber');
@@ -205,6 +231,7 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
   @override
   String toString() {
     return '''
+tabBarScrolling: ${tabBarScrolling},
 pageNumber: ${pageNumber},
 title: ${title},
 description: ${description},

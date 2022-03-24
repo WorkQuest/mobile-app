@@ -105,6 +105,7 @@ class ReviewsWidget extends StatelessWidget {
   final String userRole;
   final String questTitle;
   final String message;
+  final String cutMessage;
   final String id;
   final String myId;
   final UserRole role;
@@ -117,6 +118,7 @@ class ReviewsWidget extends StatelessWidget {
     required this.userRole,
     required this.questTitle,
     required this.message,
+    required this.cutMessage,
     required this.id,
     required this.myId,
     required this.role,
@@ -233,7 +235,7 @@ class ReviewsWidget extends StatelessWidget {
                 height: 15,
               ),
               Text(
-                message,
+                cutMessage,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(
