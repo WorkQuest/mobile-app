@@ -28,9 +28,10 @@ List<_WalletItem> _wallets = [
 ];
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({
-    Key? key,
-  }) : super(key: key);
+  const PaymentPage(this.questId);
+
+  final String questId;
+
   static const String routeName = "/paymentPage";
 
   @override
@@ -260,7 +261,11 @@ class _PaymentPageState extends State<PaymentPage>
               ElevatedButton(
                 onPressed: raiseViewStore.canSubmit
                     ? () async {
-                        await raiseViewStore.raiseProfile();
+                        if (widget.questId.isEmpty)
+                          await raiseViewStore.raiseProfile();
+                        else
+                          await raiseViewStore.raiseQuest(widget.questId);
+
                         if (raiseViewStore.isSuccess) {
                           Navigator.pop(context);
                           Navigator.pop(context);

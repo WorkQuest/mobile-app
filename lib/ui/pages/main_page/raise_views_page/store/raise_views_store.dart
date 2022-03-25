@@ -81,4 +81,15 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
+
+  Future<void> raiseQuest(String questId) async {
+    try {
+      this.onLoading();
+      await apiProvider.raiseQuest(
+          questId: questId, duration: getPeriod(), type: levelGroupValue - 1);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
 }

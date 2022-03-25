@@ -1179,4 +1179,18 @@ extension RasieView on ApiProvider {
       },
     );
   }
+
+  Future<void> raiseQuest({
+    required String questId,
+    required int duration,
+    required int type,
+  }) async {
+    await httpClient.post(
+      query: '/v1/quest/$questId/raise-view/pay',
+      data: {
+        "duration": duration,
+        "type": type,
+      },
+    );
+  }
 }

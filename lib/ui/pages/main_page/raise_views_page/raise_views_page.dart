@@ -11,9 +11,9 @@ final _divider = const SizedBox(
 );
 
 class RaiseViews extends StatelessWidget {
-  RaiseViews(this.skip);
+  RaiseViews(this.questId);
 
-  final bool skip;
+  final String questId;
 
   static const String routeName = "/raiseViewsPage";
 
@@ -27,7 +27,7 @@ class RaiseViews extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.of(context, rootNavigator: true)
-                  .pushNamed(PaymentPage.routeName);
+                  .pushNamed(PaymentPage.routeName, arguments: questId);
             },
             child: Text(
               "Go to payment",
@@ -37,7 +37,7 @@ class RaiseViews extends StatelessWidget {
         body: CustomScrollView(
           slivers: [
             CupertinoSliverNavigationBar(
-              trailing: skip
+              trailing: questId.isNotEmpty
                   ? TextButton(
                       onPressed: () {},
                       child: Text("Skip"),

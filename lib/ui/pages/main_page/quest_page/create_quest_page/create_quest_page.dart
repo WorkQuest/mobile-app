@@ -2,6 +2,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
+import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
@@ -351,7 +352,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             UserRole.Employer,
                             true,
                           );
-                          Navigator.pop(context, true);
                           if (isEdit) {
                             final updatedQuest =
                                 await store.getQuest(widget.questInfo!.id);
@@ -361,6 +361,11 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               arguments: updatedQuest,
                             );
                           }
+                          await Navigator.of(context).pushNamed(
+                            RaiseViews.routeName,
+                            arguments: widget.questInfo!.id,
+                          );
+                          Navigator.pop(context, true);
                           await AlertDialogUtils.showSuccessDialog(context);
                           // await successAlert(
                           //   context,

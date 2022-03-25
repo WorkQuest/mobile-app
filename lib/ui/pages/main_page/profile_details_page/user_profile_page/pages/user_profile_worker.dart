@@ -316,7 +316,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                 onPressed: () async {
                   await Navigator.of(context, rootNavigator: true).pushNamed(
                     RaiseViews.routeName,
-                    arguments: false,
+                    arguments: "",
                   );
                 },
                 child: Text(

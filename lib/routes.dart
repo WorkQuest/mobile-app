@@ -531,7 +531,7 @@ class Routes {
             create: (context) => getIt.get<RaiseViewStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: RaiseViews(settings.arguments as bool),
+              child: RaiseViews(settings.arguments as String),
             ),
           ),
         );
@@ -542,7 +542,7 @@ class Routes {
             create: (context) => getIt.get<RaiseViewStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: PaymentPage(),
+              child: PaymentPage(settings.arguments as String),
             ),
           ),
         );
