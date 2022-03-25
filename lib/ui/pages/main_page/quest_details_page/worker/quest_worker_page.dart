@@ -8,7 +8,6 @@ import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
-import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -166,7 +165,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   ),
                 ),
               ),
-              PriorityView(widget.questInfo.priority),
+              // PriorityView(widget.questInfo.priority, true),
             ],
           ),
           const SizedBox(height: 20),
@@ -373,34 +372,38 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     store.mediaIds.isNotEmpty
                 ? () async {
                     await store.sendRespondOnQuest(store.opinion);
-                    // widget.questInfo.responded = Responded(
-                    //   id: "",
-                    //   workerId: profile!.userData!.id,
-                    //   questId: widget.questInfo.id,
-                    //   status: 0,
-                    //   type: 0,
-                    //   message: store.opinion,
-                    //   createdAt: DateTime.now(),
-                    //   updatedAt: DateTime.now(),
-                    // );
-                    // for (int i = 0; i < questStore.questsList.length; i++)
-                    //   if (questStore.questsList[i].id == widget.questInfo.id)
-                    //     questStore.questsList[i].responded = Responded(
-                    //       id: "",
-                    //       workerId: profile!.userData!.id,
-                    //       questId: widget.questInfo.id,
-                    //       status: 0,
-                    //       type: 0,
-                    //       message: store.opinion,
-                    //       createdAt: DateTime.now(),
-                    //       updatedAt: DateTime.now(),
-                    //     );
-                    questStore.getQuests(true);
-                    myQuestStore.deleteQuest(widget.questInfo);
-                    myQuestStore.addQuest(widget.questInfo, true);
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                    await AlertDialogUtils.showSuccessDialog(context);
+                    if (store.isSuccess) {
+                      widget.questInfo.responded = Responded(
+                        id: "",
+                        workerId: profile!.userData!.id,
+                        questId: widget.questInfo.id,
+                        status: 0,
+                        type: 0,
+                        message: store.opinion,
+                        createdAt: DateTime.now(),
+                        updatedAt: DateTime.now(),
+                      );
+                      for (int i = 0; i < questStore.questsList.length; i++)
+                        if (questStore.questsList[i].id == widget.questInfo.id)
+                          questStore.questsList[i].responded = Responded(
+                            id: "",
+                            workerId: profile!.userData!.id,
+                            questId: widget.questInfo.id,
+                            status: 0,
+                            type: 0,
+                            message: store.opinion,
+                            createdAt: DateTime.now(),
+                            updatedAt: DateTime.now(),
+                          );
+                      questStore.searchWord.isEmpty
+                          ? questStore.getQuests(true)
+                          : questStore.setSearchWord(questStore.searchWord);
+                      myQuestStore.deleteQuest(widget.questInfo);
+                      myQuestStore.addQuest(widget.questInfo, true);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      await AlertDialogUtils.showSuccessDialog(context);
+                    }
                     // successAlert(
                     //   context,
                     //   "modals.requestSend".tr(),

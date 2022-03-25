@@ -12,7 +12,7 @@ import 'my_quests_item.dart';
 class QuestsList extends StatelessWidget {
   final QuestItemPriorityType questItemPriorityType;
 
-  ObservableList<BaseQuestResponse> questsList = ObservableList.of([]);
+  List<BaseQuestResponse> questsList = ObservableList.of([]);
 
   final Future<dynamic>? update;
 
@@ -20,6 +20,7 @@ class QuestsList extends StatelessWidget {
 
   final bool isLoading;
 
+  final bool short;
 
   final PageStorageKey _pageStorageKey = PageStorageKey<int>(1);
 
@@ -28,7 +29,8 @@ class QuestsList extends StatelessWidget {
       this.physics = const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
       ),
-      required this.isLoading});
+      required this.isLoading,
+      this.short = false});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class QuestsList extends StatelessWidget {
     return ListView.builder(
       physics: physics,
       shrinkWrap: true,
-      key: new  PageStorageKey<QuestItemPriorityType>(questItemPriorityType),
+      key: new PageStorageKey<QuestItemPriorityType>(questItemPriorityType),
       itemCount: questsList.length,
       padding: EdgeInsets.zero,
       itemBuilder: (BuildContext context, index) {
@@ -61,6 +63,20 @@ class QuestsList extends StatelessWidget {
               questsList[index],
               itemType: questItemPriorityType,
             ),
+            if (short && index == 2)
+              Column(
+                children: [
+                  Container(
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF7F8FA),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                ],
+              ),
           ],
         );
       },

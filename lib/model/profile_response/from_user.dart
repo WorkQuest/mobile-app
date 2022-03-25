@@ -11,21 +11,13 @@ class FromUser {
   String id;
   String firstName;
   String lastName;
-  Avatar avatar;
+  Avatar? avatar;
 
   factory FromUser.fromJson(Map<String, dynamic> json) => FromUser(
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        avatar: Avatar.fromJson(
-          json["avatar"] ??
-              {
-                "id": "",
-                "url":
-                    "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                "contentType": "",
-              },
-        ),
+        avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
       );
 
   Map<String, dynamic> toJson() => {

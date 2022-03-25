@@ -13,17 +13,16 @@ class User {
   String id;
   String firstName;
   String lastName;
-  Avatar avatar;
+  Avatar? avatar;
   RatingStatistic? ratingStatistic;
 
   factory User.fromJson(Map<String, dynamic> json) {
     try {
-      print("user $json");
       return User(
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
-        avatar: Avatar.fromJson(json["avatar"]),
+        avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
         ratingStatistic: json["ratingStatistic"] == null
             ? null
             : RatingStatistic.fromJson(json["ratingStatistic"]),

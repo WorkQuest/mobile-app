@@ -11,13 +11,16 @@ final _divider = const SizedBox(
 );
 
 class RaiseViews extends StatelessWidget {
-  RaiseViews({Key? key}) : super(key: key);
+  RaiseViews(this.skip);
+
+  final bool skip;
 
   static const String routeName = "/raiseViewsPage";
 
   @override
   Widget build(BuildContext context) {
     final raiseViewStore = context.read<RaiseViewStore>();
+    raiseViewStore.initPrice();
     return Observer(
       builder: (_) => Scaffold(
         persistentFooterButtons: [
@@ -34,10 +37,12 @@ class RaiseViews extends StatelessWidget {
         body: CustomScrollView(
           slivers: [
             CupertinoSliverNavigationBar(
-              trailing: TextButton(
-                onPressed: () {},
-                child: Text("Skip"),
-              ),
+              trailing: skip
+                  ? TextButton(
+                      onPressed: () {},
+                      child: Text("Skip"),
+                    )
+                  : SizedBox(),
               largeTitle: Text(
                 "raising-views.raisingViews".tr(),
               ),
@@ -98,8 +103,9 @@ class RaiseViews extends StatelessWidget {
                         onChanged: raiseViewStore.changeLevel,
                         groupValue: raiseViewStore.levelGroupValue,
                         color: Color(0xFFF6CF00),
-                        level: "Gold Plus",
-                        price: r"20$",
+                        level: "GOLD PLUS",
+                        price: raiseViewStore
+                            .price[raiseViewStore.periodGroupValue]![0],
                         description:
                             "Notifications for employees who were looking for quests, "
                             "via an offer to review the quest that has "
@@ -115,8 +121,9 @@ class RaiseViews extends StatelessWidget {
                       groupValue: raiseViewStore.levelGroupValue,
                       onChanged: raiseViewStore.changeLevel,
                       color: Color(0xFFF6CF00),
-                      level: "Gold",
-                      price: r"12$",
+                      level: "GOLD",
+                      price: raiseViewStore
+                          .price[raiseViewStore.periodGroupValue]![1],
                       description:
                           "Notifications for employees who were looking for quests"
                           " with a direct offer to review the promoted quest "
@@ -130,8 +137,9 @@ class RaiseViews extends StatelessWidget {
                       onChanged: raiseViewStore.changeLevel,
                       groupValue: raiseViewStore.levelGroupValue,
                       color: Color(0xFFBBC0C7),
-                      level: "Silver",
-                      price: r"9$",
+                      level: "SILVER",
+                      price: raiseViewStore
+                          .price[raiseViewStore.periodGroupValue]![2],
                       description:
                           "Pin quest on the main page for three hours, with the "
                           "ability to choose two categories and two locations "
@@ -144,8 +152,9 @@ class RaiseViews extends StatelessWidget {
                       groupValue: raiseViewStore.levelGroupValue,
                       onChanged: raiseViewStore.changeLevel,
                       color: Color(0xFFB79768),
-                      level: "Bronze",
-                      price: r"7$",
+                      level: "BRONZE",
+                      price: raiseViewStore
+                          .price[raiseViewStore.periodGroupValue]![3],
                       description:
                           "Pin the quest on the main page for one hour, with the "
                           "ability to choose one category and one location "
@@ -225,7 +234,10 @@ class RaiseViews extends StatelessWidget {
                       borderRadius: BorderRadius.circular(3.0),
                       color: color,
                     ),
-                    child: Text(level),
+                    child: Text(
+                      level,
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   Spacer(),
                   Text(

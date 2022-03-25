@@ -32,6 +32,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
     profileMeStore.getProfileMe().then((value) {
       setState(() => role = profileMeStore.userData!.role);
       userID = profileMeStore.userData!.id;
+      myQuests!.setId(userID);
       myQuests!.getQuests(userID, role, true);
     });
     super.initState();

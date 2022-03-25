@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:app/utils/storage.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
 ///Instrument Card
 class InstrumentCard extends StatelessWidget {
@@ -155,6 +156,8 @@ Widget logOutButton(context) {
             SignInPage.routeName,
             (route) => false,
           );
+          final cookieManager = WebviewCookieManager();
+          cookieManager.clearCookies();
           Storage.deleteAllFromSecureStorage();
         },
       );
@@ -192,7 +195,8 @@ class MyProfileImage extends StatelessWidget {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-              userStore.userData!.avatar!.url,
+              userStore.userData!.avatar?.url ??
+                  "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
             ),
             fit: BoxFit.cover,
           ),

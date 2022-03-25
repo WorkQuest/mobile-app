@@ -27,7 +27,7 @@ class WebSocket {
 
   void connect() async {
     shouldReconnectFlag = true;
-    token = await Storage.readAccessToken();
+    token = await Storage.readNotificationToken();
     print("[WebSocket]  connecting ...");
     _connectWallet();
     _connectListen();
@@ -125,14 +125,12 @@ class WebSocket {
   }
 
   void _handleSubscription(dynamic json) async {
-    print("123$json");
     try {
+      print("notification path: ${json["path"]}");
       if (json["path"] == "/notifications/quest") {
-        print(json["message"]["data"]);
-        questNotification(json["message"]["data"]);
+        questNotification(json["message"]);
       } else if (json["path"] == "/notifications/chat") {
-        print("new${json["message"]["data"]}");
-        questNotification(json["message"]["data"]);
+        getMessage(json);
       } else
         print("new message");
     } catch (e, trace) {
@@ -151,6 +149,8 @@ class WebSocket {
 
   void questNotification(dynamic json) async {
     try {
+      print("quest notification");
+      print(json);
       if (handlerQuests != null) handlerQuests!(json);
       print("questMessage: ${json.toString()}");
     } catch (e, trace) {

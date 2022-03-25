@@ -2,12 +2,15 @@ import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_worker_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+
+import '../../../raise_views_page/raise_views_page.dart';
 
 class WorkerProfile extends UserProfile {
   WorkerProfile(ProfileMeResponse? info) : super(info);
@@ -23,64 +26,91 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
 
   List<Widget> questPortfolio() => [
         ///Add new portfolio
-        if (widget.info == null)
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10.0,
-              vertical: 10.0,
-            ),
-            child: OutlinedButton(
-              onPressed: () => Navigator.pushNamed(
-                context,
-                CreatePortfolioPage.routeName,
-                arguments: false,
-              ),
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(
-                  color: Colors.blueAccent.withOpacity(0.3),
-                ),
+
+        Column(
+          children: [
+            if (widget.info == null)
+              Container(
+                color: Colors.white,
                 padding: const EdgeInsets.symmetric(
+                  horizontal: 10.0,
                   vertical: 10.0,
                 ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "quests.addNew".tr(),
+                child: OutlinedButton(
+                  onPressed: () => Navigator.pushNamed(
+                    context,
+                    CreatePortfolioPage.routeName,
+                    arguments: false,
                   ),
-                  const SizedBox(width: 5.0),
-                  const Icon(Icons.add),
-                ],
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                      color: Colors.blueAccent.withOpacity(0.3),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10.0,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "quests.addNew".tr(),
+                      ),
+                      const SizedBox(width: 5.0),
+                      const Icon(Icons.add),
+                    ],
+                  ),
+                ),
+              ),
+            Observer(
+              builder: (_) => portfolioStore!.portfolioList.isEmpty
+                  ? Center(
+                      child: Text(
+                        "profiler.dontHavePortfolioOtherUser".tr(),
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        for (int index = 0; index < 2; index++)
+                          PortfolioWidget(
+                            index: index,
+                            imageUrl: portfolioStore!
+                                    .portfolioList[index].medias.isEmpty
+                                ? "https://app-ver1.workquest.co/_nuxt/img/logo.1baae1e.svg"
+                                : portfolioStore!
+                                    .portfolioList[index].medias.first.url,
+                            title: portfolioStore!.portfolioList[index].title,
+                            isProfileYour: widget.info == null ? true : false,
+                          ),
+                      ],
+                    ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+              ),
+              child: ElevatedButton(
+                onPressed: () async {
+                  portfolioStore!.setTitleName("Portfolio");
+                  await Navigator.pushNamed(
+                    context,
+                    ReviewPage.routeName,
+                    arguments: portfolioStore!,
+                  );
+                  await portfolioStore!.getPortfolio(
+                    userId: widget.info == null
+                        ? userStore!.userData!.id
+                        : widget.info!.id,
+                    newList: true,
+                  );
+                },
+                child: Text(
+                  "meta.showAllPortfolio".tr(),
+                ),
               ),
             ),
-          ),
-
-        Observer(
-          builder: (_) => portfolioStore!.portfolioList.isEmpty
-              ? Center(
-                  child: Text(
-                    "profiler.dontHavePortfolioOtherUser".tr(),
-                  ),
-                )
-              : Column(
-                  children: [
-                    for (int index = 0;
-                        index < portfolioStore!.portfolioList.length;
-                        index++)
-                      PortfolioWidget(
-                        index: index,
-                        imageUrl: portfolioStore!
-                                .portfolioList[index].medias.isEmpty
-                            ? "https://app-ver1.workquest.co/_nuxt/img/logo.1baae1e.svg"
-                            : portfolioStore!
-                                .portfolioList[index].medias.first.url,
-                        title: portfolioStore!.portfolioList[index].title,
-                        isProfileYour: widget.info == null ? true : false,
-                      ),
-                  ],
-                ),
+          ],
         ),
       ];
 
@@ -274,6 +304,23 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                 },
                 child: Text(
                   "quests.addToQuest".tr(),
+                ),
+              ),
+            ],
+          ),
+        if (widget.info == null)
+          Column(
+            children: [
+              spacer,
+              ElevatedButton(
+                onPressed: () async {
+                  await Navigator.of(context, rootNavigator: true).pushNamed(
+                    RaiseViews.routeName,
+                    arguments: false,
+                  );
+                },
+                child: Text(
+                  "profiler.raiseViews".tr(),
                 ),
               ),
             ],

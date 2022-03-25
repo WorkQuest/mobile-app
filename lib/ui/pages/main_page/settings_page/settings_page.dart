@@ -140,9 +140,9 @@ class SettingsPage extends StatelessWidget {
                                   title: "settings.changeRole".tr(),
                                   onTap: userStore.userData?.isTotpActive ==
                                           true
-                                      ? () {
+                                      ? () async {
                                           if (userStore.userData!
-                                                  .questsStatistic!.opened!=
+                                                  .questsStatistic!.opened !=
                                               0) {
                                             AlertDialogUtils.showAlertDialog(
                                               context,
@@ -159,8 +159,10 @@ class SettingsPage extends StatelessWidget {
                                               colorOk: Colors.blue,
                                             );
                                           } else {
+                                            chooseRoleStore.setRole(
+                                                userStore.userData!.role);
                                             chooseRoleStore.isChange = true;
-                                            Navigator.of(context,
+                                            await Navigator.of(context,
                                                     rootNavigator: true)
                                                 .pushNamed(
                                               ApproveRolePage.routeName,

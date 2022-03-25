@@ -76,6 +76,21 @@ mixin _$SignInStore on _SignInStore, Store {
     });
   }
 
+  final _$errorAtom = Atom(name: '_SignInStore.error');
+
+  @override
+  String get error {
+    _$errorAtom.reportRead();
+    return super.error;
+  }
+
+  @override
+  set error(String value) {
+    _$errorAtom.reportWrite(value, super.error, () {
+      super.error = value;
+    });
+  }
+
   final _$signInWalletAsyncAction = AsyncAction('_SignInStore.signInWallet');
 
   @override
@@ -152,6 +167,7 @@ mixin _$SignInStore on _SignInStore, Store {
     return '''
 mnemonic: ${mnemonic},
 totp: ${totp},
+error: ${error},
 canSignIn: ${canSignIn}
     ''';
   }

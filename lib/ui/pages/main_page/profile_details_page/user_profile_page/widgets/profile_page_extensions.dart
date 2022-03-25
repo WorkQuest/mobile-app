@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:flutter/material.dart';
@@ -9,117 +8,115 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 extension CustomAppBar on UserProfileState {
-  Widget sliverAppBar(ProfileMeResponse? info, StreamController<AppBarParams> streamController) {
+  Widget sliverAppBar(ProfileMeResponse? info) {
     final mark = info == null
         ? userStore!.userData!.ratingStatistic!.averageMark
         : info.ratingStatistic!.averageMark;
     final markDev = mark.toInt();
     final markMod = (mark % (markDev == 0 ? 1 : markDev) * 10).round() / 10;
-    return StreamBuilder<AppBarParams>(
-      initialData: AppBarParams.initial(),
-      stream: streamController.stream,
-      builder: (_, snapshot) => SliverAppBar(
-        backgroundColor: Color(0xFF0083C7),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
-          onPressed: () => Navigator.pop(context),
+    return SliverAppBar(
+      backgroundColor: Color(0xFF0083C7),
+      automaticallyImplyLeading: false,
+      leading: IconButton(
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
         ),
-        actions: [
-          if (info == null)
-            IconButton(
-              icon: Icon(
-                Icons.edit,
-                color: Colors.white,
-              ),
-              onPressed: () =>
-                  Navigator.of(context, rootNavigator: true).pushNamed(
-                ChangeProfilePage.routeName,
-              ),
+        onPressed: () => Navigator.pop(context),
+      ),
+      actions: [
+        if (info == null)
+          IconButton(
+            icon: Icon(
+              Icons.edit,
+              color: Colors.white,
             ),
-        ],
-        centerTitle: false,
-        pinned: true,
-        expandedHeight: 250,
-        flexibleSpace: FlexibleSpaceBar(
-          titlePadding: EdgeInsets.only(
-            left: 16.0,
-            bottom: 0,
-            top: 0.0,
+            onPressed: () =>
+                Navigator.of(context, rootNavigator: true).pushNamed(
+              ChangeProfilePage.routeName,
+            ),
           ),
-          collapseMode: CollapseMode.pin,
-          centerTitle: false,
-          background: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.network(
-                info == null
-                    ? userStore!.userData!.avatar!.url
-                    : info.avatar!.url,
-                fit: BoxFit.cover,
-              ),
-              Positioned(
-                bottom: info == null
-                    ? userStore!.userData!.ratingStatistic!.status != "noStatus"
-                        ? 85.0
-                        : 67.0
-                    : info.ratingStatistic!.status != "noStatus"
-                        ? 85.0
-                        : 67.0,
-                left: 15.0,
-                child: Row(
-                  children: [
-                    for (int i = 0; i < markDev; i++)
-                      Icon(
-                        Icons.star,
-                        color: Color(0xFFE8D20D),
-                        size: 20.0,
-                      ),
-                    if (markDev != 5)
-                      ShaderMask(
-                        blendMode: BlendMode.srcATop,
-                        shaderCallback: (Rect rect) {
-                          return LinearGradient(
-                            stops: [0, markMod, markMod],
-                            colors: [
-                              Color(0xFFE8D20D),
-                              Color(0xFFE8D20D),
-                              Color(0xFFE8D20D).withOpacity(0)
-                            ],
-                          ).createShader(rect);
-                        },
-                        child: SizedBox(
-                          child: Icon(
-                            Icons.star,
-                            color: Color(0xFFE9EDF2),
-                            size: 20.0,
-                          ),
+      ],
+      centerTitle: false,
+      pinned: true,
+      expandedHeight: 250,
+      flexibleSpace: FlexibleSpaceBar(
+        titlePadding: EdgeInsets.only(
+          left: 16.0,
+          bottom: appBarPositionVertical,
+          top: 0.0,
+        ),
+        collapseMode: CollapseMode.pin,
+        centerTitle: false,
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(
+              info == null
+                  ? userStore!.userData!.avatar?.url ??
+                      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs"
+                  : info.avatar?.url ??
+                      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+              fit: BoxFit.cover,
+            ),
+            Positioned(
+              bottom: info == null
+                  ? userStore!.userData!.ratingStatistic!.status != 3
+                      ? 85.0
+                      : 67.0
+                  : info.ratingStatistic!.status != 3
+                      ? 85.0
+                      : 67.0,
+              left: 15.0,
+              child: Row(
+                children: [
+                  for (int i = 0; i < markDev; i++)
+                    Icon(
+                      Icons.star,
+                      color: Color(0xFFE8D20D),
+                      size: 20.0,
+                    ),
+                  if (markDev != 5)
+                    ShaderMask(
+                      blendMode: BlendMode.srcATop,
+                      shaderCallback: (Rect rect) {
+                        return LinearGradient(
+                          stops: [0, markMod, markMod],
+                          colors: [
+                            Color(0xFFE8D20D),
+                            Color(0xFFE8D20D),
+                            Color(0xFFE8D20D).withOpacity(0)
+                          ],
+                        ).createShader(rect);
+                      },
+                      child: SizedBox(
+                        child: Icon(
+                          Icons.star,
+                          color: Color(0xFFE9EDF2),
+                          size: 20.0,
                         ),
                       ),
-                    for (int i = 0; i < 4 - markDev; i++)
-                      Icon(
-                        Icons.star,
-                        color: Color(0xFFE9EDF2),
-                        size: 20.0,
-                      ),
-                  ],
-                ),
+                    ),
+                  for (int i = 0; i < 4 - markDev; i++)
+                    Icon(
+                      Icons.star,
+                      color: Color(0xFFE9EDF2),
+                      size: 20.0,
+                    ),
+                ],
               ),
-            ],
-          ),
-          title: appBarTitle(
-            info == null
-                ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
-                : "${info.firstName} ${info.lastName}",
-            snapshot.data!.appBarPosition,
-            info == null
-                ? userStore!.userData!.ratingStatistic?.status.toString() ?? "noStatus"
-                : info.ratingStatistic?.status.toString() ?? "noStatus",
-              snapshot.data!.width,
-          ),
+            ),
+          ],
+        ),
+        title: appBarTitle(
+          info == null
+              ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
+              : "${info.firstName} ${info.lastName}",
+          appBarPosition,
+          info == null
+              ? userStore!.userData!.ratingStatistic?.status ?? 3
+              : info.ratingStatistic?.status ?? 3,
+          width,
         ),
       ),
     );
@@ -135,12 +132,11 @@ extension ReviewsTab on UserProfileState {
             ? Observer(
                 builder: (_) => Column(
                   children: [
-                    for (int index = 0;
-                        index < portfolioStore!.reviewsList.length;
-                        index++)
+                    for (int index = 0; index < 3; index++)
                       ReviewsWidget(
                         avatar: portfolioStore!
-                            .reviewsList[index].fromUser.avatar.url,
+                                .reviewsList[index].fromUser.avatar?.url ??
+                            "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                         name: portfolioStore!
                                 .reviewsList[index].fromUser.firstName +
                             " " +
@@ -154,6 +150,7 @@ extension ReviewsTab on UserProfileState {
                             : "role.worker",
                         questTitle:
                             portfolioStore!.reviewsList[index].quest.title,
+                        cutMessage: portfolioStore!.messages[index],
                         message: portfolioStore!.reviewsList[index].message,
                         id: portfolioStore!.reviewsList[index].fromUserId,
                         myId: widget.info == null
@@ -162,7 +159,35 @@ extension ReviewsTab on UserProfileState {
                         role: widget.info == null
                             ? userStore!.userData!.role
                             : widget.info!.role,
+                        last: index == portfolioStore!.reviewsList.length - 1
+                            ? true
+                            : false,
                       ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          portfolioStore!.setTitleName("Reviews");
+                          await Navigator.pushNamed(
+                            context,
+                            ReviewPage.routeName,
+                            arguments: portfolioStore!,
+                          );
+                          await portfolioStore!.getReviews(
+                            userId: widget.info == null
+                                ? userStore!.userData!.id
+                                : widget.info!.id,
+                            newList: true,
+                          );
+                        },
+                        child: Text(
+                          "meta.showAllReviews".tr(),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               )

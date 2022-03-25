@@ -27,7 +27,7 @@ class AdditionalInfo {
   List<String>? skills;
   List<Map<String, String>> educations = [];
   List<Map<String, String>> workExperiences = [];
-  Avatar avatar;
+  Avatar? avatar;
 
   AdditionalInfo.clone(AdditionalInfo object)
       : this(
@@ -47,14 +47,9 @@ class AdditionalInfo {
 
   factory AdditionalInfo.fromJson(Map<String, dynamic> json) {
     return AdditionalInfo(
-      secondMobileNumber: Phone.fromJson(
-        json["secondMobileNumber"] ??
-            {
-              "codeRegion": "",
-              "fullPhone": "",
-              "phone": "",
-            },
-      ),
+      secondMobileNumber: json["secondMobileNumber"] == null
+          ? null
+          : Phone.fromJson(json["secondMobileNumber"]),
       address: json["address"],
       socialNetwork: json["socialNetwork"] == null
           ? null
@@ -86,15 +81,7 @@ class AdditionalInfo {
             })).toList()
           : [],
       description: json["description"],
-      avatar: Avatar.fromJson(
-        json["avatar"] ??
-            {
-              "id": "",
-              "url":
-                  "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-              "contentType": "",
-            },
-      ),
+      avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
     );
   }
 

@@ -28,6 +28,9 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   ProfileMeResponse? questHolder;
 
   @observable
+  bool review = false;
+
+  @observable
   QuestPriority priorityValue = QuestPriority.Normal;
 
   @observable
@@ -48,6 +51,8 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   int offset = 0;
 
   String sort = "sort[createdAt]=desc";
+
+  String error = "";
 
   void setPriorityValue(String priority) =>
       priorityValue = QuestPriority.values.byName(priority);
@@ -108,17 +113,23 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   Future getProfileMe() async {
     try {
-      this.onLoading();
+      // this.onLoading();
+      error = "";
       userData = await _apiProvider.getProfileMe();
-      this.onSuccess(true);
+      // this.onSuccess(true);
     } catch (e, trace) {
       print(trace);
+      error = e.toString();
       this.onError(e.toString());
     }
   }
 
-  Future<void> getCompletedQuests(String userId) async {
+  Future<void> getCompletedQuests(String userId, bool newList) async {
     try {
+      if (newList){
+        offset = 0;
+        quests.clear();
+      }
       if (offset == quests.length) {
         this.onLoading();
         quests.addAll(
@@ -137,8 +148,12 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getActiveQuests(String userId) async {
+  Future<void> getActiveQuests(String userId, bool newList) async {
     try {
+      if (newList){
+        offset = 0;
+        quests.clear();
+      }
       if (offset == quests.length) {
         this.onLoading();
         quests.addAll(
@@ -185,8 +200,10 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       if (media != null)
         userData.avatarId = (await _apiProvider.uploadMedia(
             medias: ObservableList.of([media])))[0];
+      final isTotpActive = this.userData?.isTotpActive;
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
+      this.userData?.isTotpActive = isTotpActive;
       this.onSuccess(true);
     } catch (e, trace) {
       print(trace);

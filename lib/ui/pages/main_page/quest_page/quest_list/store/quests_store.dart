@@ -83,7 +83,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   List<String> workplaces = [];
 
-  List<String> employeeRatings = [];
+  List<int> employeeRatings = [];
 
   List<int> priorities = [];
 
@@ -97,7 +97,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     employments = employment;
   }
 
-  setEmployeeRating(List<String> employeeRating) {
+  setEmployeeRating(List<int> employeeRating) {
     employeeRatings = employeeRating;
   }
 
@@ -202,30 +202,41 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       debounce!.cancel();
       this.onSuccess(true);
     }
-    if (searchWord.length > 2)
+    if (searchWord.length > 0)
       role == UserRole.Worker ? getSearchedQuests() : getSearchedWorkers();
   }
 
   @computed
   bool get emptySearch =>
-      searchWord.length > 2 &&
+      searchWord.isNotEmpty &&
       searchResultList.isEmpty &&
       searchWorkersList.isEmpty &&
       !this.isLoading;
 
   @action
   Future getSearchedQuests() async {
-    if (offset == searchResultList.length) {
-      this.onLoading();
-      debounce = Timer(const Duration(milliseconds: 300), () async {
-        searchResultList.addAll(await _apiProvider.getQuests(
-          searchWord:searchWord,
-          offset: offset,
-        ));
-        //offset review
-        offset += 10;
-        this.onSuccess(true);
-      });
+    try {
+      if (offset == searchResultList.length) {
+        this.onLoading();
+        debounce = Timer(const Duration(milliseconds: 300), () async {
+          searchResultList.addAll(await _apiProvider.getQuests(
+            searchWord: searchWord,
+            offset: offset,
+            statuses: [0, 1],
+            employment: employments,
+            workplace: workplaces,
+            priority: priorities,
+            limit: this.limit,
+            sort: this.sort,
+            specializations: selectedSkill,
+          ));
+          //offset review
+          offset += 10;
+          this.onSuccess(true);
+        });
+      }
+    } catch (e) {
+      this.onError(e.toString());
     }
   }
 
@@ -237,6 +248,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         searchWorkersList.addAll(await _apiProvider.getWorkers(
           searchWord: this.searchWord,
           offset: this.offset,
+          sort: this.sort,
+          limit: this.limit,
+          workplace: workplaces,
+          priority: priorities,
+          ratingStatus: employeeRatings,
+          specializations: selectedSkill,
         ));
         this.offset += 10;
         this.onSuccess(true);
@@ -282,7 +299,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         workersList.clear();
         offsetWorkers = 0;
       }
-      if (this.offset == workersList.length) {
+      if (offsetWorkers == workersList.length) {
         workersList.addAll(await _apiProvider.getWorkers(
           sort: this.sort,
           offset: this.offsetWorkers,

@@ -110,7 +110,7 @@
   },
   "profiler": {
     "noInformation": "No Information",
-    "raiseViews": "Increase views",
+    "raiseViews": "Raise views",
     "educations": "Education",
     "prevWorkExp": "Previous professional experience",
     "active": "active proposals",
@@ -155,6 +155,8 @@
     "buyWUSD": "Buy WUSD",
     "submit": "Submit",
     "showAllReviews": "Show all reviews",
+    "showAllPortfolio": "Show all portfolios",
+    "showAllQuests": "Show all quests",
     "later": "Later",
     "iAgree": "I agree",
     "next": "Next",
@@ -292,7 +294,10 @@
       "workerAcceptedInvitationToQuest": "Worker accepted invitation to quest",
       "workerRejectedInvitationToQuest": "Worker rejected invitation to quest",
       "employerRejectedWorkersResponse": "Employer rejected workers response",
-      "userLeftReviewAboutQuest": "User left review about quest"
+      "userLeftReviewAboutQuest": "User left review about quest",
+      "waitWorker": "Wait worker",
+      "waitConfirm": "Wait confirm",
+      "questEdited": "Quest edited"
     },
     "youResponded": "You responded",
     "title": "Quest Title",
@@ -304,6 +309,7 @@
     "yourQuest": "Your quest",
     "distantWork": {
       "title": "Distant work",
+      "allWorkplaces": "All workplaces",
       "distantWork": "Distant work",
       "workInOffice": "Work in the office",
       "bothVariant": "Both options"
@@ -541,8 +547,8 @@
       "6": {
         "title": "Data Science & Analytics",
         "sub": {
-          "600": "Data Extraction / ETL",
-          "601": "A / B Testing",
+          "601": "Data Extraction / ETL",
+          "600": "A / B Testing",
           "602": "Data Mining & Management",
           "603": "Data Visualization",
           "604": "Machine Learning",

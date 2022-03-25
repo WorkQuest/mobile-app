@@ -32,9 +32,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   _CreateQuestStore(this.apiProvider);
 
   final List<String> priorityList = [
-    "quests.priority.low".tr(),
-    "quests.priority.normal".tr(),
-    "quests.priority.urgent".tr(),
+    "quests.priority.low",
+    "quests.priority.normal",
+    "quests.priority.urgent",
   ];
 
   final List<String> employmentList = [
@@ -62,12 +62,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @observable
   String workplace = "Distant work";
-
-  // @observable
-  // String category = 'Choose';
-
-  @observable
-  String categoryValue = 'other';
 
   @observable
   String priority = "quests.priority.low".tr();
@@ -129,9 +123,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @computed
   bool get canCreateQuest =>
-      !isLoading &&
-      locationPlaceName.isNotEmpty &&
-      skillFilters.isNotEmpty;
+      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
 
   @computed
   bool get canSubmitEditQuest =>
@@ -191,6 +183,20 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
     return employment;
   }
 
+  int priorityValue = 0;
+
+  int getPriority() {
+    switch (priority) {
+      case "Low":
+        return priorityValue = 1;
+      case "Normal":
+        return priorityValue = 2;
+      case "Urgent":
+        return priorityValue = 3;
+    }
+    return priorityValue;
+  }
+
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
@@ -236,12 +242,11 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         ),
       );
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
-        category: categoryValue,
         employment: getEmploymentValue(),
         // locationPlaceName: locationPlaceName,
         workplace: getWorkplaceValue(),
         specializationKeys: skillFilters,
-        priority: priorityList.indexOf(priority),
+        priority: getPriority(),
         location: location,
         media: mediaIds.map((e) => e.id).toList() +
             await apiProvider.uploadMedia(

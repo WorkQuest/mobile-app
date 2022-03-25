@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../../../../../enums.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 
 class ProfileQuestsPage extends StatefulWidget {
@@ -21,62 +20,65 @@ class ProfileQuestsPage extends StatefulWidget {
 class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
   ProfileMeStore? profileMeStore;
 
+  late UserRole role;
+
   @override
   void initState() {
     profileMeStore = context.read<ProfileMeStore>();
-    profileMeStore!.getQuestHolder(widget.userId).then((value) {
-      profileMeStore!.offset = 0;
-      profileMeStore!.quests.clear();
-      profileMeStore!.questHolder!.role == UserRole.Worker
-          ? profileMeStore!.getActiveQuests(profileMeStore!.questHolder!.id)
-          : profileMeStore!.getCompletedQuests(profileMeStore!.questHolder!.id);
-    });
+    profileMeStore!.offset = 0;
+    profileMeStore!.quests.clear();
+    if (profileMeStore!.userData!.id != widget.userId)
+      profileMeStore!.getQuestHolder(widget.userId).then((value) {
+        role = profileMeStore!.questHolder!.role;
+        role == UserRole.Worker
+            ? profileMeStore!
+                .getActiveQuests(profileMeStore!.questHolder!.id, true)
+            : profileMeStore!
+                .getCompletedQuests(profileMeStore!.questHolder!.id, true);
+      });
+    else {
+      profileMeStore!.getCompletedQuests(profileMeStore!.userData!.id, true);
+      role = profileMeStore!.userData!.role;
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            CupertinoSliverNavigationBar(
-              largeTitle: Text(
-                "profiler.quests".tr(),
-              ),
-              border: const Border.fromBorderSide(BorderSide.none),
-            ),
-          ];
+      appBar: CupertinoNavigationBar(
+        automaticallyImplyLeading: true,
+        middle: Text(
+          "Quests",
+        ),
+      ),
+      body: NotificationListener<ScrollEndNotification>(
+        onNotification: (scrollEnd) {
+          final metrics = scrollEnd.metrics;
+          if (metrics.atEdge ||
+              metrics.maxScrollExtent < metrics.pixels &&
+                  !profileMeStore!.isLoading) {
+            if (role == UserRole.Worker)
+              profileMeStore!.getActiveQuests(widget.userId, false);
+            else
+              profileMeStore!.getCompletedQuests(widget.userId, false);
+          }
+          return true;
         },
-        physics: const ClampingScrollPhysics(),
-        body: NotificationListener<ScrollEndNotification>(
-          onNotification: (scrollEnd) {
-            final metrics = scrollEnd.metrics;
-            if (metrics.atEdge ||
-                metrics.maxScrollExtent < metrics.pixels &&
-                    !profileMeStore!.isLoading) {
-              if (profileMeStore!.questHolder!.role == UserRole.Worker)
-                profileMeStore!
-                    .getActiveQuests(profileMeStore!.questHolder!.id);
-              else
-                profileMeStore!
-                    .getCompletedQuests(profileMeStore!.questHolder!.id);
-            }
-            return true;
-          },
-          child: Observer(
-            builder: (_) => profileMeStore!.questHolder == null
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : QuestsList(
-                    profileMeStore!.questHolder!.role == UserRole.Worker
-                        ? QuestItemPriorityType.Active
-                        : QuestItemPriorityType.Performed,
-                    profileMeStore!.quests,
-                    isLoading: profileMeStore!.isLoading,
-                  ),
-          ),
+        child: Observer(
+          builder: (_) => profileMeStore!.questHolder == null &&
+                  profileMeStore!.isLoading &&
+                  profileMeStore!.quests.isEmpty
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : QuestsList(
+                  role == UserRole.Worker
+                      ? QuestItemPriorityType.Active
+                      : QuestItemPriorityType.Performed,
+                  profileMeStore!.quests,
+                  isLoading: profileMeStore!.isLoading,
+                ),
         ),
       ),
     );

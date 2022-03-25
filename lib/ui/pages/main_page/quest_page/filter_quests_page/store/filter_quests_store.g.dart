@@ -282,7 +282,7 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
   }
 
   @override
-  void initRating(List<String> value) {
+  void initRating(List<int> value) {
     final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
         name: 'FilterQuestsStoreBase.initRating');
     try {

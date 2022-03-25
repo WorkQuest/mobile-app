@@ -31,13 +31,13 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   List<String> workplaceValue = [];
 
-  List<String> employeeRatingValue = [];
+  List<int> employeeRatingValue = [];
 
   List<int> priorityValue = [];
 
   List<String> selectedSkill = [];
 
-  String sort = "sort[createdAt]=desc";
+  String sort = "";
 
   @observable
   ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
@@ -92,14 +92,15 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   @observable
   ObservableList<String> sortByWorkplace = ObservableList.of([
-    "quests.distantWork.bothVariant",
+    "quests.distantWork.allWorkplaces",
     "quests.distantWork.distantWork",
     "quests.distantWork.workInOffice",
+    "quests.distantWork.bothVariant",
   ]);
 
   @observable
   ObservableList<bool> selectWorkplace =
-      ObservableList.of(List.generate(3, (index) => false));
+      ObservableList.of(List.generate(4, (index) => false));
 
   List<String> getEmploymentValue() {
     if (selectEmployment[0] == true) {
@@ -157,9 +158,9 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   List<String> getWorkplaceValue() {
     if (selectWorkplace[0] == true) {
       workplaceValue.clear();
-      workplaceValue.add("both");
       workplaceValue.add("distant");
       workplaceValue.add("office");
+      workplaceValue.add("both");
       return workplaceValue;
     } else if (selectWorkplace[0] == false) {
       workplaceValue.clear();
@@ -173,6 +174,11 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
       workplaceValue.add("office");
     } else if (selectWorkplace[2] == false) {
       workplaceValue.remove("office");
+    }
+    if (selectWorkplace[3] == true) {
+      workplaceValue.add("both");
+    } else if (selectWorkplace[3] == false) {
+      workplaceValue.remove("both");
     }
     return workplaceValue;
   }
@@ -203,6 +209,9 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
         break;
       case 2:
         selectWorkplace[2] = value ?? false;
+        break;
+      case 3:
+        selectWorkplace[3] = value ?? false;
         break;
     }
     for (int i = 1; i < selectWorkplace.length; i++) {
@@ -265,22 +274,23 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     }
   }
 
-  List<String> getEmployeeRating() {
+  List<int> getEmployeeRating() {
     employeeRatingValue.clear();
     if (selectEmployeeRating[0] == true) {
-      employeeRatingValue.add("verified");
-      employeeRatingValue.add("reliable");
-      employeeRatingValue.add("topRanked");
+      employeeRatingValue.add(0);
+      employeeRatingValue.add(1);
+      employeeRatingValue.add(2);
+      employeeRatingValue.add(3);
       return employeeRatingValue;
     }
     if (selectEmployeeRating[1] == true) {
-      employeeRatingValue.add("verified");
+      employeeRatingValue.add(2);
     }
     if (selectEmployeeRating[2] == true) {
-      employeeRatingValue.add("reliable");
+      employeeRatingValue.add(1);
     }
     if (selectEmployeeRating[3] == true) {
-      employeeRatingValue.add("topRanked");
+      employeeRatingValue.add(0);
     }
     return employeeRatingValue;
   }
@@ -344,11 +354,11 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   }
 
   @action
-  void initRating(List<String> value) {
+  void initRating(List<int> value) {
     value.forEach((element) {
-      if (element == "verified") selectEmployeeRating[1] = true;
-      if (element == "reliable") selectEmployeeRating[2] = true;
-      if (element == "topRanked") selectEmployeeRating[3] = true;
+      if (element == 2) selectEmployeeRating[1] = true;
+      if (element == 1) selectEmployeeRating[2] = true;
+      if (element == 3) selectEmployeeRating[3] = true;
     });
     if (selectEmployeeRating[1] == true &&
         selectEmployeeRating[2] == true &&
@@ -358,13 +368,16 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   @action
   void initWorkplace(List<String> value) {
     value.forEach((element) {
-      if (element == "both") {
+      if (value.length == 3) {
         selectWorkplace[0] = true;
         selectWorkplace[1] = true;
         selectWorkplace[2] = true;
+        selectWorkplace[3] = true;
+        return;
       }
       if (element == "distant") selectWorkplace[1] = true;
       if (element == "office") selectWorkplace[2] = true;
+      if (element == "both") selectWorkplace[3] = true;
     });
   }
 

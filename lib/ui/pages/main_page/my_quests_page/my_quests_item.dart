@@ -2,7 +2,6 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
-import 'package:app/ui/widgets/running_line.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";
 import '../../../../constants.dart';
@@ -40,30 +39,24 @@ class MyQuestsItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: FadeInImage.assetNetwork(
+                  child: Image.network(
+                    questInfo.user.avatar?.url ??
+                        "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
-                    image: questInfo.user.avatar.url,
-                    placeholder: 'assets/white_back.jpeg',
                   ),
                 ),
                 const SizedBox(
                   width: 5,
                 ),
                 Expanded(
-                  child: SizedBox(
-                    height: 20,
-                    child: RunningLine(
-                      children: [
-                        Text(
-                          questInfo.user.firstName +
-                              " " +
-                              questInfo.user.lastName,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
+                  child: Text(
+                    questInfo.user.firstName +
+                        " " +
+                        questInfo.user.lastName,
+                    style: TextStyle(fontSize: 16),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 if (questInfo.responded != null)
@@ -153,7 +146,10 @@ class MyQuestsItem extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                PriorityView(questInfo.priority),
+                PriorityView(
+                  questInfo.priority != 0 ? questInfo.priority - 1 : 0,
+                  true,
+                ),
                 SizedBox(width: 50),
                 Flexible(
                   child: Text(

@@ -190,12 +190,13 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
                     ? await MarkerLoader.getClusterMarkerBitmap(
                         cluster.count.toString())
                     : await MarkerLoader.getMarkerImageFromUrl(
-                        cluster.items.toList()[0].avatar!.url,
+                        cluster.items.toList()[0].avatar?.url ??
+                            "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                         Constants
-                                .workerRatingTag[cluster.items
-                                    .toList()[0]
-                                    .ratingStatistic
-                                    ?.status]
-                                ?.color));
+                            .workerRatingTag[cluster.items
+                                .toList()[0]
+                                .ratingStatistic
+                                ?.status]
+                            ?.color));
           };
 }

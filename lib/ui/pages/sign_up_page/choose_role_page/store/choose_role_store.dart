@@ -35,7 +35,9 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   bool _amlAndCtfPolicy = false;
 
   @observable
-  UserRole _userRole = UserRole.Employer;
+  UserRole userRole = UserRole.Employer;
+
+  void setRole(UserRole role)=> userRole = role;
 
   String getRole() {
     if (userRole == UserRole.Employer)
@@ -43,6 +45,8 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
     else
       return UserRole.Employer.name;
   }
+
+  void setChange(bool change) => isChange = true;
 
   @action
   void setTotp(String value) => totp = value;
@@ -60,7 +64,7 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   void setAmlAndCtfPolicy(bool value) => _amlAndCtfPolicy = value;
 
   @action
-  void setUserRole(UserRole role) => _userRole = role;
+  void setUserRole(UserRole role) => userRole = role;
 
   @action
   Future approveRole() async {
@@ -68,10 +72,10 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
       this.onLoading();
       await _apiProvider.setRole(
         isChange
-            ? _userRole == UserRole.Worker
+            ? userRole == UserRole.Worker
                 ? "employer"
                 : "worker"
-            : _userRole == UserRole.Worker
+            : userRole == UserRole.Worker
                 ? "worker"
                 : "employer",
       );
@@ -83,7 +87,7 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
 
   @action
   Future changeRole() async {
-    try{
+    try {
       this.onLoading();
       await _apiProvider.changeRole(totp);
       this.onSuccess(true);
@@ -121,7 +125,4 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   @computed
   bool get canApprove =>
       _privacyPolicy && _amlAndCtfPolicy && _termsAndConditions;
-
-  @computed
-  UserRole get userRole => _userRole;
 }

@@ -62,6 +62,7 @@ class SignUpPage extends StatelessWidget {
                   Padding(
                     padding: _padding.copyWith(top: 30.0),
                     child: TextFormField(
+                      textCapitalization: TextCapitalization.sentences,
                       onChanged: store.setFirstName,
                       decoration: InputDecoration(
                         prefixIconConstraints: _prefixConstraints,
@@ -76,6 +77,7 @@ class SignUpPage extends StatelessWidget {
                   Padding(
                     padding: _padding,
                     child: TextFormField(
+                      textCapitalization: TextCapitalization.sentences,
                       onChanged: store.setLastName,
                       decoration: InputDecoration(
                         prefixIconConstraints: _prefixConstraints,

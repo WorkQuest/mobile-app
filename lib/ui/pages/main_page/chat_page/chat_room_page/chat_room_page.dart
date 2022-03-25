@@ -47,17 +47,22 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     _store.idChat = widget.idChat;
     _store.getMessages(true);
     id1 = _store.chat?.chatModel.userMembers[0].id ?? "--";
-    id2 = _store.chat?.chatModel.userMembers[1].id ?? "--";
     ownersChatId = _store.chat?.chatModel.ownerUserId ?? "--";
     firstName1 = _store.chat?.chatModel.userMembers[0].firstName ?? "--";
     lastName1 = _store.chat?.chatModel.userMembers[0].lastName ?? "--";
-    firstName2 = _store.chat?.chatModel.userMembers[1].firstName ?? "--";
-    lastName2 = _store.chat?.chatModel.userMembers[1].lastName ?? "--";
     url1 = _store.chat?.chatModel.userMembers[0].avatar?.url ?? defaultImageUrl;
-    url2 = _store.chat?.chatModel.userMembers[1].avatar?.url ?? defaultImageUrl;
     chatType = _store.chat?.chatModel.type ?? "";
     chatName = _store.chat?.chatModel.name ?? "--";
-    if (_store.chat!.chatModel.type == "group") _store.generateListUserInChat();
+
+    if (_store.chat!.chatModel.type == "group")
+      _store.generateListUserInChat();
+    else {
+      id2 = _store.chat?.chatModel.userMembers[1].id ?? "--";
+      firstName2 = _store.chat?.chatModel.userMembers[1].firstName ?? "--";
+      lastName2 = _store.chat?.chatModel.userMembers[1].lastName ?? "--";
+      url2 =
+          _store.chat?.chatModel.userMembers[1].avatar?.url ?? defaultImageUrl;
+    }
   }
 
   @override
@@ -184,7 +189,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     top: -15.0,
                     right: -15.0,
                     child: IconButton(
-                      onPressed: () => _store.media.removeAt(index),
+                      onPressed: () => !_store.isLoading
+                          ? _store.media.removeAt(index)
+                          : null,
                       icon: Icon(Icons.cancel_outlined),
                       color: Colors.black,
                     ),

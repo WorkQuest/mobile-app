@@ -17,6 +17,21 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
               name: '_PortfolioStore.canSubmit'))
           .value;
 
+  final _$tabBarScrollingAtom = Atom(name: '_PortfolioStore.tabBarScrolling');
+
+  @override
+  bool get tabBarScrolling {
+    _$tabBarScrollingAtom.reportRead();
+    return super.tabBarScrolling;
+  }
+
+  @override
+  set tabBarScrolling(bool value) {
+    _$tabBarScrollingAtom.reportWrite(value, super.tabBarScrolling, () {
+      super.tabBarScrolling = value;
+    });
+  }
+
   final _$pageNumberAtom = Atom(name: '_PortfolioStore.pageNumber');
 
   @override
@@ -154,20 +169,32 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
   final _$getPortfolioAsyncAction = AsyncAction('_PortfolioStore.getPortfolio');
 
   @override
-  Future<void> getPortfolio({required String userId}) {
+  Future<void> getPortfolio({required String userId, required bool newList}) {
     return _$getPortfolioAsyncAction
-        .run(() => super.getPortfolio(userId: userId));
+        .run(() => super.getPortfolio(userId: userId, newList: newList));
   }
 
   final _$getReviewsAsyncAction = AsyncAction('_PortfolioStore.getReviews');
 
   @override
-  Future<void> getReviews({required String userId}) {
-    return _$getReviewsAsyncAction.run(() => super.getReviews(userId: userId));
+  Future<void> getReviews({required String userId, required bool newList}) {
+    return _$getReviewsAsyncAction
+        .run(() => super.getReviews(userId: userId, newList: newList));
   }
 
   final _$_PortfolioStoreActionController =
       ActionController(name: '_PortfolioStore');
+
+  @override
+  void setScrolling(bool value) {
+    final _$actionInfo = _$_PortfolioStoreActionController.startAction(
+        name: '_PortfolioStore.setScrolling');
+    try {
+      return super.setScrolling(value);
+    } finally {
+      _$_PortfolioStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void changePageNumber(int value) {
@@ -205,6 +232,7 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
   @override
   String toString() {
     return '''
+tabBarScrolling: ${tabBarScrolling},
 pageNumber: ${pageNumber},
 title: ${title},
 description: ${description},

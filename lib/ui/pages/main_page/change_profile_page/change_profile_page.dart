@@ -39,10 +39,11 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
-    pageStore.getInitCode(pageStore.userData.phone ?? pageStore.userData.tempPhone!,
+    pageStore.getInitCode(
+        pageStore.userData.phone ?? pageStore.userData.tempPhone!,
         pageStore.userData.additionalInfo?.secondMobileNumber);
-    if (profile!.userData!.additionalInfo!.address != null)
-      pageStore.address = profile!.userData!.additionalInfo!.address!;
+    if (profile!.userData!.locationPlaceName != null)
+      pageStore.address = profile!.userData!.locationPlaceName!;
     _controller = SkillSpecializationController(
         initialValue: pageStore.userData.userSpecializations);
     _controllerKnowledge = KnowledgeWorkSelectionController();
@@ -83,9 +84,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
         ],
       ),
       body: ObserverListener<ProfileMeStore>(
-        onSuccess: () {
-          Navigator.pop(context);
-        },
+        onSuccess: () => Navigator.pop(context),
         child: Observer(
           builder: (_) => profile!.isLoading
               ? Center(
@@ -172,25 +171,15 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             phoneNumber(
               title: "modals.phoneNumber",
               initialValue: pageStore.phoneNumber,
-              onChanged: (PhoneNumber phone) {
-                pageStore.userData.tempPhone?.codeRegion = phone.dialCode ?? "";
-                pageStore.userData.tempPhone?.phone =
-                    phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "";
-                pageStore.userData.tempPhone?.fullPhone = phone.phoneNumber ?? "";
-              },
+              onChanged: (PhoneNumber phone) => pageStore.setPhoneNumber(phone),
             ),
-            phoneNumber(
-              title: "modals.secondPhoneNumber",
-              initialValue: pageStore.secondPhoneNumber,
-              onChanged: (PhoneNumber phone) {
-                pageStore.userData.additionalInfo?.secondMobileNumber!.codeRegion =
-                    phone.dialCode ?? "";
-                pageStore.userData.additionalInfo?.secondMobileNumber!.phone =
-                    phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "";
-                pageStore.userData.additionalInfo?.secondMobileNumber!.fullPhone =
-                    phone.phoneNumber ?? "";
-              },
-            ),
+            if (profile!.userData!.role == UserRole.Employer)
+              phoneNumber(
+                title: "modals.secondPhoneNumber",
+                initialValue: pageStore.secondPhoneNumber,
+                onChanged: (PhoneNumber phone) =>
+                    pageStore.setSecondPhoneNumber(phone),
+              ),
             inputBody(
               title: "signUp.email".tr(),
               readOnly: true,
@@ -200,8 +189,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             ),
             inputBody(
               title: "modals.title".tr(),
-              initialValue: pageStore.userData.additionalInfo!.description ?? "",
-              onChanged: (text) => pageStore.userData.additionalInfo!.description = text,
+              initialValue:
+                  pageStore.userData.additionalInfo!.description ?? "",
+              onChanged: (text) =>
+                  pageStore.userData.additionalInfo!.description = text,
               maxLines: null,
               validator: Validators.descriptionValidator,
             ),
@@ -209,33 +200,37 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             inputBody(
               title: "settings.twitterUsername".tr(),
               initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.twitter ?? "",
-              onChanged: (text) =>
-                  pageStore.userData.additionalInfo!.socialNetwork?.twitter = text,
+                  pageStore.userData.additionalInfo!.socialNetwork?.twitter ??
+                      "",
+              onChanged: (text) => pageStore
+                  .userData.additionalInfo!.socialNetwork?.twitter = text,
               validator: Validators.nicknameTwitterValidator,
             ),
             inputBody(
               title: "settings.facebookUsername".tr(),
               initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.facebook ?? "",
-              onChanged: (text) =>
-                  pageStore.userData.additionalInfo!.socialNetwork?.facebook = text,
+                  pageStore.userData.additionalInfo!.socialNetwork?.facebook ??
+                      "",
+              onChanged: (text) => pageStore
+                  .userData.additionalInfo!.socialNetwork?.facebook = text,
               validator: Validators.nicknameFacebookValidator,
             ),
             inputBody(
               title: "settings.linkedInUsername".tr(),
               initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.linkedin ?? "",
-              onChanged: (text) =>
-                  pageStore.userData.additionalInfo!.socialNetwork?.linkedin = text,
+                  pageStore.userData.additionalInfo!.socialNetwork?.linkedin ??
+                      "",
+              onChanged: (text) => pageStore
+                  .userData.additionalInfo!.socialNetwork?.linkedin = text,
               validator: Validators.nicknameLinkedInValidator,
             ),
             inputBody(
               title: "settings.instagramUsername".tr(),
               initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.instagram ?? "",
-              onChanged: (text) =>
-                  pageStore.userData.additionalInfo!.socialNetwork?.instagram = text,
+                  pageStore.userData.additionalInfo!.socialNetwork?.instagram ??
+                      "",
+              onChanged: (text) => pageStore
+                  .userData.additionalInfo!.socialNetwork?.instagram = text,
               validator: Validators.nicknameLinkedInValidator,
             ),
             const SizedBox(height: 20),
@@ -255,7 +250,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
               borderRadius: BorderRadius.circular(65),
               child: pageStore.media == null
                   ? Image.network(
-                      profile!.userData!.avatar!.url,
+                      profile!.userData!.avatar?.url ??
+                          "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                       height: 130,
                       width: 130,
                       fit: BoxFit.cover,
@@ -277,7 +273,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                   type: FileType.image,
                 );
                 if (result != null) {
-                  List<File> files = result.paths.map((path) => File(path!)).toList();
+                  List<File> files =
+                      result.paths.map((path) => File(path!)).toList();
                   pageStore.media = files.first;
                 }
               },
@@ -349,53 +346,53 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             border: Border.all(color: Color(0xFFF7F8FA)),
             borderRadius: BorderRadius.circular(6.0),
           ),
-          child: Observer(
-            builder: (_) => InternationalPhoneNumberInput(
-              validator: title == "modals.secondPhoneNumber"
-                  ? (value) {}
-                  : Validators.phoneNumberValidator,
-              initialValue: initialValue,
-              errorMessage: "modals.invalidPhone".tr(),
-              onInputChanged: onChanged,
-              selectorConfig: SelectorConfig(
-                setSelectorButtonAsPrefixIcon: true,
-                selectorType: PhoneInputSelectorType.DROPDOWN,
+          child: InternationalPhoneNumberInput(
+            validator: title == "modals.secondPhoneNumber"
+                ? (value) {
+                    return null;
+                  }
+                : Validators.phoneNumberValidator,
+            initialValue: initialValue,
+            errorMessage: "modals.invalidPhone".tr(),
+            onInputChanged: onChanged,
+            selectorConfig: SelectorConfig(
+              setSelectorButtonAsPrefixIcon: true,
+              selectorType: PhoneInputSelectorType.DROPDOWN,
+            ),
+            hintText: "modals.phoneNumber".tr(),
+            keyboardType: TextInputType.number,
+            inputBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              borderSide: BorderSide(
+                color: Colors.blue,
               ),
-              hintText: "modals.phoneNumber".tr(),
-              keyboardType: TextInputType.number,
-              inputBorder: OutlineInputBorder(
+            ),
+            inputDecoration: InputDecoration(
+              fillColor: Colors.white,
+              focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6.0),
                 borderSide: BorderSide(
                   color: Colors.blue,
                 ),
               ),
-              inputDecoration: InputDecoration(
-                fillColor: Colors.white,
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                  borderSide: BorderSide(
-                    color: Colors.blue,
-                  ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: BorderSide(
+                  color: Colors.blue,
                 ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                  borderSide: BorderSide(
-                    color: Colors.blue,
-                  ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: BorderSide(
+                  color: Color(0xFFf7f8fa),
+                  width: 2.0,
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                  borderSide: BorderSide(
-                    color: Color(0xFFf7f8fa),
-                    width: 2.0,
-                  ),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                  borderSide: BorderSide(
-                    width: 1.0,
-                    color: Colors.red,
-                  ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: BorderSide(
+                  width: 1.0,
+                  color: Colors.red,
                 ),
               ),
             ),
@@ -528,19 +525,23 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
 
   onSave() async {
     if (_formKey.currentState?.validate() ?? false) {
-      if (!pageStore.validationKnowledge(_controllerKnowledge!.getListMap(), context))
+      if (!pageStore.validationKnowledge(
+          _controllerKnowledge!.getListMap(), context)) return;
+      if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
         return;
-      if (!pageStore.validationWork(_controllerWork!.getListMap(), context)) return;
       if (pageStore.userData.additionalInfo?.secondMobileNumber?.phone == "")
         pageStore.userData.additionalInfo?.secondMobileNumber = null;
-      pageStore.userData.additionalInfo?.educations = _controllerKnowledge!.getListMap();
-      pageStore.userData.additionalInfo?.workExperiences = _controllerWork!.getListMap();
+      pageStore.userData.additionalInfo?.educations =
+          _controllerKnowledge!.getListMap();
+      pageStore.userData.additionalInfo?.workExperiences =
+          _controllerWork!.getListMap();
       pageStore.userData.additionalInfo!.address = pageStore.address;
       pageStore.userData.locationPlaceName = pageStore.address;
       pageStore.userData.priority = profile!.userData!.priority;
       pageStore.userData.workplace = profile!.valueToWorkplace();
       if (!profile!.isLoading)
-        pageStore.userData.userSpecializations = _controller!.getSkillAndSpecialization();
+        pageStore.userData.userSpecializations =
+            _controller!.getSkillAndSpecialization();
       await profile!.changeProfile(
         pageStore.userData,
         media: pageStore.media,

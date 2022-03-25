@@ -39,6 +39,13 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
     });
   }
 
+  final _$startQuestAsyncAction = AsyncAction('_UserProfileStore.startQuest');
+
+  @override
+  Future<void> startQuest(String userId) {
+    return _$startQuestAsyncAction.run(() => super.startQuest(userId));
+  }
+
   final _$_UserProfileStoreActionController =
       ActionController(name: '_UserProfileStore');
 

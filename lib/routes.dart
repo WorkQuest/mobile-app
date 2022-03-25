@@ -18,6 +18,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_employer.dart';
@@ -93,8 +94,15 @@ class Routes {
     switch (settings.name) {
       case SignInPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<SignInStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SignInStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: SignInPage(),
@@ -327,8 +335,18 @@ class Routes {
 
       case NotificationPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<NotificationStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<NotificationStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChatStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: NotificationPage(settings.arguments as String),
@@ -513,7 +531,7 @@ class Routes {
             create: (context) => getIt.get<RaiseViewStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: RaiseViews(),
+              child: RaiseViews(settings.arguments as bool),
             ),
           ),
         );
@@ -682,6 +700,27 @@ class Routes {
               child: CreateReviewPage(
                 quest: settings.arguments as BaseQuestResponse,
               ),
+            ),
+          ),
+        );
+
+      case ReviewPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<PortfolioStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<UserProfileStore>(),
+              ),
+            ],
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ReviewPage(settings.arguments as PortfolioStore),
             ),
           ),
         );

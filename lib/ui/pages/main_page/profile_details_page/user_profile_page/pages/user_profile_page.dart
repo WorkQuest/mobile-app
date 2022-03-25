@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -39,7 +37,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
   late TabController _tabController;
 
   ScrollController controllerMain = ScrollController();
-  late StreamController<AppBarParams> _streamController;
 
   ProfileMeStore? userStore;
   PortfolioStore? portfolioStore;
@@ -52,7 +49,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
     super.initState();
 
     _tabController = TabController(vsync: this, length: 2);
-    _streamController = StreamController<AppBarParams>();
 
     portfolioStore = context.read<PortfolioStore>();
     myQuests = context.read<MyQuestStore>();
@@ -64,9 +60,15 @@ class UserProfileState<T extends UserProfile> extends State<T>
       role = userStore!.userData?.role ?? UserRole.Worker;
 
       if (role == UserRole.Worker)
-        portfolioStore!.getPortfolio(userId: userStore!.userData!.id);
+        portfolioStore!.getPortfolio(
+          userId: userStore!.userData!.id,
+          newList: true,
+        );
 
-      portfolioStore!.getReviews(userId: userStore!.userData!.id);
+      portfolioStore!.getReviews(
+        userId: userStore!.userData!.id,
+        newList: true,
+      );
       myQuests!.getQuests(userStore!.userData!.id, role, true);
     } else {
       role = widget.info?.role ?? UserRole.Worker;
@@ -78,8 +80,8 @@ class UserProfileState<T extends UserProfile> extends State<T>
         viewOtherUser!.getQuests(widget.info!.id, role, true);
 
       if (role == UserRole.Worker)
-        portfolioStore!.getPortfolio(userId: widget.info!.id);
-      portfolioStore!.getReviews(userId: widget.info!.id);
+        portfolioStore!.getPortfolio(userId: widget.info!.id, newList: true);
+      portfolioStore!.getReviews(userId: widget.info!.id, newList: true);
     }
     isVerify = widget.info == null
         ? userStore!.userData?.phone != null
@@ -103,50 +105,36 @@ class UserProfileState<T extends UserProfile> extends State<T>
     String name, [
     bool getReviews = true,
   ]) {
+    ScrollController _controller = ScrollController();
     return NotificationListener<ScrollEndNotification>(
-      onNotification: (scrollNotification) {
-        if (scrollNotification.metrics.atEdge) if (scrollNotification
-                .metrics.pixels ==
-            scrollNotification.metrics.maxScrollExtent) {
-          if (widget.info == null) {
-            //on your own profile
-            if (getReviews && !portfolioStore!.isLoading)
-              portfolioStore!.getReviews(
-                userId: userStore!.userData!.id,
-              );
-            else if (role == UserRole.Worker)
-              portfolioStore!.getPortfolio(
-                userId: userStore!.userData!.id,
-              );
-            myQuests!.getQuests(userStore!.userData!.id, role, false);
-          } else {
-            //on another user profile
-            viewOtherUser!.getQuests(widget.info!.id, role, false);
-            if (getReviews && !portfolioStore!.isLoading)
-              portfolioStore!.getReviews(
-                userId: widget.info!.id,
-              );
-            else if (role == UserRole.Worker)
-              portfolioStore!.getPortfolio(
-                userId: widget.info!.id,
-              );
-          }
-        }
-        return false;
-      },
-      child: Builder(builder: (context) {
-        return CustomScrollView(
-            key: PageStorageKey<String>(name),
-            slivers: <Widget>[
-              SliverOverlapInjector(
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              ),
-              SliverList(delegate: SliverChildListDelegate(body))
-            ]
-            //children: body,
-            );
-      }),
+      // onNotification: (scrollNotification) {
+      //   if (scrollNotification.metrics.atEdge) if (scrollNotification
+      //           .metrics.pixels ==
+      //       scrollNotification.metrics.maxScrollExtent) {
+      //     if (widget.info == null) {
+      //       //on your own profile
+      //       if (role == UserRole.Worker)
+      //         portfolioStore!.getPortfolio(
+      //           userId: userStore!.userData!.id,
+      //         );
+      //       myQuests!.getQuests(userStore!.userData!.id, role, false);
+      //     } else {
+      //       //on another user profile
+      //       viewOtherUser!.getQuests(widget.info!.id, role, false);
+      //       if (role == UserRole.Worker)
+      //         portfolioStore!.getPortfolio(
+      //           userId: widget.info!.id,
+      //         );
+      //     }
+      //   }
+      //   setState(() {});
+      //   return false;
+      // },
+      child: ListView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: _controller,
+        children: body,
+      ),
     );
   }
 
@@ -159,19 +147,40 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   double appBarPositionVertical = 16.0;
 
+  double pastPosition = 0.0;
+  double presentPosition = 0.0;
+
+  ScrollController reviewController = ScrollController();
+  ScrollController questController = ScrollController();
+  ScrollController disabledController = ScrollController();
+
+  double scrollPosition = 0.0;
+
   @override
   Widget build(BuildContext context) {
-    //final userStore = context.read<ProfileMeStore>();
     return Scaffold(
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
-          if (controllerMain.offset < 180) {
-            double width = 240 + (controllerMain.offset.round() / 200 * 60);
-            double appBarPosition = controllerMain.offset.round() / 200 * 28;
-            double appBarPositionVertical = (controllerMain.offset.round() / 200 * 10);
-            _streamController.sink.add(
-                AppBarParams(width, appBarPosition, appBarPositionVertical));
-          }
+          //Animate Padding
+          if (controllerMain.offset < 240)
+            setState(() {
+              appBarPosition = 0.0;
+              appBarPositionVertical = 16.0;
+              width = 240.0;
+            });
+          if (controllerMain.offset > 0 && controllerMain.offset < 240)
+            setState(() {
+              appBarPosition = controllerMain.offset < 120 ? 0.0 : 25.0;
+              widget.info != null
+                  ? widget.info!.ratingStatistic?.status != 3
+                      ? appBarPositionVertical = 7.0
+                      : appBarPositionVertical = 16.0
+                  : userStore!.userData!.ratingStatistic?.status != 3
+                      ? appBarPositionVertical = 7.0
+                      : appBarPositionVertical = 16.0;
+              width = 300.0;
+            });
+
           return false;
         },
         child: NestedScrollView(
@@ -182,7 +191,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
           ) {
             return <Widget>[
               //__________AppBar__________//
-              sliverAppBar(widget.info, _streamController),
+              sliverAppBar(widget.info),
               SliverPadding(
                 padding: EdgeInsets.fromLTRB(
                   16.0,
@@ -190,58 +199,52 @@ class UserProfileState<T extends UserProfile> extends State<T>
                   16.0,
                   0.0,
                 ),
-                sliver: SliverOverlapAbsorber(
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: listWidgets(),
-                        ),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: listWidgets(),
+                      ),
 
-                        ///Social Accounts
-                        socialAccounts(
-                          socialNetwork: widget.info == null
-                              ? userStore!
-                                  .userData?.additionalInfo?.socialNetwork
-                              : widget.info!.additionalInfo?.socialNetwork,
-                        ),
+                      ///Social Accounts
+                      socialAccounts(
+                        socialNetwork: widget.info == null
+                            ? userStore!.userData?.additionalInfo?.socialNetwork
+                            : widget.info!.additionalInfo?.socialNetwork,
+                      ),
 
-                        ///Contact Details
-                        contactDetails(
-                          location: widget.info == null
-                              ? userStore!.userData?.additionalInfo?.address ??
-                                  ''
-                              : widget.info!.additionalInfo?.address ?? "",
-                          number: widget.info == null
-                              ? userStore!.userData?.phone?.fullPhone ??
-                                  userStore!.userData?.tempPhone?.fullPhone ??
-                                  ""
-                              : widget.info?.phone?.fullPhone ??
-                                  widget.info!.tempPhone?.fullPhone ??
-                                  "",
-                          secondNumber: widget.info == null
-                              ? userStore!.userData?.additionalInfo
-                                      ?.secondMobileNumber!.fullPhone ??
-                                  ""
-                              : widget.info!.additionalInfo?.secondMobileNumber!
-                                      .fullPhone ??
-                                  "",
-                          email: widget.info == null
-                              ? userStore!.userData?.email ?? " "
-                              : widget.info!.email ?? " ",
-                          isVerify: isVerify,
-                        ),
+                      ///Contact Details
+                      contactDetails(
+                        location: widget.info == null
+                            ? userStore!.userData?.additionalInfo?.address ?? ''
+                            : widget.info!.additionalInfo?.address ?? "",
+                        number: widget.info == null
+                            ? userStore!.userData?.phone?.fullPhone ??
+                                userStore!.userData?.tempPhone?.fullPhone ??
+                                ""
+                            : widget.info?.phone?.fullPhone ??
+                                widget.info!.tempPhone?.fullPhone ??
+                                "",
+                        secondNumber: widget.info == null
+                            ? userStore!.userData?.additionalInfo
+                                    ?.secondMobileNumber?.fullPhone ??
+                                ""
+                            : widget.info!.additionalInfo?.secondMobileNumber
+                                    ?.fullPhone ??
+                                "",
+                        email: widget.info == null
+                            ? userStore!.userData?.email ?? " "
+                            : widget.info!.email ?? " ",
+                        isVerify: isVerify,
+                      ),
 
-                        ...ratingsWidget(),
+                      ...ratingsWidget(),
 
-                        ...addToQuest(),
-                        spacer,
-                      ],
-                    ),
+                      ...addToQuest(),
+                      spacer,
+                    ],
                   ),
                 ),
               ),
@@ -290,17 +293,5 @@ class UserProfileState<T extends UserProfile> extends State<T>
         ),
       ),
     );
-  }
-}
-
-class AppBarParams {
-  double width;
-  double appBarPosition;
-  double appBarPositionVertical;
-
-  AppBarParams(this.width, this.appBarPosition, this.appBarPositionVertical);
-
-  factory AppBarParams.initial() {
-    return AppBarParams(240.0, 0.0, 16.0);
   }
 }
