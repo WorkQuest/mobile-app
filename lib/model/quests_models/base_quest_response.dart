@@ -25,7 +25,6 @@ class BaseQuestResponse with ClusterItem {
     required this.title,
     required this.description,
     required this.price,
-    required this.adType,
     required this.createdAt,
     required this.star,
     required this.locationPlaceName,
@@ -51,7 +50,6 @@ class BaseQuestResponse with ClusterItem {
   String title;
   String description;
   String price;
-  int adType;
   DateTime createdAt;
   bool star;
   AssignedWorker? assignedWorker;
@@ -79,7 +77,6 @@ class BaseQuestResponse with ClusterItem {
       title: json["title"],
       description: json["description"],
       price: json["price"],
-      adType: json["adType"],
       createdAt: DateTime.parse(json["createdAt"]),
       star: json["star"] == null ? false : true,
       assignedWorker: json["assignedWorker"] == null
@@ -120,7 +117,6 @@ class BaseQuestResponse with ClusterItem {
     this.title = updateQuest.title;
     this.description = updateQuest.description;
     this.price = updateQuest.price;
-    this.adType = updateQuest.adType;
     this.createdAt = updateQuest.createdAt;
     this.star = updateQuest.star;
     this.locationPlaceName = updateQuest.locationPlaceName;
@@ -143,7 +139,6 @@ class BaseQuestResponse with ClusterItem {
         "title": title,
         "description": description,
         "price": price,
-        "adType": adType,
         "createdAt": createdAt.toIso8601String(),
         "questChat": questChat,
       };

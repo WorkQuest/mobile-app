@@ -1,5 +1,6 @@
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:flutter/material.dart';
@@ -131,9 +132,7 @@ extension ReviewsTab on UserProfileState {
             ? Observer(
                 builder: (_) => Column(
                   children: [
-                    for (int index = 0;
-                        index < portfolioStore!.reviewsList.length;
-                        index++)
+                    for (int index = 0; index < 3; index++)
                       ReviewsWidget(
                         avatar: portfolioStore!
                                 .reviewsList[index].fromUser.avatar?.url ??
@@ -164,6 +163,31 @@ extension ReviewsTab on UserProfileState {
                             ? true
                             : false,
                       ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          portfolioStore!.setTitleName("Reviews");
+                          await Navigator.pushNamed(
+                            context,
+                            ReviewPage.routeName,
+                            arguments: portfolioStore!,
+                          );
+                          await portfolioStore!.getReviews(
+                            userId: widget.info == null
+                                ? userStore!.userData!.id
+                                : widget.info!.id,
+                            newList: true,
+                          );
+                        },
+                        child: Text(
+                          "meta.showAllReviews".tr(),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               )

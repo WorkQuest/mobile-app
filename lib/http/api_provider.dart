@@ -1165,3 +1165,18 @@ extension Reviews on ApiProvider {
     }
   }
 }
+
+extension RasieView on ApiProvider {
+  Future<void> raiseProfile({
+    required int duration,
+    required int type,
+  }) async {
+    await httpClient.post(
+      query: '/v1/profile/worker/me/raise-view/pay',
+      data: {
+        "duration": duration,
+        "type": type,
+      },
+    );
+  }
+}

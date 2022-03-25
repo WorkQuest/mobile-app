@@ -1,19 +1,36 @@
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/bank_card_widget.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+
+import '../../../../constants.dart';
+import '../../../../web3/contractEnums.dart';
+import '../../../widgets/dismiss_keyboard.dart';
 
 final _divider = const SizedBox(
   height: 5.0,
 );
+final String coinsPath = "assets/coins";
+List<_CoinItem> _coins = [
+  _CoinItem("$coinsPath/wusd.svg", 'WUSD', TYPE_COINS.WUSD, true),
+  _CoinItem("$coinsPath/wqt.svg", 'WQT', TYPE_COINS.WQT, true),
+];
+
+List<_WalletItem> _wallets = [
+  _WalletItem(
+      "assets/coinpaymebts.svg", "Сoinpaymebts", TYPE_WALLET.Coinpaymebts),
+];
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({Key? key,}) : super(key: key);
+  const PaymentPage({
+    Key? key,
+  }) : super(key: key);
   static const String routeName = "/paymentPage";
 
   @override
@@ -23,9 +40,19 @@ class PaymentPage extends StatefulWidget {
 class _PaymentPageState extends State<PaymentPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late RaiseViewStore raiseViewStore;
+
+  _CoinItem? _currentCoin;
+
+  bool get _selectedCoin => _currentCoin != null;
+
+  _WalletItem? _currentWallet;
+
+  bool get _selectedWallet => _currentWallet != null;
 
   void initState() {
     super.initState();
+    raiseViewStore = context.read<RaiseViewStore>();
     _tabController = TabController(
       vsync: this,
       length: 2,
@@ -34,8 +61,6 @@ class _PaymentPageState extends State<PaymentPage>
 
   @override
   Widget build(BuildContext context) {
-    final raiseViewStore = context.read<RaiseViewStore>();
-
     return Scaffold(
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
@@ -60,7 +85,7 @@ class _PaymentPageState extends State<PaymentPage>
                   tabs: <Widget>[
                     Tab(
                       child: Text(
-                        "wallet.cryptoWallet".tr(),
+                        "Crypto address",
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
@@ -101,111 +126,148 @@ class _PaymentPageState extends State<PaymentPage>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("wallet.cryptoWallet".tr(),),
+              Text("Crypto address"),
               _divider,
-              ExpansionPanelList(
-                elevation: 0,
-                children: [
-                  ExpansionPanel(
-                    headerBuilder: (context, isExpanded) {
-                      return SizedBox(
-                        height: 50.0,
-                        child: ListTile(
-                          title: Text(
-                            'WQT ',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      );
-                    },
-                    body: Column(
-                      children: [
-                        RadioListTile(
-                          title: Text(
-                            'Card 1',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          onChanged: (value) {
-                            // setState(() {
-                            //   _groupValue = 1;
-                            // });
-                          },
-                          groupValue: 1,
-                          value: 1,
-                        ),
-                      ],
-                    ),
-                    isExpanded: false,
-                    canTapOnHeader: true,
+              GestureDetector(
+                onTap: _chooseCoin,
+                child: Container(
+                  height: 46,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15.0,
+                    vertical: 12.5,
                   ),
-                ],
-                dividerColor: Colors.grey,
-                expansionCallback: (panelIndex, isExpanded) {
-                  // setState(() {
-                  //   _expanded = !_expanded;
-                  // });
-                },
+                  decoration: BoxDecoration(
+                    color:
+                        _selectedCoin ? Colors.white : AppColor.disabledButton,
+                    borderRadius: BorderRadius.circular(6.0),
+                    border: Border.all(
+                      color: AppColor.disabledButton,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      if (_selectedCoin)
+                        Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                AppColor.enabledButton,
+                                AppColor.blue,
+                              ],
+                            ),
+                          ),
+                          child: SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: SvgPicture.asset(
+                              _currentCoin!.iconPath,
+                            ),
+                          ),
+                        ),
+                      Text(
+                        _selectedCoin
+                            ? _currentCoin!.title
+                            : 'wallet.enterCoin'.tr(),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: _selectedCoin
+                              ? Colors.black
+                              : AppColor.disabledText,
+                        ),
+                      ),
+                      const Spacer(),
+                      Icon(
+                        Icons.arrow_drop_down_outlined,
+                        size: 25.0,
+                      )
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 15.0,
               ),
-              Text('wallet.wallet'.tr(),),
+              Text(
+                'wallet.wallet'.tr(),
+              ),
               _divider,
-              ExpansionPanelList(
-                elevation: 0,
-                children: [
-                  ExpansionPanel(
-                    headerBuilder: (context, isExpanded) {
-                      return SizedBox(
-                        height: 50.0,
-                        child: ListTile(
-                          title: Text(
-                            'Coin Payments ',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      );
-                    },
-                    body: Column(
-                      children: [
-                        RadioListTile(
-                          title: Text(
-                            'Card 1',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          onChanged: (value) {
-                            // setState(() {
-                            //   _groupValue = 1;
-                            // });
-                          },
-                          groupValue: 1,
-                          value: 1,
-                        ),
-                      ],
-                    ),
-                    isExpanded: false,
-                    canTapOnHeader: true,
+              GestureDetector(
+                onTap: _chooseWallet,
+                child: Container(
+                  height: 46,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15.0,
+                    vertical: 12.5,
                   ),
-                ],
-                dividerColor: Colors.grey,
-                expansionCallback: (panelIndex, isExpanded) {
-                  // setState(() {
-                  //   _expanded = !_expanded;
-                  // });
-                },
+                  decoration: BoxDecoration(
+                    color: _selectedWallet
+                        ? Colors.white
+                        : AppColor.disabledButton,
+                    borderRadius: BorderRadius.circular(6.0),
+                    border: Border.all(
+                      color: AppColor.disabledButton,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      if (_selectedWallet)
+                        Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                AppColor.enabledButton,
+                                AppColor.blue,
+                              ],
+                            ),
+                          ),
+                          child: SizedBox(
+                            width: 32,
+                            height: 32,
+                            child: SvgPicture.asset(
+                              _currentWallet!.iconPath,
+                            ),
+                          ),
+                        ),
+                      Text(
+                        _selectedWallet
+                            ? _currentWallet!.title
+                            : 'wallet.enterCoin'.tr(),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: _selectedWallet
+                              ? Colors.black
+                              : AppColor.disabledText,
+                        ),
+                      ),
+                      const Spacer(),
+                      Icon(
+                        Icons.arrow_drop_down_outlined,
+                        size: 25.0,
+                      )
+                    ],
+                  ),
+                ),
               ),
               Spacer(),
               ElevatedButton(
-                onPressed: null,
-                // onPressed: withdrawStore.canSubmit
-                //     ? () => confirmTransaction(
-                //           context,
-                //           transaction: "Withdraw",
-                //           address: withdrawStore.getAddress(),
-                //           amount: withdrawStore.getAmount(),
-                //           fee: "0.15",
-                //         )
-                //     : null,
+                onPressed: raiseViewStore.canSubmit
+                    ? () async {
+                        await raiseViewStore.raiseProfile();
+                        if (raiseViewStore.isSuccess) {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          AlertDialogUtils.showSuccessDialog(context);
+                        }
+                      }
+                    : null,
                 child: Text("Pay"),
               ),
               const SizedBox(
@@ -215,6 +277,272 @@ class _PaymentPageState extends State<PaymentPage>
           ),
         ),
       );
+
+  void _chooseCoin() {
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0),
+              topRight: Radius.circular(24.0),
+            ),
+            color: Colors.white,
+          ),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            child: SingleChildScrollView(
+              child: DismissKeyboard(
+                child: Column(
+                  children: [
+                    Container(
+                      width: 100,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: const Color(0xffE9EDF2),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 21,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'wallet.chooseCoin'.tr(),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 16.5,
+                        ),
+                        ..._coins
+                            .map(
+                              (coin) => Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 6.5,
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: coin.isEnable
+                                          ? () {
+                                              _selectCoin(coin);
+                                              Navigator.pop(context);
+                                            }
+                                          : null,
+                                      child: Container(
+                                        height: 32,
+                                        width: double.infinity,
+                                        color: Colors.transparent,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Container(
+                                              decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                gradient: LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [
+                                                    AppColor.enabledButton,
+                                                    AppColor.blue,
+                                                  ],
+                                                ),
+                                              ),
+                                              child: SizedBox(
+                                                width: 32,
+                                                height: 32,
+                                                child: SvgPicture.asset(
+                                                  coin.iconPath,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              coin.title,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: coin.isEnable
+                                                    ? Colors.black
+                                                    : AppColor.disabledText,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 1,
+                                    color: AppColor.disabledButton,
+                                  ),
+                                ],
+                              ),
+                            )
+                            .toList(),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _chooseWallet() {
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0),
+              topRight: Radius.circular(24.0),
+            ),
+            color: Colors.white,
+          ),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            child: SingleChildScrollView(
+              child: DismissKeyboard(
+                child: Column(
+                  children: [
+                    Container(
+                      width: 100,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: const Color(0xffE9EDF2),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 21,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'wallet.chooseCoin'.tr(),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 16.5,
+                        ),
+                        ..._wallets
+                            .map(
+                              (wallet) => Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 6.5,
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _selectWallet(wallet);
+                                        Navigator.pop(context);
+                                      },
+                                      child: Container(
+                                        height: 32,
+                                        width: double.infinity,
+                                        color: Colors.transparent,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Container(
+                                              decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                gradient: LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [
+                                                    AppColor.enabledButton,
+                                                    AppColor.blue,
+                                                  ],
+                                                ),
+                                              ),
+                                              child: SizedBox(
+                                                width: 32,
+                                                height: 32,
+                                                child: SvgPicture.asset(
+                                                  wallet.iconPath,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              wallet.title,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 1,
+                                    color: AppColor.disabledButton,
+                                  ),
+                                ],
+                              ),
+                            )
+                            .toList(),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _selectCoin(_CoinItem coin) {
+    setState(() {
+      _currentCoin = coin;
+    });
+    raiseViewStore.setTitleSelectedCoin(coin.typeCoin);
+  }
+
+  void _selectWallet(_WalletItem wallet) {
+    setState(() {
+      _currentWallet = wallet;
+    });
+    raiseViewStore.setTitleSelectedWallet(wallet.typeWallet);
+  }
 
   Widget titledTextBox(
     String title,
@@ -234,4 +562,21 @@ class _PaymentPageState extends State<PaymentPage>
           ),
         ],
       );
+}
+
+class _CoinItem {
+  String iconPath;
+  String title;
+  bool isEnable;
+  TYPE_COINS typeCoin;
+
+  _CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);
+}
+
+class _WalletItem {
+  String iconPath;
+  String title;
+  TYPE_WALLET typeWallet;
+
+  _WalletItem(this.iconPath, this.title, this.typeWallet);
 }

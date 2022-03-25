@@ -67,3 +67,7 @@ enum WQFContractEvents {
 enum TYPE_COINS {
   WUSD, WQT, wBNB, wETH
 }
+
+enum TYPE_WALLET {
+  Coinpaymebts
+}

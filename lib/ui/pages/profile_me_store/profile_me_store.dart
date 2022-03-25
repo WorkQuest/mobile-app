@@ -124,8 +124,12 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getCompletedQuests(String userId) async {
+  Future<void> getCompletedQuests(String userId, bool newList) async {
     try {
+      if (newList){
+        offset = 0;
+        quests.clear();
+      }
       if (offset == quests.length) {
         this.onLoading();
         quests.addAll(
@@ -144,8 +148,12 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getActiveQuests(String userId) async {
+  Future<void> getActiveQuests(String userId, bool newList) async {
     try {
+      if (newList){
+        offset = 0;
+        quests.clear();
+      }
       if (offset == quests.length) {
         this.onLoading();
         quests.addAll(

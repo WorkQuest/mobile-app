@@ -168,12 +168,12 @@ class ReviewsWidget extends StatelessWidget {
                     );
                     portfolioStore.clearData();
                     if (role == UserRole.Worker)
-                      portfolioStore.getPortfolio(userId: myId);
+                      portfolioStore.getPortfolio(userId: myId, newList: true);
                     else {
                       userProfileStore.quests.clear();
                       userProfileStore.getQuests(myId, role, true);
                     }
-                    portfolioStore.getReviews(userId: myId);
+                    portfolioStore.getReviews(userId: myId, newList: true);
                   }
                   profile.assignedWorker = null;
                 },
@@ -329,12 +329,12 @@ class ReviewsWidget extends StatelessWidget {
                     );
                     portfolioStore.clearData();
                     if (role == UserRole.Worker)
-                      portfolioStore.getPortfolio(userId: myId);
+                      portfolioStore.getPortfolio(userId: myId, newList: true);
                     else {
                       userProfileStore.quests.clear();
                       userProfileStore.getQuests(myId, role, true);
                     }
-                    portfolioStore.getReviews(userId: myId);
+                    portfolioStore.getReviews(userId: myId, newList: true);
                   }
                   profile.assignedWorker = null;
                 },

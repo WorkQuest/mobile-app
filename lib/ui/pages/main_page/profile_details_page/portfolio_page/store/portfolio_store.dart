@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/portfolio.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/review.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:injectable/injectable.dart';
@@ -19,6 +20,10 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
   _PortfolioStore(this._apiProvider);
+
+  ProfileMeResponse? otherUserData;
+
+  String titleName = "";
 
   int portfolioIndex = -1;
 
@@ -53,6 +58,10 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   ObservableList<File> media = ObservableList();
 
   List<String> messages = [];
+
+  void setTitleName(String value) => titleName = value;
+
+  void setOtherUserData(ProfileMeResponse? value) => otherUserData = value;
 
   @action
   void setScrolling(bool value) => tabBarScrolling = value;
@@ -98,7 +107,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
               medias: media,
             ),
       );
-      await getPortfolio(userId: userId);
+      await getPortfolio(userId: userId, newList: true);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
@@ -121,7 +130,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
               medias: media,
             ),
       );
-      await getPortfolio(userId: userId);
+      await getPortfolio(userId: userId, newList: true);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
@@ -138,7 +147,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
       await _apiProvider.deletePortfolio(
         portfolioId: portfolioId,
       );
-      await getPortfolio(userId: userId);
+      await getPortfolio(userId: userId, newList: true);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
@@ -148,16 +157,26 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   @action
   Future<void> getPortfolio({
     required String userId,
+    required bool newList,
   }) async {
     try {
-      this.onLoading();
-      portfolioList = ObservableList.of(
-        await _apiProvider.getPortfolio(
-          userId: userId,
-          offset: offset,
-        ),
-      );
-      this.onSuccess(true);
+      if (newList) {
+        portfolioList.clear();
+        offset = 0;
+      }
+      if (offset == portfolioList.length) {
+        this.onLoading();
+        portfolioList.addAll(
+          ObservableList.of(
+            await _apiProvider.getPortfolio(
+              userId: userId,
+              offset: offset,
+            ),
+          ),
+        );
+        offset += 10;
+        this.onSuccess(true);
+      }
     } catch (e) {
       this.onError(e.toString());
     }
@@ -166,9 +185,14 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   @action
   Future<void> getReviews({
     required String userId,
+    required bool newList,
   }) async {
     try {
-      // if (!pagination) return;
+      if (newList){
+        reviewsList.clear();
+        offsetReview = 0;
+      }
+      if (offsetReview > reviewsList.length) return;
       this.onLoading();
       final response = ObservableList.of(
         await _apiProvider.getReviews(

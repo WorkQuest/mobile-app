@@ -169,16 +169,17 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
   final _$getPortfolioAsyncAction = AsyncAction('_PortfolioStore.getPortfolio');
 
   @override
-  Future<void> getPortfolio({required String userId}) {
+  Future<void> getPortfolio({required String userId, required bool newList}) {
     return _$getPortfolioAsyncAction
-        .run(() => super.getPortfolio(userId: userId));
+        .run(() => super.getPortfolio(userId: userId, newList: newList));
   }
 
   final _$getReviewsAsyncAction = AsyncAction('_PortfolioStore.getReviews');
 
   @override
-  Future<void> getReviews({required String userId}) {
-    return _$getReviewsAsyncAction.run(() => super.getReviews(userId: userId));
+  Future<void> getReviews({required String userId, required bool newList}) {
+    return _$getReviewsAsyncAction
+        .run(() => super.getReviews(userId: userId, newList: newList));
   }
 
   final _$_PortfolioStoreActionController =
