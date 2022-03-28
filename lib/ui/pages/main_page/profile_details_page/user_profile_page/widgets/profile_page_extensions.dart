@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
@@ -45,7 +47,7 @@ extension CustomAppBar on UserProfileState {
         flexibleSpace: FlexibleSpaceBar(
           titlePadding: EdgeInsets.only(
             left: 16.0,
-            bottom: 0,
+            bottom: 3,
             top: 0.0,
           ),
           collapseMode: CollapseMode.pin,
@@ -61,10 +63,10 @@ extension CustomAppBar on UserProfileState {
               ),
               Positioned(
                 bottom: info == null
-                    ? userStore!.userData!.ratingStatistic!.status != "noStatus"
+                    ? userStore!.userData!.ratingStatistic!.status != 3
                         ? 85.0
                         : 67.0
-                    : info.ratingStatistic!.status != "noStatus"
+                    : info.ratingStatistic!.status != 3
                         ? 85.0
                         : 67.0,
                 left: 15.0,
@@ -114,8 +116,8 @@ extension CustomAppBar on UserProfileState {
                 : "${info.firstName} ${info.lastName}",
             snapshot.data!.appBarPosition,
             info == null
-                ? userStore!.userData!.ratingStatistic?.status.toString() ?? "noStatus"
-                : info.ratingStatistic?.status.toString() ?? "noStatus",
+                ? userStore!.userData!.ratingStatistic?.status ?? 3
+                : info.ratingStatistic?.status ?? 3,
               snapshot.data!.width,
           ),
         ),

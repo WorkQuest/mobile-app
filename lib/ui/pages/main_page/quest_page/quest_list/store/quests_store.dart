@@ -35,8 +35,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   Map<int, List<int>> skillFilters = {};
 
-  ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
-      ObservableMap.of({});
+  ObservableMap<int, ObservableList<bool>> selectedSkillFilters = ObservableMap.of({});
 
   @observable
   String sort = "sort[createdAt]=desc";
@@ -193,9 +192,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   void setSearchWord(String value) {
-    role == UserRole.Worker
-        ? searchResultList.clear()
-        : searchWorkersList.clear();
+    role == UserRole.Worker ? searchResultList.clear() : searchWorkersList.clear();
     offset = 0;
     searchWord = value.trim();
     if (debounce != null) {
@@ -251,8 +248,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getQuests(bool newList) async {
     try {
-      this.onLoading();
       if (newList) {
+        this.onLoading();
         this.offset = 0;
         questsList.clear();
       }
@@ -281,8 +278,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getWorkers(bool newList) async {
     try {
-      this.onLoading();
       if (newList) {
+        this.onLoading();
         workersList.clear();
         offsetWorkers = 0;
       }

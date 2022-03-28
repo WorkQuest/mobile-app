@@ -541,6 +541,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
           _controllerKnowledge!.getListMap(), context)) return;
       if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
         return;
+
       if (pageStore.userData.additionalInfo?.secondMobileNumber?.phone == "")
         pageStore.userData.additionalInfo?.secondMobileNumber = null;
       pageStore.userData.additionalInfo?.educations =
@@ -551,6 +552,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
       pageStore.userData.locationPlaceName = pageStore.address;
       pageStore.userData.priority = profile!.userData!.priority;
       pageStore.userData.workplace = profile!.valueToWorkplace();
+
       if (!profile!.isLoading)
         pageStore.userData.userSpecializations =
             _controller!.getSkillAndSpecialization();

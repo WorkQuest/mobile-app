@@ -99,6 +99,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
       );
       if (bearerToken.status == 0) {
         this.onError("unconfirmed");
+        print('errrorrr');
         return;
       }
       await Storage.writeRefreshToken(bearerToken.refresh);
@@ -113,7 +114,8 @@ abstract class _SignInStore extends IStore<bool> with Store {
       // await getIt.get<ProfileMeStore>().getProfileMe();
       // await signInWallet();
       this.onSuccess(true);
-    } catch (e) {
+    } catch (e, trace) {
+      print('e: $e\ntrace: $trace');
       error = e.toString();
       this.onError(e.toString());
     }

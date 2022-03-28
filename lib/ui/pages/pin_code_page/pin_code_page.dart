@@ -212,20 +212,12 @@ class PasswordField extends StatefulWidget {
 class _PasswordFieldState extends State<PasswordField> {
   @override
   Widget build(BuildContext context) {
-    final add = widget.pinCode.length != 4;
-    if (add) {
-      widget.animationController!
-          .forward()
-          .then((value) => widget.animationController!.reverse());
-    }
     return AnimatedBuilder(
       animation: widget.animationController!,
       builder: (context, child) {
         final sineValue = sin(4 * 2 * pi * widget.animationController!.value);
         return Transform.translate(
-          offset: add
-              ? Offset(0, -2.5 * widget.animationController!.value)
-              : Offset(sineValue * 10, 0),
+          offset: Offset(sineValue * 10, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

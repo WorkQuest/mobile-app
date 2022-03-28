@@ -33,9 +33,9 @@ void main() async {
   //_initialisePushNotification();
   //init get_it
   injectDependencies(env: Environment.test);
-  await Firebase.initializeApp().then(
-    (value) => _initialisePushNotification(),
-  );
+  // await Firebase.initializeApp().then(
+  //   (value) => _initialisePushNotification(),
+  // );
 
   await EasyLocalization.ensureInitialized();
 

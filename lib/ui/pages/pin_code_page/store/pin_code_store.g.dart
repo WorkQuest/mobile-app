@@ -54,36 +54,6 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
     });
   }
 
-  final _$startSwitchAtom = Atom(name: 'PinCodeStoreBase.startSwitch');
-
-  @override
-  bool get startSwitch {
-    _$startSwitchAtom.reportRead();
-    return super.startSwitch;
-  }
-
-  @override
-  set startSwitch(bool value) {
-    _$startSwitchAtom.reportWrite(value, super.startSwitch, () {
-      super.startSwitch = value;
-    });
-  }
-
-  final _$startAnimationAtom = Atom(name: 'PinCodeStoreBase.startAnimation');
-
-  @override
-  bool get startAnimation {
-    _$startAnimationAtom.reportRead();
-    return super.startAnimation;
-  }
-
-  @override
-  set startAnimation(bool value) {
-    _$startAnimationAtom.reportWrite(value, super.startAnimation, () {
-      super.startAnimation = value;
-    });
-  }
-
   final _$statePinAtom = Atom(name: '_PinCodeStore.statePin');
 
   @override
@@ -111,6 +81,36 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
   set newPinCode(String value) {
     _$newPinCodeAtom.reportWrite(value, super.newPinCode, () {
       super.newPinCode = value;
+    });
+  }
+
+  final _$startSwitchAtom = Atom(name: '_PinCodeStore.startSwitch');
+
+  @override
+  bool get startSwitch {
+    _$startSwitchAtom.reportRead();
+    return super.startSwitch;
+  }
+
+  @override
+  set startSwitch(bool value) {
+    _$startSwitchAtom.reportWrite(value, super.startSwitch, () {
+      super.startSwitch = value;
+    });
+  }
+
+  final _$startAnimationAtom = Atom(name: '_PinCodeStore.startAnimation');
+
+  @override
+  bool get startAnimation {
+    _$startAnimationAtom.reportRead();
+    return super.startAnimation;
+  }
+
+  @override
+  set startAnimation(bool value) {
+    _$startAnimationAtom.reportWrite(value, super.startAnimation, () {
+      super.startAnimation = value;
     });
   }
 
@@ -182,6 +182,8 @@ pin: ${pin},
 attempts: ${attempts},
 statePin: ${statePin},
 newPinCode: ${newPinCode},
+startSwitch: ${startSwitch},
+startAnimation: ${startAnimation},
 canCheckBiometrics: ${canCheckBiometrics}
     ''';
   }

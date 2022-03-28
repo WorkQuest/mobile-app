@@ -48,6 +48,14 @@ class UserProfileState<T extends UserProfile> extends State<T>
   late UserRole role;
   late bool isVerify;
 
+
+  @override
+  void dispose() {
+    _streamController.close();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
 

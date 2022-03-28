@@ -178,60 +178,54 @@ class SignInPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Observer(
-                        builder: (context) {
-                          return ElevatedButton(
-                            onPressed: signInStore.canSignIn
-                                ? () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      await signInStore.signIn();
-                                      if (signInStore.isSuccess)
-                                        await profile.getProfileMe();
-                                      else {
-                                        signInStore.onSuccess(false);
-                                        _errorMessage(
-                                            context, signInStore.error);
-                                        return;
-                                      }
-                                      if (profile.error.isEmpty)
-                                        await signInStore.signInWallet();
-                                      else {
-                                        _errorMessage(context, profile.error);
-                                        return;
-                                      }
-                                      if (signInStore.isSuccess &&
-                                          signInStore.error.isEmpty) {
-                                        Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          PinCodePage.routeName,
-                                          (_) => false,
-                                        );
-                                      } else {
-                                        // signInStore.onSuccess(false);
-                                        _errorMessage(
-                                            context, signInStore.error);
-                                        if (signInStore.errorMessage ==
-                                            "unconfirmed") {
-                                          print("error");
-                                          Navigator.pushNamed(
-                                              context, ConfirmEmail.routeName,
-                                              arguments:
-                                                  signInStore.getUsername());
-                                        }
+                    child: Observer(
+                      builder: (context) {
+                        return LoginButton(
+                          onTap: signInStore.canSignIn
+                              ? signInStore.isLoading ? () {} : () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    await signInStore.signIn();
+                                    if (signInStore.isSuccess)
+                                      await profile.getProfileMe();
+                                    else {
+                                      signInStore.onSuccess(false);
+                                      _errorMessage(
+                                          context, signInStore.error);
+                                      return;
+                                    }
+                                    if (profile.error.isEmpty)
+                                      await signInStore.signInWallet();
+                                    else {
+                                      _errorMessage(context, profile.error);
+                                      return;
+                                    }
+                                    if (signInStore.isSuccess &&
+                                        signInStore.error.isEmpty) {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        PinCodePage.routeName,
+                                        (_) => false,
+                                      );
+                                    } else {
+                                      // signInStore.onSuccess(false);
+                                      _errorMessage(
+                                          context, signInStore.error);
+                                      if (signInStore.errorMessage ==
+                                          "unconfirmed") {
+                                        print("error");
+                                        Navigator.pushNamed(
+                                            context, ConfirmEmail.routeName,
+                                            arguments:
+                                                signInStore.getUsername());
                                       }
                                     }
                                   }
-                                : null,
-                            child: signInStore.isLoading
-                                ? CircularProgressIndicator.adaptive()
-                                : Text(
-                                    "signIn.login".tr(),
-                                  ),
-                          );
-                        },
-                      ),
+                                }
+                              : null,
+                          title: "signIn.login".tr(),
+                          enabled: signInStore.isLoading,
+                        );
+                      },
                     ),
                   ),
                   Padding(

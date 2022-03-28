@@ -257,7 +257,6 @@ class RatingStatistic {
         );
 
   factory RatingStatistic.fromJson(Map<String, dynamic> json) {
-    print('json["status"] -> ${json["status"].runtimeType}');
     return RatingStatistic(
       id: json["id"],
       userId: json["userId"],

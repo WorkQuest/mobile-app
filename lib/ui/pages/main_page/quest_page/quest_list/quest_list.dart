@@ -1,4 +1,6 @@
 import 'package:app/enums.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
@@ -293,6 +295,16 @@ class _QuestListState extends State<QuestList> {
     );
   }
 
+  Future _markItem(dynamic object) async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (object is BaseQuestResponse) {
+      object.showAnimation = false;
+    }
+    if (object is ProfileMeResponse) {
+      object.showAnimation = false;
+    }
+  }
+
   void _scrollListener() {
     if (controller!.position.extentAfter < 500) {
       if (questsStore != null) {
@@ -307,5 +319,59 @@ class _QuestListState extends State<QuestList> {
               : questsStore!.getWorkers(false);
       }
     }
+  }
+}
+
+class _AnimationWorkersQuestsItems extends StatefulWidget {
+  final Widget child;
+  final int index;
+  final bool enabled;
+
+  const _AnimationWorkersQuestsItems({
+    Key? key,
+    required this.child,
+    this.enabled = false,
+    this.index = 0,
+  }) : super(key: key);
+
+  @override
+  _AnimationWorkersQuestsItemsState createState() => _AnimationWorkersQuestsItemsState();
+}
+
+class _AnimationWorkersQuestsItemsState extends State<_AnimationWorkersQuestsItems>
+    with TickerProviderStateMixin {
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 550));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.enabled) {
+      _animationController.forward();
+    }
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (_, child) {
+        return Transform.translate(
+          offset: Offset(25 - (25 * _animationController.value), 0),
+          child: Opacity(
+            opacity: 0.1 + 0.9 * _animationController.value,
+            child: child,
+          ),
+        );
+      },
+      child: widget.child,
+    );
   }
 }

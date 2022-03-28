@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
@@ -94,37 +96,45 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         ),
                         alignment: Alignment.centerLeft,
                         child: Observer(
-                          builder: (_) => DropdownButtonHideUnderline(
-                            child: DropdownButton(
-                              isExpanded: true,
-                              value: store.priority,
-                              onChanged: (String? value) {
-                                store.changedPriority(value!);
-                              },
-                              items: store.priorityList
-                                  .map<DropdownMenuItem<String>>(
-                                (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: new Text(value),
-                                  );
-                                },
-                              ).toList(),
-                              icon: Icon(
-                                Icons.arrow_drop_down,
-                                size: 30,
-                                color: Colors.blueAccent,
-                              ),
-                              hint: Text(
-                                'mining.choose'.tr(),
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
+                          builder: (_) => Platform.isIOS
+                              ? dropDownWithModalSheep(
+                                  value: store.priority,
+                                  children: store.priorityList,
+                                  onPressed: (value) {
+                                    store.changedPriority(value);
+                                  },
+                                )
+                              : DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    value: store.priority,
+                                    onChanged: (String? value) {
+                                      store.changedPriority(value!);
+                                    },
+                                    items:
+                                        store.priorityList.map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: new Text(value),
+                                        );
+                                      },
+                                    ).toList(),
+                                    icon: Icon(
+                                      Icons.arrow_drop_down,
+                                      size: 30,
+                                      color: Colors.blueAccent,
+                                    ),
+                                    hint: Text(
+                                      'mining.choose'.tr(),
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
                         ),
                       ),
                     ),
@@ -192,36 +202,43 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         ),
                         alignment: Alignment.centerLeft,
                         child: Observer(
-                          builder: (_) => DropdownButtonHideUnderline(
-                            child: DropdownButton(
-                              isExpanded: true,
-                              value: store.employment,
-                              onChanged: (String? value) {
-                                store.changedEmployment(value!);
-                              },
-                              items: store.employmentList
-                                  .map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: new Text(value),
-                                );
-                              }).toList(),
-                              icon: Icon(
-                                Icons.arrow_drop_down,
-                                size: 30,
-                                color: Colors.blueAccent,
-                              ),
-                              hint: Text(
-                                'mining.choose'.tr(),
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
+                          builder: (_) => Platform.isIOS
+                              ? dropDownWithModalSheep(
+                                  value: store.employment,
+                                  children: store.employmentList,
+                                  onPressed: (value) {
+                                    store.changedEmployment(value);
+                                  },
+                                )
+                              : DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    value: store.employment,
+                                    onChanged: (String? value) {
+                                      store.changedEmployment(value!);
+                                    },
+                                    items: store.employmentList
+                                        .map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: new Text(value),
+                                      );
+                                    }).toList(),
+                                    icon: Icon(
+                                      Icons.arrow_drop_down,
+                                      size: 30,
+                                      color: Colors.blueAccent,
+                                    ),
+                                    hint: Text(
+                                      'mining.choose'.tr(),
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
                         ),
                       ),
                     ),
@@ -238,36 +255,43 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         ),
                         alignment: Alignment.centerLeft,
                         child: Observer(
-                          builder: (_) => DropdownButtonHideUnderline(
-                            child: DropdownButton(
-                              isExpanded: true,
-                              value: store.workplace,
-                              onChanged: (String? value) {
-                                store.changedDistantWork(value!);
-                              },
-                              items: store.distantWorkList
-                                  .map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: new Text(value),
-                                );
-                              }).toList(),
-                              icon: Icon(
-                                Icons.arrow_drop_down,
-                                size: 30,
-                                color: Colors.blueAccent,
-                              ),
-                              hint: Text(
-                                'mining.choose'.tr(),
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
+                          builder: (_) => Platform.isIOS
+                              ? dropDownWithModalSheep(
+                                  value: store.workplace,
+                                  children: store.distantWorkList,
+                                  onPressed: (value) {
+                                    store.changedDistantWork(value);
+                                  },
+                                )
+                              : DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    value: store.workplace,
+                                    onChanged: (String? value) {
+                                      store.changedDistantWork(value!);
+                                    },
+                                    items: store.distantWorkList
+                                        .map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: new Text(value),
+                                      );
+                                    }).toList(),
+                                    icon: Icon(
+                                      Icons.arrow_drop_down,
+                                      size: 30,
+                                      color: Colors.blueAccent,
+                                    ),
+                                    hint: Text(
+                                      'mining.choose'.tr(),
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
                         ),
                       ),
                     ),
@@ -376,8 +400,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   _controller!.getSkillAndSpecialization();
                               if (isEdit) {
                                 if (store.canSubmitEditQuest) {
-                                  if (_formKey.currentState?.validate() ??
-                                      false)
+                                  if (_formKey.currentState?.validate() ?? false)
                                     await store.createQuest(
                                       isEdit: true,
                                       questId: widget.questInfo!.id,
@@ -394,9 +417,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             child: store.isLoading
                                 ? CircularProgressIndicator.adaptive()
                                 : Text(
-                                    isEdit
-                                        ? "Edit Quest"
-                                        : 'quests.createAQuest'.tr(),
+                                    isEdit ? "Edit Quest" : 'quests.createAQuest'.tr(),
                                     style: TextStyle(
                                       color: Colors.white,
                                     ),
@@ -436,18 +457,67 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
         ],
       );
 
-  ///Show Modal Sheet Function
-  modalBottomSheet(Widget child) => showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(
-            20.0,
+  dropDownWithModalSheep({
+    required String value,
+    required List<String> children,
+    required Function(String) onPressed,
+  }) {
+    return CupertinoButton(
+      child: Row(
+        children: [
+          Text(
+            value,
+            style: TextStyle(color: Colors.black87),
           ),
-        ),
+          Spacer(),
+          Icon(
+            Icons.arrow_drop_down,
+            size: 30,
+            color: Colors.blueAccent,
+          )
+        ],
       ),
-      context: context,
-      builder: (context) {
-        return child;
-      });
+      padding: EdgeInsets.zero,
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
+          ),
+          builder: (BuildContext context) {
+            var changedEmployment = value;
+            return Container(
+              height: 150.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: CupertinoPicker(
+                      scrollController: FixedExtentScrollController(
+                          initialItem: children.indexOf(value)),
+                      itemExtent: 32.0,
+                      onSelectedItemChanged: (int index) {
+                        changedEmployment = children[index];
+                      },
+                      children: children.map((e) => Center(child: Text(e))).toList(),
+                    ),
+                  ),
+                  CupertinoButton(
+                    child: Text("OK"),
+                    onPressed: () {
+                      onPressed.call(changedEmployment);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 }
