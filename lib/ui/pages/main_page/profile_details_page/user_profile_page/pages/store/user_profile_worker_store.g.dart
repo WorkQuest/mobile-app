@@ -24,8 +24,62 @@ mixin _$UserProfileWorkerStore on _UserProfileWorkerStore, Store {
     });
   }
 
+  final _$expandedSkillsAtom =
+      Atom(name: '_UserProfileWorkerStore.expandedSkills');
+
+  @override
+  bool get expandedSkills {
+    _$expandedSkillsAtom.reportRead();
+    return super.expandedSkills;
+  }
+
+  @override
+  set expandedSkills(bool value) {
+    _$expandedSkillsAtom.reportWrite(value, super.expandedSkills, () {
+      super.expandedSkills = value;
+    });
+  }
+
+  final _$expandedDescriptionAtom =
+      Atom(name: '_UserProfileWorkerStore.expandedDescription');
+
+  @override
+  bool get expandedDescription {
+    _$expandedDescriptionAtom.reportRead();
+    return super.expandedDescription;
+  }
+
+  @override
+  set expandedDescription(bool value) {
+    _$expandedDescriptionAtom.reportWrite(value, super.expandedDescription, () {
+      super.expandedDescription = value;
+    });
+  }
+
   final _$_UserProfileWorkerStoreActionController =
       ActionController(name: '_UserProfileWorkerStore');
+
+  @override
+  dynamic setExpandedSkills(bool value) {
+    final _$actionInfo = _$_UserProfileWorkerStoreActionController.startAction(
+        name: '_UserProfileWorkerStore.setExpandedSkills');
+    try {
+      return super.setExpandedSkills(value);
+    } finally {
+      _$_UserProfileWorkerStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setExpandedDescription(bool value) {
+    final _$actionInfo = _$_UserProfileWorkerStoreActionController.startAction(
+        name: '_UserProfileWorkerStore.setExpandedDescription');
+    try {
+      return super.setExpandedDescription(value);
+    } finally {
+      _$_UserProfileWorkerStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   List<String> parser(List<String> skills) {
@@ -41,7 +95,9 @@ mixin _$UserProfileWorkerStore on _UserProfileWorkerStore, Store {
   @override
   String toString() {
     return '''
-allSpices: ${allSpices}
+allSpices: ${allSpices},
+expandedSkills: ${expandedSkills},
+expandedDescription: ${expandedDescription}
     ''';
   }
 }

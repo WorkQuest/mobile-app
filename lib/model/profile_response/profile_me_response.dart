@@ -54,6 +54,7 @@ class ProfileMeResponse with ClusterItem {
   RaiseView? raiseView;
   String? walletAddress;
   bool? isTotpActive;
+  bool showAnimation = true;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(

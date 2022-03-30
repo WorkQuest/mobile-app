@@ -289,8 +289,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getQuests(bool newList) async {
     try {
-      this.onLoading();
       if (newList) {
+        this.onLoading();
         this.offset = 0;
         questsList.clear();
       }
@@ -320,8 +320,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getWorkers(bool newList) async {
     try {
-      this.onLoading();
       if (newList) {
+        this.onLoading();
         workersList.clear();
         offsetWorkers = 0;
       }

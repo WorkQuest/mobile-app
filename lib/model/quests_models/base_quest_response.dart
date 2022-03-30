@@ -60,6 +60,7 @@ class BaseQuestResponse with ClusterItem {
   Responded? responded;
   YourReview? yourReview;
   QuestChat? questChat;
+  bool showAnimation = true;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(

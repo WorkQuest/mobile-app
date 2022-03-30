@@ -5,6 +5,7 @@ import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
@@ -52,7 +53,7 @@ class SignInPage extends StatelessWidget {
               bottom: false,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   AutofillGroup(
                     child: Expanded(
@@ -71,8 +72,7 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         child: Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
+                          padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,60 +178,54 @@ class SignInPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Observer(
-                        builder: (context) {
-                          return ElevatedButton(
-                            onPressed: signInStore.canSignIn
-                                ? () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      await signInStore.signIn();
-                                      if (signInStore.isSuccess)
-                                        await profile.getProfileMe();
-                                      else {
-                                        signInStore.onSuccess(false);
-                                        _errorMessage(
-                                            context, signInStore.error);
-                                        return;
-                                      }
-                                      if (profile.error.isEmpty)
-                                        await signInStore.signInWallet();
-                                      else {
-                                        _errorMessage(context, profile.error);
-                                        return;
-                                      }
-                                      if (signInStore.isSuccess &&
-                                          signInStore.error.isEmpty) {
-                                        Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          PinCodePage.routeName,
-                                          (_) => false,
-                                        );
-                                      } else {
-                                        // signInStore.onSuccess(false);
-                                        _errorMessage(
-                                            context, signInStore.error);
-                                        if (signInStore.errorMessage ==
-                                            "unconfirmed") {
-                                          print("error");
-                                          Navigator.pushNamed(
-                                              context, ConfirmEmail.routeName,
-                                              arguments:
-                                                  signInStore.getUsername());
-                                        }
+                    child: Observer(
+                      builder: (context) {
+                        return LoginButton(
+                          onTap: signInStore.canSignIn
+                              ? signInStore.isLoading ? () {} : () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    await signInStore.signIn();
+                                    if (signInStore.isSuccess)
+                                      await profile.getProfileMe();
+                                    else {
+                                      signInStore.onSuccess(false);
+                                      _errorMessage(
+                                          context, signInStore.error);
+                                      return;
+                                    }
+                                    if (profile.error.isEmpty)
+                                      await signInStore.signInWallet();
+                                    else {
+                                      _errorMessage(context, profile.error);
+                                      return;
+                                    }
+                                    if (signInStore.isSuccess &&
+                                        signInStore.error.isEmpty) {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        PinCodePage.routeName,
+                                        (_) => false,
+                                      );
+                                    } else {
+                                      // signInStore.onSuccess(false);
+                                      _errorMessage(
+                                          context, signInStore.error);
+                                      if (signInStore.errorMessage ==
+                                          "unconfirmed") {
+                                        print("error");
+                                        Navigator.pushNamed(
+                                            context, ConfirmEmail.routeName,
+                                            arguments:
+                                                signInStore.getUsername());
                                       }
                                     }
                                   }
-                                : null,
-                            child: signInStore.isLoading
-                                ? CircularProgressIndicator.adaptive()
-                                : Text(
-                                    "signIn.login".tr(),
-                                  ),
-                          );
-                        },
-                      ),
+                                }
+                              : null,
+                          title: "signIn.login".tr(),
+                          enabled: signInStore.isLoading,
+                        );
+                      },
                     ),
                   ),
                   Padding(
@@ -297,8 +291,7 @@ class SignInPage extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10.0),
                           child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(
-                                  context, SignUpPage.routeName);
+                              Navigator.pushNamed(context, SignUpPage.routeName);
                             },
                             child: Text(
                               "signIn.signUp".tr(),
@@ -440,8 +433,7 @@ class SignInPage extends StatelessWidget {
                 preferredControlTintColor: Colors.white,
                 barCollapsingEnabled: true,
                 entersReaderIfAvailable: false,
-                dismissButtonStyle:
-                    SafariViewControllerDismissButtonStyle.close,
+                dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
               ),
             )
         // } catch (e) {

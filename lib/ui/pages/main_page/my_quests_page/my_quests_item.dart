@@ -42,12 +42,12 @@ class MyQuestsItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: Image.network(
-                    questInfo.user.avatar?.url ??
-                        "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                  child: FadeInImage.assetNetwork(
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
+                    image: questInfo.user.avatar.url,
+                    placeholder: 'assets/white_back.jpeg',
                   ),
                 ),
                 const SizedBox(
