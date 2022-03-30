@@ -25,6 +25,7 @@ class ProfileMeResponse with ClusterItem {
     required this.workplace,
     required this.priority,
     required this.questsStatistic,
+    this.raiseView,
     required this.walletAddress,
     required this.isTotpActive,
     // required this.createdAt,
@@ -50,6 +51,7 @@ class ProfileMeResponse with ClusterItem {
   String? workplace;
   QuestPriority priority;
   QuestsStatistic? questsStatistic;
+  RaiseView? raiseView;
   String? walletAddress;
   bool? isTotpActive;
 
@@ -137,6 +139,7 @@ class ProfileMeResponse with ClusterItem {
       questsStatistic: json["questsStatistic"] == null
           ? null
           : QuestsStatistic.fromJson(json["questsStatistic"]),
+      raiseView: json["raiseView"] == null ? null : RaiseView.fromJson(json["raiseView"]),
       walletAddress: json["wallet"]?["address"],
       isTotpActive: json["totpIsActive"] == null ? false : json["totpIsActive"],
       // createdAt: DateTime.parse(json["createdAt"]),
@@ -310,4 +313,48 @@ class Phone {
         "fullPhone": fullPhone,
         "codeRegion": codeRegion,
       };
+}
+
+class RaiseView {
+  RaiseView({
+    this.id,
+    this.userId,
+    this.status,
+    this.duration,
+    this.type,
+    this.endedAt,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  String? id;
+  String? userId;
+  int? status;
+  int? duration;
+  int? type;
+  DateTime? endedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+
+  factory RaiseView.fromJson(Map<String, dynamic> json) => RaiseView(
+    id: json["id"] == null ? null : json["id"],
+    userId: json["userId"] == null ? null : json["userId"],
+    status: json["status"] == null ? null : json["status"],
+    duration: json["duration"] == null ? null : json["duration"],
+    type: json["type"] == null ? null : json["type"],
+    endedAt: json["endedAt"] == null ? null : DateTime.parse(json["endedAt"]),
+    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id == null ? null : id,
+    "userId": userId == null ? null : userId,
+    "status": status == null ? null : status,
+    "duration": duration == null ? null : duration,
+    "type": type == null ? null : type,
+    "endedAt": endedAt == null ? null : endedAt!.toIso8601String(),
+    "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+    "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
+  };
 }

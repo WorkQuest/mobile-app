@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
@@ -35,11 +36,16 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   Map<int, List<int>> skillFilters = {};
 
-  ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
-      ObservableMap.of({});
+  ObservableMap<int, ObservableList<bool>> selectedSkillFilters = ObservableMap.of({});
 
   @observable
   String sort = "sort[createdAt]=desc";
+
+  @observable
+  String fromPrice = '';
+
+  @observable
+  String toPrice = '';
 
   @observable
   int offset = 0;
@@ -136,7 +142,26 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     selectedSkill.clear();
     employeeRatings.clear();
     sort = "sort[createdAt]=desc";
+    setPrice('', '');
     clearSkillFilters();
+  }
+
+  @action
+  void setPrice(String from, String to) {
+    fromPrice = from;
+    toPrice = to;
+  }
+
+  String getFilterPrice({bool isWorker = false}) {
+    String result = '';
+    if (isWorker) {
+      result += '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+      result += '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+    } else {
+      result += '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+      result += '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+    }
+    return result;
   }
 
   @action
@@ -193,9 +218,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   void setSearchWord(String value) {
-    role == UserRole.Worker
-        ? searchResultList.clear()
-        : searchWorkersList.clear();
+    role == UserRole.Worker ? searchResultList.clear() : searchWorkersList.clear();
     offset = 0;
     searchWord = value.trim();
     if (debounce != null) {
@@ -220,6 +243,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         this.onLoading();
         debounce = Timer(const Duration(milliseconds: 300), () async {
           searchResultList.addAll(await _apiProvider.getQuests(
+            price: getFilterPrice(),
             searchWord: searchWord,
             offset: offset,
             statuses: [0, 1],
@@ -247,6 +271,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       debounce = Timer(const Duration(milliseconds: 300), () async {
         searchWorkersList.addAll(await _apiProvider.getWorkers(
           searchWord: this.searchWord,
+          price: getFilterPrice(isWorker: true),
           offset: this.offset,
           sort: this.sort,
           limit: this.limit,
@@ -271,6 +296,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       }
       if (this.offset == questsList.length) {
         questsList.addAll(await _apiProvider.getQuests(
+          price: getFilterPrice(),
           statuses: [0, 1],
           employment: employments,
           workplace: workplaces,
@@ -300,8 +326,14 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         offsetWorkers = 0;
       }
       if (offsetWorkers == workersList.length) {
+        log('sort: $sort');
+        log('workplaces: $workplaces');
+        log('priorities: $priorities');
+        log('employeeRatings: $employeeRatings');
+        log('selectedSkill: $selectedSkill');
         workersList.addAll(await _apiProvider.getWorkers(
           sort: this.sort,
+          price: getFilterPrice(isWorker: true),
           offset: this.offsetWorkers,
           limit: this.limit,
           workplace: workplaces,

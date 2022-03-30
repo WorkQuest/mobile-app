@@ -26,7 +26,10 @@ class MyQuestsItem extends StatelessWidget {
         );
       },
       child: Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+        ),
         margin: const EdgeInsets.only(
           top: 10,
         ),
@@ -52,9 +55,7 @@ class MyQuestsItem extends StatelessWidget {
                 ),
                 Expanded(
                   child: Text(
-                    questInfo.user.firstName +
-                        " " +
-                        questInfo.user.lastName,
+                    questInfo.user.firstName + " " + questInfo.user.lastName,
                     style: TextStyle(fontSize: 16),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -63,8 +64,7 @@ class MyQuestsItem extends StatelessWidget {
                   if (questInfo.responded!.workerId ==
                               context.read<ProfileMeStore>().userData!.id &&
                           (questInfo.status == 0 || questInfo.status == 4) ||
-                      questInfo.invited != null &&
-                          questInfo.invited?.status == 1)
+                      questInfo.invited != null && questInfo.invited?.status == 1)
                     Row(
                       children: [
                         const SizedBox(
@@ -91,8 +91,7 @@ class MyQuestsItem extends StatelessWidget {
             const SizedBox(
               height: 17.5,
             ),
-            if (questInfo.userId !=
-                    context.read<ProfileMeStore>().userData!.id &&
+            if (questInfo.userId != context.read<ProfileMeStore>().userData!.id &&
                 questInfo.status != 5 &&
                 questInfo.status != 6)
               Column(

@@ -23,14 +23,13 @@ List<_CoinItem> _coins = [
 ];
 
 List<_WalletItem> _wallets = [
-  _WalletItem(
-      "assets/coinpaymebts.svg", "Сoinpaymebts", TYPE_WALLET.Coinpaymebts),
+  _WalletItem("assets/coinpaymebts.svg", "Сoinpaymebts", TYPE_WALLET.Coinpaymebts),
 ];
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage(this.questId);
+  const PaymentPage(this.questId, {Key? key}) : super(key: key);
 
-  final String questId;
+  final String? questId;
 
   static const String routeName = "/paymentPage";
 
@@ -38,8 +37,7 @@ class PaymentPage extends StatefulWidget {
   _PaymentPageState createState() => _PaymentPageState();
 }
 
-class _PaymentPageState extends State<PaymentPage>
-    with SingleTickerProviderStateMixin {
+class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late RaiseViewStore raiseViewStore;
 
@@ -51,6 +49,7 @@ class _PaymentPageState extends State<PaymentPage>
 
   bool get _selectedWallet => _currentWallet != null;
 
+  @override
   void initState() {
     super.initState();
     raiseViewStore = context.read<RaiseViewStore>();
@@ -61,11 +60,30 @@ class _PaymentPageState extends State<PaymentPage>
   }
 
   @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CupertinoNavigationBar(
-        automaticallyImplyLeading: true,
-        middle: Text("modals.payment".tr()),
+      appBar: AppBar(
+        title: Text(
+          "modals.payment".tr(),
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+        centerTitle: true,
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColor.enabledButton,
+          ),
+        ),
       ),
       body: CustomScrollView(
         physics: NeverScrollableScrollPhysics(),
@@ -127,7 +145,7 @@ class _PaymentPageState extends State<PaymentPage>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Crypto address"),
+              Text("Choose currency"),
               _divider,
               GestureDetector(
                 onTap: _chooseCoin,
@@ -139,8 +157,7 @@ class _PaymentPageState extends State<PaymentPage>
                     vertical: 12.5,
                   ),
                   decoration: BoxDecoration(
-                    color:
-                        _selectedCoin ? Colors.white : AppColor.disabledButton,
+                    color: _selectedCoin ? Colors.white : AppColor.disabledButton,
                     borderRadius: BorderRadius.circular(6.0),
                     border: Border.all(
                       color: AppColor.disabledButton,
@@ -170,14 +187,10 @@ class _PaymentPageState extends State<PaymentPage>
                           ),
                         ),
                       Text(
-                        _selectedCoin
-                            ? _currentCoin!.title
-                            : 'wallet.enterCoin'.tr(),
+                        _selectedCoin ? _currentCoin!.title : 'wallet.enterCoin'.tr(),
                         style: TextStyle(
                           fontSize: 16,
-                          color: _selectedCoin
-                              ? Colors.black
-                              : AppColor.disabledText,
+                          color: _selectedCoin ? Colors.black : AppColor.disabledText,
                         ),
                       ),
                       const Spacer(),
@@ -206,9 +219,7 @@ class _PaymentPageState extends State<PaymentPage>
                     vertical: 12.5,
                   ),
                   decoration: BoxDecoration(
-                    color: _selectedWallet
-                        ? Colors.white
-                        : AppColor.disabledButton,
+                    color: _selectedWallet ? Colors.white : AppColor.disabledButton,
                     borderRadius: BorderRadius.circular(6.0),
                     border: Border.all(
                       color: AppColor.disabledButton,
@@ -238,14 +249,10 @@ class _PaymentPageState extends State<PaymentPage>
                           ),
                         ),
                       Text(
-                        _selectedWallet
-                            ? _currentWallet!.title
-                            : 'wallet.enterCoin'.tr(),
+                        _selectedWallet ? _currentWallet!.title : 'wallet.enterCoin'.tr(),
                         style: TextStyle(
                           fontSize: 16,
-                          color: _selectedWallet
-                              ? Colors.black
-                              : AppColor.disabledText,
+                          color: _selectedWallet ? Colors.black : AppColor.disabledText,
                         ),
                       ),
                       const Spacer(),
@@ -261,10 +268,10 @@ class _PaymentPageState extends State<PaymentPage>
               ElevatedButton(
                 onPressed: raiseViewStore.canSubmit
                     ? () async {
-                        if (widget.questId.isEmpty)
+                        if (widget.questId!.isEmpty)
                           await raiseViewStore.raiseProfile();
                         else
-                          await raiseViewStore.raiseQuest(widget.questId);
+                          await raiseViewStore.raiseQuest(widget.questId!);
 
                         if (raiseViewStore.isSuccess) {
                           Navigator.pop(context);
@@ -300,8 +307,7 @@ class _PaymentPageState extends State<PaymentPage>
             color: Colors.white,
           ),
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: SingleChildScrollView(
               child: DismissKeyboard(
                 child: Column(
@@ -428,8 +434,7 @@ class _PaymentPageState extends State<PaymentPage>
             color: Colors.white,
           ),
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: SingleChildScrollView(
               child: DismissKeyboard(
                 child: Column(

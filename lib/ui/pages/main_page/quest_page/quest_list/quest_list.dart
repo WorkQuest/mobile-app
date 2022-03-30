@@ -33,8 +33,7 @@ class _QuestListState extends State<QuestList> {
 
   FilterQuestsStore? filterQuestsStore;
 
-  final QuestItemPriorityType questItemPriorityType =
-      QuestItemPriorityType.Starred;
+  final QuestItemPriorityType questItemPriorityType = QuestItemPriorityType.Starred;
   final scrollKey = new GlobalKey();
 
   @override
@@ -159,9 +158,9 @@ class _QuestListState extends State<QuestList> {
                   padding: const EdgeInsets.all(20.0),
                   child: OutlinedButton(
                     onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(FilterQuestsPage.routeName,
-                              arguments: filterQuestsStore!.skillFilters);
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                          FilterQuestsPage.routeName,
+                          arguments: filterQuestsStore!.skillFilters);
                       // questsStore!.offset = 0;
                       // questsStore!.getQuests(true);
                     },
@@ -192,14 +191,19 @@ class _QuestListState extends State<QuestList> {
                       ? Center(
                           child: Column(
                             children: [
+                              const SizedBox(
+                                height: 50,
+                              ),
                               SvgPicture.asset(
                                 "assets/empty_quest_icon.svg",
                               ),
+                              const SizedBox(
+                                height: 5,
+                              ),
                               Text(
-                                profileMeStore!.userData!.role ==
-                                        UserRole.Worker
+                                profileMeStore!.userData!.role == UserRole.Worker
                                     ? "quests.noQuest".tr()
-                                    : "Worker not wound",
+                                    : "Worker not found",
                               ),
                             ],
                           ),
@@ -224,17 +228,29 @@ class _QuestListState extends State<QuestList> {
                           itemBuilder: (_, index) {
                             return Observer(builder: (_) {
                               if (role == UserRole.Worker)
-                                return MyQuestsItem(
-                                  questsStore!.searchWord.isNotEmpty
-                                      ? questsStore!.searchResultList[index]
-                                      : questsStore!.questsList[index],
-                                  itemType: this.questItemPriorityType,
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF7F8FA),
+                                  ),
+                                  child: MyQuestsItem(
+                                    questsStore!.searchWord.isNotEmpty
+                                        ? questsStore!.searchResultList[index]
+                                        : questsStore!.questsList[index],
+                                    itemType: this.questItemPriorityType,
+                                  ),
                                 );
-                              return WorkersItem(
-                                questsStore!.searchWord.isNotEmpty
-                                    ? questsStore!.searchWorkersList[index]
-                                    : questsStore!.workersList[index],
-                                questsStore!,
+                              return Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFF7F8FA),
+                                ),
+                                child: WorkersItem(
+                                  questsStore!.searchWord.isNotEmpty
+                                      ? questsStore!.searchWorkersList[index]
+                                      : questsStore!.workersList[index],
+                                  questsStore!,
+                                ),
                               );
                             });
                           },
@@ -259,7 +275,7 @@ class _QuestListState extends State<QuestList> {
 
   Widget _getDivider() {
     return SizedBox(
-      height: 10,
+      height: 6,
       child: Container(
         color: Color(0xFFF7F8FA),
       ),

@@ -225,7 +225,7 @@ class WebSocket {
         }
       }
     } catch (e, trace) {
-      print('web socket e - $e\ntrace - $trace');
+      // print('web socket e - $e\ntrace - $trace');
     }
   }
 

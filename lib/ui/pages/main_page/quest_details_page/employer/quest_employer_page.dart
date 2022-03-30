@@ -615,7 +615,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   ),
                 ),
                 if (respond.worker.ratingStatistic?.status != null)
-                  UserRating(respond.worker.ratingStatistic!.status),
+                  UserRating(respond.worker.ratingStatistic!.status, isWorker: true,),
               ],
             ),
           ),

@@ -34,13 +34,13 @@ class QuestsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) => questsList.isEmpty
-          ? Center(
+    return questsList.isEmpty
+        ? Observer(
+            builder: (_) => Center(
               child: isLoading ? getLoadingBody() : getEmptyBody(context),
-            )
-          : getBody(),
-    );
+            ),
+          )
+        : getBody();
   }
 
   Widget getBody() {

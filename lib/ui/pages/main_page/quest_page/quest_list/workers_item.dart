@@ -4,12 +4,12 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../widgets/user_rating.dart';
 
 class WorkersItem extends StatelessWidget {
-  const WorkersItem(this.workersInfo, this.questsStore,
-      {this.showRating = false});
+  const WorkersItem(this.workersInfo, this.questsStore, {this.showRating = false});
 
   final ProfileMeResponse workersInfo;
   final QuestsStore questsStore;
@@ -25,11 +25,19 @@ class WorkersItem extends StatelessWidget {
         );
       },
       child: Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(
+            color: workersInfo.raiseView != null
+                ? _getColorBorder(workersInfo.raiseView!.type)
+                : Colors.transparent,
+          ),
+          color: Colors.white,
+        ),
         margin: const EdgeInsets.only(
           top: 10,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -64,11 +72,34 @@ class WorkersItem extends StatelessWidget {
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(
                         height: 5,
                       ),
-                      UserRating(workersInfo.ratingStatistic?.status ?? 3),
+                      Row(
+                        children: [
+                          if (workersInfo.raiseView != null &&
+                              workersInfo.raiseView!.status != null &&
+                              workersInfo.raiseView!.status == 1)
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/arrow_raise_icon.svg',
+                                  height: 18,
+                                  width: 18,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                              ],
+                            ),
+                          UserRating(
+                            workersInfo.ratingStatistic?.status ?? 3,
+                            isWorker: true,
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -82,8 +113,7 @@ class WorkersItem extends StatelessWidget {
                       children: [
                         Text(
                           "${workersInfo.ratingStatistic?.averageMark.toStringAsFixed(1) ?? 0.0}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700, fontSize: 23),
+                          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 23),
                         ),
                         const SizedBox(
                           width: 5,
@@ -112,11 +142,12 @@ class WorkersItem extends StatelessWidget {
               height: 5,
             ),
             Text(
-              workersInfo.additionalInfo?.description ??
-                  "modals.noDescription".tr(),
+              workersInfo.additionalInfo?.description ?? "modals.noDescription".tr(),
               style: TextStyle(
                 color: Color(0xFFAAB0B9),
               ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 3,
             ),
             const SizedBox(
               height: 10,
@@ -157,26 +188,22 @@ class WorkersItem extends StatelessWidget {
     );
   }
 
-  // Widget tagStatus(int status) {
-  //   WorkerBadge? badge = Constants.workerRatingTag[status+1];
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-  //     decoration: BoxDecoration(
-  //       color: badge?.color,
-  //       borderRadius: BorderRadius.circular(3),
-  //     ),
-  //     child: Text(
-  //       badge?.title ?? "",
-  //       style: TextStyle(
-  //         color: Colors.white,
-  //         fontSize: 12,
-  //         fontWeight: FontWeight.w500,
-  //       ),
-  //     ),
-  //   );
-  // }
+  Color _getColorBorder(int? type) {
+    switch (type) {
+      case 0:
+        return Color(0xFFF6CF00);
+      case 2:
+        return Color(0xFFBBC0C7);
+      case 3:
+        return Color(0xC3936C);
+      default:
+        return Colors.transparent;
+    }
+  }
 
   Widget tagSkills(List<String> skills) {
+    String skillsLine = '';
+    skills.map((e) => skillsLine += e == skills.last ? e : '$e, ').toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -186,19 +213,15 @@ class WorkersItem extends StatelessWidget {
         const SizedBox(
           height: 5,
         ),
-        Wrap(
-          children: skills
-              .map(
-                (item) => Text(
-                  item == skills.last ? item : item + ",",
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    color: Color(0xFF0083C7),
-                  ),
-                ),
-              )
-              .toList(),
-        ),
+        Text(
+          skillsLine,
+          style: const TextStyle(
+            fontSize: 16.0,
+            color: Color(0xFF0083C7),
+          ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 3,
+        )
       ],
     );
   }

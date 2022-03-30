@@ -34,10 +34,7 @@ class PortfolioWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Map<String, dynamic> arguments = {
-          "index": index,
-          "isProfileYour": isProfileYour
-        };
+        Map<String, dynamic> arguments = {"index": index, "isProfileYour": isProfileYour};
         Navigator.pushNamed(
           context,
           PortfolioDetails.routeName,
@@ -418,7 +415,13 @@ class ReviewsWidget extends StatelessWidget {
 }
 
 ///AppBar Title
-Widget appBarTitle(String name, double padding, int status, double width) {
+Widget appBarTitle(
+  String name,
+  double padding,
+  int status,
+  double width, {
+  bool isWorker = false,
+}) {
   return Container(
     child: AnimatedPadding(
       padding: EdgeInsets.only(left: padding),
@@ -445,11 +448,10 @@ Widget appBarTitle(String name, double padding, int status, double width) {
               bottom: 0.0,
               left: 0.0,
               child: Container(
-                // padding: EdgeInsets.symmetric(
-                //   horizontal: 5.0,
-                //   vertical: 2.0,
-                // ),
-                child: UserRating(status),
+                child: UserRating(
+                  status,
+                  isWorker: isWorker,
+                ),
               ),
             ),
         ],
@@ -544,8 +546,7 @@ Widget employerRating({
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (userId != profile.userData!.id &&
-                        completedQuests != "0") {
+                    if (userId != profile.userData!.id && completedQuests != "0") {
                       // profile.offset = 0;
                       // profile.setUserId(userId);
                       // await profile.getCompletedQuests();
@@ -562,8 +563,7 @@ Widget employerRating({
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: userId != profile.userData!.id &&
-                              completedQuests != "0"
+                      color: userId != profile.userData!.id && completedQuests != "0"
                           ? Color(0xFF00AA5B)
                           : Color(0xFFF7F8FA),
                       fontSize: 12.0,
@@ -682,9 +682,8 @@ Widget workerQuestStats({
               child: Text(
                 thirdLine.tr(),
                 style: TextStyle(
-                  decoration: title == "quests.activeQuests"
-                      ? TextDecoration.underline
-                      : null,
+                  decoration:
+                      title == "quests.activeQuests" ? TextDecoration.underline : null,
                   color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
                 ),

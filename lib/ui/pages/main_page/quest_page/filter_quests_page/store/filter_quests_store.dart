@@ -39,6 +39,15 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
 
   String sort = "";
 
+  String fromPrice = "";
+
+  String toPrice = "";
+
+  setFromPrice(String value) => fromPrice = value;
+
+  setToPrice(String value) => toPrice = value;
+
+
   @observable
   ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
       ObservableMap.of({});
@@ -47,8 +56,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   List<String> sortBy = [
     "quests.filter.sortBy.addedTimeAscending",
     "quests.filter.sortBy.addedTimeDescending",
-    "quests.filter.sortBy.priceAscending",
-    "quests.filter.sortBy.priceDescending",
   ];
 
   @observable
@@ -188,11 +195,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
       return sort = "sort[createdAt]=asc";
     } else if (selectSortBy == "quests.filter.sortBy.addedTimeDescending") {
       return sort = "sort[createdAt]=desc";
-    }
-    if (selectSortBy == "quests.filter.sortBy.priceAscending") {
-      return sort = "sort[price]=asc";
-    } else if (selectSortBy == "quests.filter.sortBy.priceDescending") {
-      return sort = "sort[price]=desc";
     }
     return sort;
   }
@@ -401,8 +403,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   void initSort(String value) {
     if (value == "sort[createdAt]=asc") selectSortBy = sortBy[0];
     if (value == "sort[createdAt]=desc") selectSortBy = sortBy[1];
-    if (value == "sort[price]=asc") selectSortBy = sortBy[2];
-    if (value == "sort[price]=desc") selectSortBy = sortBy[3];
   }
 
   @action

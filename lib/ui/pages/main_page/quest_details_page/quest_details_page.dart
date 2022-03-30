@@ -13,6 +13,8 @@ import 'package:easy_localization/easy_localization.dart';
 import "package:provider/provider.dart";
 import 'package:maps_launcher/maps_launcher.dart';
 
+import '../../../widgets/priority_view.dart';
+
 class QuestDetails extends StatefulWidget {
   static const String routeName = "/QuestDetails";
 
@@ -90,12 +92,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                           setState(() {
                             this.isLoading = true;
                           });
-                          await profile!
-                              .getQuestHolder(widget.questInfo.userId)
-                              .then(
+                          await profile!.getQuestHolder(widget.questInfo.userId).then(
                                 (value) =>
-                                    Navigator.of(context, rootNavigator: true)
-                                        .pushNamed(
+                                    Navigator.of(context, rootNavigator: true).pushNamed(
                                   UserProfile.routeName,
                                   arguments: profile!.questHolder,
                                 ),
@@ -152,8 +151,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                   profile!.parser(widget.questInfo.questSpecializations),
                 ),
                 if (widget.questInfo.assignedWorker != null &&
-                    (widget.questInfo.status == 1 ||
-                        widget.questInfo.status == 5))
+                    (widget.questInfo.status == 1 || widget.questInfo.status == 5))
                   inProgressBy(),
                 const SizedBox(height: 15),
                 GestureDetector(
@@ -186,8 +184,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                   ImageViewerWidget(widget.questInfo.medias, Color(0xFF1D2127)),
                 ],
                 Text(
-                  DateFormat('dd MMMM yyyy, kk:mm')
-                      .format(widget.questInfo.createdAt),
+                  DateFormat('dd MMMM yyyy, kk:mm').format(widget.questInfo.createdAt),
                   style: TextStyle(
                     color: Color(0xFFAAB0B9),
                     fontSize: 12,
@@ -227,8 +224,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                           "assets/marker.svg",
                           width: 22,
                           height: 29,
-                          color: Constants
-                              .priorityColors[widget.questInfo.priority],
+                          color: Constants.priorityColors[widget.questInfo.priority],
                         ),
                         Container(
                           color: Colors.transparent,
@@ -251,8 +247,11 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     SizedBox(
                       width: 5,
                     ),
-                    // if (profile!.userData!.role == UserRole.Employer)
-                    priority(widget.questInfo.priority),
+                    PriorityView(
+                        widget.questInfo.priority != 0
+                            ? widget.questInfo.priority - 1
+                            : 0,
+                        true),
                   ],
                 ),
                 getBody(),
@@ -262,8 +261,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                 if (widget.questInfo.status == 6 &&
                     !profile!.review &&
                     (widget.questInfo.userId == profile!.userData!.id ||
-                        widget.questInfo.assignedWorker?.id ==
-                            profile!.userData!.id))
+                        widget.questInfo.assignedWorker?.id == profile!.userData!.id))
                   Observer(
                     builder: (_) => isLoading
                         ? Center(
@@ -288,8 +286,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                               fixedSize: MaterialStateProperty.all(
                                 Size(double.maxFinite, 43),
                               ),
-                              backgroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
+                              backgroundColor: MaterialStateProperty.resolveWith<Color>(
                                 (Set<MaterialState> states) {
                                   if (states.contains(MaterialState.pressed))
                                     return Theme.of(context)
@@ -309,56 +306,6 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
         ),
       ),
     );
-  }
-
-  Widget priority(int priority) {
-    Widget returnWidget = Container();
-    switch (priority) {
-      case 1:
-        returnWidget = Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFF22CC14).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text(
-            "Fixed delivery",
-            style: TextStyle(
-              color: Color(0xFF22CC14),
-            ),
-          ),
-        );
-        break;
-      case 2:
-        returnWidget = Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFE8D20D).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text(
-            "Short term",
-            style: TextStyle(
-              color: Color(0xFFE8D20D),
-            ),
-          ),
-        );
-        break;
-      case 3:
-        returnWidget = Container(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-          decoration: BoxDecoration(
-            color: Color(0xFFDF3333).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: Text(
-            "priority.urgent".tr(),
-            style: TextStyle(color: Color(0xFFDF3333)),
-          ),
-        );
-        break;
-    }
-    return returnWidget;
   }
 
   Widget inProgressBy() {

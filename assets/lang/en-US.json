@@ -1351,12 +1351,12 @@
     "liquidityMining": "Liquidity mining"
   },
   "raising-views": {
-    "raisingViews": "Increase views",
-    "choosePeriod": "Select period",
+    "raisingViews": "Raising views",
+    "choosePeriod": "Choose period",
     "forOneDay": "For 1 day",
     "forOneWeek": "For 1 week",
     "forOneMonth": "For 1 month",
-    "chooseLevel": "Select level"
+    "chooseLevel": "Choose level"
   },
   "dispute": {
     "statuses": {

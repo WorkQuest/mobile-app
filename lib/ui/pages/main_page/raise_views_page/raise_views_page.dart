@@ -26,11 +26,12 @@ class RaiseViews extends StatelessWidget {
         persistentFooterButtons: [
           ElevatedButton(
             onPressed: () {
+              print('quest: $questId');
               Navigator.of(context, rootNavigator: true)
                   .pushNamed(PaymentPage.routeName, arguments: questId);
             },
             child: Text(
-              "Go to payment",
+              "Go to the payment",
             ),
           ),
         ],

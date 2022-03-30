@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../../../enums.dart';
+
 extension CustomAppBar on UserProfileState {
   Widget sliverAppBar(ProfileMeResponse? info) {
     final mark = info == null
@@ -117,6 +119,9 @@ extension CustomAppBar on UserProfileState {
               ? userStore!.userData!.ratingStatistic?.status ?? 3
               : info.ratingStatistic?.status ?? 3,
           width,
+          isWorker: info == null
+              ? userStore!.userData!.role == UserRole.Employer
+              : info.role == UserRole.Employer
         ),
       ),
     );
