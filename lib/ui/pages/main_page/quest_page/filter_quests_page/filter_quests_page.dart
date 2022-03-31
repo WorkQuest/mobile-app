@@ -2,6 +2,7 @@ import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -54,31 +55,33 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
 
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      persistentFooterButtons: [
-        bottomButtons(),
-      ],
-      appBar: AppBar(
-        title: Text(
-          "quests.filter.btn".tr(),
-          style: TextStyle(
-            fontSize: 17,
-            color: Color(0xFF1D2127),
+    return DismissKeyboard(
+      child: Scaffold(
+        persistentFooterButtons: [
+          bottomButtons(),
+        ],
+        appBar: AppBar(
+          title: Text(
+            "quests.filter.btn".tr(),
+            style: TextStyle(
+              fontSize: 17,
+              color: Color(0xFF1D2127),
+            ),
+          ),
+          centerTitle: true,
+          leading: Row(
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_sharp,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
           ),
         ),
-        centerTitle: true,
-        leading: Row(
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_sharp,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
+        body: getBody(),
       ),
-      body: getBody(),
     );
   }
 

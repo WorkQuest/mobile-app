@@ -64,6 +64,30 @@ enum WQFContractEvents {
   Upgraded,
   WorkQuestCreated
 }
+enum WQPromotionFunctions {
+  ADMIN_ROLE,
+  DEFAULT_ADMIN_ROLE,
+  UPGRADER_ROLE,
+  factory,
+  feeReceiver,
+  getRoleAdmin,
+  grantRole,
+  hasRole,
+  initialize,
+  promote,
+  promoteUser,
+  proxiableUUID,
+  questTariff,
+  renounceRole,
+  revokeRole,
+  setFactory,
+  setQuestTariff,
+  setUserTariff,
+  supportsInterface,
+  upgradeTo,
+  upgradeToAndCall,
+  usersTariff,
+}
 enum TYPE_COINS {
   WUSD, WQT, wBNB, wETH
 }

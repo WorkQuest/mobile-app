@@ -30,7 +30,10 @@ class WorkersItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
             color: workersInfo.raiseView != null
-                ? _getColorBorder(workersInfo.raiseView!.type)
+                ? _getColorBorder(
+                    workersInfo.raiseView!.status,
+                    workersInfo.raiseView!.type,
+                  )
                 : Colors.transparent,
           ),
           color: Colors.white,
@@ -53,7 +56,7 @@ class WorkersItem extends StatelessWidget {
                     width: 61,
                     height: 61,
                     fit: BoxFit.cover,
-                    image: workersInfo.avatar!.url,
+                    image: workersInfo.avatar!.url!,
                     placeholder: 'assets/white_back.jpeg',
                   ),
                 ),
@@ -82,7 +85,7 @@ class WorkersItem extends StatelessWidget {
                         children: [
                           if (workersInfo.raiseView != null &&
                               workersInfo.raiseView!.status != null &&
-                              workersInfo.raiseView!.status == 1)
+                              workersInfo.raiseView!.status == 0)
                             Row(
                               children: [
                                 SvgPicture.asset(
@@ -189,16 +192,20 @@ class WorkersItem extends StatelessWidget {
     );
   }
 
-  Color _getColorBorder(int? type) {
-    switch (type) {
-      case 0:
-        return Color(0xFFF6CF00);
-      case 2:
-        return Color(0xFFBBC0C7);
-      case 3:
-        return Color(0xC3936C);
-      default:
-        return Colors.transparent;
+  Color _getColorBorder(int? status, int? type) {
+    if (status != null && status == 0) {
+      switch (type) {
+        case 0:
+          return Color(0xFFF6CF00);
+        case 2:
+          return Color(0xFFBBC0C7);
+        case 3:
+          return Color(0xC3936C);
+        default:
+          return Colors.transparent;
+      }
+    } else {
+      return Colors.transparent;
     }
   }
 

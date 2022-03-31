@@ -24,8 +24,7 @@ abstract class _NotificationStore extends IStore<bool> with Store {
   BaseQuestResponse? quest;
 
   @observable
-  ObservableList<NotificationElement> listOfNotifications =
-      ObservableList.of([]);
+  ObservableList<NotificationElement> listOfNotifications = ObservableList.of([]);
 
   // @action
   // void changeQuests(dynamic json) {
@@ -67,9 +66,7 @@ abstract class _NotificationStore extends IStore<bool> with Store {
     try {
       if (newList) offset = 0;
       if (offset == listOfNotifications.length) {
-        this.onLoading();
-        final responseData =
-            await _apiProvider.getNotifications(offset: offset);
+        final responseData = await _apiProvider.getNotifications(offset: offset);
         listOfNotifications.addAll(responseData.notifications);
         offset += 10;
         this.onSuccess(true);
@@ -80,12 +77,26 @@ abstract class _NotificationStore extends IStore<bool> with Store {
   }
 
   @action
+  updateNotification() async {
+    try {
+      this.onLoading();
+      offset = 0;
+      listOfNotifications.clear();
+      final responseData = await _apiProvider.getNotifications(offset: 0);
+      listOfNotifications.addAll(responseData.notifications);
+      offset += 10;
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
   Future<void> deleteNotification(String notificationId) async {
     try {
       this.onLoading();
       await _apiProvider.deleteNotification(notificationId: notificationId);
-      listOfNotifications
-          .removeWhere((element) => element.id == notificationId);
+      listOfNotifications.removeWhere((element) => element.id == notificationId);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

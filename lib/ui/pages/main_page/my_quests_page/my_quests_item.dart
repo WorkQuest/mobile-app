@@ -1,5 +1,5 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +15,7 @@ class MyQuestsItem extends StatelessWidget {
   final BaseQuestResponse questInfo;
   final bool isExpanded;
   final QuestItemPriorityType itemType;
+  final String standartImage = 'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class MyQuestsItem extends StatelessWidget {
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
-                    image: questInfo.user.avatar.url,
+                    image: questInfo.user.avatar != null ? questInfo.user.avatar!.url ?? standartImage : standartImage,
                     placeholder: 'assets/white_back.jpeg',
                   ),
                 ),

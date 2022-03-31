@@ -117,7 +117,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               SkillsWidget(
                 skills: store.parser(userStore!.userData!.userSpecializations),
                 isProfileMy: true,
-                isExpanded: store.expandedSkills,
+                isExpanded: store.expandedSkills || userStore!.userData!.userSpecializations.length < 5,
                 onPressed: (bool value) {
                   print('value: $value');
                   store.setExpandedSkills(value);

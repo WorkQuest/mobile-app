@@ -156,7 +156,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     String result = '';
     if (isWorker) {
       result += '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-      result += '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+      result +=
+          '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
     } else {
       result += '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
       result += '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
@@ -231,9 +232,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @computed
   bool get emptySearch =>
-      searchWord.isNotEmpty &&
+      // searchWord.isNotEmpty &&
       searchResultList.isEmpty &&
       searchWorkersList.isEmpty &&
+      questsList.isEmpty &&
       !this.isLoading;
 
   @action

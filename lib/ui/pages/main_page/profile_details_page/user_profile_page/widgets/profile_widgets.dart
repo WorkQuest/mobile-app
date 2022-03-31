@@ -170,12 +170,12 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                       );
                       portfolioStore.clearData();
                       if (widget.role == UserRole.Worker)
-                        portfolioStore.getPortfolio(userId: widget.myId);
+                        portfolioStore.getPortfolio(userId: widget.myId, newList: true);
                       else {
                         userProfileStore.quests.clear();
                         userProfileStore.getQuests(widget.myId, widget.role, true);
                       }
-                      portfolioStore.getReviews(userId: widget.myId);
+                      portfolioStore.getReviews(userId: widget.myId, newList: true);
                     }
                     profile.assignedWorker = null;
                   },
@@ -295,7 +295,7 @@ Widget appBarTitle(String name, double padding, int status, double width) {
           bottom: status != 3 ? 18.0 : 0.0,
           left: 0.0,
           child: Container(
-            // width: width,
+            width: width,
             child: Text(
               name,
               style: TextStyle(

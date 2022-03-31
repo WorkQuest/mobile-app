@@ -208,6 +208,7 @@ class _QuestListState extends State<QuestList> {
                     return Center(
                       child: Column(
                         children: [
+                          const SizedBox(height: 15,),
                           SvgPicture.asset(
                             "assets/empty_quest_icon.svg",
                           ),

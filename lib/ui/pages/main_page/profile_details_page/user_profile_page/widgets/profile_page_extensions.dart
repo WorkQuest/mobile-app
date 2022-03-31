@@ -12,7 +12,9 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../../../../../enums.dart';
 
 extension CustomAppBar on UserProfileState {
+
   Widget sliverAppBar(ProfileMeResponse? info, StreamController<AppBarParams> streamController) {
+    final String standartImage = 'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
     final mark = info == null
         ? userStore!.userData!.ratingStatistic!.averageMark
         : info.ratingStatistic!.averageMark;
@@ -58,11 +60,14 @@ extension CustomAppBar on UserProfileState {
           background: Stack(
             fit: StackFit.expand,
             children: [
-              Image.network(
-                info == null
-                    ? userStore!.userData!.avatar!.url
-                    : info.avatar!.url,
-                fit: BoxFit.cover,
+              Hero(
+                tag: 'trans',
+                child: Image.network(
+                  info == null
+                      ? userStore!.userData!.avatar != null ? userStore!.userData!.avatar!.url ?? standartImage : standartImage
+                      : info.avatar != null ? info.avatar!.url ?? standartImage : standartImage,
+                  fit: BoxFit.cover,
+                ),
               ),
               Positioned(
                 bottom: info == null

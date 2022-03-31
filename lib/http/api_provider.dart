@@ -80,15 +80,16 @@ extension LoginService on ApiProvider {
   Future<BearerToken> refreshToken(
     String refreshToken,
   ) async {
-    httpClient.accessToken = refreshToken;
-    final responseData = await httpClient.post(
-      query: '/v1/auth/refresh-tokens',
-    );
-    BearerToken bearerToken = BearerToken.fromJson(
-      responseData,
-    );
-    httpClient.accessToken = bearerToken.access;
-    return bearerToken;
+      httpClient.accessToken = refreshToken;
+      final responseData = await httpClient.post(
+        query: '/v1/auth/refresh-tokens',
+      );
+      print('qweasdasdsadasdas: ${responseData.toString()}');
+      BearerToken bearerToken = BearerToken.fromJson(
+        responseData,
+      );
+      httpClient.accessToken = bearerToken.access;
+      return bearerToken;
   }
 }
 
@@ -251,6 +252,7 @@ extension QuestService on ApiProvider {
   }
 
   Future<List<BaseQuestResponse>> getQuests({
+    String price = '',
     List<String> workplace = const [],
     List<String> employment = const [],
     int limit = 10,
@@ -293,7 +295,7 @@ extension QuestService on ApiProvider {
     });
     final responseData = await httpClient.get(
       query:
-          '/v1/quests?$workplaces$employments$status$specialization$priorities$sort',
+          '/v1/quests?$workplaces$employments$status$specialization$priorities$sort$price',
       queryParameters: {
         // if (workplace.isNotEmpty) "workplaces": workplaces,
         // if (employment.isNotEmpty) "employments": employments,
@@ -322,6 +324,7 @@ extension QuestService on ApiProvider {
   Future<List<ProfileMeResponse>> getWorkers({
     String searchWord = "",
     String sort = "",
+    String price = "",
     int limit = 10,
     int offset = 0,
     String? north,
@@ -349,7 +352,7 @@ extension QuestService on ApiProvider {
     });
     final responseData = await httpClient.get(
       query:
-          '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort&$specialization',
+          '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort&$specialization$price',
       queryParameters: {
         if (searchWord.isNotEmpty) "q": searchWord,
         "offset": offset,
@@ -884,6 +887,9 @@ extension GetUploadLink on ApiProvider {
           contentType = "video/mp4";
           break;
         case "jpeg":
+          contentType = "image/jpeg";
+          break;
+        case "webp":
           contentType = "image/jpeg";
           break;
         case "jpg":

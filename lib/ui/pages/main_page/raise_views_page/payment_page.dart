@@ -17,6 +17,7 @@ final _divider = const SizedBox(
   height: 5.0,
 );
 final String coinsPath = "assets/coins";
+
 List<_CoinItem> _coins = [
   _CoinItem("$coinsPath/wusd.svg", 'WUSD', TYPE_COINS.WUSD, true),
   _CoinItem("$coinsPath/wqt.svg", 'WQT', TYPE_COINS.WQT, true),
@@ -39,20 +40,10 @@ class PaymentPage extends StatefulWidget {
 
 class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late RaiseViewStore raiseViewStore;
-
-  _CoinItem? _currentCoin;
-
-  bool get _selectedCoin => _currentCoin != null;
-
-  _WalletItem? _currentWallet;
-
-  bool get _selectedWallet => _currentWallet != null;
 
   @override
   void initState() {
     super.initState();
-    raiseViewStore = context.read<RaiseViewStore>();
     _tabController = TabController(
       vsync: this,
       length: 2,
@@ -124,7 +115,7 @@ class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStat
               controller: this._tabController,
               children: [
                 ///Wallet Transfer
-                walletTab(raiseViewStore),
+                _WalletViewTab(store: context.read<RaiseViewStore>(), questId:  widget.questId,),
 
                 ///Card Transfer
                 BankCardTransaction(
@@ -138,157 +129,216 @@ class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStat
     );
   }
 
-  Widget walletTab(RaiseViewStore store) => Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Observer(
-          builder: (context) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("Choose currency"),
-              _divider,
-              GestureDetector(
-                onTap: _chooseCoin,
-                child: Container(
-                  height: 46,
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15.0,
-                    vertical: 12.5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _selectedCoin ? Colors.white : AppColor.disabledButton,
-                    borderRadius: BorderRadius.circular(6.0),
-                    border: Border.all(
-                      color: AppColor.disabledButton,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      if (_selectedCoin)
-                        Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                AppColor.enabledButton,
-                                AppColor.blue,
-                              ],
-                            ),
-                          ),
-                          child: SizedBox(
-                            width: 32,
-                            height: 32,
-                            child: SvgPicture.asset(
-                              _currentCoin!.iconPath,
-                            ),
-                          ),
-                        ),
-                      Text(
-                        _selectedCoin ? _currentCoin!.title : 'wallet.enterCoin'.tr(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: _selectedCoin ? Colors.black : AppColor.disabledText,
-                        ),
-                      ),
-                      const Spacer(),
-                      Icon(
-                        Icons.arrow_drop_down_outlined,
-                        size: 25.0,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 15.0,
-              ),
-              Text(
-                'wallet.wallet'.tr(),
-              ),
-              _divider,
-              GestureDetector(
-                onTap: _chooseWallet,
-                child: Container(
-                  height: 46,
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15.0,
-                    vertical: 12.5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _selectedWallet ? Colors.white : AppColor.disabledButton,
-                    borderRadius: BorderRadius.circular(6.0),
-                    border: Border.all(
-                      color: AppColor.disabledButton,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      if (_selectedWallet)
-                        Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                AppColor.enabledButton,
-                                AppColor.blue,
-                              ],
-                            ),
-                          ),
-                          child: SizedBox(
-                            width: 32,
-                            height: 32,
-                            child: SvgPicture.asset(
-                              _currentWallet!.iconPath,
-                            ),
-                          ),
-                        ),
-                      Text(
-                        _selectedWallet ? _currentWallet!.title : 'wallet.enterCoin'.tr(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: _selectedWallet ? Colors.black : AppColor.disabledText,
-                        ),
-                      ),
-                      const Spacer(),
-                      Icon(
-                        Icons.arrow_drop_down_outlined,
-                        size: 25.0,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Spacer(),
-              ElevatedButton(
-                onPressed: raiseViewStore.canSubmit
-                    ? () async {
-                        if (widget.questId!.isEmpty)
-                          await raiseViewStore.raiseProfile();
-                        else
-                          await raiseViewStore.raiseQuest(widget.questId!);
-
-                        if (raiseViewStore.isSuccess) {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                          AlertDialogUtils.showSuccessDialog(context);
-                        }
-                      }
-                    : null,
-                child: Text("Pay"),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-            ],
+  Widget titledTextBox(
+    String title,
+    Widget textField,
+  ) =>
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
           ),
-        ),
+          _divider,
+          Flexible(
+            fit: FlexFit.loose,
+            child: textField,
+          ),
+        ],
       );
+}
+
+class _WalletViewTab extends StatefulWidget {
+  final RaiseViewStore store;
+  final String? questId;
+
+  const _WalletViewTab({
+    Key? key,
+    required this.store,
+    required this.questId,
+  }) : super(key: key);
+
+  @override
+  _WalletViewTabState createState() => _WalletViewTabState();
+}
+
+class _WalletViewTabState extends State<_WalletViewTab> {
+  _CoinItem? _currentCoin;
+
+  _WalletItem? _currentWallet;
+
+  bool get _selectedCoin => _currentCoin != null;
+
+  bool get _selectedWallet => _currentWallet != null;
+
+
+  @override
+  void initState() {
+    super.initState();
+    print('_WalletViewTabState');
+    _currentCoin = _coins[0];
+    _currentWallet = _wallets[0];
+    widget.store.setTitleSelectedCoin(TYPE_COINS.WUSD);
+    widget.store.setTitleSelectedWallet(TYPE_WALLET.Coinpaymebts);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Observer(
+        builder: (context) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("Choose currency"),
+            _divider,
+            GestureDetector(
+              onTap: _chooseCoin,
+              child: Container(
+                height: 46,
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15.0,
+                  vertical: 12.5,
+                ),
+                decoration: BoxDecoration(
+                  color: _selectedCoin ? Colors.white : AppColor.disabledButton,
+                  borderRadius: BorderRadius.circular(6.0),
+                  border: Border.all(
+                    color: AppColor.disabledButton,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    if (_selectedCoin)
+                      Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              AppColor.enabledButton,
+                              AppColor.blue,
+                            ],
+                          ),
+                        ),
+                        child: SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: SvgPicture.asset(
+                            _currentCoin!.iconPath,
+                          ),
+                        ),
+                      ),
+                    Text(
+                      _selectedCoin ? _currentCoin!.title : 'wallet.enterCoin'.tr(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: _selectedCoin ? Colors.black : AppColor.disabledText,
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.arrow_drop_down_outlined,
+                      size: 25.0,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 15.0,
+            ),
+            Text(
+              'wallet.wallet'.tr(),
+            ),
+            _divider,
+            GestureDetector(
+              onTap: _chooseWallet,
+              child: Container(
+                height: 46,
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15.0,
+                  vertical: 12.5,
+                ),
+                decoration: BoxDecoration(
+                  color: _selectedWallet ? Colors.white : AppColor.disabledButton,
+                  borderRadius: BorderRadius.circular(6.0),
+                  border: Border.all(
+                    color: AppColor.disabledButton,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    if (_selectedWallet)
+                      Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              AppColor.enabledButton,
+                              AppColor.blue,
+                            ],
+                          ),
+                        ),
+                        child: SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: SvgPicture.asset(
+                            _currentWallet!.iconPath,
+                          ),
+                        ),
+                      ),
+                    Text(
+                      _selectedWallet ? _currentWallet!.title : 'wallet.enterCoin'.tr(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: _selectedWallet ? Colors.black : AppColor.disabledText,
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.arrow_drop_down_outlined,
+                      size: 25.0,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Spacer(),
+            ElevatedButton(
+              onPressed: widget.store.canSubmit
+                  ? () async {
+                      if (widget.questId == null || widget.questId!.isEmpty) {
+                        await widget.store.raiseProfile();
+                      }
+                      else {
+                        await widget.store.raiseQuest(widget.questId!);
+                      }
+
+                      if (widget.store.isSuccess) {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        AlertDialogUtils.showSuccessDialog(context);
+                      }
+                    }
+                  : null,
+              child: Text("Pay"),
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   void _chooseCoin() {
     showModalBottomSheet(
@@ -544,34 +594,15 @@ class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStat
     setState(() {
       _currentCoin = coin;
     });
-    raiseViewStore.setTitleSelectedCoin(coin.typeCoin);
+    widget.store.setTitleSelectedCoin(coin.typeCoin);
   }
 
   void _selectWallet(_WalletItem wallet) {
     setState(() {
       _currentWallet = wallet;
     });
-    raiseViewStore.setTitleSelectedWallet(wallet.typeWallet);
+    widget.store.setTitleSelectedWallet(wallet.typeWallet);
   }
-
-  Widget titledTextBox(
-    String title,
-    Widget textField,
-  ) =>
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-          ),
-          _divider,
-          Flexible(
-            fit: FlexFit.loose,
-            child: textField,
-          ),
-        ],
-      );
 }
 
 class _CoinItem {

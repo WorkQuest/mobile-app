@@ -184,6 +184,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       startAnimation = false;
       startSwitch = false;
     } catch (e) {
+      print('catch e');
       if (e.toString() == "Token invalid" ||
           e.toString() == "Session not found") {
         await Storage.deleteAllFromSecureStorage();
