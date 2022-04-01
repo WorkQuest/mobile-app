@@ -112,12 +112,12 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     onChanged: (String? value) {
                                       store.changedPriority(value!);
                                     },
-                                    items:
-                                        store.priorityList.map<DropdownMenuItem<String>>(
+                                    items: store.priorityList
+                                        .map<DropdownMenuItem<String>>(
                                       (String value) {
                                         return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: new Text(value),
+                                          value: value.tr(),
+                                          child: Text(value.tr()),
                                         );
                                       },
                                     ).toList(),
@@ -219,7 +219,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       store.changedEmployment(value!);
                                     },
                                     items: store.employmentList
-                                        .map<DropdownMenuItem<String>>((String value) {
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -272,7 +273,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       store.changedDistantWork(value!);
                                     },
                                     items: store.distantWorkList
-                                        .map<DropdownMenuItem<String>>((String value) {
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -384,19 +386,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               QuestDetails.routeName,
                               arguments: updatedQuest,
                             );
-                          }
-                          await Navigator.of(context).pushNamed(
-                            RaiseViews.routeName,
-                            arguments: widget.questInfo!.id,
-                          );
+                          } else
+                            await Navigator.of(context).pushNamed(
+                              RaiseViews.routeName,
+                              arguments: store.idNewQuest,
+                            );
                           Navigator.pop(context, true);
                           await AlertDialogUtils.showSuccessDialog(context);
-                          // await successAlert(
-                          //   context,
-                          //   isEdit
-                          //       ? "Quest Successfully Edited"
-                          //       : "modals.questCreated".tr(),
-                          // );
                         },
                         child: Observer(
                           builder: (context) => ElevatedButton(
@@ -405,7 +401,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   _controller!.getSkillAndSpecialization();
                               if (isEdit) {
                                 if (store.canSubmitEditQuest) {
-                                  if (_formKey.currentState?.validate() ?? false)
+                                  if (_formKey.currentState?.validate() ??
+                                      false)
                                     await store.createQuest(
                                       isEdit: true,
                                       questId: widget.questInfo!.id,
@@ -422,7 +419,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             child: store.isLoading
                                 ? CircularProgressIndicator.adaptive()
                                 : Text(
-                                    isEdit ? "Edit Quest" : 'quests.createAQuest'.tr(),
+                                    isEdit
+                                        ? "Edit Quest"
+                                        : 'quests.createAQuest'.tr(),
                                     style: TextStyle(
                                       color: Colors.white,
                                     ),
@@ -507,7 +506,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       onSelectedItemChanged: (int index) {
                         changedEmployment = children[index];
                       },
-                      children: children.map((e) => Center(child: Text(e))).toList(),
+                      children:
+                          children.map((e) => Center(child: Text(e))).toList(),
                     ),
                   ),
                   CupertinoButton(

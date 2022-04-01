@@ -35,7 +35,7 @@ mixin _$NotificationStore on _NotificationStore, Store {
   }
 
   final _$updateNotificationAsyncAction =
-  AsyncAction('_NotificationStore.updateNotification');
+      AsyncAction('_NotificationStore.updateNotification');
 
   @override
   Future updateNotification() {

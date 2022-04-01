@@ -26,7 +26,6 @@ class RaiseViews extends StatelessWidget {
         persistentFooterButtons: [
           ElevatedButton(
             onPressed: () {
-              print('quest: $questId');
               Navigator.of(context, rootNavigator: true)
                   .pushNamed(PaymentPage.routeName, arguments: questId);
             },
@@ -40,7 +39,9 @@ class RaiseViews extends StatelessWidget {
             CupertinoSliverNavigationBar(
               trailing: questId.isNotEmpty
                   ? TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                       child: Text("Skip"),
                     )
                   : SizedBox(),
@@ -102,7 +103,8 @@ class RaiseViews extends StatelessWidget {
                         groupValue: raiseViewStore.levelGroupValue,
                         color: Color(0xFFF6CF00),
                         level: "GOLD PLUS",
-                        price: raiseViewStore.price[raiseViewStore.periodGroupValue]![0],
+                        price: raiseViewStore
+                            .price[raiseViewStore.periodGroupValue]![0],
                         description:
                             "Notifications for employees who were looking for quests, "
                             "via an offer to review the quest that has "
@@ -118,7 +120,8 @@ class RaiseViews extends StatelessWidget {
                       onChanged: raiseViewStore.changeLevel,
                       color: Color(0xFFF6CF00),
                       level: "GOLD",
-                      price: raiseViewStore.price[raiseViewStore.periodGroupValue]![1],
+                      price: raiseViewStore
+                          .price[raiseViewStore.periodGroupValue]![1],
                       description:
                           "Notifications for employees who were looking for quests"
                           " with a direct offer to review the promoted quest "
@@ -133,8 +136,10 @@ class RaiseViews extends StatelessWidget {
                       groupValue: raiseViewStore.levelGroupValue,
                       color: Color(0xFFBBC0C7),
                       level: "SILVER",
-                      price: raiseViewStore.price[raiseViewStore.periodGroupValue]![2],
-                      description: "Pin quest on the main page for three hours, with the "
+                      price: raiseViewStore
+                          .price[raiseViewStore.periodGroupValue]![2],
+                      description:
+                          "Pin quest on the main page for three hours, with the "
                           "ability to choose two categories and two locations "
                           "for promotion the quest.",
                     ),
@@ -145,7 +150,8 @@ class RaiseViews extends StatelessWidget {
                       onChanged: raiseViewStore.changeLevel,
                       color: Color(0xFFB79768),
                       level: "BRONZE",
-                      price: raiseViewStore.price[raiseViewStore.periodGroupValue]![3],
+                      price: raiseViewStore
+                          .price[raiseViewStore.periodGroupValue]![3],
                       description:
                           "Pin the quest on the main page for one hour, with the "
                           "ability to choose one category and one location "
