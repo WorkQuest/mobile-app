@@ -7,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../../enums.dart';
+import '../quest_page/quest_list/workers_item.dart';
 import 'my_quests_item.dart';
 
 class QuestsList extends StatelessWidget {
@@ -108,8 +109,22 @@ class QuestsList extends StatelessWidget {
   }
 
   Widget getLoadingBody() {
-    return Center(
-      child: CircularProgressIndicator.adaptive(),
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      separatorBuilder: (context, index) {
+        return SizedBox(
+          height: 6,
+          child: Container(
+            color: Color(0xFFF7F8FA),
+          ),
+        );
+      },
+      padding: EdgeInsets.zero,
+      itemCount: 8,
+      itemBuilder: (_, index) {
+        return const ShimmerMyQuestItem();
+      },
     );
   }
 }

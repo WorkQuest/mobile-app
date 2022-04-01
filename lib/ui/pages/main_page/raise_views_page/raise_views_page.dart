@@ -74,14 +74,14 @@ class RaiseViews extends StatelessWidget {
                     ),
                     _divider,
                     _PeriodCard(
-                      period: "For 5 days",
+                      period: "For 7 days",
                       groupValue: raiseViewStore.periodGroupValue,
                       value: 2,
                       onChanged: raiseViewStore.changePeriod,
                     ),
                     _divider,
                     _PeriodCard(
-                      period: "For 7 days",
+                      period: "For 30 days",
                       groupValue: raiseViewStore.periodGroupValue,
                       value: 3,
                       onChanged: raiseViewStore.changePeriod,

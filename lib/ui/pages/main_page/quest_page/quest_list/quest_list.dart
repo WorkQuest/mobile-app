@@ -200,15 +200,24 @@ class _QuestListState extends State<QuestList> {
                       padding: EdgeInsets.zero,
                       itemCount: 8,
                       itemBuilder: (_, index) {
+                        if (role == UserRole.Worker) {
+                          return ShimmerMyQuestItem();
+                        }
                         return ShimmerWorkersItem();
                       },
                     );
                   }
+                  print('searchResultList.isEmpty : ${questsStore!.searchResultList.isEmpty}');
+                  print('searchWorkersList.isEmpty : ${questsStore!.searchWorkersList.isEmpty}');
+                  print('workersList.isEmpty : ${questsStore!.workersList.isEmpty}');
+                  print('questsList.isEmpty : ${questsStore!.questsList.isEmpty}');
                   if (questsStore!.emptySearch)
                     return Center(
                       child: Column(
                         children: [
-                          const SizedBox(height: 15,),
+                          const SizedBox(
+                            height: 15,
+                          ),
                           SvgPicture.asset(
                             "assets/empty_quest_icon.svg",
                           ),
@@ -245,26 +254,18 @@ class _QuestListState extends State<QuestList> {
                                 ? questsStore!.searchResultList[index]
                                 : questsStore!.questsList[index];
                             _markItem(item);
-                            return _AnimationWorkersQuestsItems(
-                              index: index,
-                              enabled: item.showAnimation,
-                              child: MyQuestsItem(
-                                item,
-                                itemType: this.questItemPriorityType,
-                              ),
+                            return MyQuestsItem(
+                              item,
+                              itemType: this.questItemPriorityType,
                             );
                           }
                           final item = questsStore!.searchWord.length > 2
                               ? questsStore!.searchWorkersList[index]
                               : questsStore!.workersList[index];
                           _markItem(item);
-                          return _AnimationWorkersQuestsItems(
-                            index: index,
-                            enabled: item.showAnimation,
-                            child: WorkersItem(
-                              item,
-                              questsStore!,
-                            ),
+                          return WorkersItem(
+                            item,
+                            questsStore!,
                           );
                         });
                       },
@@ -346,8 +347,8 @@ class _AnimationWorkersQuestsItemsState extends State<_AnimationWorkersQuestsIte
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 550));
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 550));
   }
 
   @override

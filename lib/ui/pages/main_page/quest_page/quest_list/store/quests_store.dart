@@ -232,9 +232,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @computed
   bool get emptySearch =>
-      // searchWord.isNotEmpty &&
+      searchWord.isNotEmpty &&
       searchResultList.isEmpty &&
       searchWorkersList.isEmpty &&
+      workersList.isEmpty &&
       questsList.isEmpty &&
       !this.isLoading;
 
@@ -328,11 +329,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         offsetWorkers = 0;
       }
       if (offsetWorkers == workersList.length) {
-        log('sort: $sort');
-        log('workplaces: $workplaces');
-        log('priorities: $priorities');
-        log('employeeRatings: $employeeRatings');
-        log('selectedSkill: $selectedSkill');
         workersList.addAll(await _apiProvider.getWorkers(
           sort: this.sort,
           price: getFilterPrice(isWorker: true),
