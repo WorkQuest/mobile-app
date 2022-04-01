@@ -1,3 +1,4 @@
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/bank_card_widget.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
@@ -115,7 +116,10 @@ class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStat
               controller: this._tabController,
               children: [
                 ///Wallet Transfer
-                _WalletViewTab(store: context.read<RaiseViewStore>(), questId:  widget.questId,),
+                _WalletViewTab(
+                  store: context.read<RaiseViewStore>(),
+                  questId: widget.questId,
+                ),
 
                 ///Card Transfer
                 BankCardTransaction(
@@ -171,7 +175,6 @@ class _WalletViewTabState extends State<_WalletViewTab> {
   bool get _selectedCoin => _currentCoin != null;
 
   bool get _selectedWallet => _currentWallet != null;
-
 
   @override
   void initState() {
@@ -312,24 +315,30 @@ class _WalletViewTabState extends State<_WalletViewTab> {
               ),
             ),
             Spacer(),
-            ElevatedButton(
-              onPressed: widget.store.canSubmit
-                  ? () async {
-                      if (widget.questId == null || widget.questId!.isEmpty) {
-                        await widget.store.raiseProfile();
+            ObserverListener<RaiseViewStore>(
+              onSuccess: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                Navigator.pop(context);
+                Navigator.pop(context);
+                await AlertDialogUtils.showSuccessDialog(context);
+              },
+              onFailure: () {
+                Navigator.of(context, rootNavigator: true).pop();
+                return false;
+              },
+              child: ElevatedButton(
+                onPressed: widget.store.canSubmit
+                    ? () async {
+                        AlertDialogUtils.showLoadingDialog(context);
+                        if (widget.questId == null || widget.questId!.isEmpty) {
+                          await widget.store.raiseProfile();
+                        } else {
+                          await widget.store.raiseQuest(widget.questId!);
+                        }
                       }
-                      else {
-                        await widget.store.raiseQuest(widget.questId!);
-                      }
-
-                      if (widget.store.isSuccess) {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        AlertDialogUtils.showSuccessDialog(context);
-                      }
-                    }
-                  : null,
-              child: Text("Pay"),
+                    : null,
+                child: Text("Pay"),
+              ),
             ),
             const SizedBox(
               height: 20.0,

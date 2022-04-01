@@ -60,14 +60,11 @@ extension CustomAppBar on UserProfileState {
           background: Stack(
             fit: StackFit.expand,
             children: [
-              Hero(
-                tag: 'trans',
-                child: Image.network(
-                  info == null
-                      ? userStore!.userData!.avatar != null ? userStore!.userData!.avatar!.url ?? standartImage : standartImage
-                      : info.avatar != null ? info.avatar!.url ?? standartImage : standartImage,
-                  fit: BoxFit.cover,
-                ),
+              Image.network(
+                info == null
+                    ? userStore!.userData!.avatar != null ? userStore!.userData!.avatar!.url ?? standartImage : standartImage
+                    : info.avatar != null ? info.avatar!.url ?? standartImage : standartImage,
+                fit: BoxFit.cover,
               ),
               Positioned(
                 bottom: info == null

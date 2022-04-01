@@ -22,8 +22,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
         SizedBox(
           height: 20,
         ),
-        myQuests?.performed != null ||
-                (viewOtherUser?.quests.isNotEmpty ?? false)
+        myQuests?.performed != null || (viewOtherUser?.quests.isNotEmpty ?? false)
             ? QuestsList(
                 QuestItemPriorityType.Performed,
                 widget.info == null
@@ -40,8 +39,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                       : "errors.emptyData.worker.myQuests.noQuest".tr(),
                 ),
               ),
-        if (myQuests?.performed != null ||
-            (viewOtherUser?.quests.isNotEmpty ?? false))
+        if (myQuests?.performed != null || (viewOtherUser?.quests.isNotEmpty ?? false))
           Padding(
             padding: EdgeInsets.only(
               left: 16.0,
@@ -52,15 +50,13 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                 await Navigator.pushNamed(
                   context,
                   ProfileQuestsPage.routeName,
-                  arguments: widget.info == null
-                      ? userStore!.userData!.id
-                      : widget.info!.id,
+                  arguments:
+                      widget.info == null ? userStore!.userData!.id : widget.info!.id,
                 );
                 if (widget.info == null)
                   myQuests!.getQuests(userStore!.userData!.id, role, true);
                 else
-                  portfolioStore!
-                      .getReviews(userId: widget.info!.id, newList: true);
+                  portfolioStore!.getReviews(userId: widget.info!.id, newList: true);
               },
               child: Text(
                 "meta.showAllQuests".tr(),
@@ -76,24 +72,26 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
           widget.info == null
               ? userStore!.userData?.additionalInfo?.description ??
                   "modals.noDescription".tr()
-              : widget.info!.additionalInfo?.description ??
-                  "modals.noDescription".tr(),
+              : widget.info!.additionalInfo?.description ?? "modals.noDescription".tr(),
         ),
       ];
 
   List<Widget> ratingsWidget() => [
         employerRating(
           completedQuests: widget.info == null
-              ? userStore!.userData!.questsStatistic!.completed.toString()
-              : widget.info!.questsStatistic!.completed.toString(),
+              ? userStore!.userData!.questsStatistic != null
+                  ? userStore!.userData!.questsStatistic!.completed.toString()
+                  : '0'
+              : widget.info!.questsStatistic != null
+                  ? widget.info!.questsStatistic!.completed.toString()
+                  : '0',
           averageRating: widget.info == null
               ? userStore!.userData!.ratingStatistic!.averageMark
               : widget.info!.ratingStatistic!.averageMark,
           reviews: widget.info == null
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
               : widget.info!.ratingStatistic!.reviewCount.toString(),
-          userId:
-              widget.info == null ? userStore!.userData!.id : widget.info!.id,
+          userId: widget.info == null ? userStore!.userData!.id : widget.info!.id,
           context: context,
         ),
       ];

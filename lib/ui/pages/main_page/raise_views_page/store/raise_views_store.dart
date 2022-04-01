@@ -83,6 +83,8 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       final _period = getPeriod();
+      await apiProvider.raiseProfile(
+          duration: getPeriod(), type: levelGroupValue - 1);
       await ClientService().promoteUser(
         tariff: levelGroupValue,
         period: _period,
@@ -92,8 +94,6 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
           period: _period,
         ),
       );
-      await apiProvider.raiseProfile(
-          duration: getPeriod(), type: levelGroupValue - 1);
       this.onSuccess(true);
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');

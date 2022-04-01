@@ -68,56 +68,49 @@ class _NotificationPageState extends State<NotificationPage> {
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: 6,
-                            separatorBuilder: (context, index) =>
-                                Divider(
-                                  thickness: 1,
-                                ),
-                            itemBuilder: (context, index) => const _ShimmerNotificationView(),
+                            separatorBuilder: (context, index) => Divider(
+                              thickness: 1,
+                            ),
+                            itemBuilder: (context, index) =>
+                                const _ShimmerNotificationView(),
                           );
                         }
                         return ListView.separated(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: store.listOfNotifications.length,
-                          separatorBuilder: (context, index) =>
-                              Divider(
-                                thickness: 1,
-                              ),
-                          itemBuilder: (context, index) =>
-                              _NotificationView(
-                                body: store.listOfNotifications[index],
-                                onTap: () async {
-                                  final body = store.listOfNotifications[index];
-                                  if (body.notification.data.user.id !=
-                                      profileMeStore.userData?.id)
-                                    await chatStore.getUserData(
-                                        body.notification.data.user.id);
-                                  else
-                                    chatStore.userData = profileMeStore.userData;
-                                  if (chatStore.userData != null) {
-                                    await Navigator.of(context, rootNavigator: true)
-                                        .pushNamed(
-                                      UserProfile.routeName,
-                                      arguments: chatStore.userData,
-                                    );
-                                    chatStore.userData = null;
-                                  }
-                                },
-                                onTabOk: () =>
-                                    store
-                                        .deleteNotification(
-                                        store.listOfNotifications[index].id),
-                                onTapPushQuest: () async {
-                                  await store.getQuest(
-                                      store.listOfNotifications[index].notification.data
-                                          .id);
-                                  await Navigator.of(context, rootNavigator: true)
-                                      .pushNamed(
-                                    QuestDetails.routeName,
-                                    arguments: store.quest,
-                                  );
-                                },
-                              ),
+                          separatorBuilder: (context, index) => Divider(
+                            thickness: 1,
+                          ),
+                          itemBuilder: (context, index) => _NotificationView(
+                            body: store.listOfNotifications[index],
+                            onTap: () async {
+                              final body = store.listOfNotifications[index];
+                              if (body.notification.data.user.id != profileMeStore.userData?.id) {
+                                await chatStore.getUserData(body.notification.data.user.id);
+                              } else {
+                                chatStore.userData = profileMeStore.userData;
+                              }
+                              if (chatStore.userData != null) {
+                                await Navigator.of(context, rootNavigator: true)
+                                    .pushNamed(
+                                  UserProfile.routeName,
+                                  arguments: chatStore.userData,
+                                );
+                                chatStore.userData = null;
+                              }
+                            },
+                            onTabOk: () => store
+                                .deleteNotification(store.listOfNotifications[index].id),
+                            onTapPushQuest: () async {
+                              await store.getQuest(
+                                  store.listOfNotifications[index].notification.data.id);
+                              await Navigator.of(context, rootNavigator: true).pushNamed(
+                                QuestDetails.routeName,
+                                arguments: store.quest,
+                              );
+                            },
+                          ),
                         );
                       },
                     ),
@@ -289,66 +282,17 @@ class _ShimmerNotificationView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: Shimmer.stand(
-                  child: Container(
-                    height: 34,
-                    width: 34,
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
+              _ShimmerItem(height: 34, width: 34),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Shimmer.stand(
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
+                  _ShimmerItem(height: 46, width: 46),
                   SizedBox(width: 10),
-                  Shimmer.stand(
-                    child: Container(
-                      height: 30,
-                      width: 220,
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  _ShimmerItem(height: 20, width: 220),
                   SizedBox(
                     width: 5,
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Shimmer.stand(
-                      child: Container(
-                        height: 30,
-                        width: 130,
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),
@@ -357,70 +301,49 @@ class _ShimmerNotificationView extends StatelessWidget {
           Container(
             margin: EdgeInsets.symmetric(vertical: 10),
             alignment: Alignment.centerLeft,
-            child: Shimmer.stand(
-              child: Container(
-                height: 30,
-                width: 140,
-                padding: const EdgeInsets.all(10.0),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
-              ),
+            child: const _ShimmerItem(
+              width: 130,
+              height: 20,
             ),
           ),
-          Container(
-            width: double.infinity,
-            height: 50,
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: Color(0xFFF7F8FA),
-              borderRadius: BorderRadius.all(Radius.circular(6.0)),
-            ),
-            alignment: Alignment.centerLeft,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Shimmer.stand(
-                  child: Container(
-                    height: 30,
-                    width: 140,
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Shimmer.stand(
-                  child: Container(
-                    height: 20,
-                    width: 20,
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                  ),
-                )
-              ],
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _ShimmerItem(height: 40, width: 320),
+            ],
           ),
         ],
       ),
     );
   }
-
-/*Shimmer.stand(
-            child: Container(
-              height: 34,
-              width: 34,
-              padding: const EdgeInsets.all(10.0),
-              decoration:
-              const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-            ),
-          ),*/
 }
 
+class _ShimmerItem extends StatelessWidget {
+  final double height;
+  final double width;
+
+  const _ShimmerItem({
+    Key? key,
+    required this.height,
+    required this.width,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.stand(
+      child: Container(
+        child: SizedBox(
+          height: height,
+          width: width,
+        ),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(20.0),
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}

@@ -200,18 +200,15 @@ class MyProfileImage extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-                child: Hero(
-                  tag: 'trans',
-                  child: FadeInImage(
-                    width: MediaQuery.of(context).size.width,
-                    height: 300,
-                    placeholder: AssetImage('assets/blue_back.jpeg'),
-                    image: NetworkImage(
-                      userStore.userData!.avatar?.url ??
-                          "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                    ),
-                    fit: BoxFit.cover,
+                child: FadeInImage(
+                  width: MediaQuery.of(context).size.width,
+                  height: 300,
+                  placeholder: AssetImage('assets/blue_back.jpeg'),
+                  image: NetworkImage(
+                    userStore.userData!.avatar?.url ??
+                        "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                   ),
+                  fit: BoxFit.cover,
                 )
 
                 ),
