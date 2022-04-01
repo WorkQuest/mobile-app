@@ -28,7 +28,6 @@ class PushNotificationService {
       );
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         //FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-        print('User granted permission');
         Platform.isAndroid
             ? implementAndroidNotificationPlugin()
             : implementIOSNotificationPlugin();

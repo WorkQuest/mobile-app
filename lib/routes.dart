@@ -23,10 +23,11 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_employer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_worker.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/store/open_dispute_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/quest_employer_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/quest_worker_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
@@ -244,6 +245,9 @@ class Routes {
                   Provider(
                     create: (context) => getIt.get<MyQuestStore>(),
                   ),
+                  Provider(
+                    create: (context) => getIt.get<QuestDetailsStore>(),
+                  ),
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),
@@ -264,6 +268,9 @@ class Routes {
                   ),
                   Provider(
                     create: (context) => getIt.get<QuestsStore>(),
+                  ),
+                  Provider(
+                    create: (context) => getIt.get<QuestDetailsStore>(),
                   ),
                 ],
                 child: Directionality(
@@ -531,7 +538,7 @@ class Routes {
             create: (context) => getIt.get<RaiseViewStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: RaiseViews(settings.arguments as bool),
+              child: RaiseViews(settings.arguments as String),
             ),
           ),
         );
@@ -542,7 +549,7 @@ class Routes {
             create: (context) => getIt.get<RaiseViewStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: PaymentPage(),
+              child: PaymentPage(settings.arguments as String),
             ),
           ),
         );

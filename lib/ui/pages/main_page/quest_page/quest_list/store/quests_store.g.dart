@@ -47,6 +47,36 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$fromPriceAtom = Atom(name: '_QuestsStore.fromPrice');
+
+  @override
+  String get fromPrice {
+    _$fromPriceAtom.reportRead();
+    return super.fromPrice;
+  }
+
+  @override
+  set fromPrice(String value) {
+    _$fromPriceAtom.reportWrite(value, super.fromPrice, () {
+      super.fromPrice = value;
+    });
+  }
+
+  final _$toPriceAtom = Atom(name: '_QuestsStore.toPrice');
+
+  @override
+  String get toPrice {
+    _$toPriceAtom.reportRead();
+    return super.toPrice;
+  }
+
+  @override
+  set toPrice(String value) {
+    _$toPriceAtom.reportWrite(value, super.toPrice, () {
+      super.toPrice = value;
+    });
+  }
+
   final _$offsetAtom = Atom(name: '_QuestsStore.offset');
 
   @override
@@ -277,6 +307,17 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$_QuestsStoreActionController = ActionController(name: '_QuestsStore');
 
   @override
+  void setPrice(String from, String to) {
+    final _$actionInfo = _$_QuestsStoreActionController.startAction(
+        name: '_QuestsStore.setPrice');
+    try {
+      return super.setPrice(from, to);
+    } finally {
+      _$_QuestsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   List<String> parser(List<String> skills) {
     final _$actionInfo =
         _$_QuestsStoreActionController.startAction(name: '_QuestsStore.parser');
@@ -303,6 +344,8 @@ mixin _$QuestsStore on _QuestsStore, Store {
     return '''
 searchWord: ${searchWord},
 sort: ${sort},
+fromPrice: ${fromPrice},
+toPrice: ${toPrice},
 offset: ${offset},
 offsetWorkers: ${offsetWorkers},
 limit: ${limit},

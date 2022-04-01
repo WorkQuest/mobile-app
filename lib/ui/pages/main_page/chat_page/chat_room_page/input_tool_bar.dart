@@ -43,7 +43,8 @@ class _InputToolbarState extends State<InputToolbar> {
                   case "modals.uploadAImages":
                     result = await FilePicker.platform.pickFiles(
                       allowMultiple: true,
-                      type: FileType.media,
+                      type: FileType.custom,
+                      allowedExtensions: ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png']
                     );
                     break;
                   case "modals.uploadADocuments":

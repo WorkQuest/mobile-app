@@ -1,5 +1,5 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +8,8 @@ import '../../../../constants.dart';
 import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../widgets/shimmer.dart';
+
 class MyQuestsItem extends StatelessWidget {
   const MyQuestsItem(this.questInfo,
       {this.itemType = QuestItemPriorityType.Active, this.isExpanded = false});
@@ -15,6 +17,8 @@ class MyQuestsItem extends StatelessWidget {
   final BaseQuestResponse questInfo;
   final bool isExpanded;
   final QuestItemPriorityType itemType;
+  final String standartImage =
+      'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,10 @@ class MyQuestsItem extends StatelessWidget {
         );
       },
       child: Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+        ),
         margin: const EdgeInsets.only(
           top: 10,
         ),
@@ -39,12 +46,14 @@ class MyQuestsItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: Image.network(
-                    questInfo.user.avatar?.url ??
-                        "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                  child: FadeInImage.assetNetwork(
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
+                    image: questInfo.user.avatar != null
+                        ? questInfo.user.avatar!.url ?? standartImage
+                        : standartImage,
+                    placeholder: 'assets/white_back.jpeg',
                   ),
                 ),
                 const SizedBox(
@@ -52,9 +61,7 @@ class MyQuestsItem extends StatelessWidget {
                 ),
                 Expanded(
                   child: Text(
-                    questInfo.user.firstName +
-                        " " +
-                        questInfo.user.lastName,
+                    questInfo.user.firstName + " " + questInfo.user.lastName,
                     style: TextStyle(fontSize: 16),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -63,8 +70,7 @@ class MyQuestsItem extends StatelessWidget {
                   if (questInfo.responded!.workerId ==
                               context.read<ProfileMeStore>().userData!.id &&
                           (questInfo.status == 0 || questInfo.status == 4) ||
-                      questInfo.invited != null &&
-                          questInfo.invited?.status == 1)
+                      questInfo.invited != null && questInfo.invited?.status == 1)
                     Row(
                       children: [
                         const SizedBox(
@@ -91,8 +97,7 @@ class MyQuestsItem extends StatelessWidget {
             const SizedBox(
               height: 17.5,
             ),
-            if (questInfo.userId !=
-                    context.read<ProfileMeStore>().userData!.id &&
+            if (questInfo.userId != context.read<ProfileMeStore>().userData!.id &&
                 questInfo.status != 5 &&
                 questInfo.status != 6)
               Column(
@@ -243,5 +248,124 @@ class MyQuestsItem extends StatelessWidget {
           height: 16,
         );
     }
+  }
+}
+
+class ShimmerMyQuestItem extends StatelessWidget {
+  const ShimmerMyQuestItem({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      margin: const EdgeInsets.only(
+        top: 10,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            height: 12,
+          ),
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: const _ShimmerItem(
+                  width: 30,
+                  height: 30,
+                ),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              const _ShimmerItem(
+                width: 140,
+                height: 20,
+              ),
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  const _ShimmerItem(width: 40, height: 20),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 17.5,
+          ),
+          Column(
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.location_on_rounded,
+                    color: Color(0xFF7C838D),
+                  ),
+                  SizedBox(
+                    width: 9,
+                  ),
+                  const _ShimmerItem(width: 60, height: 20),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
+          const _ShimmerItem(width: 50, height: 20),
+          SizedBox(
+            height: 10,
+          ),
+          const _ShimmerItem(width: 250, height: 40),
+          SizedBox(
+            height: 15,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const _ShimmerItem(width: 60, height: 20),
+              SizedBox(width: 50),
+              const _ShimmerItem(width: 70, height: 20),
+            ],
+          ),
+          SizedBox(height: 15),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShimmerItem extends StatelessWidget {
+  final double width;
+  final double height;
+
+  const _ShimmerItem({
+    Key? key,
+    required this.width,
+    required this.height,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.stand(
+      child: Container(
+        child: SizedBox(
+          height: height,
+          width: width,
+        ),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(20.0),
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 }

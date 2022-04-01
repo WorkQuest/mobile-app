@@ -99,7 +99,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   @observable
   List<String> skillFilters = [];
 
-  /// change location data
+  String? idNewQuest;
 
   @action
   void setQuestTitle(String value) => questTitle = value;
@@ -255,7 +255,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         title: questTitle,
         description: description,
         price: price,
-        adType: adType,
       );
       if (isEdit) {
         await apiProvider.editQuest(
@@ -268,7 +267,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
           BigInt.parse(price)
         ]);
       } else {
-        await apiProvider.createQuest(
+        idNewQuest = await apiProvider.createQuest(
           quest: questModel,
         );
         // Web3().connect();

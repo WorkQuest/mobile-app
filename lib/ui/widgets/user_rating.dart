@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
 
 class UserRating extends StatelessWidget {
-  UserRating(this.status);
+  UserRating(
+    this.status, {
+    Key? key,
+    this.isWorker = false,
+  }) : super(key: key);
 
   final int status;
+  final bool isWorker;
 
   @override
   Widget build(BuildContext context) {
     switch (status) {
       case 0:
         return tag(
-          text: "GOLD PLUS",
+          text: isWorker ? "TOP RANKED" : "GOLD PLUS",
           color: Color(0xFFF6CF00),
         );
       case 1:
         return tag(
-          text: "SILVER",
+          text: isWorker ? "RELIABLE" : "SILVER",
           color: Color(0xFFBBC0C7),
         );
 
       case 2:
         return tag(
-          text: "BRONZE",
+          text: isWorker ? "VERIFIED" : "BRONZE",
           color: Color(0xFFB79768),
         );
       default:

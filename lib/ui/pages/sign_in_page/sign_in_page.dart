@@ -5,6 +5,8 @@ import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
+import 'package:app/ui/widgets/default_textfield.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +32,9 @@ class SignInPage extends StatelessWidget {
   static const String routeName = "/";
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController usernameController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController totpController = new TextEditingController();
   final TextEditingController mnemonicController = new TextEditingController();
 
   SignInPage();
@@ -52,7 +57,7 @@ class SignInPage extends StatelessWidget {
               bottom: false,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   AutofillGroup(
                     child: Expanded(
@@ -71,8 +76,7 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         child: Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
+                          padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,135 +107,132 @@ class SignInPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
-                    child: TextFormField(
+                    child: DefaultTextField(
+                      controller: usernameController,
                       keyboardType: TextInputType.emailAddress,
                       onChanged: signInStore.setUsername,
                       validator: Validators.emailValidator,
                       autofillHints: [AutofillHints.email],
-                      decoration: InputDecoration(
-                        prefixIconConstraints: _prefixConstraints,
-                        prefixIcon: SvgPicture.asset(
-                          "assets/user.svg",
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        hintText: "signIn.username".tr(),
+                      prefixIconConstraints: _prefixConstraints,
+                      prefixIcon: SvgPicture.asset(
+                        "assets/user.svg",
+                        color: Theme.of(context).iconTheme.color,
                       ),
+                      hint: "signIn.username".tr(),
+                      inputFormatters: [],
+                      suffixIcon: null,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
-                    child: TextFormField(
+                    child: DefaultTextField(
+                      controller: passwordController,
+                      isPassword: true,
                       onChanged: signInStore.setPassword,
-                      obscureText: true,
+                      inputFormatters: [],
+                      prefixIconConstraints: _prefixConstraints,
                       autofillHints: [AutofillHints.password],
-                      decoration: InputDecoration(
-                        prefixIconConstraints: _prefixConstraints,
-                        prefixIcon: SvgPicture.asset(
-                          "assets/lock.svg",
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        hintText: "signIn.password".tr(),
+                      prefixIcon: SvgPicture.asset(
+                        "assets/lock.svg",
+                        color: Theme.of(context).iconTheme.color,
                       ),
+                      hint: "signIn.password".tr(),
+                      suffixIcon: null,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
-                    child: TextFormField(
+                    child: DefaultTextField(
+                      controller: totpController,
                       onChanged: signInStore.setTotp,
-                      obscureText: true,
+                      isPassword: true,
                       autofillHints: [AutofillHints.password],
-                      decoration: InputDecoration(
-                        prefixIconConstraints: _prefixConstraints,
-                        prefixIcon: SvgPicture.asset(
-                          "assets/lock.svg",
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        hintText: "signIn.totp".tr(),
+                      prefixIconConstraints: _prefixConstraints,
+                      prefixIcon: SvgPicture.asset(
+                        "assets/lock.svg",
+                        color: Theme.of(context).iconTheme.color,
                       ),
+                      hint: "signIn.totp".tr(),
+                      inputFormatters: [],
+                      suffixIcon: null,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
-                    child: TextFormField(
+                    child: DefaultTextField(
+                      controller: mnemonicController,
+                      isPassword: true,
                       onChanged: signInStore.setMnemonic,
                       validator: Validators.mnemonicValidator,
-                      controller: mnemonicController,
-                      decoration: InputDecoration(
-                        suffixIcon: CupertinoButton(
-                          minSize: 22.0,
-                          padding: EdgeInsets.zero,
-                          onPressed: () async {
-                            ClipboardData? data =
-                                await Clipboard.getData(Clipboard.kTextPlain);
-                            mnemonicController.text = data?.text ?? "";
-                            signInStore.setMnemonic(data?.text ?? "");
-                          },
-                          child: Icon(
-                            Icons.paste,
-                            size: 22.0,
-                            color: AppColor.primary,
-                          ),
+                      suffixIcon: CupertinoButton(
+                        minSize: 22.0,
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          ClipboardData? data =
+                              await Clipboard.getData(Clipboard.kTextPlain);
+                          mnemonicController.text = data?.text ?? "";
+                          signInStore.setMnemonic(data?.text ?? "");
+                        },
+                        child: Icon(
+                          Icons.paste,
+                          size: 22.0,
+                          color: AppColor.primary,
                         ),
-                        hintText: "signIn.enterMnemonicPhrase".tr(),
                       ),
+                      hint: "signIn.enterMnemonicPhrase".tr(),
+                      inputFormatters: [],
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: Observer(
-                        builder: (context) {
-                          return ElevatedButton(
-                            onPressed: signInStore.canSignIn
-                                ? () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      await signInStore.signIn();
-                                      if (signInStore.isSuccess)
-                                        await profile.getProfileMe();
-                                      else {
-                                        signInStore.onSuccess(false);
-                                        _errorMessage(
-                                            context, signInStore.error);
-                                        return;
-                                      }
-                                      if (profile.error.isEmpty)
-                                        await signInStore.signInWallet();
-                                      else {
-                                        _errorMessage(context, profile.error);
-                                        return;
-                                      }
-                                      if (signInStore.isSuccess &&
-                                          signInStore.error.isEmpty) {
-                                        Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          PinCodePage.routeName,
-                                          (_) => false,
-                                        );
-                                      } else {
-                                        // signInStore.onSuccess(false);
-                                        _errorMessage(
-                                            context, signInStore.error);
-                                        if (signInStore.errorMessage ==
-                                            "unconfirmed") {
-                                          print("error");
-                                          Navigator.pushNamed(
-                                              context, ConfirmEmail.routeName,
-                                              arguments:
-                                                  signInStore.getUsername());
+                    child: Observer(
+                      builder: (context) {
+                        return LoginButton(
+                          onTap: signInStore.canSignIn
+                              ? signInStore.isLoading
+                                  ? () {}
+                                  : () async {
+                                      if (_formKey.currentState!.validate()) {
+                                        await signInStore.signIn();
+                                        if (signInStore.isSuccess)
+                                          await profile.getProfileMe();
+                                        else {
+                                          signInStore.onSuccess(false);
+                                          _errorMessage(context, signInStore.error);
+                                          return;
+                                        }
+                                        if (profile.error.isEmpty)
+                                          await signInStore.signInWallet();
+                                        else {
+                                          _errorMessage(context, profile.error);
+                                          return;
+                                        }
+                                        if (signInStore.isSuccess &&
+                                            signInStore.error.isEmpty) {
+                                          await AlertDialogUtils.showSuccessDialog(context);
+                                          Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            PinCodePage.routeName,
+                                            (_) => false,
+                                          );
+                                        } else {
+                                          // signInStore.onSuccess(false);
+                                          _errorMessage(context, signInStore.error);
+                                          if (signInStore.errorMessage == "unconfirmed") {
+                                            print("error");
+                                            await AlertDialogUtils.showSuccessDialog(context);
+                                            Navigator.pushNamed(
+                                                context, ConfirmEmail.routeName,
+                                                arguments: signInStore.getUsername());
+                                          }
                                         }
                                       }
                                     }
-                                  }
-                                : null,
-                            child: signInStore.isLoading
-                                ? CircularProgressIndicator.adaptive()
-                                : Text(
-                                    "signIn.login".tr(),
-                                  ),
-                          );
-                        },
-                      ),
+                              : null,
+                          title: "signIn.login".tr(),
+                          enabled: signInStore.isLoading,
+                        );
+                      },
                     ),
                   ),
                   Padding(
@@ -297,8 +298,7 @@ class SignInPage extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10.0),
                           child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(
-                                  context, SignUpPage.routeName);
+                              Navigator.pushNamed(context, SignUpPage.routeName);
                             },
                             child: Text(
                               "signIn.signUp".tr(),
@@ -440,8 +440,7 @@ class SignInPage extends StatelessWidget {
                 preferredControlTintColor: Colors.white,
                 barCollapsingEnabled: true,
                 entersReaderIfAvailable: false,
-                dismissButtonStyle:
-                    SafariViewControllerDismissButtonStyle.close,
+                dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
               ),
             )
         // } catch (e) {

@@ -35,6 +35,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         statePin = StatePinCode.Check;
         canCheckBiometrics = await auth.canCheckBiometrics;
         if (canCheckBiometrics) {
+
           bool didAuthenticate = await auth.authenticate(
             localizedReason: 'Login authorization',
           );
@@ -121,6 +122,8 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       this.onLoading();
       if (isBiometric) {
         pin = "";
+        startAnimation = true;
+        await Future.delayed(const Duration(seconds: 1));
       } else {
         switch (statePin) {
           case StatePinCode.Create:
@@ -137,7 +140,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
             }
             await Storage.writePinCode(pin);
             startAnimation = true;
-            await Future.delayed(const Duration(seconds: 2));
+            await Future.delayed(const Duration(seconds: 1));
             break;
           case StatePinCode.Check:
             if (await Storage.readPinCode() != pin) {
@@ -152,7 +155,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
               return;
             }
             startAnimation = true;
-            await Future.delayed(const Duration(seconds: 2));
+            await Future.delayed(const Duration(seconds: 1));
             break;
           case StatePinCode.ToLogin:
           // TODO: Handle this case.
@@ -181,6 +184,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       startAnimation = false;
       startSwitch = false;
     } catch (e) {
+      print('catch e');
       if (e.toString() == "Token invalid" ||
           e.toString() == "Session not found") {
         await Storage.deleteAllFromSecureStorage();

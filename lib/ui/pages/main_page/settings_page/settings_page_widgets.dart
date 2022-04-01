@@ -187,26 +187,31 @@ class MyProfileImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context, rootNavigator: true)
-            .pushNamed(UserProfile.routeName);
+        Navigator.of(context, rootNavigator: true).pushNamed(UserProfile.routeName);
       },
       child: Container(
         height: 150.0,
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(
-              userStore.userData!.avatar?.url ??
-                  "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-            ),
-            fit: BoxFit.cover,
-          ),
-          color: Colors.blue,
+          // color: Colors.blue,
           borderRadius: BorderRadius.circular(
             6.0,
           ),
         ),
         child: Stack(
           children: [
+            Positioned.fill(
+                child: FadeInImage(
+                  width: MediaQuery.of(context).size.width,
+                  height: 300,
+                  placeholder: AssetImage('assets/blue_back.jpeg'),
+                  image: NetworkImage(
+                    userStore.userData!.avatar?.url ??
+                        "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                  ),
+                  fit: BoxFit.cover,
+                )
+
+                ),
             Positioned(
               bottom: 16.0,
               left: 16.0,

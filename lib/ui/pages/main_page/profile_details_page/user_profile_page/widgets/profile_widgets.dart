@@ -6,6 +6,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/animation_show_more.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:app/ui/widgets/user_rating.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../../constants.dart';
 import '../../../../../../enums.dart';
 
 ///Portfolio Widget
@@ -34,10 +36,7 @@ class PortfolioWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Map<String, dynamic> arguments = {
-          "index": index,
-          "isProfileYour": isProfileYour
-        };
+        Map<String, dynamic> arguments = {"index": index, "isProfileYour": isProfileYour};
         Navigator.pushNamed(
           context,
           PortfolioDetails.routeName,
@@ -98,7 +97,7 @@ class PortfolioWidget extends StatelessWidget {
 }
 
 ///Reviews Widget
-class ReviewsWidget extends StatelessWidget {
+class ReviewsWidget extends StatefulWidget {
   final String avatar;
   final String name;
   final int mark;
@@ -126,6 +125,13 @@ class ReviewsWidget extends StatelessWidget {
   });
 
   @override
+  State<ReviewsWidget> createState() => _ReviewsWidgetState();
+}
+
+class _ReviewsWidgetState extends State<ReviewsWidget> {
+  bool enabled = false;
+
+  @override
   Widget build(BuildContext context) {
     final profile = context.read<ProfileMeStore>();
     final portfolioStore = context.read<PortfolioStore>();
@@ -139,11 +145,6 @@ class ReviewsWidget extends StatelessWidget {
           ),
         ),
         Container(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-            bottom: 15.0,
-          ),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(
@@ -154,121 +155,125 @@ class ReviewsWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              GestureDetector(
-                onTap: () async {
-                  if (id != profile.userData!.id)
-                    await profile.getAssignedWorker(id);
-                  else
-                    profile.assignedWorker = profile.userData!;
-                  if (profile.assignedWorker != null) {
-                    portfolioStore.clearData();
-                    await Navigator.of(context, rootNavigator: true).pushNamed(
-                      UserProfile.routeName,
-                      arguments: profile.assignedWorker,
-                    );
-                    portfolioStore.clearData();
-                    if (role == UserRole.Worker)
-                      portfolioStore.getPortfolio(userId: myId, newList: true);
-                    else {
-                      userProfileStore.quests.clear();
-                      userProfileStore.getQuests(myId, role, true);
+              Flexible(
+                child: GestureDetector(
+                  onTap: () async {
+                    if (widget.id != profile.userData!.id)
+                      await profile.getAssignedWorker(widget.id);
+                    else
+                      profile.assignedWorker = profile.userData!;
+                    if (profile.assignedWorker != null) {
+                      portfolioStore.clearData();
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                        UserProfile.routeName,
+                        arguments: profile.assignedWorker,
+                      );
+                      portfolioStore.clearData();
+                      if (widget.role == UserRole.Worker)
+                        portfolioStore.getPortfolio(userId: widget.myId, newList: true);
+                      else {
+                        userProfileStore.quests.clear();
+                        userProfileStore.getQuests(widget.myId, widget.role, true);
+                      }
+                      portfolioStore.getReviews(userId: widget.myId, newList: true);
                     }
-                    portfolioStore.getReviews(userId: myId, newList: true);
-                  }
-                  profile.assignedWorker = null;
-                },
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(avatar),
-                  ),
-                  title: Text(
-                    name,
-                    style: TextStyle(fontSize: 16.0),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    userRole.tr(),
-                    style: TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
+                    profile.assignedWorker = null;
+                  },
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(widget.avatar),
+                    ),
+                    title: Text(
+                      widget.name,
+                      style: TextStyle(fontSize: 16.0),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      widget.userRole.tr(),
+                      style: TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
+                    ),
                   ),
                 ),
               ),
-              Row(
-                children: [
-                  for (int i = 0; i < mark; i++)
-                    Icon(
-                      Icons.star,
-                      color: Color(0xFFE8D20D),
-                      size: 19.0,
-                    ),
-                  for (int i = 0; i < 5 - mark; i++)
-                    Icon(
-                      Icons.star,
-                      color: Color(0xFFE9EDF2),
-                      size: 19.0,
-                    ),
-                  const SizedBox(width: 13),
-                  Text("$mark"),
-                ],
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    bottom: 15.0,
+                  ),
+                  child: Row(
+                    children: [
+                      for (int i = 0; i < widget.mark; i++)
+                        Icon(
+                          Icons.star,
+                          color: Color(0xFFE8D20D),
+                          size: 19.0,
+                        ),
+                      for (int i = 0; i < 5 - widget.mark; i++)
+                        Icon(
+                          Icons.star,
+                          color: Color(0xFFE9EDF2),
+                          size: 19.0,
+                        ),
+                      const SizedBox(width: 13),
+                      Text("${widget.mark}"),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(
-                height: 15,
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    bottom: 15.0,
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Quest    ",
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.questTitle,
+                          style: TextStyle(
+                            color: Color(0xFF7C838D),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "Quest    ",
-                      style: TextStyle(
-                        color: Colors.black,
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  bottom: 15.0,
+                ),
+                child: widget.message.length < 50
+                    ? Text(
+                        widget.message,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : AnimationShowMore(
+                        text: widget.message,
+                        enabled: enabled,
+                        onShowMore: (value) {
+                          setState(() {
+                            this.enabled = value;
+                          });
+                        },
                       ),
-                    ),
-                    TextSpan(
-                      text: questTitle,
-                      style: TextStyle(
-                        color: Color(0xFF7C838D),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                cutMessage,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              GestureDetector(
-                child: Text(
-                  "Show more",
-                  style: TextStyle(
-                    color: Color(0xFF0083C7),
-                  ),
-                ),
-                onTap: () => showMore(
-                  avatar,
-                  name,
-                  mark,
-                  userRole,
-                  questTitle,
-                  message,
-                  id,
-                  myId,
-                  role,
-                  last,
-                  context,
-                  profile,
-                  portfolioStore,
-                  userProfileStore,
-                ),
               ),
             ],
           ),
         ),
-        if (last)
+        if (widget.last)
           Container(
             height: 10,
             decoration: BoxDecoration(
@@ -278,182 +283,42 @@ class ReviewsWidget extends StatelessWidget {
       ],
     );
   }
-
-  showMore(
-    String avatar,
-    String name,
-    int mark,
-    String userRole,
-    String questTitle,
-    String message,
-    String id,
-    String myId,
-    UserRole role,
-    bool last,
-    BuildContext context,
-    ProfileMeStore profile,
-    PortfolioStore portfolioStore,
-    UserProfileStore userProfileStore,
-  ) {
-    showModalBottomSheet<void>(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(6.0),
-          topRight: Radius.circular(6.0),
-        ),
-      ),
-      backgroundColor: Colors.white,
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.only(
-            top: 20,
-            left: 16,
-            right: 16,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              GestureDetector(
-                onTap: () async {
-                  if (id != profile.userData!.id)
-                    await profile.getAssignedWorker(id);
-                  else
-                    profile.assignedWorker = profile.userData!;
-                  if (profile.assignedWorker != null) {
-                    portfolioStore.clearData();
-                    await Navigator.of(context, rootNavigator: true).pushNamed(
-                      UserProfile.routeName,
-                      arguments: profile.assignedWorker,
-                    );
-                    portfolioStore.clearData();
-                    if (role == UserRole.Worker)
-                      portfolioStore.getPortfolio(userId: myId, newList: true);
-                    else {
-                      userProfileStore.quests.clear();
-                      userProfileStore.getQuests(myId, role, true);
-                    }
-                    portfolioStore.getReviews(userId: myId, newList: true);
-                  }
-                  profile.assignedWorker = null;
-                },
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(avatar),
-                  ),
-                  title: Text(
-                    name,
-                    style: TextStyle(fontSize: 16.0),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    userRole.tr(),
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      color: Color(0xFF00AA5B),
-                    ),
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  for (int i = 0; i < mark; i++)
-                    Icon(
-                      Icons.star,
-                      color: Color(0xFFE8D20D),
-                      size: 19.0,
-                    ),
-                  for (int i = 0; i < 5 - mark; i++)
-                    Icon(
-                      Icons.star,
-                      color: Color(0xFFE9EDF2),
-                      size: 19.0,
-                    ),
-                  const SizedBox(width: 13),
-                  Text("$mark"),
-                ],
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "Quest    ",
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                    TextSpan(
-                      text: questTitle,
-                      style: TextStyle(
-                        color: Color(0xFF7C838D),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Expanded(
-                child: ListView(
-                  children: [
-                    Text(
-                      message,
-                      softWrap: true,
-                      textAlign: TextAlign.start,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 }
 
 ///AppBar Title
 Widget appBarTitle(String name, double padding, int status, double width) {
-  return Container(
-    child: AnimatedPadding(
-      padding: EdgeInsets.only(left: padding),
-      duration: Duration(milliseconds: 100),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: status != 3 ? 18.0 : 0.0,
-            left: 0.0,
-            child: Container(
-              width: width,
-              child: Text(
-                name,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
-                ),
-                overflow: TextOverflow.ellipsis,
+  return Padding(
+    padding: EdgeInsets.only(left: padding),
+    child: Stack(
+      children: [
+        Positioned(
+          bottom: status != 3 ? 18.0 : 0.0,
+          left: 0.0,
+          child: Container(
+            width: width,
+            child: Text(
+              name,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          if (status != 3)
-            Positioned(
-              bottom: 0.0,
-              left: 0.0,
-              child: Container(
-                // padding: EdgeInsets.symmetric(
-                //   horizontal: 5.0,
-                //   vertical: 2.0,
-                // ),
-                child: UserRating(status),
-              ),
+        ),
+        if (status != 3)
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            child: Container(
+              // padding: EdgeInsets.symmetric(
+              //   horizontal: 5.0,
+              //   vertical: 2.0,
+              // ),
+              child: UserRating(status),
             ),
-        ],
-      ),
+          ),
+      ],
     ),
   );
 }
@@ -544,8 +409,7 @@ Widget employerRating({
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (userId != profile.userData!.id &&
-                        completedQuests != "0") {
+                    if (userId != profile.userData!.id && completedQuests != "0") {
                       // profile.offset = 0;
                       // profile.setUserId(userId);
                       // await profile.getCompletedQuests();
@@ -562,8 +426,7 @@ Widget employerRating({
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: userId != profile.userData!.id &&
-                              completedQuests != "0"
+                      color: userId != profile.userData!.id && completedQuests != "0"
                           ? Color(0xFF00AA5B)
                           : Color(0xFFF7F8FA),
                       fontSize: 12.0,
@@ -682,9 +545,8 @@ Widget workerQuestStats({
               child: Text(
                 thirdLine.tr(),
                 style: TextStyle(
-                  decoration: title == "quests.activeQuests"
-                      ? TextDecoration.underline
-                      : null,
+                  decoration:
+                      title == "quests.activeQuests" ? TextDecoration.underline : null,
                   color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
                 ),
@@ -1041,6 +903,52 @@ Widget contactDetails({
 }
 
 ///Skills widget
+class SkillsWidget extends StatefulWidget {
+  final isExpanded;
+  final isProfileMy;
+  final List<String>? skills;
+  final Function(bool) onPressed;
+
+  SkillsWidget({
+    Key? key,
+    required this.isProfileMy,
+    required this.isExpanded,
+    required this.onPressed,
+    required this.skills,
+  }) : super(key: key);
+
+  @override
+  _SkillsWidgetState createState() => _SkillsWidgetState();
+}
+
+class _SkillsWidgetState extends State<SkillsWidget>
+    with TickerProviderStateMixin<SkillsWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AnimatedSize(
+          duration: const Duration(milliseconds: 500),
+          alignment: Alignment.topCenter,
+          child: skills(
+            isProfileMy: widget.isProfileMy,
+            skills: widget.isExpanded ? widget.skills : widget.skills!.sublist(0, 5),
+            context: context,
+          ),
+        ),
+        if (!widget.isExpanded)
+          TextButton(
+            child: const Text('Show more'),
+            onPressed: () {
+              print('onPressed isExpanded: ${widget.isExpanded}');
+              widget.onPressed.call(!widget.isExpanded);
+            },
+          )
+      ],
+    );
+  }
+}
 
 Widget skills({
   required List<String>? skills,

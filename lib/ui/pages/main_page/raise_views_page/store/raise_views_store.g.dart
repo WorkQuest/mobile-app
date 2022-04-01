@@ -77,6 +77,20 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
     });
   }
 
+  final _$raiseProfileAsyncAction = AsyncAction('_RaiseViewStore.raiseProfile');
+
+  @override
+  Future<void> raiseProfile() {
+    return _$raiseProfileAsyncAction.run(() => super.raiseProfile());
+  }
+
+  final _$raiseQuestAsyncAction = AsyncAction('_RaiseViewStore.raiseQuest');
+
+  @override
+  Future<void> raiseQuest(String questId) {
+    return _$raiseQuestAsyncAction.run(() => super.raiseQuest(questId));
+  }
+
   final _$_RaiseViewStoreActionController =
       ActionController(name: '_RaiseViewStore');
 
@@ -103,7 +117,18 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
   }
 
   @override
-  void changePeriod(int? value) {
+  void initPrice() {
+    final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
+        name: '_RaiseViewStore.initPrice');
+    try {
+      return super.initPrice();
+    } finally {
+      _$_RaiseViewStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic changePeriod(int? value) {
     final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
         name: '_RaiseViewStore.changePeriod');
     try {
@@ -114,7 +139,7 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
   }
 
   @override
-  void changeLevel(int? value) {
+  dynamic changeLevel(int? value) {
     final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
         name: '_RaiseViewStore.changeLevel');
     try {

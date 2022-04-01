@@ -11,9 +11,9 @@ final _divider = const SizedBox(
 );
 
 class RaiseViews extends StatelessWidget {
-  RaiseViews(this.skip);
+  RaiseViews(this.questId);
 
-  final bool skip;
+  final String questId;
 
   static const String routeName = "/raiseViewsPage";
 
@@ -27,19 +27,21 @@ class RaiseViews extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.of(context, rootNavigator: true)
-                  .pushNamed(PaymentPage.routeName);
+                  .pushNamed(PaymentPage.routeName, arguments: questId);
             },
             child: Text(
-              "Go to payment",
+              "Go to the payment",
             ),
           ),
         ],
         body: CustomScrollView(
           slivers: [
             CupertinoSliverNavigationBar(
-              trailing: skip
+              trailing: questId.isNotEmpty
                   ? TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                       child: Text("Skip"),
                     )
                   : SizedBox(),
@@ -64,22 +66,22 @@ class RaiseViews extends StatelessWidget {
                       ),
                     ),
                     _divider,
-                    periodCard(
+                    _PeriodCard(
                       period: "For 1 day",
                       groupValue: raiseViewStore.periodGroupValue,
                       value: 1,
                       onChanged: raiseViewStore.changePeriod,
                     ),
                     _divider,
-                    periodCard(
-                      period: "For 5 days",
+                    _PeriodCard(
+                      period: "For 7 days",
                       groupValue: raiseViewStore.periodGroupValue,
                       value: 2,
                       onChanged: raiseViewStore.changePeriod,
                     ),
                     _divider,
-                    periodCard(
-                      period: "For 7 days",
+                    _PeriodCard(
+                      period: "For 30 days",
                       groupValue: raiseViewStore.periodGroupValue,
                       value: 3,
                       onChanged: raiseViewStore.changePeriod,
@@ -87,7 +89,6 @@ class RaiseViews extends StatelessWidget {
                     const SizedBox(
                       height: 25.0,
                     ),
-
                     Text(
                       "raising-views.chooseLevel".tr(),
                       style: TextStyle(
@@ -95,10 +96,8 @@ class RaiseViews extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-
                     _divider,
-
-                    levelCard(
+                    _LevelCard(
                         value: 1,
                         onChanged: raiseViewStore.changeLevel,
                         groupValue: raiseViewStore.levelGroupValue,
@@ -115,8 +114,7 @@ class RaiseViews extends StatelessWidget {
                             "Plus the ability to choose any category and any "
                             "location to promote the quest."),
                     _divider,
-
-                    levelCard(
+                    _LevelCard(
                       value: 2,
                       groupValue: raiseViewStore.levelGroupValue,
                       onChanged: raiseViewStore.changeLevel,
@@ -132,7 +130,7 @@ class RaiseViews extends StatelessWidget {
                           " and three locations to promote the quest.",
                     ),
                     _divider,
-                    levelCard(
+                    _LevelCard(
                       value: 3,
                       onChanged: raiseViewStore.changeLevel,
                       groupValue: raiseViewStore.levelGroupValue,
@@ -146,8 +144,7 @@ class RaiseViews extends StatelessWidget {
                           "for promotion the quest.",
                     ),
                     _divider,
-
-                    levelCard(
+                    _LevelCard(
                       value: 4,
                       groupValue: raiseViewStore.levelGroupValue,
                       onChanged: raiseViewStore.changeLevel,
@@ -169,96 +166,123 @@ class RaiseViews extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget periodCard({
-    required String period,
-    required int value,
-    required int groupValue,
-    required void Function(int?)? onChanged,
-  }) =>
-      Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFF7F8FA),
-          borderRadius: BorderRadius.circular(6.0),
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: 15.0,
-        ),
-        child: RadioListTile(
-          value: value,
-          groupValue: groupValue,
-          onChanged: onChanged,
-          contentPadding: EdgeInsets.zero,
-          title: Text(
-            period,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 16.0,
-            ),
+class _PeriodCard extends StatelessWidget {
+  final String period;
+  final int value;
+  final int groupValue;
+  final Function(int?)? onChanged;
+
+  const _PeriodCard({
+    Key? key,
+    required this.period,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFFF7F8FA),
+        borderRadius: BorderRadius.circular(6.0),
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: 15.0,
+      ),
+      child: RadioListTile(
+        value: value,
+        groupValue: groupValue,
+        onChanged: onChanged,
+        contentPadding: EdgeInsets.zero,
+        title: Text(
+          period,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16.0,
           ),
         ),
-      );
+      ),
+    );
+  }
+}
 
-  Widget levelCard({
-    required int value,
-    required int groupValue,
-    required void Function(int?)? onChanged,
-    required Color color,
-    required String price,
-    required String level,
-    required String description,
-  }) =>
-      Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFF7F8FA),
-          borderRadius: BorderRadius.circular(6.0),
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: 15.0,
-        ),
-        child: Column(
-          children: [
-            RadioListTile(
-              value: value,
-              groupValue: groupValue,
-              onChanged: onChanged,
-              contentPadding: EdgeInsets.zero,
-              title: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 5.0,
-                      vertical: 2.0,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3.0),
-                      color: color,
-                    ),
-                    child: Text(
-                      level,
-                      style: TextStyle(color: Colors.white),
-                    ),
+class _LevelCard extends StatelessWidget {
+  final int value;
+  final int groupValue;
+  final Function(int?)? onChanged;
+  final Color color;
+  final String price;
+  final String level;
+  final String description;
+
+  const _LevelCard({
+    Key? key,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
+    required this.color,
+    required this.price,
+    required this.level,
+    required this.description,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFFF7F8FA),
+        borderRadius: BorderRadius.circular(6.0),
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: 15.0,
+      ),
+      child: Column(
+        children: [
+          RadioListTile(
+            value: value,
+            groupValue: groupValue,
+            onChanged: onChanged,
+            contentPadding: EdgeInsets.zero,
+            title: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 5.0,
+                    vertical: 2.0,
                   ),
-                  Spacer(),
-                  Text(
-                    price,
-                    style: TextStyle(
-                      fontSize: 17.0,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3.0),
+                    color: color,
                   ),
-                ],
-              ),
+                  child: Text(
+                    level,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  price,
+                  style: TextStyle(
+                    fontSize: 17.0,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 10.0),
-              child: Text(description),
-            ),
-            const SizedBox(
-              height: 15.0,
-            ),
-          ],
-        ),
-      );
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 10.0),
+            child: Text(description),
+          ),
+          const SizedBox(
+            height: 15.0,
+          ),
+        ],
+      ),
+    );
+  }
 }

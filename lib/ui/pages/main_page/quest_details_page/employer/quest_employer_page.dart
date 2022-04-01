@@ -5,7 +5,7 @@ import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart'
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -615,7 +615,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   ),
                 ),
                 if (respond.worker.ratingStatistic?.status != null)
-                  UserRating(respond.worker.ratingStatistic!.status),
+                  UserRating(respond.worker.ratingStatistic!.status, isWorker: true,),
               ],
             ),
           ),

@@ -1,3 +1,4 @@
+import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
@@ -24,6 +25,12 @@ class SignUpPage extends StatelessWidget {
   static const String routeName = '/signUpPage';
   final _signUpPageFormKey = GlobalKey<FormState>();
 
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _passwordRepeatController = TextEditingController();
+
   SignUpPage();
 
   @override
@@ -39,10 +46,7 @@ class SignUpPage extends StatelessWidget {
       body: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
         child: SizedBox(
-          height: mq.size.height -
-              kToolbarHeight -
-              mq.padding.top -
-              mq.padding.bottom,
+          height: mq.size.height - kToolbarHeight - mq.padding.top - mq.padding.bottom,
           child: AutofillGroup(
             child: Form(
               key: _signUpPageFormKey,
@@ -61,104 +65,105 @@ class SignUpPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: _padding.copyWith(top: 30.0),
-                    child: TextFormField(
-                      textCapitalization: TextCapitalization.sentences,
+                    child: DefaultTextField(
+                      controller: _firstNameController,
                       onChanged: store.setFirstName,
-                      decoration: InputDecoration(
-                        prefixIconConstraints: _prefixConstraints,
-                        prefixIcon: SvgPicture.asset(
-                          "assets/user.svg",
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        hintText: "labels.firstName".tr(),
+                      keyboardType: TextInputType.name,
+                      prefixIconConstraints: _prefixConstraints,
+                      prefixIcon: SvgPicture.asset(
+                        "assets/user.svg",
+                        color: Theme.of(context).iconTheme.color,
                       ),
+                      hint: "labels.firstName".tr(),
+                      inputFormatters: [],
+                      suffixIcon: null,
                     ),
                   ),
                   Padding(
                     padding: _padding,
-                    child: TextFormField(
-                      textCapitalization: TextCapitalization.sentences,
+                    child: DefaultTextField(
+                      controller: _lastNameController,
+                      keyboardType: TextInputType.name,
                       onChanged: store.setLastName,
-                      decoration: InputDecoration(
-                        prefixIconConstraints: _prefixConstraints,
-                        prefixIcon: SvgPicture.asset(
-                          "assets/user.svg",
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        hintText: "labels.lastName".tr(),
+                      prefixIconConstraints: _prefixConstraints,
+                      prefixIcon: SvgPicture.asset(
+                        "assets/user.svg",
+                        color: Theme.of(context).iconTheme.color,
                       ),
+                      hint: "labels.lastName".tr(),
+                      inputFormatters: [],
+                      suffixIcon: null,
                     ),
                   ),
                   Padding(
                     padding: _padding,
-                    child: TextFormField(
+                    child: DefaultTextField(
+                      controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       onChanged: store.setEmail,
                       validator: Validators.emailValidator,
-                      decoration: InputDecoration(
-                        prefixIconConstraints: _prefixConstraints,
-                        prefixIcon: SizedBox(
-                          height: 15,
-                          width: 15,
-                          child: SvgPicture.asset(
-                            "assets/email_icon.svg",
-                            fit: BoxFit.contain,
-                            color: Theme.of(context).iconTheme.color,
-                          ),
+                      prefixIconConstraints: _prefixConstraints,
+                      prefixIcon: SizedBox(
+                        height: 15,
+                        width: 15,
+                        child: SvgPicture.asset(
+                          "assets/email_icon.svg",
+                          fit: BoxFit.contain,
+                          color: Theme.of(context).iconTheme.color,
                         ),
-                        hintText: "signUp.email".tr(),
                       ),
+                      hint: "signUp.email".tr(),
+                      inputFormatters: [],
+                      suffixIcon: null,
                     ),
                   ),
                   Padding(
                     padding: _padding,
-                    child: TextFormField(
-                      obscureText: true,
+                    child: DefaultTextField(
+                      controller: _passwordController,
+                      isPassword: true,
                       validator: Validators.signUpPasswordValidator,
                       onChanged: store.setPassword,
-                      decoration: InputDecoration(
-                        prefixIconConstraints: _prefixConstraints,
-                        hintText: "signUp.password".tr(),
-                        prefixIcon: SvgPicture.asset(
-                          "assets/lock.svg",
-                          color: Theme.of(context).iconTheme.color,
-                        ),
+                      prefixIconConstraints: _prefixConstraints,
+                      hint: "signUp.password".tr(),
+                      prefixIcon: SvgPicture.asset(
+                        "assets/lock.svg",
+                        color: Theme.of(context).iconTheme.color,
                       ),
+                      inputFormatters: [],
+                      suffixIcon: null,
                     ),
                   ),
                   Padding(
                     padding: _padding,
-                    child: TextFormField(
-                      obscureText: true,
+                    child: DefaultTextField(
+                      controller: _passwordRepeatController,
+                      isPassword: true,
                       validator: store.signUpConfirmPasswordValidator,
                       onChanged: store.setConfirmPassword,
-                      decoration: InputDecoration(
-                        prefixIcon: SvgPicture.asset(
-                          "assets/lock.svg",
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        prefixIconConstraints: _prefixConstraints,
-                        hintText: "signUp.confirmPassword".tr(),
+                      prefixIcon: SvgPicture.asset(
+                        "assets/lock.svg",
+                        color: Theme.of(context).iconTheme.color,
                       ),
+                      prefixIconConstraints: _prefixConstraints,
+                      hint: "signUp.confirmPassword".tr(),
+                      inputFormatters: [],
+                      suffixIcon: null,
                     ),
                   ),
                   Padding(
                     padding: _padding.copyWith(top: 30.0),
                     child: ObserverListener<SignUpStore>(
                       onSuccess: () {
-                        Navigator.pushNamed(
-                          context,
-                          ConfirmEmail.routeName,
-                          arguments: store.email
-                        );
+                        Navigator.pushNamed(context, ConfirmEmail.routeName,
+                            arguments: store.email);
                       },
                       child: Observer(
                         builder: (context) {
                           return ElevatedButton(
                             onPressed: store.canSignUp
                                 ? () async {
-                                    if (_signUpPageFormKey.currentState!
-                                        .validate()) {
+                                    if (_signUpPageFormKey.currentState!.validate()) {
                                       await store.register();
                                     }
                                   }

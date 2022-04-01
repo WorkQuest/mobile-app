@@ -2,11 +2,15 @@ import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:mobx/mobx.dart';
 import "package:provider/provider.dart";
+
+import '../../../../../constants.dart';
 
 class FilterQuestsPage extends StatefulWidget {
   const FilterQuestsPage(this.filters);
@@ -23,12 +27,22 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
   FilterQuestsStore? storeFilter;
   ProfileMeStore? profile;
   late final QuestsStore storeQuest;
+  late TextEditingController fromPriceController;
+  late TextEditingController toPriceController;
 
   @override
   void initState() {
     storeFilter = context.read<FilterQuestsStore>();
     profile = context.read<ProfileMeStore>();
     storeQuest = context.read<QuestsStore>();
+    fromPriceController = TextEditingController(text: storeQuest.fromPrice)
+      ..addListener(() {
+        storeFilter!.setFromPrice(fromPriceController.text);
+      });
+    toPriceController = TextEditingController(text: storeQuest.toPrice)
+      ..addListener(() {
+        storeFilter!.setToPrice(toPriceController.text);
+      });
     storeFilter!.getFilters(storeQuest.selectedSkill, widget.filters);
     // storeFilter!.initSkillFiltersValue(storeQuest.selectedSkillFilters);
     storeFilter!.initEmployments(storeQuest.employments);
@@ -41,31 +55,33 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
 
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      persistentFooterButtons: [
-        bottomButtons(),
-      ],
-      appBar: AppBar(
-        title: Text(
-          "quests.filter.btn".tr(),
-          style: TextStyle(
-            fontSize: 17,
-            color: Color(0xFF1D2127),
+    return DismissKeyboard(
+      child: Scaffold(
+        persistentFooterButtons: [
+          bottomButtons(),
+        ],
+        appBar: AppBar(
+          title: Text(
+            "quests.filter.btn".tr(),
+            style: TextStyle(
+              fontSize: 17,
+              color: Color(0xFF1D2127),
+            ),
+          ),
+          centerTitle: true,
+          leading: Row(
+            children: [
+              IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_sharp,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
           ),
         ),
-        centerTitle: true,
-        leading: Row(
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_sharp,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
+        body: getBody(),
       ),
-      body: getBody(),
     );
   }
 
@@ -83,7 +99,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
               )
             : ListView.builder(
                 cacheExtent: 2500,
-                itemCount: storeFilter!.skillFilters.length + 4,
+                itemCount: storeFilter!.skillFilters.length + 5,
                 addAutomaticKeepAlives: true,
                 itemBuilder: (context, index) {
                   return Column(
@@ -91,6 +107,89 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                     children: [
                       if (index == 0) _radioButton(),
                       if (index == 1)
+                        ExpansionTile(
+                          expandedAlignment: Alignment.topLeft,
+                          title: Text(
+                            "Price",
+                          ),
+                          childrenPadding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                          children: [
+                            Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'From',
+                                      style: TextStyle(fontSize: 14, color: Colors.black),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width / 2.3,
+                                      child: TextField(
+                                        controller: fromPriceController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                          hintText: '0 WUSD',
+                                          suffixIcon: IconButton(
+                                            splashRadius: 0.1,
+                                            onPressed: fromPriceController.clear,
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: AppColor.enabledButton,
+                                            ),
+                                          ),
+                                        ),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'^[0-9]*')),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                const Spacer(),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'To',
+                                      style: TextStyle(fontSize: 14, color: Colors.black),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width / 2.3,
+                                      child: TextFormField(
+                                        controller: toPriceController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                          hintText: '10000 WUSD',
+                                          suffixIcon: IconButton(
+                                            splashRadius: 0.1,
+                                            onPressed: toPriceController.clear,
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: AppColor.enabledButton,
+                                            ),
+                                          ),
+                                        ),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'^[0-9]*')),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      if (index == 2)
                         profile!.userData!.role == UserRole.Worker
                             ? Column(
                                 children: [
@@ -136,8 +235,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                     title: "quests.rating".tr(),
                                     list: storeFilter!.sortByEmployeeRating,
                                     selected: storeFilter!.selectEmployeeRating,
-                                    onChange:
-                                        storeFilter!.setSelectedEmployeeRating,
+                                    onChange: storeFilter!.setSelectedEmployeeRating,
                                   ),
                                   _checkButton(
                                     title: "settings.priority".tr(),
@@ -153,7 +251,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                   ),
                                 ],
                               ),
-                      if (index == 2)
+                      if (index == 3)
                         Padding(
                           padding: EdgeInsets.all(16.0),
                           child: Text(
@@ -163,10 +261,10 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                             ),
                           ),
                         ),
-                      if (index > 2 && index != 30)
+                      if (index > 3 && index != 31)
                         ExpansionCell(
-                          storeFilter!.skillFilters[index - 2]!,
-                          index - 2,
+                          storeFilter!.skillFilters[index - 3]!,
+                          index - 3,
                           storeQuest,
                           storeFilter!,
                         ),
@@ -192,9 +290,9 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                 storeQuest.setPriority(storeFilter!.getPriorityValue());
                 storeQuest.setSortBy(storeFilter!.getSortByValue());
                 storeQuest.setEmployeeRating(storeFilter!.getEmployeeRating());
+                storeQuest.setPrice(fromPriceController.text, toPriceController.text);
                 storeQuest.setSkillFilters(storeFilter!.selectedSkill);
-                storeQuest
-                    .setSelectedSkillFilters(storeFilter!.selectedSkillFilters);
+                storeQuest.setSelectedSkillFilters(storeFilter!.selectedSkillFilters);
                 profile!.userData!.role == UserRole.Employer
                     ? storeQuest.getWorkers(true)
                     : storeQuest.getQuests(true);
@@ -265,10 +363,10 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
   }) =>
       Observer(
         builder: (_) => ExpansionTile(
-          collapsedBackgroundColor: selected
-                  .firstWhere((element) => element == true, orElse: () => false)
-              ? Color(0xFF0083C7).withOpacity(0.1)
-              : Colors.white,
+          collapsedBackgroundColor:
+              selected.firstWhere((element) => element == true, orElse: () => false)
+                  ? Color(0xFF0083C7).withOpacity(0.1)
+                  : Colors.white,
           maintainState: true,
           title: Text(title),
           children: [
@@ -320,11 +418,9 @@ class _ExpansionCellState extends State<ExpansionCell> {
         Observer(
           builder: (_) => ExpansionTile(
             collapsedBackgroundColor:
-                widget.storeFilter.selectedSkillFilters[widget.index - 1] !=
-                        null
+                widget.storeFilter.selectedSkillFilters[widget.index - 1] != null
                     ? widget.storeFilter.selectedSkillFilters[widget.index - 1]!
-                            .firstWhere((element) => element == true,
-                                orElse: () => false)
+                            .firstWhere((element) => element == true, orElse: () => false)
                         ? Color(0xFF0083C7).withOpacity(0.1)
                         : Colors.white
                     : Colors.white,
@@ -357,8 +453,7 @@ class _ExpansionCellState extends State<ExpansionCell> {
       ),
       value: widget.storeFilter.selectedSkillFilters[widget.index - 1]![index],
       onChanged: (bool? value) {
-        widget.storeFilter.selectedSkillFilters[widget.index - 1]![index] =
-            value!;
+        widget.storeFilter.selectedSkillFilters[widget.index - 1]![index] = value!;
         if (value == true)
           widget.storeFilter.addSkill("$spec.$skill");
         else

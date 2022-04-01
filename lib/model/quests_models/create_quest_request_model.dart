@@ -11,7 +11,6 @@ class CreateQuestRequestModel  {
   String price;
   List media;
   List<String> specializationKeys;
-  int adType;
   String employment;
 
   CreateQuestRequestModel({
@@ -25,7 +24,6 @@ class CreateQuestRequestModel  {
     required this.media,
     required this.description,
     required this.price,
-    required this.adType,
   });
 
   Map<String, dynamic> toJson() {
@@ -39,7 +37,6 @@ class CreateQuestRequestModel  {
     questData['medias'] = this.media;
     questData['description'] = this.description;
     questData['price'] = this.price;
-    questData['adType'] = this.adType;
     questData['employment'] = this.employment;
     return questData;
   }
