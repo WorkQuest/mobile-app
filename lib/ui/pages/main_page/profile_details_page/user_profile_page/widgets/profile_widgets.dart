@@ -295,7 +295,7 @@ Widget appBarTitle(String name, double padding, int status, double width) {
     child: Stack(
       children: [
         Positioned(
-          bottom: status != 3 ? 18.0 : 0.0,
+          bottom: status == 3 ? 13.0 : 0.0,
           left: 0.0,
           child: Container(
             width: width,
