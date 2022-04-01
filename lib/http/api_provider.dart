@@ -94,13 +94,14 @@ extension LoginService on ApiProvider {
 }
 
 extension QuestService on ApiProvider {
-  Future<void> createQuest({
+  Future<String> createQuest({
     required CreateQuestRequestModel quest,
   }) async {
-    await httpClient.post(
+    final responseData = await httpClient.post(
       query: '/v1/quest/create',
       data: quest.toJson(),
     );
+    return responseData["id"];
   }
 
   Future<void> editQuest({
