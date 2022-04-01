@@ -48,7 +48,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
   late UserRole role;
   late bool isVerify;
 
-
   @override
   void dispose() {
     _streamController.close();
@@ -119,29 +118,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
   ]) {
     ScrollController _controller = ScrollController();
     return NotificationListener<ScrollEndNotification>(
-      // onNotification: (scrollNotification) {
-      //   if (scrollNotification.metrics.atEdge) if (scrollNotification
-      //           .metrics.pixels ==
-      //       scrollNotification.metrics.maxScrollExtent) {
-      //     if (widget.info == null) {
-      //       //on your own profile
-      //       if (role == UserRole.Worker)
-      //         portfolioStore!.getPortfolio(
-      //           userId: userStore!.userData!.id,
-      //         );
-      //       myQuests!.getQuests(userStore!.userData!.id, role, false);
-      //     } else {
-      //       //on another user profile
-      //       viewOtherUser!.getQuests(widget.info!.id, role, false);
-      //       if (role == UserRole.Worker)
-      //         portfolioStore!.getPortfolio(
-      //           userId: widget.info!.id,
-      //         );
-      //     }
-      //   }
-      //   setState(() {});
-      //   return false;
-      // },
       child: ListView(
         physics: NeverScrollableScrollPhysics(),
         controller: _controller,
@@ -176,7 +152,8 @@ class UserProfileState<T extends UserProfile> extends State<T>
           if (controllerMain.offset < 180) {
             double width = 240 + (controllerMain.offset.round() / 200 * 60);
             double appBarPosition = controllerMain.offset.round() / 200 * 28;
-            double appBarPositionVertical = (controllerMain.offset.round() / 200 * 10);
+            double appBarPositionVertical =
+                (controllerMain.offset.round() / 200 * 10);
             _streamController.sink.add(
                 AppBarParams(width, appBarPosition, appBarPositionVertical));
           }

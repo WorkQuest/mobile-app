@@ -258,7 +258,6 @@ class ShimmerWorkersItem extends StatelessWidget {
                   height: 61,
                   width: 61,
                   decoration: BoxDecoration(
-                    // shape: BoxShape.circle,
                     borderRadius: BorderRadius.circular(100),
                     color: Colors.white,
                   ),

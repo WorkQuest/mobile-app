@@ -8,7 +8,7 @@ import '../../../../../web3/service/client_service.dart';
 
 part 'raise_views_store.g.dart';
 
-@singleton
+@injectable
 class RaiseViewStore extends _RaiseViewStore with _$RaiseViewStore {
   RaiseViewStore(ApiProvider apiProvider) : super(apiProvider);
 }

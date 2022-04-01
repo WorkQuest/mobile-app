@@ -297,7 +297,8 @@
       "userLeftReviewAboutQuest": "User left review about quest",
       "waitWorker": "Wait worker",
       "waitConfirm": "Wait confirm",
-      "questEdited": "Quest edited"
+      "questEdited": "Quest edited",
+      "workerRespondedToQuest": "Worker responded to quest"
     },
     "youResponded": "You responded",
     "title": "Quest Title",
