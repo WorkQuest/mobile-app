@@ -23,6 +23,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_employer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_worker.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/store/open_dispute_store.dart';
@@ -767,7 +768,7 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: PortfolioDetails(
-                arguments: settings.arguments as Map<String, dynamic>,
+                arguments: settings.arguments as PortfolioArguments,
               ),
             ),
           ),

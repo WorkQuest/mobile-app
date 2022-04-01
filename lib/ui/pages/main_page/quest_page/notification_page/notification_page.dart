@@ -86,8 +86,10 @@ class _NotificationPageState extends State<NotificationPage> {
                             body: store.listOfNotifications[index],
                             onTap: () async {
                               final body = store.listOfNotifications[index];
-                              if (body.notification.data.user.id != profileMeStore.userData?.id) {
-                                await chatStore.getUserData(body.notification.data.user.id);
+                              if (body.notification.data.user.id !=
+                                  profileMeStore.userData?.id) {
+                                await chatStore.getUserData(
+                                    body.notification.data.user.id);
                               } else {
                                 chatStore.userData = profileMeStore.userData;
                               }
@@ -100,12 +102,16 @@ class _NotificationPageState extends State<NotificationPage> {
                                 chatStore.userData = null;
                               }
                             },
-                            onTabOk: () => store
-                                .deleteNotification(store.listOfNotifications[index].id),
+                            onTabOk: () => store.deleteNotification(
+                                store.listOfNotifications[index].id),
                             onTapPushQuest: () async {
-                              await store.getQuest(
-                                  store.listOfNotifications[index].notification.data.id);
-                              await Navigator.of(context, rootNavigator: true).pushNamed(
+                              await store.getQuest(store
+                                  .listOfNotifications[index]
+                                  .notification
+                                  .data
+                                  .id);
+                              await Navigator.of(context, rootNavigator: true)
+                                  .pushNamed(
                                 QuestDetails.routeName,
                                 arguments: store.quest,
                               );

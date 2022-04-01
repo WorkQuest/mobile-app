@@ -84,7 +84,6 @@ extension LoginService on ApiProvider {
       final responseData = await httpClient.post(
         query: '/v1/auth/refresh-tokens',
       );
-      print('qweasdasdsadasdas: ${responseData.toString()}');
       BearerToken bearerToken = BearerToken.fromJson(
         responseData,
       );

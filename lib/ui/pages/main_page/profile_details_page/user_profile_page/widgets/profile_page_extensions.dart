@@ -9,12 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../../../../../enums.dart';
-
 extension CustomAppBar on UserProfileState {
-
-  Widget sliverAppBar(ProfileMeResponse? info, StreamController<AppBarParams> streamController) {
-    final String standartImage = 'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
+  Widget sliverAppBar(ProfileMeResponse? info,
+      StreamController<AppBarParams> streamController) {
+    final String standartImage =
+        'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
     final mark = info == null
         ? userStore!.userData!.ratingStatistic!.averageMark
         : info.ratingStatistic!.averageMark;
@@ -62,8 +61,12 @@ extension CustomAppBar on UserProfileState {
             children: [
               Image.network(
                 info == null
-                    ? userStore!.userData!.avatar != null ? userStore!.userData!.avatar!.url ?? standartImage : standartImage
-                    : info.avatar != null ? info.avatar!.url ?? standartImage : standartImage,
+                    ? userStore!.userData!.avatar != null
+                        ? userStore!.userData!.avatar!.url ?? standartImage
+                        : standartImage
+                    : info.avatar != null
+                        ? info.avatar!.url ?? standartImage
+                        : standartImage,
                 fit: BoxFit.cover,
               ),
               Positioned(
@@ -123,7 +126,7 @@ extension CustomAppBar on UserProfileState {
             info == null
                 ? userStore!.userData!.ratingStatistic?.status ?? 3
                 : info.ratingStatistic?.status ?? 3,
-              snapshot.data!.width,
+            snapshot.data!.width,
           ),
         ),
       ),
@@ -136,11 +139,16 @@ extension ReviewsTab on UserProfileState {
         SizedBox(
           height: 20,
         ),
-        portfolioStore!.reviewsList.isNotEmpty
-            ? Observer(
-                builder: (_) => Column(
+        Observer(
+          builder: (_) => portfolioStore!.reviewsList.isNotEmpty
+              ? Column(
                   children: [
-                    for (int index = 0; index < 3; index++)
+                    for (int index = 0;
+                        index <
+                            (portfolioStore!.reviewsList.length < 3
+                                ? portfolioStore!.reviewsList.length
+                                : 3);
+                        index++)
                       ReviewsWidget(
                         avatar: portfolioStore!
                                 .reviewsList[index].fromUser.avatar?.url ??
@@ -197,14 +205,14 @@ extension ReviewsTab on UserProfileState {
                       ),
                     ),
                   ],
+                )
+              : Center(
+                  child: Text(
+                    widget.info == null
+                        ? "quests.noReview".tr()
+                        : "quests.noReviewForOtherUser".tr(),
+                  ),
                 ),
-              )
-            : Center(
-                child: Text(
-                  widget.info == null
-                      ? "quests.noReview".tr()
-                      : "quests.noReviewForOtherUser".tr(),
-                ),
-              ),
+        ),
       ];
 }

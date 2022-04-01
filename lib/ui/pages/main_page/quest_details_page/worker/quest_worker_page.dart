@@ -67,6 +67,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           onPressed: () {
             store.onStar();
             myQuestStore.deleteQuest(store.quest.value!);
+            myQuestStore.addQuest(
+              store.quest.value!,
+              store.quest.value!.star ? true : false,
+            );
             store.quest.value!.star
                 ? myQuestStore.setStar(store.quest.value!, false)
                 : myQuestStore.setStar(store.quest.value!, true);
@@ -156,7 +160,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               Expanded(
                 child: Text(
                   "${widget.questInfo.price} WUSD",
-                  // textAlign: TextAlign.end,
                   overflow: TextOverflow.fade,
                   style: const TextStyle(
                     color: Color(0xFF00AA5B),
@@ -165,14 +168,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   ),
                 ),
               ),
-              // PriorityView(widget.questInfo.priority, true),
             ],
           ),
           const SizedBox(height: 20),
           Observer(
             builder: (_) => !store.response &&
-                    (widget.questInfo.status == 0 ||
-                        widget.questInfo.status == 4) &&
+                    widget.questInfo.status == 0 &&
                     widget.questInfo.invited == null
                 ? store.isLoading
                     ? Center(
@@ -404,10 +405,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       Navigator.pop(context);
                       await AlertDialogUtils.showSuccessDialog(context);
                     }
-                    // successAlert(
-                    //   context,
-                    //   "modals.requestSend".tr(),
-                    // );
                   }
                 : null,
             child: Text(
@@ -545,10 +542,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             Navigator.pop(context);
             Navigator.pop(context);
             await AlertDialogUtils.showSuccessDialog(context);
-            // successAlert(
-            //   context,
-            //   "quests.answerOnQuest.questCompleted".tr(),
-            // );
           },
           child: Text(
             "quests.completeTheQuest".tr(),

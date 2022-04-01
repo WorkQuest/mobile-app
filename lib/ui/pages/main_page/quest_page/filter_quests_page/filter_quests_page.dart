@@ -204,9 +204,6 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                     list: storeFilter!.sortByEmployment,
                                     selected: storeFilter!.selectEmployment,
                                     onChange: (bool? value, int index) {
-                                      print("TAG");
-                                      print(value);
-                                      print(index);
                                       storeFilter!.setSelectedEmployment(
                                         value,
                                         index,

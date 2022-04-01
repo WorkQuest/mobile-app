@@ -15,7 +15,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../constants.dart';
 import '../../../../../../enums.dart';
 
 ///Portfolio Widget
@@ -36,11 +35,10 @@ class PortfolioWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Map<String, dynamic> arguments = {"index": index, "isProfileYour": isProfileYour};
         Navigator.pushNamed(
           context,
           PortfolioDetails.routeName,
-          arguments: arguments,
+          arguments: PortfolioArguments(index, isProfileYour),
         );
       },
       child: Padding(
@@ -164,18 +162,22 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                       profile.assignedWorker = profile.userData!;
                     if (profile.assignedWorker != null) {
                       portfolioStore.clearData();
-                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(
                         UserProfile.routeName,
                         arguments: profile.assignedWorker,
                       );
                       portfolioStore.clearData();
                       if (widget.role == UserRole.Worker)
-                        portfolioStore.getPortfolio(userId: widget.myId, newList: true);
+                        portfolioStore.getPortfolio(
+                            userId: widget.myId, newList: true);
                       else {
                         userProfileStore.quests.clear();
-                        userProfileStore.getQuests(widget.myId, widget.role, true);
+                        userProfileStore.getQuests(
+                            widget.myId, widget.role, true);
                       }
-                      portfolioStore.getReviews(userId: widget.myId, newList: true);
+                      portfolioStore.getReviews(
+                          userId: widget.myId, newList: true);
                     }
                     profile.assignedWorker = null;
                   },
@@ -190,7 +192,8 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                     ),
                     subtitle: Text(
                       widget.userRole.tr(),
-                      style: TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
+                      style:
+                          TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
                     ),
                   ),
                 ),
@@ -311,10 +314,6 @@ Widget appBarTitle(String name, double padding, int status, double width) {
             bottom: 0.0,
             left: 0.0,
             child: Container(
-              // padding: EdgeInsets.symmetric(
-              //   horizontal: 5.0,
-              //   vertical: 2.0,
-              // ),
               child: UserRating(status),
             ),
           ),
@@ -323,46 +322,7 @@ Widget appBarTitle(String name, double padding, int status, double width) {
   );
 }
 
-// Widget tag({required String text, required Color color}) => Container(
-//       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-//       decoration: BoxDecoration(
-//         color: color,
-//         borderRadius: BorderRadius.circular(3),
-//       ),
-//       child: Text(
-//         text,
-//         style: TextStyle(
-//           color: Colors.white,
-//           fontSize: 8,
-//         ),
-//       ),
-//     );
-//
-// Widget tagStatus(String status) {
-//   switch (status) {
-//     case "topRanked":
-//       return tag(
-//         text: "GOLD PLUS",
-//         color: Color(0xFFF6CF00),
-//       );
-//     case "reliable":
-//       return tag(
-//         text: "SILVER",
-//         color: Color(0xFFBBC0C7),
-//       );
-//
-//     case "verified":
-//       return tag(
-//         text: "BRONZE",
-//         color: Color(0xFFB79768),
-//       );
-//     default:
-//       return SizedBox.shrink();
-//   }
-// }
-
 ///Quest Rating Widget
-///
 
 Widget employerRating({
   required String completedQuests,
@@ -409,7 +369,8 @@ Widget employerRating({
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (userId != profile.userData!.id && completedQuests != "0") {
+                    if (userId != profile.userData!.id &&
+                        completedQuests != "0") {
                       // profile.offset = 0;
                       // profile.setUserId(userId);
                       // await profile.getCompletedQuests();
@@ -426,7 +387,8 @@ Widget employerRating({
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: userId != profile.userData!.id && completedQuests != "0"
+                      color: userId != profile.userData!.id &&
+                              completedQuests != "0"
                           ? Color(0xFF00AA5B)
                           : Color(0xFFF7F8FA),
                       fontSize: 12.0,
@@ -545,8 +507,9 @@ Widget workerQuestStats({
               child: Text(
                 thirdLine.tr(),
                 style: TextStyle(
-                  decoration:
-                      title == "quests.activeQuests" ? TextDecoration.underline : null,
+                  decoration: title == "quests.activeQuests"
+                      ? TextDecoration.underline
+                      : null,
                   color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
                 ),
@@ -933,7 +896,9 @@ class _SkillsWidgetState extends State<SkillsWidget>
           alignment: Alignment.topCenter,
           child: skills(
             isProfileMy: widget.isProfileMy,
-            skills: widget.isExpanded ? widget.skills : widget.skills!.sublist(0, 5),
+            skills: widget.isExpanded
+                ? widget.skills
+                : widget.skills!.sublist(0, 5),
             context: context,
           ),
         ),
@@ -941,7 +906,6 @@ class _SkillsWidgetState extends State<SkillsWidget>
           TextButton(
             child: const Text('Show more'),
             onPressed: () {
-              print('onPressed isExpanded: ${widget.isExpanded}');
               widget.onPressed.call(!widget.isExpanded);
             },
           )
@@ -1050,4 +1014,11 @@ Widget experience({
       ),
     ],
   );
+}
+
+class PortfolioArguments {
+  int index;
+  bool isProfileYour;
+
+  PortfolioArguments(this.index, this.isProfileYour);
 }
