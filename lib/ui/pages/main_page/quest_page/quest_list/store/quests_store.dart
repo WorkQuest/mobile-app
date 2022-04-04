@@ -65,11 +65,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @observable
   ObservableList<ProfileMeResponse> workersList = ObservableList.of([]);
 
-  @observable
-  ObservableList<BaseQuestResponse> searchResultList = ObservableList.of([]);
-
-  @observable
-  ObservableList<ProfileMeResponse> searchWorkersList = ObservableList.of([]);
 
   @observable
   ObservableList<BaseQuestResponse> loadQuestsList = ObservableList.of([]);
@@ -219,7 +214,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   void setSearchWord(String value) {
-    role == UserRole.Worker ? searchResultList.clear() : searchWorkersList.clear();
+    role == UserRole.Worker ? questsList.clear() : workersList.clear();
     offset = 0;
     searchWord = value.trim();
     if (debounce != null) {
@@ -232,9 +227,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @computed
   bool get emptySearch =>
-      searchWord.isNotEmpty &&
-      searchResultList.isEmpty &&
-      searchWorkersList.isEmpty &&
+      // searchWord.isNotEmpty &&
+      // searchResultList.isEmpty &&
+      // searchWorkersList.isEmpty &&
       workersList.isEmpty &&
       questsList.isEmpty &&
       !this.isLoading;
@@ -242,10 +237,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getSearchedQuests() async {
     try {
-      if (offset == searchResultList.length) {
+      if (offset == questsList.length) {
         this.onLoading();
         debounce = Timer(const Duration(milliseconds: 300), () async {
-          searchResultList.addAll(await _apiProvider.getQuests(
+          questsList.addAll(await _apiProvider.getQuests(
             price: getFilterPrice(),
             searchWord: searchWord,
             offset: offset,
@@ -269,10 +264,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   Future getSearchedWorkers() async {
-    if (this.offset == searchResultList.length) {
+    if (this.offset == workersList.length) {
       this.onLoading();
       debounce = Timer(const Duration(milliseconds: 300), () async {
-        searchWorkersList.addAll(await _apiProvider.getWorkers(
+        workersList.addAll(await _apiProvider.getWorkers(
           searchWord: this.searchWord,
           price: getFilterPrice(isWorker: true),
           offset: this.offset,
@@ -301,6 +296,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         questsList.addAll(await _apiProvider.getQuests(
           price: getFilterPrice(),
           statuses: [0, 1],
+          searchWord: this.searchWord,
           employment: employments,
           workplace: workplaces,
           priority: priorities,
@@ -331,6 +327,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       if (offsetWorkers == workersList.length) {
         workersList.addAll(await _apiProvider.getWorkers(
           sort: this.sort,
+          searchWord: this.searchWord,
           price: getFilterPrice(isWorker: true),
           offset: this.offsetWorkers,
           limit: this.limit,
