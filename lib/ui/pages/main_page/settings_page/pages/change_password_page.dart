@@ -1,5 +1,6 @@
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/storage.dart';
 
@@ -60,39 +61,35 @@ class ChangePasswordPage extends StatelessWidget {
                       validator: Validators.signUpPasswordValidator,
                     ),
                     spacer,
-                    SizedBox(
-                      width: double.infinity,
-                      child: ObserverListener<SettingsPageStore>(
-                        onSuccess: () {
-                          Navigator.pop(context);
-                        },
-                        child: Observer(
-                          builder: (context) {
-                            return ElevatedButton(
-                              onPressed: settingsStore.canSubmit
-                                  ? () async {
-                                      if (_formKey.currentState?.validate() ??
-                                          false) {
-                                        await settingsStore.changePassword();
-                                        if (settingsStore.isSuccess) {
-                                          SuccessDialog();
-                                          Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .pushNamedAndRemoveUntil(
-                                            SignInPage.routeName,
-                                            (route) => false,
-                                          );
-                                          Storage.deleteAllFromSecureStorage();
-                                        }
+                    ObserverListener<SettingsPageStore>(
+                      onSuccess: () {
+                        Navigator.pop(context);
+                      },
+                      child: Observer(
+                        builder: (context) {
+                          return LoginButton(
+                            enabled: settingsStore.isLoading,
+                            onTap: settingsStore.canSubmit
+                                ? () async {
+                                    if (_formKey.currentState?.validate() ??
+                                        false) {
+                                      await settingsStore.changePassword();
+                                      if (settingsStore.isSuccess) {
+                                        SuccessDialog();
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pushNamedAndRemoveUntil(
+                                          SignInPage.routeName,
+                                          (route) => false,
+                                        );
+                                        Storage.deleteAllFromSecureStorage();
                                       }
                                     }
-                                  : null,
-                              child: settingsStore.isLoading
-                                  ? CircularProgressIndicator.adaptive()
-                                  : Text("meta.submit".tr()),
-                            );
-                          },
-                        ),
+                                  }
+                                : null,
+                            title: "meta.submit".tr(),
+                          );
+                        },
                       ),
                     ),
                   ]),

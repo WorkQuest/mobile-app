@@ -8,7 +8,7 @@ import '../../../../../web3/service/client_service.dart';
 
 part 'raise_views_store.g.dart';
 
-@singleton
+@injectable
 class RaiseViewStore extends _RaiseViewStore with _$RaiseViewStore {
   RaiseViewStore(ApiProvider apiProvider) : super(apiProvider);
 }
@@ -83,17 +83,18 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       final _period = getPeriod();
-      await apiProvider.raiseProfile(
-          duration: getPeriod(), type: levelGroupValue - 1);
-      await ClientService().promoteUser(
-        tariff: levelGroupValue,
-        period: _period,
-        amount: _getAmount(
-          isQuest: false,
-          tariff: levelGroupValue,
-          period: _period,
-        ),
-      );
+      print('levelGroupValue: $levelGroupValue | period: ${getPeriod()}');
+      // await apiProvider.raiseProfile(
+      //     duration: getPeriod(), type: levelGroupValue - 1);
+      // await ClientService().promoteUser(
+      //   tariff: levelGroupValue,
+      //   period: _period,
+      //   amount: _getAmount(
+      //     isQuest: false,
+      //     tariff: levelGroupValue,
+      //     period: _period,
+      //   ),
+      // );
       this.onSuccess(true);
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');

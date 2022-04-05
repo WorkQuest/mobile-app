@@ -138,66 +138,70 @@ extension ReviewsTab on UserProfileState {
         ),
         portfolioStore!.reviewsList.isNotEmpty
             ? Observer(
-                builder: (_) => Column(
-                  children: [
-                    for (int index = 0; index < 3; index++)
-                      ReviewsWidget(
-                        avatar: portfolioStore!
-                                .reviewsList[index].fromUser.avatar?.url ??
-                            "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                        name: portfolioStore!
-                                .reviewsList[index].fromUser.firstName +
-                            " " +
-                            portfolioStore!
-                                .reviewsList[index].fromUser.lastName,
-                        mark: portfolioStore!.reviewsList[index].mark,
-                        userRole: portfolioStore!
-                                    .reviewsList[index].fromUserId ==
-                                portfolioStore!.reviewsList[index].quest.userId
-                            ? "role.employer"
-                            : "role.worker",
-                        questTitle:
-                            portfolioStore!.reviewsList[index].quest.title,
-                        cutMessage: portfolioStore!.messages[index],
-                        message: portfolioStore!.reviewsList[index].message,
-                        id: portfolioStore!.reviewsList[index].fromUserId,
-                        myId: widget.info == null
-                            ? userStore!.userData!.id
-                            : widget.info!.id,
-                        role: widget.info == null
-                            ? userStore!.userData!.role
-                            : widget.info!.role,
-                        last: index == portfolioStore!.reviewsList.length - 1
-                            ? true
-                            : false,
-                      ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 16.0,
-                        right: 16.0,
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          portfolioStore!.setTitleName("Reviews");
-                          await Navigator.pushNamed(
-                            context,
-                            ReviewPage.routeName,
-                            arguments: portfolioStore!,
-                          );
-                          await portfolioStore!.getReviews(
-                            userId: widget.info == null
-                                ? userStore!.userData!.id
-                                : widget.info!.id,
-                            newList: true,
-                          );
-                        },
-                        child: Text(
-                          "meta.showAllReviews".tr(),
+                builder: (_) {
+                  print('portfolioStore!.reviewsList[index].fromUser.avatar?.url: ${portfolioStore!
+                      .reviewsList[1].fromUser.avatar?.url}');
+                  return Column(
+                    children: [
+                      for (int index = 0; index < 3; index++)
+                        ReviewsWidget(
+                          avatar: portfolioStore!
+                              .reviewsList[index].fromUser.avatar?.url ??
+                              "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                          name: portfolioStore!
+                              .reviewsList[index].fromUser.firstName +
+                              " " +
+                              portfolioStore!
+                                  .reviewsList[index].fromUser.lastName,
+                          mark: portfolioStore!.reviewsList[index].mark,
+                          userRole: portfolioStore!
+                              .reviewsList[index].fromUserId ==
+                              portfolioStore!.reviewsList[index].quest.userId
+                              ? "role.employer"
+                              : "role.worker",
+                          questTitle:
+                          portfolioStore!.reviewsList[index].quest.title,
+                          cutMessage: portfolioStore!.messages[index],
+                          message: portfolioStore!.reviewsList[index].message,
+                          id: portfolioStore!.reviewsList[index].fromUserId,
+                          myId: widget.info == null
+                              ? userStore!.userData!.id
+                              : widget.info!.id,
+                          role: widget.info == null
+                              ? userStore!.userData!.role
+                              : widget.info!.role,
+                          last: index == portfolioStore!.reviewsList.length - 1
+                              ? true
+                              : false,
+                        ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: 16.0,
+                          right: 16.0,
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            portfolioStore!.setTitleName("Reviews");
+                            await Navigator.pushNamed(
+                              context,
+                              ReviewPage.routeName,
+                              arguments: portfolioStore!,
+                            );
+                            await portfolioStore!.getReviews(
+                              userId: widget.info == null
+                                  ? userStore!.userData!.id
+                                  : widget.info!.id,
+                              newList: true,
+                            );
+                          },
+                          child: Text(
+                            "meta.showAllReviews".tr(),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  );
+                },
               )
             : Center(
                 child: Text(

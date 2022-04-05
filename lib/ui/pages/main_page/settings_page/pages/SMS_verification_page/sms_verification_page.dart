@@ -1,6 +1,7 @@
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -71,8 +72,9 @@ class SMSVerificationPage extends StatelessWidget {
                         width: 10.0,
                       ),
                       Expanded(
-                        child: ElevatedButton(
-                          onPressed: store.code.length < 4
+                        child: LoginButton(
+                          enabled: store.isLoading,
+                          onTap: store.code.length < 4
                               ? null
                               : () async {
                                   await store.submitCode();
@@ -83,13 +85,7 @@ class SMSVerificationPage extends StatelessWidget {
                                     Navigator.pop(context);
                                   }
                                 },
-                          child: store.isLoading
-                              ? Center(
-                                  child: CircularProgressIndicator.adaptive(),
-                                )
-                              : Text(
-                                  "meta.send".tr(),
-                                ),
+                          title: "meta.send".tr(),
                         ),
                       ),
                     ],

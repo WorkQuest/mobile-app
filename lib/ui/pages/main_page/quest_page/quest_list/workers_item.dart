@@ -99,7 +99,7 @@ class WorkersItem extends StatelessWidget {
                               ],
                             ),
                           UserRating(
-                            workersInfo.ratingStatistic?.status ?? 3,
+                            workersInfo.ratingStatistic != null ? workersInfo.ratingStatistic!.status : 3,
                             isWorker: true,
                           ),
                         ],

@@ -223,6 +223,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     }
     if (searchWord.length > 0)
       role == UserRole.Worker ? getSearchedQuests() : getSearchedWorkers();
+    else {
+      role == UserRole.Worker ? getQuests(true) : getWorkers(true);
+    }
   }
 
   @computed
@@ -296,7 +299,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         questsList.addAll(await _apiProvider.getQuests(
           price: getFilterPrice(),
           statuses: [0, 1],
-          searchWord: this.searchWord,
           employment: employments,
           workplace: workplaces,
           priority: priorities,
@@ -327,7 +329,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       if (offsetWorkers == workersList.length) {
         workersList.addAll(await _apiProvider.getWorkers(
           sort: this.sort,
-          searchWord: this.searchWord,
           price: getFilterPrice(isWorker: true),
           offset: this.offsetWorkers,
           limit: this.limit,

@@ -5,6 +5,7 @@ import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.da
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:flutter/cupertino.dart';
@@ -416,8 +417,9 @@ class Confirm2FAPages extends StatelessWidget {
           ),
           Observer(
             builder: (_) => Expanded(
-              child: ElevatedButton(
-                onPressed: store.index < 3
+              child: LoginButton(
+                enabled: store.isLoading,
+                onTap: store.index < 3
                     ? () async {
                         if (store.index == 0) await store.enable2FA();
                         if (store.index == 2) await openGoogleAuth();
@@ -430,18 +432,10 @@ class Confirm2FAPages extends StatelessWidget {
                               await getIt.get<ProfileMeStore>().getProfileMe();
                               Navigator.pop(context);
                               await AlertDialogUtils.showSuccessDialog(context);
-                              // await successAlert(
-                              //   context,
-                              //   "settings.2FaEnabled".tr(),
-                              // );
                             }
                           }
                         : null,
-                child: store.isLoading
-                    ? Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      )
-                    : Text(forward.tr()),
+                title: forward.tr(),
               ),
             ),
           ),

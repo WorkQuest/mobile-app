@@ -208,8 +208,11 @@ class _QuestListState extends State<QuestList> {
                     );
                   }
                   if (questsStore!.emptySearch)
-                    return Center(
+                    return Container(
+                      height: MediaQuery.of(context).size.height / 4,
+                      alignment: Alignment.center,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(
                             height: 15,
