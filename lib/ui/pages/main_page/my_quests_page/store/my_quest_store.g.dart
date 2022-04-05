@@ -129,51 +129,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     });
   }
 
-  final _$allQuestsAtom = Atom(name: '_MyQuestStore.allQuests');
-
-  @override
-  ObservableList<BaseQuestResponse> get allQuests {
-    _$allQuestsAtom.reportRead();
-    return super.allQuests;
-  }
-
-  @override
-  set allQuests(ObservableList<BaseQuestResponse> value) {
-    _$allQuestsAtom.reportWrite(value, super.allQuests, () {
-      super.allQuests = value;
-    });
-  }
-
-  final _$iconsMarkerAtom = Atom(name: '_MyQuestStore.iconsMarker');
-
-  @override
-  List<BitmapDescriptor> get iconsMarker {
-    _$iconsMarkerAtom.reportRead();
-    return super.iconsMarker;
-  }
-
-  @override
-  set iconsMarker(List<BitmapDescriptor> value) {
-    _$iconsMarkerAtom.reportWrite(value, super.iconsMarker, () {
-      super.iconsMarker = value;
-    });
-  }
-
-  final _$selectQuestInfoAtom = Atom(name: '_MyQuestStore.selectQuestInfo');
-
-  @override
-  BaseQuestResponse? get selectQuestInfo {
-    _$selectQuestInfoAtom.reportRead();
-    return super.selectQuestInfo;
-  }
-
-  @override
-  set selectQuestInfo(BaseQuestResponse? value) {
-    _$selectQuestInfoAtom.reportWrite(value, super.selectQuestInfo, () {
-      super.selectQuestInfo = value;
-    });
-  }
-
   final _$getQuestsAsyncAction = AsyncAction('_MyQuestStore.getQuests');
 
   @override
@@ -228,10 +183,7 @@ status: ${status},
 active: ${active},
 starred: ${starred},
 performed: ${performed},
-invited: ${invited},
-allQuests: ${allQuests},
-iconsMarker: ${iconsMarker},
-selectQuestInfo: ${selectQuestInfo}
+invited: ${invited}
     ''';
   }
 }

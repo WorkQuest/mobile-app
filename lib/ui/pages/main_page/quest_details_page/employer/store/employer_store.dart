@@ -2,6 +2,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
+import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -15,7 +16,9 @@ class EmployerStore extends _EmployerStore with _$EmployerStore {
 abstract class _EmployerStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _EmployerStore(this._apiProvider);
+  _EmployerStore(this._apiProvider) {
+    WebSocket().handlerQuests = this.changeQuest;
+  }
 
   @observable
   List<RespondModel> respondedList = [];
@@ -49,6 +52,17 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     final newQuest = await _apiProvider.getQuest(id: quest.value!.id);
     quest.value!.update(newQuest);
     quest.reportChanged();
+  }
+
+  @action
+  void changeQuest(dynamic json) {
+    var changedQuest =
+        BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+    if (changedQuest.id == quest.value?.id) {
+      quest.value = changedQuest;
+      _getQuest();
+      getRespondedList(changedQuest.id, changedQuest.assignedWorker?.id ?? "");
+    }
   }
 
   @action

@@ -126,6 +126,17 @@ mixin _$EmployerStore on _EmployerStore, Store {
   }
 
   @override
+  void changeQuest(dynamic json) {
+    final _$actionInfo = _$_EmployerStoreActionController.startAction(
+        name: '_EmployerStore.changeQuest');
+    try {
+      return super.changeQuest(json);
+    } finally {
+      _$_EmployerStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 respondedList: ${respondedList},

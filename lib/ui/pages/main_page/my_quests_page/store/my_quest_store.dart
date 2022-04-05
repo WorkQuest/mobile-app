@@ -3,7 +3,6 @@ import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/utils/web_socket.dart';
@@ -50,15 +49,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   @observable
   ObservableList<BaseQuestResponse> invited = ObservableList.of([]);
-
-  @observable
-  ObservableList<BaseQuestResponse> allQuests = ObservableList.of([]);
-
-  @observable
-  List<BitmapDescriptor> iconsMarker = [];
-
-  @observable
-  BaseQuestResponse? selectQuestInfo;
 
   bool loadActive = true;
 

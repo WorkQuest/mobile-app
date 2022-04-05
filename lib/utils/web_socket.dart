@@ -195,7 +195,8 @@ class WebSocket {
 
   void _onDone(IOWebSocketChannel channel, bool connectNotify) {
     print("WebSocket onDone ${channel.closeReason}");
-    if (shouldReconnectFlag) connectNotify ? _connectSender() : _connectListen();
+    if (shouldReconnectFlag)
+      connectNotify ? _connectSender() : _connectListen();
   }
 
   String get myAddress => AccountRepository().userAddress!;
@@ -205,17 +206,18 @@ class WebSocket {
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
       if (transaction.result?.events != null) {
-
         if (transaction.result!.events!['ethereum_tx.recipient']!.first
-            .toString()
-            .toLowerCase() ==
+                .toString()
+                .toLowerCase() ==
             myAddress.toLowerCase()) {
           await Future.delayed(const Duration(seconds: 4));
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions(isForce: false);
         } else {
-          final decode = json.decode(transaction.result!.events!['tx_log.txLog']!.first);
-          print('decode - ${(decode['topics'] as List<dynamic>).last.substring(26)}');
+          final decode =
+              json.decode(transaction.result!.events!['tx_log.txLog']!.first);
+          print(
+              'decode - ${(decode['topics'] as List<dynamic>).last.substring(26)}');
           if ((decode['topics'] as List<dynamic>).last.substring(26) ==
               myAddress.substring(2)) {
             await Future.delayed(const Duration(seconds: 4));

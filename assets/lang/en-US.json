@@ -257,7 +257,9 @@
   "pinCode": {
     "comeUp": "Come up with a PIN-code",
     "repeat": "Repeat PIN-code",
-    "writePinCode": "Please, write your PIN-code"
+    "writePinCode": "Please, write your PIN-code",
+    "incorrectly": "PIN-code entered incorrectly: ",
+    "left": " attempts left"
   },
   "layout": {
     "create": "Create an quest",
