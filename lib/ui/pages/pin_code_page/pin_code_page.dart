@@ -53,8 +53,8 @@ class _PinCodePageState extends State<PinCodePage>
       child: ObserverListener<PinCodeStore>(
         onFailure: () {
           controller!.forward(from: 0.0);
-          if (store.errorMessage != null) if (store
-              .errorMessage!.isNotEmpty) return false;
+          if (store.errorMessage != null) if (store.errorMessage!.isNotEmpty)
+            return false;
           return true;
         },
         onSuccess: () async {
@@ -118,7 +118,9 @@ class _PinCodePageState extends State<PinCodePage>
                     SizedBox(
                       width: double.infinity,
                       child: Text(
-                        '${'pinCode.attempts_left'.tr()}: ${3 - store.attempts}',
+                        "pinCode.incorrectly".tr() +
+                            "${3 - store.attempts}" +
+                            "pinCode.left".tr(),
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 16,
@@ -132,9 +134,8 @@ class _PinCodePageState extends State<PinCodePage>
                   PinCodeKeyboard(
                     store.inputPin,
                     onTabRemove: store.popPin,
-                    onTabSensor:
-                    (store.statePin == StatePinCode.Check &&
-                        store.canCheckBiometrics)
+                    onTabSensor: (store.statePin == StatePinCode.Check &&
+                            store.canCheckBiometrics)
                         ? store.biometricScan
                         : null,
                     canBiometric: store.canCheckBiometrics,

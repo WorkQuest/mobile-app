@@ -4,7 +4,6 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
-import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
@@ -386,11 +385,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               QuestDetails.routeName,
                               arguments: updatedQuest,
                             );
-                          } else
-                            await Navigator.of(context).pushNamed(
-                              RaiseViews.routeName,
-                              arguments: store.idNewQuest,
-                            );
+                          }
+                          // else
+                          //   await Navigator.of(context).pushNamed(
+                          //     RaiseViews.routeName,
+                          //     arguments: store.idNewQuest,
+                          //   );
+                          print("TAG");
                           Navigator.pop(context, true);
                           await AlertDialogUtils.showSuccessDialog(context);
                         },
@@ -408,11 +409,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       questId: widget.questInfo!.id,
                                     );
                                 }
-                                print("edit");
                               } else if (store.canCreateQuest) {
                                 if (_formKey.currentState?.validate() ?? false)
                                   await store.createQuest();
-                                print("create");
                               } else
                                 store.emptyField(context);
                             },

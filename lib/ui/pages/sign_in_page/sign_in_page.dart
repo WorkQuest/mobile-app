@@ -76,7 +76,8 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
+                          padding:
+                              const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +199,8 @@ class SignInPage extends StatelessWidget {
                                           await profile.getProfileMe();
                                         else {
                                           signInStore.onSuccess(false);
-                                          _errorMessage(context, signInStore.error);
+                                          _errorMessage(
+                                              context, signInStore.error);
                                           return;
                                         }
                                         if (profile.error.isEmpty)
@@ -209,7 +211,8 @@ class SignInPage extends StatelessWidget {
                                         }
                                         if (signInStore.isSuccess &&
                                             signInStore.error.isEmpty) {
-                                          await AlertDialogUtils.showSuccessDialog(context);
+                                          await AlertDialogUtils
+                                              .showSuccessDialog(context);
                                           Navigator.pushNamedAndRemoveUntil(
                                             context,
                                             PinCodePage.routeName,
@@ -217,13 +220,17 @@ class SignInPage extends StatelessWidget {
                                           );
                                         } else {
                                           // signInStore.onSuccess(false);
-                                          _errorMessage(context, signInStore.error);
-                                          if (signInStore.errorMessage == "unconfirmed") {
+                                          _errorMessage(
+                                              context, signInStore.error);
+                                          if (signInStore.errorMessage ==
+                                              "unconfirmed") {
                                             print("error");
-                                            await AlertDialogUtils.showSuccessDialog(context);
+                                            await AlertDialogUtils
+                                                .showSuccessDialog(context);
                                             Navigator.pushNamed(
                                                 context, ConfirmEmail.routeName,
-                                                arguments: signInStore.getUsername());
+                                                arguments:
+                                                    signInStore.getUsername());
                                           }
                                         }
                                       }
@@ -298,7 +305,8 @@ class SignInPage extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10.0),
                           child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, SignUpPage.routeName);
+                              Navigator.pushNamed(
+                                  context, SignUpPage.routeName);
                             },
                             child: Text(
                               "signIn.signUp".tr(),
@@ -408,13 +416,7 @@ class SignInPage extends StatelessWidget {
           color: color,
         ),
         onPressed: () async => await launch(
-              link == "google"
-                  ? 'https://app.workquest.co/api/v1/auth/login/google/token'
-                  : link == "twitter"
-                      ? 'https://app.workquest.co/api/v1/auth/login/twitter/token'
-                      : link == "facebook"
-                          ? 'https://app.workquest.co/api/v1/auth/login/facebook/token'
-                          : 'https://app.workquest.co/api/v1/auth/login/linkedin/token',
+              'https://app.workquest.co/api/v1/auth/login/$link/token',
               customTabsOption: CustomTabsOption(
                 toolbarColor: Theme.of(context).primaryColor,
                 enableDefaultShare: true,
@@ -440,7 +442,8 @@ class SignInPage extends StatelessWidget {
                 preferredControlTintColor: Colors.white,
                 barCollapsingEnabled: true,
                 entersReaderIfAvailable: false,
-                dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
+                dismissButtonStyle:
+                    SafariViewControllerDismissButtonStyle.close,
               ),
             )
         // } catch (e) {

@@ -36,7 +36,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   Map<int, List<int>> skillFilters = {};
 
-  ObservableMap<int, ObservableList<bool>> selectedSkillFilters = ObservableMap.of({});
+  ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
+      ObservableMap.of({});
 
   @observable
   String sort = "sort[createdAt]=desc";
@@ -65,6 +66,11 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @observable
   ObservableList<ProfileMeResponse> workersList = ObservableList.of([]);
 
+  @observable
+  ObservableList<BaseQuestResponse> searchResultList = ObservableList.of([]);
+
+  @observable
+  ObservableList<ProfileMeResponse> searchWorkersList = ObservableList.of([]);
 
   @observable
   ObservableList<BaseQuestResponse> loadQuestsList = ObservableList.of([]);
@@ -150,12 +156,14 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   String getFilterPrice({bool isWorker = false}) {
     String result = '';
     if (isWorker) {
-      result += '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+      result +=
+          '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
       result +=
           '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
     } else {
       result += '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-      result += '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+      result +=
+          '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
     }
     return result;
   }

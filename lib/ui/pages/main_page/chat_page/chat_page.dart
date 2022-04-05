@@ -25,8 +25,6 @@ class _ChatPageState extends State<ChatPage> {
   late ChatStore store;
   late ProfileMeStore userData;
 
-  // static const _indicatorSize = 150.0;
-  // final _helper = IndicatorStateHelper();
   ScrollDirection prevScrollDirection = ScrollDirection.idle;
 
   @override
@@ -80,17 +78,9 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                           child: Observer(builder: (_) {
                             return Column(
-                              children:
-                                  // !store.starred
-                                  //     ?
-                                  store.chatKeyList
-                                      .map(
-                                          (key) => _chatItem(store.chats[key]!))
-                                      .toList(),
-                              // : store.starredChats
-                              //     .map(
-                              //         (key) => _chatItem(store.chats[key]!))
-                              //     .toList(),
+                              children: store.chatKeyList
+                                  .map((key) => _chatItem(store.chats[key]!))
+                                  .toList(),
                             );
                           }),
                         ),
@@ -212,13 +202,6 @@ class _ChatPageState extends State<ChatPage> {
                   color: Colors.white,
                 ),
               ),
-              // IconButton(
-              //   onPressed: () {},
-              //   icon: SvgPicture.asset(
-              //     "assets/trash.svg",
-              //     color: Colors.white,
-              //   ),
-              // ),
             ],
           ),
         ],

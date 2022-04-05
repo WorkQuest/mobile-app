@@ -5,10 +5,11 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
+import '../user_profile_page/widgets/profile_widgets.dart';
 import 'create_portfolio_page.dart';
 
 class PortfolioDetails extends StatelessWidget {
-  final Map<String, dynamic> arguments;
+  final PortfolioArguments arguments;
   static const String routeName = "/portfolioDetails";
 
   const PortfolioDetails({required this.arguments});
@@ -31,7 +32,7 @@ class PortfolioDetails extends StatelessWidget {
                         "profiler.portfolio".tr(),
                       ),
                     ),
-                    if (arguments["isProfileYour"])
+                    if (arguments.isProfileYour)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(
                           20.0,
@@ -41,8 +42,7 @@ class PortfolioDetails extends StatelessWidget {
                           child: IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
-                              portfolioStore.portfolioIndex =
-                                  arguments["index"];
+                              portfolioStore.portfolioIndex = arguments.index;
                               Navigator.of(context, rootNavigator: false)
                                   .popAndPushNamed(
                                 CreatePortfolioPage.routeName,
@@ -56,7 +56,7 @@ class PortfolioDetails extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (arguments["isProfileYour"])
+                    if (arguments.isProfileYour)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(
                           20.0,
@@ -68,9 +68,9 @@ class PortfolioDetails extends StatelessWidget {
                             onPressed: () async {
                               await portfolioStore.deletePortfolio(
                                 portfolioId: portfolioStore
-                                    .portfolioList[arguments["index"]].id,
+                                    .portfolioList[arguments.index].id,
                                 userId: portfolioStore
-                                    .portfolioList[arguments["index"]].userId,
+                                    .portfolioList[arguments.index].userId,
                               );
                               Navigator.pop(context);
                             },
@@ -93,7 +93,7 @@ class PortfolioDetails extends StatelessWidget {
                   child: PageView(
                     onPageChanged: portfolioStore.changePageNumber,
                     children:
-                        portfolioStore.portfolioList[arguments["index"]].medias
+                        portfolioStore.portfolioList[arguments.index].medias
                             .map(
                               (e) => Image.network(
                                 e.url,
@@ -120,7 +120,7 @@ class PortfolioDetails extends StatelessWidget {
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
                           itemCount: portfolioStore
-                              .portfolioList[arguments["index"]].medias.length,
+                              .portfolioList[arguments.index].medias.length,
                           itemBuilder: (_, index) => Observer(
                             builder: (_) => index == portfolioStore.pageNumber
                                 ? _indicator(true, context)
@@ -131,7 +131,7 @@ class PortfolioDetails extends StatelessWidget {
 
                       ///Portfolio Title
                       Text(
-                        portfolioStore.portfolioList[arguments["index"]].title,
+                        portfolioStore.portfolioList[arguments.index].title,
                         style: const TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.w500,
@@ -144,7 +144,7 @@ class PortfolioDetails extends StatelessWidget {
                       ///Portfolio Description
                       Text(
                         portfolioStore
-                            .portfolioList[arguments["index"]].description,
+                            .portfolioList[arguments.index].description,
                       ),
                     ],
                   ),

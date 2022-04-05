@@ -7,7 +7,6 @@ import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_disp
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
-import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
@@ -75,11 +74,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             if (widget.questInfo.status == 0 || widget.questInfo.status == 4)
               switch (value) {
                 case "quests.raiseViews":
-                  await Navigator.pushNamed(
-                    context,
-                    RaiseViews.routeName,
-                    arguments: widget.questInfo,
-                  );
+                  // await Navigator.pushNamed(
+                  //   context,
+                  //   RaiseViews.routeName,
+                  //   arguments: widget.questInfo.id,
+                  // );
                   break;
                 case "registration.edit":
                   if (profile?.userData?.isTotpActive == true) {

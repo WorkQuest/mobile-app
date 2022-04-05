@@ -13,6 +13,7 @@ import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class MyQuestsPage extends StatefulWidget {
+  static const String routeName = '/myQuestPage';
   MyQuestsPage();
 
   @override

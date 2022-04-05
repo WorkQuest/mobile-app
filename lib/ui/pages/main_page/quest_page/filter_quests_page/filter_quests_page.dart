@@ -108,11 +108,19 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                       if (index == 0) _radioButton(),
                       if (index == 1)
                         ExpansionTile(
+                          collapsedBackgroundColor:
+                              fromPriceController.text.isNotEmpty ||
+                                      toPriceController.text.isNotEmpty
+                                  ? Color(0xFF0083C7).withOpacity(0.1)
+                                  : Colors.white,
                           expandedAlignment: Alignment.topLeft,
                           title: Text(
                             "Price",
                           ),
-                          childrenPadding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+                          childrenPadding: const EdgeInsets.symmetric(
+                            vertical: 6.0,
+                            horizontal: 16.0,
+                          ),
                           children: [
                             Row(
                               children: [
@@ -121,13 +129,17 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                   children: [
                                     Text(
                                       'From',
-                                      style: TextStyle(fontSize: 14, color: Colors.black),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 5,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width / 2.3,
+                                      width: MediaQuery.of(context).size.width /
+                                          2.3,
                                       child: TextField(
                                         controller: fromPriceController,
                                         keyboardType: TextInputType.number,
@@ -135,7 +147,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                           hintText: '0 WUSD',
                                           suffixIcon: IconButton(
                                             splashRadius: 0.1,
-                                            onPressed: fromPriceController.clear,
+                                            onPressed:
+                                                fromPriceController.clear,
                                             icon: Icon(
                                               Icons.close,
                                               color: AppColor.enabledButton,
@@ -144,7 +157,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                         ),
                                         inputFormatters: [
                                           FilteringTextInputFormatter.allow(
-                                              RegExp(r'^[0-9]*')),
+                                            RegExp(r'^[0-9]*'),
+                                          ),
                                         ],
                                       ),
                                     )
@@ -156,13 +170,17 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                   children: [
                                     Text(
                                       'To',
-                                      style: TextStyle(fontSize: 14, color: Colors.black),
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
                                     ),
                                     const SizedBox(
                                       height: 5,
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width / 2.3,
+                                      width: MediaQuery.of(context).size.width /
+                                          2.3,
                                       child: TextFormField(
                                         controller: toPriceController,
                                         keyboardType: TextInputType.number,
@@ -179,7 +197,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                         ),
                                         inputFormatters: [
                                           FilteringTextInputFormatter.allow(
-                                              RegExp(r'^[0-9]*')),
+                                            RegExp(r'^[0-9]*'),
+                                          ),
                                         ],
                                       ),
                                     )
@@ -204,9 +223,6 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                     list: storeFilter!.sortByEmployment,
                                     selected: storeFilter!.selectEmployment,
                                     onChange: (bool? value, int index) {
-                                      print("TAG");
-                                      print(value);
-                                      print(index);
                                       storeFilter!.setSelectedEmployment(
                                         value,
                                         index,
@@ -235,7 +251,8 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                     title: "quests.rating".tr(),
                                     list: storeFilter!.sortByEmployeeRating,
                                     selected: storeFilter!.selectEmployeeRating,
-                                    onChange: storeFilter!.setSelectedEmployeeRating,
+                                    onChange:
+                                        storeFilter!.setSelectedEmployeeRating,
                                   ),
                                   _checkButton(
                                     title: "settings.priority".tr(),
@@ -290,9 +307,11 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                 storeQuest.setPriority(storeFilter!.getPriorityValue());
                 storeQuest.setSortBy(storeFilter!.getSortByValue());
                 storeQuest.setEmployeeRating(storeFilter!.getEmployeeRating());
-                storeQuest.setPrice(fromPriceController.text, toPriceController.text);
+                storeQuest.setPrice(
+                    fromPriceController.text, toPriceController.text);
                 storeQuest.setSkillFilters(storeFilter!.selectedSkill);
-                storeQuest.setSelectedSkillFilters(storeFilter!.selectedSkillFilters);
+                storeQuest
+                    .setSelectedSkillFilters(storeFilter!.selectedSkillFilters);
                 profile!.userData!.role == UserRole.Employer
                     ? storeQuest.getWorkers(true)
                     : storeQuest.getQuests(true);
@@ -363,10 +382,10 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
   }) =>
       Observer(
         builder: (_) => ExpansionTile(
-          collapsedBackgroundColor:
-              selected.firstWhere((element) => element == true, orElse: () => false)
-                  ? Color(0xFF0083C7).withOpacity(0.1)
-                  : Colors.white,
+          collapsedBackgroundColor: selected
+                  .firstWhere((element) => element == true, orElse: () => false)
+              ? Color(0xFF0083C7).withOpacity(0.1)
+              : Colors.white,
           maintainState: true,
           title: Text(title),
           children: [
@@ -418,9 +437,11 @@ class _ExpansionCellState extends State<ExpansionCell> {
         Observer(
           builder: (_) => ExpansionTile(
             collapsedBackgroundColor:
-                widget.storeFilter.selectedSkillFilters[widget.index - 1] != null
+                widget.storeFilter.selectedSkillFilters[widget.index - 1] !=
+                        null
                     ? widget.storeFilter.selectedSkillFilters[widget.index - 1]!
-                            .firstWhere((element) => element == true, orElse: () => false)
+                            .firstWhere((element) => element == true,
+                                orElse: () => false)
                         ? Color(0xFF0083C7).withOpacity(0.1)
                         : Colors.white
                     : Colors.white,
@@ -453,7 +474,8 @@ class _ExpansionCellState extends State<ExpansionCell> {
       ),
       value: widget.storeFilter.selectedSkillFilters[widget.index - 1]![index],
       onChanged: (bool? value) {
-        widget.storeFilter.selectedSkillFilters[widget.index - 1]![index] = value!;
+        widget.storeFilter.selectedSkillFilters[widget.index - 1]![index] =
+            value!;
         if (value == true)
           widget.storeFilter.addSkill("$spec.$skill");
         else

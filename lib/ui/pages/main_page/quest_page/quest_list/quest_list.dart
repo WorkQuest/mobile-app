@@ -35,7 +35,8 @@ class _QuestListState extends State<QuestList> {
 
   FilterQuestsStore? filterQuestsStore;
 
-  final QuestItemPriorityType questItemPriorityType = QuestItemPriorityType.Starred;
+  final QuestItemPriorityType questItemPriorityType =
+      QuestItemPriorityType.Starred;
   final scrollKey = new GlobalKey();
 
   @override
@@ -160,11 +161,9 @@ class _QuestListState extends State<QuestList> {
                   padding: const EdgeInsets.all(20.0),
                   child: OutlinedButton(
                     onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true).pushNamed(
-                          FilterQuestsPage.routeName,
-                          arguments: filterQuestsStore!.skillFilters);
-                      // questsStore!.offset = 0;
-                      // questsStore!.getQuests(true);
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(FilterQuestsPage.routeName,
+                              arguments: filterQuestsStore!.skillFilters);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(
@@ -328,11 +327,12 @@ class _AnimationWorkersQuestsItems extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AnimationWorkersQuestsItemsState createState() => _AnimationWorkersQuestsItemsState();
+  _AnimationWorkersQuestsItemsState createState() =>
+      _AnimationWorkersQuestsItemsState();
 }
 
-class _AnimationWorkersQuestsItemsState extends State<_AnimationWorkersQuestsItems>
-    with TickerProviderStateMixin {
+class _AnimationWorkersQuestsItemsState
+    extends State<_AnimationWorkersQuestsItems> with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override

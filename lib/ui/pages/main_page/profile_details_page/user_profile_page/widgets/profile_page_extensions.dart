@@ -9,12 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../../../../../enums.dart';
-
 extension CustomAppBar on UserProfileState {
-
-  Widget sliverAppBar(ProfileMeResponse? info, StreamController<AppBarParams> streamController) {
-    final String standartImage = 'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
+  Widget sliverAppBar(ProfileMeResponse? info,
+      StreamController<AppBarParams> streamController) {
+    final String standartImage =
+        'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
     final mark = info == null
         ? userStore!.userData!.ratingStatistic!.averageMark
         : info.ratingStatistic!.averageMark;
@@ -62,8 +61,12 @@ extension CustomAppBar on UserProfileState {
             children: [
               Image.network(
                 info == null
-                    ? userStore!.userData!.avatar != null ? userStore!.userData!.avatar!.url ?? standartImage : standartImage
-                    : info.avatar != null ? info.avatar!.url ?? standartImage : standartImage,
+                    ? userStore!.userData!.avatar != null
+                        ? userStore!.userData!.avatar!.url ?? standartImage
+                        : standartImage
+                    : info.avatar != null
+                        ? info.avatar!.url ?? standartImage
+                        : standartImage,
                 fit: BoxFit.cover,
               ),
               Positioned(
@@ -123,7 +126,7 @@ extension CustomAppBar on UserProfileState {
             info == null
                 ? userStore!.userData!.ratingStatistic?.status ?? 3
                 : info.ratingStatistic?.status ?? 3,
-              snapshot.data!.width,
+            snapshot.data!.width,
           ),
         ),
       ),
@@ -136,79 +139,80 @@ extension ReviewsTab on UserProfileState {
         SizedBox(
           height: 20,
         ),
-        portfolioStore!.reviewsList.isNotEmpty
-            ? Observer(
-                builder: (_) {
-                  print('portfolioStore!.reviewsList[index].fromUser.avatar?.url: ${portfolioStore!
-                      .reviewsList[1].fromUser.avatar?.url}');
-                  return Column(
-                    children: [
-                      for (int index = 0; index < 3; index++)
-                        ReviewsWidget(
-                          avatar: portfolioStore!
-                              .reviewsList[index].fromUser.avatar?.url ??
-                              "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                          name: portfolioStore!
-                              .reviewsList[index].fromUser.firstName +
-                              " " +
-                              portfolioStore!
-                                  .reviewsList[index].fromUser.lastName,
-                          mark: portfolioStore!.reviewsList[index].mark,
-                          userRole: portfolioStore!
-                              .reviewsList[index].fromUserId ==
-                              portfolioStore!.reviewsList[index].quest.userId
-                              ? "role.employer"
-                              : "role.worker",
-                          questTitle:
-                          portfolioStore!.reviewsList[index].quest.title,
-                          cutMessage: portfolioStore!.messages[index],
-                          message: portfolioStore!.reviewsList[index].message,
-                          id: portfolioStore!.reviewsList[index].fromUserId,
-                          myId: widget.info == null
-                              ? userStore!.userData!.id
-                              : widget.info!.id,
-                          role: widget.info == null
-                              ? userStore!.userData!.role
-                              : widget.info!.role,
-                          last: index == portfolioStore!.reviewsList.length - 1
-                              ? true
-                              : false,
-                        ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: 16.0,
-                          right: 16.0,
-                        ),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            portfolioStore!.setTitleName("Reviews");
-                            await Navigator.pushNamed(
-                              context,
-                              ReviewPage.routeName,
-                              arguments: portfolioStore!,
-                            );
-                            await portfolioStore!.getReviews(
-                              userId: widget.info == null
-                                  ? userStore!.userData!.id
-                                  : widget.info!.id,
-                              newList: true,
-                            );
-                          },
-                          child: Text(
-                            "meta.showAllReviews".tr(),
-                          ),
+        Observer(
+          builder: (_) => portfolioStore!.reviewsList.isNotEmpty
+              ? Column(
+                  children: [
+                    for (int index = 0;
+                        index <
+                            (portfolioStore!.reviewsList.length < 3
+                                ? portfolioStore!.reviewsList.length
+                                : 3);
+                        index++)
+                      ReviewsWidget(
+                        avatar: portfolioStore!
+                                .reviewsList[index].fromUser.avatar?.url ??
+                            "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                        name: portfolioStore!
+                                .reviewsList[index].fromUser.firstName +
+                            " " +
+                            portfolioStore!
+                                .reviewsList[index].fromUser.lastName,
+                        mark: portfolioStore!.reviewsList[index].mark,
+                        userRole: portfolioStore!
+                                    .reviewsList[index].fromUserId ==
+                                portfolioStore!.reviewsList[index].quest.userId
+                            ? "role.employer"
+                            : "role.worker",
+                        questTitle:
+                            portfolioStore!.reviewsList[index].quest.title,
+                        cutMessage: portfolioStore!.messages[index],
+                        message: portfolioStore!.reviewsList[index].message,
+                        id: portfolioStore!.reviewsList[index].fromUserId,
+                        myId: widget.info == null
+                            ? userStore!.userData!.id
+                            : widget.info!.id,
+                        role: widget.info == null
+                            ? userStore!.userData!.role
+                            : widget.info!.role,
+                        last: index == portfolioStore!.reviewsList.length - 1
+                            ? true
+                            : false,
+                      ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          portfolioStore!.setTitleName("Reviews");
+                          await Navigator.pushNamed(
+                            context,
+                            ReviewPage.routeName,
+                            arguments: portfolioStore!,
+                          );
+                          await portfolioStore!.getReviews(
+                            userId: widget.info == null
+                                ? userStore!.userData!.id
+                                : widget.info!.id,
+                            newList: true,
+                          );
+                        },
+                        child: Text(
+                          "meta.showAllReviews".tr(),
                         ),
                       ),
-                    ],
-                  );
-                },
-              )
-            : Center(
-                child: Text(
-                  widget.info == null
-                      ? "quests.noReview".tr()
-                      : "quests.noReviewForOtherUser".tr(),
+                    ),
+                  ],
+                )
+              : Center(
+                  child: Text(
+                    widget.info == null
+                        ? "quests.noReview".tr()
+                        : "quests.noReviewForOtherUser".tr(),
+                  ),
                 ),
-              ),
+        ),
       ];
 }

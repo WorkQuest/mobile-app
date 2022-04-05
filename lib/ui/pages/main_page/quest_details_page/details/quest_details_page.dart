@@ -61,18 +61,20 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
       appBar: AppBar(
         actions: actionAppBar(),
       ),
-      body: Stack(children: [
-        _getBody(),
-        if (isLoading)
-          Center(
-            child: Transform.scale(
-              scale: 1.5,
-              child: CircularProgressIndicator.adaptive(
-                strokeWidth: 2.0,
+      body: Stack(
+        children: [
+          _getBody(),
+          if (isLoading)
+            Center(
+              child: Transform.scale(
+                scale: 1.5,
+                child: CircularProgressIndicator.adaptive(
+                  strokeWidth: 2.0,
+                ),
               ),
-            ),
-          )
-      ]),
+            )
+        ],
+      ),
     );
   }
 
@@ -81,9 +83,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
       builder: (_) => RefreshIndicator(
         onRefresh: () => storeQuest.updateQuest(),
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()
-          ),
+          physics:
+              BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           child: AbsorbPointer(
             absorbing: isLoading,
             child: Padding(
@@ -101,9 +102,12 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                               setState(() {
                                 this.isLoading = true;
                               });
-                              await profile!.getQuestHolder(storeQuest.questInfo!.userId).then(
-                                    (value) =>
-                                        Navigator.of(context, rootNavigator: true).pushNamed(
+                              await profile!
+                                  .getQuestHolder(storeQuest.questInfo!.userId)
+                                  .then(
+                                    (value) => Navigator.of(context,
+                                            rootNavigator: true)
+                                        .pushNamed(
                                       UserProfile.routeName,
                                       arguments: profile!.questHolder,
                                     ),
@@ -137,7 +141,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     const SizedBox(height: 17),
                     Row(
                       children: [
-                        if (storeQuest.questInfo!.userId != profile!.userData!.id)
+                        if (storeQuest.questInfo!.userId !=
+                            profile!.userData!.id)
                           Icon(
                             Icons.location_on_rounded,
                             color: Color(0xFF7C838D),
@@ -157,10 +162,13 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     ),
                     const SizedBox(height: 17),
                     tagItem(
-                      profile!.parser(storeQuest.questInfo!.questSpecializations),
+                      profile!.parser(
+                        storeQuest.questInfo!.questSpecializations,
+                      ),
                     ),
                     if (storeQuest.questInfo!.assignedWorker != null &&
-                        (storeQuest.questInfo!.status == 1 || storeQuest.questInfo!.status == 5))
+                        (storeQuest.questInfo!.status == 1 ||
+                            storeQuest.questInfo!.status == 5))
                       inProgressBy(),
                     const SizedBox(height: 15),
                     GestureDetector(
@@ -190,10 +198,14 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      ImageViewerWidget(storeQuest.questInfo!.medias, Color(0xFF1D2127)),
+                      ImageViewerWidget(
+                        storeQuest.questInfo!.medias,
+                        Color(0xFF1D2127),
+                      ),
                     ],
                     Text(
-                      DateFormat('dd MMMM yyyy, kk:mm').format(storeQuest.questInfo!.createdAt),
+                      DateFormat('dd MMMM yyyy, kk:mm')
+                          .format(storeQuest.questInfo!.createdAt),
                       style: TextStyle(
                         color: Color(0xFFAAB0B9),
                         fontSize: 12,
@@ -233,7 +245,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                               "assets/marker.svg",
                               width: 22,
                               height: 29,
-                              color: Constants.priorityColors[storeQuest.questInfo!.priority],
+                              color: Constants.priorityColors[
+                                  storeQuest.questInfo!.priority],
                             ),
                             Container(
                               color: Colors.transparent,
@@ -257,10 +270,11 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                           width: 5,
                         ),
                         PriorityView(
-                            storeQuest.questInfo!.priority != 0
-                                ? storeQuest.questInfo!.priority - 1
-                                : 0,
-                            true),
+                          storeQuest.questInfo!.priority != 0
+                              ? storeQuest.questInfo!.priority - 1
+                              : 0,
+                          true,
+                        ),
                       ],
                     ),
                     getBody(),
@@ -269,8 +283,10 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     ),
                     if (storeQuest.questInfo!.status == 6 &&
                         !profile!.review &&
-                        (storeQuest.questInfo!.userId == profile!.userData!.id ||
-                            storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id))
+                        (storeQuest.questInfo!.userId ==
+                                profile!.userData!.id ||
+                            storeQuest.questInfo!.assignedWorker?.id ==
+                                profile!.userData!.id))
                       Observer(
                         builder: (_) => isLoading
                             ? Center(
@@ -295,9 +311,11 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                   fixedSize: MaterialStateProperty.all(
                                     Size(double.maxFinite, 43),
                                   ),
-                                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith<Color>(
                                     (Set<MaterialState> states) {
-                                      if (states.contains(MaterialState.pressed))
+                                      if (states
+                                          .contains(MaterialState.pressed))
                                         return Theme.of(context)
                                             .colorScheme
                                             .primary

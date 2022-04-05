@@ -7,7 +7,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../../enums.dart';
-import '../quest_page/quest_list/workers_item.dart';
 import 'my_quests_item.dart';
 
 class QuestsList extends StatelessWidget {
@@ -35,13 +34,13 @@ class QuestsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return questsList.isEmpty
-        ? Observer(
-            builder: (_) => Center(
+    return Observer(
+      builder: (_) => questsList.isEmpty
+          ? Center(
               child: isLoading ? getLoadingBody() : getEmptyBody(context),
-            ),
-          )
-        : getBody();
+            )
+          : getBody(),
+    );
   }
 
   Widget getBody() {
