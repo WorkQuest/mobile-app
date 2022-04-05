@@ -235,28 +235,20 @@ class _QuestListState extends State<QuestList> {
                       padding: EdgeInsets.zero,
                       itemCount: () {
                         if (role == UserRole.Worker)
-                          return questsStore!.searchWord.length > 2
-                              ? questsStore!.searchResultList.length
-                              : questsStore!.questsList.length;
-                        return questsStore!.searchWord.length > 2
-                            ? questsStore!.searchWorkersList.length
-                            : questsStore!.workersList.length;
+                          return questsStore!.questsList.length;
+                        return questsStore!.workersList.length;
                       }(),
                       itemBuilder: (_, index) {
                         return Observer(builder: (_) {
                           if (role == UserRole.Worker) {
-                            final item = questsStore!.searchWord.length > 2
-                                ? questsStore!.searchResultList[index]
-                                : questsStore!.questsList[index];
+                            final item = questsStore!.questsList[index];
                             _markItem(item);
                             return MyQuestsItem(
                               item,
                               itemType: this.questItemPriorityType,
                             );
                           }
-                          final item = questsStore!.searchWord.length > 2
-                              ? questsStore!.searchWorkersList[index]
-                              : questsStore!.workersList[index];
+                          final item = questsStore!.workersList[index];
                           _markItem(item);
                           return WorkersItem(
                             item,
