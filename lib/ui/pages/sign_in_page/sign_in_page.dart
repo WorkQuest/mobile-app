@@ -198,9 +198,18 @@ class SignInPage extends StatelessWidget {
                                         if (signInStore.isSuccess)
                                           await profile.getProfileMe();
                                         else {
-                                          signInStore.onSuccess(false);
                                           _errorMessage(
                                               context, signInStore.error);
+                                          if (signInStore.errorMessage ==
+                                              "unconfirmed") {
+                                            print("error");
+                                            await AlertDialogUtils
+                                                .showSuccessDialog(context);
+                                            Navigator.pushNamed(
+                                                context, ConfirmEmail.routeName,
+                                                arguments:
+                                                signInStore.getUsername());
+                                          }
                                           return;
                                         }
                                         if (profile.error.isEmpty)
@@ -219,19 +228,8 @@ class SignInPage extends StatelessWidget {
                                             (_) => false,
                                           );
                                         } else {
-                                          // signInStore.onSuccess(false);
                                           _errorMessage(
                                               context, signInStore.error);
-                                          if (signInStore.errorMessage ==
-                                              "unconfirmed") {
-                                            print("error");
-                                            await AlertDialogUtils
-                                                .showSuccessDialog(context);
-                                            Navigator.pushNamed(
-                                                context, ConfirmEmail.routeName,
-                                                arguments:
-                                                    signInStore.getUsername());
-                                          }
                                         }
                                       }
                                     }

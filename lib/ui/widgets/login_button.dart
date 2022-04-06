@@ -1,4 +1,3 @@
-import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,15 +8,18 @@ const _durationOpacity = Duration(milliseconds: 200);
 
 class LoginButton extends StatefulWidget {
   final bool enabled;
+  final bool withColumn;
   final String title;
   final Function()? onTap;
 
   const LoginButton({
     Key? key,
     this.enabled = false,
+    this.withColumn = false,
     required this.title,
     required this.onTap,
   }) : super(key: key);
+
 
   @override
   State<LoginButton> createState() => _LoginButtonState();
@@ -45,13 +47,20 @@ class _LoginButtonState extends State<LoginButton> with TickerProviderStateMixin
     } else {
       _buttonController.reverse();
     }
-    return AnimatedBuilder(
+
+    final child = AnimatedBuilder(
       animation: _buttonController,
       builder: (context, child) {
         return Container(
           width: 60 +
-              MediaQuery.of(context).size.width -
-              MediaQuery.of(context).size.width * _buttonController.value,
+              MediaQuery
+                  .of(context)
+                  .size
+                  .width -
+              MediaQuery
+                  .of(context)
+                  .size
+                  .width * _buttonController.value,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.0),
             shape: BoxShape.rectangle,
@@ -92,5 +101,16 @@ class _LoginButtonState extends State<LoginButton> with TickerProviderStateMixin
         );
       },
     );
+
+    if (widget.withColumn) {
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            child,
+          ]
+      );
+    }
+    return child;
   }
 }

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../../widgets/user_avatar.dart';
 import '../../../../widgets/user_rating.dart';
 
 class WorkersItem extends StatelessWidget {
@@ -52,13 +53,11 @@ class WorkersItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: FadeInImage.assetNetwork(
+                  child: UserAvatar(
                     width: 61,
                     height: 61,
-                    fit: BoxFit.cover,
-                    image: workersInfo.avatar!.url!,
-                    placeholder: 'assets/white_back.jpeg',
-                  ),
+                    url:  workersInfo.avatar?.url
+                  )
                 ),
                 const SizedBox(
                   width: 15,
@@ -99,7 +98,9 @@ class WorkersItem extends StatelessWidget {
                               ],
                             ),
                           UserRating(
-                            workersInfo.ratingStatistic != null ? workersInfo.ratingStatistic!.status : 3,
+                            workersInfo.ratingStatistic != null
+                                ? workersInfo.ratingStatistic!.status
+                                : 3,
                             isWorker: true,
                           ),
                         ],

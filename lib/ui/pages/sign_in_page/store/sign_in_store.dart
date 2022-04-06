@@ -98,8 +98,8 @@ abstract class _SignInStore extends IStore<bool> with Store {
         password: _password,
       );
       if (bearerToken.status == 0) {
+        error = 'unconfirmed';
         this.onError("unconfirmed");
-        print('errrorrr');
         return;
       }
       await Storage.writeRefreshToken(bearerToken.refresh);

@@ -2,6 +2,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
+import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";
 import '../../../../constants.dart';
@@ -46,15 +47,11 @@ class MyQuestsItem extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: FadeInImage.assetNetwork(
+                  child: UserAvatar(
                     width: 30,
                     height: 30,
-                    fit: BoxFit.cover,
-                    image: questInfo.user.avatar != null
-                        ? questInfo.user.avatar!.url ?? standartImage
-                        : standartImage,
-                    placeholder: 'assets/white_back.jpeg',
-                  ),
+                    url: questInfo.user.avatar?.url,
+                  )
                 ),
                 const SizedBox(
                   width: 5,

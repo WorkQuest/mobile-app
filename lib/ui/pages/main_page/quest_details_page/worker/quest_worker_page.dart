@@ -364,6 +364,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         const SizedBox(height: 21),
         Observer(
           builder: (_) => LoginButton(
+            withColumn: true,
             enabled: isLoading,
             onTap: store.opinion.isNotEmpty ||
                     store.mediaFile.isNotEmpty ||
@@ -430,6 +431,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         ),
         const SizedBox(height: 15),
         LoginButton(
+          withColumn: true,
           enabled: isLoading,
           onTap: () async {
             _updateLoading();
@@ -452,6 +454,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         ),
         const SizedBox(height: 15),
         LoginButton(
+          withColumn: true,
+          enabled: isLoading,
           onTap: () async {
             _updateLoading();
             if (widget.questInfo.invited == null) {
@@ -498,6 +502,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         ),
         const SizedBox(height: 15),
         LoginButton(
+          withColumn: true,
           enabled: store.isLoading,
           title: "quests.completeTheQuest".tr(),
           onTap: () async {
