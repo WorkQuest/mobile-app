@@ -416,7 +416,7 @@ class SignInPage extends StatelessWidget {
           color: color,
         ),
         onPressed: () async => await launch(
-              'https://app.workquest.co/api/v1/auth/login/$link/token',
+              'https://app.workquest.co/api/v1/auth/login/main/$link',
               customTabsOption: CustomTabsOption(
                 toolbarColor: Theme.of(context).primaryColor,
                 enableDefaultShare: true,
