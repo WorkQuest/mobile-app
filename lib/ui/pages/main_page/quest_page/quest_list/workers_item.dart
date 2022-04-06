@@ -11,7 +11,8 @@ import '../../../../widgets/user_avatar.dart';
 import '../../../../widgets/user_rating.dart';
 
 class WorkersItem extends StatelessWidget {
-  const WorkersItem(this.workersInfo, this.questsStore, {this.showRating = false});
+  const WorkersItem(this.workersInfo, this.questsStore,
+      {this.showRating = false});
 
   final ProfileMeResponse workersInfo;
   final QuestsStore questsStore;
@@ -118,7 +119,8 @@ class WorkersItem extends StatelessWidget {
                       children: [
                         Text(
                           "${workersInfo.ratingStatistic?.averageMark.toStringAsFixed(1) ?? 0.0}",
-                          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 23),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 23),
                         ),
                         const SizedBox(
                           width: 5,
@@ -147,7 +149,8 @@ class WorkersItem extends StatelessWidget {
               height: 5,
             ),
             Text(
-              workersInfo.additionalInfo?.description ?? "modals.noDescription".tr(),
+              workersInfo.additionalInfo?.description ??
+                  "modals.noDescription".tr(),
               style: TextStyle(
                 color: Color(0xFFAAB0B9),
               ),
@@ -288,7 +291,8 @@ class ShimmerWorkersItem extends StatelessWidget {
                       height: 5,
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         borderRadius: BorderRadius.circular(3),

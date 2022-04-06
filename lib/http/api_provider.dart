@@ -1123,7 +1123,7 @@ extension RestorePassword on ApiProvider {
     required String token,
   }) async {
     await httpClient.post(
-      query: '/v1/restore-password/send-code',
+      query: '/v1/restore-password/set-password',
       data: {
         "newPassword": newPassword,
         "token": token,
