@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app/constants.dart';
 import 'package:app/exceptions.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/log_service.dart';
@@ -27,7 +28,9 @@ class TestHttpClient extends _HttpClient {
 
 class _HttpClient implements IHttpClient {
   final Dio _dio;
-  final String _baseUrl = "https://app.workquest.co/api";
+  final String _baseUrl = Constants.isRelease
+      ? "https://app-ver1.workquest.co/api"
+      : "https://app.workquest.co/api";
 
   @override
   String? accessToken;
@@ -44,8 +47,7 @@ class _HttpClient implements IHttpClient {
     bool useBaseUrl = true,
   }) async {
     return await _sendRequest(
-      _dio.get(useBaseUrl ? _baseUrl + query : query,
-          queryParameters: queryParameters),
+      _dio.get(useBaseUrl ? _baseUrl + query : query, queryParameters: queryParameters),
     );
   }
 
@@ -105,8 +107,7 @@ class _HttpClient implements IHttpClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           if (accessToken != null) {
-            options.headers["Authorization"] =
-                "Bearer " + accessToken.toString();
+            options.headers["Authorization"] = "Bearer " + accessToken.toString();
           }
           if (tokenExpired == true) {
             String? token = await Storage.readRefreshToken();

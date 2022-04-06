@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:app/constants.dart';
 import 'package:app/utils/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -17,10 +18,11 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  final Completer<WebViewController> _controller = Completer<WebViewController>();
 
-  final String baseUrl = "https://app.workquest.co/";
+  final String baseUrl = Constants.isRelease
+      ? "https://app-ver1.workquest.co/"
+      : "https://app.workquest.co/";
   final storage = new FlutterSecureStorage();
 
   @override
@@ -46,7 +48,7 @@ class _WebViewPageState extends State<WebViewPage> {
           initialUrl: baseUrl + widget.inputUrlRoute,
           userAgent: "random",
           javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (WebViewController webViewController)async {
+          onWebViewCreated: (WebViewController webViewController) async {
             _controller.complete(webViewController);
           },
           onProgress: (int progress) {
@@ -60,7 +62,7 @@ class _WebViewPageState extends State<WebViewPage> {
             print('allowing navigation to $request');
             return NavigationDecision.navigate;
           },
-          onPageStarted: (String url) async{
+          onPageStarted: (String url) async {
             print('Page started loading: $url');
           },
           onPageFinished: (String url) async {
@@ -70,25 +72,22 @@ class _WebViewPageState extends State<WebViewPage> {
             _controller.future.then((value) => value.evaluateJavascript(
                 """localStorage.setItem("accessToken","${accessToken ?? ''}");
                 localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
-            },
+          },
           gestureNavigationEnabled: true,
         );
       }),
     );
   }
 
-  void _onShowUserAgent(
-      WebViewController controller, BuildContext context) async {
+  void _onShowUserAgent(WebViewController controller, BuildContext context) async {
     // Send a message with the user agent string to the Toaster JavaScript channel we registered
     // with the WebView.
-    await controller.evaluateJavascript(
-        'Toaster.postMessage("User Agent: " + navigator.userAgent);');
+    await controller
+        .evaluateJavascript('Toaster.postMessage("User Agent: " + navigator.userAgent);');
   }
 
-  void _onListCookies(
-      WebViewController controller, BuildContext context) async {
-    final String cookies =
-        await controller.evaluateJavascript('document.cookie');
+  void _onListCookies(WebViewController controller, BuildContext context) async {
+    final String cookies = await controller.evaluateJavascript('document.cookie');
     // ignore: deprecated_member_use
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Column(
@@ -130,8 +129,7 @@ class _WebViewPageState extends State<WebViewPage> {
       return Container();
     }
     final List<String> cookieList = cookies.split(';');
-    final Iterable<Text> cookieWidgets =
-        cookieList.map((String cookie) => Text(cookie));
+    final Iterable<Text> cookieWidgets = cookieList.map((String cookie) => Text(cookie));
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
@@ -150,10 +148,8 @@ class NavigationControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder<WebViewController>(
       future: _webViewControllerFuture,
-      builder:
-          (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
-        final bool webViewReady =
-            snapshot.connectionState == ConnectionState.done;
+      builder: (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
+        final bool webViewReady = snapshot.connectionState == ConnectionState.done;
         final WebViewController controller = snapshot.data!;
         return Row(
           children: <Widget>[

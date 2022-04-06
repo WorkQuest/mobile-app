@@ -57,7 +57,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share("https://app.workquest.co/quests/${widget.questInfo.id}");
+          Share.share(Constants.isRelease
+              ? "https://app-ver1.workquest.co/quests/${widget.questInfo.id}"
+              : "https://app.workquest.co/quests/${widget.questInfo.id}");
         },
       ),
       if (widget.questInfo.userId == profile!.userData!.id &&

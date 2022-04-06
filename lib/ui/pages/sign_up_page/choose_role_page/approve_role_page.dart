@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
@@ -18,7 +19,9 @@ class ApproveRolePage extends StatelessWidget {
 
   static const String routeName = '/approveRolePage';
 
-  final String _baseUrl = "https://app.workquest.co/";
+  final String _baseUrl = Constants.isRelease
+      ? "https://app-ver1.workquest.co/"
+      : "https://app.workquest.co/";
 
   @override
   Widget build(BuildContext ctx) {
@@ -40,9 +43,7 @@ class ApproveRolePage extends StatelessWidget {
                       ? "role.yourRole".tr() +
                           " ${store.userRole.toString().split(".").last} " +
                           "role.right".tr()
-                      : "role.change".tr() +
-                          " ${store.getRole()} " +
-                          "role.right".tr(),
+                      : "role.change".tr() + " ${store.getRole()} " + "role.right".tr(),
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -177,9 +178,7 @@ class ApproveRolePage extends StatelessWidget {
                 Text(
                   "role.${role.name.toLowerCase()}".tr(),
                   style: TextStyle(
-                      color: role == UserRole.Worker
-                          ? Colors.white
-                          : Color(0xFF1D2127),
+                      color: role == UserRole.Worker ? Colors.white : Color(0xFF1D2127),
                       fontSize: 20,
                       fontWeight: FontWeight.w600),
                 ),
@@ -189,9 +188,7 @@ class ApproveRolePage extends StatelessWidget {
                 Text(
                   "role.${role.name.toLowerCase()}Want".tr(),
                   style: TextStyle(
-                    color: role == UserRole.Worker
-                        ? Colors.white
-                        : Color(0xFF1D2127),
+                    color: role == UserRole.Worker ? Colors.white : Color(0xFF1D2127),
                   ),
                 ),
               ],
