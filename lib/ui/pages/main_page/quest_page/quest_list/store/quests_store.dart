@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
@@ -156,14 +155,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   String getFilterPrice({bool isWorker = false}) {
     String result = '';
     if (isWorker) {
-      result +=
-          '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-      result +=
-          '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+      if (fromPrice.isNotEmpty)
+        result += '&betweenWagePerHour[from]=$fromPrice';
+      if (toPrice.isNotEmpty) result += '&betweenWagePerHour[to]=$toPrice';
     } else {
-      result += '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-      result +=
-          '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+      if (fromPrice.isNotEmpty) result += '&priceBetween[from]=$fromPrice';
+      if (toPrice.isNotEmpty) result += '&priceBetween[to]=$toPrice';
     }
     return result;
   }
@@ -241,9 +238,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       // searchWord.isNotEmpty &&
       // searchResultList.isEmpty &&
       // searchWorkersList.isEmpty &&
-      workersList.isEmpty &&
-      questsList.isEmpty &&
-      !this.isLoading;
+      workersList.isEmpty && questsList.isEmpty && !this.isLoading;
 
   @action
   Future getSearchedQuests() async {
@@ -298,8 +293,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getQuests(bool newList) async {
     try {
+      this.onLoading();
       if (newList) {
-        this.onLoading();
         this.offset = 0;
         questsList.clear();
       }
@@ -329,8 +324,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getWorkers(bool newList) async {
     try {
+      this.onLoading();
       if (newList) {
-        this.onLoading();
         workersList.clear();
         offsetWorkers = 0;
       }

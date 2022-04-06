@@ -295,7 +295,7 @@ Widget appBarTitle(String name, double padding, int status, double width) {
     child: Stack(
       children: [
         Positioned(
-          bottom: status == 3 ? 13.0 : 0.0,
+          bottom: status != 3 ? 30.0 : 13.0,
           left: 0.0,
           child: Container(
             width: width,
@@ -311,7 +311,7 @@ Widget appBarTitle(String name, double padding, int status, double width) {
         ),
         if (status != 3)
           Positioned(
-            bottom: 0.0,
+            bottom: 5.0,
             left: 0.0,
             child: Container(
               child: UserRating(status),
@@ -693,7 +693,7 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
         ),
         _socialMediaIcon(
           title: linkedin,
-          fallbackUrl: 'https://linkedin.com/$linkedin',
+          fallbackUrl: 'https://linkedin.com/in/$linkedin',
           launchUrl: '',
           icon: SvgPicture.asset(
             "assets/linkedin_icon_disabled.svg",

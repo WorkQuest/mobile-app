@@ -1,4 +1,5 @@
 import 'package:app/ui/pages/restore_password_page/store.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -32,6 +33,7 @@ final spacer = const SizedBox(
 
 class RestorePasswordPage extends StatelessWidget {
   final RestorePasswordStore _store;
+
   const RestorePasswordPage(this._store);
 
   @override
@@ -74,11 +76,17 @@ class RestorePasswordPage extends StatelessWidget {
                     child: Observer(
                       builder: (context) {
                         return ElevatedButton(
-                          onPressed:() async =>
-                              _store.canSubmit ? await  _store.restorePassword().then((value) {
-                                Navigator.pop(context);
-                                //Navigator.pop(context);
-                              }) : null,
+                          onPressed: _store.canSubmit
+                              ? () async {
+                                  await _store.restorePassword();
+                                  if (_store.isSuccess) {
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                    AlertDialogUtils.showSuccessDialog(context);
+                                  }
+                                }
+                              : null,
                           child: _store.isLoading
                               ? CircularProgressIndicator.adaptive()
                               : Text("meta.submit".tr()),
