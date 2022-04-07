@@ -98,6 +98,7 @@ class ApproveRolePage extends StatelessWidget {
                 SafeArea(
                   child: LoginButton(
                     enabled: store.isLoading,
+                    withColumn: true,
                     onTap: store.canApprove
                         ? () async {
                             if (!store.isChange) await store.approveRole();

@@ -133,8 +133,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     } on FormatException catch (e, trace) {
       print('$e\n$trace');
       onError(e.message);
-    } catch (e) {
-      print('$e');
+    } catch (e, trace) {
+      print('e: $e, trace: $trace');
       onError(e.toString());
     }
   }

@@ -23,8 +23,7 @@ class ChangeProfilePage extends StatefulWidget {
   _ChangeProfilePageState createState() => _ChangeProfilePageState();
 }
 
-class _ChangeProfilePageState extends State<ChangeProfilePage>
-    with AutomaticKeepAliveClientMixin {
+class _ChangeProfilePageState extends State<ChangeProfilePage> {
   ProfileMeStore? profile;
   late ChangeProfileStore pageStore;
 
@@ -36,11 +35,11 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
 
   @override
   void initState() {
+    print('qweasd initState');
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
-    pageStore.getInitCode(
-        pageStore.userData.phone ?? pageStore.userData.tempPhone!,
+    pageStore.getInitCode(pageStore.userData.phone ?? pageStore.userData.tempPhone!,
         pageStore.userData.additionalInfo?.secondMobileNumber);
     if (profile!.userData!.locationPlaceName != null)
       pageStore.address = profile!.userData!.locationPlaceName!;
@@ -52,8 +51,14 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
   }
 
   @override
+  void didUpdateWidget(ChangeProfilePage oldWidget) {
+    print('qweasd didUpdateWidget');
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    super.build(context);
+    print('qweasd build');
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -103,18 +108,27 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
         key: _formKey,
         child: ListView(
           addAutomaticKeepAlives: true,
+          physics: ClampingScrollPhysics(),
           children: [
             changeImage(),
             inputBody(
               title: "labels.firstName".tr(),
               initialValue: pageStore.userData.firstName,
-              onChanged: (text) => pageStore.userData.firstName = text,
+              onChanged: (text) {
+                ProfileMeResponse data = pageStore.userData;
+                data.firstName = text;
+                pageStore.setUserData(data);
+              },
               validator: Validators.firstNameValidator,
             ),
             inputBody(
               title: "labels.lastName".tr(),
               initialValue: pageStore.userData.lastName,
-              onChanged: (text) => pageStore.userData.lastName = text,
+              onChanged: (text) {
+                ProfileMeResponse data = pageStore.userData;
+                data.lastName = text;
+                pageStore.setUserData(data);
+              },
               validator: Validators.lastNameValidator,
             ),
             Column(
@@ -177,22 +191,27 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
               phoneNumber(
                 title: "modals.secondPhoneNumber",
                 initialValue: pageStore.secondPhoneNumber,
-                onChanged: (PhoneNumber phone) =>
-                    pageStore.setSecondPhoneNumber(phone),
+                onChanged: (PhoneNumber phone) => pageStore.setSecondPhoneNumber(phone),
               ),
             inputBody(
               title: "signUp.email".tr(),
               readOnly: true,
               initialValue: pageStore.userData.email ?? "",
-              onChanged: (text) => pageStore.userData.email,
+              onChanged: (text) {
+                ProfileMeResponse data = pageStore.userData;
+                data.email = text;
+                pageStore.setUserData(data);
+              },
               validator: Validators.emailValidator,
             ),
             inputBody(
               title: "modals.title".tr(),
-              initialValue:
-                  pageStore.userData.additionalInfo!.description ?? "",
-              onChanged: (text) =>
-                  pageStore.userData.additionalInfo!.description = text,
+              initialValue: pageStore.userData.additionalInfo!.description ?? "",
+              onChanged: (text) {
+                ProfileMeResponse data = pageStore.userData;
+                data.additionalInfo!.description = text;
+                pageStore.setUserData(data);
+              },
               maxLines: null,
               validator: Validators.descriptionValidator,
             ),
@@ -200,37 +219,45 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
             inputBody(
               title: "settings.twitterUsername".tr(),
               initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.twitter ??
-                      "",
-              onChanged: (text) => pageStore
-                  .userData.additionalInfo!.socialNetwork?.twitter = text,
+                  pageStore.userData.additionalInfo!.socialNetwork?.twitter ?? "",
+              onChanged: (text) {
+                ProfileMeResponse data = pageStore.userData;
+                data.additionalInfo!.socialNetwork?.twitter = text;
+                pageStore.setUserData(data);
+              },
               validator: Validators.nicknameTwitterValidator,
             ),
             inputBody(
               title: "settings.facebookUsername".tr(),
               initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.facebook ??
-                      "",
-              onChanged: (text) => pageStore
-                  .userData.additionalInfo!.socialNetwork?.facebook = text,
+                  pageStore.userData.additionalInfo!.socialNetwork?.facebook ?? "",
+              onChanged: (text) {
+                ProfileMeResponse data = pageStore.userData;
+                data.additionalInfo!.socialNetwork?.facebook = text;
+                pageStore.setUserData(data);
+              },
               validator: Validators.nicknameFacebookValidator,
             ),
             inputBody(
               title: "settings.linkedInUsername".tr(),
               initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.linkedin ??
-                      "",
-              onChanged: (text) => pageStore
-                  .userData.additionalInfo!.socialNetwork?.linkedin = text,
+                  pageStore.userData.additionalInfo!.socialNetwork?.linkedin ?? "",
+              onChanged: (text) {
+                ProfileMeResponse data = pageStore.userData;
+                data.additionalInfo!.socialNetwork?.linkedin = text;
+                pageStore.setUserData(data);
+              },
               validator: Validators.nicknameLinkedInValidator,
             ),
             inputBody(
               title: "settings.instagramUsername".tr(),
               initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.instagram ??
-                      "",
-              onChanged: (text) => pageStore
-                  .userData.additionalInfo!.socialNetwork?.instagram = text,
+                  pageStore.userData.additionalInfo!.socialNetwork?.instagram ?? "",
+              onChanged: (text) {
+                ProfileMeResponse data = pageStore.userData;
+                data.additionalInfo!.socialNetwork?.instagram = text;
+                pageStore.setUserData(data);
+              },
               validator: Validators.nicknameLinkedInValidator,
             ),
             const SizedBox(height: 20),
@@ -273,8 +300,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
                   type: FileType.image,
                 );
                 if (result != null) {
-                  List<File> files =
-                      result.paths.map((path) => File(path!)).toList();
+                  List<File> files = result.paths.map((path) => File(path!)).toList();
                   pageStore.media = files.first;
                 }
               },
@@ -525,25 +551,21 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
 
   onSave() async {
     if (_formKey.currentState?.validate() ?? false) {
-      if (!pageStore.validationKnowledge(
-          _controllerKnowledge!.getListMap(), context)) return;
-      if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
+      if (!pageStore.validationKnowledge(_controllerKnowledge!.getListMap(), context))
         return;
+      if (!pageStore.validationWork(_controllerWork!.getListMap(), context)) return;
 
       if (pageStore.userData.additionalInfo?.secondMobileNumber?.phone == "")
         pageStore.userData.additionalInfo?.secondMobileNumber = null;
-      pageStore.userData.additionalInfo?.educations =
-          _controllerKnowledge!.getListMap();
-      pageStore.userData.additionalInfo?.workExperiences =
-          _controllerWork!.getListMap();
+      pageStore.userData.additionalInfo?.educations = _controllerKnowledge!.getListMap();
+      pageStore.userData.additionalInfo?.workExperiences = _controllerWork!.getListMap();
       pageStore.userData.additionalInfo!.address = pageStore.address;
       pageStore.userData.locationPlaceName = pageStore.address;
       pageStore.userData.priority = profile!.userData!.priority;
       pageStore.userData.workplace = profile!.valueToWorkplace();
 
       if (!profile!.isLoading)
-        pageStore.userData.userSpecializations =
-            _controller!.getSkillAndSpecialization();
+        pageStore.userData.userSpecializations = _controller!.getSkillAndSpecialization();
       await profile!.changeProfile(
         pageStore.userData,
         media: pageStore.media,
@@ -645,8 +667,4 @@ class _ChangeProfilePageState extends State<ChangeProfilePage>
       builder: (context) {
         return child;
       });
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Constants {
-  static const bool isRelease = true;
+  static const bool isRelease = false;
 
   static const Map<String, Locale> languageList = {
     "English": Locale('en', 'US'),
@@ -15,6 +15,7 @@ class Constants {
     "Portuguese": Locale('pt', 'PT'),
     "Indonesian ": Locale('id', 'ID'),
   };
+
   static const List<Color> priorityColors = [
     Color.fromRGBO(34, 204, 20, 1),
     Color.fromRGBO(34, 204, 20, 1),

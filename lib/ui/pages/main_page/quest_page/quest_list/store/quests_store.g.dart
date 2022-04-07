@@ -167,35 +167,35 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  // final _$searchResultListAtom = Atom(name: '_QuestsStore.searchResultList');
-  //
-  // @override
-  // ObservableList<BaseQuestResponse> get searchResultList {
-  //   _$searchResultListAtom.reportRead();
-  //   return super.searchResultList;
-  // }
-  //
-  // @override
-  // set searchResultList(ObservableList<BaseQuestResponse> value) {
-  //   _$searchResultListAtom.reportWrite(value, super.searchResultList, () {
-  //     super.searchResultList = value;
-  //   });
-  // }
-  //
-  // final _$searchWorkersListAtom = Atom(name: '_QuestsStore.searchWorkersList');
-  //
-  // @override
-  // ObservableList<ProfileMeResponse> get searchWorkersList {
-  //   _$searchWorkersListAtom.reportRead();
-  //   return super.searchWorkersList;
-  // }
-  //
-  // @override
-  // set searchWorkersList(ObservableList<ProfileMeResponse> value) {
-  //   _$searchWorkersListAtom.reportWrite(value, super.searchWorkersList, () {
-  //     super.searchWorkersList = value;
-  //   });
-  // }
+  final _$searchResultListAtom = Atom(name: '_QuestsStore.searchResultList');
+
+  @override
+  ObservableList<BaseQuestResponse> get searchResultList {
+    _$searchResultListAtom.reportRead();
+    return super.searchResultList;
+  }
+
+  @override
+  set searchResultList(ObservableList<BaseQuestResponse> value) {
+    _$searchResultListAtom.reportWrite(value, super.searchResultList, () {
+      super.searchResultList = value;
+    });
+  }
+
+  final _$searchWorkersListAtom = Atom(name: '_QuestsStore.searchWorkersList');
+
+  @override
+  ObservableList<ProfileMeResponse> get searchWorkersList {
+    _$searchWorkersListAtom.reportRead();
+    return super.searchWorkersList;
+  }
+
+  @override
+  set searchWorkersList(ObservableList<ProfileMeResponse> value) {
+    _$searchWorkersListAtom.reportWrite(value, super.searchWorkersList, () {
+      super.searchWorkersList = value;
+    });
+  }
 
   final _$loadQuestsListAtom = Atom(name: '_QuestsStore.loadQuestsList');
 
@@ -352,6 +352,8 @@ limit: ${limit},
 status: ${status},
 questsList: ${questsList},
 workersList: ${workersList},
+searchResultList: ${searchResultList},
+searchWorkersList: ${searchWorkersList},
 loadQuestsList: ${loadQuestsList},
 latitude: ${latitude},
 longitude: ${longitude},

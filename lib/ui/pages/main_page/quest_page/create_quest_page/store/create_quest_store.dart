@@ -32,9 +32,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   _CreateQuestStore(this.apiProvider);
 
   final List<String> priorityList = [
-    "quests.priority.low",
-    "quests.priority.normal",
-    "quests.priority.urgent",
+    "quests.priority.low".tr(),
+    "quests.priority.normal".tr(),
+    "quests.priority.urgent".tr(),
   ];
 
   final List<String> employmentList = [

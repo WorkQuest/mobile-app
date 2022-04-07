@@ -35,8 +35,22 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
     final store = context.read<ConfirmTransferStore>();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CupertinoNavigationBar(
-        middle: Text('wallet.transfer'.tr()),
+      appBar:AppBar(
+        title: Text(
+            'wallet.transfer'.tr(),
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+        centerTitle: true,
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColor.enabledButton,
+          ),
+        ),
       ),
       body: Padding(
         padding: _padding,
