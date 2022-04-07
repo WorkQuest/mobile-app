@@ -35,7 +35,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
   @override
   void initState() {
-    print('qweasd initState');
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
@@ -52,13 +51,11 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
   @override
   void didUpdateWidget(ChangeProfilePage oldWidget) {
-    print('qweasd didUpdateWidget');
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
-    print('qweasd build');
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

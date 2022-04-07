@@ -86,7 +86,6 @@ import 'model/profile_response/profile_me_response.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    print(context.locale.toString());
     return context.locale.toString() == "ar_SA"
         ? TextDirection.rtl
         : TextDirection.ltr;

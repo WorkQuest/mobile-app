@@ -89,6 +89,7 @@ abstract class ChangeProfileStoreBase with Store {
         phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "";
     userData.additionalInfo?.secondMobileNumber?.fullPhone =
         phone.phoneNumber ?? "";
+    print('phone: ${userData.additionalInfo?.secondMobileNumber?.toJson()}');
   }
 
   bool validationKnowledge(

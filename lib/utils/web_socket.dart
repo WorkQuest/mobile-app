@@ -216,8 +216,6 @@ class WebSocket {
         } else {
           final decode =
               json.decode(transaction.result!.events!['tx_log.txLog']!.first);
-          print(
-              'decode - ${(decode['topics'] as List<dynamic>).last.substring(26)}');
           if ((decode['topics'] as List<dynamic>).last.substring(26) ==
               myAddress.substring(2)) {
             await Future.delayed(const Duration(seconds: 8));
