@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:app/utils/storage.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
 ///Instrument Card
@@ -162,6 +163,9 @@ Widget logOutButton(context) {
           );
           final cookieManager = WebviewCookieManager();
           cookieManager.clearCookies();
+          SharedPreferences.getInstance().then((sharedPrefs) {
+            sharedPrefs.remove('2FAStatus');
+          });
           Storage.deleteAllFromSecureStorage();
         },
       );

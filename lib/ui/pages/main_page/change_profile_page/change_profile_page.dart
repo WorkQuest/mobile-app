@@ -14,6 +14,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+import '../../../../constants.dart';
 import '../../../../enums.dart';
 
 class ChangeProfilePage extends StatefulWidget {
@@ -38,6 +39,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
+    print('tempPhone: ${pageStore.userData.tempPhone!.toJson()}');
     pageStore.getInitCode(pageStore.userData.phone ?? pageStore.userData.tempPhone!,
         pageStore.userData.additionalInfo?.secondMobileNumber);
     if (profile!.userData!.locationPlaceName != null)
@@ -50,23 +52,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   @override
-  void didUpdateWidget(ChangeProfilePage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            if (profile!.isLoading) return;
-            if (!pageStore.areThereAnyChanges(profile!.userData))
-              Navigator.pop(context);
-            else
-              showDialog();
-          },
+          onPressed: _onBackPressed,
         ),
         title: Text(
           "settings.changeProfile".tr(),
@@ -78,7 +69,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         centerTitle: true,
         actions: [
           TextButton(
-            onPressed: onSave,
+            onPressed: _onSave,
             child: Text(
               "settings.save".tr(),
             ),
@@ -104,11 +95,25 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       child: Form(
         key: _formKey,
         child: ListView(
-          addAutomaticKeepAlives: true,
           physics: ClampingScrollPhysics(),
           children: [
-            changeImage(),
-            inputBody(
+            Observer(
+              builder: (_) => _ImageProfile(
+                file: pageStore.media,
+                hasMedia: pageStore.media == null,
+                url: profile!.userData!.avatar?.url,
+                onPressed: () async {
+                  final result = await FilePicker.platform.pickFiles(
+                    type: FileType.image,
+                  );
+                  if (result != null) {
+                    List<File> files = result.paths.map((path) => File(path!)).toList();
+                    pageStore.media = files.first;
+                  }
+                },
+              ),
+            ),
+            _InputWidget(
               title: "labels.firstName".tr(),
               initialValue: pageStore.userData.firstName,
               onChanged: (text) {
@@ -118,7 +123,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               },
               validator: Validators.firstNameValidator,
             ),
-            inputBody(
+            _InputWidget(
               title: "labels.lastName".tr(),
               initialValue: pageStore.userData.lastName,
               onChanged: (text) {
@@ -128,69 +133,33 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               },
               validator: Validators.lastNameValidator,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "quests.address".tr(),
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                Observer(
-                  builder: (_) => GestureDetector(
-                    onTap: () {
-                      pageStore.getPrediction(context);
-                    },
-                    child: Container(
-                      height: 50,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Color(0xFFF7F8FA),
-                            width: 2,
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(6.0),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Flexible(
-                              child: Text(
-                                pageStore.address,
-                                overflow: TextOverflow.fade,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            Observer(
+              builder: (_) => _AddressProfileWidget(
+                address: pageStore.address,
+                onTap: () {
+                  pageStore.getPrediction(context);
+                },
+              ),
             ),
             SizedBox(
               height: 20,
             ),
-            phoneNumber(
+            _PhoneNumberWidget(
               title: "modals.phoneNumber",
               initialValue: pageStore.phoneNumber,
-              onChanged: (PhoneNumber phone) => pageStore.setPhoneNumber(phone),
+              onChanged: (PhoneNumber phone) {
+                pageStore.setPhoneNumber(phone);
+              },
             ),
             if (profile!.userData!.role == UserRole.Employer)
-              phoneNumber(
+              _PhoneNumberWidget(
                 title: "modals.secondPhoneNumber",
                 initialValue: pageStore.secondPhoneNumber,
-                onChanged: (PhoneNumber phone) => pageStore.setSecondPhoneNumber(phone),
+                onChanged: (PhoneNumber phone) {
+                  pageStore.setSecondPhoneNumber(phone);
+                },
               ),
-            inputBody(
+            _InputWidget(
               title: "signUp.email".tr(),
               readOnly: true,
               initialValue: pageStore.userData.email ?? "",
@@ -201,7 +170,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               },
               validator: Validators.emailValidator,
             ),
-            inputBody(
+            _InputWidget(
               title: "modals.title".tr(),
               initialValue: pageStore.userData.additionalInfo!.description ?? "",
               onChanged: (text) {
@@ -212,8 +181,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               maxLines: null,
               validator: Validators.descriptionValidator,
             ),
-            if (pageStore.userData.role == UserRole.Worker) fieldForWorker(),
-            inputBody(
+            if (pageStore.userData.role == UserRole.Worker) _fieldsForWorkerWidget(),
+            _InputWidget(
               title: "settings.twitterUsername".tr(),
               initialValue:
                   pageStore.userData.additionalInfo!.socialNetwork?.twitter ?? "",
@@ -224,7 +193,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               },
               validator: Validators.nicknameTwitterValidator,
             ),
-            inputBody(
+            _InputWidget(
               title: "settings.facebookUsername".tr(),
               initialValue:
                   pageStore.userData.additionalInfo!.socialNetwork?.facebook ?? "",
@@ -235,7 +204,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               },
               validator: Validators.nicknameFacebookValidator,
             ),
-            inputBody(
+            _InputWidget(
               title: "settings.linkedInUsername".tr(),
               initialValue:
                   pageStore.userData.additionalInfo!.socialNetwork?.linkedin ?? "",
@@ -246,7 +215,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               },
               validator: Validators.nicknameLinkedInValidator,
             ),
-            inputBody(
+            _InputWidget(
               title: "settings.instagramUsername".tr(),
               initialValue:
                   pageStore.userData.additionalInfo!.socialNetwork?.instagram ?? "",
@@ -264,56 +233,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     );
   }
 
-  Widget changeImage() {
-    return Center(
-      child: Observer(
-        builder: (_) => Stack(
-          alignment: Alignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(65),
-              child: pageStore.media == null
-                  ? Image.network(
-                      profile!.userData!.avatar?.url ??
-                          "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                      height: 130,
-                      width: 130,
-                      fit: BoxFit.cover,
-                    )
-                  : Image.memory(
-                      pageStore.media!.readAsBytesSync(),
-                      height: 130,
-                      width: 130,
-                      fit: BoxFit.cover,
-                    ),
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.edit,
-                color: Colors.white,
-              ),
-              onPressed: () async {
-                final result = await FilePicker.platform.pickFiles(
-                  type: FileType.image,
-                );
-                if (result != null) {
-                  List<File> files = result.paths.map((path) => File(path!)).toList();
-                  pageStore.media = files.first;
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget fieldForWorker() {
+  Widget _fieldsForWorkerWidget() {
     return Column(
       children: <Widget>[
         SkillSpecializationSelection(controller: _controller),
         Observer(
-          builder: (_) => dropDownMenu(
+          builder: (_) => _dropDownMenuWidget(
             title: "settings.priority",
             value: profile!.priorityValue.name,
             list: QuestPriority.values.map((e) => e.name).toList(),
@@ -322,14 +247,14 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
             },
           ),
         ),
-        inputBody(
+        _InputWidget(
           title: "settings.costPerHour".tr(),
           initialValue: pageStore.userData.wagePerHour,
           onChanged: (text) => pageStore.userData.wagePerHour = text,
           validator: Validators.emptyValidator,
         ),
         Observer(
-          builder: (_) => dropDownMenu(
+          builder: (_) => _dropDownMenuWidget(
             title: "settings.distantWork",
             value: profile!.distantWork,
             list: profile!.distantWorkList,
@@ -354,133 +279,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     );
   }
 
-  Widget phoneNumber({
-    required String title,
-    required PhoneNumber? initialValue,
-    required void Function(PhoneNumber)? onChanged,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title.tr()),
-        const SizedBox(height: 5),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Color(0xFFF7F8FA)),
-            borderRadius: BorderRadius.circular(6.0),
-          ),
-          child: InternationalPhoneNumberInput(
-            validator: title == "modals.secondPhoneNumber"
-                ? (value) {
-                    return null;
-                  }
-                : Validators.phoneNumberValidator,
-            initialValue: initialValue,
-            errorMessage: "modals.invalidPhone".tr(),
-            onInputChanged: onChanged,
-            selectorConfig: SelectorConfig(
-              setSelectorButtonAsPrefixIcon: true,
-              selectorType: PhoneInputSelectorType.DROPDOWN,
-            ),
-            hintText: "modals.phoneNumber".tr(),
-            keyboardType: TextInputType.number,
-            inputBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6.0),
-              borderSide: BorderSide(
-                color: Colors.blue,
-              ),
-            ),
-            inputDecoration: InputDecoration(
-              fillColor: Colors.white,
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.0),
-                borderSide: BorderSide(
-                  color: Colors.blue,
-                ),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.0),
-                borderSide: BorderSide(
-                  color: Colors.blue,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.0),
-                borderSide: BorderSide(
-                  color: Color(0xFFf7f8fa),
-                  width: 2.0,
-                ),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.0),
-                borderSide: BorderSide(
-                  width: 1.0,
-                  color: Colors.red,
-                ),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
-      ],
-    );
-  }
-
-  Widget inputBody({
-    required String title,
-    required String initialValue,
-    required void Function(String)? onChanged,
-    required String? Function(String?) validator,
-    bool readOnly = false,
-    int? maxLines = 1,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title),
-        const SizedBox(height: 5),
-        TextFormField(
-          initialValue: initialValue,
-          maxLines: maxLines,
-          readOnly: readOnly,
-          onChanged: onChanged,
-          validator: validator,
-          decoration: InputDecoration(
-            fillColor: Colors.white,
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6.0),
-              borderSide: BorderSide(
-                color: Colors.blue,
-              ),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6.0),
-              borderSide: BorderSide(
-                color: Colors.blue,
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6.0),
-              borderSide: BorderSide(
-                color: Color(0xFFf7f8fa),
-                width: 2.0,
-              ),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(6.0),
-              borderSide: BorderSide(
-                width: 1.0,
-                color: Colors.red,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
-      ],
-    );
-  }
-
-  Widget dropDownMenu({
+  Widget _dropDownMenuWidget({
     required String title,
     required String value,
     required List<String> list,
@@ -541,12 +340,20 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     );
   }
 
-  onBack() {
+  _onBackPressed() {
+    if (profile!.isLoading) return;
+    if (!pageStore.areThereAnyChanges(profile!.userData))
+      Navigator.pop(context);
+    else
+      _showDialog();
+  }
+
+  _onBack() {
     Navigator.of(context).pop();
     Navigator.of(context).pop();
   }
 
-  onSave() async {
+  _onSave() async {
     if (_formKey.currentState?.validate() ?? false) {
       if (!pageStore.validationKnowledge(_controllerKnowledge!.getListMap(), context))
         return;
@@ -567,8 +374,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         pageStore.userData,
         media: pageStore.media,
       );
+      print('tempPhone: ${profile!.userData!.tempPhone!.toJson()}');
+      print('phone: ${pageStore.userData.tempPhone!.toJson()}');
       if (pageStore.numberChanged(profile!.userData!.tempPhone!)) {
-        await profile!.submitPhoneNumber();
+        await profile!.submitPhoneNumber(pageStore.userData.tempPhone!.fullPhone);
         profile!.userData?.phone = null;
       }
       if (profile!.isSuccess) {
@@ -582,7 +391,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     }
   }
 
-  showDialog() {
+  _showDialog() {
     showCupertinoDialog(
       context: context,
       barrierDismissible: true,
@@ -606,13 +415,13 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     child: Text(
                       "modals.dontSave".tr(),
                     ),
-                    onPressed: onBack,
+                    onPressed: _onBack,
                   ),
                   CupertinoDialogAction(
                     child: Text(
                       "settings.save".tr(),
                     ),
-                    onPressed: onSave,
+                    onPressed: _onSave,
                   )
                 ],
               )
@@ -634,7 +443,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     child: Text(
                       "modals.dontSave".tr(),
                     ),
-                    onPressed: onBack,
+                    onPressed: _onBack,
                   ),
                   TextButton(
                     child: Text(
@@ -642,7 +451,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
-                      onSave();
+                      _onSave();
                     },
                   )
                 ],
@@ -650,18 +459,266 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       },
     );
   }
+}
 
-  modalBottomSheet(Widget child) => showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(
-            20.0,
+class _AddressProfileWidget extends StatelessWidget {
+  final String address;
+  final Function() onTap;
+
+  const _AddressProfileWidget({
+    Key? key,
+    required this.address,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "quests.address".tr(),
+            style: TextStyle(
+              fontSize: 16,
+            ),
           ),
         ),
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            height: 50,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Color(0xFFF7F8FA),
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(6.0),
+                ),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Flexible(
+                    child: Text(
+                      address,
+                      overflow: TextOverflow.fade,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PhoneNumberWidget extends StatefulWidget {
+  final String title;
+  final PhoneNumber? initialValue;
+  final void Function(PhoneNumber)? onChanged;
+
+  const _PhoneNumberWidget({
+    Key? key,
+    required this.title,
+    required this.initialValue,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  State<_PhoneNumberWidget> createState() => _PhoneNumberWidgetState();
+}
+
+class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(widget.title.tr()),
+        const SizedBox(height: 5),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Color(0xFFF7F8FA)),
+            borderRadius: BorderRadius.circular(6.0),
+          ),
+          child: InternationalPhoneNumberInput(
+            validator: widget.title == "modals.secondPhoneNumber"
+                ? (value) {
+                    return null;
+                  }
+                : Validators.phoneNumberValidator,
+            initialValue: widget.initialValue,
+            errorMessage: "modals.invalidPhone".tr(),
+            onInputChanged: widget.onChanged,
+            selectorConfig: SelectorConfig(
+              setSelectorButtonAsPrefixIcon: true,
+              selectorType: PhoneInputSelectorType.DROPDOWN,
+            ),
+            hintText: "modals.phoneNumber".tr(),
+            keyboardType: TextInputType.number,
+            inputBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              borderSide: BorderSide(
+                color: Colors.blue,
+              ),
+            ),
+            inputDecoration: InputDecoration(
+              fillColor: Colors.white,
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: BorderSide(
+                  color: Colors.blue,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: BorderSide(
+                  color: Colors.blue,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: BorderSide(
+                  color: Color(0xFFf7f8fa),
+                  width: 2.0,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: BorderSide(
+                  width: 1.0,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+}
+
+class _InputWidget extends StatelessWidget {
+  final String title;
+  final String initialValue;
+  final void Function(String)? onChanged;
+  final String? Function(String?) validator;
+  final bool readOnly;
+  final int? maxLines;
+
+  const _InputWidget({
+    Key? key,
+    required this.title,
+    required this.initialValue,
+    required this.onChanged,
+    required this.validator,
+    this.readOnly = false,
+    this.maxLines = 1,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title),
+        const SizedBox(height: 5),
+        TextFormField(
+          initialValue: initialValue,
+          maxLines: maxLines,
+          readOnly: readOnly,
+          onChanged: onChanged,
+          validator: validator,
+          decoration: InputDecoration(
+            fillColor: Colors.white,
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              borderSide: BorderSide(
+                color: Colors.blue,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              borderSide: BorderSide(
+                color: Colors.blue,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              borderSide: BorderSide(
+                color: Color(0xFFf7f8fa),
+                width: 2.0,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(6.0),
+              borderSide: BorderSide(
+                width: 1.0,
+                color: Colors.red,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+}
+
+class _ImageProfile extends StatelessWidget {
+  final Function() onPressed;
+  final bool hasMedia;
+  final String? url;
+  final File? file;
+
+  const _ImageProfile({
+    Key? key,
+    required this.onPressed,
+    required this.hasMedia,
+    required this.file,
+    required this.url,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(65),
+            child: hasMedia
+                ? Image.network(
+                    url ?? Constants.defaultImageNetwork,
+                    height: 130,
+                    width: 130,
+                    fit: BoxFit.cover,
+                  )
+                : Image.memory(
+                    file!.readAsBytesSync(),
+                    height: 130,
+                    width: 130,
+                    fit: BoxFit.cover,
+                  ),
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.edit,
+              color: Colors.white,
+            ),
+            onPressed: onPressed,
+          ),
+        ],
       ),
-      context: context,
-      builder: (context) {
-        return child;
-      });
+    );
+  }
 }

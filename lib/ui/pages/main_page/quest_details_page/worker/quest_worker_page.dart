@@ -460,7 +460,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             _updateLoading();
             if (widget.questInfo.invited == null) {
               await store.sendRejectOnQuest();
-              widget.questInfo.responded!.status = -1;
+              if (widget.questInfo.responded != null) {
+                widget.questInfo.responded?.status = -1;
+              }
               widget.questInfo.status = 0;
               widget.questInfo.assignedWorker = null;
               myQuestStore.deleteQuest(widget.questInfo);

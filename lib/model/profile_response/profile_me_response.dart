@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/avatar.dart';
@@ -97,14 +98,20 @@ class ProfileMeResponse with ClusterItem {
       firstName: json["firstName"] ?? "",
       lastName: json["lastName"] ?? "",
       phone: json["phone"] == null ? null : Phone.fromJson(json["phone"]),
-      tempPhone: Phone.fromJson(
-        json["tempPhone"] ??
-            {
-              "codeRegion": "",
-              "fullPhone": "",
-              "phone": "",
-            },
-      ),
+      tempPhone: Constants.isRelease
+          ? Phone(
+              fullPhone: json["tempPhone"] ?? '',
+              phone: '',
+              codeRegion: '',
+            )
+          : Phone.fromJson(
+              json["tempPhone"] ??
+                  {
+                    "codeRegion": "",
+                    "fullPhone": "",
+                    "phone": "",
+                  },
+            ),
       email: json["email"],
       additionalInfo: json["additionalInfo"] == null
           ? null
@@ -130,9 +137,8 @@ class ProfileMeResponse with ClusterItem {
             // createdAt: createdAt,
             // updatedAt: updatedAt,
           }),
-      locationCode: json["location"] == null
-          ? null
-          : LocationCode.fromJson(json["location"]),
+      locationCode:
+          json["location"] == null ? null : LocationCode.fromJson(json["location"]),
       locationPlaceName: json["locationPlaceName"] ?? "",
       wagePerHour: json["wagePerHour"] ?? "0",
       workplace: json["workplace"],
@@ -160,8 +166,7 @@ class ProfileMeResponse with ClusterItem {
         "role": role.toString().split(".").last,
         "avatar": avatar!.toJson(),
         // "skillFilter": skillFilters.map((item) => item.toJson()),
-        "ratingStatistic":
-            ratingStatistic == null ? null : ratingStatistic!.toJson(),
+        "ratingStatistic": ratingStatistic == null ? null : ratingStatistic!.toJson(),
         "location": locationCode == null ? null : locationCode!.toJson(),
         "locationPlaceName": locationPlaceName,
         "wagePerHour": wagePerHour,
@@ -174,8 +179,7 @@ class ProfileMeResponse with ClusterItem {
 
   @override
   // TODO: implement location
-  LatLng get location =>
-      LatLng(locationCode!.latitude, locationCode!.longitude);
+  LatLng get location => LatLng(locationCode!.latitude, locationCode!.longitude);
 }
 
 class QuestsStatistic {
@@ -193,8 +197,7 @@ class QuestsStatistic {
           opened: object.opened,
         );
 
-  factory QuestsStatistic.fromJson(Map<String, dynamic> json) =>
-      QuestsStatistic(
+  factory QuestsStatistic.fromJson(Map<String, dynamic> json) => QuestsStatistic(
         completed: json["completed"],
         opened: json["opened"],
       );
@@ -260,13 +263,31 @@ class RatingStatistic {
         );
 
   factory RatingStatistic.fromJson(Map<String, dynamic> json) {
+    int? status;
+    if (Constants.isRelease) {
+      switch (json["status"]) {
+        case 'noStatus':
+          status = 3;
+          break;
+        case 'verified':
+          status = 2;
+          break;
+        case 'reliable':
+          status = 1;
+          break;
+        case 'topRanked':
+          status = 0;
+          break;
+      }
+    } else {
+      status = json["status"];
+    }
     return RatingStatistic(
       id: json["id"],
       userId: json["userId"],
       reviewCount: json["reviewCount"],
-      averageMark:
-          json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
-      status: json["status"],
+      averageMark: json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
+      status: status ?? 3,
       // createdAt: json["createdAt"],
       // updatedAt: json["updatedAt"],
     );
@@ -338,24 +359,24 @@ class RaiseView {
   DateTime? updatedAt;
 
   factory RaiseView.fromJson(Map<String, dynamic> json) => RaiseView(
-    id: json["id"] == null ? null : json["id"],
-    userId: json["userId"] == null ? null : json["userId"],
-    status: json["status"] == null ? null : json["status"],
-    duration: json["duration"] == null ? null : json["duration"],
-    type: json["type"] == null ? null : json["type"],
-    endedAt: json["endedAt"] == null ? null : DateTime.parse(json["endedAt"]),
-    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-    updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
-  );
+        id: json["id"] == null ? null : json["id"],
+        userId: json["userId"] == null ? null : json["userId"],
+        status: json["status"] == null ? null : json["status"],
+        duration: json["duration"] == null ? null : json["duration"],
+        type: json["type"] == null ? null : json["type"],
+        endedAt: json["endedAt"] == null ? null : DateTime.parse(json["endedAt"]),
+        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id == null ? null : id,
-    "userId": userId == null ? null : userId,
-    "status": status == null ? null : status,
-    "duration": duration == null ? null : duration,
-    "type": type == null ? null : type,
-    "endedAt": endedAt == null ? null : endedAt!.toIso8601String(),
-    "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
-    "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
-  };
+        "id": id == null ? null : id,
+        "userId": userId == null ? null : userId,
+        "status": status == null ? null : status,
+        "duration": duration == null ? null : duration,
+        "type": type == null ? null : type,
+        "endedAt": endedAt == null ? null : endedAt!.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
+      };
 }

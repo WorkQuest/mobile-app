@@ -64,6 +64,12 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   String workplace = "Distant work";
 
   @observable
+  String category = 'Choose';
+
+  @observable
+  String categoryValue = 'other';
+
+  @observable
   String priority = "quests.priority.low".tr();
 
   @observable
@@ -247,6 +253,8 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         specializationKeys: skillFilters,
         priority: getPriority(),
         location: location,
+        adType: adType,
+        category: category,
         media: mediaIds.map((e) => e.id).toList() +
             await apiProvider.uploadMedia(
               medias: mediaFile,

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
@@ -43,8 +44,14 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     if (widget.questInfo != null) {
       this.isEdit = true;
       final store = context.read<CreateQuestStore>();
-      store.priority = store.priorityList[widget.questInfo!.priority];
-      // store.category = widget.questInfo!.category;
+      if (Constants.isRelease) {
+        store.priority = store.priorityList[widget.questInfo!.priority - 1];
+      } else {
+        store.priority = store.priorityList[widget.questInfo!.priority];
+      }
+      if (Constants.isRelease) {
+        store.category = widget.questInfo!.category;
+      }
       store.questTitle = widget.questInfo!.title;
       store.getWorkplace(widget.questInfo!.workplace);
       store.getEmployment(widget.questInfo!.employment);
@@ -393,23 +400,25 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           builder: (context) => LoginButton(
                               withColumn: true,
                               enabled: store.isLoading,
-                              onTap: store.isLoading ? null : () async {
-                                store.skillFilters =
-                                    _controller!.getSkillAndSpecialization();
-                                if (isEdit) {
-                                  if (store.canSubmitEditQuest) {
-                                    if (_formKey.currentState?.validate() ?? false)
-                                      await store.createQuest(
-                                        isEdit: true,
-                                        questId: widget.questInfo!.id,
-                                      );
-                                  }
-                                } else if (store.canCreateQuest) {
-                                  if (_formKey.currentState?.validate() ?? false)
-                                    await store.createQuest();
-                                } else
-                                  store.emptyField(context);
-                              },
+                              onTap: store.isLoading
+                                  ? null
+                                  : () async {
+                                      store.skillFilters =
+                                          _controller!.getSkillAndSpecialization();
+                                      if (isEdit) {
+                                        if (store.canSubmitEditQuest) {
+                                          if (_formKey.currentState?.validate() ?? false)
+                                            await store.createQuest(
+                                              isEdit: true,
+                                              questId: widget.questInfo!.id,
+                                            );
+                                        }
+                                      } else if (store.canCreateQuest) {
+                                        if (_formKey.currentState?.validate() ?? false)
+                                          await store.createQuest();
+                                      } else
+                                        store.emptyField(context);
+                                    },
                               title: isEdit ? "Edit Quest" : 'quests.createAQuest'.tr()),
                         ),
                       ),

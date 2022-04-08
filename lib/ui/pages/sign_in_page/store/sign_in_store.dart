@@ -12,6 +12,7 @@ import 'package:app/web3/service/client_service.dart';
 import 'package:app/web3/wallet.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'sign_in_store.g.dart';
 
@@ -99,6 +100,11 @@ abstract class _SignInStore extends IStore<bool> with Store {
         password: _password,
         totp: totp
       );
+      if (totp.isNotEmpty) {
+        SharedPreferences.getInstance().then((sharedPrefs) {
+          sharedPrefs.setBool('2FAStatus', true);
+        });
+      }
       if (bearerToken.status == 0) {
         error = 'unconfirmed';
         this.onError("unconfirmed");

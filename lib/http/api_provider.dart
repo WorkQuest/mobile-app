@@ -345,13 +345,37 @@ extension QuestService on ApiProvider {
       specialization += "specializations[]=$text&";
     });
     String priorities = "";
-    priority.forEach((text) {
-      priorities += "priorities[]=$text&";
-    });
     String ratingStatuses = "";
-    ratingStatus.forEach((text) {
-      ratingStatuses += "ratingStatuses[]=$text&";
-    });
+    if (Constants.isRelease) {
+      priority.forEach((text) {
+        priorities += "priority[]=$text&";
+      });
+      ratingStatus.forEach((text) {
+        String rating = '';
+        switch (text) {
+          case 3:
+            rating = 'noStatus';
+            break;
+          case 2:
+            rating = 'verified';
+            break;
+          case 1:
+            rating = 'reliable';
+            break;
+          case 0:
+            rating = 'topRanked';
+            break;
+        }
+        ratingStatuses += "ratingStatus[]=$rating&";
+      });
+    } else {
+      priority.forEach((text) {
+        priorities += "priorities[]=$text&";
+      });
+      ratingStatus.forEach((text) {
+        ratingStatuses += "ratingStatuses[]=$text&";
+      });
+    }
     String workplaces = "";
     workplace.forEach((text) {
       workplaces += "workplaces[]=$text&";
@@ -713,7 +737,7 @@ extension UserInfoService on ApiProvider {
             "secondMobileNumber":
                 (userData.additionalInfo?.secondMobileNumber?.fullPhone.isNotEmpty ??
                         false)
-                    ? userData.additionalInfo?.secondMobileNumber
+                    ? userData.additionalInfo?.secondMobileNumber!.fullPhone
                     : null,
             "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
                 ? userData.additionalInfo?.address
@@ -747,9 +771,7 @@ extension UserInfoService on ApiProvider {
           },
           if (userData.role == UserRole.Worker) "wagePerHour": userData.wagePerHour,
           if (userData.role == UserRole.Worker)
-            "specializationKeys": userData.userSpecializations.isEmpty
-                ? null
-                : userData.userSpecializations,
+            "specializationKeys": userData.userSpecializations
         };
       } else {
         body = {
@@ -894,8 +916,15 @@ extension ChangePassword on ApiProvider {
 
 ///SMSVerification
 extension SMSVerification on ApiProvider {
-  Future<void> submitPhoneNumber() async {
-    await httpClient.post(query: '/v1/profile/phone/send-code');
+  Future<void> submitPhoneNumber(String phone) async {
+    if (Constants.isRelease) {
+      await httpClient.post(query: '/v1/profile/phone/send-code', data: {
+        "phoneNumber": phone
+      });
+    } else {
+      await httpClient.post(query: '/v1/profile/phone/send-code');
+    }
+
   }
 
   Future<void> submitCode({
