@@ -9,14 +9,15 @@ extension Web3Requests on ApiProvider {
   }) =>
       "https://dev-explorer.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
 
-  Future<void> registerWallet(String publicKey, String address) async {
-    await httpClient.post(
+  Future<bool> registerWallet(String publicKey, String address) async {
+    final response = await httpClient.post(
       query: "/v1/auth/register/wallet",
       data: {
         "publicKey": publicKey,
         "address": address,
       },
     );
+    return response.data['ok'];
   }
 
   Future<List<Tx>?> getTransactions(String address,

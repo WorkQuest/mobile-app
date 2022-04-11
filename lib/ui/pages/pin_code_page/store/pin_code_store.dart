@@ -188,7 +188,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       startSwitch = false;
     } catch (e) {
       if (e.toString() == "Token invalid" ||
-          e.toString() == "Token is expired" ||
+          e.toString() == "Token expired" ||
           e.toString() == "Session not found") {
         SharedPreferences.getInstance().then((sharedPrefs) {
           sharedPrefs.remove('2FAStatus');

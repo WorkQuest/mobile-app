@@ -34,285 +34,288 @@ class SettingsPage extends StatelessWidget {
 
     return Scaffold(
       body: CustomScrollView(
-          physics: const ClampingScrollPhysics(),
-          slivers: [
-            CupertinoSliverNavigationBar(
-              largeTitle: Row(
-                children: [
-                  Expanded(
-                    child: Text("ui.profile.myProfile".tr()),
-                  ),
-                  InkWell(
-                    onTap: () =>
-                        Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (context) => ProfileSettings(settingStore),
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.settings_outlined,
+        physics: const ClampingScrollPhysics(),
+        slivers: [
+          CupertinoSliverNavigationBar(
+            largeTitle: Row(
+              children: [
+                Expanded(
+                  child: Text("ui.profile.myProfile".tr()),
+                ),
+                InkWell(
+                  onTap: () => Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                      builder: (context) => ProfileSettings(settingStore),
                     ),
                   ),
-                  const SizedBox(width: 20.0)
-                ],
-              ),
+                  child: const Icon(
+                    Icons.settings_outlined,
+                  ),
+                ),
+                const SizedBox(width: 20.0)
+              ],
             ),
-            SliverPadding(
-              padding: EdgeInsets.all(16.0),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    MyProfileImage(userStore),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15.0),
-                      child: Column(
-                        children: [
-                          Row(
+          ),
+          SliverPadding(
+            padding: EdgeInsets.all(16.0),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  MyProfileImage(userStore),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ///Change Password
+                            SettingsCard(
+                              icon: GradientIcon(
+                                SvgPicture.asset(
+                                  "assets/settings_password_icon.svg",
+                                ),
+                                20.0,
+                              ),
+                              title: "settings.changePass".tr(),
+                              onTap: () {
+                                Navigator.of(context, rootNavigator: true).pushNamed(
+                                  ChangePasswordPage.routeName,
+                                );
+                              },
+                            ),
+                            _spacer,
+
+                            ///2FA
+                            SettingsCard(
+                              icon: CupertinoSwitch(
+                                activeColor: const Color(0xFF0083C7),
+                                onChanged: (_) {},
+                                value: userStore.userData?.isTotpActive ?? false,
+                              ),
+                              title: "settings.2FA".tr(),
+                              onTap: () {
+                                if (Constants.isRelease) {
+                                  AlertDialogUtils.showInfoAlertDialog(context,
+                                      title: 'Warning'.tr(),
+                                      content: 'Service temporarily unavailable');
+                                } else {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed(TwoFAPage.routeName);
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              ///Change Password
+                              ///SMS Verification
                               SettingsCard(
                                 icon: GradientIcon(
                                   SvgPicture.asset(
-                                    "assets/settings_password_icon.svg",
+                                    "assets/settings_message_icon.svg",
                                   ),
                                   20.0,
                                 ),
-                                title: "settings.changePass".tr(),
+                                title: "settings.smsVerification2".tr(),
+                                onTap: () =>
+                                    Navigator.of(context, rootNavigator: true).pushNamed(
+                                  SMSVerificationPage.routeName,
+                                ),
+                              ),
+                              _spacer,
+
+                              ///Change Role
+                              SettingsCard(
+                                icon: GradientIcon(
+                                  SvgPicture.asset(
+                                    "assets/settings_role_icon.svg",
+                                  ),
+                                  20.0,
+                                ),
+                                title: "settings.changeRole".tr(),
+                                onTap: () => _onChangePressed(
+                                  context,
+                                  userStore: userStore,
+                                  chooseRoleStore: chooseRoleStore,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ///My Disputes
+                              SettingsCard(
+                                icon: GradientIcon(
+                                  SvgPicture.asset(
+                                    "assets/unread_chat.svg",
+                                  ),
+                                  20.0,
+                                ),
+                                title: "btn.myDisputes".tr(),
                                 onTap: () {
                                   Navigator.of(context, rootNavigator: true)
-                                      .pushNamed(
-                                    ChangePasswordPage.routeName,
-                                  );
+                                      .pushNamed(MyDisputesPage.routeName);
                                 },
                               ),
                               _spacer,
 
-                              ///2FA
+                              ///Change Language
                               SettingsCard(
-                                icon: CupertinoSwitch(
-                                  activeColor: const Color(0xFF0083C7),
-                                  onChanged: (_) {},
-                                  value:
-                                      userStore.userData?.isTotpActive ?? false,
+                                icon: GradientIcon(
+                                  SvgPicture.asset(
+                                    "assets/settings_language_icon.svg",
+                                  ),
+                                  20.0,
                                 ),
-                                title: "settings.2FA".tr(),
+                                title:
+                                    "Language \n${Constants.languageList.keys.firstWhere(
+                                  (k) => Constants.languageList[k] == context.locale,
+                                )}",
                                 onTap: () {
                                   Navigator.of(context, rootNavigator: true)
-                                      .pushNamed(TwoFAPage.routeName);
+                                      .pushNamed(ChangeLanguagePage.routeName);
                                 },
                               ),
                             ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ///SMS Verification
-                                SettingsCard(
-                                  icon: GradientIcon(
-                                    SvgPicture.asset(
-                                      "assets/settings_message_icon.svg",
-                                    ),
-                                    20.0,
-                                  ),
-                                  title: "settings.smsVerification2".tr(),
-                                  onTap: () =>
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pushNamed(
-                                    SMSVerificationPage.routeName,
-                                  ),
-                                ),
-                                _spacer,
-
-                                ///Change Role
-                                SettingsCard(
-                                  icon: GradientIcon(
-                                    SvgPicture.asset(
-                                      "assets/settings_role_icon.svg",
-                                    ),
-                                    20.0,
-                                  ),
-                                  title: "settings.changeRole".tr(),
-                                  onTap: userStore.userData?.isTotpActive ==
-                                          true
-                                      ? () async {
-                                          if (userStore.userData!
-                                                  .questsStatistic!.opened !=
-                                              0) {
-                                            AlertDialogUtils.showAlertDialog(
-                                              context,
-                                              title: Text("Warning"),
-                                              content: Text(
-                                                "There are active quests",
-                                              ),
-                                              needCancel: false,
-                                              titleCancel: null,
-                                              titleOk: "Ok",
-                                              onTabCancel: null,
-                                              onTabOk: null,
-                                              colorCancel: null,
-                                              colorOk: Colors.blue,
-                                            );
-                                          } else {
-                                            chooseRoleStore.setRole(
-                                                userStore.userData!.role);
-                                            chooseRoleStore.isChange = true;
-                                            await Navigator.of(context,
-                                                    rootNavigator: true)
-                                                .pushNamed(
-                                              ApproveRolePage.routeName,
-                                              arguments: chooseRoleStore,
-                                            );
-                                          }
-                                        }
-                                      : () {
-                                          AlertDialogUtils.showAlertDialog(
-                                            context,
-                                            title: Text("Warning"),
-                                            content: Text("2FA disabled"),
-                                            needCancel: false,
-                                            titleCancel: null,
-                                            titleOk: "Ok",
-                                            onTabCancel: null,
-                                            onTabOk: null,
-                                            colorCancel: null,
-                                            colorOk: Colors.blue,
-                                          );
-                                        },
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ///My Disputes
-                                SettingsCard(
-                                  icon: GradientIcon(
-                                    SvgPicture.asset(
-                                      "assets/unread_chat.svg",
-                                    ),
-                                    20.0,
-                                  ),
-                                  title: "btn.myDisputes".tr(),
-                                  onTap: () {
-                                    Navigator.of(context, rootNavigator: true)
-                                        .pushNamed(MyDisputesPage.routeName);
-                                  },
-                                ),
-                                _spacer,
-
-                                ///Change Language
-                                SettingsCard(
-                                  icon: GradientIcon(
-                                    SvgPicture.asset(
-                                      "assets/settings_language_icon.svg",
-                                    ),
-                                    20.0,
-                                  ),
-                                  title:
-                                      "Language \n${Constants.languageList.keys.firstWhere(
-                                    (k) =>
-                                        Constants.languageList[k] ==
-                                        context.locale,
-                                  )}",
-                                  onTap: () {
-                                    Navigator.of(context, rootNavigator: true)
-                                        .pushNamed(
-                                            ChangeLanguagePage.routeName);
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                  ),
 
-                    ///Logout button
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    logOutButton(context),
-                  ],
-                ),
+                  ///Logout button
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  logOutButton(context),
+                ],
               ),
             ),
-            SliverToBoxAdapter(
-              child: Container(
-                height: 10.0,
-                width: double.infinity,
-                color: Color(0xFFF7F8FA),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 10.0,
+              width: double.infinity,
+              color: Color(0xFFF7F8FA),
+            ),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.all(16.0),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Text(
+                    "settings.instruments".tr(),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  InstrumentCard(
+                    urlArgument: "pension",
+                    iconPath: "assets/settings_pension_icon.svg",
+                    title: "ui.menu.pension.title".tr(),
+                  ),
+                  InstrumentCard(
+                    urlArgument: "referral",
+                    iconPath: "assets/settings_referral_icon.svg",
+                    title: "ui.menu.referral.title".tr(),
+                  ),
+                  InstrumentCard(
+                    urlArgument: "insuring",
+                    iconPath: "assets/settings_p2p_icon.svg",
+                    title: "ui.menu.p2p.title".tr(),
+                  ),
+                  InstrumentCard(
+                    urlArgument: "savings",
+                    iconPath: "assets/setting_saving_product_icon.svg",
+                    title: "ui.menu.savings.title".tr(),
+                  ),
+                  InstrumentCard(
+                    urlArgument: "crediting",
+                    iconPath: "assets/settings_wallet.svg",
+                    title: "crediting.lending".tr(),
+                  ),
+                  InstrumentCard(
+                    urlArgument: "mining",
+                    iconPath: "assets/setting_chart.svg",
+                    title: "settings.liquidityMining".tr(),
+                  ),
+                  InstrumentCard(
+                    urlArgument: "crosschain",
+                    iconPath: "assets/work_quest_icon.svg",
+                    title: "WorkQuest Bridge",
+                  ),
+                  InstrumentCard(
+                    urlArgument: "staking",
+                    iconPath: "assets/work_quest_icon.svg",
+                    title: "WorkQuest Staking",
+                  ),
+                ],
               ),
             ),
-            SliverPadding(
-              padding: EdgeInsets.all(16.0),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    Text(
-                      "settings.instruments".tr(),
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    InstrumentCard(
-                      urlArgument: "pension",
-                      iconPath: "assets/settings_pension_icon.svg",
-                      title: "ui.menu.pension.title".tr(),
-                    ),
-                    InstrumentCard(
-                      urlArgument: "referral",
-                      iconPath: "assets/settings_referral_icon.svg",
-                      title: "ui.menu.referral.title".tr(),
-                    ),
-                    InstrumentCard(
-                      urlArgument: "insuring",
-                      iconPath: "assets/settings_p2p_icon.svg",
-                      title: "ui.menu.p2p.title".tr(),
-                    ),
-                    InstrumentCard(
-                      urlArgument: "savings",
-                      iconPath: "assets/setting_saving_product_icon.svg",
-                      title: "ui.menu.savings.title".tr(),
-                    ),
-                    InstrumentCard(
-                      urlArgument: "crediting",
-                      iconPath: "assets/settings_wallet.svg",
-                      title: "crediting.lending".tr(),
-                    ),
-                    InstrumentCard(
-                      urlArgument: "mining",
-                      iconPath: "assets/setting_chart.svg",
-                      title: "settings.liquidityMining".tr(),
-                    ),
-                    InstrumentCard(
-                      urlArgument: "crosschain",
-                      iconPath: "assets/work_quest_icon.svg",
-                      title: "WorkQuest Bridge",
-                    ),
-                    InstrumentCard(
-                      urlArgument: "staking",
-                      iconPath: "assets/work_quest_icon.svg",
-                      title: "WorkQuest Staking",
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
+
+  _onChangePressed(
+    BuildContext context, {
+    required ProfileMeStore userStore,
+    required ChooseRoleStore chooseRoleStore,
+  }) async {
+    if (Constants.isRelease) {
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'Warning'.tr(),
+          content: 'Service temporarily unavailable');
+    } else {
+      if (userStore.userData?.isTotpActive == true) {
+        if (userStore.userData!.questsStatistic!.opened != 0) {
+          _showAlertInfo(context, title: "There are active quests");
+        } else {
+          chooseRoleStore.setRole(userStore.userData!.role);
+          chooseRoleStore.isChange = true;
+          await Navigator.of(context, rootNavigator: true).pushNamed(
+            ApproveRolePage.routeName,
+            arguments: chooseRoleStore,
+          );
+        }
+      } else {
+        _showAlertInfo(context, title: "2FA disabled");
+      }
+    }
+  }
+
+  _showAlertInfo(
+    BuildContext context, {
+    required String title,
+  }) {
+    AlertDialogUtils.showAlertDialog(
+      context,
+      title: Text("Warning"),
+      content: Text(title),
+      needCancel: false,
+      titleCancel: null,
+      titleOk: "Ok",
+      onTabCancel: null,
+      onTabOk: null,
+      colorCancel: null,
+      colorOk: Colors.blue,
+    );
   }
 }

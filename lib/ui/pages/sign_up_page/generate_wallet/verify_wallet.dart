@@ -43,9 +43,9 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
               const SizedBox(
                 height: 15,
               ),
-              const Text(
-                'Choose the 3th and 7th words of your mnemonic',
-                style: TextStyle(
+              Text(
+                'Choose the ${store.indexFirstWord}th and ${store.indexSecondWord}th words of your mnemonic',
+                style: const TextStyle(
                   fontSize: 24,
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
@@ -54,9 +54,9 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
               const SizedBox(
                 height: 30,
               ),
-              const Text(
-                '3th word',
-                style: TextStyle(
+              Text(
+                '${store.indexFirstWord}th word',
+                style: const TextStyle(
                   fontSize: 18,
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
@@ -73,9 +73,9 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
               const SizedBox(
                 height: 30,
               ),
-              const Text(
-                '7th word',
-                style: TextStyle(
+              Text(
+                '${store.indexSecondWord}th word',
+                style: const TextStyle(
                   fontSize: 18,
                   color: Colors.black,
                   fontWeight: FontWeight.w500,

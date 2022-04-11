@@ -13,11 +13,11 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
 
   @override
   bool get statusGenerateButton => (_$statusGenerateButtonComputed ??=
-          Computed<bool>(() => super.statusGenerateButton,
-              name: '_CreateWalletStore.statusGenerateButton'))
+      Computed<bool>(() => super.statusGenerateButton,
+          name: 'SignUpStoreBase.statusGenerateButton'))
       .value;
 
-  final _$mnemonicAtom = Atom(name: '_CreateWalletStore.mnemonic');
+  final _$mnemonicAtom = Atom(name: 'SignUpStoreBase.mnemonic');
 
   @override
   String? get mnemonic {
@@ -32,7 +32,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$isSavedAtom = Atom(name: '_CreateWalletStore.isSaved');
+  final _$isSavedAtom = Atom(name: 'SignUpStoreBase.isSaved');
 
   @override
   bool get isSaved {
@@ -47,7 +47,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$firstWordAtom = Atom(name: '_CreateWalletStore.firstWord');
+  final _$firstWordAtom = Atom(name: 'SignUpStoreBase.firstWord');
 
   @override
   String? get firstWord {
@@ -62,7 +62,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$secondWordAtom = Atom(name: '_CreateWalletStore.secondWord');
+  final _$secondWordAtom = Atom(name: 'SignUpStoreBase.secondWord');
 
   @override
   String? get secondWord {
@@ -77,8 +77,38 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
+  final _$indexFirstWordAtom = Atom(name: 'SignUpStoreBase.indexFirstWord');
+
+  @override
+  int? get indexFirstWord {
+    _$indexFirstWordAtom.reportRead();
+    return super.indexFirstWord;
+  }
+
+  @override
+  set indexFirstWord(int? value) {
+    _$indexFirstWordAtom.reportWrite(value, super.indexFirstWord, () {
+      super.indexFirstWord = value;
+    });
+  }
+
+  final _$indexSecondWordAtom = Atom(name: 'SignUpStoreBase.indexSecondWord');
+
+  @override
+  int? get indexSecondWord {
+    _$indexSecondWordAtom.reportRead();
+    return super.indexSecondWord;
+  }
+
+  @override
+  set indexSecondWord(int? value) {
+    _$indexSecondWordAtom.reportWrite(value, super.indexSecondWord, () {
+      super.indexSecondWord = value;
+    });
+  }
+
   final _$selectedFirstWordAtom =
-      Atom(name: '_CreateWalletStore.selectedFirstWord');
+  Atom(name: 'SignUpStoreBase.selectedFirstWord');
 
   @override
   String? get selectedFirstWord {
@@ -94,7 +124,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
   }
 
   final _$selectedSecondWordAtom =
-      Atom(name: '_CreateWalletStore.selectedSecondWord');
+  Atom(name: 'SignUpStoreBase.selectedSecondWord');
 
   @override
   String? get selectedSecondWord {
@@ -109,7 +139,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$setOfWordsAtom = Atom(name: '_CreateWalletStore.setOfWords');
+  final _$setOfWordsAtom = Atom(name: 'SignUpStoreBase.setOfWords');
 
   @override
   ObservableList<String>? get setOfWords {
@@ -124,68 +154,68 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$openWalletAsyncAction = AsyncAction('_CreateWalletStore.openWallet');
+  final _$openWalletAsyncAction = AsyncAction('SignUpStoreBase.openWallet');
 
   @override
   Future openWallet() {
     return _$openWalletAsyncAction.run(() => super.openWallet());
   }
 
-  final _$_CreateWalletStoreActionController =
-      ActionController(name: '_CreateWalletStore');
+  final _$SignUpStoreBaseActionController =
+  ActionController(name: 'SignUpStoreBase');
 
   @override
   dynamic setIsSaved(bool value) {
-    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
-        name: '_CreateWalletStore.setIsSaved');
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.setIsSaved');
     try {
       return super.setIsSaved(value);
     } finally {
-      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic selectFirstWord(String? value) {
-    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
-        name: '_CreateWalletStore.selectFirstWord');
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.selectFirstWord');
     try {
       return super.selectFirstWord(value);
     } finally {
-      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic selectSecondWord(String? value) {
-    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
-        name: '_CreateWalletStore.selectSecondWord');
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.selectSecondWord');
     try {
       return super.selectSecondWord(value);
     } finally {
-      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic generateMnemonic() {
-    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
-        name: '_CreateWalletStore.generateMnemonic');
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.generateMnemonic');
     try {
       return super.generateMnemonic();
     } finally {
-      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic splitPhraseIntoWords() {
-    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
-        name: '_CreateWalletStore.splitPhraseIntoWords');
+    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
+        name: 'SignUpStoreBase.splitPhraseIntoWords');
     try {
       return super.splitPhraseIntoWords();
     } finally {
-      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
+      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
