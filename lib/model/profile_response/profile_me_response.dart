@@ -97,7 +97,20 @@ class ProfileMeResponse with ClusterItem {
       avatarId: json["avatarId"] ?? "",
       firstName: json["firstName"] ?? "",
       lastName: json["lastName"] ?? "",
-      phone: json["phone"] == null ? null : Phone.fromJson(json["phone"]),
+      phone: Constants.isRelease
+          ? Phone(
+        fullPhone: json["phone"] ?? '',
+        phone: '',
+        codeRegion: '',
+      )
+          : Phone.fromJson(
+        json["phone"] ??
+            {
+              "codeRegion": "",
+              "fullPhone": "",
+              "phone": "",
+            },
+      ),
       tempPhone: Constants.isRelease
           ? Phone(
               fullPhone: json["tempPhone"] ?? '',

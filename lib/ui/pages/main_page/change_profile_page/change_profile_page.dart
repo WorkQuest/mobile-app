@@ -34,14 +34,23 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   KnowledgeWorkSelectionController? _controllerKnowledge;
   KnowledgeWorkSelectionController? _controllerWork;
 
+  PhoneNumber phone = PhoneNumber();
+  PhoneNumber secondPhone = PhoneNumber();
+
+
   @override
   void initState() {
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
+
     print('tempPhone: ${pageStore.userData.tempPhone!.toJson()}');
     pageStore.getInitCode(pageStore.userData.phone ?? pageStore.userData.tempPhone!,
-        pageStore.userData.additionalInfo?.secondMobileNumber);
+        pageStore.userData.additionalInfo?.secondMobileNumber).then((value) {
+      phone = pageStore.phoneNumber ?? PhoneNumber();
+      secondPhone = pageStore.secondPhoneNumber ?? PhoneNumber();
+      setState(() {});
+    });
     if (profile!.userData!.locationPlaceName != null)
       pageStore.address = profile!.userData!.locationPlaceName!;
     _controller = SkillSpecializationController(
@@ -146,7 +155,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
             ),
             _PhoneNumberWidget(
               title: "modals.phoneNumber",
-              initialValue: pageStore.phoneNumber,
+              initialValue: phone,
               onChanged: (PhoneNumber phone) {
                 pageStore.setPhoneNumber(phone);
               },
@@ -154,7 +163,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
             if (profile!.userData!.role == UserRole.Employer)
               _PhoneNumberWidget(
                 title: "modals.secondPhoneNumber",
-                initialValue: pageStore.secondPhoneNumber,
+                initialValue: secondPhone,
                 onChanged: (PhoneNumber phone) {
                   pageStore.setSecondPhoneNumber(phone);
                 },
@@ -361,6 +370,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
       if (pageStore.userData.additionalInfo?.secondMobileNumber?.phone == "")
         pageStore.userData.additionalInfo?.secondMobileNumber = null;
+
       pageStore.userData.additionalInfo?.educations = _controllerKnowledge!.getListMap();
       pageStore.userData.additionalInfo?.workExperiences = _controllerWork!.getListMap();
       pageStore.userData.additionalInfo!.address = pageStore.address;
@@ -370,18 +380,18 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
       if (!profile!.isLoading)
         pageStore.userData.userSpecializations = _controller!.getSkillAndSpecialization();
+      print('tempPhone: ${profile!.userData!.tempPhone!.toJson()}');
+      print('phone: ${pageStore.userData.tempPhone!.toJson()}');
+      if (pageStore.numberChanged(profile!.userData!.tempPhone!.fullPhone)) {
+        await profile!.submitPhoneNumber(pageStore.userData.tempPhone!.fullPhone);
+        profile!.userData?.phone = null;
+      }
       await profile!.changeProfile(
         pageStore.userData,
         media: pageStore.media,
       );
-      print('tempPhone: ${profile!.userData!.tempPhone!.toJson()}');
-      print('phone: ${pageStore.userData.tempPhone!.toJson()}');
-      if (pageStore.numberChanged(profile!.userData!.tempPhone!)) {
-        await profile!.submitPhoneNumber(pageStore.userData.tempPhone!.fullPhone);
-        profile!.userData?.phone = null;
-      }
       if (profile!.isSuccess) {
-        if (!pageStore.numberChanged(profile!.userData!.tempPhone!))
+        if (!pageStore.numberChanged(profile!.userData!.tempPhone!.fullPhone))
           await AlertDialogUtils.showSuccessDialog(context);
         else
           await AlertDialogUtils.showSuccessDialog(context,

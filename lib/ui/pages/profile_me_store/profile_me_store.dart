@@ -205,8 +205,10 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
         userData.avatarId = (await _apiProvider.uploadMedia(
             medias: ObservableList.of([media])))[0];
       final isTotpActive = this.userData?.isTotpActive;
+      final tempPhone = this.userData?.tempPhone;
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
+      this.userData?.tempPhone = tempPhone;
       this.userData?.isTotpActive = isTotpActive;
       this.onSuccess(true);
     } catch (e, trace) {

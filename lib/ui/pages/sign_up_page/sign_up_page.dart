@@ -1,4 +1,5 @@
 import 'package:app/ui/widgets/default_textfield.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
@@ -160,19 +161,17 @@ class SignUpPage extends StatelessWidget {
                       },
                       child: Observer(
                         builder: (context) {
-                          return ElevatedButton(
-                            onPressed: store.canSignUp
+                          return LoginButton(
+                            withColumn: true,
+                            enabled: store.isLoading,
+                            onTap: store.canSignUp
                                 ? () async {
                                     if (_signUpPageFormKey.currentState!.validate()) {
                                       await store.register();
                                     }
                                   }
                                 : null,
-                            child: store.isLoading
-                                ? CircularProgressIndicator.adaptive()
-                                : Text(
-                                    "signUp.create".tr(),
-                                  ),
+                          title: "signUp.create".tr(),
                           );
                         },
                       ),

@@ -177,6 +177,9 @@ class AlertDialogUtils {
             scrollable: true,
             title: title,
             content: content,
+            insetPadding: EdgeInsets.zero,
+            contentPadding: EdgeInsets.zero,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
             actions: [
               if (needCancel)
                 TextButton(
@@ -188,7 +191,7 @@ class AlertDialogUtils {
                   },
                   child: Text(
                     titleCancel ?? 'meta'.tr(gender: 'cancel'),
-                    style: TextStyle(color: colorOk ?? Colors.black),
+                    style: TextStyle(color: colorCancel ?? Colors.black),
                   ),
                 ),
               TextButton(
@@ -200,7 +203,7 @@ class AlertDialogUtils {
                 },
                 child: Text(
                   titleOk ?? 'Ok',
-                  style: TextStyle(color: colorCancel ?? Colors.black),
+                  style: TextStyle(color: colorOk ?? Colors.black),
                 ),
               ),
             ],

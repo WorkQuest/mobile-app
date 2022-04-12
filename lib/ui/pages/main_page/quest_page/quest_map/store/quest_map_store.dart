@@ -108,10 +108,8 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
         questsOnMap = await _apiProvider.questMapPoints(bounds);
         clusterManager.setItems(questsOnMap);
       } else {
-        if (!Constants.isRelease) {
-          workersOnMap = await _apiProvider.workerMapPoints(bounds);
-          clusterManager.setItems(workersOnMap);
-        }
+        workersOnMap = await _apiProvider.workerMapPoints(bounds);
+        clusterManager.setItems(workersOnMap);
       }
 
       this.onSuccess(true);
