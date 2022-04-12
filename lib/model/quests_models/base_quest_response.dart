@@ -40,7 +40,7 @@ class BaseQuestResponse with ClusterItem {
 
   String id;
   String userId;
-  String category;
+  String? category;
   List<Media> medias;
   User user;
   int status;
@@ -66,7 +66,7 @@ class BaseQuestResponse with ClusterItem {
     return BaseQuestResponse(
       id: json["id"],
       userId: json["userId"],
-      category: json["category"],
+      category: json["category"] == null ? null : json["category"],
       medias: (json["medias"] as List<dynamic>)
           .map((e) => Media.fromJson(e as Map<String, dynamic>))
           .toList(),

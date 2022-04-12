@@ -129,7 +129,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                               arguments: widget.questInfo,
                             );
                           } else {
-                            await errorAlert(context, "Invalid TOTP");
+                            await errorAlert(context, "Invalid 2FA");
                           }
                         },
                         colorCancel: AppColor.enabledButton,

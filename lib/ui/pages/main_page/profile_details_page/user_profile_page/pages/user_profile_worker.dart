@@ -91,31 +91,32 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                 ),
         ),
 
-        Padding(
-          padding: EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-          ),
-          child: ElevatedButton(
-            onPressed: () async {
-              portfolioStore!.setTitleName("Portfolio");
-              await Navigator.pushNamed(
-                context,
-                ReviewPage.routeName,
-                arguments: portfolioStore!,
-              );
-              await portfolioStore!.getPortfolio(
-                userId: widget.info == null
-                    ? userStore!.userData!.id
-                    : widget.info!.id,
-                newList: true,
-              );
-            },
-            child: Text(
-              "meta.showAllReviews".tr(),
+        if (portfolioStore!.portfolioList.isNotEmpty)
+          Padding(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+            ),
+            child: ElevatedButton(
+              onPressed: () async {
+                portfolioStore!.setTitleName("Portfolio");
+                await Navigator.pushNamed(
+                  context,
+                  ReviewPage.routeName,
+                  arguments: portfolioStore!,
+                );
+                await portfolioStore!.getPortfolio(
+                  userId: widget.info == null
+                      ? userStore!.userData!.id
+                      : widget.info!.id,
+                  newList: true,
+                );
+              },
+              child: Text(
+                "meta.showAllReviews".tr(),
+              ),
             ),
           ),
-        ),
       ];
 
   @override

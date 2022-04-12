@@ -45,6 +45,7 @@ class _QuestMapState extends State<QuestMap> {
                   mapType: MapType.normal,
                   rotateGesturesEnabled: false,
                   initialCameraPosition: mapStore!.initialCameraPosition!,
+                  zoomControlsEnabled: false,
                 ),
                 child: Stack(
                   alignment: Alignment.bottomCenter,
@@ -64,6 +65,7 @@ class _QuestMapState extends State<QuestMap> {
                         mapStore!.clusterManager.onCameraMove(position);
                       },
                       mapType: MapType.normal,
+                      zoomControlsEnabled: false,
                       rotateGesturesEnabled: false,
                       myLocationEnabled: true,
                       initialCameraPosition: mapStore!.initialCameraPosition!,

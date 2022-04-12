@@ -123,7 +123,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       this.onLoading();
       isValid = await _apiProvider.validateTotp(totp: totp);
       if (isValid == false) {
-        this.onError("Invalid TOTP");
+        this.onError("Invalid 2FA");
         return;
       }
       this.onSuccess(true);

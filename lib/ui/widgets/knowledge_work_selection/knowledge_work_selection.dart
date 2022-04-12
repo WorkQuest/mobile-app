@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class KnowledgeWorkSelection extends StatefulWidget {
   final String title;
@@ -55,8 +56,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
           if (store.numberOfFiled.length < 3)
             OutlinedButton(
               onPressed: () {
-                if (widget
-                    .controller!.store!.numberOfFiled.isEmpty)
+                if (widget.controller!.store!.numberOfFiled.isEmpty)
                   widget.controller!.store!.addField(KnowledgeWork());
                 if (widget
                     .controller!.store!.numberOfFiled.last.fieldIsNotEmpty) {
@@ -110,11 +110,18 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     dateField(
-                      initialValue:
-                          widget.controller!.store!.numberOfFiled.last.dateFrom,
-                      date: "settings.education.from".tr(),
-                      onChanged: (text) => kng.dateFrom = text,
-                    ),
+                        date: kng.dateFrom.isEmpty
+                            ? widget
+                            .controller!.store!.numberOfFiled.last.dateFrom
+                            : kng.dateFrom,
+                        onChanged: (value) {
+                          kng.dateFrom = value.day.toString() +
+                              "." +
+                              value.month.toString() +
+                              "." +
+                              value.year.toString();
+                          setState(() {});
+                        }),
                     Padding(
                       padding: EdgeInsets.only(top: 10),
                       child: Text(
@@ -126,11 +133,16 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                       ),
                     ),
                     dateField(
-                      initialValue:
-                          widget.controller!.store!.numberOfFiled.last.dateTo,
-                      date: "settings.education.to".tr(),
-                      onChanged: (text) {
-                        kng.dateTo = text;
+                      date: kng.dateTo.isEmpty
+                          ? widget.controller!.store!.numberOfFiled.last.dateTo
+                          : kng.dateTo,
+                      onChanged: (value) {
+                        kng.dateTo = value.day.toString() +
+                            "." +
+                            value.month.toString() +
+                            "." +
+                            value.year.toString();
+                        setState(() {});
                       },
                     ),
                   ],
@@ -149,7 +161,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                   ),
                   child: TextFormField(
                     initialValue:
-                        widget.controller!.store!.numberOfFiled.last.place,
+                    widget.controller!.store!.numberOfFiled.last.place,
                     onChanged: (text) => kng.place = text,
                     decoration: InputDecoration(
                       // isDense: true,
@@ -194,9 +206,13 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
 
   Widget dateField({
     required String date,
-    required String initialValue,
-    required void Function(String)? onChanged,
+    required void Function(DateTime)? onChanged,
   }) {
+    LocaleType? _localeCode;
+    LocaleType.values.forEach((element) {
+      if (element.name == context.locale.countryCode?.toLowerCase())
+        _localeCode = element;
+    });
     return Container(
       height: 43,
       width: 147,
@@ -207,17 +223,21 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
         ),
         borderRadius: BorderRadius.circular(6),
       ),
-      child: TextFormField(
-        initialValue: initialValue,
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          hintText: date,
-          fillColor: Colors.white,
+      child: InkWell(
+        onTap: () {
+          DatePicker.showDatePicker(
+            context,
+            showTitleActions: true,
+            minTime: DateTime(1900, 1, 1),
+            maxTime: DateTime(2200, 12, 31),
+            onConfirm: onChanged,
+            currentTime: DateTime.now(),
+            locale: _localeCode,
+          );
+        },
+        child: Center(
+          child: Text(date),
         ),
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(4),
-          FilteringTextInputFormatter.digitsOnly,
-        ],
       ),
     );
   }
