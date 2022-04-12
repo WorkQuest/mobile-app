@@ -85,10 +85,14 @@ class _WithdrawPageState extends State<WithdrawPage>
                 ///Wallet Transfer
                 walletTab(withdrawStore),
 
-                ///Card Transfer
-                BankCardTransaction(
-                  transaction: " " + "modals.withdraw".tr(),
+                Center(
+                  child: Text("This feature is currently unavailable"),
                 ),
+
+                ///Card Transfer
+                // BankCardTransaction(
+                //   transaction: " " + "modals.withdraw".tr(),
+                // ),
               ],
             ),
           ),

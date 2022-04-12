@@ -70,6 +70,7 @@ dependencies:
   intl_phone_number_input: ^0.7.0+2
   webview_cookie_manager: ^2.0.6
   page_indicator: ^0.4.1
+  flutter_datetime_picker: ^1.5.1
 
   # Web3
   web3dart: ^2.3.3

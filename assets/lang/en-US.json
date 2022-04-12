@@ -198,7 +198,7 @@
     "dontHaveAnAccount": "Don't have an account?",
     "signUp": "Sign Up",
     "forgotYourPass": "Forgot your password?",
-    "totp": "TOTP"
+    "totp": "2FA"
   },
   "signWorkQuest": {
     "title": "WorkQuest social Network",
@@ -899,7 +899,7 @@
     }
   },
   "modals": {
-    "enter2FaCode": "Enter TOTP",
+    "enter2FaCode": "Enter 2FA",
     "exit": "Exit",
     "modals": {
       "title": "Create group chat",

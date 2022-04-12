@@ -50,7 +50,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
         store.priority = store.priorityList[widget.questInfo!.priority];
       }
       if (Constants.isRelease) {
-        store.category = widget.questInfo!.category;
+        store.category = widget.questInfo?.category ?? "";
       }
       store.questTitle = widget.questInfo!.title;
       store.getWorkplace(widget.questInfo!.workplace);
@@ -119,8 +119,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     onChanged: (String? value) {
                                       store.changedPriority(value!);
                                     },
-                                    items:
-                                        store.priorityList.map<DropdownMenuItem<String>>(
+                                    items: store.priorityList
+                                        .map<DropdownMenuItem<String>>(
                                       (String value) {
                                         return DropdownMenuItem<String>(
                                           value: value.tr(),
@@ -226,7 +226,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       store.changedEmployment(value!);
                                     },
                                     items: store.employmentList
-                                        .map<DropdownMenuItem<String>>((String value) {
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -279,7 +280,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       store.changedDistantWork(value!);
                                     },
                                     items: store.distantWorkList
-                                        .map<DropdownMenuItem<String>>((String value) {
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -403,23 +405,27 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               onTap: store.isLoading
                                   ? null
                                   : () async {
-                                      store.skillFilters =
-                                          _controller!.getSkillAndSpecialization();
+                                      store.skillFilters = _controller!
+                                          .getSkillAndSpecialization();
                                       if (isEdit) {
                                         if (store.canSubmitEditQuest) {
-                                          if (_formKey.currentState?.validate() ?? false)
+                                          if (_formKey.currentState
+                                                  ?.validate() ??
+                                              false)
                                             await store.createQuest(
                                               isEdit: true,
                                               questId: widget.questInfo!.id,
                                             );
                                         }
                                       } else if (store.canCreateQuest) {
-                                        if (_formKey.currentState?.validate() ?? false)
-                                          await store.createQuest();
+                                        if (_formKey.currentState?.validate() ??
+                                            false) await store.createQuest();
                                       } else
                                         store.emptyField(context);
                                     },
-                              title: isEdit ? "Edit Quest" : 'quests.createAQuest'.tr()),
+                              title: isEdit
+                                  ? "Edit Quest"
+                                  : 'quests.createAQuest'.tr()),
                         ),
                       ),
                     ),
@@ -488,7 +494,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
             var changedEmployment = value;
             return Container(
               height: 150.0 + MediaQuery.of(context).padding.bottom,
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -500,7 +507,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       onSelectedItemChanged: (int index) {
                         changedEmployment = children[index];
                       },
-                      children: children.map((e) => Center(child: Text(e))).toList(),
+                      children:
+                          children.map((e) => Center(child: Text(e))).toList(),
                     ),
                   ),
                   CupertinoButton(

@@ -43,11 +43,30 @@ class SettingsPage extends StatelessWidget {
                   child: Text("ui.profile.myProfile".tr()),
                 ),
                 InkWell(
-                  onTap: () => Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                      builder: (context) => ProfileSettings(settingStore),
+                  onTap: () => AlertDialogUtils.showAlertDialog(
+                    context,
+                    title: Center(
+                      child: Text("Warning"),
                     ),
+                    content: Center(
+                      child: Text(
+                        "This functionality is temporarily unavailable",
+                      ),
+                    ),
+                    needCancel: false,
+                    titleCancel: null,
+                    titleOk: "Ok",
+                    onTabCancel: null,
+                    onTabOk: null,
+                    colorCancel: null,
+                    colorOk: Colors.blue,
                   ),
+
+                  //     Navigator.of(context, rootNavigator: true).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => ProfileSettings(settingStore),
+                  //   ),
+                  // ),
                   child: const Icon(
                     Icons.settings_outlined,
                   ),
@@ -80,7 +99,8 @@ class SettingsPage extends StatelessWidget {
                               ),
                               title: "settings.changePass".tr(),
                               onTap: () {
-                                Navigator.of(context, rootNavigator: true).pushNamed(
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushNamed(
                                   ChangePasswordPage.routeName,
                                 );
                               },
@@ -92,7 +112,8 @@ class SettingsPage extends StatelessWidget {
                               icon: CupertinoSwitch(
                                 activeColor: const Color(0xFF0083C7),
                                 onChanged: (_) {},
-                                value: userStore.userData?.isTotpActive ?? false,
+                                value:
+                                    userStore.userData?.isTotpActive ?? false,
                               ),
                               title: "settings.2FA".tr(),
                               onTap: () {
@@ -118,7 +139,8 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title: "settings.smsVerification2".tr(),
                                 onTap: () =>
-                                    Navigator.of(context, rootNavigator: true).pushNamed(
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pushNamed(
                                   SMSVerificationPage.routeName,
                                 ),
                               ),
@@ -174,11 +196,32 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title:
                                     "Language \n${Constants.languageList.keys.firstWhere(
-                                  (k) => Constants.languageList[k] == context.locale,
+                                  (k) =>
+                                      Constants.languageList[k] ==
+                                      context.locale,
                                 )}",
                                 onTap: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pushNamed(ChangeLanguagePage.routeName);
+                                  AlertDialogUtils.showAlertDialog(
+                                    context,
+                                    title: Center(
+                                      child: Text("Warning"),
+                                    ),
+                                    content: Center(
+                                      child: Text(
+                                        "This feature is currently unavailable",
+                                      ),
+                                    ),
+                                    needCancel: false,
+                                    titleCancel: null,
+                                    titleOk: "Ok",
+                                    onTabCancel: null,
+                                    onTabOk: null,
+                                    colorCancel: null,
+                                    colorOk: Colors.blue,
+                                  );
+
+                                  // Navigator.of(context, rootNavigator: true)
+                                  //     .pushNamed(ChangeLanguagePage.routeName);
                                 },
                               ),
                             ],
@@ -273,19 +316,24 @@ class SettingsPage extends StatelessWidget {
     required ProfileMeStore userStore,
     required ChooseRoleStore chooseRoleStore,
   }) async {
-    if (userStore.userData?.isTotpActive == true) {
-      if (userStore.userData!.questsStatistic!.opened != 0) {
-        _showAlertInfo(context, title: "There are active quests");
-      } else {
-        chooseRoleStore.setRole(userStore.userData!.role);
-        chooseRoleStore.isChange = true;
-        await Navigator.of(context, rootNavigator: true).pushNamed(
-          ApproveRolePage.routeName,
-          arguments: chooseRoleStore,
-        );
-      }
+    if (Constants.isRelease) {
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'Warning'.tr(), content: 'Service temporarily unavailable');
     } else {
-      _showAlertInfo(context, title: "2FA disabled");
+      if (userStore.userData?.isTotpActive == true) {
+        if (userStore.userData!.questsStatistic!.opened != 0) {
+          _showAlertInfo(context, title: "There are active quests");
+        } else {
+          chooseRoleStore.setRole(userStore.userData!.role);
+          chooseRoleStore.isChange = true;
+          await Navigator.of(context, rootNavigator: true).pushNamed(
+            ApproveRolePage.routeName,
+            arguments: chooseRoleStore,
+          );
+        }
+      } else {
+        _showAlertInfo(context, title: "2FA disabled");
+      }
     }
   }
 

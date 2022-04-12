@@ -71,6 +71,7 @@ abstract class ChangeProfileStoreBase with Store {
     userData.locationCode!.latitude = detail.result.geometry!.location.lat;
     userData.locationCode!.longitude = detail.result.geometry!.location.lng;
     userData.locationPlaceName = address;
+    userData.additionalInfo?.address = address;
   }
 
   @action
