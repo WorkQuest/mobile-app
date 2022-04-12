@@ -20,7 +20,6 @@ class LoginButton extends StatefulWidget {
     required this.onTap,
   }) : super(key: key);
 
-
   @override
   State<LoginButton> createState() => _LoginButtonState();
 }
@@ -53,14 +52,8 @@ class _LoginButtonState extends State<LoginButton> with TickerProviderStateMixin
       builder: (context, child) {
         return Container(
           width: 60 +
-              MediaQuery
-                  .of(context)
-                  .size
-                  .width -
-              MediaQuery
-                  .of(context)
-                  .size
-                  .width * _buttonController.value,
+              MediaQuery.of(context).size.width -
+              MediaQuery.of(context).size.width * _buttonController.value,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.0),
             shape: BoxShape.rectangle,
@@ -91,7 +84,7 @@ class _LoginButtonState extends State<LoginButton> with TickerProviderStateMixin
                       style: TextStyle(
                         fontSize: 16,
                         color:
-                        widget.onTap != null ? Colors.white : AppColor.disabledText,
+                            widget.onTap != null ? Colors.white : AppColor.disabledText,
                       ),
                     ),
                   ),
@@ -104,12 +97,14 @@ class _LoginButtonState extends State<LoginButton> with TickerProviderStateMixin
 
     if (widget.withColumn) {
       return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const SizedBox(
+              width: double.infinity,
+            ),
             child,
-          ]
-      );
+          ]);
     }
     return child;
   }

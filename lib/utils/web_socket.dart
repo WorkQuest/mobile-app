@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app/constants.dart';
 import 'package:app/model/web3/TrxEthereumResponse.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
@@ -64,7 +65,9 @@ class WebSocket {
   }
 
   void _connectSender() {
-    _senderChannel = IOWebSocketChannel.connect("wss://app.workquest.co/api");
+    _senderChannel = IOWebSocketChannel.connect(Constants.isRelease
+        ? "wss://app-ver1.workquest.co/api"
+        : "wss://app.workquest.co/api");
     _senderChannel?.sink.add("""{
           "type": "hello",
           "id": 1,
@@ -195,8 +198,7 @@ class WebSocket {
 
   void _onDone(IOWebSocketChannel channel, bool connectNotify) {
     print("WebSocket onDone ${channel.closeReason}");
-    if (shouldReconnectFlag)
-      connectNotify ? _connectSender() : _connectListen();
+    if (shouldReconnectFlag) connectNotify ? _connectSender() : _connectListen();
   }
 
   String get myAddress => AccountRepository().userAddress!;
@@ -214,8 +216,7 @@ class WebSocket {
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
         } else {
-          final decode =
-              json.decode(transaction.result!.events!['tx_log.txLog']!.first);
+          final decode = json.decode(transaction.result!.events!['tx_log.txLog']!.first);
           if ((decode['topics'] as List<dynamic>).last.substring(26) ==
               myAddress.substring(2)) {
             await Future.delayed(const Duration(seconds: 8));
