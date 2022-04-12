@@ -159,6 +159,14 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     return _$confirmEmailAsyncAction.run(() => super.confirmEmail());
   }
 
+  final _$refreshTokenAsyncAction =
+      AsyncAction('_ChooseRoleStore.refreshToken');
+
+  @override
+  Future<dynamic> refreshToken() {
+    return _$refreshTokenAsyncAction.run(() => super.refreshToken());
+  }
+
   final _$_ChooseRoleStoreActionController =
       ActionController(name: '_ChooseRoleStore');
 

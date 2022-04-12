@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:app/constants.dart';
+import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import 'package:app/utils/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../pages/sign_up_page/choose_role_page/choose_role_page.dart';
 
 class WebViewPage extends StatefulWidget {
   final String inputUrlRoute;
@@ -67,6 +70,7 @@ class _WebViewPageState extends State<WebViewPage> {
           },
           onPageFinished: (String url) async {
             print('Page finished loading: $url');
+            _getTokenThroughSocialMedia(url);
             String? accessToken = await Storage.readAccessToken();
             String? refreshToken = await Storage.readRefreshToken();
             _controller.future.then((value) => value.evaluateJavascript(
@@ -77,6 +81,45 @@ class _WebViewPageState extends State<WebViewPage> {
         );
       }),
     );
+  }
+
+  void _getTokenThroughSocialMedia(String url) async{
+    if (url.contains("access") && url.contains("refresh")) {
+      String accessToken = "";
+      String refreshToken = "";
+      String status = "";
+      accessToken = url
+          .split("/")
+          .where((element) => element.contains("access"))
+          .first
+          .split("&")
+          .first
+          .replaceRange(0, 8, "");
+      refreshToken = url
+          .split("/")
+          .where((element) => element.contains("refresh"))
+          .first
+          .split("&")[1].replaceRange(0, 8, "");
+      status = url
+          .split("/")
+          .where((element) => element.contains("refresh"))
+          .first
+          .split("&")
+          .last
+          .split("")
+          .last;
+      Storage.writeAccessToken(accessToken);
+      Storage.writeRefreshToken(refreshToken);
+      if (status == "2")
+        Navigator.of(context, rootNavigator: false).pushNamed(
+          ChooseRolePage.routeName,
+        );
+      else if (status == "1") {
+        Navigator.of(context, rootNavigator: false).pushNamed(
+          MnemonicPage.routeName,
+        );
+      }
+    }
   }
 
   void _onShowUserAgent(WebViewController controller, BuildContext context) async {

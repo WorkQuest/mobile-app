@@ -7,10 +7,10 @@ import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/login_button.dart';
+import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:app/utils/validator.dart';
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
@@ -76,7 +76,12 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
+                          padding: const EdgeInsets.fromLTRB(
+                            16.0,
+                            0.0,
+                            16.0,
+                            30.0,
+                          ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,14 +203,21 @@ class SignInPage extends StatelessWidget {
                                         if (signInStore.isSuccess)
                                           await profile.getProfileMe();
                                         else {
-                                          _errorMessage(context, signInStore.error);
-                                          if (signInStore.errorMessage == "unconfirmed") {
+                                          _errorMessage(
+                                            context,
+                                            signInStore.error,
+                                          );
+                                          if (signInStore.errorMessage ==
+                                              "unconfirmed") {
                                             print("error");
-                                            await AlertDialogUtils.showSuccessDialog(
-                                                context);
+                                            await AlertDialogUtils
+                                                .showSuccessDialog(context);
                                             Navigator.pushNamed(
-                                                context, ConfirmEmail.routeName,
-                                                arguments: signInStore.getUsername());
+                                              context,
+                                              ConfirmEmail.routeName,
+                                              arguments:
+                                                  signInStore.getUsername(),
+                                            );
                                           }
                                           return;
                                         }
@@ -217,15 +229,18 @@ class SignInPage extends StatelessWidget {
                                         }
                                         if (signInStore.isSuccess &&
                                             signInStore.error.isEmpty) {
-                                          await AlertDialogUtils.showSuccessDialog(
-                                              context);
+                                          await AlertDialogUtils
+                                              .showSuccessDialog(context);
                                           Navigator.pushNamedAndRemoveUntil(
                                             context,
                                             PinCodePage.routeName,
                                             (_) => false,
                                           );
                                         } else {
-                                          _errorMessage(context, signInStore.error);
+                                          _errorMessage(
+                                            context,
+                                            signInStore.error,
+                                          );
                                         }
                                       }
                                     }
@@ -299,7 +314,10 @@ class SignInPage extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10.0),
                           child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, SignUpPage.routeName);
+                              Navigator.pushNamed(
+                                context,
+                                SignUpPage.routeName,
+                              );
                             },
                             child: Text(
                               "signIn.signUp".tr(),
@@ -402,54 +420,18 @@ class SignInPage extends StatelessWidget {
     Color? color,
   ]) {
     return CupertinoButton(
-        color: Color(0xFFF7F8FA),
-        padding: EdgeInsets.zero,
-        child: SvgPicture.asset(
-          iconPath,
-          color: color,
-        ),
-        onPressed: () async => await launch(
-              Constants.isRelease
-                  ? 'https://app-ver1.workquest.co/api/v1/auth/login/main/$link'
-                  : 'https://app.workquest.co/api/v1/auth/login/main/$link',
-              customTabsOption: CustomTabsOption(
-                toolbarColor: Theme.of(context).primaryColor,
-                enableDefaultShare: true,
-                enableUrlBarHiding: true,
-                showPageTitle: true,
-                // animation: CustomTabsAnimation.slideIn(),
-                // // or user defined animation.
-                // animation: const CustomTabsAnimation(
-                //   startEnter: 'slide_up',
-                //   startExit: 'android:anim/fade_out',
-                //   endEnter: 'android:anim/fade_in',
-                //   endExit: 'slide_down',
-                // ),
-                extraCustomTabs: const <String>[
-                  // ref. https://play.google.com/store/apps/details?id=org.mozilla.firefox
-                  'org.mozilla.firefox',
-                  // ref. https://play.google.com/store/apps/details?id=com.microsoft.emmx
-                  'com.microsoft.emmx',
-                ],
-              ),
-              safariVCOption: SafariViewControllerOption(
-                preferredBarTintColor: Theme.of(context).primaryColor,
-                preferredControlTintColor: Colors.white,
-                barCollapsingEnabled: true,
-                entersReaderIfAvailable: false,
-                dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
-              ),
-            )
-        // } catch (e) {
-        // // An exception is thrown if browser app is not installed on Android device.
-        // debugPrint(e.toString());
-        // }
-
-        //     Navigator.pushNamed(
-        //   context,
-        //   WebViewPage.routeName,
-        //   arguments: "api/v1/auth/login/$link/token",
-        // ),
+      color: Color(0xFFF7F8FA),
+      padding: EdgeInsets.zero,
+      child: SvgPicture.asset(
+        iconPath,
+        color: color,
+      ),
+      onPressed: () async {
+        Navigator.of(context, rootNavigator: true).pushNamed(
+          WebViewPage.routeName,
+          arguments: "api/v1/auth/login/$link",
         );
+      },
+    );
   }
 }
