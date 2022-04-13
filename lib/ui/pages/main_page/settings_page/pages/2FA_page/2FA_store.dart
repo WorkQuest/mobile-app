@@ -2,7 +2,6 @@ import 'package:app/http/api_provider.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 part '2FA_store.g.dart';
 
 @singleton
@@ -45,9 +44,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       googleAuthenticatorSecretCode = await apiProvider.enable2FA();
-      await SharedPreferences.getInstance().then((sharedPrefs) {
-        sharedPrefs.setBool("2FAStatus", true);
-      });
+
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
@@ -61,9 +58,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
       await apiProvider.disable2FA(
         totp: codeFromAuthenticator,
       );
-      await SharedPreferences.getInstance().then((sharedPrefs) {
-        sharedPrefs.setBool("2FAStatus", false);
-      });
+
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

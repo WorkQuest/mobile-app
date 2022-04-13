@@ -114,9 +114,6 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   }
 
   Future<void> onWillPop() async {
-    SharedPreferences.getInstance().then((sharedPrefs) {
-      sharedPrefs.remove('2FAStatus');
-    });
     await Storage.deleteAllFromSecureStorage();
   }
 
@@ -154,9 +151,6 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
                 await Storage.deleteAllFromSecureStorage();
                 final cookieManager = WebviewCookieManager();
                 cookieManager.clearCookies();
-                SharedPreferences.getInstance().then((sharedPrefs) {
-                  sharedPrefs.remove('2FAStatus');
-                });
                 this.onSuccess(StatePinCode.ToLogin);
                 return;
               }
@@ -196,9 +190,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       if (e.toString() == "Token invalid" ||
           e.toString() == "Token expired" ||
           e.toString() == "Session not found") {
-        SharedPreferences.getInstance().then((sharedPrefs) {
-          sharedPrefs.remove('2FAStatus');
-        });
+
         await Storage.deleteAllFromSecureStorage();
         this.onSuccess(StatePinCode.ToLogin);
         return;

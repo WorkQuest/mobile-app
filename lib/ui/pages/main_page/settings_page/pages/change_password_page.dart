@@ -5,6 +5,7 @@ import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:app/utils/storage.dart';
 
 import 'package:app/utils/validator.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -82,6 +83,7 @@ class ChangePasswordPage extends StatelessWidget {
                                           SignInPage.routeName,
                                           (route) => false,
                                         );
+                                        AccountRepository().clearData();
                                         Storage.deleteAllFromSecureStorage();
                                       }
                                     }
