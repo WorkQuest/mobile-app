@@ -34,7 +34,9 @@ class _PinCodePageState extends State<PinCodePage>
 
   @override
   void initState() {
-    context.read<PinCodeStore>().initPage();
+    Future.delayed(Duration.zero,(){
+      context.read<PinCodeStore>().initPage();
+    });
     controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,

@@ -215,7 +215,9 @@ class CreateGroupPage extends StatelessWidget {
                             AlertDialogUtils.showAlertDialog(
                               context,
                               title: Text("Error"),
-                              content: Text("You can't create a chat"),
+                              content: Text(
+                                "You can't create a chat before working on a quest",
+                              ),
                               needCancel: false,
                               titleCancel: null,
                               titleOk: "Return",

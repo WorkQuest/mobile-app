@@ -1,8 +1,11 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/enums.dart';
+import 'package:app/model/bearer_token.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:mobx/mobx.dart';
+
+import '../../../../../utils/storage.dart';
 
 part 'choose_role_store.g.dart';
 
@@ -105,6 +108,20 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
       );
       this.onSuccess(true);
     } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future refreshToken() async{
+    try{
+      this.onLoading();
+      String? token = await Storage.readRefreshToken();
+      BearerToken bearerToken = await _apiProvider.refreshToken(token!);
+      await Storage.writeRefreshToken(bearerToken.refresh);
+      await Storage.writeAccessToken(bearerToken.access);
+      this.onSuccess(true);
+    } catch(e) {
       this.onError(e.toString());
     }
   }

@@ -21,22 +21,26 @@ class InstrumentCard extends StatelessWidget {
   final String urlArgument;
   final String iconPath;
   final String title;
+  final bool enable;
 
   const InstrumentCard({
     required this.urlArgument,
     required this.iconPath,
     required this.title,
+    required this.enable,
   });
 
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
-      onPressed: () {
-        Navigator.of(context, rootNavigator: true).pushNamed(
-          WebViewPage.routeName,
-          arguments: urlArgument,
-        );
-      },
+      onPressed: enable
+          ? () {
+              Navigator.of(context, rootNavigator: true).pushNamed(
+                WebViewPage.routeName,
+                arguments: urlArgument,
+              );
+            }
+          : null,
       padding: EdgeInsets.zero,
       child: Container(
         margin: EdgeInsets.only(bottom: 10.0),
@@ -193,7 +197,8 @@ class MyProfileImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context, rootNavigator: true).pushNamed(UserProfile.routeName);
+        Navigator.of(context, rootNavigator: true)
+            .pushNamed(UserProfile.routeName);
       },
       child: Container(
         height: 150.0,
@@ -213,7 +218,8 @@ class MyProfileImage extends StatelessWidget {
                   Uint8List.fromList(base64Decode(Constants.base64BlueHolder)),
                 ),
                 image: NetworkImage(
-                  userStore.userData!.avatar?.url ?? Constants.defaultImageNetwork,
+                  userStore.userData!.avatar?.url ??
+                      Constants.defaultImageNetwork,
                 ),
                 fit: BoxFit.cover,
               ),

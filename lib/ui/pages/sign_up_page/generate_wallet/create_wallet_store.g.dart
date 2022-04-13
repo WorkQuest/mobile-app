@@ -13,11 +13,11 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
 
   @override
   bool get statusGenerateButton => (_$statusGenerateButtonComputed ??=
-      Computed<bool>(() => super.statusGenerateButton,
-          name: 'SignUpStoreBase.statusGenerateButton'))
+          Computed<bool>(() => super.statusGenerateButton,
+              name: '_CreateWalletStore.statusGenerateButton'))
       .value;
 
-  final _$mnemonicAtom = Atom(name: 'SignUpStoreBase.mnemonic');
+  final _$mnemonicAtom = Atom(name: '_CreateWalletStore.mnemonic');
 
   @override
   String? get mnemonic {
@@ -32,7 +32,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$isSavedAtom = Atom(name: 'SignUpStoreBase.isSaved');
+  final _$isSavedAtom = Atom(name: '_CreateWalletStore.isSaved');
 
   @override
   bool get isSaved {
@@ -47,7 +47,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$firstWordAtom = Atom(name: 'SignUpStoreBase.firstWord');
+  final _$firstWordAtom = Atom(name: '_CreateWalletStore.firstWord');
 
   @override
   String? get firstWord {
@@ -62,7 +62,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$secondWordAtom = Atom(name: 'SignUpStoreBase.secondWord');
+  final _$secondWordAtom = Atom(name: '_CreateWalletStore.secondWord');
 
   @override
   String? get secondWord {
@@ -77,7 +77,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$indexFirstWordAtom = Atom(name: 'SignUpStoreBase.indexFirstWord');
+  final _$indexFirstWordAtom = Atom(name: '_CreateWalletStore.indexFirstWord');
 
   @override
   int? get indexFirstWord {
@@ -92,7 +92,8 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$indexSecondWordAtom = Atom(name: 'SignUpStoreBase.indexSecondWord');
+  final _$indexSecondWordAtom =
+      Atom(name: '_CreateWalletStore.indexSecondWord');
 
   @override
   int? get indexSecondWord {
@@ -108,7 +109,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
   }
 
   final _$selectedFirstWordAtom =
-  Atom(name: 'SignUpStoreBase.selectedFirstWord');
+      Atom(name: '_CreateWalletStore.selectedFirstWord');
 
   @override
   String? get selectedFirstWord {
@@ -124,7 +125,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
   }
 
   final _$selectedSecondWordAtom =
-  Atom(name: 'SignUpStoreBase.selectedSecondWord');
+      Atom(name: '_CreateWalletStore.selectedSecondWord');
 
   @override
   String? get selectedSecondWord {
@@ -139,7 +140,7 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$setOfWordsAtom = Atom(name: 'SignUpStoreBase.setOfWords');
+  final _$setOfWordsAtom = Atom(name: '_CreateWalletStore.setOfWords');
 
   @override
   ObservableList<String>? get setOfWords {
@@ -154,68 +155,68 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
-  final _$openWalletAsyncAction = AsyncAction('SignUpStoreBase.openWallet');
+  final _$openWalletAsyncAction = AsyncAction('_CreateWalletStore.openWallet');
 
   @override
   Future openWallet() {
     return _$openWalletAsyncAction.run(() => super.openWallet());
   }
 
-  final _$SignUpStoreBaseActionController =
-  ActionController(name: 'SignUpStoreBase');
+  final _$_CreateWalletStoreActionController =
+      ActionController(name: '_CreateWalletStore');
 
   @override
   dynamic setIsSaved(bool value) {
-    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
-        name: 'SignUpStoreBase.setIsSaved');
+    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
+        name: '_CreateWalletStore.setIsSaved');
     try {
       return super.setIsSaved(value);
     } finally {
-      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic selectFirstWord(String? value) {
-    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
-        name: 'SignUpStoreBase.selectFirstWord');
+    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
+        name: '_CreateWalletStore.selectFirstWord');
     try {
       return super.selectFirstWord(value);
     } finally {
-      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic selectSecondWord(String? value) {
-    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
-        name: 'SignUpStoreBase.selectSecondWord');
+    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
+        name: '_CreateWalletStore.selectSecondWord');
     try {
       return super.selectSecondWord(value);
     } finally {
-      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic generateMnemonic() {
-    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
-        name: 'SignUpStoreBase.generateMnemonic');
+    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
+        name: '_CreateWalletStore.generateMnemonic');
     try {
       return super.generateMnemonic();
     } finally {
-      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   dynamic splitPhraseIntoWords() {
-    final _$actionInfo = _$SignUpStoreBaseActionController.startAction(
-        name: 'SignUpStoreBase.splitPhraseIntoWords');
+    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
+        name: '_CreateWalletStore.splitPhraseIntoWords');
     try {
       return super.splitPhraseIntoWords();
     } finally {
-      _$SignUpStoreBaseActionController.endAction(_$actionInfo);
+      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
     }
   }
 
@@ -226,6 +227,8 @@ mnemonic: ${mnemonic},
 isSaved: ${isSaved},
 firstWord: ${firstWord},
 secondWord: ${secondWord},
+indexFirstWord: ${indexFirstWord},
+indexSecondWord: ${indexSecondWord},
 selectedFirstWord: ${selectedFirstWord},
 selectedSecondWord: ${selectedSecondWord},
 setOfWords: ${setOfWords},

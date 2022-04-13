@@ -8,10 +8,10 @@ import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/login_button.dart';
+import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:app/utils/validator.dart';
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
@@ -77,7 +77,12 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
+                          padding: const EdgeInsets.fromLTRB(
+                            16.0,
+                            0.0,
+                            16.0,
+                            30.0,
+                          ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,7 +257,10 @@ class SignInPage extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10.0),
                           child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, SignUpPage.routeName);
+                              Navigator.pushNamed(
+                                context,
+                                SignUpPage.routeName,
+                              );
                             },
                             child: Text(
                               "signIn.signUp".tr(),
@@ -396,48 +404,16 @@ class SignInPage extends StatelessWidget {
     Color? color,
   ]) {
     return CupertinoButton(
-        color: Color(0xFFF7F8FA),
-        padding: EdgeInsets.zero,
-        child: SvgPicture.asset(
-          iconPath,
-          color: color,
-        ),
-        onPressed: Constants.isRelease
-            ? null
-            : () async {
-                await launch(
-                  'https://app.workquest.co/api/v1/auth/login/main/$link',
-                  customTabsOption: CustomTabsOption(
-                    toolbarColor: Theme.of(context).primaryColor,
-                    enableDefaultShare: true,
-                    enableUrlBarHiding: true,
-                    showPageTitle: true,
-                    extraCustomTabs: const <String>[
-                      // ref. https://play.google.com/store/apps/details?id=org.mozilla.firefox
-                      'org.mozilla.firefox',
-                      // ref. https://play.google.com/store/apps/details?id=com.microsoft.emmx
-                      'com.microsoft.emmx',
-                    ],
-                  ),
-                  safariVCOption: SafariViewControllerOption(
-                    preferredBarTintColor: Theme.of(context).primaryColor,
-                    preferredControlTintColor: Colors.white,
-                    barCollapsingEnabled: true,
-                    entersReaderIfAvailable: false,
-                    dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
-                  ),
-                );
-              }
-        // } catch (e) {
-        // // An exception is thrown if browser app is not installed on Android device.
-        // debugPrint(e.toString());
-        // }
-
-        //     Navigator.pushNamed(
-        //   context,
-        //   WebViewPage.routeName,
-        //   arguments: "api/v1/auth/login/$link/token",
-        // ),
+      color: Color(0xFFF7F8FA),
+      padding: EdgeInsets.zero,
+      child: SvgPicture.asset(
+        iconPath,
+        color: color,
+      ),
+      onPressed: () async {
+        Navigator.of(context, rootNavigator: true).pushNamed(
+          WebViewPage.routeName,
+          arguments: "api/v1/auth/login/$link",
         );
   }
 }
