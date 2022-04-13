@@ -37,7 +37,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   PhoneNumber phone = PhoneNumber();
   PhoneNumber secondPhone = PhoneNumber();
 
-
   @override
   void initState() {
     profile = context.read<ProfileMeStore>();
@@ -47,8 +46,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     print('tempPhone: ${pageStore.userData.tempPhone!.toJson()}');
     if (profile!.userData!.additionalInfo?.address != null)
       pageStore.address = profile!.userData!.additionalInfo!.address!;
-    pageStore.getInitCode(pageStore.userData.phone ?? pageStore.userData.tempPhone!,
-        pageStore.userData.additionalInfo?.secondMobileNumber).then((value) {
+    pageStore
+        .getInitCode(pageStore.userData.phone ?? pageStore.userData.tempPhone!,
+            pageStore.userData.additionalInfo?.secondMobileNumber)
+        .then((value) {
       phone = pageStore.phoneNumber ?? PhoneNumber();
       secondPhone = pageStore.secondPhoneNumber ?? PhoneNumber();
       setState(() {});
@@ -118,8 +119,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     type: FileType.image,
                   );
                   if (result != null) {
-                    List<File> files =
-                        result.paths.map((path) => File(path!)).toList();
+                    List<File> files = result.paths.map((path) => File(path!)).toList();
                     pageStore.media = files.first;
                   }
                 },
@@ -184,8 +184,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
             ),
             _InputWidget(
               title: "modals.title".tr(),
-              initialValue:
-                  pageStore.userData.additionalInfo!.description ?? "",
+              initialValue: pageStore.userData.additionalInfo!.description ?? "",
               onChanged: (text) {
                 ProfileMeResponse data = pageStore.userData;
                 data.additionalInfo!.description = text;
@@ -194,8 +193,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               maxLines: null,
               validator: Validators.descriptionValidator,
             ),
-            if (pageStore.userData.role == UserRole.Worker)
-              _fieldsForWorkerWidget(),
+            if (pageStore.userData.role == UserRole.Worker) _fieldsForWorkerWidget(),
             _InputWidget(
               title: "settings.twitterUsername".tr(),
               initialValue:
@@ -369,10 +367,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
   _onSave() async {
     if (_formKey.currentState?.validate() ?? false) {
-      if (!pageStore.validationKnowledge(
-          _controllerKnowledge!.getListMap(), context)) return;
-      if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
+      if (!pageStore.validationKnowledge(_controllerKnowledge!.getListMap(), context))
         return;
+      if (!pageStore.validationWork(_controllerWork!.getListMap(), context)) return;
 
       if (pageStore.userData.additionalInfo?.secondMobileNumber?.phone == "")
         pageStore.userData.additionalInfo?.secondMobileNumber = null;
@@ -384,26 +381,32 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       pageStore.userData.workplace = profile!.valueToWorkplace();
 
       if (!profile!.isLoading)
-        pageStore.userData.userSpecializations =
-            _controller!.getSkillAndSpecialization();
+        pageStore.userData.userSpecializations = _controller!.getSkillAndSpecialization();
       await profile!.changeProfile(
         pageStore.userData,
         media: pageStore.media,
       );
-      if (profile!.userData!.tempPhone!.fullPhone.isNotEmpty &&
-          pageStore.numberChanged(profile!.userData!.tempPhone!)) {
-        await profile!
-            .submitPhoneNumber(pageStore.userData.tempPhone!.fullPhone);
-        profile!.userData?.phone = null;
-      }
-      Navigator.pop(context);
-      if (profile!.isSuccess) {
-        if (profile!.userData!.tempPhone!.fullPhone.isNotEmpty &&
-            pageStore.numberChanged(profile!.userData!.tempPhone!))
-          await AlertDialogUtils.showSuccessDialog(context);
-        else
-          await AlertDialogUtils.showSuccessDialog(context,
-              text: 'Enter code from SMS in SMS Verification');
+      _changePhone();
+    }
+  }
+
+  _changePhone() async {
+    Phone? userPhone = profile!.userData!.phone ?? profile!.userData!.tempPhone;
+    if (userPhone != null &&
+        userPhone.fullPhone.isNotEmpty &&
+        pageStore.numberChanged(userPhone.fullPhone)) {
+      await profile!.submitPhoneNumber(pageStore.userData.tempPhone!.fullPhone);
+      profile!.userData?.phone = null;
+      userPhone = profile!.userData!.tempPhone;
+    }
+    if (profile!.isSuccess) {
+      if (userPhone != null &&
+          userPhone.fullPhone.isNotEmpty &&
+          !pageStore.numberChanged(userPhone.fullPhone)) {
+        await AlertDialogUtils.showSuccessDialog(context);
+      } else {
+        await AlertDialogUtils.showSuccessDialog(context,
+            text: 'Enter code from SMS in SMS Verification');
       }
     }
   }

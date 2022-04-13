@@ -7,7 +7,6 @@ import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mobx/mobx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'pin_code_store.g.dart';
 
@@ -113,9 +112,6 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   }
 
   Future<void> onWillPop() async {
-    SharedPreferences.getInstance().then((sharedPrefs) {
-      sharedPrefs.remove('2FAStatus');
-    });
     await Storage.deleteAllFromSecureStorage();
   }
 
@@ -190,9 +186,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       if (e.toString() == "Token invalid" ||
           e.toString() == "Token expired" ||
           e.toString() == "Session not found") {
-        SharedPreferences.getInstance().then((sharedPrefs) {
-          sharedPrefs.remove('2FAStatus');
-        });
+
         await Storage.deleteAllFromSecureStorage();
         this.onSuccess(StatePinCode.ToLogin);
         return;

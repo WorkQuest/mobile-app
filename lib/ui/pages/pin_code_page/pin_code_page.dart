@@ -15,6 +15,8 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../constants.dart';
+import '../../../utils/storage.dart';
+import '../../../web3/repository/account_repository.dart';
 
 class PinCodePage extends StatefulWidget {
   static const String routeName = "/PinCode";
@@ -70,6 +72,8 @@ class _PinCodePageState extends State<PinCodePage>
               );
             }
           } else if (store.successData == StatePinCode.ToLogin) {
+            AccountRepository().clearData();
+            Storage.deleteAllFromSecureStorage();
             Navigator.pushNamedAndRemoveUntil(
               context,
               SignInPage.routeName,

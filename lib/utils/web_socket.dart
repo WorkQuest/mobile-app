@@ -31,7 +31,9 @@ class WebSocket {
     token = await Storage.readNotificationToken();
     print("[WebSocket]  connecting ...");
     _connectWallet();
-    _connectListen();
+    if (!Constants.isRelease) {
+      _connectListen();
+    }
     _connectSender();
   }
 

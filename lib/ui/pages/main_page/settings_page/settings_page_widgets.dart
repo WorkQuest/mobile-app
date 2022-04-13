@@ -8,12 +8,12 @@ import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:app/utils/storage.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
 ///Instrument Card
@@ -163,9 +163,7 @@ Widget logOutButton(context) {
           );
           final cookieManager = WebviewCookieManager();
           cookieManager.clearCookies();
-          SharedPreferences.getInstance().then((sharedPrefs) {
-            sharedPrefs.remove('2FAStatus');
-          });
+          AccountRepository().clearData();
           Storage.deleteAllFromSecureStorage();
         },
       );

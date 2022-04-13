@@ -14,6 +14,23 @@ import '../../../../constants.dart';
 import '../../../../web3/contractEnums.dart';
 import '../../../widgets/dismiss_keyboard.dart';
 
+class _CoinItem {
+  String iconPath;
+  String title;
+  bool isEnable;
+  TYPE_COINS typeCoin;
+
+  _CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);
+}
+
+class _WalletItem {
+  String iconPath;
+  String title;
+  TYPE_WALLET typeWallet;
+
+  _WalletItem(this.iconPath, this.title, this.typeWallet);
+}
+
 final _divider = const SizedBox(
   height: 5.0,
 );
@@ -179,7 +196,6 @@ class _WalletViewTabState extends State<_WalletViewTab> {
   @override
   void initState() {
     super.initState();
-    print('_WalletViewTabState');
     _currentCoin = _coins[0];
     _currentWallet = _wallets[0];
     widget.store.setTitleSelectedCoin(TYPE_COINS.WUSD);
@@ -356,121 +372,21 @@ class _WalletViewTabState extends State<_WalletViewTab> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return Container(
-          height: 200,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24.0),
-              topRight: Radius.circular(24.0),
-            ),
-            color: Colors.white,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-            child: SingleChildScrollView(
-              child: DismissKeyboard(
-                child: Column(
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: const Color(0xffE9EDF2),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 21,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'wallet.chooseCoin'.tr(),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 16.5,
-                        ),
-                        ..._coins
-                            .map(
-                              (coin) => Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 6.5,
-                                    ),
-                                    child: GestureDetector(
-                                      onTap: coin.isEnable
-                                          ? () {
-                                              _selectCoin(coin);
-                                              Navigator.pop(context);
-                                            }
-                                          : null,
-                                      child: Container(
-                                        height: 32,
-                                        width: double.infinity,
-                                        color: Colors.transparent,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Container(
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                gradient: LinearGradient(
-                                                  begin: Alignment.topCenter,
-                                                  end: Alignment.bottomCenter,
-                                                  colors: [
-                                                    AppColor.enabledButton,
-                                                    AppColor.blue,
-                                                  ],
-                                                ),
-                                              ),
-                                              child: SizedBox(
-                                                width: 32,
-                                                height: 32,
-                                                child: SvgPicture.asset(
-                                                  coin.iconPath,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              coin.title,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: coin.isEnable
-                                                    ? Colors.black
-                                                    : AppColor.disabledText,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: AppColor.disabledButton,
-                                  ),
-                                ],
-                              ),
-                            )
-                            .toList(),
-                      ],
-                    ),
-                  ],
+        return _BottomSheetWidget(
+          children: _coins
+              .map(
+                (coin) => _ItemListBottomSheet(
+                  title: coin.title,
+                  iconPath: coin.iconPath,
+                  onTap: coin.isEnable
+                      ? () {
+                          _selectCoin(coin);
+                          Navigator.pop(context);
+                        }
+                      : null,
                 ),
-              ),
-            ),
-          ),
+              )
+              .toList(),
         );
       },
     );
@@ -483,117 +399,19 @@ class _WalletViewTabState extends State<_WalletViewTab> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return Container(
-          height: 200,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24.0),
-              topRight: Radius.circular(24.0),
-            ),
-            color: Colors.white,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-            child: SingleChildScrollView(
-              child: DismissKeyboard(
-                child: Column(
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: const Color(0xffE9EDF2),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 21,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'wallet.chooseCoin'.tr(),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 16.5,
-                        ),
-                        ..._wallets
-                            .map(
-                              (wallet) => Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 6.5,
-                                    ),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        _selectWallet(wallet);
-                                        Navigator.pop(context);
-                                      },
-                                      child: Container(
-                                        height: 32,
-                                        width: double.infinity,
-                                        color: Colors.transparent,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Container(
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                gradient: LinearGradient(
-                                                  begin: Alignment.topCenter,
-                                                  end: Alignment.bottomCenter,
-                                                  colors: [
-                                                    AppColor.enabledButton,
-                                                    AppColor.blue,
-                                                  ],
-                                                ),
-                                              ),
-                                              child: SizedBox(
-                                                width: 32,
-                                                height: 32,
-                                                child: SvgPicture.asset(
-                                                  wallet.iconPath,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              wallet.title,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: AppColor.disabledButton,
-                                  ),
-                                ],
-                              ),
-                            )
-                            .toList(),
-                      ],
-                    ),
-                  ],
+        return _BottomSheetWidget(
+          children: _wallets
+              .map(
+                (wallet) => _ItemListBottomSheet(
+                  title: wallet.title,
+                  iconPath: wallet.iconPath,
+                  onTap: () {
+                    _selectWallet(wallet);
+                    Navigator.pop(context);
+                  },
                 ),
-              ),
-            ),
-          ),
+              )
+              .toList(),
         );
       },
     );
@@ -614,19 +432,138 @@ class _WalletViewTabState extends State<_WalletViewTab> {
   }
 }
 
-class _CoinItem {
-  String iconPath;
-  String title;
-  bool isEnable;
-  TYPE_COINS typeCoin;
+class _BottomSheetWidget extends StatelessWidget {
+  final List<Widget> children;
 
-  _CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);
+  const _BottomSheetWidget({
+    Key? key,
+    required this.children,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24.0),
+          topRight: Radius.circular(24.0),
+        ),
+        color: Colors.white,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        child: SingleChildScrollView(
+          child: DismissKeyboard(
+            child: Column(
+              children: [
+                Container(
+                  width: 100,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: const Color(0xffE9EDF2),
+                  ),
+                ),
+                const SizedBox(
+                  height: 21,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'wallet.chooseCoin'.tr(),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16.5,
+                    ),
+                    ...children,
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _WalletItem {
-  String iconPath;
-  String title;
-  TYPE_WALLET typeWallet;
+class _ItemListBottomSheet extends StatelessWidget {
+  final String title;
+  final String iconPath;
+  final Function()? onTap;
 
-  _WalletItem(this.iconPath, this.title, this.typeWallet);
+  const _ItemListBottomSheet({
+    Key? key,
+    required this.title,
+    required this.iconPath,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 6.5,
+          ),
+          child: GestureDetector(
+            onTap: onTap,
+            child: Container(
+              height: 32,
+              width: double.infinity,
+              color: Colors.transparent,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColor.enabledButton,
+                          AppColor.blue,
+                        ],
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: 32,
+                      height: 32,
+                      child: SvgPicture.asset(
+                        iconPath,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          height: 1,
+          color: AppColor.disabledButton,
+        ),
+      ],
+    );
+  }
 }

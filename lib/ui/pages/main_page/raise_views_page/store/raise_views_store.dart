@@ -4,7 +4,6 @@ import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../../../web3/contractEnums.dart';
-import '../../../../../web3/service/client_service.dart';
 
 part 'raise_views_store.g.dart';
 
@@ -106,8 +105,10 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   Future<void> raiseQuest(String questId) async {
     try {
       this.onLoading();
+
       await apiProvider.raiseQuest(
           questId: questId, duration: getPeriod(), type: levelGroupValue - 1);
+
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

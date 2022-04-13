@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer' as dev;
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:app/web3/repository/account_repository.dart';
@@ -67,17 +66,12 @@ class ClientService implements ClientServiceI {
     required String amount,
     required TYPE_COINS coin,
   }) async {
-    print('client sendTransaction');
-    print('TYPE_COINS $TYPE_COINS');
     address = address.toLowerCase();
     String? hash;
-    print("privateKey: $privateKey");
 
     final bigInt = BigInt.from(double.parse(amount) * pow(10, 18));
     final credentials = await getCredentials(privateKey);
     final myAddress = await AddressService().getPublicAddress(privateKey);
-
-    print("credentials: $credentials");
 
     if (coin == TYPE_COINS.WUSD) {
       hash = await _client.sendTransaction(
