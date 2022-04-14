@@ -1,6 +1,5 @@
 import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -15,7 +14,6 @@ import "package:provider/provider.dart";
 import 'package:maps_launcher/maps_launcher.dart';
 
 import '../../../../widgets/priority_view.dart';
-import '../../../../widgets/quest_header.dart';
 
 class QuestDetails extends StatefulWidget {
   static const String routeName = "/QuestDetails";
@@ -89,14 +87,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
           child: Observer(
             builder: (_) => Column(
               children: [
-                QuestHeader(
-                  storeQuest.getQuestType(
-                    widget.questInfo,
-                    profile!.userData!.role,
-                  ),
-                  widget.questInfo.status,
-                  false,
-                ),
+                questHeader(),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
@@ -275,13 +266,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           WorkplaceView(storeQuest.questInfo!.workplace),
-                          SizedBox(
-                            width: 5,
-                          ),
+                          const SizedBox(width: 5),
                           tagEmployment(),
-                          SizedBox(
-                            width: 5,
-                          ),
+                          const SizedBox(width: 5),
                           PriorityView(
                             storeQuest.questInfo!.priority != 0
                                 ? storeQuest.questInfo!.priority - 1
@@ -291,54 +278,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         ],
                       ),
                       getBody(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      if (storeQuest.questInfo!.status == 6 &&
-                          !profile!.review &&
-                          (storeQuest.questInfo!.userId ==
-                                  profile!.userData!.id ||
-                              storeQuest.questInfo!.assignedWorker?.id ==
-                                  profile!.userData!.id))
-                        Observer(
-                          builder: (_) => isLoading
-                              ? Center(
-                                  child: CircularProgressIndicator.adaptive(),
-                                )
-                              : TextButton(
-                                  onPressed: () async {
-                                    await Navigator.pushNamed(
-                                      context,
-                                      CreateReviewPage.routeName,
-                                      arguments: storeQuest.questInfo,
-                                    );
-                                    widget.questInfo.yourReview != null
-                                        ? profile!.review = true
-                                        : profile!.review = false;
-                                  },
-                                  child: Text(
-                                    "quests.addReview".tr(),
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  style: ButtonStyle(
-                                    fixedSize: MaterialStateProperty.all(
-                                      Size(double.maxFinite, 43),
-                                    ),
-                                    backgroundColor: MaterialStateProperty
-                                        .resolveWith<Color>(
-                                      (Set<MaterialState> states) {
-                                        if (states
-                                            .contains(MaterialState.pressed))
-                                          return Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withOpacity(0.5);
-                                        return const Color(0xFF0083C7);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                        ),
+                      const SizedBox(height: 20),
+                      review(),
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -352,6 +293,14 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   }
 
   Widget inProgressBy() {
+    return const SizedBox();
+  }
+
+  Widget questHeader() {
+    return const SizedBox();
+  }
+
+  Widget review() {
     return const SizedBox();
   }
 
