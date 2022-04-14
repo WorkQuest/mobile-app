@@ -602,13 +602,9 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           child: InternationalPhoneNumberInput(
-            validator: widget.title == "modals.secondPhoneNumber"
-                ? (value) {
-                    return null;
-                  }
-                : Validators.phoneNumberValidator,
             initialValue: widget.initialValue,
             errorMessage: "modals.invalidPhone".tr(),
+            autoValidateMode: AutovalidateMode.always,
             onInputChanged: widget.onChanged,
             selectorConfig: SelectorConfig(
               setSelectorButtonAsPrefixIcon: true,
