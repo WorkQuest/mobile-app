@@ -230,10 +230,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.5);
+                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
@@ -262,10 +259,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.5);
+                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
@@ -370,46 +364,47 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     store.mediaFile.isNotEmpty ||
                     store.mediaIds.isNotEmpty
                 ? () async {
-                    _updateLoading();
-                    await store.sendRespondOnQuest(store.opinion);
-                    if (store.isSuccess) {
-                      widget.questInfo.responded = Responded(
-                        id: "",
-                        workerId: profile!.userData!.id,
-                        questId: widget.questInfo.id,
-                        status: 0,
-                        type: 0,
-                        message: store.opinion,
-                        createdAt: DateTime.now(),
-                        updatedAt: DateTime.now(),
-                      );
-                      for (int i = 0; i < questStore.questsList.length; i++)
-                        if (questStore.questsList[i].id == widget.questInfo.id)
-                          questStore.questsList[i].responded = Responded(
-                            id: "",
-                            workerId: profile!.userData!.id,
-                            questId: widget.questInfo.id,
-                            status: 0,
-                            type: 0,
-                            message: store.opinion,
-                            createdAt: DateTime.now(),
-                            updatedAt: DateTime.now(),
-                          );
-                      questStore.searchWord.isEmpty
-                          ? questStore.getQuests(true)
-                          : questStore.setSearchWord(questStore.searchWord);
-                      myQuestStore.deleteQuest(widget.questInfo);
-                      myQuestStore.addQuest(widget.questInfo, true);
+                    if (!isLoading) {
                       _updateLoading();
-                      await Future.delayed(const Duration(milliseconds: 250));
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      await AlertDialogUtils.showSuccessDialog(context);
+                      await store.sendRespondOnQuest(store.opinion);
+                      if (store.isSuccess) {
+                        widget.questInfo.responded = Responded(
+                          id: "",
+                          workerId: profile!.userData!.id,
+                          questId: widget.questInfo.id,
+                          status: 0,
+                          type: 0,
+                          message: store.opinion,
+                          createdAt: DateTime.now(),
+                          updatedAt: DateTime.now(),
+                        );
+                        for (int i = 0; i < questStore.questsList.length; i++)
+                          if (questStore.questsList[i].id == widget.questInfo.id)
+                            questStore.questsList[i].responded = Responded(
+                              id: "",
+                              workerId: profile!.userData!.id,
+                              questId: widget.questInfo.id,
+                              status: 0,
+                              type: 0,
+                              message: store.opinion,
+                              createdAt: DateTime.now(),
+                              updatedAt: DateTime.now(),
+                            );
+                        questStore.searchWord.isEmpty
+                            ? questStore.getQuests(true)
+                            : questStore.setSearchWord(questStore.searchWord);
+                        myQuestStore.deleteQuest(widget.questInfo);
+                        myQuestStore.addQuest(widget.questInfo, true);
+                        _updateLoading();
+                        await Future.delayed(const Duration(milliseconds: 250));
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        await AlertDialogUtils.showSuccessDialog(context);
+                      }
                     }
                   }
                 : null,
             title: "modals.sendARequest".tr(),
-
           ),
         ),
         const SizedBox(height: 15),
