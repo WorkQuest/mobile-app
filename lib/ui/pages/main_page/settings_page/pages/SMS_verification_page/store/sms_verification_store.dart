@@ -17,40 +17,13 @@ abstract class _SMSVerificationStore extends IStore<bool> with Store {
 
   _SMSVerificationStore(this.apiProvider);
 
-  // @observable
-  // bool validate = true;
-  //
-  // @observable
-  // String phone = '';
-
   @observable
   String code = '';
-
-  // @action
-  // void setPhone(String value) {
-  //   phone = "+" + value.trim();
-  //   //value.startsWith("+") ? phone = value.trim() : phone = "+"+value.trim();
-  // }
 
   @action
   void setCode(String value) {
     code = value;
   }
-
-  // @action
-  // Future submitPhoneNumber() async {
-  //   try {
-  //     this.onLoading();
-  //     await apiProvider.submitPhoneNumber(
-  //       phoneNumber: phone,
-  //     );
-  //     this.onSuccess(true);
-  //     validate = true;
-  //   } catch (e) {
-  //     this.onError(e.toString());
-  //     validate = false;
-  //   }
-  // }
 
   @action
   Future submitCode() async {
