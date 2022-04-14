@@ -6,7 +6,6 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../enums.dart';
 
@@ -117,9 +116,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       // this.onLoading();
       error = "";
       userData = await _apiProvider.getProfileMe();
-      await SharedPreferences.getInstance().then((sharedPrefs) {
-        userData!.isTotpActive = sharedPrefs.getBool("2FAStatus") ?? false;
-      });
       // this.onSuccess(true);
     } catch (e, trace) {
       print(trace);

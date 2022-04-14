@@ -66,58 +66,10 @@ class TwoFAPage extends StatelessWidget {
                   ),
                   child: isActiveTotp ?? false
                       ? Disable2FA(store)
-                      : Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 20.0,
-                              alignment: AlignmentDirectional.centerStart,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Color(0xFFF7F8FA),
-                              ),
-                              child: LayoutBuilder(
-                                builder: (context, constraints) => Observer(
-                                  builder: (_) => AnimatedContainer(
-                                    width: constraints.maxWidth *
-                                        (store.index + 1) /
-                                        4,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.blue,
-                                    ),
-                                    duration: const Duration(
-                                      milliseconds: 150,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10.0,
-                            ),
-                            Text(
-                              "modals.step".tr() + " ${store.index + 1}",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 23.0,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10.0,
-                            ),
-                            Expanded(
-                              child: Confirm2FAPages(
-                                store: store,
-                                userStore: userStore,
-                                mail: mail,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10.0,
-                            ),
-                          ],
+                      : _Enable2FA(
+                          userStore: userStore,
+                          mail: mail,
+                          store: store,
                         ),
                 ),
               ),
@@ -125,6 +77,78 @@ class TwoFAPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _Enable2FA extends StatelessWidget {
+  final ProfileMeStore userStore;
+  final TwoFAStore store;
+  final List<String> mail;
+
+  const _Enable2FA({
+    Key? key,
+    required this.mail,
+    required this.store,
+    required this.userStore,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 20.0,
+          alignment: AlignmentDirectional.centerStart,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Color(0xFFF7F8FA),
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) => Observer(
+              builder: (_) => AnimatedContainer(
+                width: constraints.maxWidth * (store.index + 1) / 4,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.blue,
+                ),
+                duration: const Duration(
+                  milliseconds: 150,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        LayoutBuilder(
+          builder: (context, constraints) => Observer(
+            builder: (_) => Text(
+              "modals.step".tr() + " ${store.index + 1}",
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 23.0,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Expanded(
+          child: Confirm2FAPages(
+            store: store,
+            userStore: userStore,
+            mail: mail,
+          ),
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+      ],
     );
   }
 }
@@ -181,7 +205,7 @@ class Disable2FA extends StatelessWidget {
   }
 }
 
-class Confirm2FAPages extends StatelessWidget {
+class Confirm2FAPages extends StatefulWidget {
   final TwoFAStore store;
   final ProfileMeStore userStore;
   final List<String> mail;
@@ -193,183 +217,196 @@ class Confirm2FAPages extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return IndexedStack(
-      index: store.index,
-      children: [
-        ///Step 1
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "modals.installGoogleAuth".tr(),
-            ),
-            CupertinoButton(
-              onPressed: () async {
-                try {
-                  await StoreRedirect.redirect(
-                      androidAppId: "com.google.android.apps.authenticator2",
-                      iOSAppId: "388497605");
-                } catch (e) {
-                  print(e);
-                }
-              },
-              child: SvgPicture.asset(
-                Platform.isIOS
-                    ? "assets/open_ios_appstore.svg"
-                    : "assets/open_google_play.svg",
-              ),
-            ),
-            Text(
-              "modals.continue2Fa".tr(),
-            ),
-            _spacer,
-            buttonRow(
-              store,
-              forward: "meta.next",
-              back: "meta.cancel",
-              context: context,
-            ),
-          ],
-        ),
+  State<Confirm2FAPages> createState() => _Confirm2FAPagesState();
+}
 
-        ///Step 2
-        Column(
-          children: [
-            Text(
-              "modals.pleaseSaveThisKey".tr(),
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-            Container(
-              height: 50.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6.0),
-                border: Border.all(
-                  color: const Color(0xFFF7F8FA), // red as border color
+class _Confirm2FAPagesState extends State<Confirm2FAPages> {
+  @override
+  void initState() {
+    widget.store.index = 0;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Observer(
+      builder: (_) => IndexedStack(
+        index: widget.store.index,
+        children: [
+          ///Step 1
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "modals.installGoogleAuth".tr(),
+              ),
+              CupertinoButton(
+                onPressed: () async {
+                  try {
+                    await StoreRedirect.redirect(
+                        androidAppId: "com.google.android.apps.authenticator2",
+                        iOSAppId: "388497605");
+                  } catch (e) {
+                    print(e);
+                  }
+                },
+                child: SvgPicture.asset(
+                  Platform.isIOS
+                      ? "assets/open_ios_appstore.svg"
+                      : "assets/open_google_play.svg",
                 ),
               ),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    child: SvgPicture.asset("assets/2FA_attention_icon.svg"),
-                  ),
-                  Expanded(
-                    child: Text(
-                      store.googleAuthenticatorSecretCode,
-                    ),
-                  ),
-                  IconButton(
-                    splashRadius: 20.0,
-                    onPressed: () => Clipboard.setData(
-                      new ClipboardData(
-                        text: store.googleAuthenticatorSecretCode,
-                      ),
-                    ).then(
-                      (_) => SnackBarUtils.success(
-                        context,
-                        title: "modals.codeCopy".tr(),
-                      ),
-                    ),
-                    icon: SvgPicture.asset(
-                      "assets/copy_icon.svg",
-                      color: Color(0xFFAAB0B9),
-                    ),
-                  ),
-                ],
+              Text(
+                "modals.continue2Fa".tr(),
               ),
-            ),
-            _spacer,
-            buttonRow(
-              store,
-              forward: "meta.next",
-              back: "meta.back",
-              context: context,
-            ),
-          ],
-        ),
+              _spacer,
+              buttonRow(
+                widget.store,
+                forward: "meta.next",
+                back: "meta.cancel",
+                context: context,
+              ),
+            ],
+          ),
 
-        /// Step 3
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "securityCheck.confCodeDesc".tr(),
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-            _spacer,
-            buttonRow(
-              store,
-              forward: "modals.openApp",
-              back: "meta.back",
-              context: context,
-            ),
-          ],
-        ),
+          ///Step 2
+          Column(
+            children: [
+              Text(
+                "modals.pleaseSaveThisKey".tr(),
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                height: 50.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6.0),
+                  border: Border.all(
+                    color: const Color(0xFFF7F8FA), // red as border color
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: SvgPicture.asset("assets/2FA_attention_icon.svg"),
+                    ),
+                    Expanded(
+                      child: Text(
+                        widget.store.googleAuthenticatorSecretCode,
+                      ),
+                    ),
+                    IconButton(
+                      splashRadius: 20.0,
+                      onPressed: () => Clipboard.setData(
+                        new ClipboardData(
+                          text: widget.store.googleAuthenticatorSecretCode,
+                        ),
+                      ).then(
+                        (_) => SnackBarUtils.success(
+                          context,
+                          title: "modals.codeCopy".tr(),
+                        ),
+                      ),
+                      icon: SvgPicture.asset(
+                        "assets/copy_icon.svg",
+                        color: Color(0xFFAAB0B9),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _spacer,
+              buttonRow(
+                widget.store,
+                forward: "meta.next",
+                back: "meta.back",
+                context: context,
+              ),
+            ],
+          ),
 
-        ///Step 4
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "settings.enableTwoStepAuth".tr(),
-            ),
-            const SizedBox(
-              height: 25.0,
-            ),
-            Text(
-              "modals.codeFromEmail".tr(),
-            ),
-            const SizedBox(
-              height: 5.0,
-            ),
-            TextFormField(
-              onChanged: store.setCodeFromEmail,
-              decoration: InputDecoration(
-                hintText: "*****",
+          /// Step 3
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "securityCheck.confCodeDesc".tr(),
               ),
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-            Text(
-              mail[0].length > 3
-                  ? "modals.6-digitCode".tr() +
-                      " ${mail[0][0]}${mail[0][1]}${mail[0][2]}***@${mail[1]}"
-                  : "modals.6-digitCode".tr() +
-                      " ${mail[0][0]}${mail[0][1]}***@${mail[1]}",
-            ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            Text(
-              "modals.googleConfCode".tr(),
-            ),
-            TextFormField(
-              onChanged: store.setCodeFromAuthenticator,
-              decoration: InputDecoration(
-                hintText: "*****",
+              const SizedBox(
+                height: 10.0,
               ),
-            ),
-            Text(
-              "securityCheck.confCodeDesc".tr(),
-            ),
-            _spacer,
-            buttonRow(
-              store,
-              forward: "meta.finish",
-              back: "meta.back",
-              userStore: userStore,
-              context: context,
-            ),
-          ],
-        )
-      ],
+              _spacer,
+              buttonRow(
+                widget.store,
+                forward: "modals.openApp",
+                back: "meta.back",
+                context: context,
+              ),
+            ],
+          ),
+
+          ///Step 4
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "settings.enableTwoStepAuth".tr(),
+              ),
+              const SizedBox(
+                height: 25.0,
+              ),
+              Text(
+                "modals.codeFromEmail".tr(),
+              ),
+              const SizedBox(
+                height: 5.0,
+              ),
+              TextFormField(
+                onChanged: widget.store.setCodeFromEmail,
+                decoration: InputDecoration(
+                  hintText: "*****",
+                ),
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              Text(
+                widget.mail[0].length > 3
+                    ? "modals.6-digitCode".tr() +
+                        " ${widget.mail[0][0]}${widget.mail[0][1]}${widget.mail[0][2]}***@${widget.mail[1]}"
+                    : "modals.6-digitCode".tr() +
+                        " ${widget.mail[0][0]}${widget.mail[0][1]}***@${widget.mail[1]}",
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              Text(
+                "modals.googleConfCode".tr(),
+              ),
+              TextFormField(
+                onChanged: widget.store.setCodeFromAuthenticator,
+                decoration: InputDecoration(
+                  hintText: "*****",
+                ),
+              ),
+              Text(
+                "securityCheck.confCodeDesc".tr(),
+              ),
+              _spacer,
+              buttonRow(
+                widget.store,
+                forward: "meta.finish",
+                back: "meta.back",
+                userStore: widget.userStore,
+                context: context,
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -445,18 +482,16 @@ class Confirm2FAPages extends StatelessWidget {
   Future<void> openGoogleAuth() async {
     try {
       if (!(await launch(
-          "otpauth://totp/$mail?secret=${store.googleAuthenticatorSecretCode}&issuer=WorkQuest"))) {
+          "otpauth://totp/${widget.mail}?secret=${widget.store.googleAuthenticatorSecretCode}&issuer=WorkQuest"))) {
         Platform.isIOS
-            ? launch(
-                "https://apps.apple.com/ru/app/google-authenticator/id388497605")
+            ? launch("https://apps.apple.com/ru/app/google-authenticator/id388497605")
             : launch("https://play.google.com/store/apps/details?id=" +
                 "com.google.android.apps.authenticator2");
       }
     } catch (e) {
       print(e);
       Platform.isIOS
-          ? launch(
-              "https://apps.apple.com/ru/app/google-authenticator/id388497605")
+          ? launch("https://apps.apple.com/ru/app/google-authenticator/id388497605")
           : launch("https://play.google.com/store/apps/details?id=" +
               "com.google.android.apps.authenticator2");
     }
