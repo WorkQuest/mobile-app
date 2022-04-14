@@ -347,9 +347,6 @@ extension QuestService on ApiProvider {
     List<String> specializations = const [],
   }) async {
     String specialization = "";
-    specializations.forEach((text) {
-      specialization += "specializations[]=$text&";
-    });
     String priorities = "";
     String ratingStatuses = "";
     if (Constants.isRelease) {
@@ -374,12 +371,18 @@ extension QuestService on ApiProvider {
         }
         ratingStatuses += "ratingStatus[]=$rating&";
       });
+      specializations.forEach((text) {
+        specialization += "specialization[]=$text&";
+      });
     } else {
       priority.forEach((text) {
         priorities += "priorities[]=$text&";
       });
       ratingStatus.forEach((text) {
         ratingStatuses += "ratingStatuses[]=$text&";
+      });
+      specializations.forEach((text) {
+        specialization += "specializations[]=$text&";
       });
     }
     String workplaces = "";

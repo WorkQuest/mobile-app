@@ -27,7 +27,6 @@ class SettingsPage extends StatelessWidget {
   Widget build(context) {
     final settingStore = context.read<SettingsPageStore>();
     final userStore = context.read<ProfileMeStore>();
-    userStore.getProfileMe();
     final chooseRoleStore = context.read<ChooseRoleStore>();
 
     return Scaffold(
