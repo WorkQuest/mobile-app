@@ -51,11 +51,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       fullPhone: profile!.userData?.phone?.fullPhone ?? (profile!.userData?.tempPhone?.fullPhone ?? ''),
       phone: profile!.userData?.phone?.phone ?? (profile!.userData?.tempPhone?.phone ?? ''),
     );
-    if (oldPhone != null) {
-      print('oldPhone initState: ${oldPhone!.toJson()}');
-    } else {
-      print('oldPhone initState: null');
-    }
     if (profile!.userData!.additionalInfo?.address != null)
       pageStore.address = profile!.userData!.additionalInfo!.address!;
     pageStore
@@ -302,19 +297,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   _changePhone() async {
-    if (oldPhone != null) {
-      print('oldPhone _changePhone: ${oldPhone!.toJson()}');
-    } else {
-      print('oldPhone _changePhone: null');
-    }
     if (pageStore.numberChanged(oldPhone!.fullPhone)) {
-      print('print 1');
       await profile!.submitPhoneNumber(pageStore.userData.tempPhone!.fullPhone);
       profile!.userData?.phone = null;
       oldPhone = profile!.userData!.tempPhone;
     }
     if (profile!.isSuccess) {
-      print('print 2');
       if (oldPhone != null &&
           oldPhone!.fullPhone.isNotEmpty &&
           !pageStore.numberChanged(oldPhone!.fullPhone)) {
