@@ -18,7 +18,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
   _MyQuestStore(this._apiProvider) {
-    WebSocket().handlerQuests = this.changeQuest;
+    WebSocket().handlerQuestList = this.changeLists;
   }
 
   @observable
@@ -62,8 +62,10 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   void setId(String value) => myId = value;
 
-  void changeQuest(dynamic json) {
+  @action
+  void changeLists(dynamic json) {
     try {
+      print("MyQuestStore");
       var quest =
           BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
       (json["recipients"] as List).forEach((element) {
@@ -79,8 +81,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             updatedAt: DateTime.now(),
           );
       });
-      deleteQuest(quest);
-      addQuest(quest, true);
+      deleteQuest(quest.id);
+      addQuest(quest, quest.star);
     } catch (e) {
       print("ERROR: $e");
     }
@@ -106,11 +108,11 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   }
 
   @action
-  deleteQuest(BaseQuestResponse quest) {
-    active.removeWhere((element) => element.id == quest.id);
-    performed.removeWhere((element) => element.id == quest.id);
-    invited.removeWhere((element) => element.id == quest.id);
-    starred.removeWhere((element) => element.id == quest.id);
+  deleteQuest(String id) {
+    active.removeWhere((element) => element.id == id);
+    performed.removeWhere((element) => element.id == id);
+    invited.removeWhere((element) => element.id == id);
+    starred.removeWhere((element) => element.id == id);
   }
 
   @action
@@ -157,7 +159,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   @action
   Future getQuests(String userId, UserRole role, bool createNewList) async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 250));
     try {
       this.onLoading();
       if (createNewList) {

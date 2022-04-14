@@ -198,6 +198,47 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       ),
                     ),
                     titledField(
+                      "quests.runtime".tr(),
+                      Container(
+                        height: 50,
+                        padding: EdgeInsets.symmetric(horizontal: 15.0),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFF7F8FA),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(6.0),
+                          ),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        child: Observer(
+                          builder: (_) => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  store.decreaseRuntime();
+                                },
+                                child: Icon(
+                                  Icons.arrow_left,
+                                  size: 30,
+                                  color: Color(0xFFAAB0B9),
+                                ),
+                              ),
+                              Text("qwe"),
+                              InkWell(
+                                onTap: () {
+                                  store.increaseRuntime();},
+                                child: Icon(
+                                  Icons.arrow_right,
+                                  size: 30,
+                                  color: Color(0xFFAAB0B9),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    titledField(
                       "quests.employment.title".tr(),
                       Container(
                         height: 50,
@@ -394,7 +435,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               arguments: updatedQuest,
                             );
                           }
-                          print("TAG");
                           Navigator.pop(context, true);
                           await AlertDialogUtils.showSuccessDialog(context);
                         },

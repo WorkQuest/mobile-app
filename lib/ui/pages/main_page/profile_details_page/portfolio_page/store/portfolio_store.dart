@@ -187,6 +187,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
     required String userId,
     required bool newList,
   }) async {
+    await Future.delayed(const Duration(milliseconds: 250));
     try {
       if (newList){
         reviewsList.clear();

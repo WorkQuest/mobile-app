@@ -95,7 +95,7 @@ class BaseQuestResponse with ClusterItem {
               }
               return skillsString;
             }([...json["questSpecializations"]]),
-      workplace: json["workplace"]??"",
+      workplace: json["workplace"] ?? "",
       invited:
           json["invited"] == null ? null : Invited.fromJson(json["invited"]),
       responded: json["responded"] == null
@@ -104,7 +104,7 @@ class BaseQuestResponse with ClusterItem {
       yourReview: json["yourReview"] == null
           ? null
           : YourReview.fromJson(json["yourReview"]),
-      questChat: json["questChat"] == null
+      questChat: json["questChat"] == null || json["questChat"]["userId"] == null
           ? null
           : QuestChat.fromJson(json["questChat"]),
     );

@@ -18,6 +18,7 @@ class WebSocket {
   bool shouldReconnectFlag = true;
   void Function(dynamic)? handlerChats;
   void Function(dynamic)? handlerQuests;
+  void Function(dynamic)? handlerQuestList;
   IOWebSocketChannel? walletChannel;
   IOWebSocketChannel? _senderChannel;
   IOWebSocketChannel? _notificationChannel;
@@ -157,6 +158,7 @@ class WebSocket {
       print("quest notification");
       print(json);
       if (handlerQuests != null) handlerQuests!(json);
+      if (handlerQuestList != null) handlerQuestList!(json);
       print("questMessage: ${json.toString()}");
     } catch (e, trace) {
       print("WebSocket message ERROR: $e \n $trace");
