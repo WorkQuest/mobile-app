@@ -8,6 +8,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/wi
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_svg/svg.dart';
 
 extension CustomAppBar on UserProfileState {
   Widget sliverAppBar(ProfileMeResponse? info,
@@ -207,10 +208,26 @@ extension ReviewsTab on UserProfileState {
                   ],
                 )
               : Center(
-                  child: Text(
-                    widget.info == null
-                        ? "quests.noReview".tr()
-                        : "quests.noReviewForOtherUser".tr(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        "assets/empty_quest_icon.svg",
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        widget.info == null
+                            ? "quests.noReview".tr()
+                            : "quests.noReviewForOtherUser".tr(),
+                        style: TextStyle(
+                          color: Color(0xFFD8DFE3),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
         ),
