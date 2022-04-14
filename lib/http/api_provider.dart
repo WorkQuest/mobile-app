@@ -744,10 +744,9 @@ extension UserInfoService on ApiProvider {
           },
           if (userData.role == UserRole.Worker) "workplace": userData.workplace,
           "additionalInfo": {
-            "secondMobileNumber": (userData.additionalInfo?.secondMobileNumber
-                        ?.fullPhone.isNotEmpty ??
+            "secondMobileNumber": (userData.tempPhone?.fullPhone.isNotEmpty ??
                     false)
-                ? userData.additionalInfo?.secondMobileNumber!.fullPhone
+                ? userData.tempPhone!.fullPhone
                 : null,
             "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
                 ? userData.additionalInfo?.address
@@ -869,7 +868,10 @@ extension UserInfoService on ApiProvider {
               "longitude": userData.locationCode?.longitude ?? 0,
               "latitude": userData.locationCode?.latitude ?? 0
             },
-            "locationPlaceName": userData.locationPlaceName ?? "",
+            "locationPlaceName": userData.locationPlaceName ?? "",        },
+          "profileVisibility": {
+            "network": 0,
+            "ratingStatus": 4,
           }
         };
       }

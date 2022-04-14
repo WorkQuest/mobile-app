@@ -367,7 +367,7 @@
     "proposal": "Proposal",
     "category": "Select a category",
     "address": "Address",
-    "runtime": "Runtime (hours)",
+    "runtime": "Runtime",
     "workplace": "Workplace",
     "uploadMaterials": "Upload documents to better describe the quest",
     "uploadQuestMaterials": "Add a detailed description",

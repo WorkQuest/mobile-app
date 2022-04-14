@@ -398,11 +398,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       questStore.searchWord.isEmpty
                           ? questStore.getQuests(true)
                           : questStore.setSearchWord(questStore.searchWord);
+                      store.response = true;
                       myQuestStore.deleteQuest(widget.questInfo);
                       myQuestStore.addQuest(widget.questInfo, true);
                       _updateLoading();
                       await Future.delayed(const Duration(milliseconds: 250));
-                      Navigator.pop(context);
                       Navigator.pop(context);
                       await AlertDialogUtils.showSuccessDialog(context);
                     }
@@ -447,7 +447,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             _updateLoading();
             await Future.delayed(const Duration(milliseconds: 250));
             Navigator.pop(context);
-            Navigator.pop(context);
             await AlertDialogUtils.showSuccessDialog(context);
           },
           title: "quests.answerOnQuest.accept".tr(),
@@ -473,7 +472,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             }
             _updateLoading();
             await Future.delayed(const Duration(milliseconds: 250));
-            Navigator.pop(context);
             Navigator.pop(context);
             await AlertDialogUtils.showSuccessDialog(context);
           },
@@ -515,7 +513,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             await myQuestStore.addQuest(widget.questInfo, true);
             _updateLoading();
             await Future.delayed(const Duration(milliseconds: 250));
-            Navigator.pop(context);
             Navigator.pop(context);
             await AlertDialogUtils.showSuccessDialog(context);
           },

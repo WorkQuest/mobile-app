@@ -46,6 +46,7 @@ class _QuestMapState extends State<QuestMap> {
                   rotateGesturesEnabled: false,
                   initialCameraPosition: mapStore!.initialCameraPosition!,
                   zoomControlsEnabled: false,
+                  minMaxZoomPreference: MinMaxZoomPreference(4, 17),
                 ),
                 child: Stack(
                   alignment: Alignment.bottomCenter,
@@ -68,6 +69,7 @@ class _QuestMapState extends State<QuestMap> {
                       zoomControlsEnabled: false,
                       rotateGesturesEnabled: false,
                       myLocationEnabled: true,
+                      minMaxZoomPreference: MinMaxZoomPreference(4, 17),
                       initialCameraPosition: mapStore!.initialCameraPosition!,
                       myLocationButtonEnabled: false,
                       markers: mapStore!.markers,
@@ -128,15 +130,14 @@ class _QuestMapState extends State<QuestMap> {
           children: [
             Observer(
               builder: (_) => TextFormField(
-                onTap: (){
+                onTap: () {
                   mapStore!.getPrediction(context, _controller);
                 },
                 readOnly: true,
                 decoration: InputDecoration(
                   fillColor: Color(0xFFF7F8FA),
-
-                  hintText:mapStore!.address.isNotEmpty
-                      ?  mapStore!.address
+                  hintText: mapStore!.address.isNotEmpty
+                      ? mapStore!.address
                       : "quests.ui.search".tr(),
                   prefixIcon: Icon(
                     Icons.search,

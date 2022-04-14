@@ -152,7 +152,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         if (profile!.userData!.questsStatistic != null)
                           profile!.userData!.questsStatistic!.opened -= 1;
                         Navigator.pop(context);
-                        Navigator.pop(context);
                       },
                     );
                   } else {
@@ -197,7 +196,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                 questStore.deleteQuest(widget.questInfo);
                                 if (profile!.userData!.questsStatistic != null)
                                   profile!.userData!.questsStatistic!.opened -= 1;
-                                Navigator.pop(context);
                                 Navigator.pop(context);
                               },
                             );
@@ -374,7 +372,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                   );
                                   questStore.deleteQuest(widget.questInfo);
                                   questStore.addQuest(widget.questInfo, true);
-                                  Navigator.pop(context);
                                   await AlertDialogUtils.showSuccessDialog(context);
                                 },
                           child: Text(
@@ -463,7 +460,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       widget.questInfo.status = 6;
                       questStore.deleteQuest(widget.questInfo);
                       questStore.addQuest(widget.questInfo, true);
-                      Navigator.pop(context);
                       Navigator.pop(context);
                       await AlertDialogUtils.showSuccessDialog(context);
                     },

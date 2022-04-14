@@ -2,10 +2,10 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
+import 'package:app/ui/widgets/quest_header.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import "package:provider/provider.dart";
-import '../../../../constants.dart';
 import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -18,7 +18,7 @@ class MyQuestsItem extends StatelessWidget {
   final BaseQuestResponse questInfo;
   final bool isExpanded;
   final QuestItemPriorityType itemType;
-  final String standartImage =
+  final String defaultImage =
       'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 
   @override
@@ -42,7 +42,7 @@ class MyQuestsItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (!isExpanded) getQuestHeader(itemType, context),
+            if (!isExpanded) QuestHeader(itemType, questInfo.status, true),
             Row(
               children: [
                 ClipRRect(
@@ -174,78 +174,78 @@ class MyQuestsItem extends StatelessWidget {
     );
   }
 
-  Widget header(
-          {required Color color,
-          required String title,
-          Color textColor = Colors.white}) =>
-      Container(
-        width: double.maxFinite,
-        margin: const EdgeInsets.symmetric(
-          vertical: 16,
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 7.5,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: color,
-        ),
-        child: Text(
-          title.tr(),
-          style: TextStyle(color: textColor),
-        ),
-      );
-
-  Widget getQuestHeader(QuestItemPriorityType itemType, BuildContext context) {
-    switch (itemType) {
-      case QuestItemPriorityType.Active:
-        if (questInfo.status == 3) {
-          return header(
-            color: Colors.red,
-            title: "quests.disputeQuest",
-          );
-        } else if (questInfo.status == 5) {
-          return header(
-            color: Colors.green,
-            title: "quests.employerConfirmationPending",
-          );
-        } else {
-          return header(
-            color: AppColor.green,
-            title: "quests.active",
-          );
-        }
-      case QuestItemPriorityType.Invited:
-        return header(
-          color: Color(0xFFE8D20D),
-          title: "quests.youInvited",
-        );
-      case QuestItemPriorityType.Requested:
-        return header(
-            color: Color(0xFFF7F8FA),
-            title: "quests.requested",
-            textColor: Color(0xFFAAB0B9));
-      case QuestItemPriorityType.Performed:
-        if (questInfo.status == 5) {
-          return header(
-            color: Color(0xFF0083C7),
-            title: "quests.waitConfirm",
-          );
-        } else {
-          return header(
-            color: Color(0xFF0083C7),
-            title: questInfo.status == 5
-                ? "quests.employerConfirmationPending"
-                : "quests.performed",
-          );
-        }
-      case QuestItemPriorityType.Starred:
-        return SizedBox(
-          height: 16,
-        );
-    }
-  }
+  // Widget header(
+  //         {required Color color,
+  //         required String title,
+  //         Color textColor = Colors.white}) =>
+  //     Container(
+  //       width: double.maxFinite,
+  //       margin: const EdgeInsets.symmetric(
+  //         vertical: 16,
+  //       ),
+  //       padding: const EdgeInsets.symmetric(
+  //         horizontal: 14,
+  //         vertical: 7.5,
+  //       ),
+  //       decoration: BoxDecoration(
+  //         borderRadius: BorderRadius.circular(4),
+  //         color: color,
+  //       ),
+  //       child: Text(
+  //         title.tr(),
+  //         style: TextStyle(color: textColor),
+  //       ),
+  //     );
+  //
+  // Widget getQuestHeader(QuestItemPriorityType itemType, BuildContext context) {
+  //   switch (itemType) {
+  //     case QuestItemPriorityType.Active:
+  //       if (questInfo.status == 3) {
+  //         return header(
+  //           color: Colors.red,
+  //           title: "quests.disputeQuest",
+  //         );
+  //       } else if (questInfo.status == 5) {
+  //         return header(
+  //           color: Colors.green,
+  //           title: "quests.employerConfirmationPending",
+  //         );
+  //       } else {
+  //         return header(
+  //           color: AppColor.green,
+  //           title: "quests.active",
+  //         );
+  //       }
+  //     case QuestItemPriorityType.Invited:
+  //       return header(
+  //         color: Color(0xFFE8D20D),
+  //         title: "quests.youInvited",
+  //       );
+  //     case QuestItemPriorityType.Requested:
+  //       return header(
+  //           color: Color(0xFFF7F8FA),
+  //           title: "quests.requested",
+  //           textColor: Color(0xFFAAB0B9));
+  //     case QuestItemPriorityType.Performed:
+  //       if (questInfo.status == 5) {
+  //         return header(
+  //           color: Color(0xFF0083C7),
+  //           title: "quests.waitConfirm",
+  //         );
+  //       } else {
+  //         return header(
+  //           color: Color(0xFF0083C7),
+  //           title: questInfo.status == 5
+  //               ? "quests.employerConfirmationPending"
+  //               : "quests.performed",
+  //         );
+  //       }
+  //     case QuestItemPriorityType.Starred:
+  //       return SizedBox(
+  //         height: 16,
+  //       );
+  //   }
+  // }
 }
 
 class ShimmerMyQuestItem extends StatelessWidget {
