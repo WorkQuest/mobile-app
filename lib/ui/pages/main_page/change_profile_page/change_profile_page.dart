@@ -38,14 +38,24 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   PhoneNumber phone = PhoneNumber();
   PhoneNumber secondPhone = PhoneNumber();
 
+  Phone? oldPhone;
+
   @override
   void initState() {
     print('initState');
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
-
-    print('tempPhone: ${pageStore.userData.tempPhone!.toJson()}');
+    oldPhone = Phone(
+      codeRegion: profile!.userData?.phone?.codeRegion ?? (profile!.userData?.tempPhone?.codeRegion ?? ''),
+      fullPhone: profile!.userData?.phone?.fullPhone ?? (profile!.userData?.tempPhone?.fullPhone ?? ''),
+      phone: profile!.userData?.phone?.phone ?? (profile!.userData?.tempPhone?.phone ?? ''),
+    );
+    if (oldPhone != null) {
+      print('oldPhone initState: ${oldPhone!.toJson()}');
+    } else {
+      print('oldPhone initState: null');
+    }
     if (profile!.userData!.additionalInfo?.address != null)
       pageStore.address = profile!.userData!.additionalInfo!.address!;
     pageStore
@@ -292,18 +302,22 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   _changePhone() async {
-    Phone? userPhone = profile!.userData!.phone ?? profile!.userData!.tempPhone;
-    if (userPhone != null &&
-        userPhone.fullPhone.isNotEmpty &&
-        pageStore.numberChanged(userPhone.fullPhone)) {
+    if (oldPhone != null) {
+      print('oldPhone _changePhone: ${oldPhone!.toJson()}');
+    } else {
+      print('oldPhone _changePhone: null');
+    }
+    if (pageStore.numberChanged(oldPhone!.fullPhone)) {
+      print('print 1');
       await profile!.submitPhoneNumber(pageStore.userData.tempPhone!.fullPhone);
       profile!.userData?.phone = null;
-      userPhone = profile!.userData!.tempPhone;
+      oldPhone = profile!.userData!.tempPhone;
     }
     if (profile!.isSuccess) {
-      if (userPhone != null &&
-          userPhone.fullPhone.isNotEmpty &&
-          !pageStore.numberChanged(userPhone.fullPhone)) {
+      print('print 2');
+      if (oldPhone != null &&
+          oldPhone!.fullPhone.isNotEmpty &&
+          !pageStore.numberChanged(oldPhone!.fullPhone)) {
         await AlertDialogUtils.showSuccessDialog(context);
       } else {
         await AlertDialogUtils.showSuccessDialog(context,
@@ -590,7 +604,6 @@ class _PhoneNumberWidget extends StatefulWidget {
 class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
   @override
   Widget build(BuildContext context) {
-    print('change phone');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -623,13 +636,13 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6.0),
                 borderSide: BorderSide(
-                  color: Colors.blue,
+                  color: Colors.green,
                 ),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6.0),
                 borderSide: BorderSide(
-                  color: Colors.blue,
+                  color: Colors.red,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
