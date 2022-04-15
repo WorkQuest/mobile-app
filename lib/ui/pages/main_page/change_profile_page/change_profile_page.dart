@@ -47,9 +47,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
     oldPhone = Phone(
-      codeRegion: profile!.userData?.phone?.codeRegion ?? (profile!.userData?.tempPhone?.codeRegion ?? ''),
-      fullPhone: profile!.userData?.phone?.fullPhone ?? (profile!.userData?.tempPhone?.fullPhone ?? ''),
-      phone: profile!.userData?.phone?.phone ?? (profile!.userData?.tempPhone?.phone ?? ''),
+      codeRegion: profile!.userData?.phone?.codeRegion ??
+          (profile!.userData?.tempPhone?.codeRegion ?? ''),
+      fullPhone: profile!.userData?.phone?.fullPhone ??
+          (profile!.userData?.tempPhone?.fullPhone ?? ''),
+      phone:
+          profile!.userData?.phone?.phone ?? (profile!.userData?.tempPhone?.phone ?? ''),
     );
     if (profile!.userData!.additionalInfo?.address != null)
       pageStore.address = profile!.userData!.additionalInfo!.address!;
@@ -96,7 +99,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         ],
       ),
       body: ObserverListener<ProfileMeStore>(
-        onSuccess: () => Navigator.pop(context),
+        onSuccess: () {
+          profile!.getProfileMe();
+          Navigator.pop(context, true);
+        },
         child: Observer(
           builder: (_) => profile!.isLoading
               ? Center(
@@ -281,8 +287,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         pageStore.userData.additionalInfo?.secondMobileNumber = null;
       pageStore.userData.additionalInfo?.educations = _controllerKnowledge!.getListMap();
       pageStore.userData.additionalInfo?.workExperiences = _controllerWork!.getListMap();
-      pageStore.userData.additionalInfo!.address = pageStore.address;
-      pageStore.userData.locationPlaceName = pageStore.address;
+      if (pageStore.address.isNotEmpty ) {
+        pageStore.userData.additionalInfo!.address = pageStore.address;
+        pageStore.userData.locationPlaceName = pageStore.address;
+      }
       pageStore.userData.priority = profile!.userData!.priority;
       pageStore.userData.workplace = profile!.valueToWorkplace();
 
@@ -605,7 +613,7 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
           child: InternationalPhoneNumberInput(
             initialValue: widget.initialValue,
             errorMessage: "modals.invalidPhone".tr(),
-            autoValidateMode: AutovalidateMode.always,
+            autoValidateMode: AutovalidateMode.onUserInteraction,
             onInputChanged: widget.onChanged,
             selectorConfig: SelectorConfig(
               setSelectorButtonAsPrefixIcon: true,

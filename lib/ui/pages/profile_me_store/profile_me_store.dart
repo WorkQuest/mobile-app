@@ -111,6 +111,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     return result;
   }
 
+  @action
   Future getProfileMe() async {
     try {
       // this.onLoading();
@@ -194,6 +195,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
+
   changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {
       this.onLoading();
@@ -202,6 +204,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
             medias: ObservableList.of([media])))[0];
       final isTotpActive = this.userData?.isTotpActive;
       final tempPhone = this.userData?.tempPhone;
+      userData.priority = priorityValue;
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
       this.userData?.tempPhone = tempPhone;
