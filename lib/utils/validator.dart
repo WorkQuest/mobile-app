@@ -23,6 +23,16 @@ class Validators {
     return regExp.hasMatch(email!.trim()) ? null : "Email invalid";
   }
 
+  static String? mnemonicValidator(String? value) {
+    if (value!.length <= 24) {
+      return "A small number of words";
+    }
+    if (value.split(' ').toList().length < 12) {
+      return "Incorrect mnemonic format";
+    }
+    return null;
+  }
+
   static String? signUpPasswordValidator(String? text) {
     return text!.length >= 8
         ? null
@@ -42,11 +52,11 @@ class Validators {
   }
 
   static String? phoneNumberValidator(String? text) {
-    String pattern = r'(^(?:[+0])?[0-9]{11,13}$)';
+    String pattern = r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$';
     RegExp regExp = new RegExp(pattern);
     if ((text?.length ?? 0) == 0) {
       return 'Please enter mobile number';
-    } else if (!regExp.hasMatch(text ?? "")) {
+    } else if (!regExp.hasMatch(text!)) {
       return 'Please enter valid mobile number';
     }
     return null;

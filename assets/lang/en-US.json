@@ -25,6 +25,7 @@
     "agree": "Agree",
     "goToChat": "Access instant messaging",
     "dispute": "Open dispute",
+    "myDisputes": "My Disputes",
     "responded": "Reply sent",
     "sendARequest": "Send a request",
     "view": "View"
@@ -103,13 +104,13 @@
     "signIn": "Login",
     "account": "Don't have an account ?",
     "remember": "Remember me",
-    "forgot": "Forgot password ?",
+    "forgot": "Forgot password?",
     "loginWith": "Log in with your social network account",
     "create": "Create an account"
   },
   "profiler": {
     "noInformation": "No Information",
-    "raiseViews": "Increase views",
+    "raiseViews": "Raise views",
     "educations": "Education",
     "prevWorkExp": "Previous professional experience",
     "active": "active proposals",
@@ -154,6 +155,8 @@
     "buyWUSD": "Buy WUSD",
     "submit": "Submit",
     "showAllReviews": "Show all reviews",
+    "showAllPortfolio": "Show all portfolios",
+    "showAllQuests": "Show all quests",
     "later": "Later",
     "iAgree": "I agree",
     "next": "Next",
@@ -171,10 +174,14 @@
     "all": "All priorities",
     "low": "Fixed delivery",
     "normal": "Short term",
-    "urgent": "Urgent"
+    "urgent": "Urgent",
+    "lowPriority": "Low priority",
+    "normalPriority": "Normal priority"
   },
   "signIn": {
     "title": "Sign in",
+    "mnemonic": "Mnemonic",
+    "enterMnemonicPhrase": "Enter mnemonic phrase",
     "username": "Username",
     "password": "Password",
     "account": "don't have an account?",
@@ -190,7 +197,8 @@
     "makingMoneyIsFast": "WorkQuest:\n The decentralized labour market\n of the world",
     "dontHaveAnAccount": "Don't have an account?",
     "signUp": "Sign Up",
-    "forgotYourPass": "Forgot your password?"
+    "forgotYourPass": "Forgot your password?",
+    "totp": "2FA"
   },
   "signWorkQuest": {
     "title": "WorkQuest social Network",
@@ -235,6 +243,7 @@
     "workerWant": "I want to search a tasks and working on freelance",
     "chooseThis": "Select this role",
     "yourRole": "Your role is",
+    "change": "You want to change role on ",
     "right": "right?"
   },
   "privacy": {
@@ -248,7 +257,9 @@
   "pinCode": {
     "comeUp": "Come up with a PIN-code",
     "repeat": "Repeat PIN-code",
-    "writePinCode": "Please, write your PIN-code"
+    "writePinCode": "Please, write your PIN-code",
+    "incorrectly": "PIN-code entered incorrectly: ",
+    "left": " attempts left"
   },
   "layout": {
     "create": "Create an quest",
@@ -263,6 +274,15 @@
     "noSkills": "No skills"
   },
   "quests": {
+    "statuses": {
+      "created": "Created",
+      "active": "Active",
+      "closed": "Closed",
+      "dispute": "Dispute",
+      "waitWorker": "Wait worker",
+      "waitConfirm": "Wait confirm",
+      "done": "Done"
+    },
     "inviteToQuest": "Hello! I invite you to the quest",
     "addToQuest": "Add to quest",
     "notification": {
@@ -276,7 +296,11 @@
       "workerAcceptedInvitationToQuest": "Worker accepted invitation to quest",
       "workerRejectedInvitationToQuest": "Worker rejected invitation to quest",
       "employerRejectedWorkersResponse": "Employer rejected workers response",
-      "userLeftReviewAboutQuest": "User left review about quest"
+      "userLeftReviewAboutQuest": "User left review about quest",
+      "waitWorker": "Wait worker",
+      "waitConfirm": "Wait confirm",
+      "questEdited": "Quest edited",
+      "workerRespondedToQuest": "Worker responded to quest"
     },
     "youResponded": "You responded",
     "title": "Quest Title",
@@ -288,6 +312,7 @@
     "yourQuest": "Your quest",
     "distantWork": {
       "title": "Distant work",
+      "allWorkplaces": "All workplaces",
       "distantWork": "Distant work",
       "workInOffice": "Work in the office",
       "bothVariant": "Both options"
@@ -415,13 +440,14 @@
     "fullTime": "Full time",
     "uploadAImagesOrVideos": "Upload images or videos",
     "averageRating": "Average rating",
+    "rating": "Rating",
     "showAllActiveQuests": "Show all active quests",
     "performanceTimer": "Activate until:",
     "questAmount": "quests",
     "otherQuestsSpec": "Other quests by specialization",
     "questMaterials": "Additional documentation of the quest",
     "searchResults": "Search results",
-    "type": "Type of work",
+    "type": "Type of job",
     "time": "Creation time",
     "priority": {
       "all": "All priorities",
@@ -524,8 +550,8 @@
       "6": {
         "title": "Data Science & Analytics",
         "sub": {
-          "600": "Data Extraction / ETL",
-          "601": "A / B Testing",
+          "601": "Data Extraction / ETL",
+          "600": "A / B Testing",
           "602": "Data Mining & Management",
           "603": "Data Visualization",
           "604": "Machine Learning",
@@ -873,6 +899,8 @@
     }
   },
   "modals": {
+    "enter2FaCode": "Enter 2FA",
+    "exit": "Exit",
     "modals": {
       "title": "Create group chat",
       "edit": "Edit group chat",
@@ -913,6 +941,8 @@
     "haventSMS": "Did not receive the SMS message?",
     "SMSVerConnected": "SMS verification connected",
     "phoneNumber": "Phone",
+    "secondPhoneNumber": "Second phone",
+    "invalidPhone": "Invalid phone number",
     "enterPhone": "Enter phone number to confirm SMS verification",
     "enterSMSCode": "We have sent a verification code to your phone number. Type the code",
     "codeFromSMS": "SMS code",
@@ -969,6 +999,8 @@
     "addCase": "Add case",
     "openADispute": "Begin Dispute",
     "disputeTheme": "Dispute Theme",
+    "noDisputes": "You haven’t disputes",
+    "numberDispute": "Dispute №:",
     "reason": "Reason",
     "lorem": "",
     "withdraw": "Withdrawal",
@@ -1158,6 +1190,11 @@
     "december": "December"
   },
   "wallet": {
+    "amount": "Amount",
+    "max": "Max",
+    "enterAmount": "Enter amount",
+    "chooseCoin": "Choose coin",
+    "enterCoin": "Enter coin",
     "WUSD": "WUSD Wallet",
     "cryptoWallet": "Wallet address",
     "bankCard": "Bank card",
@@ -1232,6 +1269,8 @@
     }
   },
   "settings": {
+    "enterSMS": "Please enter the code from SMS to SMS Verification",
+    "success": "Success",
     "profileChanged": "Profile changed successfully",
     "changeProfile": "Change profile",
     "placeOfStudying": "Place of study",
@@ -1315,21 +1354,28 @@
     "liquidityMining": "Liquidity mining"
   },
   "raising-views": {
-    "raisingViews": "Increase views",
-    "choosePeriod": "Select period",
+    "raisingViews": "Raising views",
+    "choosePeriod": "Choose period",
     "forOneDay": "For 1 day",
     "forOneWeek": "For 1 week",
     "forOneMonth": "For 1 month",
-    "chooseLevel": "Select level"
+    "chooseLevel": "Choose level"
   },
   "dispute": {
+    "statuses": {
+      "pending": "Pending",
+      "inProgress": "In progress",
+      "closed": "Completed"
+    },
+    "myDispute" : "My Dispute",
+    "theme": "Dispute Theme",
     "disputes": "Disputes",
     "dispute": "Number of disputes:",
     "quest": "Quest:",
     "employer": "Employer:",
     "questSalary": "Quest salary:",
     "status": "Status:",
-    "decision": "Decision",
+    "decision": "Decision:",
     "Dispute": "Dispute",
     "pending": "Pending",
     "chatHistory": "Chat history",
@@ -1755,7 +1801,15 @@
           "btnText": "Respond to the quest!"
         }
       }
-    }
+    },
+    "fieldEmpty": "Field is empty",
+    "incorrectFormat": "Incorrect format",
+    "passwordsNotMatch": "Passwords don't match",
+    "smallNumberWords": "A small number of words",
+    "incorrectMnemonicFormat": "Incorrect mnemonic format",
+    "notInternet": "No internet access",
+    "provideYourAddress": "You have provided your address.",
+    "invalidAmount": "Invalid value amount."
   },
   "sharing": {
     "title": "Share",

@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
-final _spacer = Spacer();
-
 class AddMembers extends StatelessWidget {
   static const String routeName = "/addMembers";
 
@@ -74,8 +72,7 @@ class AddMembers extends StatelessWidget {
               Expanded(
                 child: Observer(
                   builder: (_) => ListView.separated(
-                    primary: false,
-                    shrinkWrap: false,
+                    shrinkWrap: true,
                     separatorBuilder: (context, index) => const Divider(
                       color: Colors.black12,
                       endIndent: 50.0,
@@ -95,7 +92,6 @@ class AddMembers extends StatelessWidget {
                   ),
                 ),
               ),
-              _spacer,
               buttonRow(
                 store,
                 forward: "profiler.create".tr(),

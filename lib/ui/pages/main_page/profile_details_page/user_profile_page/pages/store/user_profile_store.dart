@@ -20,10 +20,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
   ProfileMeResponse? questHolder;
 
   @observable
-  ObservableList<BaseQuestResponse> userQuest = ObservableList.of([]);
-
-  @observable
-  ObservableList<BaseQuestResponse> questForWorker = ObservableList.of([]);
+  ObservableList<BaseQuestResponse> quests = ObservableList.of([]);
 
   _UserProfileStore(
     this._apiProvider,
@@ -33,66 +30,77 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
 
   String workerId = "";
 
-  @observable
-  String questName = "";
+  // @observable
+  // String questName = "";
 
+  @observable
   String questId = "";
 
   @action
   void setQuest(String? index, String id) {
-    questName = index ?? "";
+    // questName = index ?? "";
     questId = id;
   }
 
+  @action
   Future<void> startQuest(String userId) async {
     try {
+      this.onLoading();
       await _apiProvider.inviteOnQuest(
           questId: questId,
           userId: userId,
           message: "quests.inviteToQuest".tr());
+      this.onSuccess(true);
     } catch (e) {
       print("getQuests error: $e");
       this.onError(e.toString());
     }
   }
 
-  void removeOddQuests() {
-    // for (int i = 0; i < questForWorker.length; i++) {
-    //   if (questForWorker[i].responded?.workerId == workerId ||
-    //       questForWorker[i].invited?.workerId == workerId) {
-    //     questForWorker.removeAt(i);
-    //     i--;
-    //   }
-    // }
-    // questForWorker.removeWhere((element) => element.title == questName);
-  }
+  // void removeOddQuests() {
+  //   for (int i = 0; i < quests.length; i++) {
+  //     if (quests[i].responded?.workerId == workerId ||
+  //         quests[i].invited?.workerId == workerId) {
+  //       quests.removeAt(i);
+  //       i--;
+  //     }
+  //   }
+  //   quests.removeWhere((element) => element.title == questName);
+  // }
 
   Future<void> getQuests(
     String userId,
     UserRole role,
+    bool newList,
   ) async {
     try {
-      this.onLoading();
-      //TODO:offset scroll
-      if (role == UserRole.Employer) {
-        final quests = await _apiProvider.getEmployerQuests(
-          userId: userId,
-          offset: offset,
-          statuses: [6],
-        );
-        userQuest.addAll(quests);
+      if (newList) quests.clear();
+      if (offset == quests.length) {
+        this.onLoading();
+        //TODO:offset scroll
+        if (role == UserRole.Employer) {
+          quests.addAll(await _apiProvider.getEmployerQuests(
+            userId: userId,
+            offset: offset,
+            statuses: [6],
+          ));
+        }
+        if (role == UserRole.Worker) {
+          quests.addAll(await _apiProvider.getAvailableQuests(
+            userId: userId,
+            offset: offset,
+          ));
+          // removeOddQuests();
+        }
+
+        quests.toList().sort((key1, key2) =>
+            key1.createdAt.millisecondsSinceEpoch <
+                    key2.createdAt.millisecondsSinceEpoch
+                ? 1
+                : 0);
+        offset += 10;
+        this.onSuccess(true);
       }
-      if (role == UserRole.Worker) {
-        final quests = await _apiProvider.getEmployerQuests(
-          userId: userId,
-          offset: offset,
-          statuses: [0, 4],
-        );
-        questForWorker.addAll(quests);
-        removeOddQuests();
-      }
-      offset += 10;
-      this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());

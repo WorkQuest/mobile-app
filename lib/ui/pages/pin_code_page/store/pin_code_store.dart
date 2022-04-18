@@ -1,10 +1,13 @@
 import 'package:app/base_store/i_store.dart';
+import 'package:app/di/injector.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/bearer_token.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mobx/mobx.dart';
+import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
 part 'pin_code_store.g.dart';
 
@@ -43,6 +46,9 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   }
 
   @observable
+  bool totpValid = false;
+
+  @observable
   String pin = "";
 
   @observable
@@ -53,6 +59,12 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
 
   @observable
   String newPinCode = "";
+
+  @observable
+  bool startSwitch = false;
+
+  @observable
+  bool startAnimation = false;
 
   @observable
   bool canCheckBiometrics = false;
@@ -110,29 +122,52 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       this.onLoading();
       if (isBiometric) {
         pin = "";
-      } else if (statePin == StatePinCode.Create) {
-        newPinCode = pin;
-        pin = "";
-        changeState(StatePinCode.Repeat);
-        return;
-      } else if (statePin == StatePinCode.Repeat) {
-        if (pin != newPinCode) {
-          pin = "";
-          changeState(StatePinCode.Create, errorAnimation: true);
-          return;
-        }
-        await Storage.writePinCode(pin);
+        startAnimation = true;
+        await Future.delayed(const Duration(seconds: 1));
       } else {
-        if (await Storage.readPinCode() != pin) {
-          pin = "";
-          attempts += 1;
-          if (attempts >= 3) {
-            await Storage.deleteAllFromSecureStorage();
-            this.onSuccess(StatePinCode.ToLogin);
+        switch (statePin) {
+          case StatePinCode.Create:
+            newPinCode = pin;
+            pin = "";
+            changeState(StatePinCode.Repeat);
+            startSwitch = true;
             return;
-          }
-          changeState(StatePinCode.Check, errorAnimation: true);
-          return;
+          case StatePinCode.Repeat:
+            if (pin != newPinCode) {
+              pin = "";
+              changeState(StatePinCode.Create, errorAnimation: true);
+              return;
+            }
+            await Storage.writePinCode(pin);
+            startAnimation = true;
+            await Future.delayed(const Duration(seconds: 1));
+            break;
+          case StatePinCode.Check:
+            if (await Storage.readPinCode() != pin) {
+              pin = "";
+              attempts += 1;
+              if (attempts >= 3) {
+                await Storage.deleteAllFromSecureStorage();
+                final cookieManager = WebviewCookieManager();
+                cookieManager.clearCookies();
+                this.onSuccess(StatePinCode.ToLogin);
+                return;
+              }
+              changeState(StatePinCode.Check, errorAnimation: true);
+              return;
+            }
+            startAnimation = true;
+            await Future.delayed(const Duration(seconds: 1));
+            break;
+          case StatePinCode.ToLogin:
+            // TODO: Handle this case.
+            break;
+          case StatePinCode.Success:
+            // TODO: Handle this case.
+            break;
+          case StatePinCode.NaN:
+            // TODO: Handle this case.
+            break;
         }
       }
       String? token = await Storage.readRefreshToken();
@@ -144,15 +179,23 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       BearerToken bearerToken = await _apiProvider.refreshToken(token);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
-
+      await getIt.get<ProfileMeStore>().getProfileMe();
+      totpValid = true;
       this.onSuccess(StatePinCode.Success);
+      await Future.delayed(const Duration(milliseconds: 500));
+      startAnimation = false;
+      startSwitch = false;
     } catch (e) {
       if (e.toString() == "Token invalid" ||
+          e.toString() == "Token expired" ||
           e.toString() == "Session not found") {
+
         await Storage.deleteAllFromSecureStorage();
         this.onSuccess(StatePinCode.ToLogin);
         return;
       }
+      totpValid = false;
+      startAnimation = false;
       this.onError(e.toString());
     }
   }

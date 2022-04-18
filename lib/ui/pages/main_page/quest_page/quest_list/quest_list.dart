@@ -1,7 +1,10 @@
 import 'package:app/enums.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
@@ -30,8 +33,9 @@ class _QuestListState extends State<QuestList> {
 
   ProfileMeStore? profileMeStore;
 
-  final QuestItemPriorityType questItemPriorityType =
-      QuestItemPriorityType.Starred;
+  FilterQuestsStore? filterQuestsStore;
+
+  final QuestItemPriorityType questItemPriorityType = QuestItemPriorityType.Starred;
   final scrollKey = new GlobalKey();
 
   @override
@@ -39,6 +43,8 @@ class _QuestListState extends State<QuestList> {
     super.initState();
     controller = ScrollController()..addListener(_scrollListener);
     questsStore = context.read<QuestsStore>();
+    filterQuestsStore = context.read<FilterQuestsStore>();
+    filterQuestsStore!.getFilters([], {});
     profileMeStore = context.read<ProfileMeStore>();
     profileMeStore!.getProfileMe().then((value) {
       context.read<ChatStore>().initialSetup(
@@ -48,6 +54,7 @@ class _QuestListState extends State<QuestList> {
       profileMeStore!.userData!.role == UserRole.Worker
           ? questsStore!.getQuests(true)
           : questsStore!.getWorkers(true);
+      questsStore!.role = profileMeStore!.userData!.role;
     });
   }
 
@@ -85,12 +92,14 @@ class _QuestListState extends State<QuestList> {
   }
 
   Widget getBody() {
+    final role = profileMeStore?.userData?.role;
     return RefreshIndicator(
       triggerMode: RefreshIndicatorTriggerMode.anywhere,
       onRefresh: () async {
-        return profileMeStore!.userData!.role == UserRole.Worker
-            ? questsStore!.getQuests(true)
-            : questsStore!.getWorkers(true);
+        if (role == UserRole.Worker && !questsStore!.isLoading)
+          return questsStore!.getQuests(true);
+        else
+          return questsStore!.getWorkers(true);
       },
       displacement: 50,
       edgeOffset: 300,
@@ -103,7 +112,7 @@ class _QuestListState extends State<QuestList> {
               children: [
                 Expanded(
                   child: Text(
-                    profileMeStore!.userData?.role == UserRole.Worker
+                    role == UserRole.Worker
                         ? "quests.quests".tr()
                         : "workers.workers".tr(),
                   ),
@@ -124,54 +133,20 @@ class _QuestListState extends State<QuestList> {
           ),
           SliverAppBar(
             pinned: true,
-            title: GestureDetector(
-              onTap: () {
-                questsStore!
-                    .getPrediction(context, profileMeStore!.userData!.role);
-              },
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Color(0xFFF7F8FA),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6.0),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Icon(
-                      Icons.search,
-                      size: 25.0,
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Flexible(
-                      child: questsStore!.locationPlaceName.isEmpty
-                          ? Text(
-                              "quests.ui.search".tr(),
-                              style: TextStyle(
-                                color: Color(
-                                  0xFFD8DFE3,
-                                ),
-                                fontSize: 16,
-                              ),
-                              overflow: TextOverflow.fade,
-                            )
-                          : Text(
-                              questsStore!.locationPlaceName,
-                              overflow: TextOverflow.fade,
-                              style: TextStyle(
-                                color: Color(0xFF1D2127),
-                                fontSize: 16,
-                                height: 1,
-                              ),
-                            ),
-                    ),
-                  ],
+            title: TextFormField(
+              onChanged: (value) => value.isNotEmpty
+                  ? questsStore!.setSearchWord(value)
+                  : profileMeStore!.userData!.role == UserRole.Worker
+                      ? questsStore!.getQuests(true)
+                      : questsStore!.getWorkers(true),
+              decoration: InputDecoration(
+                fillColor: Color(0xFFF7F8FA),
+                hintText: profileMeStore!.userData!.role == UserRole.Worker
+                    ? "Employer / Title / Description"
+                    : "Employee / City",
+                prefixIcon: Icon(
+                  Icons.search,
+                  size: 25.0,
                 ),
               ),
             ),
@@ -185,10 +160,9 @@ class _QuestListState extends State<QuestList> {
                   padding: const EdgeInsets.all(20.0),
                   child: OutlinedButton(
                     onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(FilterQuestsPage.routeName);
-                      // questsStore!.offset = 0;
-                      // questsStore!.getQuests(true);
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                          FilterQuestsPage.routeName,
+                          arguments: filterQuestsStore!.skillFilters);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(
@@ -212,66 +186,86 @@ class _QuestListState extends State<QuestList> {
                   ),
                 ),
                 _getDivider(),
-                Observer(
-                  builder: (_) => questsStore!.emptySearch
-                      ? Center(
-                          child: Column(
-                            children: [
-                              SvgPicture.asset(
-                                "assets/empty_quest_icon.svg",
-                              ),
-                              Text(
-                                "quest.noQuest".tr(),
-                              ),
-                            ],
+                Observer(builder: (_) {
+                  if (questsStore!.isLoading) {
+                    return ListView.separated(
+                      key: scrollKey,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) {
+                        return _getDivider();
+                      },
+                      padding: EdgeInsets.zero,
+                      itemCount: 8,
+                      itemBuilder: (_, index) {
+                        if (role == UserRole.Worker) {
+                          return ShimmerMyQuestItem();
+                        }
+                        return ShimmerWorkersItem();
+                      },
+                    );
+                  }
+                  if (questsStore!.emptySearch)
+                    return Container(
+                      height: MediaQuery.of(context).size.height / 4,
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            height: 15,
                           ),
-                        )
-                      : profileMeStore!.userData?.role == UserRole.Worker
-                          ? ListView.separated(
-                              key: scrollKey,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              separatorBuilder: (context, index) {
-                                return _getDivider();
-                              },
-                              padding: EdgeInsets.zero,
-                              itemCount: questsStore!.searchWord.length > 2
-                                  ? questsStore!.searchResultList?.length ?? 0
-                                  : questsStore!.questsList.length,
-                              itemBuilder: (_, index) {
-                                return Observer(
-                                  builder: (_) => MyQuestsItem(
-                                    questsStore!.searchWord.length > 2
-                                        ? questsStore!.searchResultList![index]
-                                        : questsStore!.questsList[index],
-                                    itemType: this.questItemPriorityType,
-                                  ),
-                                );
-                              },
-                            )
-                          : ListView.separated(
-                              key: scrollKey,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              separatorBuilder: (context, index) {
-                                return _getDivider();
-                              },
-                              padding: EdgeInsets.zero,
-                              itemCount: questsStore!.searchWord.length > 2
-                                  ? questsStore!.searchResultList?.length ?? 0
-                                  : questsStore!.workersList.length,
-                              itemBuilder: (_, index) {
-                                return Observer(
-                                  builder: (_) => WorkersItem(
-                                    questsStore!.searchWord.length > 2
-                                        ? questsStore!.searchWorkersList![index]
-                                        : questsStore!.workersList[index],
-                                    questsStore!,
-                                  ),
-                                );
-                              },
+                          SvgPicture.asset(
+                            "assets/empty_quest_icon.svg",
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            profileMeStore!.userData!.role == UserRole.Worker
+                                ? "quests.noQuest".tr()
+                                : "Worker not found",
+                            style: TextStyle(
+                              color: Color(0xFFD8DFE3),
                             ),
-                ),
+                          ),
+                        ],
+                      ),
+                    );
+                  else
+                    return ListView.separated(
+                      key: scrollKey,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) {
+                        return _getDivider();
+                      },
+                      padding: EdgeInsets.zero,
+                      itemCount: () {
+                        if (role == UserRole.Worker)
+                          return questsStore!.questsList.length;
+                        return questsStore!.workersList.length;
+                      }(),
+                      itemBuilder: (_, index) {
+                        return Observer(builder: (_) {
+                          if (role == UserRole.Worker) {
+                            final item = questsStore!.questsList[index];
+                            _markItem(item);
+                            return MyQuestsItem(
+                              item,
+                              itemType: this.questItemPriorityType,
+                            );
+                          }
+                          final item = questsStore!.workersList[index];
+                          _markItem(item);
+                          return WorkersItem(
+                            item,
+                            questsStore!,
+                          );
+                        });
+                      },
+                    );
+                }),
               ],
             ),
           ),
@@ -291,11 +285,21 @@ class _QuestListState extends State<QuestList> {
 
   Widget _getDivider() {
     return SizedBox(
-      height: 10,
+      height: 6,
       child: Container(
         color: Color(0xFFF7F8FA),
       ),
     );
+  }
+
+  Future _markItem(dynamic object) async {
+    await Future.delayed(const Duration(seconds: 1));
+    if (object is BaseQuestResponse) {
+      object.showAnimation = false;
+    }
+    if (object is ProfileMeResponse) {
+      object.showAnimation = false;
+    }
   }
 
   void _scrollListener() {
@@ -303,10 +307,68 @@ class _QuestListState extends State<QuestList> {
       if (questsStore != null) {
         if (questsStore!.isLoading) return;
         if (profileMeStore!.userData!.role == UserRole.Worker)
-          questsStore!.getQuests(false);
+          questsStore!.searchWord.length > 2
+              ? questsStore!.getSearchedQuests()
+              : questsStore!.getQuests(false);
         else
-          questsStore!.getWorkers(false);
+          questsStore!.searchWord.length > 2
+              ? questsStore!.getSearchedWorkers()
+              : questsStore!.getWorkers(false);
       }
     }
+  }
+}
+
+class _AnimationWorkersQuestsItems extends StatefulWidget {
+  final Widget child;
+  final int index;
+  final bool enabled;
+
+  const _AnimationWorkersQuestsItems({
+    Key? key,
+    required this.child,
+    this.enabled = false,
+    this.index = 0,
+  }) : super(key: key);
+
+  @override
+  _AnimationWorkersQuestsItemsState createState() => _AnimationWorkersQuestsItemsState();
+}
+
+class _AnimationWorkersQuestsItemsState extends State<_AnimationWorkersQuestsItems>
+    with TickerProviderStateMixin {
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 550));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.enabled) {
+      _animationController.forward();
+    }
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (_, child) {
+        return Transform.translate(
+          offset: Offset(25 - (25 * _animationController.value), 0),
+          child: Opacity(
+            opacity: 0.1 + 0.9 * _animationController.value,
+            child: child,
+          ),
+        );
+      },
+      child: widget.child,
+    );
   }
 }

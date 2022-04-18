@@ -1,15 +1,19 @@
-import "package:app/observer_consumer.dart";
+import 'package:app/constants.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
+import 'package:app/ui/widgets/default_textfield.dart';
+import 'package:app/ui/widgets/login_button.dart';
+import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:flutter/services.dart';
 import 'package:app/utils/validator.dart';
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
-import 'package:flutter/services.dart';
 import "package:flutter_mobx/flutter_mobx.dart";
 import "package:flutter_svg/flutter_svg.dart";
 import "package:provider/provider.dart";
@@ -28,12 +32,18 @@ class SignInPage extends StatelessWidget {
   static const String routeName = "/";
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController usernameController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController totpController = new TextEditingController();
+  final TextEditingController mnemonicController = new TextEditingController();
+
   SignInPage();
 
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
     final signInStore = context.read<SignInStore>();
+    final profile = context.read<ProfileMeStore>();
 
     return Form(
       key: _formKey,
@@ -47,123 +57,142 @@ class SignInPage extends StatelessWidget {
               bottom: false,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.bottomLeft,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(
-                            Color(0xFF103D7C),
-                            BlendMode.color,
-                          ),
-                          image: AssetImage(
-                            "assets/login_page_header.png",
+                  AutofillGroup(
+                    child: Expanded(
+                      child: Container(
+                        alignment: Alignment.bottomLeft,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            colorFilter: ColorFilter.mode(
+                              Color(0xFF103D7C),
+                              BlendMode.color,
+                            ),
+                            image: AssetImage(
+                              "assets/login_page_header.png",
+                            ),
                           ),
                         ),
-                      ),
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "modals.welcomeToWorkQuest".tr(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 34,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10.0),
-                              child: Text(
-                                "signIn.pleaseSignIn".tr(),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            16.0,
+                            0.0,
+                            16.0,
+                            30.0,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "modals.welcomeToWorkQuest".tr(),
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 34,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: Text(
+                                  "signIn.pleaseSignIn".tr(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
-                    child: TextFormField(
+                    child: DefaultTextField(
+                      controller: usernameController,
                       keyboardType: TextInputType.emailAddress,
                       onChanged: signInStore.setUsername,
                       validator: Validators.emailValidator,
-                      decoration: InputDecoration(
-                        prefixIconConstraints: _prefixConstraints,
-                        prefixIcon: SvgPicture.asset(
-                          "assets/user.svg",
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        hintText: "signIn.username".tr(),
+                      autofillHints: [AutofillHints.email],
+                      prefixIconConstraints: _prefixConstraints,
+                      prefixIcon: SvgPicture.asset(
+                        "assets/user.svg",
+                        color: Theme.of(context).iconTheme.color,
                       ),
+                      hint: "signIn.username".tr(),
+                      inputFormatters: [],
+                      suffixIcon: null,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
-                    child: TextFormField(
+                    child: DefaultTextField(
+                      controller: passwordController,
+                      isPassword: true,
                       onChanged: signInStore.setPassword,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        prefixIconConstraints: _prefixConstraints,
-                        prefixIcon: SvgPicture.asset(
-                          "assets/lock.svg",
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        hintText: "signIn.password".tr(),
+                      inputFormatters: [],
+                      prefixIconConstraints: _prefixConstraints,
+                      autofillHints: [AutofillHints.password],
+                      prefixIcon: SvgPicture.asset(
+                        "assets/lock.svg",
+                        color: Theme.of(context).iconTheme.color,
                       ),
+                      hint: "signIn.password".tr(),
+                      suffixIcon: null,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
+                    child: DefaultTextField(
+                      controller: mnemonicController,
+                      isPassword: true,
+                      onChanged: signInStore.setMnemonic,
+                      validator: Validators.mnemonicValidator,
+                      suffixIcon: CupertinoButton(
+                        minSize: 22.0,
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          ClipboardData? data =
+                              await Clipboard.getData(Clipboard.kTextPlain);
+                          mnemonicController.text = data?.text ?? "";
+                          signInStore.setMnemonic(data?.text ?? "");
+                        },
+                        child: Icon(
+                          Icons.paste,
+                          size: 22.0,
+                          color: AppColor.primary,
+                        ),
+                      ),
+                      hint: "signIn.enterMnemonicPhrase".tr(),
+                      inputFormatters: [],
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ObserverListener<SignInStore>(
-                        onSuccess: () {
-                          Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            PinCodePage.routeName,
-                            (_) => false,
-                          );
-                        },
-                        onFailure: () {
-                          if (signInStore.errorMessage == "unconfirmed") {
-                            Navigator.pushNamed(context, ConfirmEmail.routeName,
-                                arguments: signInStore.getUsername());
-                            return true;
-                          }
-                          return false;
-                        },
-                        child: Observer(
-                          builder: (context) {
-                            return ElevatedButton(
-                              onPressed: signInStore.canSignIn
-                                  ? () async {
+                    child: Observer(
+                      builder: (context) {
+                        return LoginButton(
+                          onTap: signInStore.canSignIn
+                              ? signInStore.isLoading
+                                  ? () {}
+                                  : () async {
                                       if (_formKey.currentState!.validate()) {
-                                        await signInStore.signInWithUsername();
+                                        _onPressedSignIn(
+                                          context,
+                                          signInStore: signInStore,
+                                          profile: profile,
+                                        );
                                       }
                                     }
-                                  : null,
-                              child: signInStore.isLoading
-                                  ? CircularProgressIndicator.adaptive()
-                                  : Text(
-                                      "signIn.login".tr(),
-                                    ),
-                            );
-                          },
-                        ),
-                      ),
+                              : null,
+                          title: "signIn.login".tr(),
+                          enabled: signInStore.isLoading,
+                        );
+                      },
                     ),
                   ),
                   Padding(
@@ -212,8 +241,6 @@ class SignInPage extends StatelessWidget {
                         ),
                       ],
                     ),
-
-                    //_iconsView(signInStore),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -230,7 +257,9 @@ class SignInPage extends StatelessWidget {
                           child: GestureDetector(
                             onTap: () {
                               Navigator.pushNamed(
-                                  context, SignUpPage.routeName);
+                                context,
+                                SignUpPage.routeName,
+                              );
                             },
                             child: Text(
                               "signIn.signUp".tr(),
@@ -264,7 +293,7 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         Spacer(),
-                        const Text("Version 1.0.26"),
+                        //const Text("Version 1.0.26"),
                         const SizedBox(width: 15)
                       ],
                     ),
@@ -278,37 +307,80 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  // Widget _iconsView(final SignInStore store) {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       _iconButton(
-  //         store.signInWithTwitter(),
-  //         "assets/google_icon.svg",
-  //         "https://www.instagram.com/zuck/?hl=ru",
-  //       ),
-  //       // _iconButton(
-  //       //   "assets/instagram.svg",
-  //       //   "https://www.instagram.com/zuck/?hl=ru",
-  //       // ),
-  //       _iconButton(
-  //         () {},
-  //         "assets/twitter_icon.svg",
-  //         "https://www.instagram.com/zuck/?hl=ru",
-  //       ),
-  //       _iconButton(
-  //         () {},
-  //         "assets/facebook_icon.svg",
-  //         "https://www.instagram.com/zuck/?hl=ru",
-  //       ),
-  //       _iconButton(
-  //         () {},
-  //         "assets/linkedin_icon.svg",
-  //         "https://www.instagram.com/zuck/?hl=ru",
-  //       ),
-  //     ],
-  //   );
-  // }
+  _onPressedSignIn(
+    BuildContext context, {
+    required SignInStore signInStore,
+    required ProfileMeStore profile,
+  }) async {
+    await signInStore.signIn();
+    if (signInStore.isSuccess)
+      await profile.getProfileMe();
+    else {
+      _errorHandler(context, signInStore: signInStore);
+      return;
+    }
+    if (profile.error.isEmpty)
+      await signInStore.signInWallet();
+    else {
+      _errorMessage(context, profile.error);
+      return;
+    }
+    if (signInStore.isSuccess && signInStore.error.isEmpty) {
+      await AlertDialogUtils.showSuccessDialog(context);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        PinCodePage.routeName,
+        (_) => false,
+      );
+    } else {
+      _errorMessage(context, signInStore.error);
+    }
+  }
+
+  _errorHandler(
+    BuildContext context, {
+    required SignInStore signInStore,
+  }) async {
+    print('error handler: ${signInStore.errorMessage}');
+    if (signInStore.errorMessage == "unconfirmed") {
+      print("error");
+      await AlertDialogUtils.showSuccessDialog(context);
+      Navigator.pushNamed(context, ConfirmEmail.routeName,
+          arguments: signInStore.getUsername());
+    } else if (signInStore.errorMessage == "TOTP is invalid") {
+      AlertDialogUtils.showAlertDialog(
+        context,
+        title: Text('Warning'),
+        content: Builder(
+          builder: (context) {
+            var width = MediaQuery.of(context).size.width;
+            return Container(
+              width: width - 100,
+              child: _AlertTotpWidget(
+                text: totpController.text,
+                onChanged: signInStore.setTotp,
+              ),
+            );
+          },
+        ),
+        needCancel: true,
+        titleCancel: 'Cancel',
+        titleOk: 'OK',
+        onTabCancel: null,
+        onTabOk: () {
+          _onPressedSignIn(context,
+              signInStore: signInStore, profile: context.read<ProfileMeStore>());
+        },
+        colorCancel: Colors.red,
+        colorOk: AppColor.enabledButton,
+      );
+    } else {
+      _errorMessage(context, signInStore.error);
+    }
+  }
+
+  void _errorMessage(BuildContext context, String msg) =>
+      AlertDialogUtils.showInfoAlertDialog(context, title: "Error", content: msg);
 
   Widget _iconButton(
     String iconPath,
@@ -317,59 +389,67 @@ class SignInPage extends StatelessWidget {
     Color? color,
   ]) {
     return CupertinoButton(
-        color: Color(0xFFF7F8FA),
-        padding: EdgeInsets.zero,
-        child: SvgPicture.asset(
-          iconPath,
-          color: color,
-        ),
-        onPressed: () async => await launch(
-              link == "google"
-                  ? 'https://app-ver1.workquest.co/api/v1/auth/login/google/token'
-                  : link == "twitter"
-                      ? 'https://app-ver1.workquest.co/api/v1/auth/login/twitter/token'
-                      : link == "facebook"
-                          ? 'https://app-ver1.workquest.co/api/v1/auth/login/facebook/token'
-                          : 'https://app-ver1.workquest.co/api/v1/auth/login/linkedin/token',
-              customTabsOption: CustomTabsOption(
-                toolbarColor: Theme.of(context).primaryColor,
-                enableDefaultShare: true,
-                enableUrlBarHiding: true,
-                showPageTitle: true,
-                // animation: CustomTabsAnimation.slideIn(),
-                // // or user defined animation.
-                // animation: const CustomTabsAnimation(
-                //   startEnter: 'slide_up',
-                //   startExit: 'android:anim/fade_out',
-                //   endEnter: 'android:anim/fade_in',
-                //   endExit: 'slide_down',
-                // ),
-                extraCustomTabs: const <String>[
-                  // ref. https://play.google.com/store/apps/details?id=org.mozilla.firefox
-                  'org.mozilla.firefox',
-                  // ref. https://play.google.com/store/apps/details?id=com.microsoft.emmx
-                  'com.microsoft.emmx',
-                ],
-              ),
-              safariVCOption: SafariViewControllerOption(
-                preferredBarTintColor: Theme.of(context).primaryColor,
-                preferredControlTintColor: Colors.white,
-                barCollapsingEnabled: true,
-                entersReaderIfAvailable: false,
-                dismissButtonStyle:
-                    SafariViewControllerDismissButtonStyle.close,
-              ),
-            )
-        // } catch (e) {
-        // // An exception is thrown if browser app is not installed on Android device.
-        // debugPrint(e.toString());
-        // }
-
-        //     Navigator.pushNamed(
-        //   context,
-        //   WebViewPage.routeName,
-        //   arguments: "api/v1/auth/login/$link/token",
-        // ),
+      color: Color(0xFFF7F8FA),
+      padding: EdgeInsets.zero,
+      child: SvgPicture.asset(
+        iconPath,
+        color: color,
+      ),
+      onPressed: () async {
+        Navigator.of(context, rootNavigator: true).pushNamed(
+          WebViewPage.routeName,
+          arguments: "api/v1/auth/login/$link",
         );
+      },
+    );
+  }
+}
+
+class _AlertTotpWidget extends StatefulWidget {
+  final String text;
+  final Function(String)? onChanged;
+
+  const _AlertTotpWidget({
+    Key? key,
+    required this.text,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _AlertTotpWidgetState createState() => _AlertTotpWidgetState();
+}
+
+class _AlertTotpWidgetState extends State<_AlertTotpWidget> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    _controller = TextEditingController(text: widget.text);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Observer(
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
+          child: DefaultTextField(
+            controller: _controller,
+            onChanged: widget.onChanged,
+            isPassword: true,
+            autofillHints: [AutofillHints.password],
+            prefixIconConstraints: _prefixConstraints,
+            prefixIcon: SvgPicture.asset(
+              "assets/lock.svg",
+              color: Theme.of(context).iconTheme.color,
+            ),
+            hint: "signIn.totp".tr(),
+            inputFormatters: [],
+            suffixIcon: null,
+          ),
+        );
+      },
+    );
   }
 }

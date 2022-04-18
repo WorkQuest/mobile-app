@@ -1,5 +1,7 @@
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/social_network.dart';
 
+import '../../constants.dart';
 import 'avatar.dart';
 
 class AdditionalInfo {
@@ -16,7 +18,7 @@ class AdditionalInfo {
       required this.workExperiences,
       required this.avatar});
 
-  String? secondMobileNumber;
+  Phone? secondMobileNumber;
   String? address;
   SocialNetwork? socialNetwork;
   String? description;
@@ -26,7 +28,7 @@ class AdditionalInfo {
   List<String>? skills;
   List<Map<String, String>> educations = [];
   List<Map<String, String>> workExperiences = [];
-  Avatar avatar;
+  Avatar? avatar;
 
   AdditionalInfo.clone(AdditionalInfo object)
       : this(
@@ -46,7 +48,9 @@ class AdditionalInfo {
 
   factory AdditionalInfo.fromJson(Map<String, dynamic> json) {
     return AdditionalInfo(
-      secondMobileNumber: json["secondMobileNumber"],
+      secondMobileNumber: json["secondMobileNumber"] == null
+          ? null
+          : Constants.isRelease ? Phone(codeRegion: '', fullPhone: json["secondMobileNumber"], phone: '') : Phone.fromJson(json["secondMobileNumber"]),
       address: json["address"],
       socialNetwork: json["socialNetwork"] == null
           ? null
@@ -78,15 +82,7 @@ class AdditionalInfo {
             })).toList()
           : [],
       description: json["description"],
-      avatar: Avatar.fromJson(
-        json["avatar"] ??
-            {
-              "id": "",
-              "url":
-                  "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-              "contentType": "",
-            },
-      ),
+      avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
     );
   }
 

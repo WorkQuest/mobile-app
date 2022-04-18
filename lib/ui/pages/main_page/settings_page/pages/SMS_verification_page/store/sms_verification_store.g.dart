@@ -9,48 +9,34 @@ part of 'sms_verification_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
-  final _$indexAtom = Atom(name: '_SMSVerificationStore.index');
+  final _$timerAtom = Atom(name: '_SMSVerificationStore.timer');
 
   @override
-  int get index {
-    _$indexAtom.reportRead();
-    return super.index;
+  Timer? get timer {
+    _$timerAtom.reportRead();
+    return super.timer;
   }
 
   @override
-  set index(int value) {
-    _$indexAtom.reportWrite(value, super.index, () {
-      super.index = value;
+  set timer(Timer? value) {
+    _$timerAtom.reportWrite(value, super.timer, () {
+      super.timer = value;
     });
   }
 
-  final _$validateAtom = Atom(name: '_SMSVerificationStore.validate');
+  final _$secondsCodeAgainAtom =
+      Atom(name: '_SMSVerificationStore.secondsCodeAgain');
 
   @override
-  bool get validate {
-    _$validateAtom.reportRead();
-    return super.validate;
+  int get secondsCodeAgain {
+    _$secondsCodeAgainAtom.reportRead();
+    return super.secondsCodeAgain;
   }
 
   @override
-  set validate(bool value) {
-    _$validateAtom.reportWrite(value, super.validate, () {
-      super.validate = value;
-    });
-  }
-
-  final _$phoneAtom = Atom(name: '_SMSVerificationStore.phone');
-
-  @override
-  String get phone {
-    _$phoneAtom.reportRead();
-    return super.phone;
-  }
-
-  @override
-  set phone(String value) {
-    _$phoneAtom.reportWrite(value, super.phone, () {
-      super.phone = value;
+  set secondsCodeAgain(int value) {
+    _$secondsCodeAgainAtom.reportWrite(value, super.secondsCodeAgain, () {
+      super.secondsCodeAgain = value;
     });
   }
 
@@ -69,14 +55,6 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
     });
   }
 
-  final _$submitPhoneNumberAsyncAction =
-      AsyncAction('_SMSVerificationStore.submitPhoneNumber');
-
-  @override
-  Future<dynamic> submitPhoneNumber() {
-    return _$submitPhoneNumberAsyncAction.run(() => super.submitPhoneNumber());
-  }
-
   final _$submitCodeAsyncAction =
       AsyncAction('_SMSVerificationStore.submitCode');
 
@@ -89,11 +67,22 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
       ActionController(name: '_SMSVerificationStore');
 
   @override
-  void setPhone(String value) {
+  dynamic startTimer() {
     final _$actionInfo = _$_SMSVerificationStoreActionController.startAction(
-        name: '_SMSVerificationStore.setPhone');
+        name: '_SMSVerificationStore.startTimer');
     try {
-      return super.setPhone(value);
+      return super.startTimer();
+    } finally {
+      _$_SMSVerificationStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic stopTimer() {
+    final _$actionInfo = _$_SMSVerificationStoreActionController.startAction(
+        name: '_SMSVerificationStore.stopTimer');
+    try {
+      return super.stopTimer();
     } finally {
       _$_SMSVerificationStoreActionController.endAction(_$actionInfo);
     }
@@ -113,9 +102,8 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
   @override
   String toString() {
     return '''
-index: ${index},
-validate: ${validate},
-phone: ${phone},
+timer: ${timer},
+secondsCodeAgain: ${secondsCodeAgain},
 code: ${code}
     ''';
   }

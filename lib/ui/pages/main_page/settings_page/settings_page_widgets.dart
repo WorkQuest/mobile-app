@@ -1,36 +1,46 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:app/utils/storage.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
 ///Instrument Card
 class InstrumentCard extends StatelessWidget {
   final String urlArgument;
   final String iconPath;
   final String title;
+  final bool enable;
 
   const InstrumentCard({
     required this.urlArgument,
     required this.iconPath,
     required this.title,
+    required this.enable,
   });
 
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
-      onPressed: () {
-        Navigator.of(context, rootNavigator: true).pushNamed(
-          WebViewPage.routeName,
-          arguments: urlArgument,
-        );
-      },
+      onPressed: enable
+          ? () {
+              Navigator.of(context, rootNavigator: true).pushNamed(
+                WebViewPage.routeName,
+                arguments: urlArgument,
+              );
+            }
+          : null,
       padding: EdgeInsets.zero,
       child: Container(
         margin: EdgeInsets.only(bottom: 10.0),
@@ -155,6 +165,9 @@ Widget logOutButton(context) {
             SignInPage.routeName,
             (route) => false,
           );
+          final cookieManager = WebviewCookieManager();
+          cookieManager.clearCookies();
+          AccountRepository().clearData();
           Storage.deleteAllFromSecureStorage();
         },
       );
@@ -190,27 +203,39 @@ class MyProfileImage extends StatelessWidget {
       child: Container(
         height: 150.0,
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(
-              userStore.userData!.avatar!.url,
-            ),
-            fit: BoxFit.cover,
-          ),
-          color: Colors.blue,
+          // color: Colors.blue,
           borderRadius: BorderRadius.circular(
             6.0,
           ),
         ),
         child: Stack(
           children: [
+            Positioned.fill(
+              child: FadeInImage(
+                width: MediaQuery.of(context).size.width,
+                height: 300,
+                placeholder: MemoryImage(
+                  Uint8List.fromList(base64Decode(Constants.base64BlueHolder)),
+                ),
+                image: NetworkImage(
+                  userStore.userData!.avatar?.url ??
+                      Constants.defaultImageNetwork,
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
             Positioned(
               bottom: 16.0,
               left: 16.0,
-              child: Text(
-                " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
+              child: Container(
+                width: 300,
+                child: Text(
+                  " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                  ),
+                  overflow: TextOverflow.clip,
                 ),
               ),
             ),

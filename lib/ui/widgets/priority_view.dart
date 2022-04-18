@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // 0 - low; 1 - normal; 2 - urgent
 class PriorityView extends StatelessWidget {
-  const PriorityView(this.priority);
+  const PriorityView(this.priority, this.quest);
 
   final int priority;
+
+  final bool quest;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +21,7 @@ class PriorityView extends StatelessWidget {
             borderRadius: BorderRadius.circular(3),
           ),
           child: Text(
-            "Low priority",
+            quest ? "Fixed delivery" : "priority.lowPriority".tr(),
             style: TextStyle(
               color: Color(0xFF22CC14),
             ),
@@ -33,7 +36,7 @@ class PriorityView extends StatelessWidget {
             borderRadius: BorderRadius.circular(3),
           ),
           child: Text(
-            "Normal priority",
+            quest ? "Short term" : "priority.normalPriority".tr(),
             style: TextStyle(
               color: Color(0xFFE8D20D),
             ),
@@ -48,7 +51,7 @@ class PriorityView extends StatelessWidget {
             borderRadius: BorderRadius.circular(3),
           ),
           child: Text(
-            "Urgent ",
+            "priority.urgent".tr(),
             style: TextStyle(color: Color(0xFFDF3333)),
           ),
         );

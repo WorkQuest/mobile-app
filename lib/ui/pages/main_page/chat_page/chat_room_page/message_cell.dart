@@ -2,7 +2,6 @@ import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -11,9 +10,8 @@ class MessageCell extends StatefulWidget {
   final LocalKey key;
   final MessageModel mess;
   final String userId;
-  final ChatRoomStore store;
 
-  MessageCell(this.key, this.mess, this.userId, this.store);
+  MessageCell(this.key, this.mess, this.userId);
 
   @override
   _MessageCellState createState() => _MessageCellState();

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
@@ -13,6 +12,7 @@ import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:app/http/chat_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 part 'chat_room_store.g.dart';
@@ -131,7 +131,8 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
 
   @action
   void setMessageHighlighted(MessageModel message) {
-    idMessagesForStar[message.id] = !idMessagesForStar[message.id]!;
+    if (idMessagesForStar[message.id] != null)
+      idMessagesForStar[message.id] = !idMessagesForStar[message.id]!;
     for (int i = 0; i < idMessages.length; i++)
       if (idMessages[i] == message.id) {
         idMessages.removeAt(i);
@@ -282,6 +283,18 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
         return infoMessageValue = "chat.infoMessage.groupChatDeleteUser".tr();
       case "groupChatLeaveUser":
         return infoMessageValue = "chat.infoMessage.groupChatLeaveUser".tr();
+      case "workerRejectedQuest":
+        return infoMessageValue = "chat.infoMessage.workerRejectedQuest".tr();
+      case "workerAcceptedQuest":
+        return infoMessageValue = "chat.infoMessage.workerAcceptedQuest".tr();
+      case "workerCompletedQuest":
+        return infoMessageValue = "chat.infoMessage.workerCompletedQuest".tr();
+      case "workerAcceptedInvitationToQuest":
+        return infoMessageValue =
+            "chat.infoMessage.workerAcceptedInvitationToQuest".tr();
+      case "workerRejectedInvitationToQuest":
+        return infoMessageValue =
+            "chat.infoMessage.workerRejectedInvitationToQuest".tr();
     }
     return infoMessage;
   }
@@ -358,11 +371,14 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
                     avatar: element.avatar,
                     userSpecializations: element.userSpecializations,
                     ratingStatistic: element.ratingStatistic,
-                    location: element.location,
+                    locationCode: element.locationCode,
+                    locationPlaceName: element.locationPlaceName,
                     wagePerHour: element.wagePerHour,
                     workplace: element.workplace,
                     priority: element.priority,
                     questsStatistic: element.questsStatistic,
+                    walletAddress: element.walletAddress,
+                    isTotpActive: element.isTotpActive,
                   )),
                 }
             });
@@ -452,9 +468,10 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   Future sendMessage(String text, String chatId, String userId) async {
     this.onLoading();
     WebSocket().sendMessage(
-        chatId: chatId,
-        text: text,
-        medias: await _apiProvider.uploadMedia(medias: media));
+      chatId: chatId,
+      text: text,
+      medias: await _apiProvider.uploadMedia(medias: media),
+    );
     media.clear();
     this.onSuccess(true);
     _atomSendMessage.reportChanged();

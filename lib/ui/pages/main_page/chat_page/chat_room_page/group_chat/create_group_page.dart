@@ -2,6 +2,7 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.d
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members/add_user_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
+import 'package:app/utils/alert_dialog.dart';
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -185,7 +186,7 @@ class CreateGroupPage extends StatelessWidget {
                       context,
                       (route) => route.isFirst,
                     );
-                  if (store.index > 0) store.index--;
+                  if (store.index == 1) store.index--;
                 },
                 child: Text(back),
                 style: OutlinedButton.styleFrom(
@@ -203,12 +204,34 @@ class CreateGroupPage extends StatelessWidget {
           Expanded(
             child: Observer(
               builder: (_) => ElevatedButton(
-                onPressed: store.index == 0 && store.chatName.isNotEmpty
+                onPressed: store.index == 0 &&
+                        store.chatName.isNotEmpty &&
+                        !store.isLoading
                     ? () async {
-                        await store.getUsersForGroupCHat();
-                        store.index++;
+                        if (store.index == 0) {
+                          store.index++;
+                          await store.getUsersForGroupCHat();
+                          if (store.availableUsers.isEmpty)
+                            AlertDialogUtils.showAlertDialog(
+                              context,
+                              title: Text("Error"),
+                              content: Text(
+                                "You can't create a chat before working on a quest",
+                              ),
+                              needCancel: false,
+                              titleCancel: null,
+                              titleOk: "Return",
+                              onTabCancel: null,
+                              onTabOk: () => Navigator.pop(context),
+                              colorCancel: null,
+                              colorOk: Colors.blue,
+                            );
+                        }
                       }
-                    : store.usersId.isNotEmpty && store.usersId.length > 1
+                    : store.usersId.isNotEmpty &&
+                            store.usersId.length > 1 &&
+                            !store.isLoading &&
+                            store.index == 1
                         ? () async {
                             await store.createGroupChat();
                             if (store.isSuccess) {

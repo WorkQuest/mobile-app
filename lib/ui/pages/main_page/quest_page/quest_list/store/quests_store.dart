@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app/base_store/i_store.dart';
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
@@ -26,13 +27,26 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   _QuestsStore(this._apiProvider);
 
+  UserRole role = UserRole.Worker;
+
   @observable
   String searchWord = "";
 
   List<String> selectedSkill = [];
 
+  Map<int, List<int>> skillFilters = {};
+
+  ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
+      ObservableMap.of({});
+
   @observable
-  String sort = "";
+  String sort = "sort[createdAt]=desc";
+
+  @observable
+  String fromPrice = '';
+
+  @observable
+  String toPrice = '';
 
   @observable
   int offset = 0;
@@ -53,10 +67,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   ObservableList<ProfileMeResponse> workersList = ObservableList.of([]);
 
   @observable
-  List<BaseQuestResponse>? searchResultList = [];
+  ObservableList<BaseQuestResponse> searchResultList = ObservableList.of([]);
 
   @observable
-  List<ProfileMeResponse>? searchWorkersList = [];
+  ObservableList<ProfileMeResponse> searchWorkersList = ObservableList.of([]);
 
   @observable
   ObservableList<BaseQuestResponse> loadQuestsList = ObservableList.of([]);
@@ -76,18 +90,21 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   List<String> workplaces = [];
 
-  List<String> employeeRatings = [];
+  List<int> employeeRatings = [];
 
   List<int> priorities = [];
 
-  ///API_KEY HERE
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
+
+  saveSkillFilters(Map<int, List<int>> value) {
+    skillFilters = value;
+  }
 
   setEmployment(List<String> employment) {
     employments = employment;
   }
 
-  setEmployeeRating(List<String> employeeRating) {
+  setEmployeeRating(List<int> employeeRating) {
     employeeRatings = employeeRating;
   }
 
@@ -105,6 +122,59 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   setSkillFilters(List<String> value) {
     selectedSkill = value;
+  }
+
+  clearSkillFilters() {
+    selectedSkillFilters.forEach((key, value) {
+      value.forEach((element) {
+        element = false;
+      });
+    });
+  }
+
+  setSelectedSkillFilters(ObservableMap<int, ObservableList<bool>> value) {
+    selectedSkillFilters = value;
+  }
+
+  void clearFilters() {
+    employments.clear();
+    workplaces.clear();
+    priorities.clear();
+    selectedSkill.clear();
+    employeeRatings.clear();
+    sort = "sort[createdAt]=desc";
+    setPrice('', '');
+    clearSkillFilters();
+  }
+
+  @action
+  void setPrice(String from, String to) {
+    fromPrice = from;
+    toPrice = to;
+  }
+
+  String getFilterPrice({bool isWorker = false}) {
+    String result = '';
+    if (Constants.isRelease) {
+      if (isWorker) {
+        result += '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result +=
+        '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+      } else {
+        result += '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result += '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+      }
+    } else {
+      if (isWorker) {
+        if (fromPrice.isNotEmpty)
+          result += '&betweenWagePerHour[from]=$fromPrice';
+        if (toPrice.isNotEmpty) result += '&betweenWagePerHour[to]=$toPrice';
+      } else {
+        if (fromPrice.isNotEmpty) result += '&priceBetween[from]=$fromPrice';
+        if (toPrice.isNotEmpty) result += '&priceBetween[to]=$toPrice';
+      }
+    }
+    return result;
   }
 
   @action
@@ -161,27 +231,75 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   void setSearchWord(String value) {
+    role == UserRole.Worker ? questsList.clear() : workersList.clear();
+    offset = 0;
     searchWord = value.trim();
     if (debounce != null) {
       debounce!.cancel();
       this.onSuccess(true);
     }
-    if (searchWord.length > 2) getSearchedQuests();
+    if (searchWord.length > 0)
+      role == UserRole.Worker ? getSearchedQuests() : getSearchedWorkers();
+    else {
+      role == UserRole.Worker ? getQuests(true) : getWorkers(true);
+    }
   }
 
   @computed
   bool get emptySearch =>
-      searchWord.length > 2 && searchResultList!.isEmpty && !this.isLoading;
+      // searchWord.isNotEmpty &&
+      // searchResultList.isEmpty &&
+      // searchWorkersList.isEmpty &&
+      workersList.isEmpty && questsList.isEmpty && !this.isLoading;
 
   @action
   Future getSearchedQuests() async {
-    this.onLoading();
-    debounce = Timer(const Duration(milliseconds: 300), () async {
-      final searchResultList = await _apiProvider.getQuests(
-        searchWord: this.searchWord,
-      );
-      this.onSuccess(true);
-    });
+    try {
+      if (offset == questsList.length) {
+        this.onLoading();
+        debounce = Timer(const Duration(milliseconds: 300), () async {
+          questsList.addAll(await _apiProvider.getQuests(
+            price: getFilterPrice(),
+            searchWord: searchWord,
+            offset: offset,
+            statuses: [0, 1],
+            employment: employments,
+            workplace: workplaces,
+            priority: priorities,
+            limit: this.limit,
+            sort: this.sort,
+            specializations: selectedSkill,
+          ));
+          //offset review
+          offset += 10;
+          this.onSuccess(true);
+        });
+      }
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future getSearchedWorkers() async {
+    if (this.offset == workersList.length) {
+      this.onLoading();
+      debounce = Timer(const Duration(milliseconds: 300), () async {
+        workersList.addAll(await _apiProvider.getWorkers(
+          searchWord: this.searchWord,
+          price: getFilterPrice(isWorker: true),
+          offset: this.offset,
+          sort: this.sort,
+          limit: this.limit,
+          workplace: workplaces,
+          priority: priorities,
+          ratingStatus: employeeRatings,
+          specializations: selectedSkill,
+        ));
+        this.offset += 10;
+        this.onSuccess(true);
+      });
+    }
   }
 
   @action
@@ -192,27 +310,23 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         this.offset = 0;
         questsList.clear();
       }
-      final responseData = await _apiProvider.getQuests(
-        statuses: [0, 1],
-        employment: employments,
-        workplace: workplaces,
-        priority: priorities,
-        offset: this.offset,
-        limit: this.limit,
-        sort: this.sort,
-        specializations: selectedSkill,
-        // north: this.latitude.toString(),
-        // south: this.longitude.toString(),
-      );
-      questsList.addAll(
-        ObservableList.of(responseData),
-      );
-      questsList.sort((key1, key2) {
-        return key1.createdAt.millisecondsSinceEpoch
-            .compareTo(key2.createdAt.millisecondsSinceEpoch);
-      });
-      // if (offset < questsList.length)
-      this.offset += 10;
+      if (this.offset == questsList.length) {
+        questsList.addAll(await _apiProvider.getQuests(
+          searchWord: searchWord,
+          price: getFilterPrice(),
+          statuses: [0, 1],
+          employment: employments,
+          workplace: workplaces,
+          priority: priorities,
+          offset: this.offset,
+          limit: this.limit,
+          sort: this.sort,
+          specializations: selectedSkill,
+          // north: this.latitude.toString(),
+          // south: this.longitude.toString(),
+        ));
+        this.offset += 10;
+      }
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -223,24 +337,27 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getWorkers(bool newList) async {
     try {
+      this.onLoading();
       if (newList) {
         workersList.clear();
         offsetWorkers = 0;
       }
-      this.onLoading();
-      final responseData = await _apiProvider.getWorkers(
-        sort: this.sort,
-        offset: this.offsetWorkers,
-        limit: this.limit,
-        workplace: workplaces,
-        priority: priorities,
-        ratingStatus: employeeRatings,
-        // north: this.latitude.toString(),
-        // south: this.longitude.toString(),
-      );
-      workersList.addAll(ObservableList.of(List<ProfileMeResponse>.from(
-          responseData["users"].map((x) => ProfileMeResponse.fromJson(x)))));
-      if (responseData["count"] > offsetWorkers) offsetWorkers += 10;
+      if (offsetWorkers == workersList.length) {
+        workersList.addAll(await _apiProvider.getWorkers(
+          searchWord: searchWord,
+          sort: this.sort,
+          price: getFilterPrice(isWorker: true),
+          offset: this.offsetWorkers,
+          limit: this.limit,
+          workplace: workplaces,
+          priority: priorities,
+          ratingStatus: employeeRatings,
+          specializations: selectedSkill,
+          // north: this.latitude.toString(),
+          // south: this.longitude.toString(),
+        ));
+        offsetWorkers += 10;
+      }
       this.onSuccess(true);
     } catch (e, trace) {
       print("getWorkers error: $e\n$trace");

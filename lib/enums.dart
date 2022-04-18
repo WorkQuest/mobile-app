@@ -12,6 +12,7 @@ enum UserRole {
 }
 
 enum QuestPriority {
+  All,
   Low,
   Normal,
   Urgent,

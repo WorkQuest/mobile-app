@@ -8,7 +8,6 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/creat
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/dispute_page/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -18,12 +17,18 @@ import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_employer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_worker.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/store/open_dispute_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/quest_employer_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/quest_worker_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
@@ -44,6 +49,10 @@ import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_language_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/dispute_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
@@ -55,6 +64,8 @@ import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import 'package:app/ui/pages/restore_password_page/store.dart';
+import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
+import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
 import 'package:app/ui/pages/start_page/start_page.dart';
 import 'package:app/ui/pages/start_page/store/start_store.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
@@ -73,23 +84,27 @@ import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
 import 'di/injector.dart';
 import 'model/profile_response/profile_me_response.dart';
-import 'ui/pages/main_page/chat_page/dispute_page/dispute_page.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    print(context.locale.toString());
     return context.locale.toString() == "ar_SA"
         ? TextDirection.rtl
         : TextDirection.ltr;
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final role = getIt.get<ProfileMeStore>().userData?.role;
     switch (settings.name) {
       case SignInPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<SignInStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SignInStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: SignInPage(),
@@ -121,8 +136,15 @@ class Routes {
 
       case PinCodePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<PinCodeStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<PinCodeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<EmployerStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: PinCodePage(),
@@ -140,21 +162,35 @@ class Routes {
 
       case ChangePasswordPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<SettingsPageStore>(),
-            child: ChangePasswordPage(),
+          builder: (context) => Directionality(
+            textDirection: checkDirection(context),
+            child: Provider(
+              create: (context) => getIt.get<SettingsPageStore>(),
+              child: ChangePasswordPage(),
+            ),
           ),
         );
 
       case SMSVerificationPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<SMSVerificationStore>(),
-            child: SMSVerificationPage(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SMSVerificationStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: SMSVerificationPage(),
+            ),
           ),
         );
 
       case MainPage.routeName:
+        final role = getIt.get<ProfileMeStore>().userData?.role;
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
             providers: [
@@ -169,6 +205,12 @@ class Routes {
               ),
               Provider(
                 create: (context) => getIt.get<SettingsPageStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<FilterQuestsStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChooseRoleStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
@@ -204,6 +246,9 @@ class Routes {
                   Provider(
                     create: (context) => getIt.get<MyQuestStore>(),
                   ),
+                  Provider(
+                    create: (context) => getIt.get<QuestDetailsStore>(),
+                  ),
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),
@@ -224,6 +269,9 @@ class Routes {
                   ),
                   Provider(
                     create: (context) => getIt.get<QuestsStore>(),
+                  ),
+                  Provider(
+                    create: (context) => getIt.get<QuestDetailsStore>(),
                   ),
                 ],
                 child: Directionality(
@@ -254,7 +302,8 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: FilterQuestsPage(),
+              child:
+                  FilterQuestsPage(settings.arguments as Map<int, List<int>>),
             ),
           ),
         );
@@ -266,6 +315,17 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChooseRolePage(),
+            ),
+          ),
+        );
+
+      case ProfileQuestsPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ProfileMeStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ProfileQuestsPage(settings.arguments as String),
             ),
           ),
         );
@@ -283,8 +343,18 @@ class Routes {
 
       case NotificationPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<NotificationStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<NotificationStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChatStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: NotificationPage(settings.arguments as String),
@@ -303,7 +373,19 @@ class Routes {
           ),
         );
 
+      case MyDisputesPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<MyDisputesStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: MyDisputesPage(),
+            ),
+          ),
+        );
+
       case UserProfile.routeName:
+        final role = getIt.get<ProfileMeStore>().userData?.role;
         final arguments = settings.arguments as ProfileMeResponse?;
         final isViewProfile;
         if (settings.arguments == null)
@@ -381,6 +463,17 @@ class Routes {
           ),
         );
 
+      case EnterTotpPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChooseRoleStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: EnterTotpPage(),
+            ),
+          ),
+        );
+
       case CreateQuestPage.routeName:
         return MaterialPageRoute<bool>(
           builder: (context) => MultiProvider(
@@ -446,7 +539,7 @@ class Routes {
             create: (context) => getIt.get<RaiseViewStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: RaiseViews(),
+              child: RaiseViews(settings.arguments as String),
             ),
           ),
         );
@@ -457,17 +550,38 @@ class Routes {
             create: (context) => getIt.get<RaiseViewStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: PaymentPage(),
+              child: PaymentPage(settings.arguments as String),
+            ),
+          ),
+        );
+
+      case MnemonicPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SignInStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: MnemonicPage(),
             ),
           ),
         );
 
       case WebViewPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Directionality(
-            textDirection: checkDirection(context),
-            child: WebViewPage(
-              settings.arguments.toString(),
+          builder: (context) => Provider(
+            create: (context) => getIt.get<SignInStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: WebViewPage(
+                settings.arguments.toString(),
+              ),
             ),
           ),
         );
@@ -574,13 +688,34 @@ class Routes {
           ),
         );
 
-      case DisputePage.routeName:
+      case OpenDisputePage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
-            create: (context) => getIt.get<DisputeStore>(),
+            create: (context) => getIt.get<OpenDisputeStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: DisputePage(),
+              child: OpenDisputePage(settings.arguments as BaseQuestResponse),
+            ),
+          ),
+        );
+
+      case DisputePage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<DisputeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChatRoomStore>(),
+              ),
+            ],
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: DisputePage(settings.arguments as String),
             ),
           ),
         );
@@ -594,6 +729,27 @@ class Routes {
               child: CreateReviewPage(
                 quest: settings.arguments as BaseQuestResponse,
               ),
+            ),
+          ),
+        );
+
+      case ReviewPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<PortfolioStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<UserProfileStore>(),
+              ),
+            ],
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ReviewPage(settings.arguments as PortfolioStore),
             ),
           ),
         );
@@ -633,7 +789,7 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: PortfolioDetails(
-                arguments: settings.arguments as Map<String, dynamic>,
+                arguments: settings.arguments as PortfolioArguments,
               ),
             ),
           ),
@@ -648,6 +804,20 @@ class Routes {
         );
     }
   }
+
+  // static push(BuildContext ct, dynamic store, Widget widget) {
+  //   Navigator.of(ct).push(
+  //     MaterialPageRoute(
+  //       builder: (ct) => Directionality(
+  //         textDirection: checkDirection(ct),
+  //         child: Provider(
+  //           create: (_) => store,
+  //           child: widget,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   generateRouteEmployer(settings) {}
 

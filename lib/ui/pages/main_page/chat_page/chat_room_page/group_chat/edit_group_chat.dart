@@ -44,6 +44,8 @@ class EditGroupChat extends StatelessWidget {
                       await store.getUsersForGroupCHat();
                       Navigator.pushNamed(context, AddMembers.routeName,
                           arguments: store);
+                      store.generateListUserInChat();
+                      store.userForDeleting.clear();
                     },
                     icon: SvgPicture.asset(
                       "assets/plus_icon.svg",

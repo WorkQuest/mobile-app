@@ -9,6 +9,21 @@ part of 'pin_code_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$PinCodeStore on _PinCodeStore, Store {
+  final _$totpValidAtom = Atom(name: '_PinCodeStore.totpValid');
+
+  @override
+  bool get totpValid {
+    _$totpValidAtom.reportRead();
+    return super.totpValid;
+  }
+
+  @override
+  set totpValid(bool value) {
+    _$totpValidAtom.reportWrite(value, super.totpValid, () {
+      super.totpValid = value;
+    });
+  }
+
   final _$pinAtom = Atom(name: '_PinCodeStore.pin');
 
   @override
@@ -66,6 +81,36 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
   set newPinCode(String value) {
     _$newPinCodeAtom.reportWrite(value, super.newPinCode, () {
       super.newPinCode = value;
+    });
+  }
+
+  final _$startSwitchAtom = Atom(name: '_PinCodeStore.startSwitch');
+
+  @override
+  bool get startSwitch {
+    _$startSwitchAtom.reportRead();
+    return super.startSwitch;
+  }
+
+  @override
+  set startSwitch(bool value) {
+    _$startSwitchAtom.reportWrite(value, super.startSwitch, () {
+      super.startSwitch = value;
+    });
+  }
+
+  final _$startAnimationAtom = Atom(name: '_PinCodeStore.startAnimation');
+
+  @override
+  bool get startAnimation {
+    _$startAnimationAtom.reportRead();
+    return super.startAnimation;
+  }
+
+  @override
+  set startAnimation(bool value) {
+    _$startAnimationAtom.reportWrite(value, super.startAnimation, () {
+      super.startAnimation = value;
     });
   }
 
@@ -132,10 +177,13 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
   @override
   String toString() {
     return '''
+totpValid: ${totpValid},
 pin: ${pin},
 attempts: ${attempts},
 statePin: ${statePin},
 newPinCode: ${newPinCode},
+startSwitch: ${startSwitch},
+startAnimation: ${startAnimation},
 canCheckBiometrics: ${canCheckBiometrics}
     ''';
   }

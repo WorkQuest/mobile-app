@@ -46,16 +46,95 @@ mixin _$SignInStore on _SignInStore, Store {
     });
   }
 
-  final _$signInWithUsernameAsyncAction =
-      AsyncAction('_SignInStore.signInWithUsername');
+  final _$mnemonicAtom = Atom(name: '_SignInStore.mnemonic');
 
   @override
-  Future<dynamic> signInWithUsername() {
-    return _$signInWithUsernameAsyncAction
-        .run(() => super.signInWithUsername());
+  String get mnemonic {
+    _$mnemonicAtom.reportRead();
+    return super.mnemonic;
+  }
+
+  @override
+  set mnemonic(String value) {
+    _$mnemonicAtom.reportWrite(value, super.mnemonic, () {
+      super.mnemonic = value;
+    });
+  }
+
+  final _$totpAtom = Atom(name: '_SignInStore.totp');
+
+  @override
+  String get totp {
+    _$totpAtom.reportRead();
+    return super.totp;
+  }
+
+  @override
+  set totp(String value) {
+    _$totpAtom.reportWrite(value, super.totp, () {
+      super.totp = value;
+    });
+  }
+
+  final _$errorAtom = Atom(name: '_SignInStore.error');
+
+  @override
+  String get error {
+    _$errorAtom.reportRead();
+    return super.error;
+  }
+
+  @override
+  set error(String value) {
+    _$errorAtom.reportWrite(value, super.error, () {
+      super.error = value;
+    });
+  }
+
+  final _$refreshTokenAsyncAction = AsyncAction('_SignInStore.refreshToken');
+
+  @override
+  Future<dynamic> refreshToken() {
+    return _$refreshTokenAsyncAction.run(() => super.refreshToken());
+  }
+
+  final _$signInWalletAsyncAction = AsyncAction('_SignInStore.signInWallet');
+
+  @override
+  Future signInWallet() {
+    return _$signInWalletAsyncAction.run(() => super.signInWallet());
+  }
+
+  final _$signInAsyncAction = AsyncAction('_SignInStore.signIn');
+
+  @override
+  Future<dynamic> signIn() {
+    return _$signInAsyncAction.run(() => super.signIn());
   }
 
   final _$_SignInStoreActionController = ActionController(name: '_SignInStore');
+
+  @override
+  dynamic setMnemonic(String value) {
+    final _$actionInfo = _$_SignInStoreActionController.startAction(
+        name: '_SignInStore.setMnemonic');
+    try {
+      return super.setMnemonic(value);
+    } finally {
+      _$_SignInStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setTotp(String value) {
+    final _$actionInfo = _$_SignInStoreActionController.startAction(
+        name: '_SignInStore.setTotp');
+    try {
+      return super.setTotp(value);
+    } finally {
+      _$_SignInStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setUsername(String value) {
@@ -93,6 +172,9 @@ mixin _$SignInStore on _SignInStore, Store {
   @override
   String toString() {
     return '''
+mnemonic: ${mnemonic},
+totp: ${totp},
+error: ${error},
 canSignIn: ${canSignIn}
     ''';
   }

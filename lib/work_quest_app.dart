@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import 'constants.dart';
+
 class WorkQuestApp extends StatelessWidget {
   final bool isToken;
   WorkQuestApp(this.isToken);
@@ -29,7 +31,7 @@ final _theme = ThemeData(
   cupertinoOverrideTheme: const CupertinoThemeData(
     barBackgroundColor: Colors.white,
     scaffoldBackgroundColor: Colors.white,
-    primaryColor: AppColors.primary,
+    primaryColor: AppColor.primary,
     textTheme: CupertinoTextThemeData(
       navLargeTitleTextStyle: TextStyle(
         fontSize: 30,
@@ -43,24 +45,24 @@ final _theme = ThemeData(
       ),
     ),
   ),
-  primaryColor: AppColors.primary,
+  primaryColor: AppColor.primary,
   iconTheme: IconThemeData(
-    color: AppColors.primary,
+    color: AppColor.primary,
   ),
   textSelectionTheme: TextSelectionThemeData(
-    cursorColor: AppColors.primary,
+    cursorColor: AppColor.primary,
   ),
   accentIconTheme: IconThemeData(
-    color: AppColors.primary,
+    color: AppColor.primary,
   ),
   floatingActionButtonTheme: FloatingActionButtonThemeData(
-    backgroundColor: AppColors.primary,
+    backgroundColor: AppColor.primary,
     foregroundColor: Colors.white,
     elevation: 0.0,
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      primary: AppColors.primary,
+      primary: AppColor.primary,
       onPrimary: Colors.white,
       onSurface: const Color(0xFFCBCED2),
       elevation: 0.0,
@@ -116,8 +118,3 @@ final _theme = ThemeData(
     ),
   ),
 );
-
-abstract class AppColors {
-  static const Color primary = const Color(0xFF0083C7);
-  static const Color green = const Color(0xFF00AA5B);
-}

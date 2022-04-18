@@ -1,3 +1,4 @@
+import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
@@ -26,6 +27,8 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
   String newPassword = '';
   @observable
   String confirmNewPassword = '';
+
+  UserRole userRole = UserRole.Worker;
 
   @action
   void changePrivacy(int? value) {

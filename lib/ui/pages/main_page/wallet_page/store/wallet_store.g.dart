@@ -9,95 +9,51 @@ part of 'wallet_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$WalletStore on _WalletStore, Store {
-  Computed<bool>? _$canSubmitComputed;
+  final _$typeAtom = Atom(name: '_WalletStore.type');
 
   @override
-  bool get canSubmit => (_$canSubmitComputed ??=
-          Computed<bool>(() => super.canSubmit, name: '_WalletStore.canSubmit'))
-      .value;
-
-  final _$_recipientAddressAtom = Atom(name: '_WalletStore._recipientAddress');
-
-  @override
-  String get _recipientAddress {
-    _$_recipientAddressAtom.reportRead();
-    return super._recipientAddress;
+  TYPE_COINS get type {
+    _$typeAtom.reportRead();
+    return super.type;
   }
 
   @override
-  set _recipientAddress(String value) {
-    _$_recipientAddressAtom.reportWrite(value, super._recipientAddress, () {
-      super._recipientAddress = value;
+  set type(TYPE_COINS value) {
+    _$typeAtom.reportWrite(value, super.type, () {
+      super.type = value;
     });
   }
 
-  final _$amountAtom = Atom(name: '_WalletStore.amount');
+  final _$coinsAtom = Atom(name: '_WalletStore.coins');
 
   @override
-  String get amount {
-    _$amountAtom.reportRead();
-    return super.amount;
+  ObservableList<BalanceItem> get coins {
+    _$coinsAtom.reportRead();
+    return super.coins;
   }
 
   @override
-  set amount(String value) {
-    _$amountAtom.reportWrite(value, super.amount, () {
-      super.amount = value;
+  set coins(ObservableList<BalanceItem> value) {
+    _$coinsAtom.reportWrite(value, super.coins, () {
+      super.coins = value;
     });
+  }
+
+  final _$getCoinsAsyncAction = AsyncAction('_WalletStore.getCoins');
+
+  @override
+  Future getCoins({bool isForce = true}) {
+    return _$getCoinsAsyncAction.run(() => super.getCoins(isForce: isForce));
   }
 
   final _$_WalletStoreActionController = ActionController(name: '_WalletStore');
 
   @override
-  void setRecipientAddress(String value) {
+  dynamic setType(TYPE_COINS value) {
     final _$actionInfo = _$_WalletStoreActionController.startAction(
-        name: '_WalletStore.setRecipientAddress');
+        name: '_WalletStore.setType');
     try {
-      return super.setRecipientAddress(value);
-    } finally {
-      _$_WalletStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setAmount(String value) {
-    final _$actionInfo = _$_WalletStoreActionController.startAction(
-        name: '_WalletStore.setAmount');
-    try {
-      return super.setAmount(value);
-    } finally {
-      _$_WalletStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  String getAmount() {
-    final _$actionInfo = _$_WalletStoreActionController.startAction(
-        name: '_WalletStore.getAmount');
-    try {
-      return super.getAmount();
-    } finally {
-      _$_WalletStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  String getAddress() {
-    final _$actionInfo = _$_WalletStoreActionController.startAction(
-        name: '_WalletStore.getAddress');
-    try {
-      return super.getAddress();
-    } finally {
-      _$_WalletStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void clearValues() {
-    final _$actionInfo = _$_WalletStoreActionController.startAction(
-        name: '_WalletStore.clearValues');
-    try {
-      return super.clearValues();
+      return super.setType(value);
     } finally {
       _$_WalletStoreActionController.endAction(_$actionInfo);
     }
@@ -106,8 +62,8 @@ mixin _$WalletStore on _WalletStore, Store {
   @override
   String toString() {
     return '''
-amount: ${amount},
-canSubmit: ${canSubmit}
+type: ${type},
+coins: ${coins}
     ''';
   }
 }

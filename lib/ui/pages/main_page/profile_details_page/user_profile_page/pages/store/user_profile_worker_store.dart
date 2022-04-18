@@ -19,6 +19,18 @@ abstract class _UserProfileWorkerStore extends IStore<bool> with Store {
   @observable
   List<Specialization> allSpices = [];
 
+  @observable
+  bool expandedSkills = false;
+
+  @observable
+  bool expandedDescription = false;
+
+  @action
+  setExpandedSkills(bool value) => expandedSkills = value;
+
+  @action
+  setExpandedDescription(bool value) => expandedDescription = value;
+
   Future readSpecialization() async {
     final json = await parseJsonFromAssets("assets/lang/en-US.json");
     final filtersJson = json["filters"]["items"] as Map<String, dynamic>;

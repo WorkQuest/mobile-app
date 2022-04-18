@@ -25,15 +25,18 @@ class _RunningLineState extends State<RunningLine> {
   }
 
   void startAnimate() {
+    controller.addListener(() {
     if (controller.position.maxScrollExtent != 0) {
       controller.animateTo(controller.position.maxScrollExtent,
           duration: Duration(seconds: 4), curve: Curves.linear);
     }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView(
+      //shrinkWrap: true,
       controller: controller,
       physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,

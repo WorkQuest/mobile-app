@@ -2,11 +2,8 @@ import 'package:app/http/api_provider.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 part '2FA_store.g.dart';
 
-@injectable
 @singleton
 class TwoFAStore extends _TwoFAStore with _$TwoFAStore {
   TwoFAStore(ApiProvider apiProvider) : super(apiProvider);
@@ -47,6 +44,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       googleAuthenticatorSecretCode = await apiProvider.enable2FA();
+
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
@@ -60,12 +58,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
       await apiProvider.disable2FA(
         totp: codeFromAuthenticator,
       );
-      await SharedPreferences.getInstance().then(
-        (value) => value.setBool(
-          "2FAStatus",
-          false,
-        ),
-      );
+
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
@@ -77,14 +70,8 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await apiProvider.confirmEnabling2FA(
-        confirmCode: codeFromEmail,
-        totp: codeFromAuthenticator,
-      );
-      await SharedPreferences.getInstance().then(
-        (sharedPrefs) => sharedPrefs.setBool(
-          "2FAStatus",
-          true,
-        ),
+        confirmCode: codeFromEmail.toUpperCase().trim(),
+        totp: codeFromAuthenticator.trim(),
       );
       this.onSuccess(true);
     } catch (e) {

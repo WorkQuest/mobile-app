@@ -44,13 +44,6 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
       (_$canApproveComputed ??= Computed<bool>(() => super.canApprove,
               name: '_ChooseRoleStore.canApprove'))
           .value;
-  Computed<UserRole>? _$userRoleComputed;
-
-  @override
-  UserRole get userRole =>
-      (_$userRoleComputed ??= Computed<UserRole>(() => super.userRole,
-              name: '_ChooseRoleStore.userRole'))
-          .value;
 
   final _$_privacyPolicyAtom = Atom(name: '_ChooseRoleStore._privacyPolicy');
 
@@ -64,6 +57,21 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   set _privacyPolicy(bool value) {
     _$_privacyPolicyAtom.reportWrite(value, super._privacyPolicy, () {
       super._privacyPolicy = value;
+    });
+  }
+
+  final _$totpAtom = Atom(name: '_ChooseRoleStore.totp');
+
+  @override
+  String get totp {
+    _$totpAtom.reportRead();
+    return super.totp;
+  }
+
+  @override
+  set totp(String value) {
+    _$totpAtom.reportWrite(value, super.totp, () {
+      super.totp = value;
     });
   }
 
@@ -114,18 +122,18 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     });
   }
 
-  final _$_userRoleAtom = Atom(name: '_ChooseRoleStore._userRole');
+  final _$userRoleAtom = Atom(name: '_ChooseRoleStore.userRole');
 
   @override
-  UserRole get _userRole {
-    _$_userRoleAtom.reportRead();
-    return super._userRole;
+  UserRole get userRole {
+    _$userRoleAtom.reportRead();
+    return super.userRole;
   }
 
   @override
-  set _userRole(UserRole value) {
-    _$_userRoleAtom.reportWrite(value, super._userRole, () {
-      super._userRole = value;
+  set userRole(UserRole value) {
+    _$userRoleAtom.reportWrite(value, super.userRole, () {
+      super.userRole = value;
     });
   }
 
@@ -136,6 +144,13 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     return _$approveRoleAsyncAction.run(() => super.approveRole());
   }
 
+  final _$changeRoleAsyncAction = AsyncAction('_ChooseRoleStore.changeRole');
+
+  @override
+  Future<dynamic> changeRole() {
+    return _$changeRoleAsyncAction.run(() => super.changeRole());
+  }
+
   final _$confirmEmailAsyncAction =
       AsyncAction('_ChooseRoleStore.confirmEmail');
 
@@ -144,8 +159,27 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     return _$confirmEmailAsyncAction.run(() => super.confirmEmail());
   }
 
+  final _$refreshTokenAsyncAction =
+      AsyncAction('_ChooseRoleStore.refreshToken');
+
+  @override
+  Future<dynamic> refreshToken() {
+    return _$refreshTokenAsyncAction.run(() => super.refreshToken());
+  }
+
   final _$_ChooseRoleStoreActionController =
       ActionController(name: '_ChooseRoleStore');
+
+  @override
+  void setTotp(String value) {
+    final _$actionInfo = _$_ChooseRoleStoreActionController.startAction(
+        name: '_ChooseRoleStore.setTotp');
+    try {
+      return super.setTotp(value);
+    } finally {
+      _$_ChooseRoleStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setCode(String value) {
@@ -205,12 +239,13 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   @override
   String toString() {
     return '''
+totp: ${totp},
+userRole: ${userRole},
 canSubmitCode: ${canSubmitCode},
 privacyPolicy: ${privacyPolicy},
 termsAndConditions: ${termsAndConditions},
 amlAndCtfPolicy: ${amlAndCtfPolicy},
-canApprove: ${canApprove},
-userRole: ${userRole}
+canApprove: ${canApprove}
     ''';
   }
 }

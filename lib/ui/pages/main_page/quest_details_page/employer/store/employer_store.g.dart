@@ -12,13 +12,13 @@ mixin _$EmployerStore on _EmployerStore, Store {
   final _$respondedListAtom = Atom(name: '_EmployerStore.respondedList');
 
   @override
-  List<RespondModel>? get respondedList {
+  List<RespondModel> get respondedList {
     _$respondedListAtom.reportRead();
     return super.respondedList;
   }
 
   @override
-  set respondedList(List<RespondModel>? value) {
+  set respondedList(List<RespondModel> value) {
     _$respondedListAtom.reportWrite(value, super.respondedList, () {
       super.respondedList = value;
     });
@@ -37,6 +37,36 @@ mixin _$EmployerStore on _EmployerStore, Store {
   set selectedResponders(RespondModel? value) {
     _$selectedRespondersAtom.reportWrite(value, super.selectedResponders, () {
       super.selectedResponders = value;
+    });
+  }
+
+  final _$isValidAtom = Atom(name: '_EmployerStore.isValid');
+
+  @override
+  bool get isValid {
+    _$isValidAtom.reportRead();
+    return super.isValid;
+  }
+
+  @override
+  set isValid(bool value) {
+    _$isValidAtom.reportWrite(value, super.isValid, () {
+      super.isValid = value;
+    });
+  }
+
+  final _$totpAtom = Atom(name: '_EmployerStore.totp');
+
+  @override
+  String get totp {
+    _$totpAtom.reportRead();
+    return super.totp;
+  }
+
+  @override
+  set totp(String value) {
+    _$totpAtom.reportWrite(value, super.totp, () {
+      super.totp = value;
     });
   }
 
@@ -66,15 +96,6 @@ mixin _$EmployerStore on _EmployerStore, Store {
         .run(() => super.acceptCompletedWork(questId: questId));
   }
 
-  final _$rejectCompletedWorkAsyncAction =
-      AsyncAction('_EmployerStore.rejectCompletedWork');
-
-  @override
-  Future rejectCompletedWork({required String questId}) {
-    return _$rejectCompletedWorkAsyncAction
-        .run(() => super.rejectCompletedWork(questId: questId));
-  }
-
   final _$deleteQuestAsyncAction = AsyncAction('_EmployerStore.deleteQuest');
 
   @override
@@ -83,11 +104,45 @@ mixin _$EmployerStore on _EmployerStore, Store {
         .run(() => super.deleteQuest(questId: questId));
   }
 
+  final _$validateTotpAsyncAction = AsyncAction('_EmployerStore.validateTotp');
+
+  @override
+  Future<void> validateTotp() {
+    return _$validateTotpAsyncAction.run(() => super.validateTotp());
+  }
+
+  final _$_EmployerStoreActionController =
+      ActionController(name: '_EmployerStore');
+
+  @override
+  dynamic setTotp(String value) {
+    final _$actionInfo = _$_EmployerStoreActionController.startAction(
+        name: '_EmployerStore.setTotp');
+    try {
+      return super.setTotp(value);
+    } finally {
+      _$_EmployerStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void changeQuest(dynamic json) {
+    final _$actionInfo = _$_EmployerStoreActionController.startAction(
+        name: '_EmployerStore.changeQuest');
+    try {
+      return super.changeQuest(json);
+    } finally {
+      _$_EmployerStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 respondedList: ${respondedList},
-selectedResponders: ${selectedResponders}
+selectedResponders: ${selectedResponders},
+isValid: ${isValid},
+totp: ${totp}
     ''';
   }
 }

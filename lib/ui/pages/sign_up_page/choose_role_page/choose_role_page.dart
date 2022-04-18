@@ -1,8 +1,11 @@
 import 'package:app/enums.dart';
+import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
+import 'package:app/utils/storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -16,64 +19,101 @@ class ChooseRolePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final store = context.read<ChooseRoleStore>();
 
-    return Scaffold(
-      appBar: CupertinoNavigationBar(
-        previousPageTitle: "  " + "meta.back".tr(),
-        border: Border.fromBorderSide(BorderSide.none),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 20,
+    return WillPopScope(
+      onWillPop: () async {
+        Storage.deleteAllFromSecureStorage();
+        Navigator.of(context, rootNavigator: true)
+            .pushNamedAndRemoveUntil(SignInPage.routeName, (route) => false);
+        return true;
+      },
+      child: Scaffold(
+        appBar: CupertinoNavigationBar(
+          leading: Align(
+            alignment: Alignment.centerLeft,
+            child: GestureDetector(
+              onTap: () {
+                Storage.deleteAllFromSecureStorage();
+                Navigator.of(context, rootNavigator: true)
+                    .pushNamedAndRemoveUntil(
+                  SignInPage.routeName,
+                  (route) => false,
+                );
+              },
+              child: Row(
+                children: [
+                  SvgPicture.asset("assets/arrow_back.svg"),
+                  Text(
+                    "Back",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ],
               ),
-              Text(
-                "role.choose".tr(),
-                style: TextStyle(
-                  color: Color(0xFF1D2127),
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
+            ),
+          ),
+          // previousPageTitle: "  " + "meta.back".tr(),
+          border: Border.fromBorderSide(BorderSide.none),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 20,
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: getEmployerCard(context, store),
-              ),
-              SizedBox(
-                height: 0,
-              ),
-              Expanded(
-                child: getWorkerCard(context, store),
-              ),
-            ],
+                Text(
+                  "role.choose".tr(),
+                  style: TextStyle(
+                    color: Color(0xFF1D2127),
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: getCard(
+                      context, store, UserRole.Employer, Color(0xFF1D2127)),
+                ),
+                SizedBox(
+                  height: 0,
+                ),
+                Expanded(
+                  child: getCard(context, store, UserRole.Worker),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget getWorkerCard(BuildContext ctx, var store) {
+  Widget getCard(BuildContext ctx, var store, UserRole role,
+      [Color color = Colors.white]) {
     return Observer(builder: (ctx) {
       return GestureDetector(
-        onTap: () {
+        onTap: () async {
           try {
-            ctx.read<ChooseRoleStore>().setUserRole(UserRole.Worker);
+            await ctx.read<ChooseRoleStore>().refreshToken();
+            ctx.read<ChooseRoleStore>().setUserRole(role);
           } catch (e, trace) {
             e.toString();
             trace.toString();
           }
-          Navigator.pushNamed(ctx, ApproveRolePage.routeName, arguments: store);
+          Navigator.pushNamed(
+            ctx,
+            ApproveRolePage.routeName,
+            arguments: store,
+          );
         },
         child: Center(
           child: Stack(
             children: [
               Image.asset(
-                "assets/worker.jpg",
+                "assets/${role.name.toLowerCase()}.jpg",
               ),
               Container(
                 margin: const EdgeInsets.only(left: 20, top: 20),
@@ -82,9 +122,9 @@ class ChooseRolePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "role.worker".tr(),
+                      "role.${role.name.toLowerCase()}".tr(),
                       style: TextStyle(
-                        color: Colors.white,
+                        color: color,
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),
@@ -93,8 +133,8 @@ class ChooseRolePage extends StatelessWidget {
                       height: 12,
                     ),
                     Text(
-                      "role.workerWant".tr(),
-                      style: TextStyle(color: Colors.white),
+                      "role.${role.name.toLowerCase()}Want".tr(),
+                      style: TextStyle(color: color),
                     ),
                   ],
                 ),
@@ -104,55 +144,5 @@ class ChooseRolePage extends StatelessWidget {
         ),
       );
     });
-  }
-
-  Widget getEmployerCard(BuildContext ctx, var store) {
-    return Observer(
-      builder: (ctx) {
-        return GestureDetector(
-          onTap: () {
-            ctx.read<ChooseRoleStore>().setUserRole(UserRole.Employer);
-            print('${ctx.read<ChooseRoleStore>().userRole}');
-            Navigator.pushNamed(ctx, ApproveRolePage.routeName,
-                arguments: store);
-          },
-          child: Center(
-            child: Stack(
-              children: [
-                Image.asset(
-                  "assets/employer.jpg",
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 20, top: 20),
-                  width: 146,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "role.employer".tr(),
-                        style: TextStyle(
-                          color: Color(0xFF1D2127),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 12,
-                      ),
-                      Text(
-                        "role.employerWant".tr(),
-                        style: TextStyle(
-                          color: Color(0xFF1D2127),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 }

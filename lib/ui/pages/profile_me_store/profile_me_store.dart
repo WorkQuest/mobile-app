@@ -1,11 +1,10 @@
 import 'dart:io';
-
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../enums.dart';
@@ -20,19 +19,22 @@ class ProfileMeStore extends _ProfileMeStore with _$ProfileMeStore {
 abstract class _ProfileMeStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _ProfileMeStore(this._apiProvider) {
-    get2FAStatus();
-  }
+  _ProfileMeStore(this._apiProvider);
 
   ProfileMeResponse? userData;
-  ProfileMeResponse? questHolder;
   ProfileMeResponse? assignedWorker;
 
   @observable
-  bool? twoFAStatus;
+  ProfileMeResponse? questHolder;
+
+  @observable
+  bool review = false;
 
   @observable
   QuestPriority priorityValue = QuestPriority.Normal;
+
+  @observable
+  ObservableList<BaseQuestResponse> quests = ObservableList.of([]);
 
   @observable
   String distantWork = "Distant work";
@@ -45,6 +47,12 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     "Work in office",
     "Both options",
   ];
+
+  int offset = 0;
+
+  String sort = "sort[createdAt]=desc";
+
+  String error = "";
 
   void setPriorityValue(String priority) =>
       priorityValue = QuestPriority.values.byName(priority);
@@ -103,22 +111,66 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     return result;
   }
 
+  @action
   Future getProfileMe() async {
     try {
-      this.onLoading();
+      // this.onLoading();
+      error = "";
       userData = await _apiProvider.getProfileMe();
-      this.onSuccess(true);
+      // this.onSuccess(true);
     } catch (e, trace) {
       print(trace);
+      error = e.toString();
       this.onError(e.toString());
     }
   }
 
-  Future<void> get2FAStatus() async {
+  Future<void> getCompletedQuests(String userId, bool newList) async {
+    try {
+      if (newList){
+        offset = 0;
+        quests.clear();
+      }
+      if (offset == quests.length) {
+        this.onLoading();
+        quests.addAll(
+          await _apiProvider.getEmployerQuests(
+            offset: offset,
+            sort: sort,
+            userId: userId,
+            statuses: [6],
+          ),
+        );
+        offset += 10;
+        this.onSuccess(true);
+      }
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
 
-    await SharedPreferences.getInstance().then((sharedPrefs) {
-      twoFAStatus = sharedPrefs.getBool("2FAStatus") ?? false;
-    });
+  Future<void> getActiveQuests(String userId, bool newList) async {
+    try {
+      if (newList){
+        offset = 0;
+        quests.clear();
+      }
+      if (offset == quests.length) {
+        this.onLoading();
+        quests.addAll(
+          await _apiProvider.getWorkerQuests(
+            offset: offset,
+            sort: sort,
+            userId: userId,
+            statuses: [1, 3, 5],
+          ),
+        );
+        offset += 10;
+        this.onSuccess(true);
+      }
+    } catch (e) {
+      this.onError(e.toString());
+    }
   }
 
   Future getQuestHolder(String userId) async {
@@ -143,17 +195,34 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
+
   changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {
       this.onLoading();
       if (media != null)
         userData.avatarId = (await _apiProvider.uploadMedia(
             medias: ObservableList.of([media])))[0];
+      final isTotpActive = this.userData?.isTotpActive;
+      final tempPhone = this.userData?.tempPhone;
+      userData.priority = priorityValue;
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
+      this.userData?.tempPhone = tempPhone;
+      this.userData?.isTotpActive = isTotpActive;
       this.onSuccess(true);
     } catch (e, trace) {
       print(trace);
+      this.onError(e.toString());
+    }
+  }
+
+  Future submitPhoneNumber(String phone) async {
+    try {
+      this.onLoading();
+      await _apiProvider.submitPhoneNumber(phone);
+
+      this.onSuccess(true);
+    } catch (e) {
       this.onError(e.toString());
     }
   }

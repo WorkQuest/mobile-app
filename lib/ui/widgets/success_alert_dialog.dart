@@ -1,119 +1,80 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-Future successAlert(
-  BuildContext context,
-  String message,
-) =>
-    showDialog(
-        context: context,
-        builder: (_) {
-          // _timer = Timer(Duration(seconds: 2), () {
-          //   Navigator.of(context).pop();
-          // });
-          return FunkyOverlay(
-            messageText: message,
-          );
-        });
+const _durationScale = Duration(milliseconds: 1500);
+const _durationSize = Duration(milliseconds: 800);
 
-class FunkyOverlay extends StatefulWidget {
-  final String messageText;
-
-  const FunkyOverlay({required this.messageText});
+class SuccessDialog extends StatefulWidget {
+  const SuccessDialog();
 
   @override
-  State<StatefulWidget> createState() => FunkyOverlayState();
+  State<StatefulWidget> createState() => SuccessDialogState();
 }
 
-class FunkyOverlayState extends State<FunkyOverlay>
-    with SingleTickerProviderStateMixin {
-  late AnimationController controller;
-  late Animation<double> scaleAnimation;
+class SuccessDialogState extends State<SuccessDialog>
+    with TickerProviderStateMixin {
+  AnimationController? _scaleController;
+  AnimationController? _sizeController;
 
   @override
   void initState() {
     super.initState();
-
-    controller = AnimationController(
-      vsync: this,
-      duration: Duration(
-        milliseconds: 600,
-      ),
-      reverseDuration: Duration(
-        milliseconds: 600,
-      ),
-    );
-    scaleAnimation = CurvedAnimation(
-      parent: controller,
-      curve: Curves.elasticInOut,
-    );
-
-    controller.forward();
-
-    controller.addListener(() {
-      setState(() {});
-
-      if (controller.isCompleted) {
-        Timer(Duration(seconds: 1), () async {
-          await controller.reverse().then(
-                (value) => controller.stop(
-                  canceled: true,
-                ),
-              );
-          Navigator.pop(context);
-          dispose();
-        });
+    _scaleController =
+        AnimationController(vsync: this, duration: _durationScale);
+    _sizeController = AnimationController(vsync: this, duration: _durationSize);
+    _scaleController!.addStatusListener((status) {
+      if (status == AnimationStatus.forward) {
+        _sizeController!.forward();
       }
     });
+
+    _scaleController!.forward();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Material(
-        color: Colors.transparent,
-        child: ScaleTransition(
-          scale: scaleAnimation,
-          child: Container(
-            height: 200.0,
-            width: double.infinity,
-            margin: EdgeInsets.symmetric(
-              horizontal: 50.0,
+    return SizedBox(
+      width: 80,
+      height: 80,
+      child: Stack(
+        children: [
+          ScaleTransition(
+            scale: CurvedAnimation(
+              parent: _scaleController!,
+              curve: Curves.fastLinearToSlowEaseIn,
             ),
-            decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0))),
-            child: Padding(
-              padding: const EdgeInsets.all(50.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    height: 60.0,
-                    width: 60.0,
-                    child: SvgPicture.asset(
-                      "assets/on_success_alert.svg",
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  Text(widget.messageText),
-                ],
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.green,
               ),
             ),
           ),
-        ),
+          SizeTransition(
+            sizeFactor: CurvedAnimation(
+              parent: _sizeController!,
+              curve: Curves.bounceInOut,
+            ),
+            axis: Axis.horizontal,
+            axisAlignment: -1,
+            child: Center(
+              child: Icon(
+                Icons.check,
+                color: Colors.white,
+                size: 50,
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
 
   @override
   void dispose() {
+    _scaleController!.dispose();
+    _sizeController!.dispose();
     super.dispose();
-    controller.dispose();
   }
 }

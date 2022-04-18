@@ -1,8 +1,15 @@
+import 'package:app/constants.dart';
+import 'package:app/di/injector.dart';
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
+import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/import_wallet_page.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -13,11 +20,12 @@ class ApproveRolePage extends StatelessWidget {
 
   static const String routeName = '/approveRolePage';
 
-  final String _baseUrl = "https://app-ver1.workquest.co/";
+  final String _baseUrl = Constants.isRelease
+      ? "https://app-ver1.workquest.co/"
+      : "https://app.workquest.co/";
 
   @override
   Widget build(BuildContext ctx) {
-    print('store: ${this.store.userRole}');
     return Scaffold(
       appBar: CupertinoNavigationBar(
         previousPageTitle: "  " + "meta.back".tr(),
@@ -32,9 +40,11 @@ class ApproveRolePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "role.yourRole".tr() +
-                      " ${store.userRole.toString().split(".").last} " +
-                      "role.right".tr(),
+                  !store.isChange
+                      ? "role.yourRole".tr() +
+                          " ${store.userRole.toString().split(".").last} " +
+                          "role.right".tr()
+                      : "role.change".tr() + " ${store.getRole()} " + "role.right".tr(),
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -43,9 +53,15 @@ class ApproveRolePage extends StatelessWidget {
                 const SizedBox(
                   height: 30,
                 ),
-                store.userRole == UserRole.Worker
-                    ? getWorkerCard()
-                    : getEmployerCard(),
+                getCard(
+                  store.isChange
+                      ? store.userRole == UserRole.Worker
+                          ? UserRole.Employer
+                          : UserRole.Worker
+                      : store.userRole == UserRole.Worker
+                          ? UserRole.Worker
+                          : UserRole.Employer,
+                ),
                 CheckboxListTile(
                   contentPadding: const EdgeInsets.all(0),
                   value: store.privacyPolicy,
@@ -81,18 +97,72 @@ class ApproveRolePage extends StatelessWidget {
                 ),
                 Spacer(),
                 SafeArea(
-                  child: ElevatedButton(
-                    onPressed: store.canApprove
+                  child: LoginButton(
+                    enabled: store.isLoading,
+                    withColumn: true,
+                    onTap: store.canApprove
                         ? () async {
-                            await store.approveRole();
-                            Navigator.pushNamed(ctx, PinCodePage.routeName);
+                            if (!store.isChange) await store.approveRole();
+                            !store.isChange
+                                ? showDialog(
+                                    context: ctx,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        scrollable: true,
+                                        title: Text("Wallet"),
+                                        content: Text("Choose a way to add a wallet"),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => Provider(
+                                                    create: (context) =>
+                                                        getIt.get<CreateWalletStore>(),
+                                                    child: ImportWalletPage(),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Text(
+                                              "Import Wallet",
+                                              style: TextStyle(
+                                                  color: AppColor.enabledButton),
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              Navigator.pop(context);
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => Provider(
+                                                    create: (context) =>
+                                                        getIt.get<CreateWalletStore>(),
+                                                    child: CreateWalletPage(),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Text(
+                                              "Create Wallet",
+                                              style: TextStyle(
+                                                  color: AppColor.enabledButton),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  )
+                                : Navigator.of(ctx, rootNavigator: true)
+                                    .pushNamed(EnterTotpPage.routeName);
+
+                            //Navigator.pushNamed(ctx, PinCodePage.routeName);
                           }
                         : null,
-                    child: store.isLoading
-                        ? CircularProgressIndicator.adaptive()
-                        : Text(
-                            "meta.iAgree".tr(),
-                          ),
+                    title: "meta.iAgree".tr(),
                   ),
                 ),
                 SizedBox(
@@ -136,12 +206,12 @@ class ApproveRolePage extends StatelessWidget {
     );
   }
 
-  Widget getWorkerCard() {
+  Widget getCard(UserRole role) {
     return Center(
       child: Stack(
         children: [
           Image.asset(
-            "assets/worker.jpg",
+            "assets/${role.name.toLowerCase()}.jpg",
           ),
           Container(
             margin: const EdgeInsets.only(left: 20, top: 20),
@@ -150,9 +220,9 @@ class ApproveRolePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "role.worker".tr(),
+                  "role.${role.name.toLowerCase()}".tr(),
                   style: TextStyle(
-                      color: Colors.white,
+                      color: role == UserRole.Worker ? Colors.white : Color(0xFF1D2127),
                       fontSize: 20,
                       fontWeight: FontWeight.w600),
                 ),
@@ -160,43 +230,10 @@ class ApproveRolePage extends StatelessWidget {
                   height: 12,
                 ),
                 Text(
-                  "role.workerWant".tr(),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget getEmployerCard() {
-    return Center(
-      child: Stack(
-        children: [
-          Image.asset(
-            "assets/employer.jpg",
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 20, top: 20),
-            width: 146,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "role.employer".tr(),
+                  "role.${role.name.toLowerCase()}Want".tr(),
                   style: TextStyle(
-                      color: Color(0xFF1D2127),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600),
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                Text(
-                  "role.employerWant".tr(),
-                  style: TextStyle(color: Color(0xFF1D2127)),
+                    color: role == UserRole.Worker ? Colors.white : Color(0xFF1D2127),
+                  ),
                 ),
               ],
             ),

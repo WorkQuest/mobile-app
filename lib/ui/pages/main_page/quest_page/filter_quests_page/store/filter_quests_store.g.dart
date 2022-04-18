@@ -32,36 +32,6 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     });
   }
 
-  final _$employmentAtom = Atom(name: 'FilterQuestsStoreBase.employment');
-
-  @override
-  ObservableList<bool> get employment {
-    _$employmentAtom.reportRead();
-    return super.employment;
-  }
-
-  @override
-  set employment(ObservableList<bool> value) {
-    _$employmentAtom.reportWrite(value, super.employment, () {
-      super.employment = value;
-    });
-  }
-
-  final _$workplaceAtom = Atom(name: 'FilterQuestsStoreBase.workplace');
-
-  @override
-  ObservableList<bool> get workplace {
-    _$workplaceAtom.reportRead();
-    return super.workplace;
-  }
-
-  @override
-  set workplace(ObservableList<bool> value) {
-    _$workplaceAtom.reportWrite(value, super.workplace, () {
-      super.workplace = value;
-    });
-  }
-
   final _$priorityAtom = Atom(name: 'FilterQuestsStoreBase.priority');
 
   @override
@@ -153,6 +123,21 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
   set selectEmployment(ObservableList<bool> value) {
     _$selectEmploymentAtom.reportWrite(value, super.selectEmployment, () {
       super.selectEmployment = value;
+    });
+  }
+
+  final _$selectRatingAtom = Atom(name: 'FilterQuestsStoreBase.selectRating');
+
+  @override
+  ObservableList<bool> get selectRating {
+    _$selectRatingAtom.reportRead();
+    return super.selectRating;
+  }
+
+  @override
+  set selectRating(ObservableList<bool> value) {
+    _$selectRatingAtom.reportWrite(value, super.selectRating, () {
+      super.selectRating = value;
     });
   }
 
@@ -297,6 +282,17 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
   }
 
   @override
+  void initRating(List<int> value) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.initRating');
+    try {
+      return super.initRating(value);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void initWorkplace(List<String> value) {
     final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
         name: 'FilterQuestsStoreBase.initWorkplace');
@@ -355,14 +351,13 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
   String toString() {
     return '''
 isLoading: ${isLoading},
-employment: ${employment},
-workplace: ${workplace},
 priority: ${priority},
 selectedSkillFilters: ${selectedSkillFilters},
 sortBy: ${sortBy},
 selectSortBy: ${selectSortBy},
 sortByEmployment: ${sortByEmployment},
 selectEmployment: ${selectEmployment},
+selectRating: ${selectRating},
 sortByPriority: ${sortByPriority},
 sortByEmployeeRating: ${sortByEmployeeRating},
 selectEmployeeRating: ${selectEmployeeRating},

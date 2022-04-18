@@ -1,10 +1,12 @@
 import 'package:app/ui/pages/main_page/wallet_page/bank_card_widget.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share/share.dart';
 
 final _divider = const SizedBox(
@@ -86,10 +88,14 @@ class _DepositPageState extends State<DepositPage>
                 ///Wallet Transfer
                 walletTab(),
 
-                ///Card Transfer
-                BankCardTransaction(
-                  transaction: "wallet.deposit".tr(),
+                Center(
+                  child: Text("This feature is currently unavailable"),
                 ),
+
+                ///Card Transfer
+                // BankCardTransaction(
+                //   transaction: "wallet.deposit".tr(),
+                // ),
               ],
             ),
           ),
@@ -105,9 +111,16 @@ class _DepositPageState extends State<DepositPage>
           mainAxisSize: MainAxisSize.min,
           children: [
             Center(
-              child: Image.asset(
-                "assets/qr_code_placeholder.jpg",
-              ),
+              child: AccountRepository().userAddress != null
+                  ? QrImage(
+                      data: AccountRepository().userAddress!,
+                      version: QrVersions.auto,
+                      size: 200.0,
+                    )
+                  : CircularProgressIndicator(),
+              // Image.asset(
+              //   "assets/qr_code_placeholder.jpg",
+              // ),
             ),
             _divider,
             Text(
@@ -135,7 +148,10 @@ class _DepositPageState extends State<DepositPage>
                   color: Colors.black45.withOpacity(0.1),
                 ),
               ),
-              child: Text("0xu383d7g...dq9w"),
+              child: Text(
+                '${AccountRepository().userAddress!.substring(0, 9)}...'
+                '${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
+              ),
             ),
             Spacer(),
             Row(
@@ -146,8 +162,9 @@ class _DepositPageState extends State<DepositPage>
                   child: SizedBox(
                     height: 43.0,
                     child: OutlinedButton(
-                      onPressed: () => Share.share(
-                          "http://en.m.wikipedia.org"),
+                      onPressed: () => AccountRepository().userAddress != null
+                          ? Share.share(AccountRepository().userAddress!)
+                          : null,
                       child: Text(
                         "sharing.title".tr(),
                       ),
@@ -165,20 +182,22 @@ class _DepositPageState extends State<DepositPage>
                 ),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => Clipboard.setData(
-                      new ClipboardData(
-                        text: "0xu383d7g...dq9w",
-                      ),
-                    ).then((_) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: Duration(seconds: 1),
-                          content: Text(
-                            "wallet.copy".tr(),
-                          ),
-                        ),
-                      );
-                    }),
+                    onPressed: () => AccountRepository().userAddress != null
+                        ? Clipboard.setData(
+                            new ClipboardData(
+                              text: AccountRepository().userAddress!,
+                            ),
+                          ).then((_) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: Duration(seconds: 1),
+                                content: Text(
+                                  "wallet.copy".tr(),
+                                ),
+                              ),
+                            );
+                          })
+                        : null,
                     child: Text(
                       "modals.copy".tr(),
                     ),

@@ -1,9 +1,12 @@
+import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/avatar.dart';
-// import 'package:app/model/profile_response/rating_statistic.dart';
+import 'package:app/model/quests_models/location_full.dart';
+import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class ProfileMeResponse {
+class ProfileMeResponse with ClusterItem {
   ProfileMeResponse({
     required this.id,
     required this.avatarId,
@@ -17,11 +20,15 @@ class ProfileMeResponse {
     required this.avatar,
     required this.userSpecializations,
     required this.ratingStatistic,
-    required this.location,
+    required this.locationCode,
+    required this.locationPlaceName,
     required this.wagePerHour,
     required this.workplace,
     required this.priority,
     required this.questsStatistic,
+    this.raiseView,
+    required this.walletAddress,
+    required this.isTotpActive,
     // required this.createdAt,
     // required this.updatedAt,
   });
@@ -30,19 +37,25 @@ class ProfileMeResponse {
   String avatarId;
   String firstName;
   String lastName;
-  String? phone;
-  String? tempPhone;
+
+  Phone? phone;
+  Phone? tempPhone;
   String? email;
   AdditionalInfo? additionalInfo;
   UserRole role;
   Avatar? avatar;
   List<String> userSpecializations;
   RatingStatistic? ratingStatistic;
-  Location? location;
+  LocationCode? locationCode;
+  String? locationPlaceName;
   String wagePerHour;
   String? workplace;
   QuestPriority priority;
   QuestsStatistic? questsStatistic;
+  RaiseView? raiseView;
+  String? walletAddress;
+  bool? isTotpActive;
+  bool showAnimation = true;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(
@@ -62,12 +75,16 @@ class ProfileMeResponse {
           ratingStatistic: object.ratingStatistic != null
               ? RatingStatistic.clone(object.ratingStatistic!)
               : null,
-          location:
-              object.location != null ? Location.clone(object.location!) : null,
+          locationCode: object.locationCode != null
+              ? LocationCode.clone(object.locationCode!)
+              : null,
+          locationPlaceName: object.locationPlaceName,
           wagePerHour: object.wagePerHour,
           workplace: object.workplace,
           priority: object.priority,
           questsStatistic: object.questsStatistic,
+          walletAddress: object.walletAddress,
+          isTotpActive: object.isTotpActive,
         );
 
   //RatingStatistic? ratingStatistic;
@@ -80,14 +97,42 @@ class ProfileMeResponse {
       avatarId: json["avatarId"] ?? "",
       firstName: json["firstName"] ?? "",
       lastName: json["lastName"] ?? "",
-      phone: json["phone"] ?? "",
-      tempPhone: json["tempPhone"] ?? "",
+      phone: json["phone"] == null
+          ? null
+          : Constants.isRelease
+              ? Phone(
+                  fullPhone: json["phone"] ?? '',
+                  phone: '',
+                  codeRegion: '',
+                )
+              : Phone.fromJson(
+                  json["phone"] ??
+                      {
+                        "codeRegion": "",
+                        "fullPhone": "",
+                        "phone": "",
+                      },
+                ),
+      tempPhone: Constants.isRelease
+          ? Phone(
+              fullPhone: json["tempPhone"] ?? '',
+              phone: '',
+              codeRegion: '',
+            )
+          : Phone.fromJson(
+              json["tempPhone"] ??
+                  {
+                    "codeRegion": "",
+                    "fullPhone": "",
+                    "phone": "",
+                  },
+            ),
       email: json["email"],
       additionalInfo: json["additionalInfo"] == null
           ? null
           : AdditionalInfo.fromJson(json["additionalInfo"]),
       role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
-      avatar: Avatar.fromJson(json["avatar"]),
+      avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
       userSpecializations: json["userSpecializations"] == null
           ? []
           : (List<Map<String, dynamic>> skills) {
@@ -103,18 +148,25 @@ class ProfileMeResponse {
             "userId": json["id"],
             "reviewCount": 0,
             "averageMark": 0,
-            "status": "",
+            "status": 3,
             // createdAt: createdAt,
             // updatedAt: updatedAt,
           }),
-      location:
-          json["location"] == null ? null : Location.fromJson(json["location"]),
+      locationCode: json["location"] == null
+          ? null
+          : LocationCode.fromJson(json["location"]),
+      locationPlaceName: json["locationPlaceName"] ?? "",
       wagePerHour: json["wagePerHour"] ?? "0",
       workplace: json["workplace"],
       priority: QuestPriority.values[json["priority"] ?? 0],
       questsStatistic: json["questsStatistic"] == null
           ? null
           : QuestsStatistic.fromJson(json["questsStatistic"]),
+      raiseView: json["raiseView"] == null
+          ? null
+          : RaiseView.fromJson(json["raiseView"]),
+      walletAddress: json["wallet"]?["address"],
+      isTotpActive: json["totpIsActive"] == null ? false : json["totpIsActive"],
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );
@@ -125,7 +177,7 @@ class ProfileMeResponse {
         "avatarId": avatarId,
         "firstName": firstName,
         "lastName": lastName,
-        "phone": phone,
+        // "phone": phone,
         "tempPhone": tempPhone,
         "email": email,
         //"additionalInfo": additionalInfo!.toJson(),
@@ -134,7 +186,8 @@ class ProfileMeResponse {
         // "skillFilter": skillFilters.map((item) => item.toJson()),
         "ratingStatistic":
             ratingStatistic == null ? null : ratingStatistic!.toJson(),
-        "location": location == null ? null : location!.toJson(),
+        "location": locationCode == null ? null : locationCode!.toJson(),
+        "locationPlaceName": locationPlaceName,
         "wagePerHour": wagePerHour,
         "workplace": workplace,
         "priority": priority.index,
@@ -142,6 +195,11 @@ class ProfileMeResponse {
         // "createdAt": createdAt.toIso8601String(),
         // "updatedAt": updatedAt.toIso8601String(),
       };
+
+  @override
+  // TODO: implement location
+  LatLng get location =>
+      LatLng(locationCode!.latitude, locationCode!.longitude);
 }
 
 class QuestsStatistic {
@@ -194,31 +252,6 @@ class UserSkillFilters {
       };
 }
 
-class Location {
-  Location({
-    required this.longitude,
-    required this.latitude,
-  });
-
-  double longitude;
-  double latitude;
-
-  Location.clone(Location object)
-      : this(longitude: object.longitude, latitude: object.latitude);
-
-  factory Location.fromJson(Map<String, dynamic> json) {
-    return Location(
-      latitude: json["latitude"] == 0 ? 0.0 : json["latitude"],
-      longitude: json["longitude"] == 0 ? 0.0 : json["longitude"],
-    );
-  }
-
-  Map<String, double> toJson() => {
-        "latitude": latitude,
-        "longitude": longitude,
-      };
-}
-
 class RatingStatistic {
   RatingStatistic({
     required this.id,
@@ -234,7 +267,7 @@ class RatingStatistic {
   String userId;
   int reviewCount;
   double averageMark;
-  String status;
+  int status;
 
   // String createdAt;
   // String updatedAt;
@@ -251,13 +284,32 @@ class RatingStatistic {
         );
 
   factory RatingStatistic.fromJson(Map<String, dynamic> json) {
+    int? status;
+    if (Constants.isRelease) {
+      switch (json["status"]) {
+        case 'noStatus':
+          status = 3;
+          break;
+        case 'verified':
+          status = 2;
+          break;
+        case 'reliable':
+          status = 1;
+          break;
+        case 'topRanked':
+          status = 0;
+          break;
+      }
+    } else {
+      status = json["status"];
+    }
     return RatingStatistic(
       id: json["id"],
       userId: json["userId"],
       reviewCount: json["reviewCount"],
       averageMark:
           json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
-      status: json["status"],
+      status: status ?? 3,
       // createdAt: json["createdAt"],
       // updatedAt: json["updatedAt"],
     );
@@ -271,5 +323,87 @@ class RatingStatistic {
         "status": status,
         // "createdAt": createdAt,
         // "updatedAt": updatedAt,
+      };
+}
+
+class Phone {
+  Phone({
+    required this.phone,
+    required this.fullPhone,
+    required this.codeRegion,
+  });
+
+  String phone;
+  String fullPhone;
+  String codeRegion;
+
+  Phone.clone(Phone object)
+      : this(
+          phone: object.phone,
+          fullPhone: object.fullPhone,
+          codeRegion: object.codeRegion,
+        );
+
+  factory Phone.fromJson(Map<String, dynamic> json) {
+    return Phone(
+      phone: json["phone"],
+      fullPhone: json["fullPhone"],
+      codeRegion: json["codeRegion"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "phone": phone,
+        "fullPhone": fullPhone,
+        "codeRegion": codeRegion,
+      };
+}
+
+class RaiseView {
+  RaiseView({
+    this.id,
+    this.userId,
+    this.status,
+    this.duration,
+    this.type,
+    this.endedAt,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  String? id;
+  String? userId;
+  int? status;
+  int? duration;
+  int? type;
+  DateTime? endedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+
+  factory RaiseView.fromJson(Map<String, dynamic> json) => RaiseView(
+        id: json["id"] == null ? null : json["id"],
+        userId: json["userId"] == null ? null : json["userId"],
+        status: json["status"] == null ? null : json["status"],
+        duration: json["duration"] == null ? null : json["duration"],
+        type: json["type"] == null ? null : json["type"],
+        endedAt:
+            json["endedAt"] == null ? null : DateTime.parse(json["endedAt"]),
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id == null ? null : id,
+        "userId": userId == null ? null : userId,
+        "status": status == null ? null : status,
+        "duration": duration == null ? null : duration,
+        "type": type == null ? null : type,
+        "endedAt": endedAt == null ? null : endedAt!.toIso8601String(),
+        "createdAt": createdAt == null ? null : createdAt!.toIso8601String(),
+        "updatedAt": updatedAt == null ? null : updatedAt!.toIso8601String(),
       };
 }

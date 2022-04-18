@@ -1,8 +1,8 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/utils/web_socket.dart';
@@ -22,7 +22,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   }
 
   @observable
-  String? sort = "";
+  String sort = "sort[createdAt]=desc";
 
   @observable
   int priority = -1;
@@ -47,20 +47,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   @observable
   ObservableList<BaseQuestResponse> performed = ObservableList.of([]);
 
-  // @observable
-  // ObservableList<BaseQuestResponse> requested = ObservableList.of([]);
-
   @observable
   ObservableList<BaseQuestResponse> invited = ObservableList.of([]);
-
-  @observable
-  ObservableList<BaseQuestResponse> allQuests = ObservableList.of([]);
-
-  @observable
-  List<BitmapDescriptor> iconsMarker = [];
-
-  @observable
-  BaseQuestResponse? selectQuestInfo;
 
   bool loadActive = true;
 
@@ -70,27 +58,48 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   bool loadStarred = true;
 
+  String myId = "";
+
+  void setId(String value) => myId = value;
+
   void changeQuest(dynamic json) {
-    print("WebSocket quests");
-    var quest = BaseQuestResponse.fromJson(json);
-    deleteQuest(quest);
-    addQuest(quest, true);
+    try {
+      var quest =
+          BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+      (json["recipients"] as List).forEach((element) {
+        if (element == myId)
+          quest.responded = Responded(
+            id: "",
+            workerId: myId,
+            questId: quest.id,
+            status: 0,
+            type: 0,
+            message: "message",
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          );
+      });
+      deleteQuest(quest);
+      addQuest(quest, true);
+    } catch (e) {
+      print("ERROR: $e");
+    }
   }
 
   void sortQuests() {
-    active.sort((key1, key2) {
+    active.sort((key2, key1) {
       return key1.createdAt.millisecondsSinceEpoch
           .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
-    starred.sort((key1, key2) {
+    starred.sort((key2, key1) {
       return key1.createdAt.millisecondsSinceEpoch
           .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
-    performed.sort((key1, key2) {
+    performed.sort((key2, key1) {
       return key1.createdAt.millisecondsSinceEpoch
           .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
-    invited.sort((key1, key2) {
+    invited.sort((key2, key1) {
       return key1.createdAt.millisecondsSinceEpoch
           .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
@@ -171,6 +180,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadActive)
           active.addAll(await _apiProvider.getEmployerQuests(
             userId: userId,
+            sort: sort,
             offset: this.offsetActive,
             statuses: [0, 1, 3, 5],
           ));
@@ -178,6 +188,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadInvited)
           invited.addAll(await _apiProvider.getEmployerQuests(
             userId: userId,
+            sort: sort,
             offset: this.offsetInvited,
             statuses: [4],
           ));
@@ -185,6 +196,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadPerformed) {
           performed.addAll(await _apiProvider.getEmployerQuests(
             userId: userId,
+            sort: sort,
             offset: this.offsetPerformed,
             statuses: [6],
           ));
@@ -193,6 +205,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadActive)
           active.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetActive,
+            sort: sort,
             userId: userId,
             statuses: [1, 3, 5],
           ));
@@ -200,6 +213,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadInvited)
           invited.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetInvited,
+            sort: sort,
             userId: userId,
             statuses: [4],
           ));
@@ -207,6 +221,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadPerformed)
           performed.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetPerformed,
+            sort: sort,
             userId: userId,
             statuses: [6],
           ));
@@ -214,6 +229,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         if (loadStarred)
           starred.addAll(await _apiProvider.getQuests(
             offset: this.offsetStarred,
+            sort: sort,
             starred: true,
           ));
       }

@@ -30,6 +30,7 @@ dependencies:
 
   # Network modules
   dio: ^4.0.0
+  web_socket_channel: ^2.1.0
 
   # State management.
   mobx: ^2.0.1
@@ -48,22 +49,39 @@ dependencies:
   # Widgets.
   flutter_svg: ^0.22.0
   dotted_border: ^2.0.0
-  google_maps_flutter: ^2.0.3
+  google_maps_flutter: ^2.1.1
   flutter_google_places_hoc081098: ^1.0.0-nullsafety.5
   geolocator: ^8.0.1
   maps_launcher: ^2.0.1
+  google_maps_cluster_manager: ^3.0.0+1
+  flutter_cache_manager: ^3.3.0
 
   permission_handler: ^8.1.4
   flutter_secure_storage: ^4.2.0
+  store_redirect: ^2.0.1
   webview_flutter: ^2.0.10
   flutter_countdown_timer: ^4.1.0
   carousel_slider: ^4.0.0
   dots_indicator: ^2.0.0
   share: ^2.0.4
   mask_text_input_formatter: ^2.0.0
+  qr_flutter: ^4.0.0
+  country_code: ^1.0.0
+  intl_phone_number_input: ^0.7.0+2
+  webview_cookie_manager: ^2.0.6
+  page_indicator: ^0.4.1
+  flutter_datetime_picker: ^1.5.1
+
+  # Web3
+  web3dart: ^2.3.3
+  equatable: ^2.0.3
+  bip32: ^2.0.0
+  bip39: ^1.0.6
+  hex: ^0.2.0
+  ed25519_hd_key: ^2.2.0
 
   #url & app launcher
-  url_launcher: ^6.0.9
+  url_launcher: ^6.0.10
   flutter_custom_tabs: ^1.0.3
 
   #Media and Files
@@ -78,13 +96,12 @@ dependencies:
   cupertino_icons: ^1.0.0
   local_auth: ^1.1.6
   shared_preferences: ^2.0.6
-  web_socket_channel: ^2.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  build_runner: 1.12.2
+  build_runner: 2.1.7
 
   # Code generation for getIt
   injectable_generator:
@@ -110,7 +127,10 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/contracts/
     - assets/lang/
+    - assets/coins/
+    - assets/flags/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -47,6 +47,36 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$fromPriceAtom = Atom(name: '_QuestsStore.fromPrice');
+
+  @override
+  String get fromPrice {
+    _$fromPriceAtom.reportRead();
+    return super.fromPrice;
+  }
+
+  @override
+  set fromPrice(String value) {
+    _$fromPriceAtom.reportWrite(value, super.fromPrice, () {
+      super.fromPrice = value;
+    });
+  }
+
+  final _$toPriceAtom = Atom(name: '_QuestsStore.toPrice');
+
+  @override
+  String get toPrice {
+    _$toPriceAtom.reportRead();
+    return super.toPrice;
+  }
+
+  @override
+  set toPrice(String value) {
+    _$toPriceAtom.reportWrite(value, super.toPrice, () {
+      super.toPrice = value;
+    });
+  }
+
   final _$offsetAtom = Atom(name: '_QuestsStore.offset');
 
   @override
@@ -140,13 +170,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$searchResultListAtom = Atom(name: '_QuestsStore.searchResultList');
 
   @override
-  List<BaseQuestResponse>? get searchResultList {
+  ObservableList<BaseQuestResponse> get searchResultList {
     _$searchResultListAtom.reportRead();
     return super.searchResultList;
   }
 
   @override
-  set searchResultList(List<BaseQuestResponse>? value) {
+  set searchResultList(ObservableList<BaseQuestResponse> value) {
     _$searchResultListAtom.reportWrite(value, super.searchResultList, () {
       super.searchResultList = value;
     });
@@ -155,13 +185,13 @@ mixin _$QuestsStore on _QuestsStore, Store {
   final _$searchWorkersListAtom = Atom(name: '_QuestsStore.searchWorkersList');
 
   @override
-  List<ProfileMeResponse>? get searchWorkersList {
+  ObservableList<ProfileMeResponse> get searchWorkersList {
     _$searchWorkersListAtom.reportRead();
     return super.searchWorkersList;
   }
 
   @override
-  set searchWorkersList(List<ProfileMeResponse>? value) {
+  set searchWorkersList(ObservableList<ProfileMeResponse> value) {
     _$searchWorkersListAtom.reportWrite(value, super.searchWorkersList, () {
       super.searchWorkersList = value;
     });
@@ -251,6 +281,15 @@ mixin _$QuestsStore on _QuestsStore, Store {
     return _$getSearchedQuestsAsyncAction.run(() => super.getSearchedQuests());
   }
 
+  final _$getSearchedWorkersAsyncAction =
+      AsyncAction('_QuestsStore.getSearchedWorkers');
+
+  @override
+  Future<dynamic> getSearchedWorkers() {
+    return _$getSearchedWorkersAsyncAction
+        .run(() => super.getSearchedWorkers());
+  }
+
   final _$getQuestsAsyncAction = AsyncAction('_QuestsStore.getQuests');
 
   @override
@@ -266,6 +305,17 @@ mixin _$QuestsStore on _QuestsStore, Store {
   }
 
   final _$_QuestsStoreActionController = ActionController(name: '_QuestsStore');
+
+  @override
+  void setPrice(String from, String to) {
+    final _$actionInfo = _$_QuestsStoreActionController.startAction(
+        name: '_QuestsStore.setPrice');
+    try {
+      return super.setPrice(from, to);
+    } finally {
+      _$_QuestsStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   List<String> parser(List<String> skills) {
@@ -294,6 +344,8 @@ mixin _$QuestsStore on _QuestsStore, Store {
     return '''
 searchWord: ${searchWord},
 sort: ${sort},
+fromPrice: ${fromPrice},
+toPrice: ${toPrice},
 offset: ${offset},
 offsetWorkers: ${offsetWorkers},
 limit: ${limit},

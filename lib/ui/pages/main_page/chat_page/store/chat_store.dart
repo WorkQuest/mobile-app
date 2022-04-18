@@ -10,7 +10,7 @@ import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
-
+import 'package:app/http/chat_extension.dart';
 import '../../../../../enums.dart';
 
 part 'chat_store.g.dart';
@@ -49,8 +49,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   Map<String, Chats> chats = {};
 
-  @observable
-  ObservableList<Chats> starredChats = ObservableList.of([]);
+  // @observable
+  // List<String> starredChats = [];
 
   @observable
   ObservableList<String> chatsId = ObservableList.of([]);
@@ -71,12 +71,18 @@ abstract class _ChatStore extends IStore<bool> with Store {
     var keys = chats.keys.toList();
     var values = chats.values.toList();
 
+    chatSort();
+
     values.forEach((element) {
       if (idChatsForStar[element.chatModel.id] == null)
         idChatsForStar[element.chatModel.id] = false;
     });
+    return keys;
+  }
 
-    keys.sort((key1, key2) {
+  @action
+  void chatSort() {
+    chats.keys.toList().sort((key1, key2) {
       final chat1 = chats[key1]!.chatModel;
       final chat2 = chats[key2]!.chatModel;
 
@@ -85,7 +91,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
           ? 1
           : 0;
     });
-    return keys;
   }
 
   @action
@@ -137,6 +142,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
   void setMessages(List<MessageModel> messages, ChatModel chat) {
     if (chats[chat.id] == null) chats[chat.id] = Chats(chat);
     chats[chat.id]!.messages = messages;
+    print(chats[chat.id]?.chatModel.lastMessage.infoMessage);
     chats[chat.id]!.update();
     _atomChats.reportChanged();
   }
@@ -158,6 +164,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
       if (json["type"] == "request") {
         message = MessageModel.fromJson(json["payload"]["result"]);
       } else if (json["message"]["action"] == "groupChatCreate") {
+        print(json["message"]["data"]);
+        print(json["message"]["data"]["lastMessage"]);
         message = MessageModel.fromJson(json["message"]["data"]["lastMessage"]);
         setMessages(
             [MessageModel.fromJson(json["message"]["data"]["lastMessage"])],
@@ -177,9 +185,11 @@ abstract class _ChatStore extends IStore<bool> with Store {
       chat.chatModel.lastMessage = message;
       chat.messages.insert(0, message);
 
-      final saveChat = chats.remove(message.chatId);
+      // final saveChat = chats.remove(message.chatId);
 
-      chats[message.chatId] = saveChat!;
+      // chats[message.chatId] = saveChat!;
+
+      chatSort();
 
       checkMessage();
       _atomChats.reportChanged();
@@ -203,17 +213,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
   int _count = 0;
 
   @action
-  void openStarredChats(bool value) {
-    starred = value;
-    starredChats.clear();
-    chats.forEach((key, value) {
-      if (value.chatModel.star != null) {
-        starredChats.add(value);
-      }
-    });
-  }
-
-  @action
   String setInfoMessage(String infoMessage) {
     switch (infoMessage) {
       case "groupChatCreate":
@@ -235,23 +234,26 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   initialSetup(String myId) async {
     this._myId = myId;
-    await loadChats(true);
+    await loadChats(true, false);
     WebSocket().connect();
   }
 
   @action
   void checkMessage() {
-    chats.values.forEach((element) {
-      if (element.chatModel.lastMessage.senderStatus == "unread" &&
-          element.chatModel.lastMessage.senderUserId != this._myId) {
+    int i = 0;
+    unread = false;
+    while (i != chats.values.length && unread == false) {
+      if (chats.values.toList()[i].chatModel.lastMessage.senderStatus ==
+              "unread" &&
+          chats.values.toList()[i].chatModel.lastMessage.senderUserId !=
+              this._myId) {
         streamChatNotification!.sink.add(true);
         unread = true;
         return;
-      } else {
-        streamChatNotification!.sink.add(false);
-        unread = false;
       }
-    });
+      i++;
+    }
+    streamChatNotification!.sink.add(false);
   }
 
   void initialStore() async {
@@ -260,10 +262,10 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   @action
-  Future loadChats(bool isNewList) async {
+  Future loadChats(bool isNewList, bool starred) async {
     if (isNewList) {
       chats = {};
-      starredChats.clear();
+      // starredChats.clear();
       this.offset = 0;
       refresh = false;
     }
@@ -276,12 +278,14 @@ abstract class _ChatStore extends IStore<bool> with Store {
       final listChats = await _apiProvider.getChats(
         offset: this.offset,
         limit: this.limit,
+        starred: starred,
       );
       listChats.forEach((chat) {
         chats[chat.id] = Chats(chat);
-        if (chats[chat.id]!.chatModel.star != null)
-          starredChats.add(chats[chat.id]!);
+        // if (chats[chat.id]!.chatModel.star != null)
+        //   starredChats.add(chats[chat.id]!);
       });
+      checkMessage();
       this.offset = chats.length;
       refresh = true;
       this.onSuccess(true);

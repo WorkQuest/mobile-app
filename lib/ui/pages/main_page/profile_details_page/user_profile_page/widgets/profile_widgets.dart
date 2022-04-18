@@ -1,13 +1,15 @@
-import 'dart:async';
-
 import 'package:app/model/profile_response/social_network.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/animation_show_more.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
+import 'package:app/ui/widgets/user_avatar.dart';
+import 'package:app/ui/widgets/user_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -34,14 +36,10 @@ class PortfolioWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Map<String, dynamic> arguments = {
-          "index": index,
-          "isProfileYour": isProfileYour
-        };
         Navigator.pushNamed(
           context,
           PortfolioDetails.routeName,
-          arguments: arguments,
+          arguments: PortfolioArguments(index, isProfileYour),
         );
       },
       child: Padding(
@@ -98,16 +96,18 @@ class PortfolioWidget extends StatelessWidget {
 }
 
 ///Reviews Widget
-class ReviewsWidget extends StatelessWidget {
+class ReviewsWidget extends StatefulWidget {
   final String avatar;
   final String name;
   final int mark;
   final String userRole;
   final String questTitle;
   final String message;
+  final String cutMessage;
   final String id;
   final String myId;
   final UserRole role;
+  final bool last;
 
   const ReviewsWidget({
     required this.avatar,
@@ -116,10 +116,19 @@ class ReviewsWidget extends StatelessWidget {
     required this.userRole,
     required this.questTitle,
     required this.message,
+    required this.cutMessage,
     required this.id,
     required this.myId,
     required this.role,
+    required this.last,
   });
+
+  @override
+  State<ReviewsWidget> createState() => _ReviewsWidgetState();
+}
+
+class _ReviewsWidgetState extends State<ReviewsWidget> {
+  bool enabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -135,11 +144,6 @@ class ReviewsWidget extends StatelessWidget {
           ),
         ),
         Container(
-          // margin: EdgeInsets.only(
-          //   left: 16.0,
-          //   right: 16.0,
-          //   top: 10.0,
-          // ),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(
@@ -152,42 +156,48 @@ class ReviewsWidget extends StatelessWidget {
             children: [
               Flexible(
                 child: GestureDetector(
-                  onTap: () {
-                    if (id != profile.userData!.id)
-                      profile.getAssignedWorker(id);
+                  onTap: () async {
+                    if (widget.id != profile.userData!.id)
+                      await profile.getAssignedWorker(widget.id);
                     else
                       profile.assignedWorker = profile.userData!;
-                    Timer.periodic(Duration(milliseconds: 100), (timer) async {
-                      if (profile.assignedWorker != null) {
-                        timer.cancel();
-                        await Navigator.of(context, rootNavigator: true)
-                            .pushNamed(
-                          UserProfile.routeName,
-                          arguments: profile.assignedWorker,
-                        );
-                        if (role == UserRole.Worker)
-                          portfolioStore.getPortfolio(userId: myId);
-                        else {
-                          userProfileStore.userQuest.clear();
-                          userProfileStore.getQuests(myId, role);
-                        }
-                        portfolioStore.getReviews(userId: myId);
+                    if (profile.assignedWorker != null) {
+                      portfolioStore.clearData();
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                        UserProfile.routeName,
+                        arguments: profile.assignedWorker,
+                      );
+                      portfolioStore.clearData();
+                      if (widget.role == UserRole.Worker)
+                        portfolioStore.getPortfolio(userId: widget.myId, newList: true);
+                      else {
+                        userProfileStore.quests.clear();
+                        userProfileStore.getQuests(widget.myId, widget.role, true);
                       }
-                      profile.assignedWorker = null;
-                    });
+                      portfolioStore.getReviews(userId: widget.myId, newList: true);
+                    }
+                    profile.assignedWorker = null;
                   },
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundImage: NetworkImage(avatar),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100.0),
+                        child: UserAvatar(
+                          width: 40,
+                          height: 40,
+                          url: widget.avatar,
+                        ),
+                      ),
+                      // backgroundImage: NetworkImage(widget.avatar),
                     ),
                     title: Text(
-                      name,
+                      widget.name,
                       style: TextStyle(fontSize: 16.0),
+                      overflow: TextOverflow.ellipsis,
                     ),
                     subtitle: Text(
-                      userRole.tr(),
-                      style:
-                          TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
+                      widget.userRole.tr(),
+                      style: TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
                     ),
                   ),
                 ),
@@ -201,20 +211,20 @@ class ReviewsWidget extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      for (int i = 0; i < mark; i++)
+                      for (int i = 0; i < widget.mark; i++)
                         Icon(
                           Icons.star,
                           color: Color(0xFFE8D20D),
                           size: 19.0,
                         ),
-                      for (int i = 0; i < 5 - mark; i++)
+                      for (int i = 0; i < 5 - widget.mark; i++)
                         Icon(
                           Icons.star,
                           color: Color(0xFFE9EDF2),
                           size: 19.0,
                         ),
                       const SizedBox(width: 13),
-                      Text("$mark"),
+                      Text("${widget.mark}"),
                     ],
                   ),
                 ),
@@ -236,7 +246,7 @@ class ReviewsWidget extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: questTitle,
+                          text: widget.questTitle,
                           style: TextStyle(
                             color: Color(0xFF7C838D),
                           ),
@@ -246,110 +256,87 @@ class ReviewsWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16.0,
-                    right: 16.0,
-                    bottom: 15.0,
-                  ),
-                  child: Text(message),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  bottom: 15.0,
                 ),
+                child: widget.message.length < 50
+                    ? Text(
+                        widget.message,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : AnimationShowMore(
+                        text: widget.message,
+                        enabled: enabled,
+                        onShowMore: (value) {
+                          setState(() {
+                            this.enabled = value;
+                          });
+                        },
+                      ),
               ),
             ],
           ),
         ),
-        Container(
-          height: 10,
-          decoration: BoxDecoration(
-            color: Color(0xFFF7F8FA),
+        if (widget.last)
+          Container(
+            height: 10,
+            decoration: BoxDecoration(
+              color: Color(0xFFF7F8FA),
+            ),
           ),
-        ),
       ],
     );
   }
 }
 
 ///AppBar Title
-Widget appBarTitle(String name, double padding, String status) {
-  return AnimatedPadding(
+Widget appBarTitle(String name, double padding, int status, double width) {
+  return Padding(
     padding: EdgeInsets.only(left: padding),
-    duration: Duration(milliseconds: 100),
     child: Stack(
       children: [
         Positioned(
-          bottom: 18.0,
-          left: 0.0,
-          child: Text(
-            name,
-            style: TextStyle(
-              fontSize: 20.0,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 0.0,
+          bottom: status != 3 ? 30.0 : 13.0,
           left: 0.0,
           child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 5.0,
-              vertical: 2.0,
+            width: width,
+            child: Text(
+              name,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: Colors.white,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
-            child: tagStatus(status),
           ),
         ),
+        if (status != 3)
+          Positioned(
+            bottom: 5.0,
+            left: 0.0,
+            child: Container(
+              child: UserRating(status),
+            ),
+          ),
       ],
     ),
   );
 }
 
-Widget tag({required String text, required Color color}) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 8,
-        ),
-      ),
-    );
-
-Widget tagStatus(String status) {
-  switch (status) {
-    case "topRanked":
-      return tag(
-        text: "GOLD PLUS",
-        color: Color(0xFFF6CF00),
-      );
-    case "reliable":
-      return tag(
-        text: "SILVER",
-        color: Color(0xFFBBC0C7),
-      );
-
-    case "verified":
-      return tag(
-        text: "BRONZE",
-        color: Color(0xFFB79768),
-      );
-    default:
-      return SizedBox.shrink();
-  }
-}
-
 ///Quest Rating Widget
-///
 
 Widget employerRating({
   required String completedQuests,
-  required String averageRating,
+  required double averageRating,
   required String reviews,
+  required String userId,
+  required BuildContext context,
 }) {
+  final rating = ((averageRating * 10).round() / 10).toString();
+  final profile = context.read<ProfileMeStore>();
   return Padding(
     padding: const EdgeInsets.only(top: 20.0),
     child: Row(
@@ -384,14 +371,32 @@ Widget employerRating({
                     fontSize: 20.0,
                   ),
                 ),
-                // Text(
-                //   'Show all',
-                //   style: TextStyle(
-                //     decoration: TextDecoration.underline,
-                //     color: Color(0xFF00AA5B),
-                //     fontSize: 12.0,
-                //   ),
-                // ),
+                GestureDetector(
+                  onTap: () async {
+                    if (userId != profile.userData!.id && completedQuests != "0") {
+                      // profile.offset = 0;
+                      // profile.setUserId(userId);
+                      // await profile.getCompletedQuests();
+                      await Navigator.pushNamed(
+                        context,
+                        ProfileQuestsPage.routeName,
+                        arguments: userId,
+                      );
+                      // profile.quests.clear();
+                      // profile.offset = 0;
+                    }
+                  },
+                  child: Text(
+                    "workers.showAll".tr(),
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: userId != profile.userData!.id && completedQuests != "0"
+                          ? Color(0xFF00AA5B)
+                          : Color(0xFFF7F8FA),
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -418,7 +423,7 @@ Widget employerRating({
                 Row(
                   children: [
                     Text(
-                      averageRating,
+                      rating,
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -452,11 +457,14 @@ Widget employerRating({
   );
 }
 
-Widget workerRatingCard({
+Widget workerQuestStats({
   required String title,
   required String rate,
   required String thirdLine,
+  String? userId,
+  ProfileMeStore? profile,
   Color textColor = const Color(0xFF00AA5B),
+  BuildContext? context,
 }) =>
     Flexible(
       child: Container(
@@ -485,12 +493,27 @@ Widget workerRatingCard({
                 fontSize: 20.0,
               ),
             ),
-            Text(
-              thirdLine,
-              style: TextStyle(
-                decoration: TextDecoration.underline,
-                color: Color(0xFFD8DFE3),
-                fontSize: 12.0,
+            GestureDetector(
+              onTap: () async {
+                if (userId != null &&
+                    context != null &&
+                    userId != profile?.userData?.id &&
+                    thirdLine != "0") {
+                  await Navigator.pushNamed(
+                    context,
+                    ProfileQuestsPage.routeName,
+                    arguments: userId,
+                  );
+                }
+              },
+              child: Text(
+                thirdLine.tr(),
+                style: TextStyle(
+                  decoration:
+                      title == "quests.activeQuests" ? TextDecoration.underline : null,
+                  color: Color(0xFFD8DFE3),
+                  fontSize: 12.0,
+                ),
               ),
             ),
           ],
@@ -500,10 +523,14 @@ Widget workerRatingCard({
 
 Widget workerRating({
   required String completedQuests,
-  required String averageRating,
+  required double averageRating,
   required String reviews,
   required String activeQuests,
+  required String userId,
+  required BuildContext context,
 }) {
+  final rating = averageRating.toStringAsFixed(1);
+  final profile = context.read<ProfileMeStore>();
   return Padding(
     padding: const EdgeInsets.only(top: 20.0),
     child: Column(
@@ -513,14 +540,18 @@ Widget workerRating({
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            workerRatingCard(
-                title: 'quests.activeQuests',
-                rate: completedQuests,
-                thirdLine: 'Show all'),
-            workerRatingCard(
+            workerQuestStats(
+              title: "quests.activeQuests",
+              rate: activeQuests,
+              thirdLine: "workers.showAll",
+              userId: userId,
+              context: context,
+              profile: profile,
+            ),
+            workerQuestStats(
               title: 'quests.completedQuests',
               rate: completedQuests,
-              thirdLine: 'workers.oneTime'.tr(),
+              thirdLine: 'workers.oneTime',
               textColor: Color(0xFF0083C7),
             ),
           ],
@@ -548,7 +579,7 @@ Widget workerRating({
               Row(
                 children: [
                   Text(
-                    averageRating,
+                    rating,
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -583,6 +614,32 @@ Widget workerRating({
 
 ///SocialMedia Accounts Widget
 ///
+Widget _socialMediaIcon({
+  required String? title,
+  required String launchUrl,
+  required String fallbackUrl,
+  required Widget icon,
+}) =>
+    Flexible(
+      child: Container(
+        height: 50.0,
+        width: 74.0,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(6.0),
+          ),
+          color: Color(0xFFF7F8FA),
+        ),
+        child: IconButton(
+          onPressed: title != null
+              ? () {
+                  _launchSocial(launchUrl, fallbackUrl);
+                }
+              : null,
+          icon: icon,
+        ),
+      ),
+    );
 
 Widget socialAccounts({SocialNetwork? socialNetwork}) {
   final facebook = socialNetwork?.facebook;
@@ -598,112 +655,50 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Flexible(
-          child: Container(
-            height: 50.0,
-            width: 74.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(6.0),
-              ),
-              color: Color(0xFFF7F8FA),
-            ),
-            child: IconButton(
-              onPressed: facebook != null
-                  ? () {
-                      _launchSocial('fb://profile/$facebook',
-                          'https://www.facebook.com/$facebook');
-                    }
-                  : null,
-              icon: SvgPicture.asset(
-                "assets/facebook_icon_disabled.svg",
-                color: facebook != null ? Color(0xFF3B67D7) : null,
-              ),
-            ),
+        _socialMediaIcon(
+          title: facebook,
+          fallbackUrl: 'https://www.facebook.com/$facebook',
+          launchUrl: 'fb://profile/$facebook',
+          icon: SvgPicture.asset(
+            "assets/facebook_icon_disabled.svg",
+            color: facebook != null ? Color(0xFF3B67D7) : null,
           ),
         ),
-        Flexible(
-          child: Container(
-            height: 50.0,
-            width: 74.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(
-                  6.0,
+        _socialMediaIcon(
+          title: twitter,
+          fallbackUrl: 'https://twitter.com/$twitter',
+          launchUrl: '',
+          icon: SvgPicture.asset(
+            "assets/twitter_icon_disabled.svg",
+            color: twitter != null ? Color(0xFF24CAFF) : null,
+          ),
+        ),
+        _socialMediaIcon(
+          title: instagram,
+          fallbackUrl: 'https://www.instagram.com/$instagram',
+          launchUrl: '',
+          icon: instagram != null
+              ? GradientIcon(
+                  SvgPicture.asset(
+                    "assets/instagram_disabled.svg",
+                  ),
+                  20.0,
+                  const <Color>[
+                    Color(0xFFAD00FF),
+                    Color(0xFFFF9900),
+                  ],
+                )
+              : SvgPicture.asset(
+                  "assets/instagram_disabled.svg",
                 ),
-              ),
-              color: Color(0xFFF7F8FA),
-            ),
-            child: IconButton(
-              onPressed: twitter != null
-                  ? () {
-                      _launchSocial("", 'https://twitter.com/$twitter');
-                    }
-                  : null,
-              icon: SvgPicture.asset(
-                "assets/twitter_icon_disabled.svg",
-                color: twitter != null ? Color(0xFF24CAFF) : null,
-              ),
-            ),
-          ),
         ),
-        Flexible(
-          child: Container(
-            height: 50.0,
-            width: 74.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(6.0),
-              ),
-              color: Color(0xFFF7F8FA),
-            ),
-            child: IconButton(
-              onPressed: instagram != null
-                  ? () {
-                      _launchSocial(
-                        "",
-                        'https://www.instagram.com/$instagram',
-                      );
-                    }
-                  : null,
-              icon: instagram != null
-                  ? GradientIcon(
-                      SvgPicture.asset(
-                        "assets/instagram.svg",
-                      ),
-                      20.0,
-                      const <Color>[
-                        Color(0xFFAD00FF),
-                        Color(0xFFFF9900),
-                      ],
-                    )
-                  : SvgPicture.asset(
-                      "assets/instagram_disabled.svg",
-                    ),
-            ),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            height: 50.0,
-            width: 74.0,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(6.0),
-              ),
-              color: Color(0xFFF7F8FA),
-            ),
-            child: IconButton(
-              onPressed: linkedin != null
-                  ? () {
-                      _launchSocial("", 'https://linkedin.com/$linkedin');
-                    }
-                  : null,
-              icon: SvgPicture.asset(
-                "assets/linkedin_icon_disabled.svg",
-                color: linkedin != null ? Color(0xFF0A7EEA) : null,
-              ),
-            ),
+        _socialMediaIcon(
+          title: linkedin,
+          fallbackUrl: 'https://linkedin.com/in/$linkedin',
+          launchUrl: '',
+          icon: SvgPicture.asset(
+            "assets/linkedin_icon_disabled.svg",
+            color: linkedin != null ? Color(0xFF0A7EEA) : null,
           ),
         ),
       ],
@@ -742,6 +737,7 @@ Widget contactDetails({
   required String number,
   required String email,
   required String secondNumber,
+  required bool isVerify,
 }) {
   return Padding(
     padding: const EdgeInsets.only(top: 20.0),
@@ -749,28 +745,29 @@ Widget contactDetails({
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Icon(
-              Icons.location_pin,
-              size: 20.0,
-              color: const Color(0xFF7C838D),
-            ),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Text(
-                  location,
-                  overflow: TextOverflow.fade,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: const Color(0xFF7C838D),
+        if (location.isNotEmpty)
+          Row(
+            children: [
+              Icon(
+                Icons.location_pin,
+                size: 20.0,
+                color: const Color(0xFF7C838D),
+              ),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    location,
+                    overflow: TextOverflow.fade,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: const Color(0xFF7C838D),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         if (number.isNotEmpty)
           Column(
             children: [
@@ -796,6 +793,20 @@ Widget contactDetails({
                   ),
                 ],
               ),
+              if (isVerify)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 30.0),
+                    child: Text(
+                      "Number Confirmed",
+                      style: TextStyle(
+                        color: Color(0xFF0083C7),
+                        fontSize: 8,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         if (secondNumber.isNotEmpty)
@@ -856,6 +867,51 @@ Widget contactDetails({
 }
 
 ///Skills widget
+class SkillsWidget extends StatefulWidget {
+  final isExpanded;
+  final isProfileMy;
+  final List<String>? skills;
+  final Function(bool) onPressed;
+
+  SkillsWidget({
+    Key? key,
+    required this.isProfileMy,
+    required this.isExpanded,
+    required this.onPressed,
+    required this.skills,
+  }) : super(key: key);
+
+  @override
+  _SkillsWidgetState createState() => _SkillsWidgetState();
+}
+
+class _SkillsWidgetState extends State<SkillsWidget>
+    with TickerProviderStateMixin<SkillsWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AnimatedSize(
+          duration: const Duration(milliseconds: 500),
+          alignment: Alignment.topCenter,
+          child: skills(
+            isProfileMy: widget.isProfileMy,
+            skills: widget.isExpanded ? widget.skills : widget.skills!.sublist(0, 5),
+            context: context,
+          ),
+        ),
+        if (!widget.isExpanded)
+          TextButton(
+            child: const Text('Show more'),
+            onPressed: () {
+              widget.onPressed.call(!widget.isExpanded);
+            },
+          )
+      ],
+    );
+  }
+}
 
 Widget skills({
   required List<String>? skills,
@@ -957,4 +1013,11 @@ Widget experience({
       ),
     ],
   );
+}
+
+class PortfolioArguments {
+  int index;
+  bool isProfileYour;
+
+  PortfolioArguments(this.index, this.isProfileYour);
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:app/constants.dart';
 import 'package:app/exceptions.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/log_service.dart';
@@ -13,7 +14,7 @@ class TestHttpClient extends _HttpClient {
       : super(
           Dio(
             BaseOptions(
-              baseUrl: 'https://app.workquest.co/api',
+              //baseUrl: 'https://app.workquest.co/api',
               connectTimeout: 20000,
               receiveTimeout: 20000,
               headers: {"content-type": "application/json"},
@@ -27,6 +28,9 @@ class TestHttpClient extends _HttpClient {
 
 class _HttpClient implements IHttpClient {
   final Dio _dio;
+  final String _baseUrl = Constants.isRelease
+      ? "https://app-ver1.workquest.co/api"
+      : "https://app.workquest.co/api";
 
   @override
   String? accessToken;
@@ -37,37 +41,53 @@ class _HttpClient implements IHttpClient {
   }
 
   @override
-  Future get({required query, Map<String, dynamic>? queryParameters}) async {
+  Future get({
+    required query,
+    Map<String, dynamic>? queryParameters,
+    bool useBaseUrl = true,
+  }) async {
     return await _sendRequest(
-      _dio.get(query, queryParameters: queryParameters),
+      _dio.get(useBaseUrl ? _baseUrl + query : query, queryParameters: queryParameters),
     );
   }
 
   @override
-  Future post({required query, Map<String, dynamic>? data}) async {
+  Future post({
+    required query,
+    Map<String, dynamic>? data,
+    bool useBaseUrl = true,
+  }) async {
     return await _sendRequest(
       _dio.post(
-        query,
+        useBaseUrl ? _baseUrl + query : query,
         data: data,
       ),
     );
   }
 
   @override
-  Future put({required query, Map<String, dynamic>? data}) async {
+  Future put({
+    required query,
+    Map<String, dynamic>? data,
+    bool useBaseUrl = true,
+  }) async {
     return await _sendRequest(
       _dio.put(
-        query,
+        useBaseUrl ? _baseUrl + query : query,
         data: data,
       ),
     );
   }
 
   @override
-  Future delete({required query, Map<String, dynamic>? data}) async {
+  Future delete({
+    required query,
+    Map<String, dynamic>? data,
+    bool useBaseUrl = true,
+  }) async {
     return await _sendRequest(
       _dio.delete(
-        query,
+        useBaseUrl ? _baseUrl + query : query,
         data: data,
       ),
     );
@@ -87,8 +107,7 @@ class _HttpClient implements IHttpClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           if (accessToken != null) {
-            options.headers["Authorization"] =
-                "Bearer " + accessToken.toString();
+            options.headers["Authorization"] = "Bearer " + accessToken.toString();
           }
           if (tokenExpired == true) {
             String? token = await Storage.readRefreshToken();

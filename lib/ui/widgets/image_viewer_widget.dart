@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:app/model/quests_models/create_quest_model/media_model.dart';
+import 'package:app/model/quests_models/media_model.dart';
 import 'package:flutter/material.dart';
 
 class ImageViewerWidget extends StatelessWidget {
@@ -139,7 +139,6 @@ class ImageViewerWidget extends StatelessWidget {
         } else if (Platform.isIOS) {
           dir = (await getApplicationDocumentsDirectory()).path;
         }
-        print("dir: $dir");
         if (medias[index].type == TypeMedia.Pdf)
           final f = downloadFile(medias[index].url,
               medias[index].url.split("/").reversed.first + ".pdf", dir);
@@ -186,7 +185,6 @@ class ImageViewerWidget extends StatelessWidget {
     String filePath = '';
 
     try {
-      print("myURL: $url");
       var request = await httpClient.getUrl(Uri.parse(url));
       var response = await request.close();
       if (response.statusCode == 200) {
@@ -199,7 +197,6 @@ class ImageViewerWidget extends StatelessWidget {
     } catch (ex) {
       filePath = 'Can not fetch url';
     }
-    print("FILE PATH: $filePath");
 
     return filePath;
   }

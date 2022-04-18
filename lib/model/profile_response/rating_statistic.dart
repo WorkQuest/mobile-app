@@ -16,7 +16,7 @@ class RatingStatistic {
         id: json["id"],
         userId: json["userId"],
         reviewCount: json["reviewCount"],
-        averageMark: json["averageMark"].toDouble(),
+        averageMark: (json["averageMark"] ?? 0.0).toDouble(),
       );
 
   Map<String, dynamic> toJson() => {

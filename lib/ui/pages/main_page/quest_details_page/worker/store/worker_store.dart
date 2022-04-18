@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/model/quests_models/create_quest_model/media_model.dart';
+import 'package:app/model/quests_models/media_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:app/utils/web_socket.dart';
 
 part 'worker_store.g.dart';
 
@@ -32,9 +33,21 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   @action
   void setOpinion(String value) => opinion = value;
 
-  _WorkerStore(this._apiProvider);
+  _WorkerStore(this._apiProvider) {
+    WebSocket().handlerQuests = this.changeQuest;
+  }
 
   Observable<BaseQuestResponse?> quest = Observable(null);
+
+  @action
+  void changeQuest(dynamic json) {
+    var changedQuest =
+    BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+    if (changedQuest.id == quest.value?.id) {
+      quest.value = changedQuest;
+      _getQuest();
+    }
+  }
 
   _getQuest() async {
     final newQuest = await _apiProvider.getQuest(id: quest.value!.id);
@@ -54,6 +67,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptOnQuest(questId: quest.value!.id);
+      // ClientService().handleEvent(WQContractFunctions.acceptJob);
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -66,6 +80,33 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.rejectOnQuest(questId: quest.value!.id);
+      // ClientService().handleEvent(WQContractFunctions.declineJob);
+      await _getQuest();
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("getQuests error: $e\n$trace");
+      this.onError(e.toString());
+    }
+  }
+
+  acceptInvite(String responseId) async {
+    try {
+      this.onLoading();
+      await _apiProvider.acceptInvite(responseId: responseId);
+      // ClientService().handleEvent(WQContractFunctions.acceptJob);
+      await _getQuest();
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("getQuests error: $e\n$trace");
+      this.onError(e.toString());
+    }
+  }
+
+  rejectInvite(String responseId) async {
+    try {
+      this.onLoading();
+      await _apiProvider.rejectInvite(responseId: responseId);
+      // ClientService().handleEvent(WQContractFunctions.declineJob);
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -78,6 +119,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.completeWork(questId: quest.value!.id);
+      // ClientService().handleEvent(WQContractFunctions.verificationJob);
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
