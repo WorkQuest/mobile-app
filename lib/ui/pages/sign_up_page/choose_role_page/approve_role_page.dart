@@ -4,6 +4,7 @@ import 'package:app/enums.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
+import 'package:app/ui/pages/sign_up_page/generate_wallet/import_wallet_page.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -103,15 +104,57 @@ class ApproveRolePage extends StatelessWidget {
                         ? () async {
                             if (!store.isChange) await store.approveRole();
                             !store.isChange
-                                ? Navigator.push(
-                                    ctx,
-                                    MaterialPageRoute(
-                                      builder: (_) => Provider(
-                                        create: (context) =>
-                                            getIt.get<CreateWalletStore>(),
-                                        child: CreateWalletPage(),
-                                      ),
-                                    ),
+                                ? showDialog(
+                                    context: ctx,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        scrollable: true,
+                                        title: Text("Wallet"),
+                                        content: Text("Choose a way to add a wallet"),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => Provider(
+                                                    create: (context) =>
+                                                        getIt.get<CreateWalletStore>(),
+                                                    child: ImportWalletPage(),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Text(
+                                              "Import Wallet",
+                                              style: TextStyle(
+                                                  color: AppColor.enabledButton),
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              Navigator.pop(context);
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => Provider(
+                                                    create: (context) =>
+                                                        getIt.get<CreateWalletStore>(),
+                                                    child: CreateWalletPage(),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Text(
+                                              "Create Wallet",
+                                              style: TextStyle(
+                                                  color: AppColor.enabledButton),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   )
                                 : Navigator.of(ctx, rootNavigator: true)
                                     .pushNamed(EnterTotpPage.routeName);
