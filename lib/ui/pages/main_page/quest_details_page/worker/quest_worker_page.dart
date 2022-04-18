@@ -1,6 +1,7 @@
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
@@ -9,6 +10,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
+import 'package:app/ui/widgets/quest_header.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -64,11 +66,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         builder: (_) => IconButton(
           icon: Icon(
             store.quest.value!.star ? Icons.star : Icons.star_border,
-            color: store.quest.value!.star ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
+            color:
+                store.quest.value!.star ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
           ),
           onPressed: () {
             store.onStar();
-            myQuestStore.deleteQuest(store.quest.value!);
+            myQuestStore.deleteQuest(store.quest.value!.id);
             myQuestStore.addQuest(
               store.quest.value!,
               store.quest.value!.star ? true : false,
@@ -79,8 +82,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           },
         ),
       ),
-      if (widget.questInfo.assignedWorker?.id == profile!.userData!.id &&
-          (widget.questInfo.status == 1 || widget.questInfo.status == 5))
+      if (store.quest.value!.assignedWorker?.id == profile!.userData!.id &&
+          (store.quest.value!.status == 1 || store.quest.value!.status == 5))
         PopupMenuButton<String>(
           elevation: 10,
           icon: Icon(Icons.more_vert),
@@ -88,16 +91,18 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            if ((widget.questInfo.status == 1 || widget.questInfo.status == 5) &&
+            if ((store.quest.value!.status == 1 ||
+                    store.quest.value!.status == 5) &&
                 value == "chat.report")
               await Navigator.of(context, rootNavigator: true).pushNamed(
                 OpenDisputePage.routeName,
-                arguments: widget.questInfo,
+                arguments: store.quest.value!,
               );
           },
           itemBuilder: (BuildContext context) {
             return {
-              if (widget.questInfo.status == 1 || widget.questInfo.status == 5)
+              if (store.quest.value!.status == 1 ||
+                  store.quest.value!.status == 5)
                 "chat.report",
             }.map((String choice) {
               return PopupMenuItem<String>(
@@ -111,13 +116,69 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   }
 
   @override
+  Widget questHeader() {
+    return QuestHeader(
+      storeQuest.getQuestType(
+        store.quest.value!,
+        profile!.userData!.role,
+      ),
+      store.quest.value!.status,
+      false,
+    );
+  }
+
+  @override
+  Widget review() {
+    print(store.quest.value!.status);
+    print(profile!.review);
+    print(store.quest.value!.userId == profile!.userData!.id);
+    print(store.quest.value!.assignedWorker?.id == profile!.userData!.id);
+    return store.quest.value!.status == 6 &&
+            !profile!.review &&
+            (store.quest.value!.userId == profile!.userData!.id ||
+                store.quest.value!.assignedWorker?.id == profile!.userData!.id)
+        ? TextButton(
+            onPressed: () async {
+              await Navigator.pushNamed(
+                context,
+                CreateReviewPage.routeName,
+                arguments: storeQuest.questInfo,
+              );
+              widget.questInfo.yourReview != null
+                  ? profile!.review = true
+                  : profile!.review = false;
+            },
+            child: Text(
+              "quests.addReview".tr(),
+              style: TextStyle(color: Colors.white),
+            ),
+            style: ButtonStyle(
+              fixedSize: MaterialStateProperty.all(
+                Size(double.maxFinite, 43),
+              ),
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.pressed))
+                    return Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withOpacity(0.5);
+                  return const Color(0xFF0083C7);
+                },
+              ),
+            ),
+          )
+        : SizedBox();
+  }
+
+  @override
   Widget getBody() {
     if (widget.isMyQuest) return const SizedBox();
     return Observer(
       builder: (_) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.questInfo.yourReview != null)
+          if (store.quest.value!.yourReview != null)
             Column(
               children: [
                 const SizedBox(height: 20),
@@ -131,19 +192,23 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "${widget.questInfo.yourReview!.message}",
+                    "${store.quest.value!.yourReview!.message}",
                   ),
                 ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    for (int i = 0; i < widget.questInfo.yourReview!.mark; i++)
+                    for (int i = 0;
+                        i < store.quest.value!.yourReview!.mark;
+                        i++)
                       Icon(
                         Icons.star,
                         color: Color(0xFFE8D20D),
                         size: 20.0,
                       ),
-                    for (int i = 0; i < 5 - widget.questInfo.yourReview!.mark; i++)
+                    for (int i = 0;
+                        i < 5 - store.quest.value!.yourReview!.mark;
+                        i++)
                       Icon(
                         Icons.star,
                         color: Color(0xFFE9EDF2),
@@ -158,7 +223,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             children: [
               Expanded(
                 child: Text(
-                  "${widget.questInfo.price} WUSD",
+                  "${store.quest.value!.price} WUSD",
                   overflow: TextOverflow.fade,
                   style: const TextStyle(
                     color: Color(0xFF00AA5B),
@@ -172,8 +237,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           const SizedBox(height: 20),
           Observer(
             builder: (_) => !store.response &&
-                    widget.questInfo.status == 0 &&
-                    widget.questInfo.invited == null
+                    store.quest.value!.status == 0 &&
+                    store.quest.value!.invited == null
                 ? store.isLoading
                     ? Center(
                         child: CircularProgressIndicator.adaptive(),
@@ -192,7 +257,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                           fixedSize: MaterialStateProperty.all(
                             Size(double.maxFinite, 43),
                           ),
-                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
                             (Set<MaterialState> states) {
                               if (states.contains(MaterialState.pressed))
                                 return Theme.of(context)
@@ -207,8 +273,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 : SizedBox(),
           ),
           if (store.quest.value!.status == 4 &&
-                  store.quest.value!.assignedWorker?.id == profile!.userData!.id ||
-              (widget.questInfo.invited != null && widget.questInfo.invited?.status == 0))
+                  store.quest.value!.assignedWorker?.id ==
+                      profile!.userData!.id ||
+              (store.quest.value!.invited != null &&
+                  store.quest.value!.invited?.status == 0))
             store.isLoading
                 ? Center(
                     child: CircularProgressIndicator.adaptive(),
@@ -230,7 +298,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
@@ -259,7 +330,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
@@ -405,6 +479,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   }
                 : null,
             title: "modals.sendARequest".tr(),
+
           ),
         ),
         const SizedBox(height: 15),
@@ -430,13 +505,14 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           enabled: isLoading,
           onTap: () async {
             _updateLoading();
-            if (widget.questInfo.invited == null) {
+            if (store.quest.value!.invited == null) {
               await store.sendAcceptOnQuest();
-              widget.questInfo.status = 1;
-              myQuestStore.deleteQuest(widget.questInfo);
-              myQuestStore.addQuest(widget.questInfo, true);
+              store.setQuestStatus(1);
+              myQuestStore.deleteQuest(store.quest.value!.id);
+              myQuestStore.addQuest(
+                  store.quest.value!, store.quest.value!.star);
             } else {
-              await store.acceptInvite(widget.questInfo.invited!.id);
+              await store.acceptInvite(store.quest.value!.invited!.id);
               questStore.getQuests(true);
             }
             _updateLoading();
@@ -453,17 +529,18 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           enabled: isLoading,
           onTap: () async {
             _updateLoading();
-            if (widget.questInfo.invited == null) {
+            if (store.quest.value!.invited == null) {
               await store.sendRejectOnQuest();
-              if (widget.questInfo.responded != null) {
-                widget.questInfo.responded?.status = -1;
+              if (store.quest.value!.responded != null) {
+                store.quest.value!.responded?.status = -1;
               }
-              widget.questInfo.status = 0;
-              widget.questInfo.assignedWorker = null;
-              myQuestStore.deleteQuest(widget.questInfo);
-              myQuestStore.addQuest(widget.questInfo, true);
+              store.setQuestStatus(0);
+              store.quest.value!.assignedWorker = null;
+              myQuestStore.deleteQuest(store.quest.value!.id);
+              myQuestStore.addQuest(
+                  store.quest.value!, store.quest.value!.star);
             } else {
-              await store.rejectInvite(widget.questInfo.invited!.id);
+              await store.rejectInvite(store.quest.value!.invited!.id);
               questStore.getQuests(true);
             }
             _updateLoading();
@@ -505,9 +582,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           onTap: () async {
             _updateLoading();
             await store.sendCompleteWork();
-            widget.questInfo.status = 5;
-            await myQuestStore.deleteQuest(widget.questInfo);
-            await myQuestStore.addQuest(widget.questInfo, true);
+            store.setQuestStatus(5);
+            await myQuestStore.deleteQuest(store.quest.value!.id);
+            await myQuestStore.addQuest(store.quest.value!, true);
             _updateLoading();
             await Future.delayed(const Duration(milliseconds: 250));
             Navigator.pop(context);
@@ -522,7 +599,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   void dispose() {
-    widget.questInfo.update(store.quest.value!);
+    store.quest.value!.update(store.quest.value!);
     super.dispose();
   }
 }

@@ -38,6 +38,9 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   setTotp(String value) => totp = value;
 
   @action
+  setQuestStatus(int value) => quest.value!.status = value;
+
+  @action
   getRespondedList(String id, String idWorker) async {
     respondedList = await _apiProvider.responsesQuest(id);
     for (int index = 0; index < respondedList.length; index++)

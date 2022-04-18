@@ -108,6 +108,12 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   String? idNewQuest;
 
   @action
+  void increaseRuntime() {}
+
+  @action
+  void decreaseRuntime() {}
+
+  @action
   void setQuestTitle(String value) => questTitle = value;
 
   @action
