@@ -58,8 +58,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
               onPressed: () {
                 if (widget.controller!.store!.numberOfFiled.isEmpty)
                   widget.controller!.store!.addField(KnowledgeWork());
-                if (widget
-                    .controller!.store!.numberOfFiled.last.fieldIsNotEmpty) {
+                if (widget.controller!.store!.numberOfFiled.last.fieldIsNotEmpty) {
                   widget.controller!.store!.addField(KnowledgeWork());
                 }
               },
@@ -110,18 +109,19 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     dateField(
-                        date: kng.dateFrom.isEmpty
-                            ? widget
-                            .controller!.store!.numberOfFiled.last.dateFrom
-                            : kng.dateFrom,
-                        onChanged: (value) {
-                          kng.dateFrom = value.day.toString() +
-                              "." +
-                              value.month.toString() +
-                              "." +
-                              value.year.toString();
-                          setState(() {});
-                        }),
+                      date: kng.dateFrom.isEmpty
+                          ? widget.controller!.store!.numberOfFiled.last.dateFrom
+                          : kng.dateFrom,
+                      onChanged: (value) {
+                        kng.dateFrom = value.day.toString() +
+                            "." +
+                            value.month.toString() +
+                            "." +
+                            value.year.toString();
+                        setState(() {});
+                      },
+                      from: true,
+                    ),
                     Padding(
                       padding: EdgeInsets.only(top: 10),
                       child: Text(
@@ -144,6 +144,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                             value.year.toString();
                         setState(() {});
                       },
+                      from: false,
                     ),
                   ],
                 ),
@@ -160,8 +161,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: TextFormField(
-                    initialValue:
-                    widget.controller!.store!.numberOfFiled.last.place,
+                    initialValue: widget.controller!.store!.numberOfFiled.last.place,
                     onChanged: (text) => kng.place = text,
                     decoration: InputDecoration(
                       // isDense: true,
@@ -207,6 +207,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
   Widget dateField({
     required String date,
     required void Function(DateTime)? onChanged,
+    required bool from,
   }) {
     LocaleType? _localeCode;
     LocaleType.values.forEach((element) {
@@ -229,7 +230,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
             context,
             showTitleActions: true,
             minTime: DateTime(1900, 1, 1),
-            maxTime: DateTime(2200, 12, 31),
+            maxTime: from ? DateTime.now() : DateTime(DateTime.now().year + 20, 12, 31),
             onConfirm: onChanged,
             currentTime: DateTime.now(),
             locale: _localeCode,
@@ -249,8 +250,7 @@ class KnowledgeWorkSelectionController {
 
   KnowledgeWorkSelectionController({this.initialValue});
 
-  void setStore(
-      KnowledgeWorkStore store, List<Map<String, String>>? initialValue) {
+  void setStore(KnowledgeWorkStore store, List<Map<String, String>>? initialValue) {
     this.store = store;
     if (initialValue != null && initialValue != []) {
       store.numberOfFiled.clear();
