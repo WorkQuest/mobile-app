@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/keys.dart';
@@ -120,12 +121,10 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   void changedPriority(String selectedPriority) => priority = selectedPriority;
 
   @action
-  void changedEmployment(String selectedEmployment) =>
-      employment = selectedEmployment;
+  void changedEmployment(String selectedEmployment) => employment = selectedEmployment;
 
   @action
-  void changedDistantWork(String selectedEmployment) =>
-      workplace = selectedEmployment;
+  void changedDistantWork(String selectedEmployment) => workplace = selectedEmployment;
 
   @computed
   bool get canCreateQuest =>
@@ -268,22 +267,29 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
           quest: questModel,
           questId: questId,
         );
-        ClientService().handleEvent(WQContractFunctions.editJob, [
-          Uint8List.fromList(
-              utf8.encode(description.padRight(32).substring(0, 32))),
-          BigInt.parse(price)
-        ]);
+        if (!Constants.isRelease) {
+          ClientService().handleEvent(WQContractFunctions.editJob, [
+            Uint8List.fromList(
+              utf8.encode(
+                description.padRight(32).substring(0, 32),
+              ),
+            ),
+            BigInt.parse(price)
+          ]);
+        }
       } else {
+        if (!Constants.isRelease) {
+          ClientService().createNewContract(
+            jobHash: description,
+            cost: price,
+            deadline: 0.toString(),
+            nonce: description,
+          );
+        }
         idNewQuest = await apiProvider.createQuest(
           quest: questModel,
         );
         // Web3().connect();
-        ClientService().createNewContract(
-          jobHash: description,
-          cost: price,
-          deadline: 0.toString(),
-          nonce: description,
-        );
       }
 
       this.onSuccess(true);
