@@ -99,8 +99,16 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         ],
       ),
       body: ObserverListener<ProfileMeStore>(
-        onSuccess: () {
-          profile!.getProfileMe();
+        onSuccess: () async {
+          if (oldPhone != null &&
+              oldPhone!.fullPhone.isNotEmpty &&
+              !pageStore.numberChanged(oldPhone!.fullPhone)) {
+            await AlertDialogUtils.showSuccessDialog(context);
+          } else {
+            await AlertDialogUtils.showSuccessDialog(context,
+                text: 'Enter code from SMS in SMS Verification');
+          }
+          await profile!.getProfileMe();
           Navigator.pop(context, true);
         },
         child: Observer(
@@ -158,7 +166,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               ),
               Observer(
                 builder: (_) => _AddressProfileWidget(
-                  address: pageStore.address,
+                  address: pageStore.address.isEmpty ? profile!.userData!.additionalInfo?.address.toString() ?? pageStore.address : pageStore.address,
                   onTap: () {
                     pageStore.getPrediction(context);
                   },
@@ -309,16 +317,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       await profile!.submitPhoneNumber(pageStore.userData.tempPhone!.fullPhone);
       profile!.userData?.phone = null;
       oldPhone = profile!.userData!.tempPhone;
-    }
-    if (profile!.isSuccess) {
-      if (oldPhone != null &&
-          oldPhone!.fullPhone.isNotEmpty &&
-          !pageStore.numberChanged(oldPhone!.fullPhone)) {
-        await AlertDialogUtils.showSuccessDialog(context);
-      } else {
-        await AlertDialogUtils.showSuccessDialog(context,
-            text: 'Enter code from SMS in SMS Verification');
-      }
     }
   }
 
