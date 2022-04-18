@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/keys.dart';
@@ -267,25 +266,22 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
           quest: questModel,
           questId: questId,
         );
-        if (!Constants.isRelease) {
-          ClientService().handleEvent(WQContractFunctions.editJob, [
-            Uint8List.fromList(
-              utf8.encode(
-                description.padRight(32).substring(0, 32),
-              ),
+        ClientService().handleEvent(WQContractFunctions.editJob, [
+          Uint8List.fromList(
+            utf8.encode(
+              description.padRight(32).substring(0, 32),
             ),
-            BigInt.parse(price)
-          ]);
-        }
+          ),
+          BigInt.parse(price)
+        ]);
       } else {
-        if (!Constants.isRelease) {
-          ClientService().createNewContract(
-            jobHash: description,
-            cost: price,
-            deadline: 0.toString(),
-            nonce: description,
-          );
-        }
+        ClientService().createNewContract(
+          jobHash: description,
+          cost: price,
+          deadline: 0.toString(),
+          nonce: description,
+        );
+
         idNewQuest = await apiProvider.createQuest(
           quest: questModel,
         );

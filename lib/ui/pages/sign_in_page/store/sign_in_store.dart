@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:app/base_store/i_store.dart';
-import 'package:app/constants.dart';
 import 'package:app/di/injector.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/web3_extension.dart';
@@ -48,10 +47,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
 
   @computed
   bool get canSignIn =>
-      !isLoading &&
-      _username.isNotEmpty &&
-      _password.isNotEmpty &&
-      mnemonic.isNotEmpty;
+      !isLoading && _username.isNotEmpty && _password.isNotEmpty && mnemonic.isNotEmpty;
 
   @action
   void setUsername(String value) => _username = value;
@@ -63,15 +59,15 @@ abstract class _SignInStore extends IStore<bool> with Store {
   void setPassword(String value) => _password = value;
 
   @action
-  Future refreshToken() async{
-    try{
+  Future refreshToken() async {
+    try {
       this.onLoading();
       String? token = await Storage.readRefreshToken();
       BearerToken bearerToken = await _apiProvider.refreshToken(token!);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
       this.onSuccess(true);
-    } catch(e) {
+    } catch (e) {
       this.onError(e.toString());
     }
   }
@@ -83,8 +79,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
     if (walletAddress == null) this.onError("Profile not found");
     try {
       Wallet? wallet = await Wallet.derive(mnemonic);
-      if (wallet.address != walletAddress)
-        throw FormatException("Incorrect mnemonic");
+      if (wallet.address != walletAddress) throw FormatException("Incorrect mnemonic");
       final signature = await ClientService().getSignature(wallet.privateKey!);
       await _apiProvider.walletLogin(signature, wallet.address!);
       await Storage.write(Storage.wallets, jsonEncode([wallet.toJson()]));
@@ -109,10 +104,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
       await Future.delayed(const Duration(seconds: 1));
       error = "";
       BearerToken bearerToken = await _apiProvider.login(
-        email: _username.trim(),
-        password: _password,
-        totp: totp
-      );
+          email: _username.trim(), password: _password, totp: totp);
 
       if (bearerToken.status == 0) {
         error = 'unconfirmed';
@@ -122,13 +114,12 @@ abstract class _SignInStore extends IStore<bool> with Store {
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeNotificationToken(bearerToken.access);
       await Storage.writeAccessToken(bearerToken.access);
-      if (!Constants.isRelease) {
-        if (totp.isNotEmpty) if (!await _apiProvider.validateTotp(totp: totp)) {
-          error = "Invalid TOTP";
-          this.onError("Invalid TOTP");
-          return;
-        }
+      if (totp.isNotEmpty) if (!await _apiProvider.validateTotp(totp: totp)) {
+        error = "Invalid TOTP";
+        this.onError("Invalid TOTP");
+        return;
       }
+
       // throw FormatException("Invalid TOTP");
       // await getIt.get<ProfileMeStore>().getProfileMe();
       // await signInWallet();

@@ -41,17 +41,11 @@ class SettingsPage extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    if (Constants.isRelease) {
-                      AlertDialogUtils.showInfoAlertDialog(context,
-                          title: 'Warning'.tr(),
-                          content: 'Service temporarily unavailable');
-                    } else {
-                      Navigator.of(context, rootNavigator: true).push(
-                        MaterialPageRoute(
-                          builder: (context) => ProfileSettings(settingStore),
-                        ),
-                      );
-                    }
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProfileSettings(settingStore),
+                      ),
+                    );
                   },
                   child: const Icon(
                     Icons.settings_outlined,
@@ -290,24 +284,19 @@ class SettingsPage extends StatelessWidget {
     required ProfileMeStore userStore,
     required ChooseRoleStore chooseRoleStore,
   }) async {
-    if (Constants.isRelease) {
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'Warning'.tr(), content: 'Service temporarily unavailable');
-    } else {
-      if (userStore.userData?.isTotpActive == true) {
-        if (userStore.userData!.questsStatistic!.opened != 0) {
-          _showAlertInfo(context, title: "There are active quests");
-        } else {
-          chooseRoleStore.setRole(userStore.userData!.role);
-          chooseRoleStore.isChange = true;
-          await Navigator.of(context, rootNavigator: true).pushNamed(
-            ApproveRolePage.routeName,
-            arguments: chooseRoleStore,
-          );
-        }
+    if (userStore.userData?.isTotpActive == true) {
+      if (userStore.userData!.questsStatistic!.opened != 0) {
+        _showAlertInfo(context, title: "There are active quests");
       } else {
-        _showAlertInfo(context, title: "2FA disabled");
+        chooseRoleStore.setRole(userStore.userData!.role);
+        chooseRoleStore.isChange = true;
+        await Navigator.of(context, rootNavigator: true).pushNamed(
+          ApproveRolePage.routeName,
+          arguments: chooseRoleStore,
+        );
       }
+    } else {
+      _showAlertInfo(context, title: "2FA disabled");
     }
   }
 
