@@ -83,6 +83,17 @@ mixin _$WorkerStore on _WorkerStore, Store {
   }
 
   @override
+  void changeQuest(dynamic json) {
+    final _$actionInfo = _$_WorkerStoreActionController.startAction(
+        name: '_WorkerStore.changeQuest');
+    try {
+      return super.changeQuest(json);
+    } finally {
+      _$_WorkerStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 opinion: ${opinion},

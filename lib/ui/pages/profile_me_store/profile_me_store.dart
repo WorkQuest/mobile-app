@@ -111,6 +111,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     return result;
   }
 
+  @action
   Future getProfileMe() async {
     try {
       // this.onLoading();
@@ -194,6 +195,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
+
   changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {
       this.onLoading();
@@ -201,8 +203,11 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
         userData.avatarId = (await _apiProvider.uploadMedia(
             medias: ObservableList.of([media])))[0];
       final isTotpActive = this.userData?.isTotpActive;
+      final tempPhone = this.userData?.tempPhone;
+      userData.priority = priorityValue;
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
+      this.userData?.tempPhone = tempPhone;
       this.userData?.isTotpActive = isTotpActive;
       this.onSuccess(true);
     } catch (e, trace) {
@@ -211,10 +216,10 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future submitPhoneNumber() async {
+  Future submitPhoneNumber(String phone) async {
     try {
       this.onLoading();
-      await _apiProvider.submitPhoneNumber();
+      await _apiProvider.submitPhoneNumber(phone);
 
       this.onSuccess(true);
     } catch (e) {

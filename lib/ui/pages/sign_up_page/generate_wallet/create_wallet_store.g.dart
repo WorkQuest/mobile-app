@@ -77,6 +77,37 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
     });
   }
 
+  final _$indexFirstWordAtom = Atom(name: '_CreateWalletStore.indexFirstWord');
+
+  @override
+  int? get indexFirstWord {
+    _$indexFirstWordAtom.reportRead();
+    return super.indexFirstWord;
+  }
+
+  @override
+  set indexFirstWord(int? value) {
+    _$indexFirstWordAtom.reportWrite(value, super.indexFirstWord, () {
+      super.indexFirstWord = value;
+    });
+  }
+
+  final _$indexSecondWordAtom =
+      Atom(name: '_CreateWalletStore.indexSecondWord');
+
+  @override
+  int? get indexSecondWord {
+    _$indexSecondWordAtom.reportRead();
+    return super.indexSecondWord;
+  }
+
+  @override
+  set indexSecondWord(int? value) {
+    _$indexSecondWordAtom.reportWrite(value, super.indexSecondWord, () {
+      super.indexSecondWord = value;
+    });
+  }
+
   final _$selectedFirstWordAtom =
       Atom(name: '_CreateWalletStore.selectedFirstWord');
 
@@ -133,6 +164,17 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
 
   final _$_CreateWalletStoreActionController =
       ActionController(name: '_CreateWalletStore');
+
+  @override
+  dynamic setMnemonic(String value) {
+    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
+        name: '_CreateWalletStore.setMnemonic');
+    try {
+      return super.setMnemonic(value);
+    } finally {
+      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   dynamic setIsSaved(bool value) {
@@ -196,6 +238,8 @@ mnemonic: ${mnemonic},
 isSaved: ${isSaved},
 firstWord: ${firstWord},
 secondWord: ${secondWord},
+indexFirstWord: ${indexFirstWord},
+indexSecondWord: ${indexSecondWord},
 selectedFirstWord: ${selectedFirstWord},
 selectedSecondWord: ${selectedSecondWord},
 setOfWords: ${setOfWords},

@@ -86,8 +86,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
     );
     if (p != null) {
       address = p.description!;
-      PlacesDetailsResponse detail =
-          await _places.getDetailsByPlaceId(p.placeId!);
+      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId!);
       controller.moveCamera(
         CameraUpdate.newLatLng(
           LatLng(
@@ -121,17 +120,7 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
   }
 
   ClusterManager<ClusterItem> initClusterManager() {
-    final List<double> level = const [
-      1,
-      4.25,
-      6.75,
-      8.25,
-      11.5,
-      14.5,
-      16.0,
-      16.5,
-      20.0
-    ];
+    final List<double> level = const [1, 4.25, 6.75, 8.25, 11.5, 14.5, 16.0, 16.5, 20.0];
 
     if (isWorker!)
       return ClusterManager<BaseQuestResponse>(questsOnMap, _updateMarkers,
@@ -170,33 +159,28 @@ abstract class _QuestMapStore extends IStore<bool> with Store {
             currentQuestCluster = ObservableList.of(cluster.items.toList());
           },
           icon: cluster.isMultiple
-              ? await MarkerLoader.getClusterMarkerBitmap(
-                  cluster.count.toString())
+              ? await MarkerLoader.getClusterMarkerBitmap(cluster.count.toString())
               : markerLoader!.icons[cluster.items.toList()[0].priority],
         );
       };
 
-  Future<Marker> Function(Cluster<ProfileMeResponse>)
-      get workersMarkerBuilder => (cluster) async {
-            return Marker(
-                markerId: MarkerId(cluster.getId()),
-                position: cluster.location,
-                onTap: () {
-                  hideInfo = false;
-                  currentWorkerCluster =
-                      ObservableList.of(cluster.items.toList());
-                },
-                icon: cluster.isMultiple
-                    ? await MarkerLoader.getClusterMarkerBitmap(
-                        cluster.count.toString())
-                    : await MarkerLoader.getMarkerImageFromUrl(
-                        cluster.items.toList()[0].avatar?.url ??
-                            "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                        Constants
-                            .workerRatingTag[cluster.items
-                                .toList()[0]
-                                .ratingStatistic
-                                ?.status]
-                            ?.color));
-          };
+  Future<Marker> Function(Cluster<ProfileMeResponse>) get workersMarkerBuilder =>
+      (cluster) async {
+        return Marker(
+            markerId: MarkerId(cluster.getId()),
+            position: cluster.location,
+            onTap: () {
+              hideInfo = false;
+              currentWorkerCluster = ObservableList.of(cluster.items.toList());
+            },
+            icon: cluster.isMultiple
+                ? await MarkerLoader.getClusterMarkerBitmap(cluster.count.toString())
+                : await MarkerLoader.getMarkerImageFromUrl(
+                    cluster.items.toList()[0].avatar?.url ??
+                        "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                    Constants
+                        .workerRatingTag[
+                            cluster.items.toList()[0].ratingStatistic?.status]
+                        ?.color));
+      };
 }

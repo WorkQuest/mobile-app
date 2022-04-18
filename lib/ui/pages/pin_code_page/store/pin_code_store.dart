@@ -7,6 +7,7 @@ import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mobx/mobx.dart';
+import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
 part 'pin_code_store.g.dart';
 
@@ -35,7 +36,6 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         statePin = StatePinCode.Check;
         canCheckBiometrics = await auth.canCheckBiometrics;
         if (canCheckBiometrics) {
-
           bool didAuthenticate = await auth.authenticate(
             localizedReason: 'Login authorization',
           );
@@ -148,6 +148,8 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
               attempts += 1;
               if (attempts >= 3) {
                 await Storage.deleteAllFromSecureStorage();
+                final cookieManager = WebviewCookieManager();
+                cookieManager.clearCookies();
                 this.onSuccess(StatePinCode.ToLogin);
                 return;
               }
@@ -158,13 +160,13 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
             await Future.delayed(const Duration(seconds: 1));
             break;
           case StatePinCode.ToLogin:
-          // TODO: Handle this case.
+            // TODO: Handle this case.
             break;
           case StatePinCode.Success:
-          // TODO: Handle this case.
+            // TODO: Handle this case.
             break;
           case StatePinCode.NaN:
-          // TODO: Handle this case.
+            // TODO: Handle this case.
             break;
         }
       }
@@ -184,14 +186,16 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       startAnimation = false;
       startSwitch = false;
     } catch (e) {
-      print('catch e');
       if (e.toString() == "Token invalid" ||
+          e.toString() == "Token expired" ||
           e.toString() == "Session not found") {
+
         await Storage.deleteAllFromSecureStorage();
         this.onSuccess(StatePinCode.ToLogin);
         return;
       }
       totpValid = false;
+      startAnimation = false;
       this.onError(e.toString());
     }
   }

@@ -9,6 +9,37 @@ part of 'sms_verification_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
+  final _$timerAtom = Atom(name: '_SMSVerificationStore.timer');
+
+  @override
+  Timer? get timer {
+    _$timerAtom.reportRead();
+    return super.timer;
+  }
+
+  @override
+  set timer(Timer? value) {
+    _$timerAtom.reportWrite(value, super.timer, () {
+      super.timer = value;
+    });
+  }
+
+  final _$secondsCodeAgainAtom =
+      Atom(name: '_SMSVerificationStore.secondsCodeAgain');
+
+  @override
+  int get secondsCodeAgain {
+    _$secondsCodeAgainAtom.reportRead();
+    return super.secondsCodeAgain;
+  }
+
+  @override
+  set secondsCodeAgain(int value) {
+    _$secondsCodeAgainAtom.reportWrite(value, super.secondsCodeAgain, () {
+      super.secondsCodeAgain = value;
+    });
+  }
+
   final _$codeAtom = Atom(name: '_SMSVerificationStore.code');
 
   @override
@@ -36,6 +67,28 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
       ActionController(name: '_SMSVerificationStore');
 
   @override
+  dynamic startTimer() {
+    final _$actionInfo = _$_SMSVerificationStoreActionController.startAction(
+        name: '_SMSVerificationStore.startTimer');
+    try {
+      return super.startTimer();
+    } finally {
+      _$_SMSVerificationStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic stopTimer() {
+    final _$actionInfo = _$_SMSVerificationStoreActionController.startAction(
+        name: '_SMSVerificationStore.stopTimer');
+    try {
+      return super.stopTimer();
+    } finally {
+      _$_SMSVerificationStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setCode(String value) {
     final _$actionInfo = _$_SMSVerificationStoreActionController.startAction(
         name: '_SMSVerificationStore.setCode');
@@ -49,6 +102,8 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
   @override
   String toString() {
     return '''
+timer: ${timer},
+secondsCodeAgain: ${secondsCodeAgain},
 code: ${code}
     ''';
   }

@@ -64,6 +64,7 @@ import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import 'package:app/ui/pages/restore_password_page/store.dart';
+import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/enter_totp_page.dart';
 import 'package:app/ui/pages/start_page/start_page.dart';
 import 'package:app/ui/pages/start_page/store/start_store.dart';
@@ -86,7 +87,6 @@ import 'model/profile_response/profile_me_response.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    print(context.locale.toString());
     return context.locale.toString() == "ar_SA"
         ? TextDirection.rtl
         : TextDirection.ltr;
@@ -555,12 +555,33 @@ class Routes {
           ),
         );
 
+      case MnemonicPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<SignInStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: MnemonicPage(),
+            ),
+          ),
+        );
+
       case WebViewPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Directionality(
-            textDirection: checkDirection(context),
-            child: WebViewPage(
-              settings.arguments.toString(),
+          builder: (context) => Provider(
+            create: (context) => getIt.get<SignInStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: WebViewPage(
+                settings.arguments.toString(),
+              ),
             ),
           ),
         );

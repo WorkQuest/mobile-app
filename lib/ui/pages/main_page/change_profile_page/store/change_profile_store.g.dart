@@ -114,6 +114,17 @@ mixin _$ChangeProfileStore on ChangeProfileStoreBase, Store {
       ActionController(name: 'ChangeProfileStoreBase');
 
   @override
+  dynamic setUserData(ProfileMeResponse value) {
+    final _$actionInfo = _$ChangeProfileStoreBaseActionController.startAction(
+        name: 'ChangeProfileStoreBase.setUserData');
+    try {
+      return super.setUserData(value);
+    } finally {
+      _$ChangeProfileStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic setPhoneNumber(PhoneNumber phone) {
     final _$actionInfo = _$ChangeProfileStoreBaseActionController.startAction(
         name: 'ChangeProfileStoreBase.setPhoneNumber');

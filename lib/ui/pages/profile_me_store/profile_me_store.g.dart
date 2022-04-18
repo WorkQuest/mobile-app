@@ -99,6 +99,13 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
     });
   }
 
+  final _$getProfileMeAsyncAction = AsyncAction('_ProfileMeStore.getProfileMe');
+
+  @override
+  Future<dynamic> getProfileMe() {
+    return _$getProfileMeAsyncAction.run(() => super.getProfileMe());
+  }
+
   @override
   String toString() {
     return '''

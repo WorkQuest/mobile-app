@@ -6,6 +6,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:app/utils/web_socket.dart';
 
 part 'worker_store.g.dart';
 
@@ -32,9 +33,21 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   @action
   void setOpinion(String value) => opinion = value;
 
-  _WorkerStore(this._apiProvider);
+  _WorkerStore(this._apiProvider) {
+    WebSocket().handlerQuests = this.changeQuest;
+  }
 
   Observable<BaseQuestResponse?> quest = Observable(null);
+
+  @action
+  void changeQuest(dynamic json) {
+    var changedQuest =
+    BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+    if (changedQuest.id == quest.value?.id) {
+      quest.value = changedQuest;
+      _getQuest();
+    }
+  }
 
   _getQuest() async {
     final newQuest = await _apiProvider.getQuest(id: quest.value!.id);

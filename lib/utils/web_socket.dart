@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app/constants.dart';
 import 'package:app/model/web3/TrxEthereumResponse.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
@@ -30,7 +31,9 @@ class WebSocket {
     token = await Storage.readNotificationToken();
     print("[WebSocket]  connecting ...");
     _connectWallet();
-    _connectListen();
+    if (!Constants.isRelease) {
+      _connectListen();
+    }
     _connectSender();
   }
 
@@ -64,7 +67,9 @@ class WebSocket {
   }
 
   void _connectSender() {
-    _senderChannel = IOWebSocketChannel.connect("wss://app.workquest.co/api");
+    _senderChannel = IOWebSocketChannel.connect(Constants.isRelease
+        ? "wss://app-ver1.workquest.co/api"
+        : "wss://app.workquest.co/api");
     _senderChannel?.sink.add("""{
           "type": "hello",
           "id": 1,
@@ -205,22 +210,20 @@ class WebSocket {
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
       if (transaction.result?.events != null) {
-
         if (transaction.result!.events!['ethereum_tx.recipient']!.first
-            .toString()
-            .toLowerCase() ==
+                .toString()
+                .toLowerCase() ==
             myAddress.toLowerCase()) {
-          await Future.delayed(const Duration(seconds: 4));
+          await Future.delayed(const Duration(seconds: 8));
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
-          GetIt.I.get<TransactionsStore>().getTransactions(isForce: false);
+          GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
         } else {
           final decode = json.decode(transaction.result!.events!['tx_log.txLog']!.first);
-          print('decode - ${(decode['topics'] as List<dynamic>).last.substring(26)}');
           if ((decode['topics'] as List<dynamic>).last.substring(26) ==
               myAddress.substring(2)) {
-            await Future.delayed(const Duration(seconds: 4));
+            await Future.delayed(const Duration(seconds: 8));
             GetIt.I.get<WalletStore>().getCoins(isForce: false);
-            GetIt.I.get<TransactionsStore>().getTransactions(isForce: false);
+            GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
           }
         }
       }

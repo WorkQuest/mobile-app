@@ -84,6 +84,36 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
+  final _$categoryAtom = Atom(name: '_CreateQuestStore.category');
+
+  @override
+  String get category {
+    _$categoryAtom.reportRead();
+    return super.category;
+  }
+
+  @override
+  set category(String value) {
+    _$categoryAtom.reportWrite(value, super.category, () {
+      super.category = value;
+    });
+  }
+
+  final _$categoryValueAtom = Atom(name: '_CreateQuestStore.categoryValue');
+
+  @override
+  String get categoryValue {
+    _$categoryValueAtom.reportRead();
+    return super.categoryValue;
+  }
+
+  @override
+  set categoryValue(String value) {
+    _$categoryValueAtom.reportWrite(value, super.categoryValue, () {
+      super.categoryValue = value;
+    });
+  }
+
   final _$priorityAtom = Atom(name: '_CreateQuestStore.priority');
 
   @override
@@ -376,6 +406,8 @@ employment: ${employment},
 employmentValue: ${employmentValue},
 workplaceValue: ${workplaceValue},
 workplace: ${workplace},
+category: ${category},
+categoryValue: ${categoryValue},
 priority: ${priority},
 dateTime: ${dateTime},
 longitude: ${longitude},

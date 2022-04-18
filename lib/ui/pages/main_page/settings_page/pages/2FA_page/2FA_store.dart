@@ -44,6 +44,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       googleAuthenticatorSecretCode = await apiProvider.enable2FA();
+
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
@@ -57,6 +58,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
       await apiProvider.disable2FA(
         totp: codeFromAuthenticator,
       );
+
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

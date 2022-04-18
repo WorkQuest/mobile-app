@@ -1,19 +1,25 @@
+import 'package:app/constants.dart';
 
 import 'location_full.dart';
 
-class CreateQuestRequestModel  {
+class CreateQuestRequestModel {
+  String category;
   int priority;
   LocationFull location;
   String title;
   String description;
+
   // String locationPlaceName;
   String workplace;
   String price;
   List media;
   List<String> specializationKeys;
   String employment;
+  int adType;
 
   CreateQuestRequestModel({
+    this.category = '',
+    this.adType = 0,
     required this.location,
     required this.priority,
     required this.employment,
@@ -30,8 +36,18 @@ class CreateQuestRequestModel  {
     final Map<String, dynamic> questData = new Map<String, dynamic>();
     questData['priority'] = this.priority;
     questData['workplace'] = this.workplace;
+    if (Constants.isRelease) {
+      questData['category'] = this.category;
+      questData['adType'] = this.adType;
+      questData['locationPlaceName'] = this.location.locationPlaceName;
+      questData['location'] = {
+        "longitude": this.location.locationCode.longitude,
+        "latitude": this.location.locationCode.latitude
+      };
+    } else {
+      questData['locationFull'] = this.location.toJson();
+    }
     // questData['locationPlaceName'] = this.locationPlaceName;
-    questData['locationFull'] = this.location.toJson();
     questData['title'] = this.title;
     questData['specializationKeys'] = this.specializationKeys;
     questData['medias'] = this.media;

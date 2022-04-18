@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app/base_store/i_store.dart';
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
@@ -154,15 +155,24 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   String getFilterPrice({bool isWorker = false}) {
     String result = '';
-    if (isWorker) {
-      result +=
-          '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-      result +=
-          '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+    if (Constants.isRelease) {
+      if (isWorker) {
+        result += '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result +=
+        '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+      } else {
+        result += '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result += '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+      }
     } else {
-      result += '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-      result +=
-          '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+      if (isWorker) {
+        if (fromPrice.isNotEmpty)
+          result += '&betweenWagePerHour[from]=$fromPrice';
+        if (toPrice.isNotEmpty) result += '&betweenWagePerHour[to]=$toPrice';
+      } else {
+        if (fromPrice.isNotEmpty) result += '&priceBetween[from]=$fromPrice';
+        if (toPrice.isNotEmpty) result += '&priceBetween[to]=$toPrice';
+      }
     }
     return result;
   }
@@ -221,9 +231,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   void setSearchWord(String value) {
-    role == UserRole.Worker
-        ? searchResultList.clear()
-        : searchWorkersList.clear();
+    role == UserRole.Worker ? questsList.clear() : workersList.clear();
     offset = 0;
     searchWord = value.trim();
     if (debounce != null) {
@@ -232,24 +240,25 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     }
     if (searchWord.length > 0)
       role == UserRole.Worker ? getSearchedQuests() : getSearchedWorkers();
+    else {
+      role == UserRole.Worker ? getQuests(true) : getWorkers(true);
+    }
   }
 
   @computed
   bool get emptySearch =>
-      searchWord.isNotEmpty &&
-      searchResultList.isEmpty &&
-      searchWorkersList.isEmpty &&
-      workersList.isEmpty &&
-      questsList.isEmpty &&
-      !this.isLoading;
+      // searchWord.isNotEmpty &&
+      // searchResultList.isEmpty &&
+      // searchWorkersList.isEmpty &&
+      workersList.isEmpty && questsList.isEmpty && !this.isLoading;
 
   @action
   Future getSearchedQuests() async {
     try {
-      if (offset == searchResultList.length) {
+      if (offset == questsList.length) {
         this.onLoading();
         debounce = Timer(const Duration(milliseconds: 300), () async {
-          searchResultList.addAll(await _apiProvider.getQuests(
+          questsList.addAll(await _apiProvider.getQuests(
             price: getFilterPrice(),
             searchWord: searchWord,
             offset: offset,
@@ -273,10 +282,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @action
   Future getSearchedWorkers() async {
-    if (this.offset == searchResultList.length) {
+    if (this.offset == workersList.length) {
       this.onLoading();
       debounce = Timer(const Duration(milliseconds: 300), () async {
-        searchWorkersList.addAll(await _apiProvider.getWorkers(
+        workersList.addAll(await _apiProvider.getWorkers(
           searchWord: this.searchWord,
           price: getFilterPrice(isWorker: true),
           offset: this.offset,
@@ -296,13 +305,14 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getQuests(bool newList) async {
     try {
+      this.onLoading();
       if (newList) {
-        this.onLoading();
         this.offset = 0;
         questsList.clear();
       }
       if (this.offset == questsList.length) {
         questsList.addAll(await _apiProvider.getQuests(
+          searchWord: searchWord,
           price: getFilterPrice(),
           statuses: [0, 1],
           employment: employments,
@@ -327,13 +337,14 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getWorkers(bool newList) async {
     try {
+      this.onLoading();
       if (newList) {
-        this.onLoading();
         workersList.clear();
         offsetWorkers = 0;
       }
       if (offsetWorkers == workersList.length) {
         workersList.addAll(await _apiProvider.getWorkers(
+          searchWord: searchWord,
           sort: this.sort,
           price: getFilterPrice(isWorker: true),
           offset: this.offsetWorkers,

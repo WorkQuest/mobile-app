@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
@@ -10,6 +11,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
+import '../../../../../../utils/alert_dialog.dart';
 import '../../../raise_views_page/raise_views_page.dart';
 
 import '../../../../../widgets/animation_show_more.dart';
@@ -79,11 +81,9 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                         index++)
                       PortfolioWidget(
                         index: index,
-                        imageUrl: portfolioStore!
-                                .portfolioList[index].medias.isEmpty
+                        imageUrl: portfolioStore!.portfolioList[index].medias.isEmpty
                             ? "https://app-ver1.workquest.co/_nuxt/img/logo.1baae1e.svg"
-                            : portfolioStore!
-                                .portfolioList[index].medias.first.url,
+                            : portfolioStore!.portfolioList[index].medias.first.url,
                         title: portfolioStore!.portfolioList[index].title,
                         isProfileYour: widget.info == null ? true : false,
                       ),
@@ -91,31 +91,30 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                 ),
         ),
 
-        Padding(
-          padding: EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-          ),
-          child: ElevatedButton(
-            onPressed: () async {
-              portfolioStore!.setTitleName("Portfolio");
-              await Navigator.pushNamed(
-                context,
-                ReviewPage.routeName,
-                arguments: portfolioStore!,
-              );
-              await portfolioStore!.getPortfolio(
-                userId: widget.info == null
-                    ? userStore!.userData!.id
-                    : widget.info!.id,
-                newList: true,
-              );
-            },
-            child: Text(
-              "meta.showAllReviews".tr(),
+        if (portfolioStore!.portfolioList.isNotEmpty)
+          Padding(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+            ),
+            child: ElevatedButton(
+              onPressed: () async {
+                portfolioStore!.setTitleName("Portfolio");
+                await Navigator.pushNamed(
+                  context,
+                  ReviewPage.routeName,
+                  arguments: portfolioStore!,
+                );
+                await portfolioStore!.getPortfolio(
+                  userId: widget.info == null ? userStore!.userData!.id : widget.info!.id,
+                  newList: true,
+                );
+              },
+              child: Text(
+                "meta.showAllReviews".tr(),
+              ),
             ),
           ),
-        ),
       ];
 
   @override
@@ -124,9 +123,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
         Padding(
           padding: const EdgeInsets.only(bottom: 5.0),
           child: Text(
-            widget.info == null
-                ? "skills.yourSkills".tr()
-                : "skills.title".tr(),
+            widget.info == null ? "skills.yourSkills".tr() : "skills.title".tr(),
             textAlign: TextAlign.start,
             style: style,
           ),
@@ -142,8 +139,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   )
                 : Observer(
                     builder: (_) => SkillsWidget(
-                      skills: store
-                          .parser(userStore!.userData!.userSpecializations),
+                      skills: store.parser(userStore!.userData!.userSpecializations),
                       isProfileMy: true,
                       isExpanded: store.expandedSkills ||
                           userStore!.userData!.userSpecializations.length < 5,
@@ -164,7 +160,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     builder: (_) => SkillsWidget(
                       skills: store.parser(widget.info!.userSpecializations),
                       isProfileMy: false,
-                      isExpanded: store.expandedSkills,
+                      isExpanded: store.expandedSkills ||
+                          userStore!.userData!.userSpecializations.length < 5,
                       onPressed: (bool value) {
                         store.setExpandedSkills(value);
                       },
@@ -185,8 +182,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           final description = widget.info == null
               ? userStore!.userData?.additionalInfo?.description ??
                   "modals.noDescription".tr()
-              : widget.info!.additionalInfo?.description ??
-                  "modals.noDescription".tr();
+              : widget.info!.additionalInfo?.description ?? "modals.noDescription".tr();
           return AnimationShowMore(
             text: description,
             enabled: store.expandedDescription || description.length < 100,
@@ -212,11 +208,10 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount:
-                        userStore!.userData!.additionalInfo!.educations.length,
+                    itemCount: userStore!.userData!.additionalInfo!.educations.length,
                     itemBuilder: (_, index) {
-                      final education = userStore!
-                          .userData!.additionalInfo!.educations[index];
+                      final education =
+                          userStore!.userData!.additionalInfo!.educations[index];
                       return experience(
                           place: education["place"] ?? "--",
                           from: education["from"] ?? "--",
@@ -232,8 +227,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: widget.info!.additionalInfo!.educations.length,
                     itemBuilder: (_, index) {
-                      final education =
-                          widget.info!.additionalInfo!.educations[index];
+                      final education = widget.info!.additionalInfo!.educations[index];
                       return experience(
                           place: education["place"] ?? "--",
                           from: education["from"] ?? "--",
@@ -262,11 +256,11 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: userStore!
-                        .userData!.additionalInfo!.workExperiences.length,
+                    itemCount:
+                        userStore!.userData!.additionalInfo!.workExperiences.length,
                     itemBuilder: (_, index) {
-                      final userExperience = userStore!
-                          .userData!.additionalInfo!.workExperiences[index];
+                      final userExperience =
+                          userStore!.userData!.additionalInfo!.workExperiences[index];
                       return experience(
                           place: userExperience["place"] ?? "--",
                           from: userExperience["from"] ?? "--",
@@ -284,8 +278,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount:
-                        widget.info!.additionalInfo!.workExperiences.length,
+                    itemCount: widget.info!.additionalInfo!.workExperiences.length,
                     itemBuilder: (_, index) {
                       final userExperience =
                           widget.info!.additionalInfo!.workExperiences[index];
@@ -304,8 +297,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
       ];
 
   List<Widget> addToQuest() => [
-        if (widget.info != null &&
-            userStore!.userData!.role == UserRole.Employer)
+        if (widget.info != null && userStore!.userData!.role == UserRole.Employer)
           Column(
             children: [
               spacer,
@@ -334,10 +326,18 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               spacer,
               ElevatedButton(
                 onPressed: () async {
-                  await Navigator.of(context, rootNavigator: true).pushNamed(
-                    RaiseViews.routeName,
-                    arguments: "",
-                  );
+                  if (Constants.isRelease) {
+                    AlertDialogUtils.showInfoAlertDialog(
+                      context,
+                      title: 'Warning'.tr(),
+                      content: 'Service temporarily unavailable',
+                    );
+                  } else {
+                    await Navigator.of(context, rootNavigator: true).pushNamed(
+                      RaiseViews.routeName,
+                      arguments: "",
+                    );
+                  }
                 },
                 child: Text(
                   "profiler.raiseViews".tr(),
@@ -369,8 +369,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           reviews: widget.info == null
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
               : widget.info!.ratingStatistic!.reviewCount.toString(),
-          userId:
-              widget.info == null ? userStore!.userData!.id : widget.info!.id,
+          userId: widget.info == null ? userStore!.userData!.id : widget.info!.id,
           context: context,
         ),
       ];

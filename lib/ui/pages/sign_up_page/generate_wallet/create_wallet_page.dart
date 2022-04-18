@@ -105,24 +105,24 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       child: Text('Next'),
-                      onPressed: store.isSaved
-                          ? () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => Provider(
-                                    create: (_) => store,
-                                    child: const VerifyWalletPage(),
-                                  ),
-                                ),
-                              );
-                            }
-                          : null,
+                      onPressed: store.isSaved ? () => _pushVerifyWallet(store) : null,
                     ),
                   ),
                 ),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  _pushVerifyWallet(CreateWalletStore store) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => Provider(
+          create: (_) => store,
+          child: const VerifyWalletPage(),
         ),
       ),
     );

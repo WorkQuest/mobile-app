@@ -26,7 +26,7 @@ class SendEmail extends StatelessWidget {
           CupertinoSliverNavigationBar(
             heroTag: "restoreNavbar",
             largeTitle: Text(
-              "restore.enterEmail".tr(),
+              "login.forgot".tr(),
             ),
           ),
           SliverPadding(
@@ -45,7 +45,7 @@ class SendEmail extends StatelessWidget {
                     builder: (_) => TextFormField(
                       onChanged: _store.setEmail,
                       decoration: InputDecoration(
-                        hintText: 'email@yahoo.com',
+                        hintText: 'Email address',
                       ),
                     ),
                   ),

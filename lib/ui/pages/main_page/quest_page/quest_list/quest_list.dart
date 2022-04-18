@@ -35,8 +35,7 @@ class _QuestListState extends State<QuestList> {
 
   FilterQuestsStore? filterQuestsStore;
 
-  final QuestItemPriorityType questItemPriorityType =
-      QuestItemPriorityType.Starred;
+  final QuestItemPriorityType questItemPriorityType = QuestItemPriorityType.Starred;
   final scrollKey = new GlobalKey();
 
   @override
@@ -161,9 +160,9 @@ class _QuestListState extends State<QuestList> {
                   padding: const EdgeInsets.all(20.0),
                   child: OutlinedButton(
                     onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(FilterQuestsPage.routeName,
-                              arguments: filterQuestsStore!.skillFilters);
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                          FilterQuestsPage.routeName,
+                          arguments: filterQuestsStore!.skillFilters);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(
@@ -207,8 +206,11 @@ class _QuestListState extends State<QuestList> {
                     );
                   }
                   if (questsStore!.emptySearch)
-                    return Center(
+                    return Container(
+                      height: MediaQuery.of(context).size.height / 4,
+                      alignment: Alignment.center,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(
                             height: 15,
@@ -216,10 +218,16 @@ class _QuestListState extends State<QuestList> {
                           SvgPicture.asset(
                             "assets/empty_quest_icon.svg",
                           ),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           Text(
                             profileMeStore!.userData!.role == UserRole.Worker
                                 ? "quests.noQuest".tr()
-                                : "Worker not wound",
+                                : "Worker not found",
+                            style: TextStyle(
+                              color: Color(0xFFD8DFE3),
+                            ),
                           ),
                         ],
                       ),
@@ -235,28 +243,20 @@ class _QuestListState extends State<QuestList> {
                       padding: EdgeInsets.zero,
                       itemCount: () {
                         if (role == UserRole.Worker)
-                          return questsStore!.searchWord.length > 2
-                              ? questsStore!.searchResultList.length
-                              : questsStore!.questsList.length;
-                        return questsStore!.searchWord.length > 2
-                            ? questsStore!.searchWorkersList.length
-                            : questsStore!.workersList.length;
+                          return questsStore!.questsList.length;
+                        return questsStore!.workersList.length;
                       }(),
                       itemBuilder: (_, index) {
                         return Observer(builder: (_) {
                           if (role == UserRole.Worker) {
-                            final item = questsStore!.searchWord.length > 2
-                                ? questsStore!.searchResultList[index]
-                                : questsStore!.questsList[index];
+                            final item = questsStore!.questsList[index];
                             _markItem(item);
                             return MyQuestsItem(
                               item,
                               itemType: this.questItemPriorityType,
                             );
                           }
-                          final item = questsStore!.searchWord.length > 2
-                              ? questsStore!.searchWorkersList[index]
-                              : questsStore!.workersList[index];
+                          final item = questsStore!.workersList[index];
                           _markItem(item);
                           return WorkersItem(
                             item,
@@ -332,12 +332,11 @@ class _AnimationWorkersQuestsItems extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AnimationWorkersQuestsItemsState createState() =>
-      _AnimationWorkersQuestsItemsState();
+  _AnimationWorkersQuestsItemsState createState() => _AnimationWorkersQuestsItemsState();
 }
 
-class _AnimationWorkersQuestsItemsState
-    extends State<_AnimationWorkersQuestsItems> with TickerProviderStateMixin {
+class _AnimationWorkersQuestsItemsState extends State<_AnimationWorkersQuestsItems>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override

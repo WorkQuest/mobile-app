@@ -56,7 +56,7 @@ class Validators {
     RegExp regExp = new RegExp(pattern);
     if ((text?.length ?? 0) == 0) {
       return 'Please enter mobile number';
-    } else if (!regExp.hasMatch(text ?? "")) {
+    } else if (!regExp.hasMatch(text!)) {
       return 'Please enter valid mobile number';
     }
     return null;

@@ -140,43 +140,46 @@ class AlertDialogUtils {
         context: context,
         barrierDismissible: false,
         builder: (context) {
-          if (Platform.isIOS) {
-            return CupertinoAlertDialog(
-              title: title,
-              content: content,
-              actions: [
-                if (needCancel)
-                  CupertinoButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      if (onTabCancel != null) {
-                        onTabCancel.call();
-                      }
-                    },
-                    child: Text(
-                      titleCancel ?? 'meta'.tr(gender: 'cancel'),
-                      style: TextStyle(color: colorCancel ?? Colors.black),
-                    ),
-                  ),
-                CupertinoButton(
-                  onPressed: () async {
-                    if (onTabOk != null) {
-                      await onTabOk.call();
-                    }
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    titleOk ?? 'Ok',
-                    style: TextStyle(color: colorOk ?? Colors.black),
-                  ),
-                ),
-              ],
-            );
-          }
+          // if (Platform.isIOS) {
+          //   return CupertinoAlertDialog(
+          //     title: title,
+          //     content: content,
+          //     actions: [
+          //       if (needCancel)
+          //         CupertinoButton(
+          //           onPressed: () {
+          //             Navigator.pop(context);
+          //             if (onTabCancel != null) {
+          //               onTabCancel.call();
+          //             }
+          //           },
+          //           child: Text(
+          //             titleCancel ?? 'meta'.tr(gender: 'cancel'),
+          //             style: TextStyle(color: colorCancel ?? Colors.black),
+          //           ),
+          //         ),
+          //       CupertinoButton(
+          //         onPressed: () async {
+          //           if (onTabOk != null) {
+          //             await onTabOk.call();
+          //           }
+          //           Navigator.pop(context);
+          //         },
+          //         child: Text(
+          //           titleOk ?? 'Ok',
+          //           style: TextStyle(color: colorOk ?? Colors.black),
+          //         ),
+          //       ),
+          //     ],
+          //   );
+          // }
           return AlertDialog(
             scrollable: true,
             title: title,
             content: content,
+            insetPadding: EdgeInsets.zero,
+            contentPadding: EdgeInsets.zero,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
             actions: [
               if (needCancel)
                 TextButton(
@@ -188,7 +191,7 @@ class AlertDialogUtils {
                   },
                   child: Text(
                     titleCancel ?? 'meta'.tr(gender: 'cancel'),
-                    style: TextStyle(color: colorOk ?? Colors.black),
+                    style: TextStyle(color: colorCancel ?? Colors.black),
                   ),
                 ),
               TextButton(
@@ -200,7 +203,7 @@ class AlertDialogUtils {
                 },
                 child: Text(
                   titleOk ?? 'Ok',
-                  style: TextStyle(color: colorCancel ?? Colors.black),
+                  style: TextStyle(color: colorOk ?? Colors.black),
                 ),
               ),
             ],

@@ -1,9 +1,14 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -16,22 +21,26 @@ class InstrumentCard extends StatelessWidget {
   final String urlArgument;
   final String iconPath;
   final String title;
+  final bool enable;
 
   const InstrumentCard({
     required this.urlArgument,
     required this.iconPath,
     required this.title,
+    required this.enable,
   });
 
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
-      onPressed: () {
-        Navigator.of(context, rootNavigator: true).pushNamed(
-          WebViewPage.routeName,
-          arguments: urlArgument,
-        );
-      },
+      onPressed: enable
+          ? () {
+              Navigator.of(context, rootNavigator: true).pushNamed(
+                WebViewPage.routeName,
+                arguments: urlArgument,
+              );
+            }
+          : null,
       padding: EdgeInsets.zero,
       child: Container(
         margin: EdgeInsets.only(bottom: 10.0),
@@ -158,6 +167,7 @@ Widget logOutButton(context) {
           );
           final cookieManager = WebviewCookieManager();
           cookieManager.clearCookies();
+          AccountRepository().clearData();
           Storage.deleteAllFromSecureStorage();
         },
       );
@@ -187,7 +197,8 @@ class MyProfileImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context, rootNavigator: true).pushNamed(UserProfile.routeName);
+        Navigator.of(context, rootNavigator: true)
+            .pushNamed(UserProfile.routeName);
       },
       child: Container(
         height: 150.0,
@@ -200,18 +211,19 @@ class MyProfileImage extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-                child: FadeInImage(
-                  width: MediaQuery.of(context).size.width,
-                  height: 300,
-                  placeholder: AssetImage('assets/blue_back.jpeg'),
-                  image: NetworkImage(
-                    userStore.userData!.avatar?.url ??
-                        "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                  ),
-                  fit: BoxFit.cover,
-                )
-
+              child: FadeInImage(
+                width: MediaQuery.of(context).size.width,
+                height: 300,
+                placeholder: MemoryImage(
+                  Uint8List.fromList(base64Decode(Constants.base64BlueHolder)),
                 ),
+                image: NetworkImage(
+                  userStore.userData!.avatar?.url ??
+                      Constants.defaultImageNetwork,
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
             Positioned(
               bottom: 16.0,
               left: 16.0,

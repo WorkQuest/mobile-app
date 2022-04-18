@@ -39,13 +39,16 @@ abstract class _WalletStore extends IStore<bool> with Store {
           await ClientService().getAllBalance(AccountRepository().privateKey);
       print(list);
       final ether = list.firstWhere((element) => element.title == 'ether');
+      print('address: ${AccountRepository().userAddresses!.first.address!}');
       final wqt = await ClientService()
           .getBalanceFromContract(AddressCoins.wqt);
       final wEth = await ClientService()
           .getBalanceFromContract(AddressCoins.wEth);
       final wBnb = await ClientService()
           .getBalanceFromContract(AddressCoins.wBnb);
-
+      print('wqt: $wqt');
+      print('wEth: $wEth');
+      print('wBnb: $wBnb');
       if (coins.isNotEmpty) {
         coins[0].amount = ether.amount;
         coins[1].amount = wqt.toString();

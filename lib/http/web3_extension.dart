@@ -1,4 +1,3 @@
-
 import 'package:app/model/web3/transactions_response.dart';
 
 import 'api_provider.dart';
@@ -20,15 +19,37 @@ extension Web3Requests on ApiProvider {
     );
   }
 
-  Future<List<Tx>> getTransactions(String address,
+  Future<List<Tx>?> getTransactions(String address,
       {int limit = 10, int offset = 0}) async {
-    String _transactions(String address) =>
-        "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
-    final response = await httpClient.get(
-      query: '${_transactions(address)}?limit=$limit&offset=$offset',
-      useBaseUrl: false,
-    );
-    return TransactionsResponse.fromJson(response).transactions!;
+    try {
+      String _transactions(String address) =>
+          "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
+      bool status = true;
+      List<Tx>? result = [];
+      while (status) {
+        final response = await httpClient.get(
+          query: '${_transactions(address)}?limit=$limit&offset=$offset',
+          useBaseUrl: false,
+        );
+
+        final res = TransactionsResponse.fromJson(response);
+        res.transactions!.map((tran) {
+          if (tran.tokenTransfers != null && tran.tokenTransfers!.isEmpty) {
+            result.add(tran);
+          }
+        }).toList();
+        if (result.length >= 10 || res.transactions!.isEmpty) {
+          status = false;
+        } else {
+          offset += 10;
+        }
+        print('offset = $offset');
+        print('len result = ${result.length}');
+      }
+      return result;
+    } catch (e, trace) {
+      print('e: $e\ntrace: $trace');
+    }
   }
 
   Future<List<Tx>?> getTransactionsByToken({

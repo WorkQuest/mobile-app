@@ -4,11 +4,14 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/
 import 'package:app/ui/pages/main_page/chat_page/chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
+import '../../../widgets/shimmer.dart';
 import 'chat_room_page/chat_room_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -43,10 +46,8 @@ class _ChatPageState extends State<ChatPage> {
           return <Widget>[
             Observer(
               builder: (_) => CupertinoSliverNavigationBar(
-                backgroundColor:
-                    store.chatSelected ? Color(0xFF0083C7) : Colors.white,
-                largeTitle:
-                    store.chatSelected ? _selectedChatAppBar() : _appBar(),
+                backgroundColor: store.chatSelected ? Color(0xFF0083C7) : Colors.white,
+                largeTitle: store.chatSelected ? _selectedChatAppBar() : _appBar(),
                 border: const Border.fromBorderSide(BorderSide.none),
               ),
             ),
@@ -61,7 +62,11 @@ class _ChatPageState extends State<ChatPage> {
           onRefresh: () => store.loadChats(true, store.starred),
           child: Observer(
             builder: (_) => store.isLoading
-                ? Center(child: CircularProgressIndicator.adaptive())
+                ? SingleChildScrollView(
+                    child: Column(
+                            children: List.generate(10, (index) => const _ShimmerChatItem()),
+                          ),
+                )
                 : store.chats.isNotEmpty
                     ? NotificationListener<ScrollEndNotification>(
                         onNotification: (scrollEnd) {
@@ -86,10 +91,30 @@ class _ChatPageState extends State<ChatPage> {
                         ),
                       )
                     : Center(
-                        child: Text(
-                          "chat.noChats".tr(),
+                      child: SingleChildScrollView(
+                        physics: ClampingScrollPhysics(),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            SvgPicture.asset(
+                              "assets/empty_quest_icon.svg",
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "chat.noChats".tr(),
+                              style: TextStyle(
+                                color: Color(0xFFD8DFE3),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                    ),
           ),
         ),
       ),
@@ -241,15 +266,13 @@ class _ChatPageState extends State<ChatPage> {
             if (store.idChatsForStar.values.toList()[i] == true) return;
           store.setChatSelected(false);
         } else {
-          if (chatDetails.chatModel.lastMessage.senderUserId !=
-              userData.userData!.id) {
+          if (chatDetails.chatModel.lastMessage.senderUserId != userData.userData!.id) {
             store.setMessageRead(
                 chatDetails.chatModel.id, chatDetails.chatModel.lastMessageId);
             chatDetails.chatModel.lastMessage.senderStatus = "read";
           }
-          Navigator.of(context, rootNavigator: true).pushNamed(
-              ChatRoomPage.routeName,
-              arguments: chatDetails.chatModel.id);
+          Navigator.of(context, rootNavigator: true)
+              .pushNamed(ChatRoomPage.routeName, arguments: chatDetails.chatModel.id);
           store.checkMessage();
         }
       },
@@ -277,14 +300,13 @@ class _ChatPageState extends State<ChatPage> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
                           child: chatDetails.chatModel.type != "group"
-                              ? Image.network(
-                                  chatDetails.chatModel.userMembers[0].id !=
-                                          userData.userData!.id
-                                      ? "${chatDetails.chatModel.userMembers[0].avatar?.url ?? "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs"}"
-                                      : "${chatDetails.chatModel.userMembers[1].avatar?.url ?? "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs"}",
+                              ? UserAvatar(
                                   width: 56,
                                   height: 56,
-                                  fit: BoxFit.cover,
+                                  url: chatDetails.chatModel.userMembers[0].id !=
+                                          userData.userData!.id
+                                      ? chatDetails.chatModel.userMembers[0].avatar?.url
+                                      : chatDetails.chatModel.userMembers[1].avatar?.url,
                                 )
                               : Stack(
                                   children: [
@@ -298,8 +320,7 @@ class _ChatPageState extends State<ChatPage> {
                                     Positioned.fill(
                                       child: Center(
                                         child: Text(
-                                          chatDetails.chatModel.name!.length ==
-                                                  1
+                                          chatDetails.chatModel.name!.length == 1
                                               ? "${chatDetails.chatModel.name![0].toUpperCase()}"
                                               : "${chatDetails.chatModel.name![0].toUpperCase()}" +
                                                   "${chatDetails.chatModel.name?[1]}",
@@ -365,8 +386,7 @@ class _ChatPageState extends State<ChatPage> {
                       const SizedBox(width: 50),
                       Column(
                         children: [
-                          if (chatDetails.chatModel.lastMessage.senderStatus ==
-                              "unread")
+                          if (chatDetails.chatModel.lastMessage.senderStatus == "unread")
                             Container(
                               width: 11,
                               height: 11,
@@ -380,8 +400,7 @@ class _ChatPageState extends State<ChatPage> {
                             ),
                           if (chatDetails.chatModel.star != null)
                             Container(
-                              margin: chatDetails
-                                          .chatModel.lastMessage.senderStatus ==
+                              margin: chatDetails.chatModel.lastMessage.senderStatus ==
                                       "unread"
                                   ? const EdgeInsets.only(top: 3, right: 16)
                                   : const EdgeInsets.only(top: 23, right: 16),
@@ -403,6 +422,88 @@ class _ChatPageState extends State<ChatPage> {
               )
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ShimmerChatItem extends StatelessWidget {
+  const _ShimmerChatItem({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 12.5,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: _ShimmerItem(
+                    width: 56,
+                    height: 56,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    _ShimmerItem(width: double.infinity, height: 20),
+                    const SizedBox(height: 5),
+                    _ShimmerItem(width: double.infinity, height: 20),
+                    const SizedBox(height: 5),
+                    _ShimmerItem(width: 50, height: 20),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 50),
+            ],
+          ),
+        ),
+        Divider(
+          height: 1,
+          color: Color(0xFFF7F8FA),
+        )
+      ],
+    );
+  }
+}
+
+class _ShimmerItem extends StatelessWidget {
+  final double width;
+  final double height;
+
+  const _ShimmerItem({
+    Key? key,
+    required this.width,
+    required this.height,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.stand(
+      child: Container(
+        child: SizedBox(
+          height: height,
+          width: width,
+        ),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(20.0),
+          color: Colors.white,
         ),
       ),
     );

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
-import 'package:app/ui/pages/start_page/store/start_store.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
@@ -72,12 +71,25 @@ class _StartPageState extends State<StartPage> {
                                 firstImage: "assets/start_page_1.png",
                                 secondImage: "assets/start_page_2.png",
                                 context: context,
+                                firstHead:
+                                "The World's Decentralized Job Market",
+                                firstTitle:
+                                "Completely secure and easy to use, WorkQuest offers you a search for an employee or employer in just a few clicks.",
+                                secondHead: "Innovative Labor Market",
+                                secondTitle:
+                                "Absolute data security and a unique rating system guarantee the success of a transaction between an employee and an employer using a smart contract based on the WorkNet Blockchain.",
                               )
                             else
                               page(
                                 firstImage: "assets/start_page_2.png",
                                 secondImage: "assets/start_page_3.png",
                                 context: context,
+                                firstHead: "Innovative Labor Market",
+                                firstTitle:
+                                "Absolute data security and a unique rating system guarantee the success of a transaction between an employee and an employer using a smart contract based on the WorkNet Blockchain.",
+                                secondHead: "Integration DeFi with Recruitment",
+                                secondTitle:
+                                "Fast and cheap transactions are available to everyone, anywhere in the world. WorkQuest is a diverse world of decentralized finance in your pocket.",
                               ),
                             PageView(
                               controller: _pageController,
@@ -116,6 +128,10 @@ class _StartPageState extends State<StartPage> {
   Widget page({
     required String firstImage,
     required String secondImage,
+    required String firstHead,
+    required String firstTitle,
+    required String secondHead,
+    required String secondTitle,
     required BuildContext context,
   }) {
     return StreamBuilder<double>(
@@ -190,35 +206,18 @@ class _StartPageState extends State<StartPage> {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "startPage.welcome".tr(),
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    "startPage.workQuest".tr(),
-                    style: TextStyle(
-                        fontSize: 34.0, color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 15),
-                    child: Text(
-                      "startPage.title".tr(),
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
+            Opacity(
+              opacity: 1 - snapshot.data!,
+              child: title(
+                head: firstHead,
+                title: firstTitle,
+              ),
+            ),
+            Opacity(
+              opacity: snapshot.data!,
+              child: title(
+                head: secondHead,
+                title: secondTitle,
               ),
             ),
           ],
@@ -226,6 +225,52 @@ class _StartPageState extends State<StartPage> {
       },
     );
   }
+
+  Widget title({
+    required String head,
+    required String title,
+  }) =>
+      Padding(
+        padding: EdgeInsets.only(left: 16.0, right: 16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "startPage.welcome".tr(),
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              "startPage.workQuest".tr(),
+              style: TextStyle(
+                fontSize: 34.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              head,
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.white,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 15),
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
 
   Widget buttonRow({
     double position = 0.0,

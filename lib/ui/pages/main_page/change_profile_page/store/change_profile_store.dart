@@ -36,6 +36,11 @@ abstract class ChangeProfileStoreBase with Store {
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
+  setUserData(ProfileMeResponse value) {
+    this.userData = value;
+  }
+
+  @action
   Future<Null> getPrediction(BuildContext context) async {
     Prediction? p = await PlacesAutocomplete.show(
       context: context,
@@ -50,8 +55,8 @@ abstract class ChangeProfileStoreBase with Store {
 
   @action
   Future<void> getInitCode(Phone firstPhone, Phone? secondPhone) async {
-    phoneNumber =
-        await PhoneNumber.getRegionInfoFromPhoneNumber(firstPhone.fullPhone);
+    print('getInitCode');
+    phoneNumber = await PhoneNumber.getRegionInfoFromPhoneNumber(firstPhone.fullPhone);
     if (secondPhone != null)
       secondPhoneNumber =
           await PhoneNumber.getRegionInfoFromPhoneNumber(secondPhone.fullPhone);
@@ -66,28 +71,44 @@ abstract class ChangeProfileStoreBase with Store {
     userData.locationCode!.latitude = detail.result.geometry!.location.lat;
     userData.locationCode!.longitude = detail.result.geometry!.location.lng;
     userData.locationPlaceName = address;
+    userData.additionalInfo?.address = address;
   }
 
   @action
   setPhoneNumber(PhoneNumber phone) {
-    userData.tempPhone?.codeRegion = phone.dialCode ?? "";
-    userData.tempPhone?.phone =
-        phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "";
-    userData.tempPhone?.fullPhone = phone.phoneNumber ?? "";
+    this.phoneNumber = phone;
+    if (userData.tempPhone == null) {
+      userData.tempPhone = Phone(
+        codeRegion: phone.dialCode ?? "",
+        fullPhone: phone.phoneNumber ?? "",
+        phone:  phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "",
+      );
+    } else {
+      userData.tempPhone?.codeRegion = phone.dialCode ?? "";
+      userData.tempPhone?.phone =
+          phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "";
+      userData.tempPhone?.fullPhone = phone.phoneNumber ?? "";
+    }
   }
 
   @action
   setSecondPhoneNumber(PhoneNumber phone) {
-    userData.additionalInfo?.secondMobileNumber?.codeRegion =
-        phone.dialCode ?? "";
-    userData.additionalInfo?.secondMobileNumber?.phone =
-        phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "";
-    userData.additionalInfo?.secondMobileNumber?.fullPhone =
-        phone.phoneNumber ?? "";
+    this.secondPhoneNumber = phone;
+    if (userData.additionalInfo?.secondMobileNumber == null) {
+      userData.additionalInfo?.secondMobileNumber = Phone(
+        codeRegion: phone.dialCode ?? "",
+        fullPhone: phone.phoneNumber ?? "",
+        phone:  phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "",
+      );
+    } else {
+      userData.additionalInfo?.secondMobileNumber?.codeRegion = phone.dialCode ?? "";
+      userData.additionalInfo?.secondMobileNumber?.phone =
+          phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "";
+      userData.additionalInfo?.secondMobileNumber?.fullPhone = phone.phoneNumber ?? "";
+    }
   }
 
-  bool validationKnowledge(
-      List<Map<String, String>> list, BuildContext context) {
+  bool validationKnowledge(List<Map<String, String>> list, BuildContext context) {
     bool chek = true;
     list.forEach((element) {
       if (element["from"]!.isEmpty ||
@@ -113,15 +134,13 @@ abstract class ChangeProfileStoreBase with Store {
     return chek;
   }
 
-  bool numberChanged(Phone phone) =>
-      (this.userData.phone != phone && phone.fullPhone.isNotEmpty);
+  bool numberChanged(String tempPhone) =>
+      (this.userData.tempPhone!.fullPhone != tempPhone && userData.tempPhone!.fullPhone.isNotEmpty);
 
   bool areThereAnyChanges(ProfileMeResponse? userData) {
     if (userData == null) return false;
 
-    if (this.userData.role == UserRole.Worker) if (this
-            .userData
-            .userSpecializations !=
+    if (this.userData.role == UserRole.Worker) if (this.userData.userSpecializations !=
         userData.userSpecializations) return true;
 
     if (this.userData.wagePerHour != userData.wagePerHour) return true;

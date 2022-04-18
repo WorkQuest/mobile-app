@@ -15,6 +15,8 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../constants.dart';
+import '../../../utils/storage.dart';
+import '../../../web3/repository/account_repository.dart';
 
 class PinCodePage extends StatefulWidget {
   static const String routeName = "/PinCode";
@@ -32,7 +34,9 @@ class _PinCodePageState extends State<PinCodePage>
 
   @override
   void initState() {
-    context.read<PinCodeStore>().initPage();
+    Future.delayed(Duration.zero,(){
+      context.read<PinCodeStore>().initPage();
+    });
     controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -53,8 +57,8 @@ class _PinCodePageState extends State<PinCodePage>
       child: ObserverListener<PinCodeStore>(
         onFailure: () {
           controller!.forward(from: 0.0);
-          if (store.errorMessage != null) if (store
-              .errorMessage!.isNotEmpty) return false;
+          if (store.errorMessage != null) if (store.errorMessage!.isNotEmpty)
+            return false;
           return true;
         },
         onSuccess: () async {
@@ -70,6 +74,8 @@ class _PinCodePageState extends State<PinCodePage>
               );
             }
           } else if (store.successData == StatePinCode.ToLogin) {
+            AccountRepository().clearData();
+            Storage.deleteAllFromSecureStorage();
             Navigator.pushNamedAndRemoveUntil(
               context,
               SignInPage.routeName,
@@ -118,7 +124,9 @@ class _PinCodePageState extends State<PinCodePage>
                     SizedBox(
                       width: double.infinity,
                       child: Text(
-                        '${'pinCode.attempts_left'.tr()}: ${3 - store.attempts}',
+                        "pinCode.incorrectly".tr() +
+                            "${3 - store.attempts}" +
+                            "pinCode.left".tr(),
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 16,
@@ -132,9 +140,8 @@ class _PinCodePageState extends State<PinCodePage>
                   PinCodeKeyboard(
                     store.inputPin,
                     onTabRemove: store.popPin,
-                    onTabSensor:
-                    (store.statePin == StatePinCode.Check &&
-                        store.canCheckBiometrics)
+                    onTabSensor: (store.statePin == StatePinCode.Check &&
+                            store.canCheckBiometrics)
                         ? store.biometricScan
                         : null,
                     canBiometric: store.canCheckBiometrics,

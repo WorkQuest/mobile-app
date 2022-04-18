@@ -88,10 +88,14 @@ class _DepositPageState extends State<DepositPage>
                 ///Wallet Transfer
                 walletTab(),
 
-                ///Card Transfer
-                BankCardTransaction(
-                  transaction: "wallet.deposit".tr(),
+                Center(
+                  child: Text("This feature is currently unavailable"),
                 ),
+
+                ///Card Transfer
+                // BankCardTransaction(
+                //   transaction: "wallet.deposit".tr(),
+                // ),
               ],
             ),
           ),

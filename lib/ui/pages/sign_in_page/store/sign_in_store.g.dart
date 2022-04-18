@@ -91,6 +91,13 @@ mixin _$SignInStore on _SignInStore, Store {
     });
   }
 
+  final _$refreshTokenAsyncAction = AsyncAction('_SignInStore.refreshToken');
+
+  @override
+  Future<dynamic> refreshToken() {
+    return _$refreshTokenAsyncAction.run(() => super.refreshToken());
+  }
+
   final _$signInWalletAsyncAction = AsyncAction('_SignInStore.signInWallet');
 
   @override

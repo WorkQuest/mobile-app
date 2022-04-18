@@ -21,7 +21,7 @@ class Wallet extends Equatable {
   }
 
   static Future<Wallet> derive(String mnemonic) async {
-
+    mnemonic = mnemonic.trim();
     if (!AddressService().validateMnemonic(mnemonic)) {
       throw Exception("Invalid mnemonic");
     }

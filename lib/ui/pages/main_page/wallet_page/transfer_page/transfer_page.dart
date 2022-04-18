@@ -75,9 +75,21 @@ class _TransferPageState extends State<TransferPage> {
     return Scaffold(
       key: _ey,
       backgroundColor: Colors.white,
-      appBar: CupertinoNavigationBar(
-        middle: Text(
+      appBar: AppBar(
+        title: Text(
           "wallet.transfer".tr(),
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+        centerTitle: true,
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColor.enabledButton,
+          ),
         ),
       ),
       body: LayoutWithScroll(

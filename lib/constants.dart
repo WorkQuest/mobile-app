@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Constants {
+  static const bool isRelease = true;
+
   static const Map<String, Locale> languageList = {
     "English": Locale('en', 'US'),
     "Mandarin Chinese": Locale('zh', 'ZH'),
@@ -13,6 +15,7 @@ class Constants {
     "Portuguese": Locale('pt', 'PT'),
     "Indonesian ": Locale('id', 'ID'),
   };
+
   static const List<Color> priorityColors = [
     Color.fromRGBO(34, 204, 20, 1),
     Color.fromRGBO(34, 204, 20, 1),
@@ -25,6 +28,10 @@ class Constants {
     "reliable": WorkerBadge("SILVER", Color(0xFFBBC0C7)),
     "verified": WorkerBadge("BRONZE", Color(0xFFB79768)),
   };
+
+  static const String base64WhiteHolder = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
+  static const String base64BlueHolder = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkaD5eDwADoAHLLpHylgAAAABJRU5ErkJggg==';
+  static const String defaultImageNetwork = 'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 }
 
 abstract class AppColor {

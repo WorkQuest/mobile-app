@@ -7,10 +7,10 @@ import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/login_button.dart';
+import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:app/utils/validator.dart';
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
@@ -76,7 +76,12 @@ class SignInPage extends StatelessWidget {
                           ),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 30.0),
+                          padding: const EdgeInsets.fromLTRB(
+                            16.0,
+                            0.0,
+                            16.0,
+                            30.0,
+                          ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,23 +148,6 @@ class SignInPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
                     child: DefaultTextField(
-                      controller: totpController,
-                      onChanged: signInStore.setTotp,
-                      isPassword: true,
-                      autofillHints: [AutofillHints.password],
-                      prefixIconConstraints: _prefixConstraints,
-                      prefixIcon: SvgPicture.asset(
-                        "assets/lock.svg",
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      hint: "signIn.totp".tr(),
-                      inputFormatters: [],
-                      suffixIcon: null,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
-                    child: DefaultTextField(
                       controller: mnemonicController,
                       isPassword: true,
                       onChanged: signInStore.setMnemonic,
@@ -193,39 +181,11 @@ class SignInPage extends StatelessWidget {
                                   ? () {}
                                   : () async {
                                       if (_formKey.currentState!.validate()) {
-                                        await signInStore.signIn();
-                                        if (signInStore.isSuccess)
-                                          await profile.getProfileMe();
-                                        else {
-                                          signInStore.onSuccess(false);
-                                          _errorMessage(context, signInStore.error);
-                                          return;
-                                        }
-                                        if (profile.error.isEmpty)
-                                          await signInStore.signInWallet();
-                                        else {
-                                          _errorMessage(context, profile.error);
-                                          return;
-                                        }
-                                        if (signInStore.isSuccess &&
-                                            signInStore.error.isEmpty) {
-                                          await AlertDialogUtils.showSuccessDialog(context);
-                                          Navigator.pushNamedAndRemoveUntil(
-                                            context,
-                                            PinCodePage.routeName,
-                                            (_) => false,
-                                          );
-                                        } else {
-                                          // signInStore.onSuccess(false);
-                                          _errorMessage(context, signInStore.error);
-                                          if (signInStore.errorMessage == "unconfirmed") {
-                                            print("error");
-                                            await AlertDialogUtils.showSuccessDialog(context);
-                                            Navigator.pushNamed(
-                                                context, ConfirmEmail.routeName,
-                                                arguments: signInStore.getUsername());
-                                          }
-                                        }
+                                        _onPressedSignIn(
+                                          context,
+                                          signInStore: signInStore,
+                                          profile: profile,
+                                        );
                                       }
                                     }
                               : null,
@@ -281,8 +241,6 @@ class SignInPage extends StatelessWidget {
                         ),
                       ],
                     ),
-
-                    //_iconsView(signInStore),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -298,7 +256,10 @@ class SignInPage extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10.0),
                           child: GestureDetector(
                             onTap: () {
-                              Navigator.pushNamed(context, SignUpPage.routeName);
+                              Navigator.pushNamed(
+                                context,
+                                SignUpPage.routeName,
+                              );
                             },
                             child: Text(
                               "signIn.signUp".tr(),
@@ -346,53 +307,80 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  // Widget _iconsView(final SignInStore store) {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       _iconButton(
-  //         store.signInWithTwitter(),
-  //         "assets/google_icon.svg",
-  //         "https://www.instagram.com/zuck/?hl=ru",
-  //       ),
-  //       // _iconButton(
-  //       //   "assets/instagram.svg",
-  //       //   "https://www.instagram.com/zuck/?hl=ru",
-  //       // ),
-  //       _iconButton(
-  //         () {},
-  //         "assets/twitter_icon.svg",
-  //         "https://www.instagram.com/zuck/?hl=ru",
-  //       ),
-  //       _iconButton(
-  //         () {},
-  //         "assets/facebook_icon.svg",
-  //         "https://www.instagram.com/zuck/?hl=ru",
-  //       ),
-  //       _iconButton(
-  //         () {},
-  //         "assets/linkedin_icon.svg",
-  //         "https://www.instagram.com/zuck/?hl=ru",
-  //       ),
-  //     ],
-  //   );
-  // }
+  _onPressedSignIn(
+    BuildContext context, {
+    required SignInStore signInStore,
+    required ProfileMeStore profile,
+  }) async {
+    await signInStore.signIn();
+    if (signInStore.isSuccess)
+      await profile.getProfileMe();
+    else {
+      _errorHandler(context, signInStore: signInStore);
+      return;
+    }
+    if (profile.error.isEmpty)
+      await signInStore.signInWallet();
+    else {
+      _errorMessage(context, profile.error);
+      return;
+    }
+    if (signInStore.isSuccess && signInStore.error.isEmpty) {
+      await AlertDialogUtils.showSuccessDialog(context);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        PinCodePage.routeName,
+        (_) => false,
+      );
+    } else {
+      _errorMessage(context, signInStore.error);
+    }
+  }
 
-  Future<void> _errorMessage(BuildContext context, String msg) =>
+  _errorHandler(
+    BuildContext context, {
+    required SignInStore signInStore,
+  }) async {
+    print('error handler: ${signInStore.errorMessage}');
+    if (signInStore.errorMessage == "unconfirmed") {
+      print("error");
+      await AlertDialogUtils.showSuccessDialog(context);
+      Navigator.pushNamed(context, ConfirmEmail.routeName,
+          arguments: signInStore.getUsername());
+    } else if (signInStore.errorMessage == "TOTP is invalid") {
       AlertDialogUtils.showAlertDialog(
         context,
-        title: Text("Error"),
-        content: Text(
-          msg,
+        title: Text('Warning'),
+        content: Builder(
+          builder: (context) {
+            var width = MediaQuery.of(context).size.width;
+            return Container(
+              width: width - 100,
+              child: _AlertTotpWidget(
+                text: totpController.text,
+                onChanged: signInStore.setTotp,
+              ),
+            );
+          },
         ),
-        needCancel: false,
-        titleCancel: null,
-        titleOk: null,
+        needCancel: true,
+        titleCancel: 'Cancel',
+        titleOk: 'OK',
         onTabCancel: null,
-        onTabOk: null,
-        colorCancel: null,
-        colorOk: null,
+        onTabOk: () {
+          _onPressedSignIn(context,
+              signInStore: signInStore, profile: context.read<ProfileMeStore>());
+        },
+        colorCancel: Colors.red,
+        colorOk: AppColor.enabledButton,
       );
+    } else {
+      _errorMessage(context, signInStore.error);
+    }
+  }
+
+  void _errorMessage(BuildContext context, String msg) =>
+      AlertDialogUtils.showInfoAlertDialog(context, title: "Error", content: msg);
 
   Widget _iconButton(
     String iconPath,
@@ -401,58 +389,67 @@ class SignInPage extends StatelessWidget {
     Color? color,
   ]) {
     return CupertinoButton(
-        color: Color(0xFFF7F8FA),
-        padding: EdgeInsets.zero,
-        child: SvgPicture.asset(
-          iconPath,
-          color: color,
-        ),
-        onPressed: () async => await launch(
-              link == "google"
-                  ? 'https://app.workquest.co/api/v1/auth/login/google/token'
-                  : link == "twitter"
-                      ? 'https://app.workquest.co/api/v1/auth/login/twitter/token'
-                      : link == "facebook"
-                          ? 'https://app.workquest.co/api/v1/auth/login/facebook/token'
-                          : 'https://app.workquest.co/api/v1/auth/login/linkedin/token',
-              customTabsOption: CustomTabsOption(
-                toolbarColor: Theme.of(context).primaryColor,
-                enableDefaultShare: true,
-                enableUrlBarHiding: true,
-                showPageTitle: true,
-                // animation: CustomTabsAnimation.slideIn(),
-                // // or user defined animation.
-                // animation: const CustomTabsAnimation(
-                //   startEnter: 'slide_up',
-                //   startExit: 'android:anim/fade_out',
-                //   endEnter: 'android:anim/fade_in',
-                //   endExit: 'slide_down',
-                // ),
-                extraCustomTabs: const <String>[
-                  // ref. https://play.google.com/store/apps/details?id=org.mozilla.firefox
-                  'org.mozilla.firefox',
-                  // ref. https://play.google.com/store/apps/details?id=com.microsoft.emmx
-                  'com.microsoft.emmx',
-                ],
-              ),
-              safariVCOption: SafariViewControllerOption(
-                preferredBarTintColor: Theme.of(context).primaryColor,
-                preferredControlTintColor: Colors.white,
-                barCollapsingEnabled: true,
-                entersReaderIfAvailable: false,
-                dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
-              ),
-            )
-        // } catch (e) {
-        // // An exception is thrown if browser app is not installed on Android device.
-        // debugPrint(e.toString());
-        // }
-
-        //     Navigator.pushNamed(
-        //   context,
-        //   WebViewPage.routeName,
-        //   arguments: "api/v1/auth/login/$link/token",
-        // ),
+      color: Color(0xFFF7F8FA),
+      padding: EdgeInsets.zero,
+      child: SvgPicture.asset(
+        iconPath,
+        color: color,
+      ),
+      onPressed: () async {
+        Navigator.of(context, rootNavigator: true).pushNamed(
+          WebViewPage.routeName,
+          arguments: "api/v1/auth/login/$link",
         );
+      },
+    );
+  }
+}
+
+class _AlertTotpWidget extends StatefulWidget {
+  final String text;
+  final Function(String)? onChanged;
+
+  const _AlertTotpWidget({
+    Key? key,
+    required this.text,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  _AlertTotpWidgetState createState() => _AlertTotpWidgetState();
+}
+
+class _AlertTotpWidgetState extends State<_AlertTotpWidget> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    _controller = TextEditingController(text: widget.text);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Observer(
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
+          child: DefaultTextField(
+            controller: _controller,
+            onChanged: widget.onChanged,
+            isPassword: true,
+            autofillHints: [AutofillHints.password],
+            prefixIconConstraints: _prefixConstraints,
+            prefixIcon: SvgPicture.asset(
+              "assets/lock.svg",
+              color: Theme.of(context).iconTheme.color,
+            ),
+            hint: "signIn.totp".tr(),
+            inputFormatters: [],
+            suffixIcon: null,
+          ),
+        );
+      },
+    );
   }
 }
