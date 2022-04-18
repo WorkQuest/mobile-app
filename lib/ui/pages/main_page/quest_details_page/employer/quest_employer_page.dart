@@ -214,11 +214,18 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 default:
               }
             if ((widget.questInfo.status == 1 || widget.questInfo.status == 5) &&
-                value == "chat.report")
-              await Navigator.of(context, rootNavigator: true).pushNamed(
-                OpenDisputePage.routeName,
-                arguments: widget.questInfo,
-              );
+                value == "chat.report") {
+              if (Constants.isRelease) {
+                AlertDialogUtils.showInfoAlertDialog(context,
+                    title: 'Warning'.tr(),
+                    content: 'Service temporarily unavailable');
+              } else {
+                await Navigator.of(context, rootNavigator: true).pushNamed(
+                  OpenDisputePage.routeName,
+                  arguments: widget.questInfo,
+                );
+              }
+            }
           },
           itemBuilder: (BuildContext context) {
             return {

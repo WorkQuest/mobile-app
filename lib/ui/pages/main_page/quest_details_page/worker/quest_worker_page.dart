@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -88,12 +89,18 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            if ((widget.questInfo.status == 1 || widget.questInfo.status == 5) &&
-                value == "chat.report")
-              await Navigator.of(context, rootNavigator: true).pushNamed(
-                OpenDisputePage.routeName,
-                arguments: widget.questInfo,
-              );
+            if (Constants.isRelease) {
+              AlertDialogUtils.showInfoAlertDialog(context,
+                  title: 'Warning'.tr(),
+                  content: 'Service temporarily unavailable');
+            } else {
+              if ((widget.questInfo.status == 1 || widget.questInfo.status == 5) &&
+                  value == "chat.report")
+                await Navigator.of(context, rootNavigator: true).pushNamed(
+                  OpenDisputePage.routeName,
+                  arguments: widget.questInfo,
+                );
+            }
           },
           itemBuilder: (BuildContext context) {
             return {
