@@ -2,11 +2,9 @@ import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dar
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/profile_settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
-import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -41,17 +39,9 @@ class SettingsPage extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    if (Constants.isRelease) {
-                      AlertDialogUtils.showInfoAlertDialog(context,
-                          title: 'Warning'.tr(),
-                          content: 'Service temporarily unavailable');
-                    } else {
-                      Navigator.of(context, rootNavigator: true).push(
-                        MaterialPageRoute(
-                          builder: (context) => ProfileSettings(settingStore),
-                        ),
-                      );
-                    }
+                    AlertDialogUtils.showInfoAlertDialog(context,
+                        title: 'Warning'.tr(),
+                        content: 'Service temporarily unavailable');
                   },
                   child: const Icon(
                     Icons.settings_outlined,
@@ -290,25 +280,8 @@ class SettingsPage extends StatelessWidget {
     required ProfileMeStore userStore,
     required ChooseRoleStore chooseRoleStore,
   }) async {
-    if (Constants.isRelease) {
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'Warning'.tr(), content: 'Service temporarily unavailable');
-    } else {
-      if (userStore.userData?.isTotpActive == true) {
-        if (userStore.userData!.questsStatistic!.opened != 0) {
-          _showAlertInfo(context, title: "There are active quests");
-        } else {
-          chooseRoleStore.setRole(userStore.userData!.role);
-          chooseRoleStore.isChange = true;
-          await Navigator.of(context, rootNavigator: true).pushNamed(
-            ApproveRolePage.routeName,
-            arguments: chooseRoleStore,
-          );
-        }
-      } else {
-        _showAlertInfo(context, title: "2FA disabled");
-      }
-    }
+    AlertDialogUtils.showInfoAlertDialog(context,
+        title: 'Warning'.tr(), content: 'Service temporarily unavailable');
   }
 
   _showAlertInfo(

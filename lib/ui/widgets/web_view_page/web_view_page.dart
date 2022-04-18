@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:app/constants.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import 'package:app/utils/storage.dart';
 import 'package:flutter/material.dart';
@@ -23,9 +22,7 @@ class WebViewPage extends StatefulWidget {
 class _WebViewPageState extends State<WebViewPage> {
   final Completer<WebViewController> _controller = Completer<WebViewController>();
 
-  final String baseUrl = Constants.isRelease
-      ? "https://app-ver1.workquest.co/"
-      : "https://app.workquest.co/";
+  final String baseUrl = "https://app-ver1.workquest.co/";
   final storage = new FlutterSecureStorage();
 
   @override

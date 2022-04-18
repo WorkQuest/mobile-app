@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:app/base_store/i_store.dart';
-import 'package:app/constants.dart';
 import 'package:app/di/injector.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/web3_extension.dart';
@@ -122,13 +121,6 @@ abstract class _SignInStore extends IStore<bool> with Store {
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeNotificationToken(bearerToken.access);
       await Storage.writeAccessToken(bearerToken.access);
-      if (!Constants.isRelease) {
-        if (totp.isNotEmpty) if (!await _apiProvider.validateTotp(totp: totp)) {
-          error = "Invalid TOTP";
-          this.onError("Invalid TOTP");
-          return;
-        }
-      }
       // throw FormatException("Invalid TOTP");
       // await getIt.get<ProfileMeStore>().getProfileMe();
       // await signInWallet();

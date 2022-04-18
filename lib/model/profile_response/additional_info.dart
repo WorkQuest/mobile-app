@@ -1,7 +1,6 @@
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/social_network.dart';
 
-import '../../constants.dart';
 import 'avatar.dart';
 
 class AdditionalInfo {
@@ -50,7 +49,7 @@ class AdditionalInfo {
     return AdditionalInfo(
       secondMobileNumber: json["secondMobileNumber"] == null
           ? null
-          : Constants.isRelease ? Phone(codeRegion: '', fullPhone: json["secondMobileNumber"], phone: '') : Phone.fromJson(json["secondMobileNumber"]),
+          : Phone(codeRegion: '', fullPhone: json["secondMobileNumber"], phone: ''),
       address: json["address"],
       socialNetwork: json["socialNetwork"] == null
           ? null

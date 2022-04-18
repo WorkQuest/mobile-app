@@ -1,4 +1,3 @@
-import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/additional_info.dart';
 import 'package:app/model/profile_response/avatar.dart';
@@ -99,34 +98,16 @@ class ProfileMeResponse with ClusterItem {
       lastName: json["lastName"] ?? "",
       phone: json["phone"] == null
           ? null
-          : Constants.isRelease
-              ? Phone(
-                  fullPhone: json["phone"] ?? '',
-                  phone: '',
-                  codeRegion: '',
-                )
-              : Phone.fromJson(
-                  json["phone"] ??
-                      {
-                        "codeRegion": "",
-                        "fullPhone": "",
-                        "phone": "",
-                      },
-                ),
-      tempPhone: Constants.isRelease
-          ? Phone(
-              fullPhone: json["tempPhone"] ?? '',
+          : Phone(
+              fullPhone: json["phone"] ?? '',
               phone: '',
               codeRegion: '',
-            )
-          : Phone.fromJson(
-              json["tempPhone"] ??
-                  {
-                    "codeRegion": "",
-                    "fullPhone": "",
-                    "phone": "",
-                  },
             ),
+      tempPhone: Phone(
+        fullPhone: json["tempPhone"] ?? '',
+        phone: '',
+        codeRegion: '',
+      ),
       email: json["email"],
       additionalInfo: json["additionalInfo"] == null
           ? null
@@ -152,9 +133,8 @@ class ProfileMeResponse with ClusterItem {
             // createdAt: createdAt,
             // updatedAt: updatedAt,
           }),
-      locationCode: json["location"] == null
-          ? null
-          : LocationCode.fromJson(json["location"]),
+      locationCode:
+          json["location"] == null ? null : LocationCode.fromJson(json["location"]),
       locationPlaceName: json["locationPlaceName"] ?? "",
       wagePerHour: json["wagePerHour"] ?? "0",
       workplace: json["workplace"],
@@ -162,9 +142,7 @@ class ProfileMeResponse with ClusterItem {
       questsStatistic: json["questsStatistic"] == null
           ? null
           : QuestsStatistic.fromJson(json["questsStatistic"]),
-      raiseView: json["raiseView"] == null
-          ? null
-          : RaiseView.fromJson(json["raiseView"]),
+      raiseView: json["raiseView"] == null ? null : RaiseView.fromJson(json["raiseView"]),
       walletAddress: json["wallet"]?["address"],
       isTotpActive: json["totpIsActive"] == null ? false : json["totpIsActive"],
       // createdAt: DateTime.parse(json["createdAt"]),
@@ -184,8 +162,7 @@ class ProfileMeResponse with ClusterItem {
         "role": role.toString().split(".").last,
         "avatar": avatar!.toJson(),
         // "skillFilter": skillFilters.map((item) => item.toJson()),
-        "ratingStatistic":
-            ratingStatistic == null ? null : ratingStatistic!.toJson(),
+        "ratingStatistic": ratingStatistic == null ? null : ratingStatistic!.toJson(),
         "location": locationCode == null ? null : locationCode!.toJson(),
         "locationPlaceName": locationPlaceName,
         "wagePerHour": wagePerHour,
@@ -198,8 +175,7 @@ class ProfileMeResponse with ClusterItem {
 
   @override
   // TODO: implement location
-  LatLng get location =>
-      LatLng(locationCode!.latitude, locationCode!.longitude);
+  LatLng get location => LatLng(locationCode!.latitude, locationCode!.longitude);
 }
 
 class QuestsStatistic {
@@ -217,8 +193,7 @@ class QuestsStatistic {
           opened: object.opened,
         );
 
-  factory QuestsStatistic.fromJson(Map<String, dynamic> json) =>
-      QuestsStatistic(
+  factory QuestsStatistic.fromJson(Map<String, dynamic> json) => QuestsStatistic(
         completed: json["completed"],
         opened: json["opened"],
       );
@@ -285,30 +260,26 @@ class RatingStatistic {
 
   factory RatingStatistic.fromJson(Map<String, dynamic> json) {
     int? status;
-    if (Constants.isRelease) {
-      switch (json["status"]) {
-        case 'noStatus':
-          status = 3;
-          break;
-        case 'verified':
-          status = 2;
-          break;
-        case 'reliable':
-          status = 1;
-          break;
-        case 'topRanked':
-          status = 0;
-          break;
-      }
-    } else {
-      status = json["status"];
+    switch (json["status"]) {
+      case 'noStatus':
+        status = 3;
+        break;
+      case 'verified':
+        status = 2;
+        break;
+      case 'reliable':
+        status = 1;
+        break;
+      case 'topRanked':
+        status = 0;
+        break;
     }
+
     return RatingStatistic(
       id: json["id"],
       userId: json["userId"],
       reviewCount: json["reviewCount"],
-      averageMark:
-          json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
+      averageMark: json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
       status: status ?? 3,
       // createdAt: json["createdAt"],
       // updatedAt: json["updatedAt"],
@@ -386,14 +357,9 @@ class RaiseView {
         status: json["status"] == null ? null : json["status"],
         duration: json["duration"] == null ? null : json["duration"],
         type: json["type"] == null ? null : json["type"],
-        endedAt:
-            json["endedAt"] == null ? null : DateTime.parse(json["endedAt"]),
-        createdAt: json["createdAt"] == null
-            ? null
-            : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null
-            ? null
-            : DateTime.parse(json["updatedAt"]),
+        endedAt: json["endedAt"] == null ? null : DateTime.parse(json["endedAt"]),
+        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
       );
 
   Map<String, dynamic> toJson() => {

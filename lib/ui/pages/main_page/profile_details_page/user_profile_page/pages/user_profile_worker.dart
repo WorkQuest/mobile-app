@@ -1,4 +1,3 @@
-import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../../../../../utils/alert_dialog.dart';
-import '../../../raise_views_page/raise_views_page.dart';
 
 import '../../../../../widgets/animation_show_more.dart';
 
@@ -326,18 +324,11 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               spacer,
               ElevatedButton(
                 onPressed: () async {
-                  if (Constants.isRelease) {
-                    AlertDialogUtils.showInfoAlertDialog(
-                      context,
-                      title: 'Warning'.tr(),
-                      content: 'Service temporarily unavailable',
-                    );
-                  } else {
-                    await Navigator.of(context, rootNavigator: true).pushNamed(
-                      RaiseViews.routeName,
-                      arguments: "",
-                    );
-                  }
+                  AlertDialogUtils.showInfoAlertDialog(
+                    context,
+                    title: 'Warning'.tr(),
+                    content: 'Service temporarily unavailable',
+                  );
                 },
                 child: Text(
                   "profiler.raiseViews".tr(),

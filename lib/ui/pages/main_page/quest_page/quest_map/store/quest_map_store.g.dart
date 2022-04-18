@@ -9,48 +9,110 @@ part of 'quest_map_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$QuestMapStore on _QuestMapStore, Store {
-  final _$isWorkerAtom = Atom(name: '_QuestMapStore.isWorker');
+  final _$infoPanelAtom = Atom(name: '_QuestMapStore.infoPanel');
 
   @override
-  bool? get isWorker {
-    _$isWorkerAtom.reportRead();
-    return super.isWorker;
+  InfoPanel get infoPanel {
+    _$infoPanelAtom.reportRead();
+    return super.infoPanel;
   }
 
   @override
-  set isWorker(bool? value) {
-    _$isWorkerAtom.reportWrite(value, super.isWorker, () {
-      super.isWorker = value;
+  set infoPanel(InfoPanel value) {
+    _$infoPanelAtom.reportWrite(value, super.infoPanel, () {
+      super.infoPanel = value;
     });
   }
 
-  final _$hideInfoAtom = Atom(name: '_QuestMapStore.hideInfo');
+  final _$selectQuestInfoAtom = Atom(name: '_QuestMapStore.selectQuestInfo');
 
   @override
-  bool get hideInfo {
-    _$hideInfoAtom.reportRead();
-    return super.hideInfo;
+  BaseQuestResponse? get selectQuestInfo {
+    _$selectQuestInfoAtom.reportRead();
+    return super.selectQuestInfo;
   }
 
   @override
-  set hideInfo(bool value) {
-    _$hideInfoAtom.reportWrite(value, super.hideInfo, () {
-      super.hideInfo = value;
+  set selectQuestInfo(BaseQuestResponse? value) {
+    _$selectQuestInfoAtom.reportWrite(value, super.selectQuestInfo, () {
+      super.selectQuestInfo = value;
     });
   }
 
-  final _$addressAtom = Atom(name: '_QuestMapStore.address');
+  final _$bufferQuestsAtom = Atom(name: '_QuestMapStore.bufferQuests');
 
   @override
-  String get address {
-    _$addressAtom.reportRead();
-    return super.address;
+  Map<String, BaseQuestResponse> get bufferQuests {
+    _$bufferQuestsAtom.reportRead();
+    return super.bufferQuests;
   }
 
   @override
-  set address(String value) {
-    _$addressAtom.reportWrite(value, super.address, () {
-      super.address = value;
+  set bufferQuests(Map<String, BaseQuestResponse> value) {
+    _$bufferQuestsAtom.reportWrite(value, super.bufferQuests, () {
+      super.bufferQuests = value;
+    });
+  }
+
+  final _$pointsAtom = Atom(name: '_QuestMapStore.points');
+
+  @override
+  List<QuestMapPoint> get points {
+    _$pointsAtom.reportRead();
+    return super.points;
+  }
+
+  @override
+  set points(List<QuestMapPoint> value) {
+    _$pointsAtom.reportWrite(value, super.points, () {
+      super.points = value;
+    });
+  }
+
+  final _$initialCameraPositionAtom =
+  Atom(name: '_QuestMapStore.initialCameraPosition');
+
+  @override
+  CameraPosition? get initialCameraPosition {
+    _$initialCameraPositionAtom.reportRead();
+    return super.initialCameraPosition;
+  }
+
+  @override
+  set initialCameraPosition(CameraPosition? value) {
+    _$initialCameraPositionAtom.reportWrite(value, super.initialCameraPosition,
+            () {
+          super.initialCameraPosition = value;
+        });
+  }
+
+  final _$locationPositionAtom = Atom(name: '_QuestMapStore.locationPosition');
+
+  @override
+  Position? get locationPosition {
+    _$locationPositionAtom.reportRead();
+    return super.locationPosition;
+  }
+
+  @override
+  set locationPosition(Position? value) {
+    _$locationPositionAtom.reportWrite(value, super.locationPosition, () {
+      super.locationPosition = value;
+    });
+  }
+
+  final _$markersAtom = Atom(name: '_QuestMapStore.markers');
+
+  @override
+  List<Marker> get markers {
+    _$markersAtom.reportRead();
+    return super.markers;
+  }
+
+  @override
+  set markers(List<Marker> value) {
+    _$markersAtom.reportWrite(value, super.markers, () {
+      super.markers = value;
     });
   }
 
@@ -84,70 +146,23 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
     });
   }
 
-  final _$locationPositionAtom = Atom(name: '_QuestMapStore.locationPosition');
+  final _$addressAtom = Atom(name: '_QuestMapStore.address');
 
   @override
-  Position? get locationPosition {
-    _$locationPositionAtom.reportRead();
-    return super.locationPosition;
+  String get address {
+    _$addressAtom.reportRead();
+    return super.address;
   }
 
   @override
-  set locationPosition(Position? value) {
-    _$locationPositionAtom.reportWrite(value, super.locationPosition, () {
-      super.locationPosition = value;
-    });
-  }
-
-  final _$initialCameraPositionAtom =
-      Atom(name: '_QuestMapStore.initialCameraPosition');
-
-  @override
-  CameraPosition? get initialCameraPosition {
-    _$initialCameraPositionAtom.reportRead();
-    return super.initialCameraPosition;
-  }
-
-  @override
-  set initialCameraPosition(CameraPosition? value) {
-    _$initialCameraPositionAtom.reportWrite(value, super.initialCameraPosition,
-        () {
-      super.initialCameraPosition = value;
-    });
-  }
-
-  final _$bufferQuestsAtom = Atom(name: '_QuestMapStore.bufferQuests');
-
-  @override
-  Map<String, BaseQuestResponse> get bufferQuests {
-    _$bufferQuestsAtom.reportRead();
-    return super.bufferQuests;
-  }
-
-  @override
-  set bufferQuests(Map<String, BaseQuestResponse> value) {
-    _$bufferQuestsAtom.reportWrite(value, super.bufferQuests, () {
-      super.bufferQuests = value;
-    });
-  }
-
-  final _$markersAtom = Atom(name: '_QuestMapStore.markers');
-
-  @override
-  ObservableSet<Marker> get markers {
-    _$markersAtom.reportRead();
-    return super.markers;
-  }
-
-  @override
-  set markers(ObservableSet<Marker> value) {
-    _$markersAtom.reportWrite(value, super.markers, () {
-      super.markers = value;
+  set address(String value) {
+    _$addressAtom.reportWrite(value, super.address, () {
+      super.address = value;
     });
   }
 
   final _$getPredictionAsyncAction =
-      AsyncAction('_QuestMapStore.getPrediction');
+  AsyncAction('_QuestMapStore.getPrediction');
 
   @override
   Future<Null> getPrediction(
@@ -157,15 +172,33 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   }
 
   final _$getQuestsOnMapAsyncAction =
-      AsyncAction('_QuestMapStore.getQuestsOnMap');
+  AsyncAction('_QuestMapStore.getQuestsOnMap');
 
   @override
   Future<dynamic> getQuestsOnMap(LatLngBounds bounds) {
     return _$getQuestsOnMapAsyncAction.run(() => super.getQuestsOnMap(bounds));
   }
 
+  final _$onTabQuestAsyncAction = AsyncAction('_QuestMapStore.onTabQuest');
+
+  @override
+  Future onTabQuest(String id) {
+    return _$onTabQuestAsyncAction.run(() => super.onTabQuest(id));
+  }
+
   final _$_QuestMapStoreActionController =
-      ActionController(name: '_QuestMapStore');
+  ActionController(name: '_QuestMapStore');
+
+  @override
+  dynamic onCloseQuest() {
+    final _$actionInfo = _$_QuestMapStoreActionController.startAction(
+        name: '_QuestMapStore.onCloseQuest');
+    try {
+      return super.onCloseQuest();
+    } finally {
+      _$_QuestMapStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   dynamic createMarkerLoader(BuildContext context) {
@@ -181,15 +214,16 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   @override
   String toString() {
     return '''
-isWorker: ${isWorker},
-hideInfo: ${hideInfo},
-address: ${address},
+infoPanel: ${infoPanel},
+selectQuestInfo: ${selectQuestInfo},
+bufferQuests: ${bufferQuests},
+points: ${points},
+initialCameraPosition: ${initialCameraPosition},
+locationPosition: ${locationPosition},
+markers: ${markers},
 debounce: ${debounce},
 markerLoader: ${markerLoader},
-locationPosition: ${locationPosition},
-initialCameraPosition: ${initialCameraPosition},
-bufferQuests: ${bufferQuests},
-markers: ${markers}
+address: ${address}
     ''';
   }
 }

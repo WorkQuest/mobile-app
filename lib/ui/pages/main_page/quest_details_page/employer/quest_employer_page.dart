@@ -3,13 +3,11 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
-import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -19,7 +17,6 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import 'package:share/share.dart';
 
-import '../../../../../constants.dart';
 
 class QuestEmployer extends QuestDetails {
   QuestEmployer(BaseQuestResponse questInfo) : super(questInfo);
@@ -57,9 +54,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share(Constants.isRelease
-              ? "https://app-ver1.workquest.co/quests/${widget.questInfo.id}"
-              : "https://app.workquest.co/quests/${widget.questInfo.id}");
+          Share.share("https://app-ver1.workquest.co/quests/${widget.questInfo.id}");
         },
       ),
       if (widget.questInfo.userId == profile!.userData!.id &&
@@ -84,147 +79,33 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   // );
                   break;
                 case "registration.edit":
-                  if (Constants.isRelease) {
-                    await Navigator.pushNamed(
-                      context,
-                      CreateQuestPage.routeName,
-                      arguments: widget.questInfo,
-                    );
-                  } else {
-                    if (profile?.userData?.isTotpActive == true) {
-                      AlertDialogUtils.showAlertDialog(
-                        context,
-                        title: const Text("Security check"),
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Google confirmation code"),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Observer(
-                              builder: (_) =>
-                                  TextField(
-                                    onChanged: store.setTotp,
-                                  ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Text(
-                              "Enter the 6-digit code from the Google Authentication app",
-                            ),
-                          ],
-                        ),
-                        needCancel: true,
-                        titleCancel: "Cancel",
-                        titleOk: "Send",
-                        onTabCancel: null,
-                        onTabOk: () async {
-                          await store.validateTotp();
-                          if (store.isValid) {
-                            await Navigator.pushNamed(
-                              context,
-                              CreateQuestPage.routeName,
-                              arguments: widget.questInfo,
-                            );
-                          } else {
-                            await errorAlert(context, "Invalid 2FA");
-                          }
-                        },
-                        colorCancel: AppColor.enabledButton,
-                        colorOk: Colors.red,
-                      );
-                    } else {
-                      errorAlert(context, "You can't edit quest without connected 2FA");
-                    }
-                  }
+                  await Navigator.pushNamed(
+                    context,
+                    CreateQuestPage.routeName,
+                    arguments: widget.questInfo,
+                  );
                   break;
                 case "settings.delete":
-                  if (Constants.isRelease) {
-                    await dialog(
-                      context,
-                      title: "quests.deleteQuest".tr(),
-                      message: "quests.deleteQuestMessage".tr(),
-                      confirmAction: () async {
-                        await store.deleteQuest(questId: widget.questInfo.id);
-                        questStore.deleteQuest(widget.questInfo);
-                        if (profile!.userData!.questsStatistic != null)
-                          profile!.userData!.questsStatistic!.opened -= 1;
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      },
-                    );
-                  } else {
-                    if (profile?.userData?.isTotpActive == true) {
-                      AlertDialogUtils.showAlertDialog(
-                        context,
-                        title: const Text("Security check"),
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Google confirmation code"),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Observer(
-                              builder: (_) =>
-                                  TextFormField(
-                                    onChanged: store.setTotp,
-                                  ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Text(
-                              "Enter the 6-digit code from the Google Authentication app",
-                            ),
-                          ],
-                        ),
-                        needCancel: true,
-                        titleCancel: "Cancel",
-                        titleOk: "Send",
-                        onTabCancel: null,
-                        onTabOk: () async {
-                          await store.validateTotp();
-                          if (store.isValid) {
-                            await dialog(
-                              context,
-                              title: "quests.deleteQuest".tr(),
-                              message: "quests.deleteQuestMessage".tr(),
-                              confirmAction: () async {
-                                await store.deleteQuest(questId: widget.questInfo.id);
-                                questStore.deleteQuest(widget.questInfo);
-                                if (profile!.userData!.questsStatistic != null)
-                                  profile!.userData!.questsStatistic!.opened -= 1;
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                              },
-                            );
-                          }
-                        },
-                        colorCancel: AppColor.enabledButton,
-                        colorOk: Colors.red,
-                      );
-                    } else {
-                      errorAlert(context, "You can't delete quest without connected 2FA");
-                    }
-                  }
+                  await dialog(
+                    context,
+                    title: "quests.deleteQuest".tr(),
+                    message: "quests.deleteQuestMessage".tr(),
+                    confirmAction: () async {
+                      await store.deleteQuest(questId: widget.questInfo.id);
+                      questStore.deleteQuest(widget.questInfo);
+                      if (profile!.userData!.questsStatistic != null)
+                        profile!.userData!.questsStatistic!.opened -= 1;
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                  );
                   break;
                 default:
               }
             if ((widget.questInfo.status == 1 || widget.questInfo.status == 5) &&
                 value == "chat.report") {
-              if (Constants.isRelease) {
-                AlertDialogUtils.showInfoAlertDialog(context,
-                    title: 'Warning'.tr(),
-                    content: 'Service temporarily unavailable');
-              } else {
-                await Navigator.of(context, rootNavigator: true).pushNamed(
-                  OpenDisputePage.routeName,
-                  arguments: widget.questInfo,
-                );
-              }
+              AlertDialogUtils.showInfoAlertDialog(context,
+                  title: 'Warning'.tr(), content: 'Service temporarily unavailable');
             }
           },
           itemBuilder: (BuildContext context) {

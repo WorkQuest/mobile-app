@@ -1,8 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/keys.dart';
@@ -11,8 +7,6 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/location_full.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
-import 'package:app/web3/contractEnums.dart';
-import 'package:app/web3/service/client_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -267,25 +261,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
           quest: questModel,
           questId: questId,
         );
-        if (!Constants.isRelease) {
-          ClientService().handleEvent(WQContractFunctions.editJob, [
-            Uint8List.fromList(
-              utf8.encode(
-                description.padRight(32).substring(0, 32),
-              ),
-            ),
-            BigInt.parse(price)
-          ]);
-        }
       } else {
-        if (!Constants.isRelease) {
-          ClientService().createNewContract(
-            jobHash: description,
-            cost: price,
-            deadline: 0.toString(),
-            nonce: description,
-          );
-        }
         idNewQuest = await apiProvider.createQuest(
           quest: questModel,
         );
