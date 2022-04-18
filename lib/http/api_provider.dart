@@ -118,14 +118,17 @@ extension QuestService on ApiProvider {
     LatLngBounds bounds,
   ) async {
     String query;
-    query = '/v1/quest/map/points'
+    query = '/v1/quest/map/get-points'
             '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
         'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
         '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
         'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}';
 
-    final response = await httpClient.get(
+    final response = await httpClient.post(
       query: query,
+      data: {
+        "specializations": []
+      }
     );
     return List<BaseQuestResponse>.from(
       response["quests"].map(
@@ -137,12 +140,16 @@ extension QuestService on ApiProvider {
   Future<List<ProfileMeResponse>> workerMapPoints(
     LatLngBounds bounds,
   ) async {
-    final response = await httpClient.get(
-      query: '/v1/profile/worker/map/points'
-              '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
-          'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
-          '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
-          'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}',
+    final response = await httpClient.post(
+      query: '/v1/profile/workers/map/get-points'
+              '?northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}&' +
+              'northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
+              'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}&' +
+              'northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}'
+          ,
+      data: {
+        "specializations": [],
+      }
     );
     return List<ProfileMeResponse>.from(
       response["users"].map(
@@ -265,11 +272,6 @@ extension QuestService on ApiProvider {
     String? north,
     String? south,
   }) async {
-    String specialization = "";
-    specializations.forEach((text) {
-      print(text);
-      specialization += "specializations[]=$text&";
-    });
     String status = "";
     statuses.forEach((text) {
       print(text);
@@ -290,24 +292,23 @@ extension QuestService on ApiProvider {
       print(text);
       employments += "employments[]=$text&";
     });
-    final responseData = await httpClient.get(
+    final responseData = await httpClient.post(
       query:
-          '/v1/quests?$workplaces$employments$status$specialization$priorities$sort$price',
-      queryParameters: {
+          '/v1/get-quests?$workplaces$employments$status$priorities$sort$price&offset=$offset&limit=$limit',
+      data: {
         // if (workplace.isNotEmpty) "workplaces": workplaces,
         // if (employment.isNotEmpty) "employments": employments,
         // if (statuses.isNotEmpty) "statuses": status,
         // if (specializations.isNotEmpty) "specializations": specialization,
         // if (priority.isNotEmpty) "priorities": priorities,
         // "sort": sort,
-        "offset": offset,
-        "limit": limit,
         if (searchWord.isNotEmpty) "q": searchWord,
         if (invited != null) "invited": invited,
         if (performing != null) "performing": performing,
         if (starred != null) "starred": starred,
         if (north != null) "north": north,
         if (south != null) "south": south,
+        "specializations": specializations,
       },
     );
 
@@ -331,7 +332,6 @@ extension QuestService on ApiProvider {
     List<String> workplace = const [],
     List<String> specializations = const [],
   }) async {
-    String specialization = "";
     String priorities = "";
     String ratingStatuses = "";
     priority.forEach((text) {
@@ -340,23 +340,19 @@ extension QuestService on ApiProvider {
     ratingStatus.forEach((text) {
       ratingStatuses += "ratingStatuses[]=$text&";
     });
-    specializations.forEach((text) {
-      specialization += "specializations[]=$text&";
-    });
 
     String workplaces = "";
     workplace.forEach((text) {
       workplaces += "workplaces[]=$text&";
     });
-    final responseData = await httpClient.get(
+    final responseData = await httpClient.post(
       query:
-          '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort&$specialization$price',
-      queryParameters: {
+          '/v1/profile/get-workers?$priorities$ratingStatuses$workplaces$sort&$price&offset=$offset&limit=$limit',
+      data: {
         if (searchWord.isNotEmpty) "q": searchWord,
-        "offset": offset,
-        "limit": limit,
         if (north != null) "north": north,
         if (south != null) "south": south,
+        "specializations": specializations,
         //"sort": sort,
       },
     );
