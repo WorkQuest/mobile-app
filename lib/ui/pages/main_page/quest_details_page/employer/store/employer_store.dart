@@ -6,6 +6,9 @@ import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
+import '../../../../../../web3/contractEnums.dart';
+import '../../../../../../web3/service/client_service.dart';
+
 part 'employer_store.g.dart';
 
 @injectable
@@ -59,8 +62,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
 
   @action
   void changeQuest(dynamic json) {
-    var changedQuest =
-        BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+    var changedQuest = BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
     if (changedQuest.id == quest.value?.id) {
       quest.value = changedQuest;
       _getQuest();
@@ -77,8 +79,8 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       this.onLoading();
       await _apiProvider.startQuest(questId: questId, userId: userId);
       // ClientService().handleEvent(
-      //   WQContractFunctions.assignJob,
-      //   [EthereumAddress.fromHex("0xc1203cd24b9ab6f942261e0d74729bbfdf36eb89")],
+      //   function: WQContractFunctions.assignJob,
+      //   contractAddress: quest.value!.contractAddress!,
       // );
       await _getQuest();
       this.onSuccess(true);
@@ -95,7 +97,10 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptCompletedWork(questId: questId);
-      // ClientService().handleEvent(WQContractFunctions.acceptJobResult);
+      // ClientService().handleEvent(
+      //   function: WQContractFunctions.acceptJobResult,
+      //   contractAddress: quest.value!.contractAddress!,
+      // );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -112,7 +117,10 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       this.onLoading();
       await _apiProvider.deleteQuest(questId: questId);
       await _getQuest();
-      // ClientService().handleEvent(WQContractFunctions.cancelJob);
+      // ClientService().handleEvent(
+      //   function: WQContractFunctions.cancelJob,
+      //   contractAddress: quest.value!.contractAddress!
+      // );
       this.onSuccess(true);
     } catch (e, trace) {
       print("accept error: $e\n$trace");

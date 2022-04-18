@@ -467,11 +467,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                         questStore.searchWord.isEmpty
                             ? questStore.getQuests(true)
                             : questStore.setSearchWord(questStore.searchWord);
-                        myQuestStore.deleteQuest(widget.questInfo);
+                        myQuestStore.deleteQuest(widget.questInfo.id);
                         myQuestStore.addQuest(widget.questInfo, true);
                         _updateLoading();
                         await Future.delayed(const Duration(milliseconds: 250));
-                        Navigator.pop(context);
                         Navigator.pop(context);
                         await AlertDialogUtils.showSuccessDialog(context);
                       }

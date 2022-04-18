@@ -282,15 +282,8 @@ extension CreateContract on ClientService {
     final contract = await getDeployedContract("WorkQuestFactory", _abiAddress);
     final ethFunction = contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
-    final depositAmount = (double.parse(cost) * 1.01) * pow(10, 18);
+    final depositAmount = (double.parse(cost)) * pow(10, 18);
 
-    final transferEvent = contract.event(WQFContractEvents.WorkQuestCreated.name);
-    final subscription = _client
-        .events(FilterOptions.events(contract: contract, event: transferEvent))
-        .take(1)
-        .listen((event) {
-      addressNewContract = event.address.toString();
-    });
 
     handleContract(
       contract: contract,
@@ -304,17 +297,16 @@ extension CreateContract on ClientService {
       from: fromAddress,
       value: EtherAmount.inWei(BigInt.parse(depositAmount.ceil().toString())),
     );
-    await subscription.asFuture();
-    await subscription.cancel();
   }
 }
 
 extension HandleEvent on ClientService {
-  Future<void> handleEvent(
-    WQContractFunctions function, [
+  Future<void> handleEvent({
+    required WQContractFunctions function,
+    required String contractAddress,
     List<dynamic> params = const [],
-  ]) async {
-    final contract = await getDeployedContract("WorkQuest", addressNewContract);
+  }) async {
+    final contract = await getDeployedContract("WorkQuest", contractAddress);
     final ethFunction = contract.function(function.name);
     handleContract(
       contract: contract,

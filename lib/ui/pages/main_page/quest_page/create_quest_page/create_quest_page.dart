@@ -44,7 +44,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       this.isEdit = true;
       final store = context.read<CreateQuestStore>();
       store.priority = store.priorityList[widget.questInfo!.priority];
-
+      store.contractAddress = widget.questInfo!.contractAddress ?? '';
       store.questTitle = widget.questInfo!.title;
       store.getWorkplace(widget.questInfo!.workplace);
       store.getEmployment(widget.questInfo!.employment);

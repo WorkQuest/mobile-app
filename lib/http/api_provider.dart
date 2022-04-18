@@ -174,11 +174,9 @@ extension QuestService on ApiProvider {
       statuses.forEach((text) {
         status += "statuses[]=$text&";
       });
-      final responseData = await httpClient.get(
-        query: "/v1/employer/$userId/quests?$status$sort",
-        queryParameters: {
-          "offset": offset,
-          "limit": limit,
+      final responseData = await httpClient.post(
+        query: "/v1/employer/$userId/get-quests?$status$sort&offset=$offset&limit=$limit",
+        data: {
           if (priority != null) "priority": priority,
           if (invited != null) "invited": invited,
           if (performing != null) "performing": performing,
@@ -228,11 +226,9 @@ extension QuestService on ApiProvider {
     statuses.forEach((text) {
       status += "statuses[]=$text&";
     });
-    final responseData = await httpClient.get(
-      query: '/v1/worker/$userId/quests?$status$sort',
-      queryParameters: {
-        "offset": offset,
-        "limit": limit,
+    final responseData = await httpClient.post(
+      query: '/v1/worker/$userId/get-quests?$status$sort&offset=$offset&limit=$limit',
+      data: {
         if (invited != null) "invited": invited,
         if (performing != null) "performing": performing,
         if (starred != null) "starred": starred,
@@ -305,7 +301,7 @@ extension QuestService on ApiProvider {
         if (searchWord.isNotEmpty) "q": searchWord,
         if (invited != null) "invited": invited,
         if (performing != null) "performing": performing,
-        if (starred != null) "starred": starred,
+        // if (starred != null) "starred": starred,
         if (north != null) "north": north,
         if (south != null) "south": south,
         "specializations": specializations,
