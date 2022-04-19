@@ -82,8 +82,12 @@ class _WithdrawPageState extends State<WithdrawPage>
             child: TabBarView(
               controller: this._tabController,
               children: [
+                Center(
+                  child: Text("This feature is currently unavailable"),
+                ),
+
                 ///Wallet Transfer
-                walletTab(withdrawStore),
+                // walletTab(withdrawStore),
 
                 Center(
                   child: Text("This feature is currently unavailable"),

@@ -138,16 +138,14 @@ extension QuestService on ApiProvider {
     LatLngBounds bounds,
   ) async {
     final response = await httpClient.post(
-      query: '/v1/profile/workers/map/get-points'
-              '?northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}&' +
-              'northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
-              'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}&' +
-              'northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}'
-          ,
-      data: {
-        "specializations": [],
-      }
-    );
+        query: '/v1/profile/workers/map/get-points'
+                '?northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}&' +
+            'northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
+            'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}&' +
+            'northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}',
+        data: {
+          "specializations": [],
+        });
     return List<ProfileMeResponse>.from(
       response["users"].map(
         (x) => ProfileMeResponse.fromJson(x),
@@ -294,36 +292,12 @@ extension QuestService on ApiProvider {
     });
     String priorities = "";
     String ratingStatuses = "";
-    if (Constants.isRelease) {
-      priority.forEach((text) {
-        priorities += "priority[]=$text&";
-      });
-      ratingStatus.forEach((text) {
-        String rating = '';
-        switch (text) {
-          case 3:
-            rating = 'noStatus';
-            break;
-          case 2:
-            rating = 'verified';
-            break;
-          case 1:
-            rating = 'reliable';
-            break;
-          case 0:
-            rating = 'topRanked';
-            break;
-        }
-        ratingStatuses += "ratingStatus[]=$rating&";
-      });
-    } else {
-      priority.forEach((text) {
-        priorities += "priorities=$text&";
-      });
-      ratingStatus.forEach((text) {
-        ratingStatuses += "ratingStatuses=$text&";
-      });
-    }
+    priority.forEach((text) {
+      priorities += "priorities=$text&";
+    });
+    ratingStatus.forEach((text) {
+      ratingStatuses += "ratingStatuses=$text&";
+    });
     String workplaces = "";
     workplace.forEach((text) {
       workplaces += "workplaces=$text&";
@@ -331,7 +305,7 @@ extension QuestService on ApiProvider {
     final responseData = await httpClient.post(
       query:
           '/v1/profile/get-workers?$priorities$ratingStatuses$workplaces$sort'
-              '$price&offset=$offset&limit=$limit',
+          '$price&offset=$offset&limit=$limit',
       data: {
         if (specialization.isNotEmpty) "specializations": specializations,
       },
@@ -669,151 +643,92 @@ extension UserInfoService on ApiProvider {
   ) async {
     try {
       Map<String, dynamic> body;
-      if (Constants.isRelease) {
-        body = {
-          "firstName": userData.firstName,
-          "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
-          "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
+      body = {
+        "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
+        "phoneNumber": {
+          "codeRegion": userData.tempPhone!.codeRegion,
+          "phone": userData.tempPhone!.phone,
+          "fullPhone": userData.tempPhone!.fullPhone
+        },
+        "firstName": userData.firstName,
+        "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
+        if (userData.role == UserRole.Worker)
+          "wagePerHour": userData.wagePerHour,
+        if (userData.role == UserRole.Worker)
+          "priority": userData.priority.index,
+        if (userData.role == UserRole.Worker) "workplace": userData.workplace,
+        "additionalInfo": {
+          "secondMobileNumber": userData.additionalInfo?.secondMobileNumber !=
+                  null
+              ? {
+                  "codeRegion":
+                      userData.additionalInfo?.secondMobileNumber!.codeRegion,
+                  "phone": userData.additionalInfo?.secondMobileNumber!.phone,
+                  "fullPhone":
+                      userData.additionalInfo?.secondMobileNumber!.fullPhone,
+                }
+              : null,
+          "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
+              ? userData.additionalInfo?.address
+              : null,
+          "socialNetwork": {
+            "instagram": (userData
+                        .additionalInfo?.socialNetwork?.instagram?.isNotEmpty ??
+                    false)
+                ? userData.additionalInfo?.socialNetwork?.instagram
+                : null,
+            "twitter":
+                (userData.additionalInfo?.socialNetwork?.twitter?.isNotEmpty ??
+                        false)
+                    ? userData.additionalInfo?.socialNetwork?.twitter
+                    : null,
+            "linkedin":
+                (userData.additionalInfo?.socialNetwork?.linkedin?.isNotEmpty ??
+                        false)
+                    ? userData.additionalInfo?.socialNetwork?.linkedin
+                    : null,
+            "facebook":
+                (userData.additionalInfo?.socialNetwork?.facebook?.isNotEmpty ??
+                        false)
+                    ? userData.additionalInfo?.socialNetwork?.facebook
+                    : null,
+          },
+          "description":
+              (userData.additionalInfo?.description?.isNotEmpty ?? false)
+                  ? userData.additionalInfo?.description
+                  : null,
+          if (userData.role == UserRole.Employer)
+            "company": (userData.additionalInfo?.company?.isNotEmpty ?? false)
+                ? userData.additionalInfo?.company
+                : null,
+          if (userData.role == UserRole.Employer)
+            "CEO": (userData.additionalInfo?.ceo?.isNotEmpty ?? false)
+                ? userData.additionalInfo?.ceo
+                : null,
+          if (userData.role == UserRole.Employer)
+            "website": (userData.additionalInfo?.website?.isNotEmpty ?? false)
+                ? userData.additionalInfo?.website
+                : null,
           if (userData.role == UserRole.Worker)
-            "priority": userData.priority.index,
+            "educations": userData.additionalInfo!.educations,
+          if (userData.role == UserRole.Worker)
+            "workExperiences": userData.additionalInfo!.workExperiences,
+          if (userData.role == UserRole.Worker) "skills": [],
+        },
+        if (userData.role == UserRole.Worker)
+          "specializationKeys": userData.userSpecializations,
+        "locationFull": {
           "location": {
             "longitude": userData.locationCode?.longitude ?? 0,
             "latitude": userData.locationCode?.latitude ?? 0
           },
-          if (userData.role == UserRole.Worker) "workplace": userData.workplace,
-          "additionalInfo": {
-            "secondMobileNumber":
-                (userData.tempPhone?.fullPhone.isNotEmpty ?? false)
-                    ? userData.tempPhone!.fullPhone
-                    : null,
-            "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
-                ? userData.additionalInfo?.address
-                : null,
-            "socialNetwork": {
-              "instagram": (userData.additionalInfo?.socialNetwork?.instagram
-                          ?.isNotEmpty ??
-                      false)
-                  ? userData.additionalInfo?.socialNetwork?.instagram
-                  : null,
-              "twitter": (userData
-                          .additionalInfo?.socialNetwork?.twitter?.isNotEmpty ??
-                      false)
-                  ? userData.additionalInfo?.socialNetwork?.twitter
-                  : null,
-              "linkedin": (userData.additionalInfo?.socialNetwork?.linkedin
-                          ?.isNotEmpty ??
-                      false)
-                  ? userData.additionalInfo?.socialNetwork?.linkedin
-                  : null,
-              "facebook": (userData.additionalInfo?.socialNetwork?.facebook
-                          ?.isNotEmpty ??
-                      false)
-                  ? userData.additionalInfo?.socialNetwork?.facebook
-                  : null,
-            },
-            if (userData.role == UserRole.Worker) "skills": [],
-            if (userData.role == UserRole.Worker)
-              "educations": userData.additionalInfo!.educations,
-            if (userData.role == UserRole.Worker)
-              "workExperiences": userData.additionalInfo!.workExperiences,
-            "description":
-                (userData.additionalInfo?.description?.isNotEmpty ?? false)
-                    ? userData.additionalInfo?.description
-                    : null,
-          },
-          if (userData.role == UserRole.Worker)
-            "wagePerHour": userData.wagePerHour,
-          if (userData.role == UserRole.Worker)
-            "specializationKeys": userData.userSpecializations
-        };
-      } else {
-        body = {
-          "avatarId": (userData.avatarId.isEmpty) ? null : userData.avatarId,
-          "phoneNumber": {
-            "codeRegion": userData.tempPhone!.codeRegion,
-            "phone": userData.tempPhone!.phone,
-            "fullPhone": userData.tempPhone!.fullPhone
-          },
-          "firstName": userData.firstName,
-          "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
-          if (userData.role == UserRole.Worker)
-            "wagePerHour": userData.wagePerHour,
-          if (userData.role == UserRole.Worker)
-            "priority": userData.priority.index,
-          if (userData.role == UserRole.Worker) "workplace": userData.workplace,
-          "additionalInfo": {
-            "secondMobileNumber": userData.additionalInfo?.secondMobileNumber !=
-                    null
-                ? {
-                    "codeRegion":
-                        userData.additionalInfo?.secondMobileNumber!.codeRegion,
-                    "phone": userData.additionalInfo?.secondMobileNumber!.phone,
-                    "fullPhone":
-                        userData.additionalInfo?.secondMobileNumber!.fullPhone,
-                  }
-                : null,
-            "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
-                ? userData.additionalInfo?.address
-                : null,
-            "socialNetwork": {
-              "instagram": (userData.additionalInfo?.socialNetwork?.instagram
-                          ?.isNotEmpty ??
-                      false)
-                  ? userData.additionalInfo?.socialNetwork?.instagram
-                  : null,
-              "twitter": (userData
-                          .additionalInfo?.socialNetwork?.twitter?.isNotEmpty ??
-                      false)
-                  ? userData.additionalInfo?.socialNetwork?.twitter
-                  : null,
-              "linkedin": (userData.additionalInfo?.socialNetwork?.linkedin
-                          ?.isNotEmpty ??
-                      false)
-                  ? userData.additionalInfo?.socialNetwork?.linkedin
-                  : null,
-              "facebook": (userData.additionalInfo?.socialNetwork?.facebook
-                          ?.isNotEmpty ??
-                      false)
-                  ? userData.additionalInfo?.socialNetwork?.facebook
-                  : null,
-            },
-            "description":
-                (userData.additionalInfo?.description?.isNotEmpty ?? false)
-                    ? userData.additionalInfo?.description
-                    : null,
-            if (userData.role == UserRole.Employer)
-              "company": (userData.additionalInfo?.company?.isNotEmpty ?? false)
-                  ? userData.additionalInfo?.company
-                  : null,
-            if (userData.role == UserRole.Employer)
-              "CEO": (userData.additionalInfo?.ceo?.isNotEmpty ?? false)
-                  ? userData.additionalInfo?.ceo
-                  : null,
-            if (userData.role == UserRole.Employer)
-              "website": (userData.additionalInfo?.website?.isNotEmpty ?? false)
-                  ? userData.additionalInfo?.website
-                  : null,
-            if (userData.role == UserRole.Worker)
-              "educations": userData.additionalInfo!.educations,
-            if (userData.role == UserRole.Worker)
-              "workExperiences": userData.additionalInfo!.workExperiences,
-            if (userData.role == UserRole.Worker) "skills": [],
-          },
-          if (userData.role == UserRole.Worker)
-            "specializationKeys": userData.userSpecializations,
-          "locationFull": {
-            "location": {
-              "longitude": userData.locationCode?.longitude ?? 0,
-              "latitude": userData.locationCode?.latitude ?? 0
-            },
-            "locationPlaceName": userData.locationPlaceName ?? "",
-          },
-          "profileVisibility": {
-            "network": 0,
-            "ratingStatus": 4,
-          }
-        };
-      }
+          "locationPlaceName": userData.locationPlaceName ?? "",
+        },
+        "profileVisibility": {
+          "network": 0,
+          "ratingStatus": 4,
+        }
+      };
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");
       final responseData;
       if (role == UserRole.Worker)

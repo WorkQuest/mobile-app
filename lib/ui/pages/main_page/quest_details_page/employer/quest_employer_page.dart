@@ -85,131 +85,107 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   // );
                   break;
                 case "registration.edit":
-                  if (Constants.isRelease) {
-                    await Navigator.pushNamed(
+                  if (profile?.userData?.isTotpActive == true) {
+                    AlertDialogUtils.showAlertDialog(
                       context,
-                      CreateQuestPage.routeName,
-                      arguments: store.quest.value!,
+                      title: const Text("Security check"),
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Google confirmation code"),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Observer(
+                            builder: (_) => TextField(
+                              onChanged: store.setTotp,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            "Enter the 6-digit code from the Google Authentication app",
+                          ),
+                        ],
+                      ),
+                      needCancel: true,
+                      titleCancel: "Cancel",
+                      titleOk: "Send",
+                      onTabCancel: null,
+                      onTabOk: () async {
+                        await store.validateTotp();
+                        if (store.isValid) {
+                          await Navigator.pushNamed(
+                            context,
+                            CreateQuestPage.routeName,
+                            arguments: store.quest.value!,
+                          );
+                        } else {
+                          await errorAlert(context, "Invalid 2FA");
+                        }
+                      },
+                      colorCancel: AppColor.enabledButton,
+                      colorOk: Colors.red,
                     );
                   } else {
-                    if (profile?.userData?.isTotpActive == true) {
-                      AlertDialogUtils.showAlertDialog(
-                        context,
-                        title: const Text("Security check"),
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Google confirmation code"),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Observer(
-                              builder: (_) => TextField(
-                                onChanged: store.setTotp,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Text(
-                              "Enter the 6-digit code from the Google Authentication app",
-                            ),
-                          ],
-                        ),
-                        needCancel: true,
-                        titleCancel: "Cancel",
-                        titleOk: "Send",
-                        onTabCancel: null,
-                        onTabOk: () async {
-                          await store.validateTotp();
-                          if (store.isValid) {
-                            await Navigator.pushNamed(
-                              context,
-                              CreateQuestPage.routeName,
-                              arguments: store.quest.value!,
-                            );
-                          } else {
-                            await errorAlert(context, "Invalid 2FA");
-                          }
-                        },
-                        colorCancel: AppColor.enabledButton,
-                        colorOk: Colors.red,
-                      );
-                    } else {
-                      errorAlert(context,
-                          "You can't edit quest without connected 2FA");
-                    }
+                    errorAlert(
+                        context, "You can't edit quest without connected 2FA");
                   }
                   break;
                 case "settings.delete":
-                  if (Constants.isRelease) {
-                    await dialog(
+                  if (profile?.userData?.isTotpActive == true) {
+                    AlertDialogUtils.showAlertDialog(
                       context,
-                      title: "quests.deleteQuest".tr(),
-                      message: "quests.deleteQuestMessage".tr(),
-                      confirmAction: () async {
-                        await store.deleteQuest(questId: store.quest.value!.id);
-                        questStore.deleteQuest(store.quest.value!.id);
-                        if (profile!.userData!.questsStatistic != null)
-                          profile!.userData!.questsStatistic!.opened -= 1;
-                        Navigator.pop(context);
+                      title: const Text("Security check"),
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Google confirmation code"),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Observer(
+                            builder: (_) => TextFormField(
+                              onChanged: store.setTotp,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            "Enter the 6-digit code from the Google Authentication app",
+                          ),
+                        ],
+                      ),
+                      needCancel: true,
+                      titleCancel: "Cancel",
+                      titleOk: "Send",
+                      onTabCancel: null,
+                      onTabOk: () async {
+                        await store.validateTotp();
+                        if (store.isValid) {
+                          await dialog(
+                            context,
+                            title: "quests.deleteQuest".tr(),
+                            message: "quests.deleteQuestMessage".tr(),
+                            confirmAction: () async {
+                              await store.deleteQuest(
+                                  questId: store.quest.value!.id);
+                              questStore.deleteQuest(store.quest.value!.id);
+                              if (profile!.userData!.questsStatistic != null)
+                                profile!.userData!.questsStatistic!.opened -= 1;
+                              Navigator.pop(context);
+                            },
+                          );
+                        }
                       },
+                      colorCancel: AppColor.enabledButton,
+                      colorOk: Colors.red,
                     );
                   } else {
-                    if (profile?.userData?.isTotpActive == true) {
-                      AlertDialogUtils.showAlertDialog(
-                        context,
-                        title: const Text("Security check"),
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Google confirmation code"),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Observer(
-                              builder: (_) => TextFormField(
-                                onChanged: store.setTotp,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Text(
-                              "Enter the 6-digit code from the Google Authentication app",
-                            ),
-                          ],
-                        ),
-                        needCancel: true,
-                        titleCancel: "Cancel",
-                        titleOk: "Send",
-                        onTabCancel: null,
-                        onTabOk: () async {
-                          await store.validateTotp();
-                          if (store.isValid) {
-                            await dialog(
-                              context,
-                              title: "quests.deleteQuest".tr(),
-                              message: "quests.deleteQuestMessage".tr(),
-                              confirmAction: () async {
-                                await store.deleteQuest(
-                                    questId: store.quest.value!.id);
-                                questStore.deleteQuest(store.quest.value!.id);
-                                if (profile!.userData!.questsStatistic != null)
-                                  profile!.userData!.questsStatistic!.opened -=
-                                      1;
-                                Navigator.pop(context);
-                              },
-                            );
-                          }
-                        },
-                        colorCancel: AppColor.enabledButton,
-                        colorOk: Colors.red,
-                      );
-                    } else {
-                      errorAlert(context,
-                          "You can't delete quest without connected 2FA");
-                    }
+                    errorAlert(context,
+                        "You can't delete quest without connected 2FA");
                   }
                   break;
                 default:

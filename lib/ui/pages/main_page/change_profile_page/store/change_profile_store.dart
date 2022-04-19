@@ -55,7 +55,8 @@ abstract class ChangeProfileStoreBase with Store {
 
   @action
   Future<void> getInitCode(Phone firstPhone, Phone? secondPhone) async {
-    phoneNumber = await PhoneNumber.getRegionInfoFromPhoneNumber(firstPhone.fullPhone);
+    phoneNumber =
+        await PhoneNumber.getRegionInfoFromPhoneNumber(firstPhone.fullPhone);
     if (secondPhone != null)
       secondPhoneNumber =
           await PhoneNumber.getRegionInfoFromPhoneNumber(secondPhone.fullPhone);
@@ -74,40 +75,52 @@ abstract class ChangeProfileStoreBase with Store {
   }
 
   @action
-  setPhoneNumber(PhoneNumber phone) {
-    this.phoneNumber = phone;
-    if (userData.tempPhone == null) {
-      userData.tempPhone = Phone(
-        codeRegion: phone.dialCode ?? "",
-        fullPhone: phone.phoneNumber ?? "",
-        phone:  phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "",
-      );
-    } else {
-      userData.tempPhone!.codeRegion = phone.dialCode ?? "";
-      userData.tempPhone!.phone =
-          phone.phoneNumber!.replaceAll((phone.dialCode ?? ""), "");
-      userData.tempPhone!.fullPhone = phone.phoneNumber ?? "";
-    }
-  }
+  setPhoneNumber(PhoneNumber phone) => this.phoneNumber = phone;
 
   @action
-  setSecondPhoneNumber(PhoneNumber phone) {
-    this.secondPhoneNumber = phone;
-    if (userData.additionalInfo?.secondMobileNumber == null) {
-      userData.additionalInfo?.secondMobileNumber = Phone(
-        codeRegion: phone.dialCode ?? "",
-        fullPhone: phone.phoneNumber ?? "",
-        phone:  phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "",
+  setSecondPhoneNumber(PhoneNumber phone) => this.secondPhoneNumber = phone;
+
+  void savePhoneNumber() {
+    if (userData.tempPhone == null) {
+      userData.tempPhone = Phone(
+        codeRegion: phoneNumber?.dialCode ?? "",
+        fullPhone: phoneNumber?.phoneNumber ?? "",
+        phone: phoneNumber?.phoneNumber
+                ?.replaceAll((phoneNumber?.dialCode ?? ""), "") ??
+            "",
       );
     } else {
-      userData.additionalInfo?.secondMobileNumber?.codeRegion = phone.dialCode ?? "";
-      userData.additionalInfo?.secondMobileNumber?.phone =
-          phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "";
-      userData.additionalInfo?.secondMobileNumber?.fullPhone = phone.phoneNumber ?? "";
+      userData.tempPhone!.codeRegion = phoneNumber?.dialCode ?? "";
+      userData.tempPhone!.phone = phoneNumber!.phoneNumber!
+          .replaceAll((phoneNumber?.dialCode ?? ""), "");
+      userData.tempPhone!.fullPhone = phoneNumber?.phoneNumber ?? "";
     }
   }
 
-  bool validationKnowledge(List<Map<String, String>> list, BuildContext context) {
+  void saveSecondPhoneNumber() {
+    if ((secondPhoneNumber?.phoneNumber ?? "").isEmpty) return;
+    if (userData.additionalInfo?.secondMobileNumber == null) {
+      userData.additionalInfo?.secondMobileNumber = Phone(
+        codeRegion: secondPhoneNumber?.dialCode ?? "",
+        fullPhone: secondPhoneNumber?.phoneNumber ?? "",
+        phone: secondPhoneNumber?.phoneNumber
+                ?.replaceAll((secondPhoneNumber?.dialCode ?? ""), "") ??
+            "",
+      );
+    } else {
+      userData.additionalInfo?.secondMobileNumber?.codeRegion =
+          secondPhoneNumber?.dialCode ?? "";
+      userData.additionalInfo?.secondMobileNumber?.phone = secondPhoneNumber
+              ?.phoneNumber
+              ?.replaceAll((secondPhoneNumber?.dialCode ?? ""), "") ??
+          "";
+      userData.additionalInfo?.secondMobileNumber?.fullPhone =
+          secondPhoneNumber?.phoneNumber ?? "";
+    }
+  }
+
+  bool validationKnowledge(
+      List<Map<String, String>> list, BuildContext context) {
     bool chek = true;
     list.forEach((element) {
       if (element["from"]!.isEmpty ||
@@ -134,12 +147,15 @@ abstract class ChangeProfileStoreBase with Store {
   }
 
   bool numberChanged(String tempPhone) =>
-      (this.userData.tempPhone!.fullPhone != tempPhone && userData.tempPhone!.fullPhone.isNotEmpty);
+      (this.userData.tempPhone!.fullPhone != tempPhone &&
+          userData.tempPhone!.fullPhone.isNotEmpty);
 
   bool areThereAnyChanges(ProfileMeResponse? userData) {
     if (userData == null) return false;
 
-    if (this.userData.role == UserRole.Worker) if (this.userData.userSpecializations !=
+    if (this.userData.role == UserRole.Worker) if (this
+            .userData
+            .userSpecializations !=
         userData.userSpecializations) return true;
 
     if (this.userData.wagePerHour != userData.wagePerHour) return true;

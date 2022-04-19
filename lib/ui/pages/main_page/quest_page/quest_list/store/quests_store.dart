@@ -154,27 +154,13 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   String getFilterPrice({bool isWorker = false}) {
     String result = '';
-    if (Constants.isRelease) {
-      if (isWorker) {
-        result +=
-            '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-        result +=
-            '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
-      } else {
-        result +=
-            '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-        result +=
-            '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
-      }
+    if (isWorker) {
+      if (fromPrice.isNotEmpty)
+        result += '&betweenWagePerHour[from]=$fromPrice';
+      if (toPrice.isNotEmpty) result += '&betweenWagePerHour[to]=$toPrice';
     } else {
-      if (isWorker) {
-        if (fromPrice.isNotEmpty)
-          result += '&betweenWagePerHour[from]=$fromPrice';
-        if (toPrice.isNotEmpty) result += '&betweenWagePerHour[to]=$toPrice';
-      } else {
-        if (fromPrice.isNotEmpty) result += '&priceBetween[from]=$fromPrice';
-        if (toPrice.isNotEmpty) result += '&priceBetween[to]=$toPrice';
-      }
+      if (fromPrice.isNotEmpty) result += '&priceBetween[from]=$fromPrice';
+      if (toPrice.isNotEmpty) result += '&priceBetween[to]=$toPrice';
     }
     return result;
   }
