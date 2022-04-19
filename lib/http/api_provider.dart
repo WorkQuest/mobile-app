@@ -121,19 +121,19 @@ extension QuestService on ApiProvider {
   ) async {
     String query;
     if (Constants.isRelease) {
-      query = '/v1/quests/map/points' +
+      query = '/v1/quests/map/get-points' +
           '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
           'north[longitude]=${bounds.northeast.longitude.toString()}' +
           '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
           'south[longitude]=${bounds.southwest.longitude.toString()}';
     } else {
-      query = '/v1/quest/map/points'
+      query = '/v1/quest/map/get-points'
               '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
           'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
           '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
           'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}';
     }
-    final response = await httpClient.get(
+    final response = await httpClient.post(
       query: query,
     );
     return Constants.isRelease
@@ -152,8 +152,8 @@ extension QuestService on ApiProvider {
   Future<List<ProfileMeResponse>> workerMapPoints(
     LatLngBounds bounds,
   ) async {
-    final response = await httpClient.get(
-      query: '/v1/profile/worker/map/points'
+    final response = await httpClient.post(
+      query: '/v1/profile/worker/map/get-points'
               '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
           'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
           '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
@@ -172,26 +172,13 @@ extension QuestService on ApiProvider {
     int offset = 0,
     int? priority,
     String sort = "",
-    List<int> statuses = const [],
-    bool? invited,
-    bool? performing,
-    bool? starred,
+    bool invited = false,
+    bool performing = false,
   }) async {
     try {
-      String status = "";
-      statuses.forEach((text) {
-        status += "statuses[]=$text&";
-      });
-      final responseData = await httpClient.get(
-        query: "/v1/employer/$userId/quests?$status$sort",
-        queryParameters: {
-          "offset": offset,
-          "limit": limit,
-          if (priority != null) "priority": priority,
-          if (invited != null) "invited": invited,
-          if (performing != null) "performing": performing,
-          if (starred != null) "starred": starred,
-        },
+      final responseData = await httpClient.post(
+        query: "/v1/employer/$userId/get-quests?&offset=$offset&limit=$limit&"
+            "invited=$invited&performing=$performing&$sort",
       );
       return List<BaseQuestResponse>.from(
           responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)));
@@ -226,27 +213,17 @@ extension QuestService on ApiProvider {
     int offset = 0,
     List<int> statuses = const [],
     String sort = "",
-    bool? invited,
-    bool? performing,
-    bool? starred,
-    String? north,
-    String? south,
+    bool invited = false,
+    bool performing = false,
+    bool starred = false,
   }) async {
     String status = "";
     statuses.forEach((text) {
-      status += "statuses[]=$text&";
+      status += "statuses=$text&";
     });
-    final responseData = await httpClient.get(
-      query: '/v1/worker/$userId/quests?$status$sort',
-      queryParameters: {
-        "offset": offset,
-        "limit": limit,
-        if (invited != null) "invited": invited,
-        if (performing != null) "performing": performing,
-        if (starred != null) "starred": starred,
-        if (north != null) "north": north,
-        if (south != null) "south": south,
-      },
+    final responseData = await httpClient.post(
+      query: '/v1/worker/$userId/get-quests?limit=$limit&offset=$offset&$status'
+          'invited=$invited&performing=$performing&starred=$starred&$sort',
     );
 
     return List<BaseQuestResponse>.from(
@@ -267,62 +244,38 @@ extension QuestService on ApiProvider {
     String price = '',
     List<String> workplace = const [],
     List<String> employment = const [],
+    List<int> priority = const [],
     int limit = 10,
     int offset = 0,
     String searchWord = "",
-    List<int> priority = const [],
-    List<int> statuses = const [],
     String sort = "",
-    List<String> specializations = const [],
-    bool? invited,
-    bool? performing,
-    bool? starred,
-    String? north,
-    String? south,
+    List<String>? specializations,
+    bool invited = false,
+    bool performing = false,
+    bool starred = false,
   }) async {
-    String specialization = "";
-    specializations.forEach((text) {
-      print(text);
-      specialization += "specializations[]=$text&";
-    });
-    String status = "";
-    statuses.forEach((text) {
-      print(text);
-      status += "statuses[]=$text&";
-    });
     String priorities = "";
     priority.forEach((text) {
       print(text);
-      priorities += "priorities[]=$text&";
+      priorities += "priorities=$text&";
     });
     String workplaces = "";
     workplace.forEach((text) {
       print(text);
-      workplaces += "workplaces[]=$text&";
+      workplaces += "workplaces=$text&";
     });
     String employments = "";
     employment.forEach((text) {
       print(text);
-      employments += "employments[]=$text&";
+      employments += "employments=$text&";
     });
-    final responseData = await httpClient.get(
+    final responseData = await httpClient.post(
       query:
-          '/v1/quests?$workplaces$employments$status$specialization$priorities$sort$price',
-      queryParameters: {
-        // if (workplace.isNotEmpty) "workplaces": workplaces,
-        // if (employment.isNotEmpty) "employments": employments,
-        // if (statuses.isNotEmpty) "statuses": status,
-        // if (specializations.isNotEmpty) "specializations": specialization,
-        // if (priority.isNotEmpty) "priorities": priorities,
-        // "sort": sort,
-        "offset": offset,
-        "limit": limit,
-        if (searchWord.isNotEmpty) "q": searchWord,
-        if (invited != null) "invited": invited,
-        if (performing != null) "performing": performing,
-        if (starred != null) "starred": starred,
-        if (north != null) "north": north,
-        if (south != null) "south": south,
+          '/v1/get-quests?offset=$offset&limit=$limit&$workplaces$employments'
+          '$priorities$sort$price&invited=$invited&starred=$starred&'
+          'performing=$performing&${searchWord.isNotEmpty ? "q=$searchWord" : ""}',
+      data: {
+        if (specializations != null) "specializations": specializations,
       },
     );
 
@@ -348,7 +301,7 @@ extension QuestService on ApiProvider {
   }) async {
     String specialization = "";
     specializations.forEach((text) {
-      specialization += "specializations[]=$text&";
+      specialization += "specializations=$text&";
     });
     String priorities = "";
     String ratingStatuses = "";
@@ -376,26 +329,22 @@ extension QuestService on ApiProvider {
       });
     } else {
       priority.forEach((text) {
-        priorities += "priorities[]=$text&";
+        priorities += "priorities=$text&";
       });
       ratingStatus.forEach((text) {
-        ratingStatuses += "ratingStatuses[]=$text&";
+        ratingStatuses += "ratingStatuses=$text&";
       });
     }
     String workplaces = "";
     workplace.forEach((text) {
-      workplaces += "workplaces[]=$text&";
+      workplaces += "workplaces=$text&";
     });
-    final responseData = await httpClient.get(
+    final responseData = await httpClient.post(
       query:
-          '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort&$specialization$price',
-      queryParameters: {
-        if (searchWord.isNotEmpty) "q": searchWord,
-        "offset": offset,
-        "limit": limit,
-        if (north != null) "north": north,
-        if (south != null) "south": south,
-        //"sort": sort,
+          '/v1/profile/get-workers?$priorities$ratingStatuses$workplaces$sort'
+              '$price&offset=$offset&limit=$limit',
+      data: {
+        if (specialization.isNotEmpty) "specializations": specializations,
       },
     );
 
@@ -744,10 +693,10 @@ extension UserInfoService on ApiProvider {
           },
           if (userData.role == UserRole.Worker) "workplace": userData.workplace,
           "additionalInfo": {
-            "secondMobileNumber": (userData.tempPhone?.fullPhone.isNotEmpty ??
-                    false)
-                ? userData.tempPhone!.fullPhone
-                : null,
+            "secondMobileNumber":
+                (userData.tempPhone?.fullPhone.isNotEmpty ?? false)
+                    ? userData.tempPhone!.fullPhone
+                    : null,
             "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
                 ? userData.additionalInfo?.address
                 : null,
@@ -868,7 +817,8 @@ extension UserInfoService on ApiProvider {
               "longitude": userData.locationCode?.longitude ?? 0,
               "latitude": userData.locationCode?.latitude ?? 0
             },
-            "locationPlaceName": userData.locationPlaceName ?? "",        },
+            "locationPlaceName": userData.locationPlaceName ?? "",
+          },
           "profileVisibility": {
             "network": 0,
             "ratingStatus": 4,

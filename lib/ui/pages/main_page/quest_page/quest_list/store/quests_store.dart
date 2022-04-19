@@ -157,12 +157,15 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     String result = '';
     if (Constants.isRelease) {
       if (isWorker) {
-        result += '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
         result +=
-        '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+            '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result +=
+            '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
       } else {
-        result += '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-        result += '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+        result +=
+            '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result +=
+            '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
       }
     } else {
       if (isWorker) {
@@ -247,9 +250,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @computed
   bool get emptySearch =>
-      // searchWord.isNotEmpty &&
-      // searchResultList.isEmpty &&
-      // searchWorkersList.isEmpty &&
       workersList.isEmpty && questsList.isEmpty && !this.isLoading;
 
   @action
@@ -262,7 +262,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
             price: getFilterPrice(),
             searchWord: searchWord,
             offset: offset,
-            statuses: [0, 1],
             employment: employments,
             workplace: workplaces,
             priority: priorities,
@@ -270,7 +269,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
             sort: this.sort,
             specializations: selectedSkill,
           ));
-          //offset review
           offset += 10;
           this.onSuccess(true);
         });
@@ -314,7 +312,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         questsList.addAll(await _apiProvider.getQuests(
           searchWord: searchWord,
           price: getFilterPrice(),
-          statuses: [0, 1],
+          // statuses: [0, 1],
           employment: employments,
           workplace: workplaces,
           priority: priorities,

@@ -181,52 +181,58 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
       if (role == UserRole.Employer) {
         if (loadActive)
-          active.addAll(await _apiProvider.getEmployerQuests(
-            userId: userId,
+          active.addAll(await _apiProvider.getQuests(
+            // userId: userId,
             sort: sort,
             offset: this.offsetActive,
-            statuses: [0, 1, 3, 5],
+            // statuses: [0, 1, 3, 5],
+            performing: false,
+            invited: false,
           ));
 
         if (loadInvited)
-          invited.addAll(await _apiProvider.getEmployerQuests(
-            userId: userId,
+          invited.addAll(await _apiProvider.getQuests(
+            // userId: userId,
             sort: sort,
             offset: this.offsetInvited,
-            statuses: [4],
+            // statuses: [4],
+            performing: false,
+            invited: true,
           ));
 
         if (loadPerformed) {
-          performed.addAll(await _apiProvider.getEmployerQuests(
-            userId: userId,
+          performed.addAll(await _apiProvider.getQuests(
+            // userId: userId,
             sort: sort,
             offset: this.offsetPerformed,
-            statuses: [6],
+            // statuses: [6],
+            performing: true,
+            invited: false,
           ));
         }
       } else {
         if (loadActive)
-          active.addAll(await _apiProvider.getWorkerQuests(
+          active.addAll(await _apiProvider.getQuests(
             offset: this.offsetActive,
             sort: sort,
-            userId: userId,
-            statuses: [1, 3, 5],
+            // userId: userId,
+            // statuses: [1, 3, 5],
           ));
 
         if (loadInvited)
-          invited.addAll(await _apiProvider.getWorkerQuests(
+          invited.addAll(await _apiProvider.getQuests(
             offset: this.offsetInvited,
             sort: sort,
-            userId: userId,
-            statuses: [4],
+            // userId: userId,
+            // statuses: [4],
           ));
 
         if (loadPerformed)
-          performed.addAll(await _apiProvider.getWorkerQuests(
+          performed.addAll(await _apiProvider.getQuests(
             offset: this.offsetPerformed,
             sort: sort,
-            userId: userId,
-            statuses: [6],
+            // userId: userId,
+            // statuses: [6],
           ));
 
         if (loadStarred)
