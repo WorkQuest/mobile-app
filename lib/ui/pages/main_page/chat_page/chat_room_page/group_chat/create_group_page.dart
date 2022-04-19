@@ -212,19 +212,10 @@ class CreateGroupPage extends StatelessWidget {
                           store.index++;
                           await store.getUsersForGroupCHat();
                           if (store.availableUsers.isEmpty)
-                            AlertDialogUtils.showAlertDialog(
+                            AlertDialogUtils.showInfoAlertDialog(
                               context,
-                              title: Text("Error"),
-                              content: Text(
-                                "You can't create a chat before working on a quest",
-                              ),
-                              needCancel: false,
-                              titleCancel: null,
-                              titleOk: "Return",
-                              onTabCancel: null,
-                              onTabOk: () => Navigator.pop(context),
-                              colorCancel: null,
-                              colorOk: Colors.blue,
+                              title: "Warning",
+                              content: 'You can\'t create a chat before working on a quest',
                             );
                         }
                       }

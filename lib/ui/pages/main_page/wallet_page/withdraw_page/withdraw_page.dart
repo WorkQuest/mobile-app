@@ -1,4 +1,3 @@
-import 'package:app/ui/pages/main_page/wallet_page/bank_card_widget.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +7,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
-import '../confirm_transaction_dialog.dart';
+import '../../../../../utils/alert_dialog.dart';
 
 final _divider = const SizedBox(
   height: 5.0,
@@ -149,12 +148,11 @@ class _WithdrawPageState extends State<WithdrawPage>
               Spacer(),
               ElevatedButton(
                 onPressed: withdrawStore.canSubmit
-                    ? () => confirmTransaction(
+                    ? () => AlertDialogUtils.showInfoAlertDialog(
                           context,
-                          transaction: "modals.withdraw".tr(),
-                          address: withdrawStore.getAddress(),
-                          amount: withdrawStore.getAmount(),
-                          fee: "0.15",
+                          title: "Warning",
+                          content:
+                              "Service temporarily unavailable",
                         )
                     : null,
                 child: Text(
