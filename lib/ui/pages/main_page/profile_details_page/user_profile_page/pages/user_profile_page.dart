@@ -80,6 +80,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
         userId: userStore!.userData!.id,
         newList: true,
       );
+      portfolioStore!.setOtherUserData(userStore!.userData);
       myQuests!.getQuests(userStore!.userData!.id, role, true);
     } else {
       role = widget.info?.role ?? UserRole.Worker;
@@ -100,6 +101,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(userId: widget.info!.id, newList: true);
       portfolioStore!.getReviews(userId: widget.info!.id, newList: true);
+      portfolioStore!.setOtherUserData(widget.info);
     }
     isVerify = widget.info == null
         ? userStore!.userData?.phone != null
@@ -154,128 +156,132 @@ class UserProfileState<T extends UserProfile> extends State<T>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (scrollNotification) {
-          if (controllerMain.offset < 180) {
-            double width = 240 + (controllerMain.offset.round() / 200 * 60);
-            double appBarPosition = controllerMain.offset.round() / 200 * 28;
-            double appBarPositionVertical =
-                (controllerMain.offset.round() / 200 * 10);
-            _streamController.sink.add(
-                AppBarParams(width, appBarPosition, appBarPositionVertical));
-          }
-          return false;
-        },
-        child: NestedScrollView(
-          controller: controllerMain,
-          headerSliverBuilder: (
-            BuildContext context,
-            bool innerBoxIsScrolled,
-          ) {
-            return <Widget>[
-              //__________AppBar__________//
-              sliverAppBar(widget.info, _streamController),
-              SliverPadding(
-                padding: EdgeInsets.fromLTRB(
-                  16.0,
-                  16.0,
-                  16.0,
-                  0.0,
-                ),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: listWidgets(),
-                      ),
-
-                      ///Social Accounts
-                      socialAccounts(
-                        socialNetwork: widget.info == null
-                            ? userStore!.userData?.additionalInfo?.socialNetwork
-                            : widget.info!.additionalInfo?.socialNetwork,
-                      ),
-
-                      ///Contact Details
-                      contactDetails(
-                        location: widget.info == null
-                            ? userStore!.userData?.additionalInfo?.address ?? ''
-                            : widget.info!.additionalInfo?.address ?? "",
-                        number: widget.info == null
-                            ? userStore!.userData?.phone?.fullPhone ??
-                                userStore!.userData?.tempPhone?.fullPhone ??
-                                ""
-                            : widget.info?.phone?.fullPhone ??
-                                widget.info!.tempPhone?.fullPhone ??
-                                "",
-                        secondNumber: widget.info == null
-                            ? userStore!.userData?.additionalInfo
-                                    ?.secondMobileNumber?.fullPhone ??
-                                ""
-                            : widget.info!.additionalInfo?.secondMobileNumber
-                                    ?.fullPhone ??
-                                "",
-                        email: widget.info == null
-                            ? userStore!.userData?.email ?? " "
-                            : widget.info!.email ?? " ",
-                        isVerify: isVerify,
-                      ),
-
-                      ...ratingsWidget(),
-
-                      ...addToQuest(),
-                      spacer,
-                    ],
-                  ),
-                ),
-              ),
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: StickyTabBarDelegate(
-                  child: TabBar(
-                    unselectedLabelColor: Color(0xFF8D96A1),
-                    indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6.0),
-                      color: Colors.white,
-                    ),
-                    labelColor: Colors.black,
-                    controller: this._tabController,
-                    tabs: <Widget>[
-                      Tab(
-                        child: Text(
-                          "profiler.reviews".tr(),
-                          style: TextStyle(fontSize: 14.0),
-                        ),
-                      ),
-                      Tab(
-                        child: Text(
-                          tabTitle,
-                          style: TextStyle(fontSize: 14.0),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ];
+        body: NotificationListener<ScrollNotification>(
+          onNotification: (scrollNotification) {
+            if (controllerMain.offset < 180) {
+              double width = 240 + (controllerMain.offset.round() / 200 * 60);
+              double appBarPosition = controllerMain.offset.round() / 200 * 28;
+              double appBarPositionVertical =
+                  (controllerMain.offset.round() / 200 * 10);
+              _streamController.sink.add(
+                  AppBarParams(width, appBarPosition, appBarPositionVertical));
+            }
+            return false;
           },
-          body: Observer(
-            builder: (_) => TabBarView(
-              controller: this._tabController,
-              children: <Widget>[
-                ///Reviews Tab
-                wrapperTabBar(reviewsTab(), "reviews"),
+          child: NestedScrollView(
+            controller: controllerMain,
+            headerSliverBuilder: (
+              BuildContext context,
+              bool innerBoxIsScrolled,
+            ) {
+              return <Widget>[
+                //__________AppBar__________//
+                sliverAppBar(widget.info, _streamController, _update),
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(
+                    16.0,
+                    16.0,
+                    16.0,
+                    0.0,
+                  ),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: listWidgets(),
+                        ),
 
-                ///Portfolio and Quests
-                wrapperTabBar(questPortfolio(), "quest", false),
-              ],
+                        ///Social Accounts
+                        socialAccounts(
+                          socialNetwork: widget.info == null
+                              ? userStore!.userData?.additionalInfo?.socialNetwork
+                              : widget.info!.additionalInfo?.socialNetwork,
+                        ),
+
+                        ///Contact Details
+                        contactDetails(
+                          location: widget.info == null
+                              ? userStore!.userData?.additionalInfo?.address ?? ''
+                              : widget.info!.additionalInfo?.address ?? "",
+                          number: widget.info == null
+                              ? userStore!.userData?.phone?.fullPhone ??
+                                  userStore!.userData?.tempPhone?.fullPhone ??
+                                  ""
+                              : widget.info?.phone?.fullPhone ??
+                                  widget.info!.tempPhone?.fullPhone ??
+                                  "",
+                          secondNumber: widget.info == null
+                              ? userStore!.userData?.additionalInfo
+                                      ?.secondMobileNumber?.fullPhone ??
+                                  ""
+                              : widget.info!.additionalInfo?.secondMobileNumber
+                                      ?.fullPhone ??
+                                  "",
+                          email: widget.info == null
+                              ? userStore!.userData?.email ?? " "
+                              : widget.info!.email ?? " ",
+                          isVerify: isVerify,
+                        ),
+
+                        ...ratingsWidget(),
+
+                        ...addToQuest(),
+                        spacer,
+                      ],
+                    ),
+                  ),
+                ),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: StickyTabBarDelegate(
+                    child: TabBar(
+                      unselectedLabelColor: Color(0xFF8D96A1),
+                      indicator: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.0),
+                        color: Colors.white,
+                      ),
+                      labelColor: Colors.black,
+                      controller: this._tabController,
+                      tabs: <Widget>[
+                        Tab(
+                          child: Text(
+                            "profiler.reviews".tr(),
+                            style: TextStyle(fontSize: 14.0),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            tabTitle,
+                            style: TextStyle(fontSize: 14.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ];
+            },
+            body: Observer(
+              builder: (_) => TabBarView(
+                controller: this._tabController,
+                children: <Widget>[
+                  ///Reviews Tab
+                  wrapperTabBar(reviewsTab(), "reviews"),
+
+                  ///Portfolio and Quests
+                  wrapperTabBar(questPortfolio(), "quest", false),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+  }
+
+  _update() {
+    setState(() {});
   }
 }
 

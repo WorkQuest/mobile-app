@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_store.dart';
@@ -37,12 +38,22 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   PhoneNumber phone = PhoneNumber();
   PhoneNumber secondPhone = PhoneNumber();
 
+  Phone? oldPhone;
+
   @override
   void initState() {
+    print('initState');
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
-
+    oldPhone = Phone(
+      codeRegion: profile!.userData?.phone?.codeRegion ??
+          (profile!.userData?.tempPhone?.codeRegion ?? ''),
+      fullPhone: profile!.userData?.phone?.fullPhone ??
+          (profile!.userData?.tempPhone?.fullPhone ?? ''),
+      phone:
+          profile!.userData?.phone?.phone ?? (profile!.userData?.tempPhone?.phone ?? ''),
+    );
     if (profile!.userData!.additionalInfo?.address != null)
       pageStore.address = profile!.userData!.additionalInfo!.address!;
     pageStore
@@ -88,7 +99,18 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         ],
       ),
       body: ObserverListener<ProfileMeStore>(
-        onSuccess: () => Navigator.pop(context),
+        onSuccess: () async {
+          if (oldPhone != null &&
+              oldPhone!.fullPhone.isNotEmpty &&
+              !pageStore.numberChanged(oldPhone!.fullPhone)) {
+            await AlertDialogUtils.showSuccessDialog(context);
+          } else {
+            await AlertDialogUtils.showSuccessDialog(context,
+                text: 'Enter code from SMS in SMS Verification');
+          }
+          await profile!.getProfileMe();
+          Navigator.pop(context, true);
+        },
         child: Observer(
           builder: (_) => profile!.isLoading
               ? Center(
@@ -105,11 +127,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Form(
         key: _formKey,
-        child: ListView(
-          physics: ClampingScrollPhysics(),
-          children: [
-            Observer(
-              builder: (_) => _ImageProfile(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _ImageProfile(
                 file: pageStore.media,
                 hasMedia: pageStore.media == null,
                 url: profile!.userData!.avatar?.url,
@@ -118,244 +139,136 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     type: FileType.image,
                   );
                   if (result != null) {
-                    List<File> files =
-                        result.paths.map((path) => File(path!)).toList();
+                    List<File> files = result.paths.map((path) => File(path!)).toList();
                     pageStore.media = files.first;
                   }
                 },
               ),
-            ),
-            _InputWidget(
-              title: "labels.firstName".tr(),
-              initialValue: pageStore.userData.firstName,
-              onChanged: (text) {
-                ProfileMeResponse data = pageStore.userData;
-                data.firstName = text;
-                pageStore.setUserData(data);
-              },
-              validator: Validators.firstNameValidator,
-            ),
-            _InputWidget(
-              title: "labels.lastName".tr(),
-              initialValue: pageStore.userData.lastName,
-              onChanged: (text) {
-                ProfileMeResponse data = pageStore.userData;
-                data.lastName = text;
-                pageStore.setUserData(data);
-              },
-              validator: Validators.lastNameValidator,
-            ),
-            Observer(
-              builder: (_) => _AddressProfileWidget(
-                address: pageStore.address,
-                onTap: () {
-                  pageStore.getPrediction(context);
+              _InputWidget(
+                title: "labels.firstName".tr(),
+                initialValue: pageStore.userData.firstName,
+                onChanged: (text) {
+                  ProfileMeResponse data = pageStore.userData;
+                  data.firstName = text;
+                  pageStore.setUserData(data);
                 },
+                validator: Validators.firstNameValidator,
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            _PhoneNumberWidget(
-              title: "modals.phoneNumber",
-              initialValue: phone,
-              onChanged: (PhoneNumber phone) {
-                pageStore.setPhoneNumber(phone);
-              },
-            ),
-            if (profile!.userData!.role == UserRole.Employer &&
-                !Constants.isRelease)
-              _PhoneNumberWidget(
-                title: "modals.secondPhoneNumber",
-                initialValue: secondPhone,
-                onChanged: (PhoneNumber phone) {
-                  pageStore.setSecondPhoneNumber(phone);
+              _InputWidget(
+                title: "labels.lastName".tr(),
+                initialValue: pageStore.userData.lastName,
+                onChanged: (text) {
+                  ProfileMeResponse data = pageStore.userData;
+                  data.lastName = text;
+                  pageStore.setUserData(data);
                 },
+                validator: Validators.lastNameValidator,
               ),
-            _InputWidget(
-              title: "signUp.email".tr(),
-              readOnly: true,
-              initialValue: pageStore.userData.email ?? "",
-              onChanged: (text) {
-                ProfileMeResponse data = pageStore.userData;
-                data.email = text;
-                pageStore.setUserData(data);
-              },
-              validator: Validators.emailValidator,
-            ),
-            _InputWidget(
-              title: "modals.title".tr(),
-              initialValue:
-                  pageStore.userData.additionalInfo!.description ?? "",
-              onChanged: (text) {
-                ProfileMeResponse data = pageStore.userData;
-                data.additionalInfo!.description = text;
-                pageStore.setUserData(data);
-              },
-              maxLines: null,
-              validator: Validators.descriptionValidator,
-            ),
-            if (pageStore.userData.role == UserRole.Worker)
-              _fieldsForWorkerWidget(),
-            _InputWidget(
-              title: "settings.twitterUsername".tr(),
-              initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.twitter ??
-                      "",
-              onChanged: (text) {
-                ProfileMeResponse data = pageStore.userData;
-                data.additionalInfo!.socialNetwork?.twitter = text;
-                pageStore.setUserData(data);
-              },
-              validator: Validators.nicknameTwitterValidator,
-            ),
-            _InputWidget(
-              title: "settings.facebookUsername".tr(),
-              initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.facebook ??
-                      "",
-              onChanged: (text) {
-                ProfileMeResponse data = pageStore.userData;
-                data.additionalInfo!.socialNetwork?.facebook = text;
-                pageStore.setUserData(data);
-              },
-              validator: Validators.nicknameFacebookValidator,
-            ),
-            _InputWidget(
-              title: "settings.linkedInUsername".tr(),
-              initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.linkedin ??
-                      "",
-              onChanged: (text) {
-                ProfileMeResponse data = pageStore.userData;
-                data.additionalInfo!.socialNetwork?.linkedin = text;
-                pageStore.setUserData(data);
-              },
-              validator: Validators.nicknameLinkedInValidator,
-            ),
-            _InputWidget(
-              title: "settings.instagramUsername".tr(),
-              initialValue:
-                  pageStore.userData.additionalInfo!.socialNetwork?.instagram ??
-                      "",
-              onChanged: (text) {
-                ProfileMeResponse data = pageStore.userData;
-                data.additionalInfo!.socialNetwork?.instagram = text;
-                pageStore.setUserData(data);
-              },
-              validator: Validators.nicknameLinkedInValidator,
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _fieldsForWorkerWidget() {
-    return Column(
-      children: <Widget>[
-        SkillSpecializationSelection(controller: _controller),
-        Observer(
-          builder: (_) => _dropDownMenuWidget(
-            title: "settings.priority",
-            value: profile!.priorityValue.name,
-            list: QuestPriority.values.map((e) => e.name).toList(),
-            onChanged: (priority) {
-              profile!.setPriorityValue(priority!);
-            },
-          ),
-        ),
-        _InputWidget(
-          title: "settings.costPerHour".tr(),
-          initialValue: pageStore.userData.wagePerHour,
-          onChanged: (text) => pageStore.userData.wagePerHour = text,
-          validator: Validators.emptyValidator,
-        ),
-        Observer(
-          builder: (_) => _dropDownMenuWidget(
-            title: "settings.distantWork",
-            value: profile!.distantWork,
-            list: profile!.distantWorkList,
-            onChanged: (text) {
-              profile!.setWorkplaceValue(text!);
-            },
-          ),
-        ),
-        KnowledgeWorkSelection(
-          title: "Knowledge",
-          hintText: "settings.education.educationalInstitution".tr(),
-          controller: _controllerKnowledge,
-          data: pageStore.userData.additionalInfo?.educations,
-        ),
-        KnowledgeWorkSelection(
-          title: "Work experience",
-          hintText: "Work place",
-          controller: _controllerWork,
-          data: pageStore.userData.additionalInfo?.workExperiences,
-        ),
-      ],
-    );
-  }
-
-  Widget _dropDownMenuWidget({
-    required String title,
-    required String value,
-    required List<String> list,
-    required void Function(String?)? onChanged,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 10),
-          alignment: Alignment.centerLeft,
-          child: Text(
-            title.tr(),
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-        ),
-        Container(
-          height: 50,
-          padding: EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: BoxDecoration(
-            color: Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.all(
-              Radius.circular(6.0),
-            ),
-          ),
-          alignment: Alignment.centerLeft,
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton(
-              isExpanded: true,
-              value: value,
-              onChanged: onChanged,
-              items: list.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              icon: Icon(
-                Icons.arrow_drop_down,
-                size: 30,
-                color: Colors.blueAccent,
-              ),
-              hint: Text(
-                title,
-                maxLines: 1,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
+              Observer(
+                builder: (_) => _AddressProfileWidget(
+                  address: pageStore.address.isEmpty ? profile!.userData!.additionalInfo?.address.toString() ?? pageStore.address : pageStore.address,
+                  onTap: () {
+                    pageStore.getPrediction(context);
+                  },
                 ),
               ),
-            ),
+              SizedBox(
+                height: 20,
+              ),
+              _PhoneNumberWidget(
+                title: "modals.phoneNumber",
+                initialValue: phone,
+                onChanged: (PhoneNumber phone) {
+                  pageStore.setPhoneNumber(phone);
+                },
+              ),
+              if (profile!.userData!.role == UserRole.Employer)
+                _PhoneNumberWidget(
+                  title: "modals.secondPhoneNumber",
+                  initialValue: secondPhone,
+                  onChanged: (PhoneNumber phone) {
+                    pageStore.setSecondPhoneNumber(phone);
+                  },
+                ),
+              _InputWidget(
+                title: "signUp.email".tr(),
+                readOnly: true,
+                initialValue: pageStore.userData.email ?? "",
+                onChanged: (text) {
+                  ProfileMeResponse data = pageStore.userData;
+                  data.email = text;
+                  pageStore.setUserData(data);
+                },
+                validator: Validators.emailValidator,
+              ),
+              _InputWidget(
+                title: "modals.title".tr(),
+                initialValue: pageStore.userData.additionalInfo!.description ?? "",
+                onChanged: (text) {
+                  ProfileMeResponse data = pageStore.userData;
+                  data.additionalInfo!.description = text;
+                  pageStore.setUserData(data);
+                },
+                maxLines: null,
+                validator: Validators.descriptionValidator,
+              ),
+              if (pageStore.userData.role == UserRole.Worker)
+                _FieldsForWorkerWidget(
+                  controllerKnowledge: _controllerKnowledge!,
+                  controllerWork: _controllerWork!,
+                  controller: _controller!,
+                  pageStore: pageStore,
+                  profile: profile!,
+                ),
+              _InputWidget(
+                title: "settings.twitterUsername".tr(),
+                initialValue:
+                    pageStore.userData.additionalInfo!.socialNetwork?.twitter ?? "",
+                onChanged: (text) {
+                  ProfileMeResponse data = pageStore.userData;
+                  data.additionalInfo!.socialNetwork?.twitter = text;
+                  pageStore.setUserData(data);
+                },
+                validator: Validators.nicknameTwitterValidator,
+              ),
+              _InputWidget(
+                title: "settings.facebookUsername".tr(),
+                initialValue:
+                    pageStore.userData.additionalInfo!.socialNetwork?.facebook ?? "",
+                onChanged: (text) {
+                  ProfileMeResponse data = pageStore.userData;
+                  data.additionalInfo!.socialNetwork?.facebook = text;
+                  pageStore.setUserData(data);
+                },
+                validator: Validators.nicknameFacebookValidator,
+              ),
+              _InputWidget(
+                title: "settings.linkedInUsername".tr(),
+                initialValue:
+                    pageStore.userData.additionalInfo!.socialNetwork?.linkedin ?? "",
+                onChanged: (text) {
+                  ProfileMeResponse data = pageStore.userData;
+                  data.additionalInfo!.socialNetwork?.linkedin = text;
+                  pageStore.setUserData(data);
+                },
+                validator: Validators.nicknameLinkedInValidator,
+              ),
+              _InputWidget(
+                title: "settings.instagramUsername".tr(),
+                initialValue:
+                    pageStore.userData.additionalInfo!.socialNetwork?.instagram ?? "",
+                onChanged: (text) {
+                  ProfileMeResponse data = pageStore.userData;
+                  data.additionalInfo!.socialNetwork?.instagram = text;
+                  pageStore.setUserData(data);
+                },
+                validator: Validators.nicknameLinkedInValidator,
+              ),
+              const SizedBox(height: 20),
+            ],
           ),
         ),
-        const SizedBox(height: 20),
-      ],
+      ),
     );
   }
 
@@ -373,35 +286,24 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   _onSave() async {
-    if ((pageStore.userData.tempPhone?.fullPhone ?? "").contains("-") ||
-        (pageStore.userData.tempPhone?.fullPhone ?? "").contains(" ")) {
-      AlertDialogUtils.showInfoAlertDialog(
-        context,
-        title: "Warning",
-        content: "The number must not contain dashes or spaces",
-      );
-      return;
-    }
     if (_formKey.currentState?.validate() ?? false) {
-      if (!pageStore.validationKnowledge(
-          _controllerKnowledge!.getListMap(), context)) return;
-      if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
+      if (!pageStore.validationKnowledge(_controllerKnowledge!.getListMap(), context))
         return;
+      if (!pageStore.validationWork(_controllerWork!.getListMap(), context)) return;
 
       if (pageStore.userData.additionalInfo?.secondMobileNumber?.phone == "")
         pageStore.userData.additionalInfo?.secondMobileNumber = null;
-      pageStore.userData.additionalInfo?.educations =
-          _controllerKnowledge!.getListMap();
-      pageStore.userData.additionalInfo?.workExperiences =
-          _controllerWork!.getListMap();
-      pageStore.userData.additionalInfo!.address = pageStore.address;
-      pageStore.userData.locationPlaceName = pageStore.address;
+      pageStore.userData.additionalInfo?.educations = _controllerKnowledge!.getListMap();
+      pageStore.userData.additionalInfo?.workExperiences = _controllerWork!.getListMap();
+      if (pageStore.address.isNotEmpty ) {
+        pageStore.userData.additionalInfo!.address = pageStore.address;
+        pageStore.userData.locationPlaceName = pageStore.address;
+      }
       pageStore.userData.priority = profile!.userData!.priority;
       pageStore.userData.workplace = profile!.valueToWorkplace();
 
       if (!profile!.isLoading)
-        pageStore.userData.userSpecializations =
-            _controller!.getSkillAndSpecialization();
+        pageStore.userData.userSpecializations = _controller!.getSkillAndSpecialization();
       await profile!.changeProfile(
         pageStore.userData,
         media: pageStore.media,
@@ -411,23 +313,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   _changePhone() async {
-    Phone? userPhone = profile!.userData!.phone ?? profile!.userData!.tempPhone;
-    if (userPhone != null &&
-        userPhone.fullPhone.isNotEmpty &&
-        pageStore.numberChanged(userPhone.fullPhone)) {
+    if (pageStore.numberChanged(oldPhone!.fullPhone)) {
       await profile!.submitPhoneNumber(pageStore.userData.tempPhone!.fullPhone);
       profile!.userData?.phone = null;
-      userPhone = profile!.userData!.tempPhone;
-    }
-    if (profile!.isSuccess) {
-      if (userPhone != null &&
-          userPhone.fullPhone.isNotEmpty &&
-          !pageStore.numberChanged(userPhone.fullPhone)) {
-        await AlertDialogUtils.showSuccessDialog(context);
-      } else {
-        await AlertDialogUtils.showSuccessDialog(context,
-            text: 'Enter code from SMS in SMS Verification');
-      }
+      oldPhone = profile!.userData!.tempPhone;
     }
   }
 
@@ -497,6 +386,136 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 ],
               );
       },
+    );
+  }
+}
+
+class _FieldsForWorkerWidget extends StatefulWidget {
+  final KnowledgeWorkSelectionController controllerKnowledge;
+  final KnowledgeWorkSelectionController controllerWork;
+  final SkillSpecializationController controller;
+  final ChangeProfileStore pageStore;
+  final ProfileMeStore profile;
+
+  const _FieldsForWorkerWidget({
+    Key? key,
+    required this.controllerKnowledge,
+    required this.controllerWork,
+    required this.controller,
+    required this.pageStore,
+    required this.profile,
+  }) : super(key: key);
+
+  @override
+  _FieldsForWorkerWidgetState createState() => _FieldsForWorkerWidgetState();
+}
+
+class _FieldsForWorkerWidgetState extends State<_FieldsForWorkerWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        SkillSpecializationSelection(controller: widget.controller),
+        Observer(
+          builder: (_) => _dropDownMenuWidget(
+            title: "settings.priority",
+            value: widget.profile.priorityValue.name,
+            list: QuestPriority.values.map((e) => e.name).toList(),
+            onChanged: (priority) {
+              widget.profile.setPriorityValue(priority!);
+            },
+          ),
+        ),
+        _InputWidget(
+          title: "settings.costPerHour".tr(),
+          initialValue: widget.pageStore.userData.wagePerHour,
+          onChanged: (text) => widget.pageStore.userData.wagePerHour = text,
+          validator: Validators.emptyValidator,
+        ),
+        Observer(
+          builder: (_) => _dropDownMenuWidget(
+            title: "settings.distantWork",
+            value: widget.profile.distantWork,
+            list: widget.profile.distantWorkList,
+            onChanged: (text) {
+              widget.profile.setWorkplaceValue(text!);
+            },
+          ),
+        ),
+        KnowledgeWorkSelection(
+          title: "Knowledge",
+          hintText: "settings.education.educationalInstitution".tr(),
+          controller: widget.controllerKnowledge,
+          data: widget.pageStore.userData.additionalInfo?.educations,
+        ),
+        KnowledgeWorkSelection(
+          title: "Work experience",
+          hintText: "Work place",
+          controller: widget.controllerWork,
+          data: widget.pageStore.userData.additionalInfo?.workExperiences,
+        ),
+      ],
+    );
+  }
+
+  Widget _dropDownMenuWidget({
+    required String title,
+    required String value,
+    required List<String> list,
+    required void Function(String?)? onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 10),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            title.tr(),
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ),
+        Container(
+          height: 50,
+          padding: EdgeInsets.symmetric(horizontal: 15.0),
+          decoration: BoxDecoration(
+            color: Color(0xFFF7F8FA),
+            borderRadius: BorderRadius.all(
+              Radius.circular(6.0),
+            ),
+          ),
+          alignment: Alignment.centerLeft,
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton(
+              isExpanded: true,
+              value: value,
+              onChanged: onChanged,
+              items: list.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              icon: Icon(
+                Icons.arrow_drop_down,
+                size: 30,
+                color: Colors.blueAccent,
+              ),
+              hint: Text(
+                title,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 }
@@ -590,13 +609,9 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           child: InternationalPhoneNumberInput(
-            validator: widget.title == "modals.secondPhoneNumber"
-                ? (value) {
-                    return null;
-                  }
-                : Validators.phoneNumberValidator,
             initialValue: widget.initialValue,
             errorMessage: "modals.invalidPhone".tr(),
+            autoValidateMode: AutovalidateMode.onUserInteraction,
             onInputChanged: widget.onChanged,
             selectorConfig: SelectorConfig(
               setSelectorButtonAsPrefixIcon: true,
@@ -615,13 +630,13 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6.0),
                 borderSide: BorderSide(
-                  color: Colors.blue,
+                  color: Colors.green,
                 ),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6.0),
                 borderSide: BorderSide(
-                  color: Colors.blue,
+                  color: Colors.red,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
@@ -714,7 +729,7 @@ class _InputWidget extends StatelessWidget {
   }
 }
 
-class _ImageProfile extends StatelessWidget {
+class _ImageProfile extends StatefulWidget {
   final Function() onPressed;
   final bool hasMedia;
   final String? url;
@@ -729,25 +744,62 @@ class _ImageProfile extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<_ImageProfile> createState() => _ImageProfileState();
+}
+
+class _ImageProfileState extends State<_ImageProfile> {
+  late Future<Uint8List> future;
+  File? file;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.hasMedia) {
+      file = widget.file!;
+      future = file!.readAsBytes();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!widget.hasMedia) {
+      if (file == null || file != widget.file) {
+        future = widget.file!.readAsBytes();
+        file = widget.file!;
+      }
+    }
     return Center(
       child: Stack(
         alignment: Alignment.center,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(65),
-            child: hasMedia
+            child: widget.hasMedia
                 ? Image.network(
-                    url ?? Constants.defaultImageNetwork,
+                    widget.url ?? Constants.defaultImageNetwork,
                     height: 130,
                     width: 130,
                     fit: BoxFit.cover,
                   )
-                : Image.memory(
-                    file!.readAsBytesSync(),
-                    height: 130,
-                    width: 130,
-                    fit: BoxFit.cover,
+                : FutureBuilder<Uint8List>(
+                    future: future,
+                    builder: (_, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return Image.memory(
+                          snapshot.data!,
+                          height: 130,
+                          width: 130,
+                          fit: BoxFit.cover,
+                        );
+                      }
+                      return SizedBox(
+                        height: 130,
+                        width: 130,
+                        child: Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      );
+                    },
                   ),
           ),
           IconButton(
@@ -755,7 +807,7 @@ class _ImageProfile extends StatelessWidget {
               Icons.edit,
               color: Colors.white,
             ),
-            onPressed: onPressed,
+            onPressed: widget.onPressed,
           ),
         ],
       ),

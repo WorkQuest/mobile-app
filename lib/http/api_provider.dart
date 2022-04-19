@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/model/bearer_token.dart';
@@ -36,7 +35,6 @@ extension LoginService on ApiProvider {
       data: {
         'email': email,
         'password': password,
-        if (Constants.isRelease && totp.isNotEmpty) 'totp': totp,
       },
     );
     BearerToken bearerToken = BearerToken.fromJson(
@@ -120,44 +118,35 @@ extension QuestService on ApiProvider {
     LatLngBounds bounds,
   ) async {
     String query;
-    if (Constants.isRelease) {
-      query = '/v1/quests/map/get-points' +
-          '?north[latitude]=${bounds.northeast.latitude.toString()}&' +
-          'north[longitude]=${bounds.northeast.longitude.toString()}' +
-          '&south[latitude]=${bounds.southwest.latitude.toString()}&' +
-          'south[longitude]=${bounds.southwest.longitude.toString()}';
-    } else {
-      query = '/v1/quest/map/get-points'
-              '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
-          'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
-          '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
-          'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}';
-    }
+    query = '/v1/quest/map/get-points'
+            '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
+        'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
+        '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
+        'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}';
+
     final response = await httpClient.post(
       query: query,
     );
-    return Constants.isRelease
-        ? List<BaseQuestResponse>.from(
-            response.map(
-              (x) => BaseQuestResponse.fromJson(x),
-            ),
-          )
-        : List<BaseQuestResponse>.from(
-            response["quests"].map(
-              (x) => BaseQuestResponse.fromJson(x),
-            ),
-          );
+    return List<BaseQuestResponse>.from(
+      response["quests"].map(
+        (x) => BaseQuestResponse.fromJson(x),
+      ),
+    );
   }
 
   Future<List<ProfileMeResponse>> workerMapPoints(
     LatLngBounds bounds,
   ) async {
     final response = await httpClient.post(
-      query: '/v1/profile/worker/map/get-points'
-              '?northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
-          'northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}' +
-          '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
-          'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}',
+      query: '/v1/profile/workers/map/get-points'
+              '?northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}&' +
+              'northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
+              'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}&' +
+              'northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}'
+          ,
+      data: {
+        "specializations": [],
+      }
     );
     return List<ProfileMeResponse>.from(
       response["users"].map(
@@ -896,12 +885,7 @@ extension ChangePassword on ApiProvider {
 ///SMSVerification
 extension SMSVerification on ApiProvider {
   Future<void> submitPhoneNumber(String phone) async {
-    if (Constants.isRelease) {
-      await httpClient.post(
-          query: '/v1/profile/phone/send-code', data: {"phoneNumber": phone});
-    } else {
-      await httpClient.post(query: '/v1/profile/phone/send-code');
-    }
+    await httpClient.post(query: '/v1/profile/phone/send-code');
   }
 
   Future<void> submitCode({

@@ -7,7 +7,6 @@ import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mobx/mobx.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
 part 'pin_code_store.g.dart';
@@ -196,6 +195,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         return;
       }
       totpValid = false;
+      startAnimation = false;
       this.onError(e.toString());
     }
   }

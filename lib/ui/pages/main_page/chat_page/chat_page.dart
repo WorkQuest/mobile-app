@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import '../../../widgets/shimmer.dart';
 import 'chat_room_page/chat_room_page.dart';
@@ -90,10 +91,30 @@ class _ChatPageState extends State<ChatPage> {
                         ),
                       )
                     : Center(
-                        child: Text(
-                          "chat.noChats".tr(),
+                      child: SingleChildScrollView(
+                        physics: ClampingScrollPhysics(),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            SvgPicture.asset(
+                              "assets/empty_quest_icon.svg",
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "chat.noChats".tr(),
+                              style: TextStyle(
+                                color: Color(0xFFD8DFE3),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                    ),
           ),
         ),
       ),

@@ -6,7 +6,6 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../enums.dart';
 
@@ -112,14 +111,12 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     return result;
   }
 
+  @action
   Future getProfileMe() async {
     try {
       // this.onLoading();
       error = "";
       userData = await _apiProvider.getProfileMe();
-      await SharedPreferences.getInstance().then((sharedPrefs) {
-        userData!.isTotpActive = sharedPrefs.getBool("2FAStatus") ?? false;
-      });
       // this.onSuccess(true);
     } catch (e, trace) {
       print(trace);
@@ -219,6 +216,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
+
   changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {
       this.onLoading();
@@ -227,6 +225,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
             medias: ObservableList.of([media])))[0];
       final isTotpActive = this.userData?.isTotpActive;
       final tempPhone = this.userData?.tempPhone;
+      userData.priority = priorityValue;
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
       this.userData?.tempPhone = tempPhone;

@@ -166,6 +166,17 @@ mixin _$CreateWalletStore on _CreateWalletStore, Store {
       ActionController(name: '_CreateWalletStore');
 
   @override
+  dynamic setMnemonic(String value) {
+    final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
+        name: '_CreateWalletStore.setMnemonic');
+    try {
+      return super.setMnemonic(value);
+    } finally {
+      _$_CreateWalletStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic setIsSaved(bool value) {
     final _$actionInfo = _$_CreateWalletStoreActionController.startAction(
         name: '_CreateWalletStore.setIsSaved');

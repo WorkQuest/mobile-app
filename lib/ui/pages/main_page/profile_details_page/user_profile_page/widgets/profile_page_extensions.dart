@@ -8,10 +8,11 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/wi
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_svg/svg.dart';
 
 extension CustomAppBar on UserProfileState {
   Widget sliverAppBar(ProfileMeResponse? info,
-      StreamController<AppBarParams> streamController) {
+      StreamController<AppBarParams> streamController, Function() updateState) {
     final String standartImage =
         'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
     final mark = info == null
@@ -35,15 +36,18 @@ extension CustomAppBar on UserProfileState {
         actions: [
           if (info == null)
             IconButton(
-              icon: Icon(
-                Icons.edit,
-                color: Colors.white,
-              ),
-              onPressed: () =>
-                  Navigator.of(context, rootNavigator: true).pushNamed(
-                ChangeProfilePage.routeName,
-              ),
-            ),
+                icon: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                ),
+                onPressed: () async {
+                  final result = await Navigator.of(context, rootNavigator: true).pushNamed(
+                    ChangeProfilePage.routeName,
+                  );
+                  if (result != null && result as bool) {
+                    updateState.call();
+                  }
+                }),
         ],
         centerTitle: false,
         pinned: true,
@@ -150,22 +154,17 @@ extension ReviewsTab on UserProfileState {
                                 : 3);
                         index++)
                       ReviewsWidget(
-                        avatar: portfolioStore!
-                                .reviewsList[index].fromUser.avatar?.url ??
+                        avatar: portfolioStore!.reviewsList[index].fromUser.avatar?.url ??
                             "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                        name: portfolioStore!
-                                .reviewsList[index].fromUser.firstName +
+                        name: portfolioStore!.reviewsList[index].fromUser.firstName +
                             " " +
-                            portfolioStore!
-                                .reviewsList[index].fromUser.lastName,
+                            portfolioStore!.reviewsList[index].fromUser.lastName,
                         mark: portfolioStore!.reviewsList[index].mark,
-                        userRole: portfolioStore!
-                                    .reviewsList[index].fromUserId ==
+                        userRole: portfolioStore!.reviewsList[index].fromUserId ==
                                 portfolioStore!.reviewsList[index].quest.userId
                             ? "role.employer"
                             : "role.worker",
-                        questTitle:
-                            portfolioStore!.reviewsList[index].quest.title,
+                        questTitle: portfolioStore!.reviewsList[index].quest.title,
                         cutMessage: portfolioStore!.messages[index],
                         message: portfolioStore!.reviewsList[index].message,
                         id: portfolioStore!.reviewsList[index].fromUserId,
@@ -207,10 +206,26 @@ extension ReviewsTab on UserProfileState {
                   ],
                 )
               : Center(
-                  child: Text(
-                    widget.info == null
-                        ? "quests.noReview".tr()
-                        : "quests.noReviewForOtherUser".tr(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        "assets/empty_quest_icon.svg",
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        widget.info == null
+                            ? "quests.noReview".tr()
+                            : "quests.noReviewForOtherUser".tr(),
+                        style: TextStyle(
+                          color: Color(0xFFD8DFE3),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
         ),

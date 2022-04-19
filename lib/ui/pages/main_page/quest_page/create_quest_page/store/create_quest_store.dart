@@ -126,12 +126,10 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   void changedPriority(String selectedPriority) => priority = selectedPriority;
 
   @action
-  void changedEmployment(String selectedEmployment) =>
-      employment = selectedEmployment;
+  void changedEmployment(String selectedEmployment) => employment = selectedEmployment;
 
   @action
-  void changedDistantWork(String selectedEmployment) =>
-      workplace = selectedEmployment;
+  void changedDistantWork(String selectedEmployment) => workplace = selectedEmployment;
 
   @computed
   bool get canCreateQuest =>
@@ -276,20 +274,24 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         );
         ClientService().handleEvent(WQContractFunctions.editJob, [
           Uint8List.fromList(
-              utf8.encode(description.padRight(32).substring(0, 32))),
+            utf8.encode(
+              description.padRight(32).substring(0, 32),
+            ),
+          ),
           BigInt.parse(price)
         ]);
       } else {
-        idNewQuest = await apiProvider.createQuest(
-          quest: questModel,
-        );
-        // Web3().connect();
         ClientService().createNewContract(
           jobHash: description,
           cost: price,
           deadline: 0.toString(),
           nonce: description,
         );
+
+        idNewQuest = await apiProvider.createQuest(
+          quest: questModel,
+        );
+        // Web3().connect();
       }
 
       this.onSuccess(true);

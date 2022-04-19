@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class Constants {
-  static const bool isRelease = false;
 
   static const Map<String, Locale> languageList = {
     "English": Locale('en', 'US'),

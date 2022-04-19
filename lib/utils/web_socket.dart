@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:app/constants.dart';
 import 'package:app/model/web3/TrxEthereumResponse.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
@@ -32,9 +31,8 @@ class WebSocket {
     token = await Storage.readNotificationToken();
     print("[WebSocket]  connecting ...");
     _connectWallet();
-    if (!Constants.isRelease) {
-      _connectListen();
-    }
+    _connectListen();
+
     _connectSender();
   }
 
@@ -68,9 +66,7 @@ class WebSocket {
   }
 
   void _connectSender() {
-    _senderChannel = IOWebSocketChannel.connect(Constants.isRelease
-        ? "wss://app-ver1.workquest.co/api"
-        : "wss://app.workquest.co/api");
+    _senderChannel = IOWebSocketChannel.connect("wss://app.workquest.co/api");
     _senderChannel?.sink.add("""{
           "type": "hello",
           "id": 1,

@@ -35,8 +35,7 @@ class _QuestListState extends State<QuestList> {
 
   FilterQuestsStore? filterQuestsStore;
 
-  final QuestItemPriorityType questItemPriorityType =
-      QuestItemPriorityType.Starred;
+  final QuestItemPriorityType questItemPriorityType = QuestItemPriorityType.Starred;
   final scrollKey = new GlobalKey();
 
   @override
@@ -161,9 +160,9 @@ class _QuestListState extends State<QuestList> {
                   padding: const EdgeInsets.all(20.0),
                   child: OutlinedButton(
                     onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(FilterQuestsPage.routeName,
-                              arguments: filterQuestsStore!.skillFilters);
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                          FilterQuestsPage.routeName,
+                          arguments: filterQuestsStore!.skillFilters);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(
@@ -219,10 +218,16 @@ class _QuestListState extends State<QuestList> {
                           SvgPicture.asset(
                             "assets/empty_quest_icon.svg",
                           ),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           Text(
                             profileMeStore!.userData!.role == UserRole.Worker
                                 ? "quests.noQuest".tr()
-                                : "Worker not wound",
+                                : "Worker not found",
+                            style: TextStyle(
+                              color: Color(0xFFD8DFE3),
+                            ),
                           ),
                         ],
                       ),
@@ -327,12 +332,11 @@ class _AnimationWorkersQuestsItems extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AnimationWorkersQuestsItemsState createState() =>
-      _AnimationWorkersQuestsItemsState();
+  _AnimationWorkersQuestsItemsState createState() => _AnimationWorkersQuestsItemsState();
 }
 
-class _AnimationWorkersQuestsItemsState
-    extends State<_AnimationWorkersQuestsItems> with TickerProviderStateMixin {
+class _AnimationWorkersQuestsItemsState extends State<_AnimationWorkersQuestsItems>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
