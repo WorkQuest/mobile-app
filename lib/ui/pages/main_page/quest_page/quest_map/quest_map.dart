@@ -231,7 +231,7 @@ class _QuestMapState extends State<QuestMap> {
     });
 
     await _geoLocatorPlatform.getLastKnownPosition().then((position) {
-      mapStore?.locationPosition = position!;
+      mapStore?.locationPosition = position;
     });
   }
 

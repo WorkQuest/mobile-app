@@ -61,8 +61,8 @@ class BaseQuestResponse with ClusterItem {
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(
-      id: json["id"],
-      userId: json["userId"],
+      id: json["id"] ?? '0',
+      userId: User.fromJson(json["user"]).id,
       category: json["category"] == null ? null : json["category"],
       medias: json["medias"] == null
           ? null
@@ -70,7 +70,7 @@ class BaseQuestResponse with ClusterItem {
               .map((e) => Media.fromJson(e as Map<String, dynamic>))
               .toList(),
       user: User.fromJson(json["user"]),
-      status: json["status"],
+      status: json["status"] ?? 3,
       priority: json["priority"] ?? 0,
       locationCode: json["location"] == null
           ? null
