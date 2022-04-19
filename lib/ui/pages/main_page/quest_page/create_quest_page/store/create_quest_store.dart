@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:app/http/api_provider.dart';
@@ -89,6 +90,9 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @observable
   String price = "";
+
+  @observable
+  String contractAddress = "";
 
   @observable
   int adType = 0;
@@ -265,14 +269,17 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
             ),
         title: questTitle,
         description: description,
-        price: price,
+        price: (BigInt.parse(price).toDouble() * pow(10, 18)).toStringAsFixed(0),
       );
       if (isEdit) {
         await apiProvider.editQuest(
           quest: questModel,
           questId: questId,
         );
-        ClientService().handleEvent(WQContractFunctions.editJob, [
+        ClientService().handleEvent(
+            function: WQContractFunctions.editJob,
+            contractAddress: contractAddress,
+            params: [
           Uint8List.fromList(
             utf8.encode(
               description.padRight(32).substring(0, 32),

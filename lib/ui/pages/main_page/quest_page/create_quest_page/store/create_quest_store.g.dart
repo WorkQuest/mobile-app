@@ -219,6 +219,21 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
+  final _$contractAddressAtom = Atom(name: '_CreateQuestStore.contractAddress');
+
+  @override
+  String get contractAddress {
+    _$contractAddressAtom.reportRead();
+    return super.contractAddress;
+  }
+
+  @override
+  set contractAddress(String value) {
+    _$contractAddressAtom.reportWrite(value, super.contractAddress, () {
+      super.contractAddress = value;
+    });
+  }
+
   final _$adTypeAtom = Atom(name: '_CreateQuestStore.adType');
 
   @override
@@ -437,6 +452,7 @@ latitude: ${latitude},
 questTitle: ${questTitle},
 description: ${description},
 price: ${price},
+contractAddress: ${contractAddress},
 adType: ${adType},
 mediaFile: ${mediaFile},
 mediaIds: ${mediaIds},

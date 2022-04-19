@@ -201,7 +201,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             userId: userId,
             sort: sort,
             offset: this.offsetPerformed,
-            statuses: [6],
+            statuses: [-3,-1],
           ));
         }
       } else {
@@ -226,7 +226,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             offset: this.offsetPerformed,
             sort: sort,
             userId: userId,
-            statuses: [6],
+            statuses: [-3, -1],
           ));
 
         if (loadStarred)
