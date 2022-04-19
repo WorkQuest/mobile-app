@@ -2,7 +2,6 @@ import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
@@ -456,7 +455,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                         questStore.searchWord.isEmpty
                             ? questStore.getQuests(true)
                             : questStore.setSearchWord(questStore.searchWord);
-                        myQuestStore.deleteQuest(widget.questInfo);
+                        myQuestStore.deleteQuest(widget.questInfo.id);
                         myQuestStore.addQuest(widget.questInfo, true);
                         _updateLoading();
                         await Future.delayed(const Duration(milliseconds: 250));

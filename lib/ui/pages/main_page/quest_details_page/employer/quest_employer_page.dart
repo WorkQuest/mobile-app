@@ -95,7 +95,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     message: "quests.deleteQuestMessage".tr(),
                     confirmAction: () async {
                       await store.deleteQuest(questId: widget.questInfo.id);
-                      questStore.deleteQuest(widget.questInfo);
+                      questStore.deleteQuest(widget.questInfo.id);
                       if (profile!.userData!.questsStatistic != null)
                         profile!.userData!.questsStatistic!.opened -= 1;
                       Navigator.pop(context);
