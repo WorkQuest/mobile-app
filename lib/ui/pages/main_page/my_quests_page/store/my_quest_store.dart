@@ -158,6 +158,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   @action
   Future getQuests(String userId, UserRole role, bool createNewList) async {
     try {
+      await Future.delayed(const Duration(milliseconds: 250));
       this.onLoading();
       if (createNewList) {
         this.offsetActive = 0;

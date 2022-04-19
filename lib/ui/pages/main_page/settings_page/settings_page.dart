@@ -153,8 +153,12 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title: "btn.myDisputes".tr(),
                                 onTap: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pushNamed(MyDisputesPage.routeName);
+                                  _showAlertInfo(
+                                    context,
+                                    title: "Service temporarily unavailable",
+                                  );
+                                  // Navigator.of(context, rootNavigator: true)
+                                  //     .pushNamed(MyDisputesPage.routeName);
                                 },
                               ),
                               _spacer,
@@ -288,17 +292,10 @@ class SettingsPage extends StatelessWidget {
     BuildContext context, {
     required String title,
   }) {
-    AlertDialogUtils.showAlertDialog(
+    AlertDialogUtils.showInfoAlertDialog(
       context,
-      title: Text("Warning"),
-      content: Text(title),
-      needCancel: false,
-      titleCancel: null,
-      titleOk: "Ok",
-      onTabCancel: null,
-      onTabOk: null,
-      colorCancel: null,
-      colorOk: Colors.blue,
+      title: "Warning",
+      content: title,
     );
   }
 }

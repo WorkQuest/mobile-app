@@ -85,7 +85,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                 delegate: SliverChildListDelegate(
                   [
                     titledField(
-                      "settings.priority".tr(),
+                      "Runtime",
                       Container(
                         height: 50,
                         padding: EdgeInsets.symmetric(horizontal: 15.0),
