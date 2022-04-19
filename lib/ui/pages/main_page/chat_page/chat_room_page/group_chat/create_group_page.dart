@@ -215,7 +215,8 @@ class CreateGroupPage extends StatelessWidget {
                             AlertDialogUtils.showInfoAlertDialog(
                               context,
                               title: "Warning",
-                              content: 'You can\'t create a chat before working on a quest',
+                              content:  "You can't create a chat"
+                                  "\nbefore working on a quest",
                             );
                         }
                       }
