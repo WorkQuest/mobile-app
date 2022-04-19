@@ -49,6 +49,9 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     }
   }
 
+  @action
+  setQuestStatus(int value) => quest.value!.status = value;
+
   _getQuest() async {
     final newQuest = await _apiProvider.getQuest(id: quest.value!.id);
     quest.value!.update(newQuest);

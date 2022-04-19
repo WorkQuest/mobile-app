@@ -286,10 +286,20 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   _onSave() async {
+    if ((pageStore.userData.tempPhone?.fullPhone ?? "").contains("-") ||
+        (pageStore.userData.tempPhone?.fullPhone ?? "").contains(" ")) {
+      AlertDialogUtils.showInfoAlertDialog(
+        context,
+        title: "Warning",
+        content: "The number must not contain dashes or spaces",
+      );
+      return;
+    }
     if (_formKey.currentState?.validate() ?? false) {
-      if (!pageStore.validationKnowledge(_controllerKnowledge!.getListMap(), context))
+      if (!pageStore.validationKnowledge(
+          _controllerKnowledge!.getListMap(), context)) return;
+      if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
         return;
-      if (!pageStore.validationWork(_controllerWork!.getListMap(), context)) return;
 
       if (pageStore.userData.additionalInfo?.secondMobileNumber?.phone == "")
         pageStore.userData.additionalInfo?.secondMobileNumber = null;
@@ -299,11 +309,18 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         pageStore.userData.additionalInfo!.address = pageStore.address;
         pageStore.userData.locationPlaceName = pageStore.address;
       }
+      pageStore.userData.additionalInfo?.educations =
+          _controllerKnowledge!.getListMap();
+      pageStore.userData.additionalInfo?.workExperiences =
+          _controllerWork!.getListMap();
+      pageStore.userData.additionalInfo!.address = pageStore.address;
+      pageStore.userData.locationPlaceName = pageStore.address;
       pageStore.userData.priority = profile!.userData!.priority;
       pageStore.userData.workplace = profile!.valueToWorkplace();
 
       if (!profile!.isLoading)
-        pageStore.userData.userSpecializations = _controller!.getSkillAndSpecialization();
+        pageStore.userData.userSpecializations =
+            _controller!.getSkillAndSpecialization();
       await profile!.changeProfile(
         pageStore.userData,
         media: pageStore.media,

@@ -234,9 +234,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   @computed
   bool get emptySearch =>
-      // searchWord.isNotEmpty &&
-      // searchResultList.isEmpty &&
-      // searchWorkersList.isEmpty &&
       workersList.isEmpty && questsList.isEmpty && !this.isLoading;
 
   @action
@@ -249,7 +246,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
             price: getFilterPrice(),
             searchWord: searchWord,
             offset: offset,
-            statuses: [0, 1],
             employment: employments,
             workplace: workplaces,
             priority: priorities,
@@ -257,7 +253,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
             sort: this.sort,
             specializations: selectedSkill,
           ));
-          //offset review
           offset += 10;
           this.onSuccess(true);
         });
@@ -301,7 +296,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         questsList.addAll(await _apiProvider.getQuests(
           searchWord: searchWord,
           price: getFilterPrice(),
-          statuses: [0, 1],
+          // statuses: [0, 1],
           employment: employments,
           workplace: workplaces,
           priority: priorities,

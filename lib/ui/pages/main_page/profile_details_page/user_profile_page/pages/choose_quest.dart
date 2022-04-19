@@ -23,7 +23,12 @@ class _ChooseQuestState extends State<ChooseQuest> {
   @override
   void initState() {
     store = context.read<UserProfileStore>();
-    store.getQuests(widget.workerId, UserRole.Worker, true);
+    store.getQuests(
+      userId: widget.workerId,
+      role: UserRole.Worker,
+      newList: true,
+      isProfileYours: false,
+    );
     super.initState();
   }
 
@@ -61,9 +66,13 @@ class _ChooseQuestState extends State<ChooseQuest> {
                   final metrics = scrollEnd.metrics;
                   if ((metrics.atEdge ||
                           metrics.maxScrollExtent < metrics.pixels) &&
-                      !store.isLoading) {
-                    store.getQuests(widget.workerId, UserRole.Worker, false);
-                  }
+                      !store.isLoading)
+                    store.getQuests(
+                      userId: widget.workerId,
+                      role: UserRole.Worker,
+                      newList: true,
+                      isProfileYours: false,
+                    );
                   return true;
                 },
                 child: ListView.builder(
@@ -118,7 +127,7 @@ class _ChooseQuestState extends State<ChooseQuest> {
             ),
             Expanded(
               child: Observer(
-                builder:(_) => ElevatedButton(
+                builder: (_) => ElevatedButton(
                   onPressed: store.questId.isNotEmpty
                       ? () async {
                           await store.startQuest(widget.workerId);

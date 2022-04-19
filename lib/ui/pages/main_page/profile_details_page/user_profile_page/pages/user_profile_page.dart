@@ -88,8 +88,15 @@ class UserProfileState<T extends UserProfile> extends State<T>
       viewOtherUser!.offset = 0;
       viewOtherUser!.quests.clear();
 
+      portfolioStore!.setOtherUserData(widget.info);
+
       if (viewOtherUser!.quests.isEmpty)
-        viewOtherUser!.getQuests(widget.info!.id, role, true);
+        viewOtherUser!.getQuests(
+          userId: widget.info!.id,
+          role: role,
+          newList: true,
+          isProfileYours: false,
+        );
 
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(userId: widget.info!.id, newList: true);

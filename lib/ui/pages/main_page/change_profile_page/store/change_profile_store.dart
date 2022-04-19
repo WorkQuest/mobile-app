@@ -55,7 +55,6 @@ abstract class ChangeProfileStoreBase with Store {
 
   @action
   Future<void> getInitCode(Phone firstPhone, Phone? secondPhone) async {
-    print('getInitCode');
     phoneNumber = await PhoneNumber.getRegionInfoFromPhoneNumber(firstPhone.fullPhone);
     if (secondPhone != null)
       secondPhoneNumber =
@@ -84,10 +83,10 @@ abstract class ChangeProfileStoreBase with Store {
         phone:  phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "",
       );
     } else {
-      userData.tempPhone?.codeRegion = phone.dialCode ?? "";
-      userData.tempPhone?.phone =
-          phone.phoneNumber?.replaceAll((phone.dialCode ?? ""), "") ?? "";
-      userData.tempPhone?.fullPhone = phone.phoneNumber ?? "";
+      userData.tempPhone!.codeRegion = phone.dialCode ?? "";
+      userData.tempPhone!.phone =
+          phone.phoneNumber!.replaceAll((phone.dialCode ?? ""), "");
+      userData.tempPhone!.fullPhone = phone.phoneNumber ?? "";
     }
   }
 

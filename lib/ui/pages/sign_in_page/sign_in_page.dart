@@ -369,7 +369,8 @@ class SignInPage extends StatelessWidget {
         onTabCancel: null,
         onTabOk: () {
           _onPressedSignIn(context,
-              signInStore: signInStore, profile: context.read<ProfileMeStore>());
+              signInStore: signInStore,
+              profile: context.read<ProfileMeStore>());
         },
         colorCancel: Colors.red,
         colorOk: AppColor.enabledButton,

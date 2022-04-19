@@ -37,10 +37,22 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
       await profileMeStore!.getQuestHolder(widget.userId);
       role = profileMeStore!.questHolder!.role;
       role == UserRole.Worker
-          ? profileMeStore!.getActiveQuests(profileMeStore!.questHolder!.id, true)
-          : profileMeStore!.getCompletedQuests(profileMeStore!.questHolder!.id, true);
+          ? profileMeStore!.getActiveQuests(
+              userId: profileMeStore!.questHolder!.id,
+              newList: true,
+              isProfileYours: false,
+            )
+          : profileMeStore!.getCompletedQuests(
+              userId: profileMeStore!.questHolder!.id,
+              newList: true,
+              isProfileYours: false,
+            );
     } else {
-      await profileMeStore!.getCompletedQuests(profileMeStore!.userData!.id, true);
+      await profileMeStore!.getCompletedQuests(
+        userId: profileMeStore!.userData!.id,
+        newList: true,
+        isProfileYours: false,
+      );
       role = profileMeStore!.userData!.role;
     }
     return Future.value(role);
@@ -67,9 +79,23 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
                     metrics.maxScrollExtent < metrics.pixels &&
                         !profileMeStore!.isLoading) {
                   if (snapshot.data == UserRole.Worker)
-                    profileMeStore!.getActiveQuests(widget.userId, false);
+                    profileMeStore!.getActiveQuests(
+                      userId: profileMeStore!.questHolder!.id,
+                      newList: true,
+                      isProfileYours:
+                          profileMeStore!.userData!.id != widget.userId
+                              ? false
+                              : true,
+                    );
                   else
-                    profileMeStore!.getCompletedQuests(widget.userId, false);
+                    profileMeStore!.getCompletedQuests(
+                      userId: widget.userId,
+                      newList: false,
+                      isProfileYours:
+                          profileMeStore!.userData!.id != widget.userId
+                              ? false
+                              : true,
+                    );
                 }
                 return true;
               },
