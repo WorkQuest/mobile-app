@@ -385,7 +385,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               arguments: updatedQuest,
                             );
                           }
-                          print("TAG");
                           Navigator.pop(context, true);
                           await AlertDialogUtils.showSuccessDialog(context);
                         },

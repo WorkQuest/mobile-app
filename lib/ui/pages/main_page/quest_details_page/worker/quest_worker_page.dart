@@ -1,5 +1,6 @@
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
@@ -30,6 +31,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   late WorkerStore store;
   late MyQuestStore myQuestStore;
   late QuestsStore questStore;
+  late ChatStore chatStore;
   List<Responded?> respondedList = [];
 
   AnimationController? controller;
@@ -42,6 +44,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     myQuestStore = context.read<MyQuestStore>();
     questStore = context.read<QuestsStore>();
     profile = context.read<ProfileMeStore>();
+    chatStore = context.read<ChatStore>();
+
     profile!.getProfileMe();
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
@@ -390,6 +394,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                             : questStore.setSearchWord(questStore.searchWord);
                         myQuestStore.deleteQuest(widget.questInfo);
                         myQuestStore.addQuest(widget.questInfo, true);
+                        chatStore.loadChats(true, false);
                         _updateLoading();
                         await Future.delayed(const Duration(milliseconds: 250));
                         Navigator.pop(context);
