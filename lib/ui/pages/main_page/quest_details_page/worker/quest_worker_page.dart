@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -223,7 +225,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             children: [
               Expanded(
                 child: Text(
-                  "${store.quest.value!.price} WUSD",
+                  "${_getPrice(store.quest.value!.price)} WUSD",
                   overflow: TextOverflow.fade,
                   style: const TextStyle(
                     color: Color(0xFF00AA5B),
@@ -237,7 +239,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           const SizedBox(height: 20),
           Observer(
             builder: (_) => !store.response &&
-                    store.quest.value!.status == 0 &&
+                    (store.quest.value!.status == 1) &&
                     store.quest.value!.invited == null
                 ? store.isLoading
                     ? Center(
@@ -342,6 +344,14 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         ],
       ),
     );
+  }
+
+  _getPrice(String value) {
+    try {
+      return (BigInt.parse(value).toDouble() * pow(10, -18)).toStringAsFixed(2);
+    } catch (e) {
+      return '0.00';
+    }
   }
 
   bottomForm({
@@ -453,7 +463,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                           updatedAt: DateTime.now(),
                         );
                         for (int i = 0; i < questStore.questsList.length; i++)
-                          if (questStore.questsList[i].id == widget.questInfo.id)
+                          if (questStore.questsList[i].id ==
+                              widget.questInfo.id)
                             questStore.questsList[i].responded = Responded(
                               id: "",
                               workerId: profile!.userData!.id,
@@ -478,7 +489,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   }
                 : null,
             title: "modals.sendARequest".tr(),
-
           ),
         ),
         const SizedBox(height: 15),
