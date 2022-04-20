@@ -119,7 +119,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
         return;
       }
       await Storage.writeRefreshToken(bearerToken.refresh);
-      await Storage.writeNotificationToken(bearerToken.access);
+      // await Storage.writeNotificationToken(bearerToken.access);
       await Storage.writeAccessToken(bearerToken.access);
       // throw FormatException("Invalid TOTP");
       // await getIt.get<ProfileMeStore>().getProfileMe();
