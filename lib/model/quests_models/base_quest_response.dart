@@ -1,4 +1,3 @@
-import 'package:app/model/dispute_model.dart';
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/model/quests_models/your_review.dart';
@@ -7,7 +6,6 @@ import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../chat_model/quest_chat.dart';
-import '../dispute_model.dart';
 import '../user_model.dart';
 import 'assigned_worker.dart';
 import 'invited.dart';
@@ -45,7 +43,7 @@ class BaseQuestResponse with ClusterItem {
   String id;
   String userId;
   String? category;
-  List<Media> medias;
+  List<Media>? medias;
   User user;
   int status;
   int priority;
@@ -74,9 +72,11 @@ class BaseQuestResponse with ClusterItem {
       id: json["id"],
       userId: json["userId"],
       category: json["category"] == null ? null : json["category"],
-      medias: (json["medias"] as List<dynamic>)
-          .map((e) => Media.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      medias: json["medias"] == null
+          ? null
+          : (json["medias"] as List<dynamic>)
+              .map((e) => Media.fromJson(e as Map<String, dynamic>))
+              .toList(),
       user: User.fromJson(json["user"]),
       status: json["status"],
       priority: json["priority"],
