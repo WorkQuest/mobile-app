@@ -1,4 +1,6 @@
 import 'package:app/http/api_provider.dart';
+import 'package:app/web3/contractEnums.dart';
+import 'package:app/web3/service/client_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
@@ -81,14 +83,18 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
     return themeValue;
   }
 
-  Future<void> openDispute(String questId) async {
+  Future<void> openDispute(String questId, String contractAddress) async {
     try {
       this.onLoading();
-      await _apiProvider.openDispute(
-        questId: questId,
-        reason: getTheme(),
-        problemDescription: description,
+      await ClientService().handleEvent(
+        function: WQContractFunctions.arbitration,
+        contractAddress: contractAddress,
       );
+      // await _apiProvider.openDispute(
+      //   questId: questId,
+      //   reason: getTheme(),
+      //   problemDescription: description,
+      // );
       this.onSuccess(true);
     } on Exception catch (e) {
       onError(e.toString());
