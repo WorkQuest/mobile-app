@@ -72,7 +72,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   sendAcceptOnQuest() async {
     try {
       this.onLoading();
-      await _apiProvider.acceptOnQuest(questId: quest.value!.id);
+      // await _apiProvider.acceptOnQuest(questId: quest.value!.id);
       await ClientService().handleEvent(
         function: WQContractFunctions.acceptJob,
         contractAddress: quest.value!.contractAddress!,

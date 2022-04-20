@@ -82,6 +82,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       final user = await _apiProvider.getProfileUser(userId: userId);
       // Remove request
       // await _apiProvider.startQuest(questId: questId, userId: userId);
+
       await ClientService().handleEvent(
         function: WQContractFunctions.assignJob,
         contractAddress: quest.value!.contractAddress!,
@@ -103,7 +104,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      await _apiProvider.acceptCompletedWork(questId: questId);
+      // await _apiProvider.acceptCompletedWork(questId: questId);
       await ClientService().handleEvent(
         function: WQContractFunctions.acceptJobResult,
         contractAddress: quest.value!.contractAddress!,

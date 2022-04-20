@@ -285,7 +285,7 @@ extension CreateContract on ClientService {
     final depositAmount = (double.parse(cost)) * pow(10, 18);
 
 
-    handleContract(
+    await handleContract(
       contract: contract,
       function: ethFunction,
       params: [
