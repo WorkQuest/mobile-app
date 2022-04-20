@@ -5,6 +5,7 @@ import 'package:app/model/respond_model.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:web3dart/credentials.dart';
 
 import '../../../../../../web3/contractEnums.dart';
 import '../../../../../../web3/service/client_service.dart';
@@ -62,7 +63,8 @@ abstract class _EmployerStore extends IStore<bool> with Store {
 
   @action
   void changeQuest(dynamic json) {
-    var changedQuest = BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+    var changedQuest =
+        BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
     if (changedQuest.id == quest.value?.id) {
       quest.value = changedQuest;
       _getQuest();
@@ -77,11 +79,16 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      await _apiProvider.startQuest(questId: questId, userId: userId);
-      // ClientService().handleEvent(
-      //   function: WQContractFunctions.assignJob,
-      //   contractAddress: quest.value!.contractAddress!,
-      // );
+      final user = await _apiProvider.getProfileUser(userId: userId);
+      // Remove request
+      // await _apiProvider.startQuest(questId: questId, userId: userId);
+      await ClientService().handleEvent(
+        function: WQContractFunctions.assignJob,
+        contractAddress: quest.value!.contractAddress!,
+        params: [
+          EthereumAddress.fromHex(user.walletAddress!),
+        ],
+      );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -97,10 +104,10 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptCompletedWork(questId: questId);
-      // ClientService().handleEvent(
-      //   function: WQContractFunctions.acceptJobResult,
-      //   contractAddress: quest.value!.contractAddress!,
-      // );
+      await ClientService().handleEvent(
+        function: WQContractFunctions.acceptJobResult,
+        contractAddress: quest.value!.contractAddress!,
+      );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -115,12 +122,12 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      await _apiProvider.deleteQuest(questId: questId);
       await _getQuest();
-      // ClientService().handleEvent(
-      //   function: WQContractFunctions.cancelJob,
-      //   contractAddress: quest.value!.contractAddress!
-      // );
+      await _apiProvider.deleteQuest(questId: questId);
+      await ClientService().handleEvent(
+        function: WQContractFunctions.cancelJob,
+        contractAddress: quest.value!.contractAddress!,
+      );
       this.onSuccess(true);
     } catch (e, trace) {
       print("accept error: $e\n$trace");

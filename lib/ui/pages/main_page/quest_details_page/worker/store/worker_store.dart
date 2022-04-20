@@ -44,7 +44,8 @@ abstract class _WorkerStore extends IStore<bool> with Store {
 
   @action
   void changeQuest(dynamic json) {
-    var changedQuest = BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+    var changedQuest =
+        BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
     if (changedQuest.id == quest.value?.id) {
       quest.value = changedQuest;
       _getQuest();
@@ -72,9 +73,10 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptOnQuest(questId: quest.value!.id);
-      ClientService().handleEvent(
-          function: WQContractFunctions.acceptJob,
-          contractAddress: quest.value!.contractAddress!);
+      await ClientService().handleEvent(
+        function: WQContractFunctions.acceptJob,
+        contractAddress: quest.value!.contractAddress!,
+      );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -103,7 +105,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptInvite(responseId: responseId);
-      ClientService().handleEvent(
+      await ClientService().handleEvent(
         function: WQContractFunctions.acceptJob,
         contractAddress: quest.value!.contractAddress!,
       );
@@ -135,7 +137,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.completeWork(questId: quest.value!.id);
-      ClientService().handleEvent(
+      await ClientService().handleEvent(
         function: WQContractFunctions.verificationJob,
         contractAddress: quest.value!.contractAddress!,
       );

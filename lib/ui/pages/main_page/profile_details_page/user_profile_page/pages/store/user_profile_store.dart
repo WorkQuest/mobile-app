@@ -5,7 +5,10 @@ import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:web3dart/credentials.dart';
 import '../../../../../../../enums.dart';
+import '../../../../../../../web3/contractEnums.dart';
+import '../../../../../../../web3/service/client_service.dart';
 
 part 'user_profile_store.g.dart';
 
@@ -36,20 +39,34 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
   @observable
   String questId = "";
 
+  @observable
+  String contractAddress = "";
+
   @action
-  void setQuest(String? index, String id) {
+  void setQuest(String id, String contractAddress) {
     // questName = index ?? "";
     questId = id;
+    this.contractAddress = contractAddress;
   }
 
   @action
-  Future<void> startQuest(String userId) async {
+  Future<void> startQuest({
+    required String userId,
+    required String userAddress,
+  }) async {
     try {
       this.onLoading();
       await _apiProvider.inviteOnQuest(
           questId: questId,
           userId: userId,
           message: "quests.inviteToQuest".tr());
+      await ClientService().handleEvent(
+        function: WQContractFunctions.assignJob,
+        contractAddress: contractAddress,
+        params: [
+          EthereumAddress.fromHex(userAddress),
+        ],
+      );
       this.onSuccess(true);
     } catch (e) {
       print("getQuests error: $e");
@@ -94,8 +111,8 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
         }
 
         quests.toList().sort((key1, key2) =>
-            key1.createdAt!.millisecondsSinceEpoch <
-                    key2.createdAt!.millisecondsSinceEpoch
+            key1.createdAt.millisecondsSinceEpoch <
+                    key2.createdAt.millisecondsSinceEpoch
                 ? 1
                 : 0);
         offset += 10;
