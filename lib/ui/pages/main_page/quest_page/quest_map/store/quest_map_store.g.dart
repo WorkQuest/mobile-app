@@ -70,7 +70,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   }
 
   final _$initialCameraPositionAtom =
-  Atom(name: '_QuestMapStore.initialCameraPosition');
+      Atom(name: '_QuestMapStore.initialCameraPosition');
 
   @override
   CameraPosition? get initialCameraPosition {
@@ -81,9 +81,9 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   @override
   set initialCameraPosition(CameraPosition? value) {
     _$initialCameraPositionAtom.reportWrite(value, super.initialCameraPosition,
-            () {
-          super.initialCameraPosition = value;
-        });
+        () {
+      super.initialCameraPosition = value;
+    });
   }
 
   final _$locationPositionAtom = Atom(name: '_QuestMapStore.locationPosition');
@@ -162,7 +162,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   }
 
   final _$getPredictionAsyncAction =
-  AsyncAction('_QuestMapStore.getPrediction');
+      AsyncAction('_QuestMapStore.getPrediction');
 
   @override
   Future<Null> getPrediction(
@@ -172,7 +172,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   }
 
   final _$getQuestsOnMapAsyncAction =
-  AsyncAction('_QuestMapStore.getQuestsOnMap');
+      AsyncAction('_QuestMapStore.getQuestsOnMap');
 
   @override
   Future<dynamic> getQuestsOnMap(LatLngBounds bounds) {
@@ -187,7 +187,7 @@ mixin _$QuestMapStore on _QuestMapStore, Store {
   }
 
   final _$_QuestMapStoreActionController =
-  ActionController(name: '_QuestMapStore');
+      ActionController(name: '_QuestMapStore');
 
   @override
   dynamic onCloseQuest() {

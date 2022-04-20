@@ -273,6 +273,9 @@ class Routes {
                   Provider(
                     create: (context) => getIt.get<QuestDetailsStore>(),
                   ),
+                  Provider(
+                    create: (context) => getIt.get<ChatStore>(),
+                  ),
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),

@@ -36,11 +36,11 @@ import '../ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_
 import '../ui/pages/main_page/quest_page/notification_page/store/notification_store.dart'
     as _i16;
 import '../ui/pages/main_page/quest_page/quest_list/store/quests_store.dart'
-    as _i37;
-import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
     as _i36;
-import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
+import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
     as _i19;
+import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
+    as _i20;
 import '../ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart'
     as _i39;
 import '../ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/dispute_store.dart'
@@ -48,7 +48,7 @@ import '../ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/disp
 import '../ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_store.dart'
     as _i15;
 import '../ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart'
-    as _i21;
+    as _i37;
 import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i22;
 import '../ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart'
     as _i12;
@@ -63,7 +63,7 @@ import '../ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_stor
     as _i25;
 import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i33;
 import '../ui/pages/profile_me_store/profile_me_store.dart' as _i35;
-import '../ui/pages/restore_password_page/store.dart' as _i20;
+import '../ui/pages/restore_password_page/store.dart' as _i21;
 import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i23;
 import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
     as _i7;
@@ -113,12 +113,12 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i17.OpenDisputeStore(get<_i8.ApiProvider>()));
     gh.factory<_i18.QuestDetailsStore>(
         () => _i18.QuestDetailsStore(get<_i8.ApiProvider>()));
-    gh.factory<_i19.RaiseViewStore>(
-        () => _i19.RaiseViewStore(get<_i8.ApiProvider>()));
-    gh.factory<_i20.RestorePasswordStore>(
-        () => _i20.RestorePasswordStore(get<_i8.ApiProvider>()));
-    gh.factory<_i21.SMSVerificationStore>(
-        () => _i21.SMSVerificationStore(get<_i8.ApiProvider>()));
+    gh.factory<_i19.QuestMapStore>(
+        () => _i19.QuestMapStore(get<_i8.ApiProvider>()));
+    gh.factory<_i20.RaiseViewStore>(
+        () => _i20.RaiseViewStore(get<_i8.ApiProvider>()));
+    gh.factory<_i21.RestorePasswordStore>(
+        () => _i21.RestorePasswordStore(get<_i8.ApiProvider>()));
     gh.factory<_i22.SettingsPageStore>(
         () => _i22.SettingsPageStore(get<_i8.ApiProvider>()));
     gh.factory<_i23.SignInStore>(
@@ -143,9 +143,9 @@ extension GetItInjectableX on _i1.GetIt {
         _i34.PortfolioStore(get<_i8.ApiProvider>()));
     gh.singleton<_i35.ProfileMeStore>(
         _i35.ProfileMeStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i36.QuestMapStore>(
-        _i36.QuestMapStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i37.QuestsStore>(_i37.QuestsStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i36.QuestsStore>(_i36.QuestsStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i37.SMSVerificationStore>(
+        _i37.SMSVerificationStore(get<_i8.ApiProvider>()));
     gh.singleton<_i38.TransactionsStore>(
         _i38.TransactionsStore(get<_i8.ApiProvider>()));
     gh.singleton<_i39.TwoFAStore>(_i39.TwoFAStore(get<_i8.ApiProvider>()));

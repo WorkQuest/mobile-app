@@ -71,26 +71,21 @@ abstract class _ChatStore extends IStore<bool> with Store {
     var keys = chats.keys.toList();
     var values = chats.values.toList();
 
-    chatSort();
-
     values.forEach((element) {
       if (idChatsForStar[element.chatModel.id] == null)
         idChatsForStar[element.chatModel.id] = false;
     });
-    return keys;
-  }
 
-  @action
-  void chatSort() {
-    chats.keys.toList().sort((key1, key2) {
+    keys.sort((key1, key2) {
       final chat1 = chats[key1]!.chatModel;
       final chat2 = chats[key2]!.chatModel;
 
       return chat1.lastMessage.createdAt.millisecondsSinceEpoch <
-              chat2.lastMessage.createdAt.millisecondsSinceEpoch
+          chat2.lastMessage.createdAt.millisecondsSinceEpoch
           ? 1
           : 0;
     });
+    return keys;
   }
 
   @action
@@ -142,7 +137,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
   void setMessages(List<MessageModel> messages, ChatModel chat) {
     if (chats[chat.id] == null) chats[chat.id] = Chats(chat);
     chats[chat.id]!.messages = messages;
-    print(chats[chat.id]?.chatModel.lastMessage.infoMessage);
     chats[chat.id]!.update();
     _atomChats.reportChanged();
   }
@@ -164,8 +158,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
       if (json["type"] == "request") {
         message = MessageModel.fromJson(json["payload"]["result"]);
       } else if (json["message"]["action"] == "groupChatCreate") {
-        print(json["message"]["data"]);
-        print(json["message"]["data"]["lastMessage"]);
         message = MessageModel.fromJson(json["message"]["data"]["lastMessage"]);
         setMessages(
             [MessageModel.fromJson(json["message"]["data"]["lastMessage"])],
@@ -180,16 +172,17 @@ abstract class _ChatStore extends IStore<bool> with Store {
         _atomChats.reportChanged();
         return;
       }
+
       var chat = chats[message.chatId];
       if (chat == null) return;
       chat.chatModel.lastMessage = message;
       chat.messages.insert(0, message);
 
-      // final saveChat = chats.remove(message.chatId);
+      final saveChat = chats.remove(message.chatId);
 
-      // chats[message.chatId] = saveChat!;
+      chats[message.chatId] = saveChat!;
 
-      chatSort();
+      // chatSort();
 
       checkMessage();
       _atomChats.reportChanged();

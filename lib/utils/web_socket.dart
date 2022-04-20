@@ -11,7 +11,6 @@ class WebSocket {
   static final WebSocket _singleton = WebSocket._internal();
 
   String? token;
-  int _senderCounter = 0;
   int _notifyCounter = 0;
   int closeCode = 4001;
   bool shouldReconnectFlag = true;
@@ -19,7 +18,6 @@ class WebSocket {
   void Function(dynamic)? handlerQuests;
   void Function(dynamic)? handlerQuestList;
   IOWebSocketChannel? walletChannel;
-  IOWebSocketChannel? _senderChannel;
   IOWebSocketChannel? _notificationChannel;
 
   factory WebSocket() {
@@ -28,10 +26,10 @@ class WebSocket {
 
   void connect() async {
     shouldReconnectFlag = true;
-    token = await Storage.readNotificationToken();
+    token = await Storage.readAccessToken();
     print("[WebSocket]  connecting ...");
     _connectWallet();
-    _connectSender();
+    _connectNotification();
   }
 
   void _connectWallet() {
@@ -63,55 +61,36 @@ class WebSocket {
     );
   }
 
-  void _connectSender() {
-    _senderChannel = IOWebSocketChannel.connect("wss://app-ver1.workquest.co/api");
-    _senderChannel?.sink.add("""{
-          "type": "hello",
-          "id": 1,
-          "version": "2",
-          "auth": {
-            "headers": {"authorization": "Bearer $token"}
-          }
-        }""");
-
-    _senderChannel?.stream.listen(
-      (message) => _onData(message, _senderChannel!, "sender"),
-      onError: _onError,
-      onDone: () => _onDone(_senderChannel!, false),
-    );
-  }
-
-  void _connectListen() {
+  void _connectNotification() {
     _notificationChannel =
-        IOWebSocketChannel.connect("wss://notifications.workquest.co/api/");
-
-    _notificationChannel?.sink.add("""{
+        IOWebSocketChannel.connect("wss://app-ver1.workquest.co/api");
+    _notificationChannel!.sink.add("""{
           "type": "hello",
           "id": 1,
           "version": "2",
           "auth": {
             "headers": {"authorization": "Bearer $token"}
           },
-          "subs": ["/notifications/chat","/notifications/quest"]
+          "subs": ["/notifications/chat", "/notifications/quest"]
         }""");
 
-    _notificationChannel?.stream.listen(
-      (message) => _onData(message, _notificationChannel!, "notify"),
+    _notificationChannel!.stream.listen(
+      (message) => _onData(message, _notificationChannel!),
       onError: _onError,
-      onDone: () => _onDone(_notificationChannel!, true),
+      onDone: () => _onDone(_notificationChannel!, false),
     );
   }
 
-  void _onData(message, IOWebSocketChannel channel, String type) {
+  void _onData(message, IOWebSocketChannel channel) {
     try {
-      print("WebSocket message: $type $message");
+      print("WebSocket message: $message");
       final json = jsonDecode(message.toString());
       switch (json["type"]) {
         case "pub":
           _handleSubscription(json);
           break;
         case "ping":
-          _ping(channel, type == "sender" ? _senderCounter : _notifyCounter);
+          _ping(channel, _notifyCounter);
           break;
         case "request":
           getMessage(json);
@@ -166,7 +145,7 @@ class WebSocket {
   }) async {
     Object payload = {
       "type": "request",
-      "id": "$_senderCounter",
+      "id": "$_notifyCounter",
       "method": "POST",
       "path": "/api/v1/chat/$chatId/send-message",
       "payload": {
@@ -175,9 +154,9 @@ class WebSocket {
       }
     };
     String textPayload = json.encode(payload).toString();
-    _senderChannel?.sink.add(textPayload);
+    _notificationChannel?.sink.add(textPayload);
     print("Send Message: $textPayload");
-    ++_senderCounter;
+    ++_notifyCounter;
   }
 
   void _ping(IOWebSocketChannel channel, counter) {
@@ -196,7 +175,7 @@ class WebSocket {
 
   void _onDone(IOWebSocketChannel channel, bool connectNotify) {
     print("WebSocket onDone ${channel.closeReason}");
-    if (shouldReconnectFlag) connectNotify ? _connectSender() : _connectListen();
+    if (shouldReconnectFlag) _connectNotification();
   }
 
   String get myAddress => AccountRepository().userAddress!;
@@ -214,7 +193,8 @@ class WebSocket {
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
         } else {
-          final decode = json.decode(transaction.result!.events!['tx_log.txLog']!.first);
+          final decode =
+              json.decode(transaction.result!.events!['tx_log.txLog']!.first);
           if ((decode['topics'] as List<dynamic>).last.substring(26) ==
               myAddress.substring(2)) {
             await Future.delayed(const Duration(seconds: 8));
