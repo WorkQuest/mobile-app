@@ -56,15 +56,18 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
+      final user = await _apiProvider.getProfileUser(userId: userId);
+      final quest = await _apiProvider.getQuest(id: questId);
       await _apiProvider.inviteOnQuest(
-          questId: questId,
-          userId: userId,
-          message: "quests.inviteToQuest".tr());
+        questId: questId,
+        userId: userId,
+        message: "quests.inviteToQuest".tr(),
+      );
       await ClientService().handleEvent(
         function: WQContractFunctions.assignJob,
-        contractAddress: contractAddress,
+        contractAddress: quest.contractAddress!,
         params: [
-          EthereumAddress.fromHex(userAddress),
+          EthereumAddress.fromHex(user.walletAddress!),
         ],
       );
       this.onSuccess(true);

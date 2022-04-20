@@ -223,7 +223,7 @@ extension CreateQuestContract on ClientService {
     return bytes32;
   }
 
-  Future<List<dynamic>> handleContract({
+  Future<TransactionReceipt> handleContract({
     required DeployedContract contract,
     required ContractFunction function,
     required List<dynamic> params,
@@ -249,21 +249,20 @@ extension CreateQuestContract on ClientService {
 
       print("transactionHash: $transactionHash");
 
-      Timer.periodic(Duration(seconds: 10), (timer) async {
-        timer.cancel();
-        TransactionReceipt? transactionReceipt =
-            await _client.getTransactionReceipt(transactionHash);
-
-        if (transactionReceipt != null) {
-          addressNewContract = transactionReceipt.logs[0].address.toString();
-          print("Logs:");
-          transactionReceipt.logs.forEach((element) {
-            print(element);
-          });
+      int attempts = 0;
+      TransactionReceipt? result;
+      while (result == null) {
+        result = await _client.getTransactionReceipt(transactionHash);
+        if (result != null) {
+          print('result - ${result.blockNumber}');
         }
-        checkStatus();
-      });
-      return [];
+        await Future.delayed(const Duration(seconds: 3));
+        attempts++;
+        if (attempts == 5) {
+          throw Exception("The waiting time is over. Expect a balance update.");
+        }
+      }
+      return result;
     } catch (e, tr) {
       print("ERROR: $e \n trace: $tr");
       throw Exception("Unable to call");
@@ -282,20 +281,23 @@ extension CreateContract on ClientService {
     final contract = await getDeployedContract("WorkQuestFactory", _abiAddress);
     final ethFunction = contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
-    final depositAmount = (double.parse(cost)) * pow(10, 18);
-
-
+    final _value = EtherAmount.fromUnitAndValue(
+      EtherUnit.wei,
+      BigInt.from(double.parse(cost) * pow(10, 18)),
+    );
+    final _gas = await getGas();
     await handleContract(
       contract: contract,
       function: ethFunction,
       params: [
         stringToBytes32(jobHash),
-        BigInt.parse(cost),
+        //TODO Find out why a transaction with a commission does not pass
+        BigInt.from((double.parse(cost) - 0.1) * pow(10, 18)),
         BigInt.parse(deadline),
         BigInt.parse(nonce),
       ],
       from: fromAddress,
-      value: EtherAmount.inWei(BigInt.parse(depositAmount.ceil().toString())),
+      value: _value,
     );
   }
 }
@@ -308,7 +310,7 @@ extension HandleEvent on ClientService {
   }) async {
     final contract = await getDeployedContract("WorkQuest", contractAddress);
     final ethFunction = contract.function(function.name);
-    handleContract(
+    await handleContract(
       contract: contract,
       function: ethFunction,
       params: params,
@@ -382,9 +384,6 @@ extension PromoteUser on ClientService {
     required int period,
     required String amount,
   }) async {
-    print('tariff: $tariff');
-    print('period: $period');
-    print('amount: $amount');
     final contract = await getDeployedContract(
         "WQPromotion", '0xc14e047639d531e863702BeF5D8E4c8CAE02d379');
     final function = contract.function(WQPromotionFunctions.promoteUser.name);

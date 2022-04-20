@@ -59,8 +59,8 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
   @override
   Future<void> startQuest(
       {required String userId, required String userAddress}) {
-    return _$startQuestAsyncAction.run(() =>
-        super.startQuest(userId: userId, userAddress: userAddress));
+    return _$startQuestAsyncAction
+        .run(() => super.startQuest(userId: userId, userAddress: userAddress));
   }
 
   final _$_UserProfileStoreActionController =
