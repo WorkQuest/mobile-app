@@ -274,7 +274,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       )
                 : SizedBox(),
           ),
-          if (store.quest.value!.status == 4 &&
+          if (store.quest.value!.status == 2 &&
                   store.quest.value!.assignedWorker?.id ==
                       profile!.userData!.id ||
               (store.quest.value!.invited != null &&
@@ -309,7 +309,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       ),
                     ),
                   ),
-          if (store.quest.value!.status == 1 &&
+          if (store.quest.value!.status == 3 &&
               store.quest.value!.assignedWorker?.id == profile!.userData!.id)
             store.isLoading
                 ? Center(

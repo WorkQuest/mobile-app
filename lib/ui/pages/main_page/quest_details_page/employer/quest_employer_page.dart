@@ -343,7 +343,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           ? Center(
               child: CircularProgressIndicator.adaptive(),
             )
-          : store.quest.value!.status == 5
+          : store.quest.value!.status == 4
               ? TextButton(
                   onPressed: () {
                     bottomForm();
@@ -365,7 +365,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     ),
                   ),
                 )
-              : (store.respondedList.isNotEmpty && (store.quest.value!.status == 0))
+              : (store.respondedList.isNotEmpty && (store.quest.value!.status == 1))
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -386,20 +386,33 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           onPressed: store.selectedResponders == null
                               ? null
                               : () async {
-                                  await store.startQuest(
-                                    userId: store.selectedResponders!.workerId,
-                                    questId: store.quest.value!.id,
-                                  );
-                                  store.quest.value!.assignedWorker = AssignedWorker(
-                                    firstName: store.selectedResponders!.worker.firstName,
-                                    lastName: store.selectedResponders!.worker.lastName,
-                                    avatar: store.selectedResponders!.worker.avatar,
+                              await store.startQuest(
+                                userId: store.selectedResponders!.workerId,
+                                questId: store.quest.value!.id,
+                              );
+                              if (store.errorMessage != null && store.errorMessage!.isNotEmpty) {
+                                _showMessage(store.errorMessage!);
+                                return;
+                              }
+                              store.quest.value!.assignedWorker =
+                                  AssignedWorker(
+                                    firstName: store.selectedResponders!.worker
+                                        .firstName,
+                                    lastName: store.selectedResponders!.worker
+                                        .lastName,
+                                    avatar: store.selectedResponders!.worker
+                                        .avatar,
                                     id: store.selectedResponders!.id,
                                   );
-                                  store.setQuestStatus(4);
-                                  questStore.deleteQuest(store.quest.value!.id);
-                                  questStore.addQuest(store.quest.value!, false);
-                                  await AlertDialogUtils.showSuccessDialog(context);
+                              store.setQuestStatus(4);
+                              questStore.deleteQuest(store.quest.value!.id);
+                              questStore.addQuest(store.quest.value!, false);
+                              if (store.errorMessage != null && store.errorMessage!.isNotEmpty) {
+                                _showMessage(store.errorMessage!);
+                                return;
+                              }
+                              await AlertDialogUtils.showSuccessDialog(context);
+                              setState(() {});
                                 },
                           child: Text(
                             "quests.chooseWorker".tr(),
@@ -431,6 +444,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     )
                   : const SizedBox(),
     );
+  }
+
+  _showMessage(String error) {
+    AlertDialogUtils.showInfoAlertDialog(context, title: "Error", content: error);
   }
 
   bottomForm() {

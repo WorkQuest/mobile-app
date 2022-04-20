@@ -15,12 +15,12 @@ class QuestHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (itemType) {
       case QuestItemPriorityType.Active:
-        if (questStatus == 3) {
+        if (questStatus == -2) {
           return header(
             color: Colors.red,
             title: "quests.disputeQuest",
           );
-        } else if (questStatus == 5) {
+        } else if (questStatus == 2) {
           return header(
             color: Colors.green,
             title: "quests.employerConfirmationPending",
@@ -42,7 +42,7 @@ class QuestHeader extends StatelessWidget {
             title: "quests.requested",
             textColor: Color(0xFFAAB0B9));
       case QuestItemPriorityType.Performed:
-        if (questStatus == 5) {
+        if (questStatus == 4) {
           return header(
             color: Color(0xFF0083C7),
             title: "quests.waitConfirm",
@@ -50,7 +50,7 @@ class QuestHeader extends StatelessWidget {
         } else {
           return header(
             color: Color(0xFF0083C7),
-            title: questStatus == 5
+            title: questStatus == 2
                 ? "quests.employerConfirmationPending"
                 : "quests.performed",
           );

@@ -90,20 +90,20 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   void sortQuests() {
     active.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
     starred.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
     performed.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
     invited.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
   }
 
@@ -185,7 +185,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             userId: userId,
             sort: sort,
             offset: this.offsetActive,
-            statuses: [0, 1, 3, 5],
+            statuses: [0, 1, 3],
           ));
 
         if (loadInvited)
@@ -193,6 +193,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             userId: userId,
             sort: sort,
             offset: this.offsetInvited,
+            // invited: true,
             statuses: [4],
           ));
 
@@ -201,7 +202,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             userId: userId,
             sort: sort,
             offset: this.offsetPerformed,
-            statuses: [-3,-1],
+            statuses: [-3,-1, 5],
           ));
         }
       } else {
@@ -210,7 +211,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             offset: this.offsetActive,
             sort: sort,
             userId: userId,
-            statuses: [1, 3, 5],
+            statuses: [0, 1, 3],
           ));
 
         if (loadInvited)
@@ -218,7 +219,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             offset: this.offsetInvited,
             sort: sort,
             userId: userId,
-            statuses: [4],
+            statuses: [2],
           ));
 
         if (loadPerformed)
@@ -226,7 +227,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             offset: this.offsetPerformed,
             sort: sort,
             userId: userId,
-            statuses: [-3, -1],
+            statuses: [-3, -1, 5],
           ));
 
         if (loadStarred)
