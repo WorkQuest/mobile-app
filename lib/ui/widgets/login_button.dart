@@ -59,7 +59,7 @@ class _LoginButtonState extends State<LoginButton> with TickerProviderStateMixin
             shape: BoxShape.rectangle,
           ),
           child: ElevatedButton(
-            onPressed: widget.onTap,
+            onPressed: widget.enabled ? null : widget.onTap,
             child: Stack(
               alignment: AlignmentDirectional.center,
               children: [
