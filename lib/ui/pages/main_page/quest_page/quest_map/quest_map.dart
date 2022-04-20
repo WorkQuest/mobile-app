@@ -39,53 +39,57 @@ class _QuestMapState extends State<QuestMap> {
       builder: (_) => Scaffold(
         body: mapStore?.initialCameraPosition == null
             ? Center(child: CircularProgressIndicator())
-            : Visibility(
-          visible: hasPermission,
-          maintainState: false,
-          replacement: GoogleMap(
-            mapType: MapType.normal,
-            rotateGesturesEnabled: false,
-            initialCameraPosition: mapStore!.initialCameraPosition!,
-          ),
-          child: Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              GoogleMap(
-                onCameraMove: (CameraPosition position) {
-                  if (mapStore?.debounce != null)
-                    mapStore!.debounce!.cancel();
-                  mapStore!.debounce = Timer(
-                    const Duration(milliseconds: 200),
-                        () async {
-                      LatLngBounds bounds =
-                      await _controller.getVisibleRegion();
-                      mapStore!.getQuestsOnMap(bounds);
-                    },
-                  );
-                },
-                mapType: MapType.normal,
-                rotateGesturesEnabled: false,
-                myLocationEnabled: true,
-                initialCameraPosition: mapStore!.initialCameraPosition!,
-                myLocationButtonEnabled: false,
-                markers: mapStore!.markers.toSet(),
-                onMapCreated: (GoogleMapController controller) async {
-                  _controller = controller;
-                  LatLngBounds bounds =
-                  await _controller.getVisibleRegion();
-                  mapStore!.getQuestsOnMap(bounds);
-                  _onMyLocationPressed();
-                },
-                onTap: (point) {
-                  if (mapStore!.infoPanel != InfoPanel.Nope)
-                    mapStore!.onCloseQuest();
-                },
-              ),
-              QuestQuickInfo(),
-              searchBar(),
-            ],
-          ),
-        ),
+            : SafeArea(
+              child: Visibility(
+                  visible: hasPermission,
+                  maintainState: false,
+                  replacement: GoogleMap(
+                    mapType: MapType.normal,
+                    rotateGesturesEnabled: false,
+                    initialCameraPosition: mapStore!.initialCameraPosition!,
+                    minMaxZoomPreference: MinMaxZoomPreference(4, 17),
+                  ),
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      GoogleMap(
+                        onCameraMove: (CameraPosition position) {
+                          if (mapStore?.debounce != null)
+                            mapStore!.debounce!.cancel();
+                          mapStore!.debounce = Timer(
+                            const Duration(milliseconds: 200),
+                            () async {
+                              LatLngBounds bounds =
+                                  await _controller.getVisibleRegion();
+                              mapStore!.getQuestsOnMap(bounds);
+                            },
+                          );
+                        },
+                        mapType: MapType.normal,
+                        rotateGesturesEnabled: false,
+                        myLocationEnabled: true,
+                        initialCameraPosition: mapStore!.initialCameraPosition!,
+                        myLocationButtonEnabled: false,
+                        markers: mapStore!.markers.toSet(),
+                        minMaxZoomPreference: MinMaxZoomPreference(4, 17),
+                        onMapCreated: (GoogleMapController controller) async {
+                          _controller = controller;
+                          LatLngBounds bounds =
+                              await _controller.getVisibleRegion();
+                          mapStore!.getQuestsOnMap(bounds);
+                          _onMyLocationPressed();
+                        },
+                        onTap: (point) {
+                          if (mapStore!.infoPanel != InfoPanel.Nope)
+                            mapStore!.onCloseQuest();
+                        },
+                      ),
+                      QuestQuickInfo(),
+                      searchBar(),
+                    ],
+                  ),
+                ),
+            ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: AnimatedContainer(
           padding: EdgeInsets.only(
@@ -124,60 +128,60 @@ class _QuestMapState extends State<QuestMap> {
   }
 
   Widget searchBar() => Padding(
-    padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 54),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Observer(
-          builder: (_) => GestureDetector(
-            onTap: () {
-              mapStore!.getPrediction(context, _controller);
-            },
-            child: Container(
-              height: 60,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFFF7F8FA),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6.0),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Icon(
-                      Icons.search,
-                      size: 25.0,
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Flexible(
-                      child: mapStore!.address.isNotEmpty
-                          ? Text(
-                        mapStore!.address,
-                        overflow: TextOverflow.fade,
-                      )
-                          : Text(
-                        "quests.ui.search".tr(),
-                        overflow: TextOverflow.fade,
-                        style: TextStyle(
-                          color: Color(0xFFD8DFE3),
-                          fontSize: 16,
-                        ),
+        padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 54),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Observer(
+              builder: (_) => GestureDetector(
+                onTap: () {
+                  mapStore!.getPrediction(context, _controller);
+                },
+                child: Container(
+                  height: 60,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF7F8FA),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(6.0),
                       ),
                     ),
-                  ],
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Icon(
+                          Icons.search,
+                          size: 25.0,
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Flexible(
+                          child: mapStore!.address.isNotEmpty
+                              ? Text(
+                                  mapStore!.address,
+                                  overflow: TextOverflow.fade,
+                                )
+                              : Text(
+                                  "quests.ui.search".tr(),
+                                  overflow: TextOverflow.fade,
+                                  style: TextStyle(
+                                    color: Color(0xFFD8DFE3),
+                                    fontSize: 16,
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 
   Future<void> _getLocation() async {
     hasPermission = await _handlePermission();
