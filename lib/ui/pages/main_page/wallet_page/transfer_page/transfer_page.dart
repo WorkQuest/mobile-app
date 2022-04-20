@@ -53,6 +53,8 @@ class _TransferPageState extends State<TransferPage> {
   void initState() {
     super.initState();
     store = context.read<TransferStore>();
+    _currentCoin = _coins.first;
+    store.setTitleSelectedCoin(TYPE_COINS.WUSD);
     store.getFee();
     _amountController.addListener(() {
       store.setAmount(_amountController.text);
