@@ -84,7 +84,7 @@ class BaseQuestResponse with ClusterItem {
       locationPlaceName: json["locationPlaceName"],
       title: json["title"],
       assignedWorkerId: json["title"],
-      contractAddress: json["title"],
+      contractAddress: json["contractAddress"],
       nonce: json["title"],
       description: json["description"],
       price: json["price"],
