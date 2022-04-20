@@ -101,7 +101,7 @@ extension QuestService on ApiProvider {
       query: '/v1/quest/create',
       data: quest.toJson(),
     );
-    return responseData["id"];
+    return responseData['nonce'];
   }
 
   Future<void> editQuest({
@@ -288,9 +288,13 @@ extension QuestService on ApiProvider {
       print(text);
       employments += "employments[]=$text&";
     });
+    String search = '';
+    if (searchWord.isNotEmpty) {
+      search = 'q=$searchWord&';
+    }
     final responseData = await httpClient.post(
       query:
-          '/v1/get-quests?$workplaces$employments$status$priorities$sort$price&offset=$offset&limit=$limit',
+          '/v1/get-quests?$search$workplaces$employments$priorities$sort$price&offset=$offset&limit=$limit',
       data: {
         // if (workplace.isNotEmpty) "workplaces": workplaces,
         // if (employment.isNotEmpty) "employments": employments,
@@ -298,7 +302,6 @@ extension QuestService on ApiProvider {
         // if (specializations.isNotEmpty) "specializations": specialization,
         // if (priority.isNotEmpty) "priorities": priorities,
         // "sort": sort,
-        if (searchWord.isNotEmpty) "q": searchWord,
         if (invited != null) "invited": invited,
         if (performing != null) "performing": performing,
         // if (starred != null) "starred": starred,
@@ -341,11 +344,15 @@ extension QuestService on ApiProvider {
     workplace.forEach((text) {
       workplaces += "workplaces[]=$text&";
     });
+    String search = '';
+    if (searchWord.isNotEmpty) {
+      search = 'q=$searchWord&';
+    }
     final responseData = await httpClient.post(
       query:
-          '/v1/profile/get-workers?$priorities$ratingStatuses$workplaces$sort&$price&offset=$offset&limit=$limit',
+          '/v1/profile/get-workers?$search$priorities$ratingStatuses$workplaces$sort&$price&offset=$offset&limit=$limit',
       data: {
-        if (searchWord.isNotEmpty) "q": searchWord,
+        // if (searchWord.isNotEmpty) "q": searchWord,
         if (north != null) "north": north,
         if (south != null) "south": south,
         "specializations": specializations,
@@ -482,7 +489,7 @@ extension QuestService on ApiProvider {
   }) async {
     try {
       final responseData =
-          await httpClient.post(query: '/v1/quest/$questId/reject-completed-work');
+          await httpClient.post(query: '/v1/quest/employer/$questId/reject');
       return responseData == null;
     } catch (e) {
       return false;

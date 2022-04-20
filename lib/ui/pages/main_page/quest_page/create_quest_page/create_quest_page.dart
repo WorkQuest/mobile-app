@@ -410,6 +410,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       height: 50.0,
                       margin: const EdgeInsets.symmetric(vertical: 30),
                       child: ObserverListener<CreateQuestStore>(
+                        onFailure: () {
+                          return false;
+                        },
                         onSuccess: () async {
                           ///review
                           await questStore.getQuests(

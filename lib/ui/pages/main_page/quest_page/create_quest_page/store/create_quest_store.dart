@@ -12,6 +12,7 @@ import 'package:app/model/quests_models/location_full.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:app/web3/contractEnums.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/client_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
@@ -19,6 +20,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:web3dart/web3dart.dart';
 
 part 'create_quest_store.g.dart';
 
@@ -272,33 +274,41 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         price: (BigInt.parse(price).toDouble() * pow(10, 18)).toStringAsFixed(0),
       );
       if (isEdit) {
+        await ClientService().handleEvent(
+            function: WQContractFunctions.editJob,
+            contractAddress: contractAddress,
+            params: [
+              Uint8List.fromList(
+                utf8.encode(
+                  description.padRight(32).substring(0, 32),
+                ),
+              ),
+              BigInt.parse(price)
+            ]);
         await apiProvider.editQuest(
           quest: questModel,
           questId: questId,
         );
-        ClientService().handleEvent(
-            function: WQContractFunctions.editJob,
-            contractAddress: contractAddress,
-            params: [
-          Uint8List.fromList(
-            utf8.encode(
-              description.padRight(32).substring(0, 32),
-            ),
-          ),
-          BigInt.parse(price)
-        ]);
       } else {
-        ClientService().createNewContract(
+        final balanceWusd = await ClientService().getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
+        final gas = await ClientService().getGas();
+
+        if (balanceWusd < double.parse(price) + (gas.getInEther).toDouble()) {
+          throw Exception('Not enough balance.');
+        }
+
+        final nonce = await apiProvider.createQuest(
+          quest: questModel,
+        );
+
+
+
+        await ClientService().createNewContract(
           jobHash: description,
           cost: price,
           deadline: 0.toString(),
-          nonce: description,
+          nonce: nonce,
         );
-
-        idNewQuest = await apiProvider.createQuest(
-          quest: questModel,
-        );
-        // Web3().connect();
       }
 
       this.onSuccess(true);

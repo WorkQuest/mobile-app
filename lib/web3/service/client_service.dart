@@ -292,7 +292,7 @@ extension CreateContract on ClientService {
         stringToBytes32(jobHash),
         BigInt.parse(cost),
         BigInt.parse(deadline),
-        BigInt.parse("123"),
+        BigInt.parse(nonce),
       ],
       from: fromAddress,
       value: EtherAmount.inWei(BigInt.parse(depositAmount.ceil().toString())),
