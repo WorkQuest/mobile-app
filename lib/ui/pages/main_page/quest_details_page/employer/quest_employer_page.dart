@@ -76,8 +76,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            if (store.quest.value!.status == 0 ||
-                store.quest.value!.status == 4)
+            if (store.quest.value!.status == 1)
               switch (value) {
                 case "quests.raiseViews":
                   // await Navigator.pushNamed(
@@ -204,17 +203,17 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           },
           itemBuilder: (BuildContext context) {
             return {
-              if (store.quest.value!.status == 0 ||
-                  store.quest.value!.status == 4)
-                'quests.raiseViews',
-              if (store.quest.value!.status == 0 ||
-                  store.quest.value!.status == 4)
-                'registration.edit',
-              if (store.quest.value!.status == 0 ||
-                  store.quest.value!.status == 4)
-                'settings.delete',
               if (store.quest.value!.status == 1 ||
-                  store.quest.value!.status == 5)
+                  store.quest.value!.status == 2)
+                'quests.raiseViews',
+              if (store.quest.value!.status == 1 ||
+                  store.quest.value!.status == 2)
+                'registration.edit',
+              if (store.quest.value!.status == 1 ||
+                  store.quest.value!.status == 2)
+                'settings.delete',
+              if (store.quest.value!.status == 3 ||
+                  store.quest.value!.status == 4)
                 "chat.report",
             }.map((String choice) {
               return PopupMenuItem<String>(
