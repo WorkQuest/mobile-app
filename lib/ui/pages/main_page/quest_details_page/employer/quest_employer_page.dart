@@ -56,7 +56,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share("https://app-ver1.workquest.co/quests/${widget.questInfo.id}");
+          Share.share(
+              "https://app-ver1.workquest.co/quests/${widget.questInfo.id}");
         },
       ),
       if (store.quest.value!.userId == profile!.userData!.id &&
@@ -105,10 +106,12 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   break;
                 default:
               }
-            if ((widget.questInfo.status == 1 || widget.questInfo.status == 5) &&
+            if ((widget.questInfo.status == 1 ||
+                    widget.questInfo.status == 5) &&
                 value == "chat.report") {
               AlertDialogUtils.showInfoAlertDialog(context,
-                  title: 'Warning'.tr(), content: 'Service temporarily unavailable');
+                  title: 'Warning'.tr(),
+                  content: 'Service temporarily unavailable');
             }
           },
           itemBuilder: (BuildContext context) {
@@ -152,6 +155,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       ),
       store.quest.value!.status,
       false,
+      false,
+      true,
     );
   }
 
@@ -162,36 +167,41 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             (storeQuest.questInfo!.userId == profile!.userData!.id ||
                 storeQuest.questInfo!.assignedWorker?.id ==
                     profile!.userData!.id)
-        ? TextButton(
-            onPressed: () async {
-              await Navigator.pushNamed(
-                context,
-                CreateReviewPage.routeName,
-                arguments: storeQuest.questInfo,
-              );
-              widget.questInfo.yourReview != null
-                  ? profile!.review = true
-                  : profile!.review = false;
-            },
-            child: Text(
-              "quests.addReview".tr(),
-              style: TextStyle(color: Colors.white),
-            ),
-            style: ButtonStyle(
-              fixedSize: MaterialStateProperty.all(
-                Size(double.maxFinite, 43),
-              ),
-              backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                (Set<MaterialState> states) {
-                  if (states.contains(MaterialState.pressed))
-                    return Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withOpacity(0.5);
-                  return const Color(0xFF0083C7);
+        ? Column(
+            children: [
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () async {
+                  await Navigator.pushNamed(
+                    context,
+                    CreateReviewPage.routeName,
+                    arguments: storeQuest.questInfo,
+                  );
+                  widget.questInfo.yourReview != null
+                      ? profile!.review = true
+                      : profile!.review = false;
                 },
+                child: Text(
+                  "quests.addReview".tr(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(
+                    Size(double.maxFinite, 43),
+                  ),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed))
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
+                      return const Color(0xFF0083C7);
+                    },
+                  ),
+                ),
               ),
-            ),
+            ],
           )
         : SizedBox();
   }

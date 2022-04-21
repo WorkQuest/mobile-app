@@ -35,7 +35,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   Map<int, List<int>> skillFilters = {};
 
-  ObservableMap<int, ObservableList<bool>> selectedSkillFilters = ObservableMap.of({});
+  ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
+      ObservableMap.of({});
 
   @observable
   String sort = "sort[createdAt]=desc";
@@ -151,15 +152,15 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     toPrice = to;
   }
 
+  ///CHECK THE REQUEST FROM THE FRONT
   String getFilterPrice({bool isWorker = false}) {
     String result = '';
     if (isWorker) {
-      result += '&betweenWagePerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-      result +=
-          '&betweenWagePerHour[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+      if (fromPrice.isNotEmpty) result = '&betweenWagePerHour[from]=$fromPrice';
+      if (toPrice.isNotEmpty) result = '&betweenWagePerHour[to]=$toPrice';
     } else {
-      result += '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-      result += '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '99999999999999'}';
+      if (fromPrice.isNotEmpty) result = '&priceBetween[from]=$fromPrice';
+      if (fromPrice.isNotEmpty) result = '&priceBetween[to]=$toPrice';
     }
     return result;
   }
@@ -244,6 +245,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         debounce = Timer(const Duration(milliseconds: 300), () async {
           questsList.addAll(await _apiProvider.getQuests(
             price: getFilterPrice(),
+            // statuses: [0],
             searchWord: searchWord,
             offset: offset,
             employment: employments,
@@ -296,7 +298,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         questsList.addAll(await _apiProvider.getQuests(
           searchWord: searchWord,
           price: getFilterPrice(),
-          // statuses: [0, 1],
+          // statuses: [0],
           employment: employments,
           workplace: workplaces,
           priority: priorities,

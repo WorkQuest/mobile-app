@@ -303,6 +303,7 @@
       "workerRespondedToQuest": "Worker responded to quest"
     },
     "youResponded": "You responded",
+    "responded": "Responded",
     "title": "Quest Title",
     "quests": "Quests",
     "starred": "Starred",
@@ -341,6 +342,7 @@
     "requested": "Requested",
     "youRequested": "You requested",
     "youInvited": "You invited",
+    "employeeAwaited": "Employee response awaited",
     "youAreInvited": "You are invited",
     "workerInvited": "Worker invited",
     "inProgressBy": "In progress by:",
