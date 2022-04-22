@@ -366,7 +366,9 @@ class SignInPage extends StatelessWidget {
         needCancel: true,
         titleCancel: 'Cancel',
         titleOk: 'OK',
-        onTabCancel: null,
+        onTabCancel: () {
+          signInStore.setTotp('');
+        },
         onTabOk: () {
           _onPressedSignIn(context,
               signInStore: signInStore,
