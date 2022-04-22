@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart';
+import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/layout_with_scroll.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -116,9 +117,11 @@ class _TransferPageState extends State<TransferPage> {
                 child: Container(
                   height: 46,
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.5),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 15.0, vertical: 12.5),
                   decoration: BoxDecoration(
-                    color: _selectedCoin ? Colors.white : AppColor.disabledButton,
+                    color:
+                        _selectedCoin ? Colors.white : AppColor.disabledButton,
                     borderRadius: BorderRadius.circular(6.0),
                     border: Border.all(
                       color: AppColor.disabledButton,
@@ -148,10 +151,14 @@ class _TransferPageState extends State<TransferPage> {
                           ),
                         ),
                       Text(
-                        _selectedCoin ? _currentCoin!.title : 'wallet.enterCoin'.tr(),
+                        _selectedCoin
+                            ? _currentCoin!.title
+                            : 'wallet.enterCoin'.tr(),
                         style: TextStyle(
                           fontSize: 16,
-                          color: _selectedCoin ? Colors.black : AppColor.disabledText,
+                          color: _selectedCoin
+                              ? Colors.black
+                              : AppColor.disabledText,
                         ),
                       ),
                       const Spacer(),
@@ -175,11 +182,9 @@ class _TransferPageState extends State<TransferPage> {
               ),
               Form(
                 key: _key,
-                child: TextFormField(
+                child: DefaultTextField(
                   controller: _addressController,
-                  decoration: InputDecoration(
-                    hintText: 'wallet.enterAddress'.tr(),
-                  ),
+                  hint: 'wallet.enterAddress'.tr(),
                   inputFormatters: [
                     MaskTextInputFormatter(
                       mask: '0x########################################',
@@ -193,6 +198,7 @@ class _TransferPageState extends State<TransferPage> {
                     }
                     return null;
                   },
+                  suffixIcon: null,
                 ),
               ),
               const SizedBox(
@@ -205,36 +211,33 @@ class _TransferPageState extends State<TransferPage> {
               const SizedBox(
                 height: 5,
               ),
-              TextFormField(
+              DefaultTextField(
+                hint: 'wallet.enterAmount'.tr(),
                 controller: _amountController,
-                decoration: InputDecoration(
-                  hintText: 'wallet.enterAmount'.tr(),
-                  suffixIcon: ObserverListener<TransferStore>(
-                    onSuccess: () {
-                      _amountController.text = store.amount;
-                    },
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.only(right: 12.5),
-                      child: Text(
-                        'wallet.max'.tr(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColor.enabledButton,
-                        ),
-                      ),
-                      onPressed: () async {
-                        store.getMaxAmount();
-                      },
-                    ),
-                  ),
-                ),
-                // keyboardType: TextInputType.number,
-
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                 ],
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                suffixIcon: ObserverListener<TransferStore>(
+                  onSuccess: () {
+                    _amountController.text = store.amount;
+                  },
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.only(right: 12.5),
+                    child: Text(
+                      'wallet.max'.tr(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppColor.enabledButton,
+                      ),
+                    ),
+                    onPressed: () async {
+                      store.getMaxAmount();
+                    },
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 20,
@@ -252,8 +255,9 @@ class _TransferPageState extends State<TransferPage> {
                   child: Observer(
                     builder: (_) => ElevatedButton(
                       child: Text('wallet.transfer'.tr()),
-                      onPressed:
-                          store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+                      onPressed: store.statusButtonTransfer
+                          ? _pushConfirmTransferPage
+                          : null,
                     ),
                   ),
                 ),
@@ -277,7 +281,8 @@ class _TransferPageState extends State<TransferPage> {
       if (store.addressTo.toLowerCase() ==
           AccountRepository().userAddress!.toLowerCase()) {
         AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'modals.error'.tr(), content: 'errors.provideYourAddress'.tr());
+            title: 'modals.error'.tr(),
+            content: 'errors.provideYourAddress'.tr());
         return;
       }
       if (double.parse(store.amount) == 0.0) {
@@ -328,7 +333,8 @@ class _TransferPageState extends State<TransferPage> {
             color: Colors.white,
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: SingleChildScrollView(
               child: DismissKeyboard(
                 child: Column(
@@ -363,7 +369,8 @@ class _TransferPageState extends State<TransferPage> {
                               (coin) => Column(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 6.5),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 6.5),
                                     child: GestureDetector(
                                       onTap: coin.isEnable
                                           ? () {

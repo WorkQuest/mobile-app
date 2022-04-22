@@ -12,7 +12,8 @@ import 'package:app/base_store/i_store.dart';
 part 'confirm_transfer_store.g.dart';
 
 @injectable
-class ConfirmTransferStore = ConfirmTransferStoreBase with _$ConfirmTransferStore;
+class ConfirmTransferStore = ConfirmTransferStoreBase
+    with _$ConfirmTransferStore;
 
 abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
   @action
@@ -26,9 +27,8 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
         coin: typeCoin,
       );
       GetIt.I.get<WalletStore>().getCoins();
-      Future.delayed(const Duration(seconds: 2)).then((value) {
-        GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
-      });
+      await Future.delayed(const Duration(seconds: 5));
+      GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
       onSuccess(true);
     } on SocketException catch (_) {
       onError("Lost connection to server");
