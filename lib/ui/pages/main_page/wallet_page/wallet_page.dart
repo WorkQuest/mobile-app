@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:app/di/injector.dart';
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
@@ -130,11 +131,13 @@ class _WalletPageState extends State<WalletPage> {
                 ),
                 Row(
                   children: [
-                    outlinedButton(route: WithdrawPage.routeName, title: "withdraw"),
+                    outlinedButton(
+                        route: WithdrawPage.routeName, title: "withdraw"),
                     const SizedBox(
                       width: 10,
                     ),
-                    outlinedButton(route: DepositPage.routeName, title: "deposit"),
+                    outlinedButton(
+                        route: DepositPage.routeName, title: "deposit"),
                     const SizedBox(
                       width: 10,
                     ),
@@ -155,6 +158,23 @@ class _WalletPageState extends State<WalletPage> {
                     )
                   ],
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ObserverListener<WalletStore>(
+                  onFailure: () {
+                    return false;
+                  },
+                  onSuccess: () {
+
+                  },
+                  child: ElevatedButton(
+                    child: Text('Get free tokens'),
+                    onPressed: () async {
+
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -172,7 +192,9 @@ class _WalletPageState extends State<WalletPage> {
               title: Text(
                 'wallet.table.trx'.tr(),
                 style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
               ),
             ),
             centerTitle: false,
@@ -278,112 +300,122 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
           if (store.coins.isNotEmpty) {
             return Column(
               children: [
-                CarouselSlider(
-                  carouselController: _controller,
-                  items: store.coins.map((balance) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'wallet'.tr(gender: 'balance'),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          if (store.isLoading)
-                            SizedBox(
-                              width: double.infinity,
-                              height: 30,
-                              child: Shimmer.fromColors(
-                                baseColor: const Color(0xfff1f0f0),
-                                highlightColor: Colors.white,
-                                child: Container(
-                                  width: 100,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(6.0),
-                                  ),
-                                ),
-                              ),
-                            )
-                          else
+                Observer(
+                  builder: (_) => CarouselSlider(
+                    carouselController: _controller,
+                    items: store.coins.map((balance) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              // '${num.parse(balance.amount).toInt()} ${balance.title}',
-                              '${num.parse(balance.amount).toDouble().toStringAsFixed(
-                                  8)} ${balance.title}',
+                              'wallet'.tr(gender: 'balance'),
                               style: const TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w700,
-                                color: AppColor.enabledButton,
+                                fontSize: 18,
+                                color: Colors.black,
                               ),
                             ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          if (store.isLoading)
-                            SizedBox(
-                              width: 140,
+                            const SizedBox(
                               height: 15,
-                              child: Shimmer.fromColors(
-                                baseColor: const Color(0xfff1f0f0),
-                                highlightColor: Colors.white,
-                                child: Container(
-                                  width: 100,
-                                  height: 15,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            if (store.isLoading)
+                              SizedBox(
+                                width: double.infinity,
+                                height: 30,
+                                child: Shimmer.fromColors(
+                                  baseColor: const Color(0xfff1f0f0),
+                                  highlightColor: Colors.white,
+                                  child: Container(
+                                    width: 100,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(6.0),
+                                    ),
                                   ),
                                 ),
+                              )
+                            else
+                              Text(
+                                '${num.parse(balance.amount).toDouble().toStringAsFixed(8)} ${balance.title}',
+                                style: const TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColor.enabledButton,
+                                ),
                               ),
-                            )
-                          else
-                            Text(
-                              _getCourseDollar(balance.title, balance.amount),
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: AppColor.unselectedBottomIcon,
-                              ),
+                            const SizedBox(
+                              height: 5,
                             ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                  options: CarouselOptions(
-                    height: 120.0,
-                    viewportFraction: 1.0,
-                    disableCenter: true,
-                    onPageChanged: (int index, _) {
-                      switch (index) {
-                        case 0:
-                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.WUSD);
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.WUSD);
-                          break;
-                        case 1:
-                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.WQT);
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.WQT);
-                          break;
-                        case 2:
-                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.wBNB);
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wBNB);
-                          break;
-                        case 3:
-                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.wETH);
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wETH);
-                          break;
-                      }
-                      GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
-                      setState(() {
-                        _currencyIndex = index;
-                      });
-                    },
+                            if (store.isLoading)
+                              SizedBox(
+                                width: 140,
+                                height: 15,
+                                child: Shimmer.fromColors(
+                                  baseColor: const Color(0xfff1f0f0),
+                                  highlightColor: Colors.white,
+                                  child: Container(
+                                    width: 100,
+                                    height: 15,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            else
+                              Text(
+                                _getCourseDollar(balance.title, balance.amount),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: AppColor.unselectedBottomIcon,
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    options: CarouselOptions(
+                      height: 120.0,
+                      viewportFraction: 1.0,
+                      disableCenter: true,
+                      onPageChanged: (int index, _) {
+                        switch (index) {
+                          case 0:
+                            GetIt.I.get<WalletStore>().setType(TYPE_COINS.WUSD);
+                            GetIt.I
+                                .get<TransactionsStore>()
+                                .setType(TYPE_COINS.WUSD);
+                            break;
+                          case 1:
+                            GetIt.I.get<WalletStore>().setType(TYPE_COINS.WQT);
+                            GetIt.I
+                                .get<TransactionsStore>()
+                                .setType(TYPE_COINS.WQT);
+                            break;
+                          case 2:
+                            GetIt.I.get<WalletStore>().setType(TYPE_COINS.wBNB);
+                            GetIt.I
+                                .get<TransactionsStore>()
+                                .setType(TYPE_COINS.wBNB);
+                            break;
+                          case 3:
+                            GetIt.I.get<WalletStore>().setType(TYPE_COINS.wETH);
+                            GetIt.I
+                                .get<TransactionsStore>()
+                                .setType(TYPE_COINS.wETH);
+                            break;
+                        }
+                        GetIt.I
+                            .get<TransactionsStore>()
+                            .getTransactions(isForce: true);
+                        setState(() {
+                          _currencyIndex = index;
+                        });
+                      },
+                    ),
                   ),
                 ),
                 Row(
@@ -401,8 +433,11 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           border: isCurrency
                               ? null
                               : Border.all(
-                              color: AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
+                                  color:
+                                      AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency
+                              ? AppColor.enabledButton
+                              : Colors.transparent,
                         ),
                       ),
                     );

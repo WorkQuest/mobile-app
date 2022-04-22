@@ -212,6 +212,8 @@ class WebSocket {
             myAddress.toLowerCase()) {
           await Future.delayed(const Duration(seconds: 8));
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
+
+          await Future.delayed(const Duration(seconds: 2));
           GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
         } else {
           final decode = json.decode(transaction.result!.events!['tx_log.txLog']!.first);
@@ -219,6 +221,7 @@ class WebSocket {
               myAddress.substring(2)) {
             await Future.delayed(const Duration(seconds: 8));
             GetIt.I.get<WalletStore>().getCoins(isForce: false);
+            await Future.delayed(const Duration(seconds: 2));
             GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
           }
         }
