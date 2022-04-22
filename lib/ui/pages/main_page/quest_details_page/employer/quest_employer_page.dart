@@ -23,6 +23,7 @@ import 'package:share/share.dart';
 
 import '../../../../../constants.dart';
 import '../../../../widgets/quest_header.dart';
+import '../../raise_views_page/raise_views_page.dart';
 
 class QuestEmployer extends QuestDetails {
   QuestEmployer(BaseQuestResponse questInfo) : super(questInfo);
@@ -79,11 +80,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             if (store.quest.value!.status == 1)
               switch (value) {
                 case "quests.raiseViews":
-                  // await Navigator.pushNamed(
-                  //   context,
-                  //   RaiseViews.routeName,
-                  //   arguments: store.quest.value!.id,
-                  // );
+                  await Navigator.pushNamed(
+                    context,
+                    RaiseViews.routeName,
+                    arguments: store.quest.value!.id,
+                  );
                   break;
                 case "registration.edit":
                   if (profile?.userData?.isTotpActive == true) {

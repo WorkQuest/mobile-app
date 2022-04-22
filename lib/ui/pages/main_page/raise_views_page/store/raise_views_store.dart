@@ -51,14 +51,25 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
     price[3] = forMonth;
   }
 
-  int getPeriod() {
-    switch (periodGroupValue) {
-      case 1:
-        return periodValue = 1;
-      case 2:
-        return periodValue = 7;
-      case 3:
-        return periodValue = 30;
+  int getPeriod({bool isQuest = false}) {
+    if (isQuest) {
+      switch (periodGroupValue) {
+        case 1:
+          return periodValue = 1;
+        case 2:
+          return periodValue = 5;
+        case 3:
+          return periodValue = 7;
+      }
+    } else {
+      switch (periodGroupValue) {
+        case 1:
+          return periodValue = 1;
+        case 2:
+          return periodValue = 7;
+        case 3:
+          return periodValue = 30;
+      }
     }
     return periodValue;
   }
@@ -84,8 +95,6 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onLoading();
       final _period = getPeriod();
       print('levelGroupValue: $levelGroupValue | period: ${getPeriod()}');
-      await apiProvider.raiseProfile(
-          duration: getPeriod(), type: levelGroupValue - 1);
       await ClientService().promoteUser(
         tariff: levelGroupValue,
         period: _period,
@@ -95,6 +104,8 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
           period: _period,
         ),
       );
+      await apiProvider.raiseProfile(
+          duration: getPeriod(), type: levelGroupValue - 1);
       this.onSuccess(true);
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
@@ -106,7 +117,18 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   Future<void> raiseQuest(String questId) async {
     try {
       this.onLoading();
-
+      final _quest = await apiProvider.getQuest(id: questId);
+      final _period = getPeriod(isQuest: true);
+      await ClientService().promoteQuest(
+        tariff: levelGroupValue,
+        period: _period,
+        amount: _getAmount(
+          isQuest: true,
+          tariff: levelGroupValue,
+          period: _period,
+        ),
+        questAddress: _quest.contractAddress!,
+      );
       await apiProvider.raiseQuest(
           questId: questId, duration: getPeriod(), type: levelGroupValue - 1);
 
@@ -124,10 +146,40 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
     if (isQuest) {
       switch (period) {
         case 1:
+          switch (tariff) {
+            case 1:
+              return '20';
+            case 2:
+              return '12';
+            case 3:
+              return '9';
+            case 4:
+              return '7';
+          }
           break;
         case 5:
+          switch (tariff) {
+            case 1:
+              return '35';
+            case 2:
+              return '28';
+            case 3:
+              return '22';
+            case 4:
+              return '18';
+          }
           break;
         case 7:
+          switch (tariff) {
+            case 1:
+              return '50';
+            case 2:
+              return '35';
+            case 3:
+              return '29';
+            case 4:
+              return '21';
+          }
           break;
       }
     } else {
