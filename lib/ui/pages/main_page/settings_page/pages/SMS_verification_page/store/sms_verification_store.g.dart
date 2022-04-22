@@ -55,6 +55,14 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
     });
   }
 
+  final _$startTimerAsyncAction =
+      AsyncAction('_SMSVerificationStore.startTimer');
+
+  @override
+  Future startTimer() {
+    return _$startTimerAsyncAction.run(() => super.startTimer());
+  }
+
   final _$submitCodeAsyncAction =
       AsyncAction('_SMSVerificationStore.submitCode');
 
@@ -65,17 +73,6 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
 
   final _$_SMSVerificationStoreActionController =
       ActionController(name: '_SMSVerificationStore');
-
-  @override
-  dynamic startTimer() {
-    final _$actionInfo = _$_SMSVerificationStoreActionController.startAction(
-        name: '_SMSVerificationStore.startTimer');
-    try {
-      return super.startTimer();
-    } finally {
-      _$_SMSVerificationStoreActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   dynamic stopTimer() {

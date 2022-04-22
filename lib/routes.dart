@@ -221,6 +221,9 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<ChatStore>(),
               ),
+              Provider(
+                create: (context) => getIt.get<SMSVerificationStore>(),
+              ),
             ],
             child: Directionality(
               textDirection: checkDirection(context),

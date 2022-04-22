@@ -8,6 +8,7 @@ import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filte
 import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -56,6 +57,7 @@ class _QuestListState extends State<QuestList> {
           : questsStore!.getWorkers(true);
       questsStore!.role = profileMeStore!.userData!.role;
     });
+    context.read<SMSVerificationStore>().initTime();
   }
 
   @override
