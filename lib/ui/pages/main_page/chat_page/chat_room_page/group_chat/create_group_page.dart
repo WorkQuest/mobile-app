@@ -211,13 +211,15 @@ class CreateGroupPage extends StatelessWidget {
                         if (store.index == 0) {
                           store.index++;
                           await store.getUsersForGroupCHat();
-                          if (store.availableUsers.isEmpty)
+                          if (store.availableUsers.isEmpty) {
+                            Navigator.pop(context);
                             AlertDialogUtils.showInfoAlertDialog(
                               context,
                               title: "Warning",
-                              content:  "You can't create a chat"
+                              content: "You can't create a chat"
                                   "\nbefore working on a quest",
                             );
+                          }
                         }
                       }
                     : store.usersId.isNotEmpty &&

@@ -76,7 +76,7 @@ class QuestHeader extends StatelessWidget {
             title: "quests.requested",
             textColor: Color(0xFFAAB0B9));
       case QuestItemPriorityType.Performed:
-        if (!forMe)
+        if (!forMe && responded)
           return header(
             color: Colors.red,
             title: "quests.responded",
