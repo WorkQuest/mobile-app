@@ -6,12 +6,24 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
+class ChooseQuestArguments {
+  final String workerId;
+  final String workerAddress;
+
+  ChooseQuestArguments({
+    required this.workerId,
+    required this.workerAddress,
+  });
+}
+
 class ChooseQuest extends StatefulWidget {
   static const String routeName = '/chooseQuest';
 
-  const ChooseQuest(this.workerId);
+  const ChooseQuest({
+    required this.arguments,
+  });
 
-  final String workerId;
+  final ChooseQuestArguments arguments;
 
   @override
   State<ChooseQuest> createState() => _ChooseQuestState();
@@ -23,12 +35,7 @@ class _ChooseQuestState extends State<ChooseQuest> {
   @override
   void initState() {
     store = context.read<UserProfileStore>();
-    store.getQuests(
-      userId: widget.workerId,
-      role: UserRole.Worker,
-      newList: true,
-      isProfileYours: false,
-    );
+    store.getQuests(widget.arguments.workerId, UserRole.Worker, true);
     super.initState();
   }
 
@@ -66,13 +73,10 @@ class _ChooseQuestState extends State<ChooseQuest> {
                   final metrics = scrollEnd.metrics;
                   if ((metrics.atEdge ||
                           metrics.maxScrollExtent < metrics.pixels) &&
-                      !store.isLoading)
+                      !store.isLoading) {
                     store.getQuests(
-                      userId: widget.workerId,
-                      role: UserRole.Worker,
-                      newList: true,
-                      isProfileYours: false,
-                    );
+                        widget.arguments.workerId, UserRole.Worker, false);
+                  }
                   return true;
                 },
                 child: ListView.builder(
@@ -84,7 +88,10 @@ class _ChooseQuestState extends State<ChooseQuest> {
                       value: store.quests[index].id,
                       groupValue: store.questId,
                       onChanged: (value) {
-                        store.setQuest(value, store.quests[index].id);
+                        store.setQuest(
+                          store.quests[index].id,
+                          store.quests[index].contractAddress!,
+                        );
                       },
                     ),
                   ),
@@ -130,7 +137,10 @@ class _ChooseQuestState extends State<ChooseQuest> {
                 builder: (_) => ElevatedButton(
                   onPressed: store.questId.isNotEmpty
                       ? () async {
-                          await store.startQuest(widget.workerId);
+                          await store.startQuest(
+                            userId: widget.arguments.workerId,
+                            userAddress: widget.arguments.workerAddress,
+                          );
                           if (store.isSuccess) {
                             Navigator.pop(context);
                             await AlertDialogUtils.showSuccessDialog(context);

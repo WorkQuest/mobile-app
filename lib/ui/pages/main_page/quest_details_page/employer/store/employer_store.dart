@@ -5,6 +5,10 @@ import 'package:app/model/respond_model.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:web3dart/credentials.dart';
+
+import '../../../../../../web3/contractEnums.dart';
+import '../../../../../../web3/service/client_service.dart';
 
 part 'employer_store.g.dart';
 
@@ -75,11 +79,17 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      await _apiProvider.startQuest(questId: questId, userId: userId);
-      // ClientService().handleEvent(
-      //   WQContractFunctions.assignJob,
-      //   [EthereumAddress.fromHex("0xc1203cd24b9ab6f942261e0d74729bbfdf36eb89")],
-      // );
+      final user = await _apiProvider.getProfileUser(userId: userId);
+      // Remove request
+      // await _apiProvider.startQuest(questId: questId, userId: userId);
+
+      await ClientService().handleEvent(
+        function: WQContractFunctions.assignJob,
+        contractAddress: quest.value!.contractAddress!,
+        params: [
+          EthereumAddress.fromHex(user.walletAddress!),
+        ],
+      );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -94,8 +104,11 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      await _apiProvider.acceptCompletedWork(questId: questId);
-      // ClientService().handleEvent(WQContractFunctions.acceptJobResult);
+      // await _apiProvider.acceptCompletedWork(questId: questId);
+      await ClientService().handleEvent(
+        function: WQContractFunctions.acceptJobResult,
+        contractAddress: quest.value!.contractAddress!,
+      );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -110,9 +123,12 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      await _apiProvider.deleteQuest(questId: questId);
       await _getQuest();
-      // ClientService().handleEvent(WQContractFunctions.cancelJob);
+      await _apiProvider.deleteQuest(questId: questId);
+      await ClientService().handleEvent(
+        function: WQContractFunctions.cancelJob,
+        contractAddress: quest.value!.contractAddress!,
+      );
       this.onSuccess(true);
     } catch (e, trace) {
       print("accept error: $e\n$trace");

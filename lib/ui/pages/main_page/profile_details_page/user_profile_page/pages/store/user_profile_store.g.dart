@@ -39,22 +39,39 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
     });
   }
 
+  final _$contractAddressAtom = Atom(name: '_UserProfileStore.contractAddress');
+
+  @override
+  String get contractAddress {
+    _$contractAddressAtom.reportRead();
+    return super.contractAddress;
+  }
+
+  @override
+  set contractAddress(String value) {
+    _$contractAddressAtom.reportWrite(value, super.contractAddress, () {
+      super.contractAddress = value;
+    });
+  }
+
   final _$startQuestAsyncAction = AsyncAction('_UserProfileStore.startQuest');
 
   @override
-  Future<void> startQuest(String userId) {
-    return _$startQuestAsyncAction.run(() => super.startQuest(userId));
+  Future<void> startQuest(
+      {required String userId, required String userAddress}) {
+    return _$startQuestAsyncAction
+        .run(() => super.startQuest(userId: userId, userAddress: userAddress));
   }
 
   final _$_UserProfileStoreActionController =
       ActionController(name: '_UserProfileStore');
 
   @override
-  void setQuest(String? index, String id) {
+  void setQuest(String id, String contractAddress) {
     final _$actionInfo = _$_UserProfileStoreActionController.startAction(
         name: '_UserProfileStore.setQuest');
     try {
-      return super.setQuest(index, id);
+      return super.setQuest(id, contractAddress);
     } finally {
       _$_UserProfileStoreActionController.endAction(_$actionInfo);
     }
@@ -64,7 +81,8 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
   String toString() {
     return '''
 quests: ${quests},
-questId: ${questId}
+questId: ${questId},
+contractAddress: ${contractAddress}
     ''';
   }
 }

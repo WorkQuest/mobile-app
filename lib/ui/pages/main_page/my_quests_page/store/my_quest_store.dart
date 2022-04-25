@@ -90,20 +90,20 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   void sortQuests() {
     active.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
     starred.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
     performed.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
     invited.sort((key2, key1) {
-      return key1.createdAt!.millisecondsSinceEpoch
-          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      return key1.createdAt.millisecondsSinceEpoch
+          .compareTo(key2.createdAt.millisecondsSinceEpoch);
     });
   }
 

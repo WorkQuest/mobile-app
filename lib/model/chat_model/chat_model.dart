@@ -32,7 +32,7 @@ class ChatModel {
   MeMember? meMember;
   List<ProfileMeResponse> userMembers;
   Star? star;
-  QuestChat questChat;
+  QuestChat? questChat;
 
   factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
         id: json["id"],
@@ -52,7 +52,7 @@ class ChatModel {
             .map((e) => ProfileMeResponse.fromJson(e as Map<String, dynamic>))
             .toList(),
         star: json["star"] == null ? null : Star.fromJson(json["star"]),
-        questChat: QuestChat.fromJson(json["questChat"]),
+        questChat: json["questChat"] == null ? null : QuestChat.fromJson(json["questChat"]),
       );
 
   Map<String, dynamic> toJson() => {

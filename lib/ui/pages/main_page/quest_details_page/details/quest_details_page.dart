@@ -164,7 +164,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       const SizedBox(height: 17),
                       tagItem(
                         profile!.parser(
-                          storeQuest.questInfo!.questSpecializations!,
+                          storeQuest.questInfo!.questSpecializations,
                         ),
                       ),
                       if (storeQuest.questInfo!.assignedWorker != null &&
@@ -207,7 +207,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       ],
                       Text(
                         DateFormat('dd MMMM yyyy, kk:mm')
-                            .format(storeQuest.questInfo!.createdAt!),
+                            .format(storeQuest.questInfo!.createdAt),
                         style: TextStyle(
                           color: Color(0xFFAAB0B9),
                           fontSize: 12,
@@ -217,8 +217,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       InkWell(
                         onTap: () {
                           MapsLauncher.launchCoordinates(
-                            storeQuest.questInfo!.locationCode!.latitude,
-                            storeQuest.questInfo!.locationCode!.longitude,
+                            storeQuest.questInfo!.locationCode.latitude,
+                            storeQuest.questInfo!.locationCode.longitude,
                           );
                         },
                         child: Container(
@@ -237,9 +237,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                   bearing: 0,
                                   target: LatLng(
                                     storeQuest
-                                        .questInfo!.locationCode!.latitude,
+                                        .questInfo!.locationCode.latitude,
                                     storeQuest
-                                        .questInfo!.locationCode!.longitude,
+                                        .questInfo!.locationCode.longitude,
                                   ),
                                   zoom: 15.0,
                                 ),

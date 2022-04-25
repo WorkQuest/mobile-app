@@ -368,7 +368,7 @@ class Routes {
             create: (context) => getIt.get<UserProfileStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ChooseQuest(settings.arguments as String),
+              child: ChooseQuest(arguments: settings.arguments as ChooseQuestArguments),
             ),
           ),
         );

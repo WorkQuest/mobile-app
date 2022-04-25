@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -155,7 +157,7 @@ class MyQuestsItem extends StatelessWidget {
                 SizedBox(width: 50),
                 Flexible(
                   child: Text(
-                    questInfo.price + "  WUSD",
+                    _getPrice(questInfo.price) + "  WUSD",
                     textAlign: TextAlign.end,
                     style: TextStyle(
                       color: Color(0xFF00AA5B),
@@ -246,6 +248,15 @@ class MyQuestsItem extends StatelessWidget {
   //       );
   //   }
   // }
+
+  _getPrice(String value) {
+    try {
+      return (BigInt.parse(value).toDouble() * pow(10, -18))
+          .toStringAsFixed(2);
+    } catch (e) {
+      return '0.00';
+    }
+  }
 }
 
 class ShimmerMyQuestItem extends StatelessWidget {
@@ -336,6 +347,14 @@ class ShimmerMyQuestItem extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getPrice(String value) {
+    try {
+      return (BigInt.parse(value).toDouble() * pow(10, -18)).toStringAsFixed(2);
+    } catch (e) {
+      return '0.00';
+    }
   }
 }
 

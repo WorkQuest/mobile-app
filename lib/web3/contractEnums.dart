@@ -55,6 +55,7 @@ enum WQFContractFunctions {
   workquestValid,
   workquests
 }
+
 enum WQFContractEvents {
   AdminChanged,
   BeaconUpgraded,
@@ -64,6 +65,7 @@ enum WQFContractEvents {
   Upgraded,
   WorkQuestCreated
 }
+
 enum WQPromotionFunctions {
   ADMIN_ROLE,
   DEFAULT_ADMIN_ROLE,

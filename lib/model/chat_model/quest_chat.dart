@@ -1,5 +1,3 @@
-import 'package:app/model/quests_models/base_quest_response.dart';
-
 class QuestChat {
   QuestChat({
     required this.id,
@@ -19,7 +17,7 @@ class QuestChat {
   String? responseId;
   String? chatId;
   int? status;
-  BaseQuestResponse? quest;
+  QuestChatInfo? quest;
 
   factory QuestChat.fromJson(Map<String, dynamic> json) => QuestChat(
         id: json["id"],
@@ -31,7 +29,7 @@ class QuestChat {
         status: json["status"],
         quest: json["quest"] == null
             ? null
-            : BaseQuestResponse.fromJson(json["quest"]),
+            : QuestChatInfo.fromJson(json["quest"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -45,3 +43,25 @@ class QuestChat {
         "quest": quest!.toJson(),
       };
 }
+
+class QuestChatInfo{
+  QuestChatInfo({
+    required this.id,
+    required this.status,
+  });
+
+  String? id;
+  int? status;
+
+  factory QuestChatInfo.fromJson(Map<String, dynamic> json) => QuestChatInfo(
+    id: json["id"],
+    status: json["status"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "status": status,
+  };
+}
+
+

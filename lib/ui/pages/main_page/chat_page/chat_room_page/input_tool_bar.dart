@@ -38,7 +38,7 @@ class _InputToolbarState extends State<InputToolbar> {
                 borderRadius: BorderRadius.circular(6.0),
               ),
               onSelected: widget
-                          .store.chat!.chatModel.questChat.quest?.status !=
+                          .store.chat!.chatModel.questChat?.quest?.status !=
                       6
                   ? (value) async {
                       switch (value) {
@@ -90,7 +90,7 @@ class _InputToolbarState extends State<InputToolbar> {
           Expanded(
             child: TextFormField(
               readOnly:
-                  widget.store.chat!.chatModel.questChat.quest?.status != 6
+                  widget.store.chat!.chatModel.questChat?.quest?.status != 6
                       ? false
                       : true,
               controller: _controller,
@@ -100,7 +100,7 @@ class _InputToolbarState extends State<InputToolbar> {
               onChanged: (text) => setState(() {}),
               decoration: InputDecoration(
                 hintText:
-                    widget.store.chat!.chatModel.questChat.quest?.status != 6
+                    widget.store.chat!.chatModel.questChat?.quest?.status != 6
                         ? 'Text'
                         : "Chat closed",
               ),
@@ -114,7 +114,7 @@ class _InputToolbarState extends State<InputToolbar> {
               onTap: (_controller.text.isNotEmpty ||
                           widget.store.media.isNotEmpty) &&
                       !widget.store.isLoading &&
-                      widget.store.chat!.chatModel.questChat.quest?.status != 6
+                      widget.store.chat!.chatModel.questChat?.quest?.status != 6
                   ? () {
                       widget.store.sendMessage(
                         _controller.text,

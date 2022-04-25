@@ -1,9 +1,11 @@
-import 'package:app/model/chat_model/quest_chat.dart';
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/model/quests_models/your_review.dart';
+
 import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../chat_model/quest_chat.dart';
 import '../user_model.dart';
 import 'assigned_worker.dart';
 import 'invited.dart';
@@ -20,6 +22,9 @@ class BaseQuestResponse with ClusterItem {
     required this.priority,
     required this.locationCode,
     required this.title,
+    required this.assignedWorkerId,
+    required this.contractAddress,
+    required this.nonce,
     required this.description,
     required this.price,
     required this.createdAt,
@@ -42,16 +47,19 @@ class BaseQuestResponse with ClusterItem {
   User user;
   int status;
   int priority;
-  LocationCode? locationCode;
+  LocationCode locationCode;
   String locationPlaceName;
   String title;
+  String? assignedWorkerId;
+  String? contractAddress;
+  String? nonce;
   String description;
   String price;
-  DateTime? createdAt;
+  DateTime createdAt;
   bool star;
   AssignedWorker? assignedWorker;
   String employment;
-  List<String>? questSpecializations;
+  List<String> questSpecializations;
   String workplace;
   Invited? invited;
   Responded? responded;
@@ -71,31 +79,29 @@ class BaseQuestResponse with ClusterItem {
               .toList(),
       user: User.fromJson(json["user"]),
       status: json["status"],
-      priority: json["priority"] ?? 0,
-      locationCode: json["location"] == null
-          ? null
-          : LocationCode.fromJson(json["location"]),
-      locationPlaceName: json["locationPlaceName"] ?? "",
+      priority: json["priority"],
+      locationCode: LocationCode.fromJson(json["location"]),
+      locationPlaceName: json["locationPlaceName"],
       title: json["title"],
-      description: json["description"] ?? "",
-      price: json["price"] ?? "",
-      createdAt:
-          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+      assignedWorkerId: json["title"],
+      contractAddress: json["contractAddress"],
+      nonce: json["title"],
+      description: json["description"],
+      price: json["price"],
+      createdAt: DateTime.parse(json["createdAt"]),
       star: json["star"] == null ? false : true,
       assignedWorker: json["assignedWorker"] == null
           ? null
           : AssignedWorker.fromJson(json["assignedWorker"]),
-      employment: json["employment"] ?? "",
-      questSpecializations: json["questSpecializations"] == null
-          ? null
-          : (List<Map<String, dynamic>> skills) {
-              List<String> skillsString = [];
-              for (var skill in skills) {
-                skillsString.add(skill.values.toString());
-              }
-              return skillsString;
-            }([...json["questSpecializations"]]),
-      workplace: json["workplace"] ?? "",
+      employment: json["employment"],
+      questSpecializations: (List<Map<String, dynamic>> skills) {
+        List<String> skillsString = [];
+        for (var skill in skills) {
+          skillsString.add(skill.values.toString());
+        }
+        return skillsString;
+      }([...json["questSpecializations"]]),
+      workplace: json["workplace"],
       invited:
           json["invited"] == null ? null : Invited.fromJson(json["invited"]),
       responded: json["responded"] == null
@@ -104,7 +110,7 @@ class BaseQuestResponse with ClusterItem {
       yourReview: json["yourReview"] == null
           ? null
           : YourReview.fromJson(json["yourReview"]),
-      questChat: json["questChat"] == null || json["questChat"]["userId"] == null
+      questChat: json["questChat"] == null
           ? null
           : QuestChat.fromJson(json["questChat"]),
     );
@@ -140,17 +146,14 @@ class BaseQuestResponse with ClusterItem {
         "category": category,
         "status": status,
         "priority": priority,
-        "location": locationCode!.toJson(),
+        "location": locationCode.toJson(),
         "title": title,
         "description": description,
         "price": price,
-        "createdAt": createdAt!.toIso8601String(),
+        "createdAt": createdAt.toIso8601String(),
         "questChat": questChat,
       };
 
   @override
-  LatLng get location => LatLng(
-        locationCode!.latitude,
-        locationCode!.longitude,
-      );
+  LatLng get location => LatLng(locationCode.latitude, locationCode.longitude);
 }

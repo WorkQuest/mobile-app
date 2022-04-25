@@ -1,4 +1,5 @@
 import 'package:app/constants.dart';
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
@@ -380,21 +381,8 @@ class SignInPage extends StatelessWidget {
     }
   }
 
-  Future<void> _errorMessage(BuildContext context, String msg) =>
-      AlertDialogUtils.showAlertDialog(
-        context,
-        title: Text("Error"),
-        content: Text(
-          msg,
-        ),
-        needCancel: false,
-        titleCancel: null,
-        titleOk: null,
-        onTabCancel: null,
-        onTabOk: null,
-        colorCancel: null,
-        colorOk: null,
-      );
+  void _errorMessage(BuildContext context, String msg) =>
+      AlertDialogUtils.showInfoAlertDialog(context, title: "Error", content: msg);
 
   Widget _iconButton(
     String iconPath,
@@ -403,18 +391,19 @@ class SignInPage extends StatelessWidget {
     Color? color,
   ]) {
     return CupertinoButton(
-        color: Color(0xFFF7F8FA),
-        padding: EdgeInsets.zero,
-        child: SvgPicture.asset(
-          iconPath,
-          color: color,
-        ),
-        onPressed: () async {
-          Navigator.of(context, rootNavigator: true).pushNamed(
-            WebViewPage.routeName,
-            arguments: "api/v1/auth/login/main/$link",
-          );
-        });
+      color: Color(0xFFF7F8FA),
+      padding: EdgeInsets.zero,
+      child: SvgPicture.asset(
+        iconPath,
+        color: color,
+      ),
+      onPressed: () async {
+        Navigator.of(context, rootNavigator: true).pushNamed(
+          WebViewPage.routeName,
+          arguments: "api/v1/auth/login/$link",
+        );
+      },
+    );
   }
 }
 

@@ -34,16 +34,14 @@ abstract class _QuestDetailsStore extends IStore<bool> with Store {
         return questType = QuestItemPriorityType.Active;
       case 1:
         return questType = QuestItemPriorityType.Active;
-      case 3:
-        return questType = QuestItemPriorityType.Active;
-      case 4:
+      case 2:
         if (role == UserRole.Worker)
           return questType = QuestItemPriorityType.Invited;
         else
           return questType = QuestItemPriorityType.Requested;
       case 5:
-        return questType = QuestItemPriorityType.Active;
-      case 6:
+        return questType = QuestItemPriorityType.Performed;
+      case -3:
         return questType = QuestItemPriorityType.Performed;
     }
     return questType = QuestItemPriorityType.Active;
