@@ -117,15 +117,17 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   @action
   addQuest(BaseQuestResponse quest, bool restoreStarred) {
-    if (quest.status == 0 ||
-        quest.status == 1 ||
-        quest.status == 3 ||
-        quest.status == 5)
+    if ((quest.status == 0 ||
+            quest.status == 1 ||
+            quest.status == 3 ||
+            quest.status == 5) &&
+        quest.assignedWorker?.id == myId)
       active.add(quest);
-    else if (quest.status == 4) {
+    else if (quest.status == 4 && quest.assignedWorker?.id == myId) {
       invited.add(quest);
       // requested.add(quest);
-    } else if (quest.status == 6) performed.add(quest);
+    } else if (quest.status == 6 && quest.assignedWorker?.id == myId)
+      performed.add(quest);
     if (restoreStarred) starred.add(quest);
     sortQuests();
   }
@@ -181,7 +183,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       }
 
       if (role == UserRole.Employer) {
-        if (loadActive)if (loadActive)
+        if (loadActive) if (loadActive)
           active.addAll(await _apiProvider.getEmployerQuests(
             userId: userId,
             sort: sort,
