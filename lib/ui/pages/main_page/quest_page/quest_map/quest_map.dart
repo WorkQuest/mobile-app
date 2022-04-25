@@ -9,6 +9,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
+
 class QuestMap extends StatefulWidget {
   final void Function() changePage;
 
@@ -29,6 +31,7 @@ class _QuestMapState extends State<QuestMap> {
   void initState() {
     mapStore = context.read<QuestMapStore>();
     mapStore!.createMarkerLoader(context);
+    context.read<SMSVerificationStore>().initTime();
     _getLocation();
     super.initState();
   }
