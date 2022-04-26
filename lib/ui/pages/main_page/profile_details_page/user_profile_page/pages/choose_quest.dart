@@ -35,7 +35,12 @@ class _ChooseQuestState extends State<ChooseQuest> {
   @override
   void initState() {
     store = context.read<UserProfileStore>();
-    store.getQuests(widget.arguments.workerId, UserRole.Worker, true);
+    store.getQuests(
+      userId: widget.arguments.workerId,
+      role: UserRole.Worker,
+      newList: true,
+      isProfileYours: false,
+    );
     super.initState();
   }
 
@@ -75,7 +80,11 @@ class _ChooseQuestState extends State<ChooseQuest> {
                           metrics.maxScrollExtent < metrics.pixels) &&
                       !store.isLoading) {
                     store.getQuests(
-                        widget.arguments.workerId, UserRole.Worker, false);
+                      userId: widget.arguments.workerId,
+                      role: UserRole.Worker,
+                      newList: true,
+                      isProfileYours: false,
+                    );
                   }
                   return true;
                 },

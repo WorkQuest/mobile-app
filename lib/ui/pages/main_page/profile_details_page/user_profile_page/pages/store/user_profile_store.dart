@@ -88,21 +88,31 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
   //   quests.removeWhere((element) => element.title == questName);
   // }
 
-  Future<void> getQuests(
-    String userId,
-    UserRole role,
-    bool newList,
-  ) async {
+  Future<void> getQuests({
+    required String userId,
+    required UserRole role,
+    required bool newList,
+    required bool isProfileYours,
+  }) async {
     try {
       if (newList) quests.clear();
       if (offset == quests.length) {
         this.onLoading();
         //TODO:offset scroll
         if (role == UserRole.Employer) {
-          quests.addAll(await _apiProvider.getEmployerQuests(
+          quests.addAll(isProfileYours
+              ? await _apiProvider.getQuests(
+            offset: offset,
+            performing: true,
+            invited: false,
+            sort: "sort[createdAt]=desc",
+          )
+              : await _apiProvider.getEmployerQuests(
             userId: userId,
             offset: offset,
-            statuses: [6],
+            performing: true,
+            invited: false,
+            sort: "sort[createdAt]=desc",
           ));
         }
         if (role == UserRole.Worker) {
@@ -110,14 +120,13 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
             userId: userId,
             offset: offset,
           ));
-          // removeOddQuests();
         }
 
         quests.toList().sort((key1, key2) =>
-            key1.createdAt.millisecondsSinceEpoch <
-                    key2.createdAt.millisecondsSinceEpoch
-                ? 1
-                : 0);
+        key1.createdAt.millisecondsSinceEpoch <
+            key2.createdAt.millisecondsSinceEpoch
+            ? 1
+            : 0);
         offset += 10;
         this.onSuccess(true);
       }

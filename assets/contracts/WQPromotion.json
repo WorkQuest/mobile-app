@@ -1,10 +1,5 @@
 [
   {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
@@ -42,6 +37,37 @@
       {
         "indexed": false,
         "internalType": "address",
+        "name": "quest",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum WQPromotion.PaidTariff",
+        "name": "tariff",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "period",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "promotedAt",
+        "type": "uint256"
+      }
+    ],
+    "name": "PromotedQuest",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
         "name": "user",
         "type": "address"
       },
@@ -54,11 +80,17 @@
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "period",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "promotedAt",
         "type": "uint256"
       }
     ],
-    "name": "Promoted",
+    "name": "PromotedUser",
     "type": "event"
   },
   {
@@ -311,7 +343,7 @@
         "type": "uint256"
       }
     ],
-    "name": "promote",
+    "name": "promoteQuest",
     "outputs": [],
     "stateMutability": "payable",
     "type": "function"

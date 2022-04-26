@@ -399,7 +399,7 @@ extension Promote on ClientService {
     print('questAddress: $questAddress');
     final contract = await getDeployedContract(
         "WQPromotion", '0xc14e047639d531e863702BeF5D8E4c8CAE02d379');
-    final function = contract.function(WQPromotionFunctions.promote.name);
+    final function = contract.function(WQPromotionFunctions.promoteQuest.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await _client.getGasPrice();
     final _fromAddress = await _credentials.extractAddress();
@@ -430,6 +430,8 @@ extension Promote on ClientService {
       result = await _client.getTransactionReceipt(_transactionHash);
       if (result != null) {
         print('result - ${result.blockNumber}');
+        print("_transactionHash: $_transactionHash");
+        print("result: $result");
       }
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
@@ -445,6 +447,9 @@ extension Promote on ClientService {
     required int period,
     required String amount,
   }) async {
+    print('tariff: $tariff');
+    print('period: $period');
+    print('amount: $amount');
     final contract = await getDeployedContract(
         "WQPromotion", '0xc14e047639d531e863702BeF5D8E4c8CAE02d379');
     final function = contract.function(WQPromotionFunctions.promoteUser.name);
@@ -477,6 +482,8 @@ extension Promote on ClientService {
       result = await _client.getTransactionReceipt(_transactionHash);
       if (result != null) {
         print('result - ${result.blockNumber}');
+        print("_transactionHash: $_transactionHash");
+        print("result: $result");
       }
       await Future.delayed(const Duration(seconds: 3));
       attempts++;

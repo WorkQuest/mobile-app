@@ -550,7 +550,7 @@ class Routes {
             create: (context) => getIt.get<RaiseViewStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: PaymentPage(settings.arguments as String),
+              child: PaymentPage(settings.arguments as RaiseViewStore),
             ),
           ),
         );

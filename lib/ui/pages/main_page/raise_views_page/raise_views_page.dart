@@ -21,13 +21,14 @@ class RaiseViews extends StatelessWidget {
   Widget build(BuildContext context) {
     final raiseViewStore = context.read<RaiseViewStore>();
     raiseViewStore.initPrice();
+    raiseViewStore.setQuestId(questId);
     return Observer(
       builder: (_) => Scaffold(
         persistentFooterButtons: [
           ElevatedButton(
             onPressed: () {
               Navigator.of(context, rootNavigator: true)
-                  .pushNamed(PaymentPage.routeName, arguments: questId);
+                  .pushNamed(PaymentPage.routeName, arguments: raiseViewStore);
             },
             child: Text(
               "Go to the payment",

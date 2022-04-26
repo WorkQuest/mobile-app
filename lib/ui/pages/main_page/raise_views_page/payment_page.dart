@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
-import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../constants.dart';
@@ -42,13 +41,14 @@ List<_CoinItem> _coins = [
 ];
 
 List<_WalletItem> _wallets = [
-  _WalletItem("assets/coinpaymebts.svg", "Сoinpaymebts", TYPE_WALLET.Coinpaymebts),
+  _WalletItem(
+      "assets/coinpaymebts.svg", "Сoinpaymebts", TYPE_WALLET.Coinpaymebts),
 ];
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage(this.questId, {Key? key}) : super(key: key);
+  const PaymentPage(this.store, {Key? key}) : super(key: key);
 
-  final String? questId;
+  final RaiseViewStore store;
 
   static const String routeName = "/paymentPage";
 
@@ -56,7 +56,8 @@ class PaymentPage extends StatefulWidget {
   _PaymentPageState createState() => _PaymentPageState();
 }
 
-class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStateMixin {
+class _PaymentPageState extends State<PaymentPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -134,8 +135,8 @@ class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStat
               children: [
                 ///Wallet Transfer
                 _WalletViewTab(
-                  store: context.read<RaiseViewStore>(),
-                  questId: widget.questId,
+                  store: widget.store,
+                  questId: widget.store.questId,
                 ),
 
                 ///Card Transfer
@@ -253,10 +254,14 @@ class _WalletViewTabState extends State<_WalletViewTab> {
                         ),
                       ),
                     Text(
-                      _selectedCoin ? _currentCoin!.title : 'wallet.enterCoin'.tr(),
+                      _selectedCoin
+                          ? _currentCoin!.title
+                          : 'wallet.enterCoin'.tr(),
                       style: TextStyle(
                         fontSize: 16,
-                        color: _selectedCoin ? Colors.black : AppColor.disabledText,
+                        color: _selectedCoin
+                            ? Colors.black
+                            : AppColor.disabledText,
                       ),
                     ),
                     const Spacer(),
@@ -285,7 +290,8 @@ class _WalletViewTabState extends State<_WalletViewTab> {
                   vertical: 12.5,
                 ),
                 decoration: BoxDecoration(
-                  color: _selectedWallet ? Colors.white : AppColor.disabledButton,
+                  color:
+                      _selectedWallet ? Colors.white : AppColor.disabledButton,
                   borderRadius: BorderRadius.circular(6.0),
                   border: Border.all(
                     color: AppColor.disabledButton,
@@ -315,10 +321,14 @@ class _WalletViewTabState extends State<_WalletViewTab> {
                         ),
                       ),
                     Text(
-                      _selectedWallet ? _currentWallet!.title : 'wallet.enterCoin'.tr(),
+                      _selectedWallet
+                          ? _currentWallet!.title
+                          : 'wallet.enterCoin'.tr(),
                       style: TextStyle(
                         fontSize: 16,
-                        color: _selectedWallet ? Colors.black : AppColor.disabledText,
+                        color: _selectedWallet
+                            ? Colors.black
+                            : AppColor.disabledText,
                       ),
                     ),
                     const Spacer(),
@@ -350,6 +360,12 @@ class _WalletViewTabState extends State<_WalletViewTab> {
                           await widget.store.raiseProfile();
                         } else {
                           await widget.store.raiseQuest(widget.questId!);
+                        }
+                        if (widget.store.isSuccess) {
+                          Navigator.of(context, rootNavigator: true).pop();
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                          await AlertDialogUtils.showSuccessDialog(context);
                         }
                       }
                     : null,

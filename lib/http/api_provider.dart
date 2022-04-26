@@ -124,12 +124,8 @@ extension QuestService on ApiProvider {
         '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
         'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}';
 
-    final response = await httpClient.post(
-      query: query,
-      data: {
-        "specializations": []
-      }
-    );
+    final response =
+        await httpClient.post(query: query, data: {"specializations": []});
     return List<BaseQuestResponse>.from(
       response["quests"].map(
         (x) => BaseQuestResponse.fromJson(x),
@@ -173,7 +169,8 @@ extension QuestService on ApiProvider {
         status += "statuses[]=$text&";
       });
       final responseData = await httpClient.post(
-        query: "/v1/employer/$userId/get-quests?$status$sort&offset=$offset&limit=$limit",
+        query:
+            "/v1/employer/$userId/get-quests?$status$sort&offset=$offset&limit=$limit",
         data: {
           if (priority != null) "priority": priority,
           if (invited != null) "invited": invited,
@@ -225,12 +222,8 @@ extension QuestService on ApiProvider {
       status += "statuses=$text&";
     });
     final responseData = await httpClient.post(
-      query: '/v1/worker/$userId/get-quests?$status$sort&offset=$offset&limit=$limit',
-      data: {
-        if (invited != null) "invited": invited,
-        if (performing != null) "performing": performing,
-        if (starred != null) "starred": starred,
-      },
+      query: '/v1/worker/$userId/get-quests?limit=$limit&offset=$offset&$status'
+          'invited=$invited&performing=$performing&starred=$starred&$sort',
     );
 
     return List<BaseQuestResponse>.from(
@@ -282,18 +275,11 @@ extension QuestService on ApiProvider {
     }
     final responseData = await httpClient.post(
       query:
-          '/v1/get-quests?$search$workplaces$employments$priorities$sort$price&offset=$offset&limit=$limit',
+          '/v1/get-quests?offset=$offset&limit=$limit&$workplaces$employments'
+          '$priorities$sort$price&invited=$invited&starred=$starred&'
+          'performing=$performing&$search',
       data: {
-        // if (workplace.isNotEmpty) "workplaces": workplaces,
-        // if (employment.isNotEmpty) "employments": employments,
-        // if (statuses.isNotEmpty) "statuses": status,
-        // if (specializations.isNotEmpty) "specializations": specialization,
-        // if (priority.isNotEmpty) "priorities": priorities,
-        // "sort": sort,
-        if (invited != null) "invited": invited,
-        if (performing != null) "performing": performing,
-        // if (starred != null) "starred": starred,
-        "specializations": specializations,
+        if (specializations != null)"specializations": specializations,
       },
     );
 
@@ -339,13 +325,10 @@ extension QuestService on ApiProvider {
     }
     final responseData = await httpClient.post(
       query:
-          '/v1/profile/get-workers?$search$priorities$ratingStatuses$workplaces$sort&$price&offset=$offset&limit=$limit',
+          '/v1/profile/get-workers?$search$priorities$ratingStatuses$workplaces'
+          '$sort&$price&offset=$offset&limit=$limit',
       data: {
-        // if (searchWord.isNotEmpty) "q": searchWord,
-        if (north != null) "north": north,
-        if (south != null) "south": south,
         "specializations": specializations,
-        //"sort": sort,
       },
     );
 
@@ -370,8 +353,8 @@ extension QuestService on ApiProvider {
       query: '/v1/skill-filters',
     );
     Map<int, List<int>> list = (responseData as Map).map((key, value) {
-      return MapEntry<int, List<int>>(
-          value["id"], (value["skills"] as Map).values.map((e) => e as int).toList());
+      return MapEntry<int, List<int>>(value["id"],
+          (value["skills"] as Map).values.map((e) => e as int).toList());
     });
     return list;
   }
@@ -413,7 +396,8 @@ extension QuestService on ApiProvider {
 
   Future<List<BaseQuestResponse>> responsesQuests() async {
     try {
-      final responseData = await httpClient.get(query: '/v1/quest/responses/my');
+      final responseData =
+          await httpClient.get(query: '/v1/quest/responses/my');
       return List<BaseQuestResponse>.from(
         responseData["responses"].map(
           (x) => BaseQuestResponse.fromJson(x),
@@ -465,8 +449,8 @@ extension QuestService on ApiProvider {
     required String questId,
   }) async {
     try {
-      final responseData =
-          await httpClient.post(query: '/v1/quest/$questId/accept-completed-work');
+      final responseData = await httpClient.post(
+          query: '/v1/quest/$questId/accept-completed-work');
       return responseData == null;
     } catch (e) {
       return false;
@@ -489,7 +473,8 @@ extension QuestService on ApiProvider {
     required String questId,
   }) async {
     try {
-      final responseData = await httpClient.post(query: '/v1/quest/$questId/accept-work');
+      final responseData =
+          await httpClient.post(query: '/v1/quest/$questId/accept-work');
       return responseData == null;
     } catch (e) {
       return false;
@@ -512,7 +497,8 @@ extension QuestService on ApiProvider {
     required String questId,
   }) async {
     try {
-      final responseData = await httpClient.post(query: '/v1/quest/$questId/reject-work');
+      final responseData =
+          await httpClient.post(query: '/v1/quest/$questId/reject-work');
       return responseData == null;
     } catch (e) {
       return false;
@@ -687,41 +673,51 @@ extension UserInfoService on ApiProvider {
         },
         "firstName": userData.firstName,
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
-        if (userData.role == UserRole.Worker) "wagePerHour": userData.wagePerHour,
-        if (userData.role == UserRole.Worker) "priority": userData.priority.index,
+        if (userData.role == UserRole.Worker)
+          "wagePerHour": userData.wagePerHour,
+        if (userData.role == UserRole.Worker)
+          "priority": userData.priority.index,
         if (userData.role == UserRole.Worker) "workplace": userData.workplace,
         "additionalInfo": {
-          "secondMobileNumber": userData.additionalInfo?.secondMobileNumber != null
+          "secondMobileNumber": userData.additionalInfo?.secondMobileNumber !=
+                  null
               ? {
-                  "codeRegion": userData.additionalInfo?.secondMobileNumber!.codeRegion,
+                  "codeRegion":
+                      userData.additionalInfo?.secondMobileNumber!.codeRegion,
                   "phone": userData.additionalInfo?.secondMobileNumber!.phone,
-                  "fullPhone": userData.additionalInfo?.secondMobileNumber!.fullPhone,
+                  "fullPhone":
+                      userData.additionalInfo?.secondMobileNumber!.fullPhone,
                 }
               : null,
           "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
               ? userData.additionalInfo?.address
               : null,
           "socialNetwork": {
-            "instagram":
-                (userData.additionalInfo?.socialNetwork?.instagram?.isNotEmpty ?? false)
-                    ? userData.additionalInfo?.socialNetwork?.instagram
-                    : null,
+            "instagram": (userData
+                        .additionalInfo?.socialNetwork?.instagram?.isNotEmpty ??
+                    false)
+                ? userData.additionalInfo?.socialNetwork?.instagram
+                : null,
             "twitter":
-                (userData.additionalInfo?.socialNetwork?.twitter?.isNotEmpty ?? false)
+                (userData.additionalInfo?.socialNetwork?.twitter?.isNotEmpty ??
+                        false)
                     ? userData.additionalInfo?.socialNetwork?.twitter
                     : null,
             "linkedin":
-                (userData.additionalInfo?.socialNetwork?.linkedin?.isNotEmpty ?? false)
+                (userData.additionalInfo?.socialNetwork?.linkedin?.isNotEmpty ??
+                        false)
                     ? userData.additionalInfo?.socialNetwork?.linkedin
                     : null,
             "facebook":
-                (userData.additionalInfo?.socialNetwork?.facebook?.isNotEmpty ?? false)
+                (userData.additionalInfo?.socialNetwork?.facebook?.isNotEmpty ??
+                        false)
                     ? userData.additionalInfo?.socialNetwork?.facebook
                     : null,
           },
-          "description": (userData.additionalInfo?.description?.isNotEmpty ?? false)
-              ? userData.additionalInfo?.description
-              : null,
+          "description":
+              (userData.additionalInfo?.description?.isNotEmpty ?? false)
+                  ? userData.additionalInfo?.description
+                  : null,
           if (userData.role == UserRole.Employer)
             "company": (userData.additionalInfo?.company?.isNotEmpty ?? false)
                 ? userData.additionalInfo?.company
@@ -758,10 +754,11 @@ extension UserInfoService on ApiProvider {
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");
       final responseData;
       if (role == UserRole.Worker)
-        responseData = await httpClient.put(query: '/v1/worker/profile/edit', data: body);
-      else
         responseData =
-            await httpClient.put(query: '/v1/employer/profile/edit', data: body);
+            await httpClient.put(query: '/v1/worker/profile/edit', data: body);
+      else
+        responseData = await httpClient.put(
+            query: '/v1/employer/profile/edit', data: body);
       return ProfileMeResponse.fromJson(responseData);
     } catch (e, trace) {
       print('tag: $e\ntrace: $trace');

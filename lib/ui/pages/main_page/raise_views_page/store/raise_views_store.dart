@@ -32,11 +32,15 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
 
   int periodValue = 0;
 
+  String questId = "";
+
   Map<int, List<String>> price = {};
 
   List<String> forDay = [r"20$", r"12$", r"9$", r"7$"];
   List<String> forWeek = [r"35$", r"28$", r"22$", r"18$"];
   List<String> forMonth = [r"50$", r"35$", r"29$", r"21$"];
+
+  setQuestId(String value) => questId = value;
 
   @action
   setTitleSelectedCoin(TYPE_COINS? value) => typeCoin = value;
@@ -96,7 +100,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       final _period = getPeriod();
       print('levelGroupValue: $levelGroupValue | period: ${getPeriod()}');
       await ClientService().promoteUser(
-        tariff: levelGroupValue,
+        tariff: levelGroupValue - 1,
         period: _period,
         amount: _getAmount(
           isQuest: false,
@@ -104,8 +108,8 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
           period: _period,
         ),
       );
-      await apiProvider.raiseProfile(
-          duration: getPeriod(), type: levelGroupValue - 1);
+      // await apiProvider.raiseProfile(
+      //     duration: getPeriod(), type: levelGroupValue - 1);
       this.onSuccess(true);
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
@@ -120,7 +124,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       final _quest = await apiProvider.getQuest(id: questId);
       final _period = getPeriod(isQuest: true);
       await ClientService().promoteQuest(
-        tariff: levelGroupValue,
+        tariff: levelGroupValue - 1,
         period: _period,
         amount: _getAmount(
           isQuest: true,
@@ -129,8 +133,8 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
         ),
         questAddress: _quest.contractAddress!,
       );
-      await apiProvider.raiseQuest(
-          questId: questId, duration: getPeriod(), type: levelGroupValue - 1);
+      // await apiProvider.raiseQuest(
+      //     questId: questId, duration: getPeriod(), type: levelGroupValue - 1);
 
       this.onSuccess(true);
     } catch (e) {

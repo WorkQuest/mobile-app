@@ -76,7 +76,7 @@ enum WQPromotionFunctions {
   grantRole,
   hasRole,
   initialize,
-  promote,
+  promoteQuest,
   promoteUser,
   proxiableUUID,
   questTariff,
