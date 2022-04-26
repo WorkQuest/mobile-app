@@ -29,6 +29,12 @@ abstract class _WalletStore extends IStore<bool> with Store {
   @observable
   ObservableList<BalanceItem> coins = ObservableList.of([]);
 
+  @observable
+  bool isLoadingTest = false;
+
+  @observable
+  String errorTest = '';
+
   @action
   getCoins({bool isForce = true}) async {
     if (isForce) {
@@ -39,12 +45,12 @@ abstract class _WalletStore extends IStore<bool> with Store {
           await ClientService().getAllBalance(AccountRepository().privateKey);
       print(list);
       final ether = list.firstWhere((element) => element.title == 'ether');
-      final wqt = await ClientService()
-          .getBalanceFromContract(AddressCoins.wqt);
-      final wEth = await ClientService()
-          .getBalanceFromContract(AddressCoins.wEth);
-      final wBnb = await ClientService()
-          .getBalanceFromContract(AddressCoins.wBnb);
+      final wqt =
+          await ClientService().getBalanceFromContract(AddressCoins.wqt);
+      final wEth =
+          await ClientService().getBalanceFromContract(AddressCoins.wEth);
+      final wBnb =
+          await ClientService().getBalanceFromContract(AddressCoins.wBnb);
       if (coins.isNotEmpty) {
         coins[0] = BalanceItem(
           "WUSD",
@@ -91,4 +97,29 @@ abstract class _WalletStore extends IStore<bool> with Store {
     }
   }
 
+  @action
+  getTestCoinsWUSD() async {
+    errorTest = '';
+    try {
+      isLoadingTest = true;
+      // await Future.delayed(const Duration(seconds: 2));
+      await _apiProvider.getTestCoinsWUSD();
+    } catch (e) {
+      errorTest = e.toString();
+    }
+    isLoadingTest = false;
+  }
+
+  @action
+  getTestCoinsWQT() async {
+    errorTest = '';
+    try {
+      isLoadingTest = true;
+      // await Future.delayed(const Duration(seconds: 2));
+      await _apiProvider.getTestCoinsWQT();
+    } catch (e) {
+      errorTest = e.toString();
+    }
+    isLoadingTest = false;
+  }
 }

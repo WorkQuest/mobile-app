@@ -160,6 +160,14 @@ extension QuestService on ApiProvider {
       ),
     );
   }
+  
+  Future getTestCoinsWQT() async {
+    await httpClient.get(query: '/v1/user/me/faucet/wqt');
+  }
+
+  Future getTestCoinsWUSD() async {
+    await httpClient.get(query: '/v1/user/me/faucet/wusd');
+  }
 
   Future<List<ProfileMeResponse>> workerMapPoints(
     LatLngBounds bounds,

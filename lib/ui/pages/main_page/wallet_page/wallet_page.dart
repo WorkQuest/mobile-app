@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'package:app/di/injector.dart';
-import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/shimmer.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
@@ -64,6 +65,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget layout() {
+    final store = GetIt.I.get<WalletStore>();
     final address = AccountRepository().userAddress ?? '1234567890';
     return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -161,20 +163,26 @@ class _WalletPageState extends State<WalletPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                ObserverListener<WalletStore>(
-                  onFailure: () {
-                    return false;
-                  },
-                  onSuccess: () {
-
-                  },
-                  child: ElevatedButton(
-                    child: Text('Get free tokens'),
-                    onPressed: () async {
-
-                    },
-                  ),
-                ),
+                Observer(
+                  builder: (_) => store.type == TYPE_COINS.WQT || store.type == TYPE_COINS.WUSD ? LoginButton(
+                          enabled: store.isLoadingTest,
+                          title: 'Get test coins',
+                          onTap: store.isLoadingTest ? null : () async {
+                            if (store.type == TYPE_COINS.WQT) {
+                              await store.getTestCoinsWQT();
+                            } else if (store.type == TYPE_COINS.WUSD) {
+                              await store.getTestCoinsWUSD();
+                            }
+                            if (store.errorTest.isNotEmpty) {
+                              AlertDialogUtils.showInfoAlertDialog(context,
+                                  title: 'Warning', content: store.errorTest);
+                            } else {
+                              AlertDialogUtils.showInfoAlertDialog(context,
+                                  title: 'Success', content: "The coins will arrive within 5 minutes.");
+                            }
+                          },
+                        ) : SizedBox(),
+                )
               ],
             ),
           ),

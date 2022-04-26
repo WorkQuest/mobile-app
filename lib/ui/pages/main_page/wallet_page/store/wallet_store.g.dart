@@ -39,6 +39,36 @@ mixin _$WalletStore on _WalletStore, Store {
     });
   }
 
+  final _$isLoadingTestAtom = Atom(name: '_WalletStore.isLoadingTest');
+
+  @override
+  bool get isLoadingTest {
+    _$isLoadingTestAtom.reportRead();
+    return super.isLoadingTest;
+  }
+
+  @override
+  set isLoadingTest(bool value) {
+    _$isLoadingTestAtom.reportWrite(value, super.isLoadingTest, () {
+      super.isLoadingTest = value;
+    });
+  }
+
+  final _$errorTestAtom = Atom(name: '_WalletStore.errorTest');
+
+  @override
+  String get errorTest {
+    _$errorTestAtom.reportRead();
+    return super.errorTest;
+  }
+
+  @override
+  set errorTest(String value) {
+    _$errorTestAtom.reportWrite(value, super.errorTest, () {
+      super.errorTest = value;
+    });
+  }
+
   final _$getCoinsAsyncAction = AsyncAction('_WalletStore.getCoins');
 
   @override
@@ -60,10 +90,34 @@ mixin _$WalletStore on _WalletStore, Store {
   }
 
   @override
+  dynamic getTestCoinsWUSD() {
+    final _$actionInfo = _$_WalletStoreActionController.startAction(
+        name: '_WalletStore.getTestCoinsWUSD');
+    try {
+      return super.getTestCoinsWUSD();
+    } finally {
+      _$_WalletStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic getTestCoinsWQT() {
+    final _$actionInfo = _$_WalletStoreActionController.startAction(
+        name: '_WalletStore.getTestCoinsWQT');
+    try {
+      return super.getTestCoinsWQT();
+    } finally {
+      _$_WalletStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 type: ${type},
-coins: ${coins}
+coins: ${coins},
+isLoadingTest: ${isLoadingTest},
+errorTest: ${errorTest}
     ''';
   }
 }

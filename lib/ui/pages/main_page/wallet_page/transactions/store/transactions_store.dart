@@ -1,4 +1,3 @@
-
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/web3_extension.dart';
 import 'package:app/model/web3/transactions_response.dart';
@@ -10,16 +9,14 @@ import 'package:app/base_store/i_store.dart';
 
 import '../../../../../../constants.dart';
 
-
 part 'transactions_store.g.dart';
 
 @singleton
-class TransactionsStore extends TransactionsStoreBase with _$TransactionsStore{
-TransactionsStore(ApiProvider apiProvider) : super(apiProvider);
+class TransactionsStore extends TransactionsStoreBase with _$TransactionsStore {
+  TransactionsStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
 abstract class TransactionsStoreBase extends IStore<bool> with Store {
-
   final ApiProvider _apiProvider;
 
   TransactionsStoreBase(this._apiProvider);
@@ -38,6 +35,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   @action
   getTransactions({bool isForce = false}) async {
+    if (isLoading) return;
     if (isForce) {
       onLoading();
     }
@@ -100,8 +98,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
               tran.coin = TYPE_COINS.WUSD;
               break;
           }
-        }
-        else {
+        } else {
           switch (tran.toAddressHash!.hex!) {
             case AddressCoins.wqt:
               tran.coin = TYPE_COINS.WQT;
@@ -178,7 +175,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
           break;
       }
       result!.map((tran) {
-        final index = transactions.indexWhere((element) => element.hash == tran.hash);
+        final index =
+            transactions.indexWhere((element) => element.hash == tran.hash);
         if (index == -1) {
           transactions.add(tran);
         }
