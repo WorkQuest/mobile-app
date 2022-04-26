@@ -164,24 +164,35 @@ class _WalletPageState extends State<WalletPage> {
                   height: 20,
                 ),
                 Observer(
-                  builder: (_) => store.type == TYPE_COINS.WQT || store.type == TYPE_COINS.WUSD ? LoginButton(
-                          enabled: store.isLoadingTest,
-                          title: 'Get test coins',
-                          onTap: store.isLoadingTest ? null : () async {
-                            if (store.type == TYPE_COINS.WQT) {
-                              await store.getTestCoinsWQT();
-                            } else if (store.type == TYPE_COINS.WUSD) {
-                              await store.getTestCoinsWUSD();
-                            }
-                            if (store.errorTest.isNotEmpty) {
-                              AlertDialogUtils.showInfoAlertDialog(context,
-                                  title: 'Warning', content: store.errorTest);
-                            } else {
-                              AlertDialogUtils.showInfoAlertDialog(context,
-                                  title: 'Success', content: "The coins will arrive within 5 minutes.");
-                            }
-                          },
-                        ) : SizedBox(),
+                  builder: (_) {
+                    if (store.type == TYPE_COINS.WQT ||
+                        store.type == TYPE_COINS.WUSD) {
+                      return LoginButton(
+                        enabled: store.isLoadingTest,
+                        title: 'Get test coins',
+                        onTap: store.isLoadingTest
+                            ? null
+                            : () async {
+                                if (store.type == TYPE_COINS.WQT) {
+                                  await store.getTestCoinsWQT();
+                                } else if (store.type == TYPE_COINS.WUSD) {
+                                  await store.getTestCoinsWUSD();
+                                }
+                                if (store.errorTest.isNotEmpty) {
+                                  AlertDialogUtils.showInfoAlertDialog(context,
+                                      title: 'Warning',
+                                      content: store.errorTest);
+                                } else {
+                                  AlertDialogUtils.showInfoAlertDialog(context,
+                                      title: 'Success',
+                                      content:
+                                          "The coins will arrive within 5 minutes.");
+                                }
+                              },
+                      );
+                    }
+                    return SizedBox();
+                  },
                 )
               ],
             ),

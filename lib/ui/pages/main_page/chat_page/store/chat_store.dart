@@ -175,6 +175,10 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
       var chat = chats[message.chatId];
       if (chat == null) return;
+      if (chat.chatModel.lastMessage.id == message.id) {
+        //TODO because 2 times get message in websocket
+        return;
+      }
       chat.chatModel.lastMessage = message;
       chat.messages.insert(0, message);
 

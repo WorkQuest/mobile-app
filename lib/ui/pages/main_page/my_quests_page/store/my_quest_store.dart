@@ -60,7 +60,10 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   String myId = "";
 
+  UserRole role = UserRole.Worker;
+
   void setId(String value) => myId = value;
+  void setRole(UserRole value) => role = value;
 
   @action
   void changeLists(dynamic json) {
@@ -121,12 +124,12 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             quest.status == 1 ||
             quest.status == 3 ||
             quest.status == 5) &&
-        quest.assignedWorker?.id == myId)
+        (role != UserRole.Worker || quest.assignedWorker?.id == myId))
       active.add(quest);
-    else if (quest.status == 4 && quest.assignedWorker?.id == myId) {
+    else if (quest.status == 4 && (role != UserRole.Worker || quest.assignedWorker?.id == myId)) {
       invited.add(quest);
       // requested.add(quest);
-    } else if (quest.status == 6 && quest.assignedWorker?.id == myId)
+    } else if (quest.status == 6 && (role != UserRole.Worker || quest.assignedWorker?.id == myId))
       performed.add(quest);
     if (restoreStarred) starred.add(quest);
     sortQuests();
@@ -165,16 +168,20 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
     try {
       await Future.delayed(const Duration(milliseconds: 250));
       this.onLoading();
+      print('createNewList: $createNewList');
       if (createNewList) {
         this.offsetActive = 0;
         this.offsetInvited = 0;
         this.offsetPerformed = 0;
         this.offsetStarred = 0;
 
-        active.clear();
-        invited.clear();
-        performed.clear();
-        starred.clear();
+        active = ObservableList.of([]);
+        invited = ObservableList.of([]);
+        performed = ObservableList.of([]);
+        starred = ObservableList.of([]);
+        // invited.clear();
+        // performed.clear();
+        // starred.clear();
 
         loadActive = true;
         loadInvited = true;

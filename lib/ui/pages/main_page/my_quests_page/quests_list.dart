@@ -84,26 +84,29 @@ class QuestsList extends StatelessWidget {
   }
 
   Widget getEmptyBody(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SvgPicture.asset(
-          "assets/empty_quest_icon.svg",
-        ),
-        const SizedBox(
-          height: 10.0,
-        ),
-        Text(
-          "quests.youDontHaveAny".tr() +
-              " ${questItemPriorityType.name} " +
-              "quests.questYet".tr(),
-          style: TextStyle(
-            color: Color(0xFFD8DFE3),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            "assets/empty_quest_icon.svg",
           ),
-        ),
-      ],
+          const SizedBox(
+            height: 10.0,
+          ),
+          Text(
+            "quests.youDontHaveAny".tr() +
+                " ${questItemPriorityType.name} " +
+                "quests.questYet".tr(),
+            style: TextStyle(
+              color: Color(0xFFD8DFE3),
+            ),
+          ),
+          SizedBox(height: 150,),
+        ],
+      ),
     );
   }
 

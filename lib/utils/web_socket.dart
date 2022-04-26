@@ -62,8 +62,7 @@ class WebSocket {
   }
 
   void _connectNotification() {
-    _notificationChannel =
-        IOWebSocketChannel.connect("wss://app-ver1.workquest.co/api");
+    _notificationChannel = IOWebSocketChannel.connect("wss://app-ver1.workquest.co/api");
     _notificationChannel!.sink.add("""{
           "type": "hello",
           "id": 1,

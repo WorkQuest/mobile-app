@@ -3,6 +3,8 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../../widgets/image_viewer_widget.dart';
+
 class StarredMessageCell extends StatefulWidget {
   final MessageModel message;
   final int index;
@@ -79,6 +81,7 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
               Text(
                 widget.message.text ?? "",
                 style: TextStyle(
@@ -90,6 +93,15 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
               const SizedBox(
                 height: 5,
               ),
+              if (widget.message.medias.isNotEmpty)
+                Center(
+                  child: ImageViewerWidget(
+                    widget.message.medias,
+                    widget.message.senderUserId != widget.userId
+                        ? Color(0xFFFFFFFF)
+                        : Color(0xFF1D2127),
+                  ),
+                ),
               Row(
                 children: [
                   Text(
