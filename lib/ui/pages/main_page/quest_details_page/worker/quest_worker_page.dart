@@ -1,5 +1,6 @@
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
@@ -15,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+import 'package:share/share.dart';
 
 class QuestWorker extends QuestDetails {
   final bool isMyQuest;
@@ -32,6 +34,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   late WorkerStore store;
   late MyQuestStore myQuestStore;
   late QuestsStore questStore;
+  late ChatStore chatStore;
   List<Responded?> respondedList = [];
 
   AnimationController? controller;
@@ -44,6 +47,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     myQuestStore = context.read<MyQuestStore>();
     questStore = context.read<QuestsStore>();
     profile = context.read<ProfileMeStore>();
+    chatStore = context.read<ChatStore>();
+
     profile!.getProfileMe();
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
@@ -81,31 +86,40 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           },
         ),
       ),
-      if (store.quest.value!.assignedWorker?.id == profile!.userData!.id &&
-          (store.quest.value!.status == 1 || store.quest.value!.status == 5))
-        PopupMenuButton<String>(
-          elevation: 10,
-          icon: Icon(Icons.more_vert),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6.0),
-          ),
-          onSelected: (value) async {
-            AlertDialogUtils.showInfoAlertDialog(context,
-                title: 'Warning'.tr(), content: 'Service temporarily unavailable');
-          },
-          itemBuilder: (BuildContext context) {
-            return {
-              if (store.quest.value!.status == 1 ||
-                  store.quest.value!.status == 5)
-                "chat.report",
-            }.map((String choice) {
-              return PopupMenuItem<String>(
-                value: choice,
-                child: Text(choice.tr()),
-              );
-            }).toList();
-          },
-        ),
+    if (store.quest.value!.status == 0)
+      IconButton(
+        icon: Icon(Icons.share_outlined),
+        onPressed: () {
+          Share.share(
+              "https://app-ver1.workquest.co/quests/${widget.questInfo.id}");
+        },
+      ),
+      // if (store.quest.value!.assignedWorker?.id == profile!.userData!.id &&
+      //     (store.quest.value!.status == 1 || store.quest.value!.status == 5))
+      //   PopupMenuButton<String>(
+      //     elevation: 10,
+      //     icon: Icon(Icons.more_vert),
+      //     shape: RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(6.0),
+      //     ),
+      //     onSelected: (value) async {
+      //       AlertDialogUtils.showInfoAlertDialog(context,
+      //           title: 'Warning'.tr(),
+      //           content: 'Service temporarily unavailable');
+      //     },
+      //     itemBuilder: (BuildContext context) {
+      //       return {
+      //         if (store.quest.value!.status == 1 ||
+      //             store.quest.value!.status == 5)
+      //           "chat.report",
+      //       }.map((String choice) {
+      //         return PopupMenuItem<String>(
+      //           value: choice,
+      //           child: Text(choice.tr()),
+      //         );
+      //       }).toList();
+      //     },
+      //   ),
     ];
   }
 
@@ -118,50 +132,53 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       ),
       store.quest.value!.status,
       false,
+      store.response,
+      profile!.userData!.id == store.quest.value!.assignedWorker?.id,
     );
   }
 
   @override
   Widget review() {
-    print(store.quest.value!.status);
-    print(profile!.review);
-    print(store.quest.value!.userId == profile!.userData!.id);
-    print(store.quest.value!.assignedWorker?.id == profile!.userData!.id);
     return store.quest.value!.status == 6 &&
             !profile!.review &&
             (store.quest.value!.userId == profile!.userData!.id ||
                 store.quest.value!.assignedWorker?.id == profile!.userData!.id)
-        ? TextButton(
-            onPressed: () async {
-              await Navigator.pushNamed(
-                context,
-                CreateReviewPage.routeName,
-                arguments: storeQuest.questInfo,
-              );
-              widget.questInfo.yourReview != null
-                  ? profile!.review = true
-                  : profile!.review = false;
-            },
-            child: Text(
-              "quests.addReview".tr(),
-              style: TextStyle(color: Colors.white),
-            ),
-            style: ButtonStyle(
-              fixedSize: MaterialStateProperty.all(
-                Size(double.maxFinite, 43),
-              ),
-              backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                (Set<MaterialState> states) {
-                  if (states.contains(MaterialState.pressed))
-                    return Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withOpacity(0.5);
-                  return const Color(0xFF0083C7);
+        ? Column(
+          children: [
+            const SizedBox(height: 20),
+            TextButton(
+                onPressed: () async {
+                  await Navigator.pushNamed(
+                    context,
+                    CreateReviewPage.routeName,
+                    arguments: storeQuest.questInfo,
+                  );
+                  widget.questInfo.yourReview != null
+                      ? profile!.review = true
+                      : profile!.review = false;
                 },
+                child: Text(
+                  "quests.addReview".tr(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(
+                    Size(double.maxFinite, 43),
+                  ),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed))
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
+                      return const Color(0xFF0083C7);
+                    },
+                  ),
+                ),
               ),
-            ),
-          )
+          ],
+        )
         : SizedBox();
   }
 
@@ -172,46 +189,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       builder: (_) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (store.quest.value!.yourReview != null)
-            Column(
-              children: [
-                const SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "quests.yourReview".tr(),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "${store.quest.value!.yourReview!.message}",
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    for (int i = 0;
-                        i < store.quest.value!.yourReview!.mark;
-                        i++)
-                      Icon(
-                        Icons.star,
-                        color: Color(0xFFE8D20D),
-                        size: 20.0,
-                      ),
-                    for (int i = 0;
-                        i < 5 - store.quest.value!.yourReview!.mark;
-                        i++)
-                      Icon(
-                        Icons.star,
-                        color: Color(0xFFE9EDF2),
-                        size: 20.0,
-                      ),
-                  ],
-                ),
-              ],
-            ),
           const SizedBox(height: 20),
           Row(
             children: [
@@ -292,7 +269,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
@@ -321,7 +301,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
@@ -441,7 +424,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                           updatedAt: DateTime.now(),
                         );
                         for (int i = 0; i < questStore.questsList.length; i++)
-                          if (questStore.questsList[i].id == widget.questInfo.id)
+                          if (questStore.questsList[i].id ==
+                              widget.questInfo.id)
                             questStore.questsList[i].responded = Responded(
                               id: "",
                               workerId: profile!.userData!.id,
@@ -457,6 +441,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                             : questStore.setSearchWord(questStore.searchWord);
                         myQuestStore.deleteQuest(widget.questInfo.id);
                         myQuestStore.addQuest(widget.questInfo, true);
+                        chatStore.loadChats(true, false);
                         _updateLoading();
                         await Future.delayed(const Duration(milliseconds: 250));
                         Navigator.pop(context);

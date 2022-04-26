@@ -9,6 +9,7 @@ import 'package:app/ui/pages/main_page/quest_page/notification_page/notification
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/utils/alert_dialog.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,8 @@ class _QuestListState extends State<QuestList> {
 
   FilterQuestsStore? filterQuestsStore;
 
-  final QuestItemPriorityType questItemPriorityType = QuestItemPriorityType.Starred;
+  final QuestItemPriorityType questItemPriorityType =
+      QuestItemPriorityType.Starred;
   final scrollKey = new GlobalKey();
 
   @override
@@ -118,13 +120,16 @@ class _QuestListState extends State<QuestList> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => Navigator.of(
-                    context,
-                    rootNavigator: true,
-                  ).pushNamed(
-                    NotificationPage.routeName,
-                    arguments: profileMeStore!.userData!.id,
-                  ),
+                  onTap: () => AlertDialogUtils.showInfoAlertDialog(context,
+                      title: 'Warning'.tr(),
+                      content: 'Service temporarily unavailable'),
+                  //     Navigator.of(
+                  //   context,
+                  //   rootNavigator: true,
+                  // ).pushNamed(
+                  //   NotificationPage.routeName,
+                  //   arguments: profileMeStore!.userData!.id,
+                  // ),
                   child: const Icon(Icons.notifications_none_outlined),
                 ),
                 const SizedBox(width: 20.0)
@@ -160,9 +165,9 @@ class _QuestListState extends State<QuestList> {
                   padding: const EdgeInsets.all(20.0),
                   child: OutlinedButton(
                     onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true).pushNamed(
-                          FilterQuestsPage.routeName,
-                          arguments: filterQuestsStore!.skillFilters);
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(FilterQuestsPage.routeName,
+                              arguments: filterQuestsStore!.skillFilters);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(
@@ -332,11 +337,12 @@ class _AnimationWorkersQuestsItems extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AnimationWorkersQuestsItemsState createState() => _AnimationWorkersQuestsItemsState();
+  _AnimationWorkersQuestsItemsState createState() =>
+      _AnimationWorkersQuestsItemsState();
 }
 
-class _AnimationWorkersQuestsItemsState extends State<_AnimationWorkersQuestsItems>
-    with TickerProviderStateMixin {
+class _AnimationWorkersQuestsItemsState
+    extends State<_AnimationWorkersQuestsItems> with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override

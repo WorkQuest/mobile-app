@@ -278,8 +278,49 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         ],
                       ),
                       getBody(),
-                      const SizedBox(height: 20),
                       review(),
+                      if (storeQuest.questInfo!.yourReview != null)
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                for (int i = 0;
+                                    i < storeQuest.questInfo!.yourReview!.mark;
+                                    i++)
+                                  Icon(
+                                    Icons.star,
+                                    color: Color(0xFFE8D20D),
+                                    size: 20.0,
+                                  ),
+                                for (int i = 0;
+                                    i <
+                                        5 -
+                                            storeQuest
+                                                .questInfo!.yourReview!.mark;
+                                    i++)
+                                  Icon(
+                                    Icons.star,
+                                    color: Color(0xFFE9EDF2),
+                                    size: 20.0,
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "quests.yourReview".tr(),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "${storeQuest.questInfo!.yourReview!.message}",
+                              ),
+                            ),
+                          ],
+                        ),
                       const SizedBox(height: 20),
                     ],
                   ),

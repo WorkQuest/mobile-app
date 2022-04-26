@@ -5,11 +5,19 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../enums.dart';
 
 class QuestHeader extends StatelessWidget {
-  const QuestHeader(this.itemType, this.questStatus, this.rounded);
+  const QuestHeader(
+    this.itemType,
+    this.questStatus,
+    this.rounded,
+    this.responded,
+    this.forMe,
+  );
 
   final QuestItemPriorityType itemType;
   final int questStatus;
   final bool rounded;
+  final bool responded;
+  final bool forMe;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +33,20 @@ class QuestHeader extends StatelessWidget {
             color: Colors.green,
             title: "quests.employerConfirmationPending",
           );
+        } else if (responded && questStatus == 0) {
+          return header(
+            color: Color(0xFF0083C7),
+            title: "quests.responded",
+          );
+        } else if (responded && !forMe) {
+          return header(
+            color: Colors.red,
+            title: "quests.responded",
+          );
+        } else if (questStatus == 0) {
+          return SizedBox(
+            height: 16,
+          );
         } else {
           return header(
             color: AppColor.green,
@@ -32,17 +54,34 @@ class QuestHeader extends StatelessWidget {
           );
         }
       case QuestItemPriorityType.Invited:
-        return header(
-          color: Color(0xFFE8D20D),
-          title: "quests.youInvited",
-        );
+        if (forMe)
+          return header(
+            color: Color(0xFFE8D20D),
+            title: "quests.youInvited",
+          );
+        else if (responded)
+          return header(
+            color: Colors.red,
+            title: "quests.responded",
+          );
+        else
+          return header(
+            color: Color(0xFFE8D20D),
+            title: "quests.employeeAwaited",
+          );
+
       case QuestItemPriorityType.Requested:
         return header(
             color: Color(0xFFF7F8FA),
             title: "quests.requested",
             textColor: Color(0xFFAAB0B9));
       case QuestItemPriorityType.Performed:
-        if (questStatus == 5) {
+        if (!forMe && responded)
+          return header(
+            color: Colors.red,
+            title: "quests.responded",
+          );
+        else if (questStatus == 5) {
           return header(
             color: Color(0xFF0083C7),
             title: "quests.waitConfirm",
@@ -55,10 +94,14 @@ class QuestHeader extends StatelessWidget {
                 : "quests.performed",
           );
         }
-      case QuestItemPriorityType.Starred:
+      default:
         return SizedBox(
           height: 16,
         );
+      // case QuestItemPriorityType.Starred:
+      //   return SizedBox(
+      //     height: 16,
+      //   );
     }
   }
 

@@ -142,15 +142,17 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
               ? await _apiProvider.getQuests(
                   offset: offset,
                   sort: sort,
-                  performing: true,
-                  invited: false,
+                  statuses: [6],
+                  // performing: true,
+                  // invited: false,
                 )
               : await _apiProvider.getEmployerQuests(
                   offset: offset,
                   sort: sort,
                   userId: userId,
-                  performing: true,
-                  invited: false,
+                  statuses: [6],
+                  // performing: true,
+                  // invited: false,
                 ),
         );
         offset += 10;
@@ -178,12 +180,13 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
               ? await _apiProvider.getQuests(
                   offset: offset,
                   sort: sort,
+                  statuses: [1, 3, 5],
                 )
               : await _apiProvider.getWorkerQuests(
                   offset: offset,
                   sort: sort,
                   userId: userId,
-                  // statuses: [1, 3, 5],
+                  statuses: [1, 3, 5],
                 ),
         );
         offset += 10;
@@ -215,7 +218,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
-
 
   changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {
