@@ -4,7 +4,6 @@ import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
@@ -18,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+import 'package:share/share.dart';
 
 class QuestWorker extends QuestDetails {
   final bool isMyQuest;
@@ -47,6 +47,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     myQuestStore = context.read<MyQuestStore>();
     questStore = context.read<QuestsStore>();
     profile = context.read<ProfileMeStore>();
+
     profile!.getProfileMe();
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
@@ -84,8 +85,16 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           },
         ),
       ),
+      if (store.quest.value!.status == 0)
+        IconButton(
+          icon: Icon(Icons.share_outlined),
+          onPressed: () {
+            Share.share(
+                "https://app-ver1.workquest.co/quests/${widget.questInfo.id}");
+          },
+        ),
       if (store.quest.value!.assignedWorker?.id == profile!.userData!.id &&
-          (store.quest.value!.status == 1 || store.quest.value!.status == 5))
+          (store.quest.value!.status == 3 || store.quest.value!.status == 4))
         PopupMenuButton<String>(
           elevation: 10,
           icon: Icon(Icons.more_vert),
@@ -93,18 +102,14 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            if ((store.quest.value!.status == 1 ||
-                    store.quest.value!.status == 5) &&
-                value == "chat.report")
-              await Navigator.of(context, rootNavigator: true).pushNamed(
-                OpenDisputePage.routeName,
-                arguments: store.quest.value!,
-              );
+            AlertDialogUtils.showInfoAlertDialog(context,
+                title: 'Warning'.tr(),
+                content: 'Service temporarily unavailable');
           },
           itemBuilder: (BuildContext context) {
             return {
-              if (store.quest.value!.status == 1 ||
-                  store.quest.value!.status == 5)
+              if (store.quest.value!.status == 3 ||
+                  store.quest.value!.status == 4)
                 "chat.report",
             }.map((String choice) {
               return PopupMenuItem<String>(
@@ -126,49 +131,52 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       ),
       store.quest.value!.status,
       false,
+      store.response,
+      profile!.userData!.id == store.quest.value!.assignedWorker?.id,
     );
   }
 
   @override
   Widget review() {
-    print(store.quest.value!.status);
-    print(profile!.review);
-    print(store.quest.value!.userId == profile!.userData!.id);
-    print(store.quest.value!.assignedWorker?.id == profile!.userData!.id);
-    return store.quest.value!.status == 6 &&
+    return store.quest.value!.status == 5 &&
             !profile!.review &&
             (store.quest.value!.userId == profile!.userData!.id ||
                 store.quest.value!.assignedWorker?.id == profile!.userData!.id)
-        ? TextButton(
-            onPressed: () async {
-              await Navigator.pushNamed(
-                context,
-                CreateReviewPage.routeName,
-                arguments: storeQuest.questInfo,
-              );
-              widget.questInfo.yourReview != null
-                  ? profile!.review = true
-                  : profile!.review = false;
-            },
-            child: Text(
-              "quests.addReview".tr(),
-              style: TextStyle(color: Colors.white),
-            ),
-            style: ButtonStyle(
-              fixedSize: MaterialStateProperty.all(
-                Size(double.maxFinite, 43),
-              ),
-              backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                (Set<MaterialState> states) {
-                  if (states.contains(MaterialState.pressed))
-                    return Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withOpacity(0.5);
-                  return const Color(0xFF0083C7);
+        ? Column(
+            children: [
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () async {
+                  await Navigator.pushNamed(
+                    context,
+                    CreateReviewPage.routeName,
+                    arguments: storeQuest.questInfo,
+                  );
+                  widget.questInfo.yourReview != null
+                      ? profile!.review = true
+                      : profile!.review = false;
                 },
+                child: Text(
+                  "quests.addReview".tr(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(
+                    Size(double.maxFinite, 43),
+                  ),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed))
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
+                      return const Color(0xFF0083C7);
+                    },
+                  ),
+                ),
               ),
-            ),
+            ],
           )
         : SizedBox();
   }
@@ -180,46 +188,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       builder: (_) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (store.quest.value!.yourReview != null)
-            Column(
-              children: [
-                const SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "quests.yourReview".tr(),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "${store.quest.value!.yourReview!.message}",
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    for (int i = 0;
-                        i < store.quest.value!.yourReview!.mark;
-                        i++)
-                      Icon(
-                        Icons.star,
-                        color: Color(0xFFE8D20D),
-                        size: 20.0,
-                      ),
-                    for (int i = 0;
-                        i < 5 - store.quest.value!.yourReview!.mark;
-                        i++)
-                      Icon(
-                        Icons.star,
-                        color: Color(0xFFE9EDF2),
-                        size: 20.0,
-                      ),
-                  ],
-                ),
-              ],
-            ),
           const SizedBox(height: 20),
           Row(
             children: [
@@ -239,7 +207,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           const SizedBox(height: 20),
           Observer(
             builder: (_) => !store.response &&
-                    (store.quest.value!.status == 1) &&
+                    store.quest.value!.status == 1 &&
                     store.quest.value!.invited == null
                 ? store.isLoading
                     ? Center(
@@ -248,13 +216,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     : TextButton(
                         onPressed: () {
                           bottomForm(
-                            child: _BottomRespondWidget(
-                              store: store,
-                              profile: profile!,
-                              questInfo: widget.questInfo,
-                              questStore: questStore,
-                              myQuestStore: myQuestStore,
-                            ),
+                            child: bottomRespond(),
                           );
                         },
                         child: Text(
@@ -284,7 +246,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   store.quest.value!.assignedWorker?.id ==
                       profile!.userData!.id ||
               (store.quest.value!.invited != null &&
-                  store.quest.value!.invited?.status == 0))
+                  store.quest.value!.invited?.status == 1))
             store.isLoading
                 ? Center(
                     child: CircularProgressIndicator.adaptive(),
@@ -292,13 +254,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 : TextButton(
                     onPressed: () {
                       bottomForm(
-                        child: _BottomAcceptRejectWidget(
-                          store: store,
-                          profile: profile!,
-                          questInfo: widget.questInfo,
-                          questStore: questStore,
-                          myQuestStore: myQuestStore,
-                        ),
+                        child: bottomAcceptReject(),
                       );
                     },
                     child: Text(
@@ -330,13 +286,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 : TextButton(
                     onPressed: () {
                       bottomForm(
-                        child: _BottomCompleteWidget(
-                          store: store,
-                          profile: profile!,
-                          questInfo: widget.questInfo,
-                          questStore: questStore,
-                          myQuestStore: myQuestStore,
-                        ),
+                        child: bottomComplete(),
                       );
                     },
                     child: Text(
@@ -422,248 +372,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     );
   }
 
-  @override
-  void dispose() {
-    store.quest.value!.update(store.quest.value!);
-    super.dispose();
-  }
-}
-
-class _BottomCompleteWidget extends StatefulWidget {
-  final BaseQuestResponse questInfo;
-  final MyQuestStore myQuestStore;
-  final QuestsStore questStore;
-  final ProfileMeStore profile;
-  final WorkerStore store;
-
-  const _BottomCompleteWidget({
-    Key? key,
-    required this.store,
-    required this.profile,
-    required this.questInfo,
-    required this.questStore,
-    required this.myQuestStore,
-  }) : super(key: key);
-
-  @override
-  _BottomCompleteWidgetState createState() => _BottomCompleteWidgetState();
-}
-
-class _BottomCompleteWidgetState extends State<_BottomCompleteWidget> {
-  late WorkerStore store;
-  late MyQuestStore myQuestStore;
-  late QuestsStore questStore;
-  late ProfileMeStore profile;
-
-  bool _isLoading = false;
-
-
-  @override
-  void initState() {
-    super.initState();
-    store = widget.store;
-    myQuestStore = widget.myQuestStore;
-    questStore = widget.questStore;
-    profile = widget.profile;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox(height: 23),
-        Text(
-          "quests.areYouSureTheQuestIsComplete".tr(),
-          style: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 15),
-        LoginButton(
-          withColumn: true,
-          enabled: _isLoading,
-          title: "quests.completeTheQuest".tr(),
-          onTap: () async {
-            _updateLoading();
-            await store.sendCompleteWork();
-            store.setQuestStatus(5);
-            await myQuestStore.deleteQuest(store.quest.value!.id);
-            await myQuestStore.addQuest(store.quest.value!, true);
-            _updateLoading();
-            await Future.delayed(const Duration(milliseconds: 250));
-            Navigator.pop(context);
-            Navigator.pop(context);
-            await AlertDialogUtils.showSuccessDialog(context);
-          },
-        ),
-        const SizedBox(height: 15),
-      ],
-    );
-  }
-
-  _updateLoading() {
-    setState(() {
-      _isLoading = !_isLoading;
-    });
-  }
-}
-
-class _BottomAcceptRejectWidget extends StatefulWidget {
-  final BaseQuestResponse questInfo;
-  final MyQuestStore myQuestStore;
-  final QuestsStore questStore;
-  final ProfileMeStore profile;
-  final WorkerStore store;
-
-  const _BottomAcceptRejectWidget({
-    Key? key,
-    required this.store,
-    required this.profile,
-    required this.questInfo,
-    required this.questStore,
-    required this.myQuestStore,
-  }) : super(key: key);
-
-  @override
-  _BottomAcceptRejectWidgetState createState() =>
-      _BottomAcceptRejectWidgetState();
-}
-
-class _BottomAcceptRejectWidgetState extends State<_BottomAcceptRejectWidget> {
-  late WorkerStore store;
-  late MyQuestStore myQuestStore;
-  late QuestsStore questStore;
-  late ProfileMeStore profile;
-
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    store = widget.store;
-    myQuestStore = widget.myQuestStore;
-    questStore = widget.questStore;
-    profile = widget.profile;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        const SizedBox(height: 23),
-        Text(
-          "quests.answerOnQuest.title".tr(),
-          style: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 15),
-        LoginButton(
-          withColumn: true,
-          enabled: _isLoading,
-          onTap: () async {
-            _updateLoading();
-            if (store.quest.value!.invited == null) {
-              await store.sendAcceptOnQuest();
-              store.setQuestStatus(1);
-              myQuestStore.deleteQuest(store.quest.value!.id);
-              myQuestStore.addQuest(
-                  store.quest.value!, store.quest.value!.star);
-            } else {
-              await store.acceptInvite(store.quest.value!.invited!.id);
-              questStore.getQuests(true);
-            }
-            _updateLoading();
-            await Future.delayed(const Duration(milliseconds: 250));
-            Navigator.pop(context);
-            Navigator.pop(context);
-            await AlertDialogUtils.showSuccessDialog(context);
-          },
-          title: "quests.answerOnQuest.accept".tr(),
-        ),
-        const SizedBox(height: 15),
-        LoginButton(
-          withColumn: true,
-          enabled: _isLoading,
-          onTap: () async {
-            _updateLoading();
-            if (store.quest.value!.invited == null) {
-              await store.sendRejectOnQuest();
-              if (store.quest.value!.responded != null) {
-                store.quest.value!.responded?.status = -1;
-              }
-              store.setQuestStatus(0);
-              store.quest.value!.assignedWorker = null;
-              myQuestStore.deleteQuest(store.quest.value!.id);
-              myQuestStore.addQuest(
-                  store.quest.value!, store.quest.value!.star);
-            } else {
-              await store.rejectInvite(store.quest.value!.invited!.id);
-              questStore.getQuests(true);
-            }
-            _updateLoading();
-            await Future.delayed(const Duration(milliseconds: 250));
-            Navigator.pop(context);
-            Navigator.pop(context);
-            await AlertDialogUtils.showSuccessDialog(context);
-          },
-          title: "quests.answerOnQuest.reject".tr(),
-        ),
-        const SizedBox(height: 15),
-      ],
-    );
-  }
-
-  _updateLoading() {
-    setState(() {
-      _isLoading = !_isLoading;
-    });
-  }
-}
-
-class _BottomRespondWidget extends StatefulWidget {
-  final MyQuestStore myQuestStore;
-  final QuestsStore questStore;
-  final ProfileMeStore profile;
-  final BaseQuestResponse questInfo;
-  final WorkerStore store;
-
-  const _BottomRespondWidget({
-    Key? key,
-    required this.store,
-    required this.profile,
-    required this.questInfo,
-    required this.questStore,
-    required this.myQuestStore,
-  }) : super(key: key);
-
-  @override
-  _BottomRespondWidgetState createState() => _BottomRespondWidgetState();
-}
-
-class _BottomRespondWidgetState extends State<_BottomRespondWidget> {
-  late WorkerStore store;
-  late MyQuestStore myQuestStore;
-  late QuestsStore questStore;
-  late ProfileMeStore profile;
-
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    store = widget.store;
-    myQuestStore = widget.myQuestStore;
-    questStore = widget.questStore;
-    profile = widget.profile;
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  bottomRespond() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -702,18 +411,18 @@ class _BottomRespondWidgetState extends State<_BottomRespondWidget> {
         Observer(
           builder: (_) => LoginButton(
             withColumn: true,
-            enabled: _isLoading,
+            enabled: isLoading,
             onTap: store.opinion.isNotEmpty ||
                     store.mediaFile.isNotEmpty ||
                     store.mediaIds.isNotEmpty
                 ? () async {
-                    if (!_isLoading) {
+                    if (!isLoading) {
                       _updateLoading();
                       await store.sendRespondOnQuest(store.opinion);
                       if (store.isSuccess) {
                         widget.questInfo.responded = Responded(
                           id: "",
-                          workerId: profile.userData!.id,
+                          workerId: profile!.userData!.id,
                           questId: widget.questInfo.id,
                           status: 0,
                           type: 0,
@@ -726,7 +435,7 @@ class _BottomRespondWidgetState extends State<_BottomRespondWidget> {
                               widget.questInfo.id)
                             questStore.questsList[i].responded = Responded(
                               id: "",
-                              workerId: profile.userData!.id,
+                              workerId: profile!.userData!.id,
                               questId: widget.questInfo.id,
                               status: 0,
                               type: 0,
@@ -742,6 +451,7 @@ class _BottomRespondWidgetState extends State<_BottomRespondWidget> {
                         _updateLoading();
                         await Future.delayed(const Duration(milliseconds: 250));
                         Navigator.pop(context);
+                        Navigator.pop(context);
                         await AlertDialogUtils.showSuccessDialog(context);
                       }
                     }
@@ -755,9 +465,116 @@ class _BottomRespondWidgetState extends State<_BottomRespondWidget> {
     );
   }
 
+  bottomAcceptReject() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const SizedBox(height: 23),
+        Text(
+          "quests.answerOnQuest.title".tr(),
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 15),
+        LoginButton(
+          withColumn: true,
+          enabled: isLoading,
+          onTap: () async {
+            _updateLoading();
+            if (store.quest.value!.invited == null) {
+              await store.sendAcceptOnQuest();
+              store.setQuestStatus(3);
+              myQuestStore.deleteQuest(store.quest.value!.id);
+              myQuestStore.addQuest(
+                  store.quest.value!, store.quest.value!.star);
+            } else {
+              await store.acceptInvite(store.quest.value!.invited!.id);
+              questStore.getQuests(true);
+            }
+            _updateLoading();
+            await Future.delayed(const Duration(milliseconds: 250));
+            Navigator.pop(context);
+            await AlertDialogUtils.showSuccessDialog(context);
+          },
+          title: "quests.answerOnQuest.accept".tr(),
+        ),
+        const SizedBox(height: 15),
+        LoginButton(
+          withColumn: true,
+          enabled: isLoading,
+          onTap: () async {
+            _updateLoading();
+            if (store.quest.value!.invited == null) {
+              await store.sendRejectOnQuest();
+              if (store.quest.value!.responded != null) {
+                store.quest.value!.responded?.status = -1;
+              }
+              store.setQuestStatus(1);
+              store.quest.value!.assignedWorker = null;
+              myQuestStore.deleteQuest(store.quest.value!.id);
+              myQuestStore.addQuest(
+                  store.quest.value!, store.quest.value!.star);
+            } else {
+              await store.rejectInvite(store.quest.value!.invited!.id);
+              questStore.getQuests(true);
+            }
+            _updateLoading();
+            await Future.delayed(const Duration(milliseconds: 250));
+            Navigator.pop(context);
+            await AlertDialogUtils.showSuccessDialog(context);
+          },
+          title: "quests.answerOnQuest.reject".tr(),
+        ),
+        const SizedBox(height: 15),
+      ],
+    );
+  }
+
   _updateLoading() {
     setState(() {
-      _isLoading = !_isLoading;
+      isLoading = !isLoading;
     });
+  }
+
+  bottomComplete() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const SizedBox(height: 23),
+        Text(
+          "quests.areYouSureTheQuestIsComplete".tr(),
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 15),
+        LoginButton(
+          withColumn: true,
+          enabled: store.isLoading,
+          title: "quests.completeTheQuest".tr(),
+          onTap: () async {
+            _updateLoading();
+            await store.sendCompleteWork();
+            store.setQuestStatus(4);
+            await myQuestStore.deleteQuest(store.quest.value!.id);
+            await myQuestStore.addQuest(store.quest.value!, true);
+            _updateLoading();
+            await Future.delayed(const Duration(milliseconds: 250));
+            Navigator.pop(context);
+            await AlertDialogUtils.showSuccessDialog(context);
+          },
+        ),
+        const SizedBox(height: 15),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    store.quest.value!.update(store.quest.value!);
+    super.dispose();
   }
 }

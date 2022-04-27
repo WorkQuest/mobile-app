@@ -201,10 +201,12 @@ class WorkersItem extends StatelessWidget {
       switch (type) {
         case 0:
           return Color(0xFFF6CF00);
+        case 1:
+          return Color(0xFFF6CF00);
         case 2:
           return Color(0xFFBBC0C7);
         case 3:
-          return Color(0xC3936C);
+          return Color(0xFFB79768);
         default:
           return Colors.transparent;
       }

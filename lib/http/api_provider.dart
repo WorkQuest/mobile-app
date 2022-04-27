@@ -156,28 +156,33 @@ extension QuestService on ApiProvider {
     String userId = "",
     int limit = 10,
     int offset = 0,
-    int? priority,
     String sort = "",
+    bool invited = false,
     List<int> statuses = const [],
-    bool? invited,
-    bool? performing,
-    bool? starred,
+    required bool me,
   }) async {
     try {
       String status = "";
       statuses.forEach((text) {
         status += "statuses[]=$text&";
       });
-      final responseData = await httpClient.post(
-        query:
-            "/v1/employer/$userId/get-quests?$status$sort&offset=$offset&limit=$limit",
-        data: {
-          if (priority != null) "priority": priority,
-          if (invited != null) "invited": invited,
-          if (performing != null) "performing": performing,
-          if (starred != null) "starred": starred,
-        },
-      );
+      var responseData;
+      if (me)
+        responseData = await httpClient.post(
+          query: "/v1/me/employer/get-quests?offset=$offset&limit=$limit"
+              "&invited=$invited&$status$sort",
+          data: {
+            "specializations": [],
+          },
+        );
+      else
+        responseData = await httpClient.post(
+          query: "/v1/employer/$userId/get-quests?offset=$offset&limit=$limit"
+              "&invited=$invited&$status$sort",
+          data: {
+            "specializations": [],
+          },
+        );
       return List<BaseQuestResponse>.from(
           responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)));
     } catch (e, trace) {
@@ -209,22 +214,34 @@ extension QuestService on ApiProvider {
     String userId = "",
     int limit = 10,
     int offset = 0,
-    List<int> statuses = const [],
     String sort = "",
-    bool? invited,
-    bool? performing,
-    bool? starred,
-    String? north,
-    String? south,
+    bool invited = false,
+    bool starred = false,
+    List<int> statuses = const [],
+    required bool me,
   }) async {
     String status = "";
     statuses.forEach((text) {
-      status += "statuses=$text&";
+      status += "statuses[]=$text&";
     });
-    final responseData = await httpClient.post(
-      query: '/v1/worker/$userId/get-quests?limit=$limit&offset=$offset&$status'
-          'invited=$invited&performing=$performing&starred=$starred&$sort',
-    );
+    var responseData;
+    if (me)
+      responseData = await httpClient.post(
+        query: '/v1/me/worker/get-quests?limit=$limit&offset=$offset&$status'
+            'invited=$invited&starred=$starred&$sort',
+        data: {
+          "specializations": [],
+        },
+      );
+    else
+      responseData = await httpClient.post(
+        query:
+            '/v1/worker/$userId/get-quests?limit=$limit&offset=$offset&$status'
+            'invited=$invited&$sort',
+        data: {
+          "specializations": [],
+        },
+      );
 
     return List<BaseQuestResponse>.from(
       responseData["quests"].map(
@@ -251,23 +268,21 @@ extension QuestService on ApiProvider {
     String sort = "",
     List<String>? specializations,
     bool invited = false,
-    bool performing = false,
-    bool starred = false,
   }) async {
     String priorities = "";
     priority.forEach((text) {
       print(text);
-      priorities += "priorities=$text&";
+      priorities += "priorities[]=$text&";
     });
     String workplaces = "";
     workplace.forEach((text) {
       print(text);
-      workplaces += "workplaces=$text&";
+      workplaces += "workplaces[]=$text&";
     });
     String employments = "";
     employment.forEach((text) {
       print(text);
-      employments += "employments=$text&";
+      employments += "employments[]=$text&";
     });
     String search = '';
     if (searchWord.isNotEmpty) {
@@ -276,10 +291,9 @@ extension QuestService on ApiProvider {
     final responseData = await httpClient.post(
       query:
           '/v1/get-quests?offset=$offset&limit=$limit&$workplaces$employments'
-          '$priorities$sort$price&invited=$invited&starred=$starred&'
-          'performing=$performing&$search',
+          '$priorities$price&invited=$invited&$search$sort',
       data: {
-        if (specializations != null)"specializations": specializations,
+        if (specializations != null) "specializations": specializations,
       },
     );
 
@@ -301,23 +315,19 @@ extension QuestService on ApiProvider {
     List<int> priority = const [],
     List<int> ratingStatus = const [],
     List<String> workplace = const [],
-    List<String> specializations = const [],
+    List<String>? specializations,
   }) async {
-    String specialization = "";
-    specializations.forEach((text) {
-      specialization += "specializations=$text&";
-    });
     String priorities = "";
     String ratingStatuses = "";
     priority.forEach((text) {
-      priorities += "priorities=$text&";
+      priorities += "priorities[]=$text&";
     });
     ratingStatus.forEach((text) {
-      ratingStatuses += "ratingStatuses=$text&";
+      ratingStatuses += "ratingStatuses[]=$text&";
     });
     String workplaces = "";
     workplace.forEach((text) {
-      workplaces += "workplaces=$text&";
+      workplaces += "workplaces[]=$text&";
     });
     String search = '';
     if (searchWord.isNotEmpty) {
@@ -328,7 +338,7 @@ extension QuestService on ApiProvider {
           '/v1/profile/get-workers?$search$priorities$ratingStatuses$workplaces'
           '$sort&$price&offset=$offset&limit=$limit',
       data: {
-        "specializations": specializations,
+        "specializations": specializations ?? [],
       },
     );
 
@@ -561,13 +571,6 @@ extension Notification on ApiProvider {
     required int offset,
   }) async {
     try {
-      // String workplaces = "";
-      // workplace.forEach((text) {
-      //   workplaces += "workplaces[]=$text&";
-      // });
-      // final responseData = await httpClient.get(
-      //   query:
-      //   '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort&$specialization',
       final responseData = await httpClient.get(
         query: 'https://notifications.workquest.co/api/notifications',
         queryParameters: {

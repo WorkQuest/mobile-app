@@ -138,19 +138,20 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       if (offset == quests.length) {
         this.onLoading();
         quests.addAll(
-          isProfileYours
-              ? await _apiProvider.getQuests(
+          userData!.role == UserRole.Employer
+              ? await _apiProvider.getEmployerQuests(
                   offset: offset,
                   sort: sort,
-                  performing: true,
                   invited: false,
+                  statuses: [5],
+                  me: isProfileYours ? true : false,
                 )
-              : await _apiProvider.getEmployerQuests(
+              : await _apiProvider.getWorkerQuests(
                   offset: offset,
                   sort: sort,
-                  userId: userId,
-                  performing: true,
                   invited: false,
+                  statuses: [5],
+                  me: isProfileYours ? true : false,
                 ),
         );
         offset += 10;
@@ -174,17 +175,13 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       if (offset == quests.length) {
         this.onLoading();
         quests.addAll(
-          isProfileYours
-              ? await _apiProvider.getQuests(
-                  offset: offset,
-                  sort: sort,
-                )
-              : await _apiProvider.getWorkerQuests(
-                  offset: offset,
-                  sort: sort,
-                  userId: userId,
-                  // statuses: [1, 3, 5],
-                ),
+          await _apiProvider.getWorkerQuests(
+            offset: offset,
+            sort: sort,
+            userId: userId,
+            statuses: [3, 4],
+            me: isProfileYours ? true : false,
+          ),
         );
         offset += 10;
         this.onSuccess(true);
@@ -215,7 +212,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
-
 
   changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {

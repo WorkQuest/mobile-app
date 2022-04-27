@@ -285,9 +285,10 @@ extension CreateContract on ClientService {
     final ethFunction =
         contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
+    final _cost = double.parse(cost) + double.parse(cost) * 0.01;
     final _value = EtherAmount.fromUnitAndValue(
       EtherUnit.wei,
-      BigInt.from(double.parse(cost) * pow(10, 18)),
+      BigInt.from(_cost * pow(10, 18)),
     );
     final _gas = await getGas();
     await handleContract(

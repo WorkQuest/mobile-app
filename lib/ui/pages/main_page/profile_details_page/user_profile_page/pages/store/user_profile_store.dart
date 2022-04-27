@@ -100,19 +100,11 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
         this.onLoading();
         //TODO:offset scroll
         if (role == UserRole.Employer) {
-          quests.addAll(isProfileYours
-              ? await _apiProvider.getQuests(
+          quests.addAll(await _apiProvider.getEmployerQuests(
             offset: offset,
-            performing: true,
             invited: false,
             sort: "sort[createdAt]=desc",
-          )
-              : await _apiProvider.getEmployerQuests(
-            userId: userId,
-            offset: offset,
-            performing: true,
-            invited: false,
-            sort: "sort[createdAt]=desc",
+            me: isProfileYours ? true : false,
           ));
         }
         if (role == UserRole.Worker) {
@@ -123,10 +115,10 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
         }
 
         quests.toList().sort((key1, key2) =>
-        key1.createdAt.millisecondsSinceEpoch <
-            key2.createdAt.millisecondsSinceEpoch
-            ? 1
-            : 0);
+            key1.createdAt.millisecondsSinceEpoch <
+                    key2.createdAt.millisecondsSinceEpoch
+                ? 1
+                : 0);
         offset += 10;
         this.onSuccess(true);
       }

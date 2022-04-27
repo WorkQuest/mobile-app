@@ -1,3 +1,4 @@
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/model/quests_models/your_review.dart';
@@ -12,33 +13,33 @@ import 'invited.dart';
 import 'location_full.dart';
 
 class BaseQuestResponse with ClusterItem {
-  BaseQuestResponse({
-    required this.id,
-    required this.userId,
-    required this.medias,
-    required this.user,
-    required this.category,
-    required this.status,
-    required this.priority,
-    required this.locationCode,
-    required this.title,
-    required this.assignedWorkerId,
-    required this.contractAddress,
-    required this.nonce,
-    required this.description,
-    required this.price,
-    required this.createdAt,
-    required this.star,
-    required this.locationPlaceName,
-    required this.assignedWorker,
-    required this.employment,
-    required this.questSpecializations,
-    required this.workplace,
-    required this.invited,
-    required this.responded,
-    required this.yourReview,
-    required this.questChat,
-  });
+  BaseQuestResponse(
+      {required this.id,
+      required this.userId,
+      required this.medias,
+      required this.user,
+      required this.category,
+      required this.status,
+      required this.priority,
+      required this.locationCode,
+      required this.title,
+      required this.assignedWorkerId,
+      required this.contractAddress,
+      required this.nonce,
+      required this.description,
+      required this.price,
+      required this.createdAt,
+      required this.star,
+      required this.locationPlaceName,
+      required this.assignedWorker,
+      required this.employment,
+      required this.questSpecializations,
+      required this.workplace,
+      required this.invited,
+      required this.responded,
+      required this.yourReview,
+      required this.questChat,
+      required this.raiseView});
 
   String id;
   String userId;
@@ -66,6 +67,7 @@ class BaseQuestResponse with ClusterItem {
   YourReview? yourReview;
   QuestChat? questChat;
   bool showAnimation = true;
+  RaiseView? raiseView;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(
@@ -113,6 +115,7 @@ class BaseQuestResponse with ClusterItem {
       questChat: json["questChat"] == null
           ? null
           : QuestChat.fromJson(json["questChat"]),
+      raiseView: json["raiseView"] == null ? null : RaiseView.fromJson(json["raiseView"]),
     );
   }
 
@@ -139,6 +142,7 @@ class BaseQuestResponse with ClusterItem {
     this.responded = updateQuest.responded;
     this.yourReview = updateQuest.yourReview;
     this.questChat = updateQuest.questChat;
+    this.raiseView = updateQuest.raiseView;
   }
 
   Map<String, dynamic> toJson() => {

@@ -7,6 +7,7 @@ import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/quest_header.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -34,8 +35,16 @@ class MyQuestsItem extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
           borderRadius: BorderRadius.circular(12.0),
+          border: Border.all(
+            color: questInfo.raiseView != null
+                ? _getColorBorder(
+                    questInfo.raiseView!.status,
+                    questInfo.raiseView!.type,
+                  )
+                : Colors.transparent,
+          ),
+          color: Colors.white,
         ),
         margin: const EdgeInsets.only(
           top: 10,
@@ -44,17 +53,23 @@ class MyQuestsItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (!isExpanded) QuestHeader(itemType, questInfo.status, true),
+            if (!isExpanded)
+              QuestHeader(
+                itemType,
+                questInfo.status,
+                true,
+                false,
+                true,
+              ),
             Row(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: UserAvatar(
-                    width: 30,
-                    height: 30,
-                    url: questInfo.user.avatar?.url,
-                  )
-                ),
+                    borderRadius: BorderRadius.circular(100),
+                    child: UserAvatar(
+                      width: 30,
+                      height: 30,
+                      url: questInfo.user.avatar?.url,
+                    )),
                 const SizedBox(
                   width: 5,
                 ),
@@ -69,7 +84,8 @@ class MyQuestsItem extends StatelessWidget {
                   if (questInfo.responded!.workerId ==
                               context.read<ProfileMeStore>().userData!.id &&
                           (questInfo.status == 0 || questInfo.status == 4) ||
-                      questInfo.invited != null && questInfo.invited?.status == 1)
+                      questInfo.invited != null &&
+                          questInfo.invited?.status == 1)
                     Row(
                       children: [
                         const SizedBox(
@@ -96,7 +112,8 @@ class MyQuestsItem extends StatelessWidget {
             const SizedBox(
               height: 17.5,
             ),
-            if (questInfo.userId != context.read<ProfileMeStore>().userData!.id &&
+            if (questInfo.userId !=
+                    context.read<ProfileMeStore>().userData!.id &&
                 questInfo.status != 5 &&
                 questInfo.status != 6)
               Column(
@@ -126,13 +143,32 @@ class MyQuestsItem extends StatelessWidget {
                   ),
                 ],
               ),
-            Text(
-              questInfo.title,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Color(0xFF1D2127),
-                fontSize: 18,
-              ),
+            Row(
+              children: [
+                if (questInfo.raiseView != null &&
+                    questInfo.raiseView!.status != null &&
+                    questInfo.raiseView!.status == 0)
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/arrow_raise_icon.svg',
+                        height: 18,
+                        width: 18,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                    ],
+                  ),
+                Text(
+                  questInfo.title,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Color(0xFF1D2127),
+                    fontSize: 18,
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: 10,
@@ -176,83 +212,28 @@ class MyQuestsItem extends StatelessWidget {
     );
   }
 
-  // Widget header(
-  //         {required Color color,
-  //         required String title,
-  //         Color textColor = Colors.white}) =>
-  //     Container(
-  //       width: double.maxFinite,
-  //       margin: const EdgeInsets.symmetric(
-  //         vertical: 16,
-  //       ),
-  //       padding: const EdgeInsets.symmetric(
-  //         horizontal: 14,
-  //         vertical: 7.5,
-  //       ),
-  //       decoration: BoxDecoration(
-  //         borderRadius: BorderRadius.circular(4),
-  //         color: color,
-  //       ),
-  //       child: Text(
-  //         title.tr(),
-  //         style: TextStyle(color: textColor),
-  //       ),
-  //     );
-  //
-  // Widget getQuestHeader(QuestItemPriorityType itemType, BuildContext context) {
-  //   switch (itemType) {
-  //     case QuestItemPriorityType.Active:
-  //       if (questInfo.status == 3) {
-  //         return header(
-  //           color: Colors.red,
-  //           title: "quests.disputeQuest",
-  //         );
-  //       } else if (questInfo.status == 5) {
-  //         return header(
-  //           color: Colors.green,
-  //           title: "quests.employerConfirmationPending",
-  //         );
-  //       } else {
-  //         return header(
-  //           color: AppColor.green,
-  //           title: "quests.active",
-  //         );
-  //       }
-  //     case QuestItemPriorityType.Invited:
-  //       return header(
-  //         color: Color(0xFFE8D20D),
-  //         title: "quests.youInvited",
-  //       );
-  //     case QuestItemPriorityType.Requested:
-  //       return header(
-  //           color: Color(0xFFF7F8FA),
-  //           title: "quests.requested",
-  //           textColor: Color(0xFFAAB0B9));
-  //     case QuestItemPriorityType.Performed:
-  //       if (questInfo.status == 5) {
-  //         return header(
-  //           color: Color(0xFF0083C7),
-  //           title: "quests.waitConfirm",
-  //         );
-  //       } else {
-  //         return header(
-  //           color: Color(0xFF0083C7),
-  //           title: questInfo.status == 5
-  //               ? "quests.employerConfirmationPending"
-  //               : "quests.performed",
-  //         );
-  //       }
-  //     case QuestItemPriorityType.Starred:
-  //       return SizedBox(
-  //         height: 16,
-  //       );
-  //   }
-  // }
+  Color _getColorBorder(int? status, int? type) {
+    if (status != null && status == 0) {
+      switch (type) {
+        case 0:
+          return Color(0xFFF6CF00);
+        case 1:
+          return Color(0xFFF6CF00);
+        case 2:
+          return Color(0xFFBBC0C7);
+        case 3:
+          return Color(0xFFB79768);
+        default:
+          return Colors.transparent;
+      }
+    } else {
+      return Colors.transparent;
+    }
+  }
 
   _getPrice(String value) {
     try {
-      return (BigInt.parse(value).toDouble() * pow(10, -18))
-          .toStringAsFixed(2);
+      return (BigInt.parse(value).toDouble() * pow(10, -18)).toStringAsFixed(2);
     } catch (e) {
       return '0.00';
     }

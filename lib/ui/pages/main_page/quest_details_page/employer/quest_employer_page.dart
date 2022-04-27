@@ -4,14 +4,11 @@ import 'package:app/model/respond_model.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
-import 'package:app/ui/widgets/error_dialog.dart';
-import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -21,7 +18,6 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import 'package:share/share.dart';
 
-import '../../../../../constants.dart';
 import '../../../../widgets/quest_header.dart';
 import '../../raise_views_page/raise_views_page.dart';
 
@@ -45,7 +41,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     profile!.getProfileMe().then((value) => {
           if (widget.questInfo.userId == profile!.userData!.id)
             store.getRespondedList(
-                widget.questInfo.id, widget.questInfo.assignedWorker?.id ?? ""),
+              widget.questInfo.id,
+              widget.questInfo.assignedWorker?.id ?? "",
+            ),
         });
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
@@ -62,14 +60,14 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         icon: Icon(Icons.share_outlined),
         onPressed: () {
           Share.share(
-              "https://app.workquest.co/quests/${store.quest.value!.id}");
+              "https://app-ver1.workquest.co/quests/${widget.questInfo.id}");
         },
       ),
       if (store.quest.value!.userId == profile!.userData!.id &&
-          (store.quest.value!.status == 0 ||
-              store.quest.value!.status == 1 ||
-              store.quest.value!.status == 4 ||
-              store.quest.value!.status == 5))
+          (store.quest.value!.status == 1 ||
+              store.quest.value!.status == 2 ||
+              store.quest.value!.status == 3 ||
+              store.quest.value!.status == 4))
         PopupMenuButton<String>(
           elevation: 10,
           icon: Icon(Icons.more_vert),
@@ -77,7 +75,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            if (store.quest.value!.status == 1)
+            if (store.quest.value!.status == 1 ||
+                store.quest.value!.status == 2)
               switch (value) {
                 case "quests.raiseViews":
                   await Navigator.pushNamed(
@@ -87,120 +86,38 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   );
                   break;
                 case "registration.edit":
-                  if (profile?.userData?.isTotpActive == true) {
-                    AlertDialogUtils.showAlertDialog(
-                      context,
-                      title: const Text("Security check"),
-                      content: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Google confirmation code"),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Observer(
-                            builder: (_) => TextField(
-                              onChanged: store.setTotp,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            "Enter the 6-digit code from the Google Authentication app",
-                          ),
-                        ],
-                      ),
-                      needCancel: true,
-                      titleCancel: "Cancel",
-                      titleOk: "Send",
-                      onTabCancel: null,
-                      onTabOk: () async {
-                        await store.validateTotp();
-                        if (store.isValid) {
-                          await Navigator.pushNamed(
-                            context,
-                            CreateQuestPage.routeName,
-                            arguments: store.quest.value!,
-                          );
-                        } else {
-                          await errorAlert(context, "Invalid 2FA");
-                        }
-                      },
-                      colorCancel: AppColor.enabledButton,
-                      colorOk: Colors.red,
-                    );
-                  } else {
-                    errorAlert(
-                        context, "You can't edit quest without connected 2FA");
-                  }
-
+                  await Navigator.pushNamed(
+                    context,
+                    CreateQuestPage.routeName,
+                    arguments: widget.questInfo,
+                  );
                   break;
                 case "settings.delete":
-                  if (profile?.userData?.isTotpActive == true) {
-                    AlertDialogUtils.showAlertDialog(
-                      context,
-                      title: const Text("Security check"),
-                      content: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Google confirmation code"),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Observer(
-                            builder: (_) => TextFormField(
-                              onChanged: store.setTotp,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            "Enter the 6-digit code from the Google Authentication app",
-                          ),
-                        ],
-                      ),
-                      needCancel: true,
-                      titleCancel: "Cancel",
-                      titleOk: "Send",
-                      onTabCancel: null,
-                      onTabOk: () async {
-                        await store.validateTotp();
-                        if (store.isValid) {
-                          await dialog(
-                            context,
-                            title: "quests.deleteQuest".tr(),
-                            message: "quests.deleteQuestMessage".tr(),
-                            confirmAction: () async {
-                              await store.deleteQuest(
-                                  questId: store.quest.value!.id);
-                              questStore.deleteQuest(store.quest.value!.id);
-                              if (profile!.userData!.questsStatistic != null)
-                                profile!.userData!.questsStatistic!.opened -= 1;
-                              Navigator.pop(context);
-                            },
-                          );
-                        }
-                      },
-                      colorCancel: AppColor.enabledButton,
-                      colorOk: Colors.red,
-                    );
-                  } else {
-                    errorAlert(context,
-                        "You can't delete quest without connected 2FA");
-                  }
-
+                  await dialog(
+                    context,
+                    title: "quests.deleteQuest".tr(),
+                    message: "quests.deleteQuestMessage".tr(),
+                    confirmAction: () async {
+                      await store.deleteQuest(questId: widget.questInfo.id);
+                      questStore.deleteQuest(widget.questInfo.id);
+                      if (profile!.userData!.questsStatistic != null)
+                        profile!.userData!.questsStatistic!.opened -= 1;
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                  );
                   break;
                 default:
               }
-            if ((store.quest.value!.status == 1 ||
-                    store.quest.value!.status == 5) &&
-                value == "chat.report")
-              await Navigator.of(context, rootNavigator: true).pushNamed(
-                OpenDisputePage.routeName,
-                arguments: store.quest.value!,
+            if ((widget.questInfo.status == 3 ||
+                    widget.questInfo.status == 4) &&
+                value == "chat.report") {
+              AlertDialogUtils.showInfoAlertDialog(
+                context,
+                title: 'Warning'.tr(),
+                content: 'Service temporarily unavailable',
               );
+            }
           },
           itemBuilder: (BuildContext context) {
             return {
@@ -243,46 +160,53 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       ),
       store.quest.value!.status,
       false,
+      false,
+      true,
     );
   }
 
   @override
   Widget review() {
-    return storeQuest.questInfo!.status == 6 &&
+    return storeQuest.questInfo!.status == 5 &&
             !profile!.review &&
             (storeQuest.questInfo!.userId == profile!.userData!.id ||
                 storeQuest.questInfo!.assignedWorker?.id ==
                     profile!.userData!.id)
-        ? TextButton(
-            onPressed: () async {
-              await Navigator.pushNamed(
-                context,
-                CreateReviewPage.routeName,
-                arguments: storeQuest.questInfo,
-              );
-              widget.questInfo.yourReview != null
-                  ? profile!.review = true
-                  : profile!.review = false;
-            },
-            child: Text(
-              "quests.addReview".tr(),
-              style: TextStyle(color: Colors.white),
-            ),
-            style: ButtonStyle(
-              fixedSize: MaterialStateProperty.all(
-                Size(double.maxFinite, 43),
-              ),
-              backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                (Set<MaterialState> states) {
-                  if (states.contains(MaterialState.pressed))
-                    return Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withOpacity(0.5);
-                  return const Color(0xFF0083C7);
+        ? Column(
+            children: [
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () async {
+                  await Navigator.pushNamed(
+                    context,
+                    CreateReviewPage.routeName,
+                    arguments: storeQuest.questInfo,
+                  );
+                  widget.questInfo.yourReview != null
+                      ? profile!.review = true
+                      : profile!.review = false;
                 },
+                child: Text(
+                  "quests.addReview".tr(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(
+                    Size(double.maxFinite, 43),
+                  ),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed))
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
+                      return const Color(0xFF0083C7);
+                    },
+                  ),
+                ),
               ),
-            ),
+            ],
           )
         : SizedBox();
   }
@@ -310,8 +234,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           const SizedBox(height: 10),
           GestureDetector(
             onTap: () async {
-              await profile!
-                  .getAssignedWorker(store.quest.value!.assignedWorker!.id);
+              await profile!.getAssignedWorker(
+                store.quest.value!.assignedWorker!.id,
+              );
               if (profile!.assignedWorker?.id != null) {
                 await Navigator.of(context, rootNavigator: true).pushNamed(
                   UserProfile.routeName,
@@ -335,7 +260,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 const SizedBox(width: 10),
                 Flexible(
                   child: Text(
-                    "${store.quest.value!.assignedWorker!.firstName} " +
+                    "${store.quest.value!.assignedWorker!.firstName} "
                         "${store.quest.value!.assignedWorker!.lastName}",
                     style: const TextStyle(
                       fontSize: 16,
@@ -402,21 +327,14 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           for (final respond in store.respondedList)
                             selectableMember(respond),
                         const SizedBox(height: 15),
-                        LoginButton(
-                          withColumn: true,
-                          enabled: store.isLoading,
-                          onTap: store.selectedResponders == null
+                        TextButton(
+                          onPressed: store.selectedResponders == null
                               ? null
                               : () async {
                                   await store.startQuest(
                                     userId: store.selectedResponders!.workerId,
                                     questId: store.quest.value!.id,
                                   );
-                                  if (store.errorMessage != null &&
-                                      store.errorMessage!.isNotEmpty) {
-                                    _showMessage(store.errorMessage!);
-                                    return;
-                                  }
                                   store.quest.value!.assignedWorker =
                                       AssignedWorker(
                                     firstName: store
@@ -427,30 +345,44 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                         store.selectedResponders!.worker.avatar,
                                     id: store.selectedResponders!.id,
                                   );
-                                  store.setQuestStatus(4);
+                                  store.setQuestStatus(2);
                                   questStore.deleteQuest(store.quest.value!.id);
                                   questStore.addQuest(
                                       store.quest.value!, false);
-                                  if (store.errorMessage != null &&
-                                      store.errorMessage!.isNotEmpty) {
-                                    _showMessage(store.errorMessage!);
-                                    return;
-                                  }
                                   await AlertDialogUtils.showSuccessDialog(
                                       context);
-                                  setState(() {});
                                 },
-                          title: "quests.chooseWorker".tr(),
+                          child: Text(
+                            "quests.chooseWorker".tr(),
+                            style: TextStyle(
+                              color: store.selectedResponders == null
+                                  ? Colors.grey
+                                  : Colors.white,
+                            ),
+                          ),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.disabled))
+                                  return const Color(0xFFF7F8FA);
+                                if (states.contains(MaterialState.pressed))
+                                  return Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.5);
+                                return const Color(0xFF0083C7);
+                              },
+                            ),
+                            fixedSize: MaterialStateProperty.all(
+                              Size(double.maxFinite, 43),
+                            ),
+                          ),
                         )
                       ],
                     )
                   : const SizedBox(),
     );
-  }
-
-  _showMessage(String error) {
-    AlertDialogUtils.showInfoAlertDialog(context,
-        title: "Error", content: error);
   }
 
   bottomForm() {
@@ -465,9 +397,76 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       backgroundColor: Colors.white,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return _BottomCompletedQuestWidget(
-          store: store,
-          questStore: questStore,
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            top: 10.0,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  height: 5.0,
+                  width: 70.0,
+                  decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15.0),
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 23),
+                  Text(
+                    "quests.answerOnQuest.title".tr(),
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  TextButton(
+                    onPressed: () async {
+                      store.acceptCompletedWork(questId: store.quest.value!.id);
+                      store.setQuestStatus(5);
+                      questStore.deleteQuest(store.quest.value!.id);
+                      questStore.addQuest(store.quest.value!, false);
+                      Navigator.pop(context);
+                      await AlertDialogUtils.showSuccessDialog(context);
+                    },
+                    child: Text(
+                      "quests.answerOnQuest.acceptCompleted".tr(),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.all(
+                        Size(double.maxFinite, 43),
+                      ),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.pressed))
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
+                          return const Color(0xFF0083C7);
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );
@@ -621,103 +620,5 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         );
       },
     );
-  }
-}
-
-class _BottomCompletedQuestWidget extends StatefulWidget {
-  final EmployerStore store;
-  final MyQuestStore questStore;
-
-  const _BottomCompletedQuestWidget({
-    Key? key,
-    required this.store,
-    required this.questStore,
-  }) : super(key: key);
-
-  @override
-  _BottomCompletedQuestWidgetState createState() =>
-      _BottomCompletedQuestWidgetState();
-}
-
-class _BottomCompletedQuestWidgetState
-    extends State<_BottomCompletedQuestWidget> {
-  late EmployerStore store;
-  late MyQuestStore questStore;
-
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    store = widget.store;
-    questStore = widget.questStore;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 16.0,
-        right: 16.0,
-        top: 10.0,
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              height: 5.0,
-              width: 70.0,
-              decoration: BoxDecoration(
-                color: Colors.black12,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(15.0),
-                ),
-              ),
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(height: 23),
-              Text(
-                "quests.answerOnQuest.title".tr(),
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 15),
-              LoginButton(
-                withColumn: true,
-                enabled: _isLoading,
-                onTap: () async {
-                  _updateLoading();
-                  await store.acceptCompletedWork(
-                      questId: store.quest.value!.id);
-                  store.setQuestStatus(6);
-                  questStore.deleteQuest(store.quest.value!.id);
-                  questStore.addQuest(store.quest.value!, false);
-                  _updateLoading();
-                  Navigator.pop(context);
-                  await AlertDialogUtils.showSuccessDialog(context);
-                },
-                title: "quests.answerOnQuest.acceptCompleted".tr(),
-              ),
-              const SizedBox(height: 15),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  _updateLoading() {
-    setState(() {
-      _isLoading = !_isLoading;
-    });
   }
 }
