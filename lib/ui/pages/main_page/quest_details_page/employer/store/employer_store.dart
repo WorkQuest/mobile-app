@@ -124,7 +124,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _getQuest();
-      await _apiProvider.deleteQuest(questId: questId);
+      // await _apiProvider.deleteQuest(questId: questId);
       await ClientService().handleEvent(
         function: WQContractFunctions.cancelJob,
         contractAddress: quest.value!.contractAddress!,
