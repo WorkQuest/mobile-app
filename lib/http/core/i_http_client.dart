@@ -17,6 +17,7 @@ abstract class IHttpClient {
     required query,
     Map<String, dynamic>? data,
     bool useBaseUrl = true,
+
   });
 
   Future delete({
