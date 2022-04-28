@@ -755,7 +755,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ReviewPage(settings.arguments as PortfolioStore),
+              child: ReviewPage(settings.arguments as ReviewPageArguments),
             ),
           ),
         );

@@ -1,37 +1,43 @@
-import 'package:app/model/profile_response/profile_me_response.dart';
+import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
-import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../portfolio_page/store/portfolio_store.dart';
-import 'package:provider/provider.dart';
+
+class ReviewPageArguments {
+  final String userId;
+  final UserRole role;
+  final PortfolioStore store;
+
+  ReviewPageArguments({
+    required this.userId,
+    required this.role,
+    required this.store,
+  });
+}
 
 class ReviewPage extends StatefulWidget {
   static const String routeName = '/reviewPage';
 
-  const ReviewPage(this.store);
+  final ReviewPageArguments arguments;
 
-  final PortfolioStore store;
+  const ReviewPage(this.arguments);
+
 
   @override
   _ReviewPageState createState() => _ReviewPageState();
 }
 
 class _ReviewPageState extends State<ReviewPage> {
-  late ProfileMeResponse user;
   late bool isProfileYour;
 
   @override
   void initState() {
-    if (widget.store.otherUserData == null)
-      user = context.read<ProfileMeStore>().userData!;
-    else
-      user = widget.store.otherUserData!;
-    if (widget.store.titleName == "Reviews")
-      widget.store.getReviews(userId: user.id, newList: true);
-    if (widget.store.titleName == "Portfolio")
-      widget.store.getPortfolio(userId: user.id, newList: true);
+    if (widget.arguments.store.titleName == "Reviews")
+      widget.arguments.store.getReviews(userId: widget.arguments.userId, newList: true);
+    if (widget.arguments.store.titleName == "Portfolio")
+      widget.arguments.store.getPortfolio(userId: widget.arguments.userId, newList: true);
     super.initState();
   }
 
@@ -41,7 +47,7 @@ class _ReviewPageState extends State<ReviewPage> {
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
         middle: Text(
-          widget.store.titleName,
+          widget.arguments.store.titleName,
         ),
       ),
       body: NotificationListener<ScrollEndNotification>(
@@ -49,19 +55,22 @@ class _ReviewPageState extends State<ReviewPage> {
           if (scrollNotification.metrics.atEdge &&
               scrollNotification.metrics.pixels ==
                   scrollNotification.metrics.maxScrollExtent &&
-              !widget.store.isLoading) {
-            if (widget.store.titleName == "Reviews")
-              widget.store.getReviews(userId: user.id, newList: false);
+              !widget.arguments.store.isLoading) {
+            print('NotificationListener | getReviews');
+            if (widget.arguments.store.titleName == "Reviews")
+              widget.arguments.store
+                  .getReviews(userId: widget.arguments.userId, newList: false);
 
-            if (widget.store.titleName == "Portfolio")
-              widget.store.getPortfolio(userId: user.id, newList: false);
+            if (widget.arguments.store.titleName == "Portfolio")
+              widget.arguments.store
+                  .getPortfolio(userId: widget.arguments.userId, newList: false);
           }
           setState(() {});
           return false;
         },
         child: Observer(
-          builder: (_) => widget.store.isLoading &&
-                  widget.store.reviewsList.isEmpty
+          builder: (_) => widget.arguments.store.isLoading &&
+                  widget.arguments.store.reviewsList.isEmpty
               ? Center(
                   child: CircularProgressIndicator(),
                 )
@@ -70,46 +79,57 @@ class _ReviewPageState extends State<ReviewPage> {
                     SliverList(
                       delegate: SliverChildListDelegate(
                         [
-                          if (widget.store.titleName == "Reviews")
+                          if (widget.arguments.store.titleName == "Reviews")
                             for (int index = 0;
-                                index < widget.store.reviewsList.length;
+                                index <
+                                    widget.arguments.store.reviewsList.length;
                                 index++)
                               ReviewsWidget(
-                                avatar: widget.store.reviewsList[index].fromUser
-                                        .avatar?.url ??
+                                avatar: widget
+                                        .arguments
+                                        .store
+                                        .reviewsList[index]
+                                        .fromUser
+                                        .avatar
+                                        ?.url ??
                                     "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                                name: widget.store.reviewsList[index].fromUser
-                                        .firstName +
+                                name: widget.arguments.store.reviewsList[index]
+                                        .fromUser.firstName +
                                     " " +
-                                    widget.store.reviewsList[index].fromUser
-                                        .lastName,
-                                mark: widget.store.reviewsList[index].mark,
-                                userRole: widget.store.reviewsList[index]
-                                            .fromUserId ==
-                                        widget.store.reviewsList[index].quest
-                                            .userId
+                                    widget.arguments.store.reviewsList[index]
+                                        .fromUser.lastName,
+                                mark: widget
+                                    .arguments.store.reviewsList[index].mark,
+                                userRole: widget.arguments.store
+                                            .reviewsList[index].fromUserId ==
+                                        widget.arguments.store
+                                            .reviewsList[index].quest.userId
                                     ? "role.employer"
                                     : "role.worker",
-                                questTitle:
-                                    widget.store.reviewsList[index].quest.title,
-                                cutMessage: widget.store.messages[index],
-                                message:
-                                    widget.store.reviewsList[index].message,
-                                id: widget.store.reviewsList[index].fromUserId,
-                                myId: user.id,
-                                role: user.role,
-                                last:
-                                    index == widget.store.reviewsList.length - 1
-                                        ? true
-                                        : false,
+                                questTitle: widget.arguments.store
+                                    .reviewsList[index].quest.title,
+                                cutMessage:
+                                    widget.arguments.store.messages[index],
+                                message: widget
+                                    .arguments.store.reviewsList[index].message,
+                                id: widget.arguments.store.reviewsList[index]
+                                    .fromUserId,
+                                myId: widget.arguments.userId,
+                                role: widget.arguments.role,
+                                last: index ==
+                                        widget.arguments.store.reviewsList
+                                                .length -
+                                            1
+                                    ? true
+                                    : false,
                               ),
-                          if (widget.store.titleName == "Portfolio")
+                          if (widget.arguments.store.titleName == "Portfolio")
                             Column(
                               children: [
                                 Observer(
-                                  builder: (_) => widget
+                                  builder: (_) => widget.arguments
                                               .store.portfolioList.isEmpty &&
-                                          !widget.store.isLoading
+                                          !widget.arguments.store.isLoading
                                       ? Center(
                                           child: CircularProgressIndicator(),
                                         )
@@ -117,24 +137,26 @@ class _ReviewPageState extends State<ReviewPage> {
                                           children: [
                                             for (int index = 0;
                                                 index <
-                                                    widget.store.portfolioList
-                                                        .length;
+                                                    widget.arguments.store
+                                                        .portfolioList.length;
                                                 index++)
                                               PortfolioWidget(
                                                 index: index,
                                                 imageUrl: widget
+                                                        .arguments
                                                         .store
                                                         .portfolioList[index]
                                                         .medias
                                                         .isEmpty
                                                     ? "https://app-ver1.workquest.co/_nuxt/img/logo.1baae1e.svg"
                                                     : widget
+                                                        .arguments
                                                         .store
                                                         .portfolioList[index]
                                                         .medias
                                                         .first
                                                         .url,
-                                                title: widget.store
+                                                title: widget.arguments.store
                                                     .portfolioList[index].title,
                                                 isProfileYour: false,
                                               ),
