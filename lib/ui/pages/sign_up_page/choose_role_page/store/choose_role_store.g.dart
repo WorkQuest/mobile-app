@@ -137,6 +137,37 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     });
   }
 
+  final _$timerAtom = Atom(name: '_ChooseRoleStore.timer');
+
+  @override
+  Timer? get timer {
+    _$timerAtom.reportRead();
+    return super.timer;
+  }
+
+  @override
+  set timer(Timer? value) {
+    _$timerAtom.reportWrite(value, super.timer, () {
+      super.timer = value;
+    });
+  }
+
+  final _$secondsCodeAgainAtom =
+      Atom(name: '_ChooseRoleStore.secondsCodeAgain');
+
+  @override
+  int get secondsCodeAgain {
+    _$secondsCodeAgainAtom.reportRead();
+    return super.secondsCodeAgain;
+  }
+
+  @override
+  set secondsCodeAgain(int value) {
+    _$secondsCodeAgainAtom.reportWrite(value, super.secondsCodeAgain, () {
+      super.secondsCodeAgain = value;
+    });
+  }
+
   final _$approveRoleAsyncAction = AsyncAction('_ChooseRoleStore.approveRole');
 
   @override
@@ -165,6 +196,13 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   @override
   Future<dynamic> refreshToken() {
     return _$refreshTokenAsyncAction.run(() => super.refreshToken());
+  }
+
+  final _$startTimerAsyncAction = AsyncAction('_ChooseRoleStore.startTimer');
+
+  @override
+  Future startTimer(String email) {
+    return _$startTimerAsyncAction.run(() => super.startTimer(email));
   }
 
   final _$_ChooseRoleStoreActionController =
@@ -237,10 +275,23 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   }
 
   @override
+  dynamic stopTimer() {
+    final _$actionInfo = _$_ChooseRoleStoreActionController.startAction(
+        name: '_ChooseRoleStore.stopTimer');
+    try {
+      return super.stopTimer();
+    } finally {
+      _$_ChooseRoleStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 totp: ${totp},
 userRole: ${userRole},
+timer: ${timer},
+secondsCodeAgain: ${secondsCodeAgain},
 canSubmitCode: ${canSubmitCode},
 privacyPolicy: ${privacyPolicy},
 termsAndConditions: ${termsAndConditions},

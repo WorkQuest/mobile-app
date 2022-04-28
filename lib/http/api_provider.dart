@@ -91,6 +91,18 @@ extension LoginService on ApiProvider {
     httpClient.accessToken = bearerToken.access;
     return bearerToken;
   }
+
+  Future<bool> resendEmail(
+      String email,
+      ) async {
+    await httpClient.post(
+      query: '/v1/auth/main/resend-email',
+      data: {
+        "email": email,
+      }
+    );
+    return true;
+  }
 }
 
 extension QuestService on ApiProvider {

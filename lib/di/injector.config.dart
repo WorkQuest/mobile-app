@@ -12,35 +12,35 @@ import '../http/core/http_client.dart' as _i5;
 import '../http/core/i_http_client.dart' as _i4;
 import '../log_service.dart' as _i6;
 import '../ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart'
-    as _i27;
-import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i28;
-import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i32;
+    as _i28;
+import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i29;
+import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i33;
 import '../ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart'
-    as _i34;
+    as _i18;
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart'
     as _i10;
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart'
     as _i40;
 import '../ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart'
-    as _i18;
+    as _i19;
 import '../ui/pages/main_page/quest_details_page/dispute_page/store/open_dispute_store.dart'
     as _i17;
 import '../ui/pages/main_page/quest_details_page/employer/store/employer_store.dart'
     as _i14;
 import '../ui/pages/main_page/quest_details_page/worker/store/worker_store.dart'
-    as _i26;
+    as _i27;
 import '../ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart'
     as _i9;
 import '../ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart'
-    as _i31;
+    as _i32;
 import '../ui/pages/main_page/quest_page/notification_page/store/notification_store.dart'
     as _i16;
 import '../ui/pages/main_page/quest_page/quest_list/store/quests_store.dart'
-    as _i37;
-import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
     as _i36;
+import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
+    as _i20;
 import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
-    as _i19;
+    as _i21;
 import '../ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart'
     as _i39;
 import '../ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/dispute_store.dart'
@@ -48,8 +48,8 @@ import '../ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/disp
 import '../ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_store.dart'
     as _i15;
 import '../ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart'
-    as _i21;
-import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i22;
+    as _i37;
+import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i23;
 import '../ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart'
     as _i12;
 import '../ui/pages/main_page/wallet_page/store/wallet_store.dart' as _i41;
@@ -58,19 +58,19 @@ import '../ui/pages/main_page/wallet_page/transactions/store/transactions_store.
 import '../ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart'
     as _i3;
 import '../ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart'
-    as _i30;
+    as _i31;
 import '../ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart'
-    as _i25;
-import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i33;
+    as _i26;
+import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i34;
 import '../ui/pages/profile_me_store/profile_me_store.dart' as _i35;
-import '../ui/pages/restore_password_page/store.dart' as _i20;
-import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i23;
+import '../ui/pages/restore_password_page/store.dart' as _i22;
+import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i24;
 import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
     as _i7;
 import '../ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart'
     as _i11;
-import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i24;
-import '../web3/service/client_service.dart' as _i29;
+import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i25;
+import '../web3/service/client_service.dart' as _i30;
 
 const String _test = 'test';
 const String _prod = 'prod';
@@ -111,41 +111,41 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i16.NotificationStore(get<_i8.ApiProvider>()));
     gh.factory<_i17.OpenDisputeStore>(
         () => _i17.OpenDisputeStore(get<_i8.ApiProvider>()));
-    gh.factory<_i18.QuestDetailsStore>(
-        () => _i18.QuestDetailsStore(get<_i8.ApiProvider>()));
-    gh.factory<_i19.RaiseViewStore>(
-        () => _i19.RaiseViewStore(get<_i8.ApiProvider>()));
-    gh.factory<_i20.RestorePasswordStore>(
-        () => _i20.RestorePasswordStore(get<_i8.ApiProvider>()));
-    gh.factory<_i21.SMSVerificationStore>(
-        () => _i21.SMSVerificationStore(get<_i8.ApiProvider>()));
-    gh.factory<_i22.SettingsPageStore>(
-        () => _i22.SettingsPageStore(get<_i8.ApiProvider>()));
-    gh.factory<_i23.SignInStore>(
-        () => _i23.SignInStore(get<_i8.ApiProvider>()));
-    gh.factory<_i24.SignUpStore>(
-        () => _i24.SignUpStore(get<_i8.ApiProvider>()));
-    gh.factory<_i25.WithdrawPageStore>(
-        () => _i25.WithdrawPageStore(get<_i8.ApiProvider>()));
-    gh.factory<_i26.WorkerStore>(
-        () => _i26.WorkerStore(get<_i8.ApiProvider>()));
-    gh.factory<_i27.ChatRoomStore>(() =>
-        _i27.ChatRoomStore(get<_i8.ApiProvider>(), get<_i28.ChatStore>()));
-    gh.singleton<_i29.ClientService>(_i29.ClientService());
-    gh.singleton<_i30.TransferStore>(_i30.TransferStore());
+    gh.factory<_i18.PortfolioStore>(
+        () => _i18.PortfolioStore(get<_i8.ApiProvider>()));
+    gh.factory<_i19.QuestDetailsStore>(
+        () => _i19.QuestDetailsStore(get<_i8.ApiProvider>()));
+    gh.factory<_i20.QuestMapStore>(
+        () => _i20.QuestMapStore(get<_i8.ApiProvider>()));
+    gh.factory<_i21.RaiseViewStore>(
+        () => _i21.RaiseViewStore(get<_i8.ApiProvider>()));
+    gh.factory<_i22.RestorePasswordStore>(
+        () => _i22.RestorePasswordStore(get<_i8.ApiProvider>()));
+    gh.factory<_i23.SettingsPageStore>(
+        () => _i23.SettingsPageStore(get<_i8.ApiProvider>()));
+    gh.factory<_i24.SignInStore>(
+        () => _i24.SignInStore(get<_i8.ApiProvider>()));
+    gh.factory<_i25.SignUpStore>(
+        () => _i25.SignUpStore(get<_i8.ApiProvider>()));
+    gh.factory<_i26.WithdrawPageStore>(
+        () => _i26.WithdrawPageStore(get<_i8.ApiProvider>()));
+    gh.factory<_i27.WorkerStore>(
+        () => _i27.WorkerStore(get<_i8.ApiProvider>()));
+    gh.factory<_i28.ChatRoomStore>(() =>
+        _i28.ChatRoomStore(get<_i8.ApiProvider>(), get<_i29.ChatStore>()));
+    gh.singleton<_i30.ClientService>(_i30.ClientService());
+    gh.singleton<_i31.TransferStore>(_i31.TransferStore());
     gh.singleton<_i8.ApiProvider>(_i8.ApiProvider(get<_i4.IHttpClient>()));
-    gh.singleton<_i28.ChatStore>(_i28.ChatStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i31.FilterQuestsStore>(
-        _i31.FilterQuestsStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i32.MyQuestStore>(_i32.MyQuestStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i33.PinCodeStore>(_i33.PinCodeStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i34.PortfolioStore>(
-        _i34.PortfolioStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i29.ChatStore>(_i29.ChatStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i32.FilterQuestsStore>(
+        _i32.FilterQuestsStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i33.MyQuestStore>(_i33.MyQuestStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i34.PinCodeStore>(_i34.PinCodeStore(get<_i8.ApiProvider>()));
     gh.singleton<_i35.ProfileMeStore>(
         _i35.ProfileMeStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i36.QuestMapStore>(
-        _i36.QuestMapStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i37.QuestsStore>(_i37.QuestsStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i36.QuestsStore>(_i36.QuestsStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i37.SMSVerificationStore>(
+        _i37.SMSVerificationStore(get<_i8.ApiProvider>()));
     gh.singleton<_i38.TransactionsStore>(
         _i38.TransactionsStore(get<_i8.ApiProvider>()));
     gh.singleton<_i39.TwoFAStore>(_i39.TwoFAStore(get<_i8.ApiProvider>()));
