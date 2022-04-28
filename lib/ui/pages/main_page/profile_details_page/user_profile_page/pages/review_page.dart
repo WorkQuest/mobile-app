@@ -3,6 +3,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/wi
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import '../../../../../../constants.dart';
 import '../../portfolio_page/store/portfolio_store.dart';
 
 class ReviewPageArguments {
@@ -44,10 +45,23 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CupertinoNavigationBar(
-        automaticallyImplyLeading: true,
-        middle: Text(
+      appBar: AppBar(
+        title: Text(
           widget.arguments.store.titleName,
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+        centerTitle: true,
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            if (!widget.arguments.store.isLoading) {
+              Navigator.pop(context);
+            }
+          },
+          child: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColor.enabledButton,
+          ),
         ),
       ),
       body: NotificationListener<ScrollEndNotification>(
