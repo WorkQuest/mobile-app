@@ -26,9 +26,9 @@ class Storage {
     _secureStorage.write(key: "timeEmailTimer", value: time);
   }
 
-  // static Future<void> writeNotificationToken(String token) async {
-  //   _secureStorage.write(key: "notificationToken", value: token);
-  // }
+  static Future<void> writeNotificationToken(String token) async {
+    _secureStorage.write(key: "notificationToken", value: token);
+  }
 
   static Future<void> writeRefreshToken(String token) async {
     _secureStorage.write(key: "refreshToken", value: token);
@@ -70,9 +70,9 @@ class Storage {
     return await _secureStorage.read(key: "accessToken");
   }
 
-  // static Future<String?> readNotificationToken() async {
-  //   return await _secureStorage.read(key: "notificationToken");
-  // }
+  static Future<String?> readNotificationToken() async {
+    return await _secureStorage.read(key: "notificationToken");
+  }
 
   static deleteAllFromSecureStorage() async {
     await _secureStorage.deleteAll();
