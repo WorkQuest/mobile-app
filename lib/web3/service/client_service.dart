@@ -46,7 +46,7 @@ class ClientService implements ClientServiceI {
   static final apiUrl = "https://dev-node-nyc3.workquest.co";
   static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
   final int _chainId = 20220112;
-  final _abiAddress = '0xF38E33e7DD7e1a91c772aF51A366cd126e4552BB';
+  final abiAddress = '0x796fC95153e6105528717Da994B65e42dC561aBa';
   String addressNewContract = "";
 
   final Web3Client _client = Web3Client(
@@ -281,7 +281,7 @@ extension CreateContract on ClientService {
     required String nonce,
   }) async {
     final credentials = await getCredentials(AccountRepository().privateKey);
-    final contract = await getDeployedContract("WorkQuestFactory", _abiAddress);
+    final contract = await getDeployedContract("WorkQuestFactory", abiAddress);
     final ethFunction =
         contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
@@ -345,11 +345,28 @@ extension GetContract on ClientService {
   }
 }
 
+extension CheckFunction on ClientService {
+  void checkFunction() async {
+    try {
+      final contract =
+          await getDeployedContract("WQBridgeToken", "0xD92E713d051C37EbB2561803a3b5FBAbc4962431");
+      final outputs = contract.functions;
+      print("Contract function:");
+      outputs.forEach((element) {
+        print(element.name);
+      });
+    } catch (e, tr) {
+      print("Error: $e \n Trace: $tr");
+      throw Exception("Error handling event");
+    }
+  }
+}
+
 extension CheckAddres on ClientService {
   Future<List<dynamic>> checkAdders(String address) async {
     try {
       final contract =
-          await getDeployedContract("WorkQuestFactory", _abiAddress);
+          await getDeployedContract("WorkQuestFactory", abiAddress);
       final ethFunction =
           contract.function(WQFContractFunctions.getWorkQuests.name);
       final outputs = await _client.call(
@@ -399,7 +416,7 @@ extension Promote on ClientService {
     print('amount: $amount');
     print('questAddress: $questAddress');
     final contract = await getDeployedContract(
-        "WQPromotion", '0xc14e047639d531e863702BeF5D8E4c8CAE02d379');
+        "WQPromotion", '0xEcC78f46d19DE638ECFB71423857bC6B50F5aED1');
     final function = contract.function(WQPromotionFunctions.promoteQuest.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await _client.getGasPrice();
