@@ -132,10 +132,12 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
   void changedPriority(String selectedPriority) => priority = selectedPriority;
 
   @action
-  void changedEmployment(String selectedEmployment) => employment = selectedEmployment;
+  void changedEmployment(String selectedEmployment) =>
+      employment = selectedEmployment;
 
   @action
-  void changedDistantWork(String selectedEmployment) => workplace = selectedEmployment;
+  void changedDistantWork(String selectedEmployment) =>
+      workplace = selectedEmployment;
 
   @computed
   bool get canCreateQuest =>
@@ -271,7 +273,8 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
             ),
         title: questTitle,
         description: description,
-        price: (BigInt.parse(price).toDouble() * pow(10, 18)).toStringAsFixed(0),
+        price:
+            (BigInt.parse(price).toDouble() * pow(10, 18)).toStringAsFixed(0),
       );
       if (isEdit) {
         await ClientService().handleEvent(
@@ -290,7 +293,8 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
           questId: questId,
         );
       } else {
-        final balanceWusd = await ClientService().getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
+        final balanceWusd = await ClientService()
+            .getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
         final gas = await ClientService().getGas();
 
         if (balanceWusd < double.parse(price) + (gas.getInEther).toDouble()) {
@@ -301,14 +305,15 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
           quest: questModel,
         );
 
+        final approveCoin = await ClientService().approveCoin(cost: price);
 
-
-        await ClientService().createNewContract(
-          jobHash: description,
-          cost: price,
-          deadline: 0.toString(),
-          nonce: nonce,
-        );
+        if (approveCoin)
+          await ClientService().createNewContract(
+            jobHash: description,
+            cost: price,
+            deadline: 0.toString(),
+            nonce: nonce,
+          );
       }
 
       this.onSuccess(true);

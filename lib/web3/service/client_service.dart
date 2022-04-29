@@ -47,6 +47,7 @@ class ClientService implements ClientServiceI {
   static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
   final int _chainId = 20220112;
   final abiAddress = '0x796fC95153e6105528717Da994B65e42dC561aBa';
+  final abiBridgeAddress = "0xD92E713d051C37EbB2561803a3b5FBAbc4962431";
   String addressNewContract = "";
 
   final Web3Client _client = Web3Client(
@@ -285,12 +286,13 @@ extension CreateContract on ClientService {
     final ethFunction =
         contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
-    final _cost = double.parse(cost) + double.parse(cost) * 0.01;
-    final _value = EtherAmount.fromUnitAndValue(
-      EtherUnit.wei,
-      BigInt.from(_cost * pow(10, 18)),
-    );
-    final _gas = await getGas();
+    // final _cost = double.parse(cost) + double.parse(cost) * 0.01;
+    // final _value = EtherAmount.fromUnitAndValue(
+    //   EtherUnit.wei,
+    //   BigInt.from(_cost * pow(10, 18)),
+    // );
+    // final _gas = await getGas();
+    print("CreateContract");
     await handleContract(
       contract: contract,
       function: ethFunction,
@@ -302,7 +304,7 @@ extension CreateContract on ClientService {
         BigInt.parse(nonce),
       ],
       from: fromAddress,
-      value: _value,
+      // value: _value,
     );
   }
 }
@@ -345,11 +347,47 @@ extension GetContract on ClientService {
   }
 }
 
+extension ApproveCoin on ClientService {
+  Future<bool> approveCoin({
+    required String cost,
+  }) async {
+    final credentials = await getCredentials(AccountRepository().privateKey);
+    final contract =
+        await getDeployedContract("WQBridgeToken", abiBridgeAddress);
+    final ethFunction = contract.function(WQBridgeTokenFunctions.approve.name);
+    final fromAddress = await credentials.extractAddress();
+    final _cost = double.parse(cost) + double.parse(cost) * 0.01;
+    final _value = EtherAmount.fromUnitAndValue(
+      EtherUnit.wei,
+      BigInt.from(_cost * pow(10, 18)),
+    );
+    print("ApproveContract");
+    // print(
+    //     EthereumAddress.fromHex("0x796fC95153e6105528717Da994B65e42dC561aBa"));
+    final result = await handleContract(
+      contract: contract,
+      function: ethFunction,
+      params: [
+        EthereumAddress.fromHex(abiBridgeAddress),
+        // fromAddress,
+        BigInt.from(_cost * pow(10, 18)),
+      ],
+      from: fromAddress,
+      // value: _value,
+    );
+
+    if (result.status ?? false)
+      return true;
+    else
+      return false;
+  }
+}
+
 extension CheckFunction on ClientService {
   void checkFunction() async {
     try {
-      final contract =
-          await getDeployedContract("WQBridgeToken", "0xD92E713d051C37EbB2561803a3b5FBAbc4962431");
+      final contract = await getDeployedContract(
+          "WQBridgeToken", "0xD92E713d051C37EbB2561803a3b5FBAbc4962431");
       final outputs = contract.functions;
       print("Contract function:");
       outputs.forEach((element) {
