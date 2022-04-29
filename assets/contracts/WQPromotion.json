@@ -1,5 +1,10 @@
 [
   {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -225,7 +230,7 @@
     "name": "factory",
     "outputs": [
       {
-        "internalType": "contract WorkQuestFactory",
+        "internalType": "contract WorkQuestFactoryInterface",
         "name": "",
         "type": "address"
       }
@@ -238,7 +243,7 @@
     "name": "feeReceiver",
     "outputs": [
       {
-        "internalType": "address payable",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -310,13 +315,18 @@
   {
     "inputs": [
       {
-        "internalType": "address payable",
+        "internalType": "address",
         "name": "_feeReceiver",
         "type": "address"
       },
       {
         "internalType": "address",
         "name": "_factory",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_wusd",
         "type": "address"
       }
     ],
@@ -345,7 +355,7 @@
     ],
     "name": "promoteQuest",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -363,7 +373,7 @@
     ],
     "name": "promoteUser",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -567,6 +577,19 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "wusd",
+    "outputs": [
+      {
+        "internalType": "contract IERC20Upgradeable",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

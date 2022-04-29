@@ -28,13 +28,12 @@ enum WQContractFunctions {
 }
 enum WQFContractFunctions {
   ADMIN_ROLE,
+  ARBITER_ROLE,
   DEFAULT_ADMIN_ROLE,
   UPGRADER_ROLE,
-  allArbiters,
-  arbiterList,
-  arbiters,
-  fee,
+  feeEmployer,
   feeReceiver,
+  feeWorker,
   getRoleAdmin,
   getWorkQuests,
   grantRole,
@@ -42,18 +41,22 @@ enum WQFContractFunctions {
   initialize,
   newWorkQuest,
   pensionFund,
+  proxiableUUID,
   referral,
   renounceRole,
   revokeRole,
+  setFeeEmployer,
+  setFeeReceiver,
+  setFeeWorker,
+  setPensionFund,
+  setRefferal,
+  setWusd,
   supportsInterface,
-  updateArbiter,
-  updateFeeReceiver,
-  updatePensionFund,
-  updateRefferal,
   upgradeTo,
   upgradeToAndCall,
   workquestValid,
-  workquests
+  workquests,
+  wusd,
 }
 
 enum WQFContractEvents {
@@ -89,11 +92,43 @@ enum WQPromotionFunctions {
   upgradeTo,
   upgradeToAndCall,
   usersTariff,
-}
-enum TYPE_COINS {
-  WUSD, WQT, wBNB, wETH
+  wusd,
 }
 
-enum TYPE_WALLET {
-  Coinpaymebts
+enum WQBridgeTokenFunctions {
+  ADMIN_ROLE,
+  BURNER_ROLE,
+  DEFAULT_ADMIN_ROLE,
+  MINTER_ROLE,
+  PAUSER_ROLE,
+  addBlockList,
+  allowance,
+  approve,
+  balanceOf,
+  burn,
+  decimals,
+  decreaseAllowance,
+  getOwner,
+  getRoleAdmin,
+  grantRole,
+  hasRole,
+  increaseAllowance,
+  initialize,
+  isBlockListed,
+  mint,
+  name,
+  pause,
+  paused,
+  removeBlockList,
+  renounceRole,
+  revokeRole,
+  supportsInterface,
+  symbol,
+  totalSupply,
+  transfer,
+  transferFrom,
+  unpause,
 }
+enum TYPE_COINS { WUSD, WQT, wBNB, wETH }
+
+enum TYPE_WALLET { Coinpaymebts }
