@@ -4,6 +4,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
@@ -19,6 +20,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../../enums.dart';
 import '../../../../../observer_consumer.dart';
+import '../../../../../web3/repository/account_repository.dart';
+import '../../wallet_page/confirm_transaction_dialog.dart';
 
 class CreateQuestPage extends StatefulWidget {
   static const String routeName = '/createQuestPage';
@@ -34,12 +37,22 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   final _formKey = GlobalKey<FormState>();
   SkillSpecializationController? _controller;
   late ProfileMeStore? profile;
+  late TransferStore transferStore;
+  final _scrollController = ScrollController();
+
+  final addressKey = new GlobalKey();
+  final specializationKey = new GlobalKey();
+  final titleKey = new GlobalKey();
+  final descriptionKey = new GlobalKey();
+  final priceKey = new GlobalKey();
+  final contractAddress = '0xF38E33e7DD7e1a91c772aF51A366cd126e4552BB';
 
   bool isEdit = false;
 
   void initState() {
     super.initState();
     profile = context.read<ProfileMeStore>();
+    transferStore = context.read<TransferStore>();
     if (widget.questInfo != null) {
       this.isEdit = true;
       final store = context.read<CreateQuestStore>();
@@ -67,6 +80,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       key: _formKey,
       child: Scaffold(
         body: CustomScrollView(
+          controller: _scrollController,
           cacheExtent: 1000,
           slivers: [
             CupertinoSliverNavigationBar(
@@ -112,8 +126,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     onChanged: (String? value) {
                                       store.changedPriority(value!);
                                     },
-                                    items:
-                                        store.priorityList.map<DropdownMenuItem<String>>(
+                                    items: store.priorityList
+                                        .map<DropdownMenuItem<String>>(
                                       (String value) {
                                         return DropdownMenuItem<String>(
                                           value: value.tr(),
@@ -139,7 +153,12 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         ),
                       ),
                     ),
-                    SkillSpecializationSelection(controller: _controller),
+                    Container(
+                      key: specializationKey,
+                      child: SkillSpecializationSelection(
+                        controller: _controller,
+                      ),
+                    ),
                     titledField(
                       "quests.address".tr(),
                       Observer(
@@ -148,6 +167,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             store.getPrediction(context);
                           },
                           child: Container(
+                            key: addressKey,
                             height: 50,
                             decoration: BoxDecoration(
                               color: Color(0xFFF7F8FA),
@@ -219,7 +239,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       store.changedEmployment(value!);
                                     },
                                     items: store.employmentList
-                                        .map<DropdownMenuItem<String>>((String value) {
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -272,7 +293,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       store.changedDistantWork(value!);
                                     },
                                     items: store.distantWorkList
-                                        .map<DropdownMenuItem<String>>((String value) {
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -299,6 +321,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                     titledField(
                       "quests.title".tr(),
                       Container(
+                        key: titleKey,
                         height: 50,
                         alignment: Alignment.centerLeft,
                         child: TextFormField(
@@ -318,6 +341,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                     titledField(
                       "quests.aboutQuest".tr(),
                       TextFormField(
+                        key: descriptionKey,
                         initialValue: store.description,
                         onChanged: store.setAboutQuest,
                         validator: Validators.emptyValidator,
@@ -345,6 +369,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                     titledField(
                       "quests.price".tr(),
                       Container(
+                        key: priceKey,
                         height: 50,
                         child: TextFormField(
                           keyboardType: TextInputType.number,
@@ -393,28 +418,63 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         },
                         child: Observer(
                           builder: (context) => LoginButton(
-                              withColumn: true,
-                              enabled: store.isLoading,
-                              onTap: store.isLoading
-                                  ? null
-                                  : () async {
-                                      store.skillFilters =
-                                          _controller!.getSkillAndSpecialization();
-                                      if (isEdit) {
-                                        if (store.canSubmitEditQuest) {
-                                          if (_formKey.currentState?.validate() ?? false)
-                                            await store.createQuest(
-                                              isEdit: true,
-                                              questId: widget.questInfo!.id,
-                                            );
-                                        }
-                                      } else if (store.canCreateQuest) {
-                                        if (_formKey.currentState?.validate() ?? false)
-                                          await store.createQuest();
-                                      } else
-                                        store.emptyField(context);
-                                    },
-                              title: isEdit ? "Edit Quest" : 'quests.createAQuest'.tr()),
+                            withColumn: true,
+                            enabled: store.isLoading,
+                            onTap: store.isLoading
+                                ? null
+                                : () async {
+                                    store.skillFilters = _controller!
+                                        .getSkillAndSpecialization();
+                                    if (isEdit) {
+                                      if (store.canSubmitEditQuest) {
+                                        if (_formKey.currentState?.validate() ??
+                                            false)
+                                          await store.createQuest(
+                                            isEdit: true,
+                                            questId: widget.questInfo!.id,
+                                          );
+                                      }
+                                    } else if (store.canCreateQuest) {
+                                      if (_formKey.currentState?.validate() ??
+                                          false) {
+                                        await _pushConfirmTransferPage(
+                                          store.price,
+                                        );
+                                        confirmTransaction(
+                                          context,
+                                          fee: transferStore.fee,
+                                          transaction: "Transaction info",
+                                          address: contractAddress,
+                                          amount: transferStore.amount,
+                                          onPress: () async {
+                                            store.createQuest();
+                                            Navigator.pop(context);
+                                          },
+                                        );
+                                      }
+                                    } else {
+                                      store.emptyField(context);
+                                    }
+                                    if (store.skillFilters.isEmpty)
+                                      Scrollable.ensureVisible(
+                                          specializationKey.currentContext!);
+                                    else if (store.locationPlaceName.isEmpty)
+                                      Scrollable.ensureVisible(
+                                          addressKey.currentContext!);
+                                    else if (store.questTitle.isEmpty)
+                                      Scrollable.ensureVisible(
+                                          titleKey.currentContext!);
+                                    else if (store.description.isEmpty)
+                                      Scrollable.ensureVisible(
+                                          descriptionKey.currentContext!);
+                                    else if (store.price.isEmpty)
+                                      Scrollable.ensureVisible(
+                                          priceKey.currentContext!);
+                                  },
+                            title: isEdit
+                                ? "Edit Quest"
+                                : 'quests.createAQuest'.tr(),
+                          ),
                         ),
                       ),
                     ),
@@ -426,6 +486,25 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _pushConfirmTransferPage(String price) async {
+    transferStore.setAmount(price);
+    if (transferStore.fee.isEmpty) {
+      await transferStore.getFee();
+    }
+    if (transferStore.addressTo.toLowerCase() ==
+        AccountRepository().userAddress!.toLowerCase()) {
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'modals.error'.tr(),
+          content: 'errors.provideYourAddress'.tr());
+      return;
+    }
+    if (double.parse(transferStore.amount) == 0.0) {
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'modals.error'.tr(), content: 'errors.invalidAmount'.tr());
+      return;
+    }
   }
 
   Widget titledField(
@@ -483,7 +562,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
             var changedEmployment = value;
             return Container(
               height: 150.0 + MediaQuery.of(context).padding.bottom,
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -495,7 +575,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       onSelectedItemChanged: (int index) {
                         changedEmployment = children[index];
                       },
-                      children: children.map((e) => Center(child: Text(e))).toList(),
+                      children:
+                          children.map((e) => Center(child: Text(e))).toList(),
                     ),
                   ),
                   CupertinoButton(

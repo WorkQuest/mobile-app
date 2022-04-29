@@ -228,7 +228,7 @@ extension QuestService on ApiProvider {
     if (me)
       responseData = await httpClient.post(
         query: '/v1/me/worker/get-quests?limit=$limit&offset=$offset&$status'
-            'invited=$invited&starred=$starred&$sort',
+            '&starred=$starred&$sort',
         data: {
           "specializations": [],
         },
@@ -259,16 +259,21 @@ extension QuestService on ApiProvider {
 
   Future<List<BaseQuestResponse>> getQuests({
     String price = '',
-    List<String> workplace = const [],
-    List<String> employment = const [],
-    List<int> priority = const [],
     int limit = 10,
     int offset = 0,
-    String searchWord = "",
     String sort = "",
+    bool starred = false,
+    String searchWord = "",
     List<String>? specializations,
-    bool invited = false,
+    List<int> priority = const [],
+    List<int> statuses = const [],
+    List<String> workplace = const [],
+    List<String> employment = const [],
   }) async {
+    String status = "";
+    statuses.forEach((text) {
+      status += "statuses[]=$text&";
+    });
     String priorities = "";
     priority.forEach((text) {
       print(text);
@@ -291,7 +296,7 @@ extension QuestService on ApiProvider {
     final responseData = await httpClient.post(
       query:
           '/v1/get-quests?offset=$offset&limit=$limit&$workplaces$employments'
-          '$priorities$price&invited=$invited&$search$sort',
+          '$priorities$price&starred=$starred&$status$search$sort',
       data: {
         if (specializations != null) "specializations": specializations,
       },

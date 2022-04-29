@@ -339,7 +339,7 @@ extension GetContract on ClientService {
       final contract = DeployedContract(_contractAbi, _contractAddress);
       return contract;
     } catch (e, tr) {
-      print("Error: $e \n Trace: $tr");
+      print("getDeployedContract | Error: $e \n Trace: $tr");
       throw Exception("Error Creating Contract");
     }
   }

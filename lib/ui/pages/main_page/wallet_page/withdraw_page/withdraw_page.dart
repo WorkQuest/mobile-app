@@ -159,6 +159,7 @@ class _WithdrawPageState extends State<WithdrawPage>
                           address: withdrawStore.getAddress(),
                           amount: withdrawStore.getAmount(),
                           fee: "0.15",
+                          onPress: () {},
                         )
                     : null,
                 child: Text(

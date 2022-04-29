@@ -85,7 +85,7 @@ class QuestHeader extends StatelessWidget {
         if (!forMe && responded)
           return header(
             color: Colors.red,
-            title: "quests.responded",
+            title: "quests.statuses.responded",
           );
         else if (questStatus == 5) {
           return header(

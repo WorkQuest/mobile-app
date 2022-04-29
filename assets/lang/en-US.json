@@ -279,6 +279,7 @@
       "active": "Active",
       "closed": "Closed",
       "dispute": "Dispute",
+      "responded": "Responded",
       "waitWorker": "Wait worker",
       "waitConfirm": "Wait confirm",
       "done": "Done"

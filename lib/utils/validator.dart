@@ -41,13 +41,17 @@ class Validators {
 
   static String? firstNameValidator(String? text) {
     return (text?.length ?? 0) > 1
-        ? null
+        ? text!.length > 15
+            ? "First name must contain no more than 15 characters"
+            : null
         : "First name must be more than 2 characters";
   }
 
   static String? lastNameValidator(String? text) {
     return (text?.length ?? 0) > 1
-        ? null
+        ? text!.length > 15
+            ? "Last name must contain no more than 15 characters"
+            : null
         : "Last name must be more than 2 characters";
   }
 

@@ -58,6 +58,7 @@ import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
@@ -489,6 +490,9 @@ class Routes {
               ),
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<TransferStore>(),
               ),
             ],
             child: Directionality(

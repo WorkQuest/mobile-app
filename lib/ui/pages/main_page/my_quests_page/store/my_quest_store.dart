@@ -188,7 +188,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           active.addAll(await _apiProvider.getEmployerQuests(
             sort: sort,
             offset: this.offsetActive,
-            statuses: [1, 3, 4],
+            statuses: [0, 1, 3, 4],
             invited: false,
             me: true,
           ));
@@ -238,11 +238,10 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           ));
 
         if (loadStarred)
-          starred.addAll(await _apiProvider.getWorkerQuests(
+          starred.addAll(await _apiProvider.getQuests(
             offset: this.offsetStarred,
             sort: sort,
             starred: true,
-            me: true,
           ));
       }
       if (active.length % 10 == 0 && active.length != 0)
