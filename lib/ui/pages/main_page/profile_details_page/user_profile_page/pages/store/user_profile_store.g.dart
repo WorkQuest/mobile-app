@@ -9,6 +9,21 @@ part of 'user_profile_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$UserProfileStore on _UserProfileStore, Store {
+  final _$userDataAtom = Atom(name: '_UserProfileStore.userData');
+
+  @override
+  ProfileMeResponse? get userData {
+    _$userDataAtom.reportRead();
+    return super.userData;
+  }
+
+  @override
+  set userData(ProfileMeResponse? value) {
+    _$userDataAtom.reportWrite(value, super.userData, () {
+      super.userData = value;
+    });
+  }
+
   final _$questsAtom = Atom(name: '_UserProfileStore.quests');
 
   @override
@@ -54,6 +69,13 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
     });
   }
 
+  final _$getProfileAsyncAction = AsyncAction('_UserProfileStore.getProfile');
+
+  @override
+  Future<void> getProfile({required String userId}) {
+    return _$getProfileAsyncAction.run(() => super.getProfile(userId: userId));
+  }
+
   final _$startQuestAsyncAction = AsyncAction('_UserProfileStore.startQuest');
 
   @override
@@ -80,6 +102,7 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
   @override
   String toString() {
     return '''
+userData: ${userData},
 quests: ${quests},
 questId: ${questId},
 contractAddress: ${contractAddress}

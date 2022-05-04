@@ -46,8 +46,8 @@ class ClientService implements ClientServiceI {
   static final apiUrl = "https://dev-node-nyc3.workquest.co";
   static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
   final int _chainId = 20220112;
-  final abiAddress = '0x796fC95153e6105528717Da994B65e42dC561aBa';
-  final abiBridgeAddress = "0xD92E713d051C37EbB2561803a3b5FBAbc4962431";
+  final abiFactoryAddress = '0x894E261DF9791aa6001f8d800169bA1fDa6F1Af5';
+  final abiBridgeAddress = "0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE";
   String addressNewContract = "";
 
   final Web3Client _client = Web3Client(
@@ -243,7 +243,7 @@ extension CreateQuestContract on ClientService {
           contract: contract,
           function: function,
           gasPrice: _gasPrice,
-          maxGas: 2000000,
+          maxGas: 3000000,
           parameters: params,
           from: from,
           value: value,
@@ -257,9 +257,7 @@ extension CreateQuestContract on ClientService {
       TransactionReceipt? result;
       while (result == null) {
         result = await _client.getTransactionReceipt(transactionHash);
-        if (result != null) {
-          print('result - ${result.blockNumber}');
-        }
+        if (result != null) print('Block: ${result.blockNumber}');
         await Future.delayed(const Duration(seconds: 3));
         attempts++;
         if (attempts == 5) {
@@ -282,29 +280,22 @@ extension CreateContract on ClientService {
     required String nonce,
   }) async {
     final credentials = await getCredentials(AccountRepository().privateKey);
-    final contract = await getDeployedContract("WorkQuestFactory", abiAddress);
+    final contract =
+        await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
     final ethFunction =
         contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
-    // final _cost = double.parse(cost) + double.parse(cost) * 0.01;
-    // final _value = EtherAmount.fromUnitAndValue(
-    //   EtherUnit.wei,
-    //   BigInt.from(_cost * pow(10, 18)),
-    // );
-    // final _gas = await getGas();
-    print("CreateContract");
     await handleContract(
       contract: contract,
       function: ethFunction,
       params: [
         stringToBytes32(jobHash),
         //TODO Find out why a transaction with a commission does not pass
-        BigInt.from((double.parse(cost) - 0.1) * pow(10, 18)),
+        BigInt.from(double.parse(cost)),
         BigInt.parse(deadline),
         BigInt.parse(nonce),
       ],
       from: fromAddress,
-      // value: _value,
     );
   }
 }
@@ -356,24 +347,15 @@ extension ApproveCoin on ClientService {
         await getDeployedContract("WQBridgeToken", abiBridgeAddress);
     final ethFunction = contract.function(WQBridgeTokenFunctions.approve.name);
     final fromAddress = await credentials.extractAddress();
-    final _cost = double.parse(cost) + double.parse(cost) * 0.01;
-    final _value = EtherAmount.fromUnitAndValue(
-      EtherUnit.wei,
-      BigInt.from(_cost * pow(10, 18)),
-    );
-    print("ApproveContract");
-    // print(
-    //     EthereumAddress.fromHex("0x796fC95153e6105528717Da994B65e42dC561aBa"));
+    final _cost = double.parse(cost) + double.parse(cost) * 0.025;
     final result = await handleContract(
       contract: contract,
       function: ethFunction,
+      from: fromAddress,
       params: [
-        EthereumAddress.fromHex(abiBridgeAddress),
-        // fromAddress,
+        EthereumAddress.fromHex(abiFactoryAddress),
         BigInt.from(_cost * pow(10, 18)),
       ],
-      from: fromAddress,
-      // value: _value,
     );
 
     if (result.status ?? false)
@@ -404,7 +386,7 @@ extension CheckAddres on ClientService {
   Future<List<dynamic>> checkAdders(String address) async {
     try {
       final contract =
-          await getDeployedContract("WorkQuestFactory", abiAddress);
+          await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
       final ethFunction =
           contract.function(WQFContractFunctions.getWorkQuests.name);
       final outputs = await _client.call(

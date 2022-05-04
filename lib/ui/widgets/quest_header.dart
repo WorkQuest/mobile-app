@@ -36,23 +36,22 @@ class QuestHeader extends StatelessWidget {
         } else if (responded && questStatus == 1) {
           return header(
             color: Color(0xFF0083C7),
-            title: "quests.responded",
+            title: "quests.statuses.responded",
           );
         } else if (responded && !forMe) {
           return header(
             color: Colors.red,
-            title: "quests.responded",
+            title: "quests.statuses.responded",
           );
         } else if (questStatus == 1) {
           return SizedBox(
             height: 16,
           );
-        }  else if (questStatus == 0) {
+        } else if (questStatus == 0) {
           return header(
-            color: Colors.white,
-            title: "quests.pending",
-            textColor: Colors.black
-          );
+              color: Colors.white,
+              title: "quests.pending",
+              textColor: Colors.black);
         } else {
           return header(
             color: AppColor.green,
@@ -68,7 +67,7 @@ class QuestHeader extends StatelessWidget {
         else if (responded)
           return header(
             color: Colors.red,
-            title: "quests.responded",
+            title: "quests.statuses.responded",
           );
         else
           return header(
@@ -90,7 +89,7 @@ class QuestHeader extends StatelessWidget {
         else if (questStatus == 5) {
           return header(
             color: Color(0xFF0083C7),
-            title: "quests.waitConfirm",
+            title: "quests.performed",
           );
         } else {
           return header(

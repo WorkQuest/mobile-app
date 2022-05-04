@@ -1,6 +1,8 @@
+import 'package:app/enums.dart';
 import 'package:app/model/quests_models/assigned_worker.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
@@ -31,6 +33,7 @@ class QuestEmployer extends QuestDetails {
 class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   late EmployerStore store;
   late MyQuestStore questStore;
+  late ChatStore chatStore;
   AnimationController? controller;
 
   @override
@@ -38,6 +41,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     store = context.read<EmployerStore>();
     questStore = context.read<MyQuestStore>();
     profile = context.read<ProfileMeStore>();
+    chatStore = context.read<ChatStore>();
     profile!.getProfileMe().then((value) => {
           if (widget.questInfo.userId == profile!.userData!.id)
             store.getRespondedList(
@@ -234,16 +238,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           const SizedBox(height: 10),
           GestureDetector(
             onTap: () async {
-              await profile!.getAssignedWorker(
-                store.quest.value!.assignedWorker!.id,
+              await Navigator.of(context, rootNavigator: true).pushNamed(
+                UserProfile.routeName,
+                arguments: ProfileArguments(
+                  role: UserRole.Worker,
+                  userId: store.quest.value!.assignedWorker!.id,
+                ),
               );
-              if (profile!.assignedWorker?.id != null) {
-                await Navigator.of(context, rootNavigator: true).pushNamed(
-                  UserProfile.routeName,
-                  arguments: profile!.assignedWorker,
-                );
-                profile!.assignedWorker = null;
-              }
             },
             child: Row(
               children: [
@@ -261,7 +262,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 Flexible(
                   child: Text(
                     "${store.quest.value!.assignedWorker!.firstName} "
-                        "${store.quest.value!.assignedWorker!.lastName}",
+                    "${store.quest.value!.assignedWorker!.lastName}",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -439,6 +440,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       store.setQuestStatus(5);
                       questStore.deleteQuest(store.quest.value!.id);
                       questStore.addQuest(store.quest.value!, false);
+                      chatStore.loadChats(true, false);
                       Navigator.pop(context);
                       await AlertDialogUtils.showSuccessDialog(context);
                     },
@@ -531,14 +533,14 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   Widget respondedUser(RespondModel respond) {
     return GestureDetector(
       onTap: () async {
-        await profile!.getAssignedWorker(respond.worker.id);
-        if (profile!.assignedWorker?.id != null) {
-          await Navigator.of(context, rootNavigator: true).pushNamed(
-            UserProfile.routeName,
-            arguments: profile!.assignedWorker,
-          );
-          profile!.assignedWorker = null;
-        }
+        await Navigator.of(context, rootNavigator: true).pushNamed(
+          UserProfile.routeName,
+          arguments: ProfileArguments(
+            role: UserRole.Worker,
+            userId: respond.workerId,
+          ),
+        );
+        profile!.assignedWorker = null;
       },
       child: Row(
         children: [

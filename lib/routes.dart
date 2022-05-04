@@ -84,7 +84,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
 import 'di/injector.dart';
-import 'model/profile_response/profile_me_response.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
@@ -250,6 +249,9 @@ class Routes {
                   Provider(
                     create: (context) => getIt.get<QuestDetailsStore>(),
                   ),
+                  Provider(
+                    create: (context) => getIt.get<ChatStore>(),
+                  ),
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),
@@ -273,6 +275,9 @@ class Routes {
                   ),
                   Provider(
                     create: (context) => getIt.get<QuestDetailsStore>(),
+                  ),
+                  Provider(
+                    create: (context) => getIt.get<ChatStore>(),
                   ),
                 ],
                 child: Directionality(
@@ -387,7 +392,7 @@ class Routes {
 
       case UserProfile.routeName:
         final role = getIt.get<ProfileMeStore>().userData?.role;
-        final arguments = settings.arguments as ProfileMeResponse?;
+        final arguments = settings.arguments as ProfileArguments?;
         final isViewProfile;
         if (settings.arguments == null)
           isViewProfile = role ?? UserRole.Worker;

@@ -1,4 +1,5 @@
 import 'package:app/constants.dart';
+import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
@@ -99,21 +100,14 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                             )
                           : GestureDetector(
                               onTap: () async {
-                                setState(() {
-                                  this.isLoading = true;
-                                });
-                                await profile!
-                                    .getQuestHolder(
-                                        storeQuest.questInfo!.userId)
-                                    .then(
-                                      (value) => Navigator.of(context,
-                                              rootNavigator: true)
-                                          .pushNamed(
-                                        UserProfile.routeName,
-                                        arguments: profile!.questHolder,
-                                      ),
-                                    );
-                                this.isLoading = false;
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushNamed(
+                                  UserProfile.routeName,
+                                  arguments: ProfileArguments(
+                                    role: UserRole.Employer,
+                                    userId: storeQuest.questInfo!.userId,
+                                  ),
+                                );
                               },
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -236,8 +230,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                 initialCameraPosition: CameraPosition(
                                   bearing: 0,
                                   target: LatLng(
-                                    storeQuest
-                                        .questInfo!.locationCode.latitude,
+                                    storeQuest.questInfo!.locationCode.latitude,
                                     storeQuest
                                         .questInfo!.locationCode.longitude,
                                   ),

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:app/exceptions.dart';
 import 'package:app/http/core/i_http_client.dart';
@@ -124,7 +123,7 @@ class _HttpClient implements IHttpClient {
         },
         onResponse: (response, handler) {
           final options = response.requestOptions;
-          log("\n---------- DioResponse ----------"
+          print("\n---------- DioResponse ----------"
               "\n\turl: ${options.baseUrl}${options.path}"
               "\n\tmethod: ${options.method}"
               "\n\tresponse: $response"

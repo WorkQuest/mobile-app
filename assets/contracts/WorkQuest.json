@@ -8,11 +8,6 @@
       },
       {
         "internalType": "uint256",
-        "name": "_fee",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "_cost",
         "type": "uint256"
       },
@@ -24,26 +19,6 @@
       {
         "internalType": "address",
         "name": "_employer",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_feeReceiver",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_pensionFund",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_referral",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_wusd",
         "type": "address"
       }
     ],
@@ -311,32 +286,6 @@
   },
   {
     "inputs": [],
-    "name": "fee",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "feeReceiver",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "forfeit",
     "outputs": [
       {
@@ -411,32 +360,6 @@
   },
   {
     "inputs": [],
-    "name": "pensionFund",
-    "outputs": [
-      {
-        "internalType": "contract WQPensionFundInterface",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "referral",
-    "outputs": [
-      {
-        "internalType": "contract WQReferralInterface",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "status",
     "outputs": [
       {
@@ -474,19 +397,6 @@
     "outputs": [
       {
         "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "wusd",
-    "outputs": [
-      {
-        "internalType": "contract IERC20",
         "name": "",
         "type": "address"
       }

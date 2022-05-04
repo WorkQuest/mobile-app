@@ -19,8 +19,9 @@ class UserProfileStore extends _UserProfileStore with _$UserProfileStore {
 
 abstract class _UserProfileStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
+
+  @observable
   ProfileMeResponse? userData;
-  ProfileMeResponse? questHolder;
 
   @observable
   ObservableList<BaseQuestResponse> quests = ObservableList.of([]);
@@ -33,9 +34,6 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
 
   String workerId = "";
 
-  // @observable
-  // String questName = "";
-
   @observable
   String questId = "";
 
@@ -44,9 +42,21 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
 
   @action
   void setQuest(String id, String contractAddress) {
-    // questName = index ?? "";
     questId = id;
     this.contractAddress = contractAddress;
+  }
+
+  @action
+  Future<void> getProfile({
+    required String userId,
+  }) async {
+    try {
+      this.onLoading();
+      userData = await _apiProvider.getProfileUser(userId: userId);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
   }
 
   @action
@@ -77,17 +87,6 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
     }
   }
 
-  // void removeOddQuests() {
-  //   for (int i = 0; i < quests.length; i++) {
-  //     if (quests[i].responded?.workerId == workerId ||
-  //         quests[i].invited?.workerId == workerId) {
-  //       quests.removeAt(i);
-  //       i--;
-  //     }
-  //   }
-  //   quests.removeWhere((element) => element.title == questName);
-  // }
-
   Future<void> getQuests({
     required String userId,
     required UserRole role,
@@ -95,10 +94,12 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
     required bool isProfileYours,
   }) async {
     try {
-      if (newList) quests.clear();
+      if (newList) {
+        quests.clear();
+        offset = 0;
+      }
       if (offset == quests.length) {
         this.onLoading();
-        //TODO:offset scroll
         if (role == UserRole.Employer) {
           quests.addAll(await _apiProvider.getEmployerQuests(
             offset: offset,

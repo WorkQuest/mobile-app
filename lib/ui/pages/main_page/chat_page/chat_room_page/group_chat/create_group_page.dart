@@ -236,7 +236,6 @@ class CreateGroupPage extends StatelessWidget {
                         }
                       }
                     : store.usersId.isNotEmpty &&
-                            store.usersId.length > 1 &&
                             !store.isLoading &&
                             store.index == 1
                         ? () async {

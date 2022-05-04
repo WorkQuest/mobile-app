@@ -1,4 +1,3 @@
-import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
@@ -9,7 +8,7 @@ import 'package:flutter/material.dart';
 import '../../../../../../enums.dart';
 
 class EmployerProfile extends UserProfile {
-  EmployerProfile(ProfileMeResponse? info) : super(info);
+  EmployerProfile(ProfileArguments? arguments) : super(arguments);
 
   @override
   _EmployerProfileState createState() => _EmployerProfileState();
@@ -26,7 +25,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                 (viewOtherUser?.quests.isNotEmpty ?? false)
             ? QuestsList(
                 QuestItemPriorityType.Performed,
-                widget.info == null
+                viewOtherUser?.userData == null
                     ? myQuests!.performed.take(2).toList()
                     : viewOtherUser!.quests.take(2).toList(),
                 physics: NeverScrollableScrollPhysics(),
@@ -35,7 +34,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
               )
             : Center(
                 child: Text(
-                  widget.info == null
+                  viewOtherUser?.userData == null
                       ? "errors.emptyData.worker.myQuests.desc".tr()
                       : "errors.emptyData.worker.myQuests.noQuest".tr(),
                 ),
@@ -52,15 +51,15 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                 await Navigator.pushNamed(
                   context,
                   ProfileQuestsPage.routeName,
-                  arguments: widget.info == null
+                  arguments: viewOtherUser?.userData == null
                       ? userStore!.userData!.id
-                      : widget.info!.id,
+                      : viewOtherUser!.userData!.id,
                 );
-                if (widget.info == null)
+                if (viewOtherUser?.userData == null)
                   myQuests!.getQuests(userStore!.userData!.id, role, true);
                 else
-                  portfolioStore!
-                      .getReviews(userId: widget.info!.id, newList: true);
+                  portfolioStore!.getReviews(
+                      userId: viewOtherUser!.userData!.id, newList: true);
               },
               child: Text(
                 "meta.showAllQuests".tr(),
@@ -73,31 +72,34 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
   List<Widget> listWidgets() => [
 //_____________About______________/
         Text(
-          widget.info == null
+          viewOtherUser?.userData == null
               ? userStore!.userData?.additionalInfo?.description ??
                   "modals.noDescription".tr()
-              : widget.info!.additionalInfo?.description ??
+              : viewOtherUser!.userData!.additionalInfo?.description ??
                   "modals.noDescription".tr(),
         ),
       ];
 
   List<Widget> ratingsWidget() => [
         employerRating(
-          completedQuests: widget.info == null
+          completedQuests: viewOtherUser?.userData == null
               ? userStore!.userData!.questsStatistic != null
                   ? userStore!.userData!.questsStatistic!.completed.toString()
                   : '0'
-              : widget.info!.questsStatistic != null
-                  ? widget.info!.questsStatistic!.completed.toString()
+              : viewOtherUser!.userData!.questsStatistic != null
+                  ? viewOtherUser!.userData!.questsStatistic!.completed
+                      .toString()
                   : '0',
-          averageRating: widget.info == null
+          averageRating: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.averageMark
-              : widget.info!.ratingStatistic!.averageMark,
-          reviews: widget.info == null
+              : viewOtherUser!.userData!.ratingStatistic!.averageMark,
+          reviews: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
-              : widget.info!.ratingStatistic!.reviewCount.toString(),
-          userId:
-              widget.info == null ? userStore!.userData!.id : widget.info!.id,
+              : viewOtherUser!.userData!.ratingStatistic!.reviewCount
+                  .toString(),
+          userId: viewOtherUser?.userData == null
+              ? userStore!.userData!.id
+              : viewOtherUser!.userData!.id,
           context: context,
         ),
       ];

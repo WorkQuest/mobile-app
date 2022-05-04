@@ -136,7 +136,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   sendCompleteWork() async {
     try {
       this.onLoading();
-      await _apiProvider.completeWork(questId: quest.value!.id);
+      // await _apiProvider.completeWork(questId: quest.value!.id);
       await ClientService().handleEvent(
         function: WQContractFunctions.verificationJob,
         contractAddress: quest.value!.contractAddress!,

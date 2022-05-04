@@ -9,6 +9,7 @@ import 'package:app/ui/pages/main_page/quest_page/notification_page/notification
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/web3/service/client_service.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -111,10 +112,15 @@ class _QuestListState extends State<QuestList> {
             largeTitle: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    role == UserRole.Worker
-                        ? "quests.quests".tr()
-                        : "workers.workers".tr(),
+                  child: GestureDetector(
+                    onTap: (){
+                      ClientService().checkFunction();
+                    },
+                    child: Text(
+                      role == UserRole.Worker
+                          ? "quests.quests".tr()
+                          : "workers.workers".tr(),
+                    ),
                   ),
                 ),
                 InkWell(

@@ -24,7 +24,10 @@ class WorkersItem extends StatelessWidget {
       onTap: () async {
         await Navigator.of(context, rootNavigator: true).pushNamed(
           UserProfile.routeName,
-          arguments: workersInfo,
+          arguments: ProfileArguments(
+            role: workersInfo.role,
+            userId: workersInfo.id,
+          ),
         );
       },
       child: Container(
@@ -53,13 +56,9 @@ class WorkersItem extends StatelessWidget {
               //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: UserAvatar(
-                    width: 61,
-                    height: 61,
-                    url:  workersInfo.avatar?.url
-                  )
-                ),
+                    borderRadius: BorderRadius.circular(100),
+                    child: UserAvatar(
+                        width: 61, height: 61, url: workersInfo.avatar?.url)),
                 const SizedBox(
                   width: 15,
                 ),

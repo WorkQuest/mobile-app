@@ -157,16 +157,15 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
               Flexible(
                 child: GestureDetector(
                   onTap: () async {
-                    if (widget.id != profile.userData!.id)
-                      await profile.getAssignedWorker(widget.id);
-                    else
-                      profile.assignedWorker = profile.userData!;
                     if (profile.assignedWorker != null) {
                       portfolioStore.clearData();
                       await Navigator.of(context, rootNavigator: true)
                           .pushNamed(
                         UserProfile.routeName,
-                        arguments: profile.assignedWorker,
+                        arguments: ProfileArguments(
+                          role: widget.role,
+                          userId: widget.id,
+                        ),
                       );
                       portfolioStore.clearData();
                       if (widget.role == UserRole.Worker)

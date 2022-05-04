@@ -423,23 +423,23 @@ extension QuestService on ApiProvider {
     }
   }
 
-  Future<bool> startQuest({
-    required String questId,
-    required String userId,
-  }) async {
-    try {
-      final body = {
-        "assignedWorkerId": userId,
-      };
-      final responseData = await httpClient.post(
-        query: '/v1/quest/$questId/start',
-        data: body,
-      );
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> startQuest({
+  //   required String questId,
+  //   required String userId,
+  // }) async {
+  //   try {
+  //     final body = {
+  //       "assignedWorkerId": userId,
+  //     };
+  //     final responseData = await httpClient.post(
+  //       query: '/v1/quest/$questId/start',
+  //       data: body,
+  //     );
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Future<bool> inviteOnQuest({
     required String questId,
@@ -460,17 +460,17 @@ extension QuestService on ApiProvider {
     }
   }
 
-  Future<bool> acceptCompletedWork({
-    required String questId,
-  }) async {
-    try {
-      final responseData = await httpClient.post(
-          query: '/v1/quest/$questId/accept-completed-work');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> acceptCompletedWork({
+  //   required String questId,
+  // }) async {
+  //   try {
+  //     final responseData = await httpClient.post(
+  //         query: '/v1/quest/$questId/accept-completed-work');
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Future<bool> rejectCompletedWork({
     required String questId,
@@ -484,17 +484,17 @@ extension QuestService on ApiProvider {
     }
   }
 
-  Future<bool> acceptOnQuest({
-    required String questId,
-  }) async {
-    try {
-      final responseData =
-          await httpClient.post(query: '/v1/quest/$questId/accept-work');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> acceptOnQuest({
+  //   required String questId,
+  // }) async {
+  //   try {
+  //     final responseData =
+  //         await httpClient.post(query: '/v1/quest/$questId/accept-work');
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Future<bool> acceptInvite({
     required String responseId,
@@ -532,28 +532,28 @@ extension QuestService on ApiProvider {
     }
   }
 
-  Future<bool> completeWork({
-    required String questId,
-  }) async {
-    try {
-      final responseData =
-          await httpClient.post(query: '/v1/quest/$questId/complete-work');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> completeWork({
+  //   required String questId,
+  // }) async {
+  //   try {
+  //     final responseData =
+  //         await httpClient.post(query: '/v1/quest/$questId/complete-work');
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> deleteQuest({
-    required String questId,
-  }) async {
-    try {
-      final responseData = await httpClient.delete(query: '/v1/quest/$questId');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> deleteQuest({
+  //   required String questId,
+  // }) async {
+  //   try {
+  //     final responseData = await httpClient.delete(query: '/v1/quest/$questId');
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Future<List<RespondModel>> responsesQuest(String id) async {
     try {
@@ -577,17 +577,19 @@ extension Notification on ApiProvider {
   }) async {
     try {
       final responseData = await httpClient.get(
-        query: 'https://notifications.workquest.co/api/notifications',
+        query: 'https://notifications.workquest.co/api/notifications?',
+            // 'exclude[]=dao&exclude[]=bridge&exclude[]=proposal&'
+            // 'exclude[]=referral&exclude[]=pensionFund&exclude[]=dailyLiquidity',
         queryParameters: {
           "offset": offset,
-          "exclude": [
-            "dao",
-            "bridge",
-            "proposal",
-            "referral",
-            "pensionFund",
-            "dailyLiquidity"
-          ],
+          // "exclude": [
+          //   "dao",
+          //   "bridge",
+          //   "proposal",
+          //   "referral",
+          //   "pensionFund",
+          //   "dailyLiquidity"
+          // ],
         },
         useBaseUrl: false,
       );
@@ -597,17 +599,19 @@ extension Notification on ApiProvider {
       print("ERROR: $trace");
 
       final responseData = await httpClient.get(
-        query: 'https://notifications.workquest.co/api/notifications',
+        query: 'https://notifications.workquest.co/api/notifications?'
+            'exclude[]=dao&exclude[]=bridge&exclude[]=proposal&'
+            'exclude[]=referral&exclude[]=pensionFund&exclude[]=dailyLiquidity',
         queryParameters: {
           "offset": offset,
-          "exclude": [
-            "dao",
-            "bridge",
-            "proposal",
-            "referral",
-            "pensionFund",
-            "dailyLiquidity",
-          ],
+          // "exclude": [
+          //   "dao",
+          //   "bridge",
+          //   "proposal",
+          //   "referral",
+          //   "pensionFund",
+          //   "dailyLiquidity",
+          // ],
         },
       );
       return Notifications.fromJson(responseData);

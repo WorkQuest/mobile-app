@@ -21,6 +21,7 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../../../../enums.dart';
 import '../../../../../observer_consumer.dart';
 import '../../../../../web3/repository/account_repository.dart';
+import '../../../../../web3/service/client_service.dart';
 import '../../wallet_page/confirm_transaction_dialog.dart';
 
 class CreateQuestPage extends StatefulWidget {
@@ -45,7 +46,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   final titleKey = new GlobalKey();
   final descriptionKey = new GlobalKey();
   final priceKey = new GlobalKey();
-  final contractAddress = '0xF38E33e7DD7e1a91c772aF51A366cd126e4552BB';
+  final contractAddress = ClientService().abiFactoryAddress;
 
   bool isEdit = false;
 

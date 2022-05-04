@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:app/enums.dart';
-import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
@@ -16,9 +15,9 @@ import '../widgets/profile_page_extensions.dart';
 
 class UserProfile extends StatefulWidget {
   static const String routeName = "/profileReviewPage";
-  final ProfileMeResponse? info;
+  final ProfileArguments? arguments;
 
-  UserProfile(this.info);
+  UserProfile(this.arguments);
 
   @override
   UserProfileState createState() => UserProfileState();
@@ -46,7 +45,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
   UserProfileStore? viewOtherUser;
   MyQuestStore? myQuests;
   late UserRole role;
-  late bool isVerify;
+  bool? isVerify;
 
   @override
   void dispose() {
@@ -67,7 +66,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
     portfolioStore!.clearData();
 
-    if (widget.info == null) {
+    if (widget.arguments == null) {
       role = userStore!.userData?.role ?? UserRole.Worker;
 
       if (role == UserRole.Worker)
@@ -82,30 +81,33 @@ class UserProfileState<T extends UserProfile> extends State<T>
       );
       portfolioStore!.setOtherUserData(userStore!.userData);
       myQuests!.getQuests(userStore!.userData!.id, role, true);
+
+      isVerify = userStore!.userData?.phone != null;
     } else {
-      role = widget.info?.role ?? UserRole.Worker;
       viewOtherUser = context.read<UserProfileStore>();
       viewOtherUser!.offset = 0;
       viewOtherUser!.quests.clear();
 
-      portfolioStore!.setOtherUserData(widget.info);
+      viewOtherUser!.getProfile(userId: widget.arguments!.userId).then((value) {
+        portfolioStore!.setOtherUserData(viewOtherUser!.userData);
 
-      if (viewOtherUser!.quests.isEmpty)
-        viewOtherUser!.getQuests(
-          userId: widget.info!.id,
-          role: role,
-          newList: true,
-          isProfileYours: false,
-        );
+        if (viewOtherUser!.quests.isEmpty)
+          viewOtherUser!.getQuests(
+            userId: viewOtherUser!.userData!.id,
+            role: role,
+            newList: true,
+            isProfileYours: false,
+          );
 
-      if (role == UserRole.Worker)
-        portfolioStore!.getPortfolio(userId: widget.info!.id, newList: true);
-      portfolioStore!.getReviews(userId: widget.info!.id, newList: true);
-      portfolioStore!.setOtherUserData(widget.info);
+        if (role == UserRole.Worker)
+          portfolioStore!
+              .getPortfolio(userId: viewOtherUser!.userData!.id, newList: true);
+        portfolioStore!
+            .getReviews(userId: viewOtherUser!.userData!.id, newList: true);
+
+        isVerify = viewOtherUser!.userData!.phone != null;
+      });
     }
-    isVerify = widget.info == null
-        ? userStore!.userData?.phone != null
-        : widget.info?.phone != null;
   }
 
   @protected
@@ -156,128 +158,157 @@ class UserProfileState<T extends UserProfile> extends State<T>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: NotificationListener<ScrollNotification>(
-          onNotification: (scrollNotification) {
-            if (controllerMain.offset < 180) {
-              double width = 240 + (controllerMain.offset.round() / 200 * 60);
-              double appBarPosition = controllerMain.offset.round() / 200 * 28;
-              double appBarPositionVertical =
-                  (controllerMain.offset.round() / 200 * 10);
-              _streamController.sink.add(
-                  AppBarParams(width, appBarPosition, appBarPositionVertical));
-            }
-            return false;
-          },
-          child: NestedScrollView(
-            controller: controllerMain,
-            headerSliverBuilder: (
-              BuildContext context,
-              bool innerBoxIsScrolled,
-            ) {
-              return <Widget>[
-                //__________AppBar__________//
-                sliverAppBar(widget.info, _streamController, _update),
-                SliverPadding(
-                  padding: EdgeInsets.fromLTRB(
-                    16.0,
-                    16.0,
-                    16.0,
-                    0.0,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: listWidgets(),
-                        ),
-
-                        ///Social Accounts
-                        socialAccounts(
-                          socialNetwork: widget.info == null
-                              ? userStore!.userData?.additionalInfo?.socialNetwork
-                              : widget.info!.additionalInfo?.socialNetwork,
-                        ),
-
-                        ///Contact Details
-                        contactDetails(
-                          location: widget.info == null
-                              ? userStore!.userData?.additionalInfo?.address ?? ''
-                              : widget.info!.additionalInfo?.address ?? "",
-                          number: widget.info == null
-                              ? userStore!.userData?.phone?.fullPhone ??
-                                  userStore!.userData?.tempPhone?.fullPhone ??
-                                  ""
-                              : widget.info?.phone?.fullPhone ??
-                                  widget.info!.tempPhone?.fullPhone ??
-                                  "",
-                          secondNumber: widget.info == null
-                              ? userStore!.userData?.additionalInfo
-                                      ?.secondMobileNumber?.fullPhone ??
-                                  ""
-                              : widget.info!.additionalInfo?.secondMobileNumber
-                                      ?.fullPhone ??
-                                  "",
-                          email: widget.info == null
-                              ? userStore!.userData?.email ?? " "
-                              : widget.info!.email ?? " ",
-                          isVerify: isVerify,
-                        ),
-
-                        ...ratingsWidget(),
-
-                        ...addToQuest(),
-                        spacer,
-                      ],
-                    ),
-                  ),
-                ),
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: StickyTabBarDelegate(
-                    child: TabBar(
-                      unselectedLabelColor: Color(0xFF8D96A1),
-                      indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.0),
-                        color: Colors.white,
+      body: Observer(
+        builder: (_) => (userStore?.isLoading ?? false) ||
+                (viewOtherUser?.isLoading ?? false)
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : NotificationListener<ScrollNotification>(
+                onNotification: (scrollNotification) {
+                  if (controllerMain.offset < 180) {
+                    double width =
+                        240 + (controllerMain.offset.round() / 200 * 60);
+                    double appBarPosition =
+                        controllerMain.offset.round() / 200 * 28;
+                    double appBarPositionVertical =
+                        (controllerMain.offset.round() / 200 * 10);
+                    _streamController.sink.add(
+                      AppBarParams(
+                        width,
+                        appBarPosition,
+                        appBarPositionVertical,
                       ),
-                      labelColor: Colors.black,
+                    );
+                  }
+                  return false;
+                },
+                child: NestedScrollView(
+                  controller: controllerMain,
+                  headerSliverBuilder: (
+                    BuildContext context,
+                    bool innerBoxIsScrolled,
+                  ) {
+                    return <Widget>[
+                      //__________AppBar__________//
+                      sliverAppBar(
+                        viewOtherUser?.userData == null
+                            ? userStore!.userData!
+                            : viewOtherUser!.userData!,
+                        _streamController,
+                        _update,
+                      ),
+                      SliverPadding(
+                        padding: EdgeInsets.fromLTRB(
+                          16.0,
+                          16.0,
+                          16.0,
+                          0.0,
+                        ),
+                        sliver: SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: listWidgets(),
+                              ),
+
+                              ///Social Accounts
+                              socialAccounts(
+                                socialNetwork: viewOtherUser?.userData == null
+                                    ? userStore!
+                                        .userData?.additionalInfo?.socialNetwork
+                                    : viewOtherUser!.userData!.additionalInfo
+                                        ?.socialNetwork,
+                              ),
+
+                              ///Contact Details
+                              contactDetails(
+                                location: viewOtherUser?.userData == null
+                                    ? userStore!.userData?.additionalInfo
+                                            ?.address ??
+                                        ''
+                                    : viewOtherUser!.userData!.additionalInfo
+                                            ?.address ??
+                                        "",
+                                number: viewOtherUser?.userData == null
+                                    ? userStore!.userData?.phone?.fullPhone ??
+                                        userStore!
+                                            .userData?.tempPhone?.fullPhone ??
+                                        ""
+                                    : viewOtherUser!
+                                            .userData?.phone?.fullPhone ??
+                                        viewOtherUser!
+                                            .userData!.tempPhone?.fullPhone ??
+                                        "",
+                                secondNumber: viewOtherUser?.userData == null
+                                    ? userStore!.userData?.additionalInfo
+                                            ?.secondMobileNumber?.fullPhone ??
+                                        ""
+                                    : viewOtherUser!.userData!.additionalInfo
+                                            ?.secondMobileNumber?.fullPhone ??
+                                        "",
+                                email: viewOtherUser?.userData == null
+                                    ? userStore!.userData?.email ?? " "
+                                    : viewOtherUser!.userData!.email ?? " ",
+                                isVerify: isVerify ?? false,
+                              ),
+
+                              ...ratingsWidget(),
+
+                              ...addToQuest(),
+                              spacer,
+                            ],
+                          ),
+                        ),
+                      ),
+                      SliverPersistentHeader(
+                        pinned: true,
+                        delegate: StickyTabBarDelegate(
+                          child: TabBar(
+                            unselectedLabelColor: Color(0xFF8D96A1),
+                            indicator: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6.0),
+                              color: Colors.white,
+                            ),
+                            labelColor: Colors.black,
+                            controller: this._tabController,
+                            tabs: <Widget>[
+                              Tab(
+                                child: Text(
+                                  "profiler.reviews".tr(),
+                                  style: TextStyle(fontSize: 14.0),
+                                ),
+                              ),
+                              Tab(
+                                child: Text(
+                                  tabTitle,
+                                  style: TextStyle(fontSize: 14.0),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ];
+                  },
+                  body: Observer(
+                    builder: (_) => TabBarView(
                       controller: this._tabController,
-                      tabs: <Widget>[
-                        Tab(
-                          child: Text(
-                            "profiler.reviews".tr(),
-                            style: TextStyle(fontSize: 14.0),
-                          ),
-                        ),
-                        Tab(
-                          child: Text(
-                            tabTitle,
-                            style: TextStyle(fontSize: 14.0),
-                          ),
-                        ),
+                      children: <Widget>[
+                        ///Reviews Tab
+                        wrapperTabBar(reviewsTab(), "reviews"),
+
+                        ///Portfolio and Quests
+                        wrapperTabBar(questPortfolio(), "quest", false),
                       ],
                     ),
                   ),
                 ),
-              ];
-            },
-            body: Observer(
-              builder: (_) => TabBarView(
-                controller: this._tabController,
-                children: <Widget>[
-                  ///Reviews Tab
-                  wrapperTabBar(reviewsTab(), "reviews"),
-
-                  ///Portfolio and Quests
-                  wrapperTabBar(questPortfolio(), "quest", false),
-                ],
               ),
-            ),
-          ),
-        ),
-      );
+      ),
+    );
   }
 
   _update() {
@@ -295,4 +326,14 @@ class AppBarParams {
   factory AppBarParams.initial() {
     return AppBarParams(240.0, 0.0, 16.0);
   }
+}
+
+class ProfileArguments {
+  UserRole role;
+  String userId;
+
+  ProfileArguments({
+    required this.role,
+    required this.userId,
+  });
 }

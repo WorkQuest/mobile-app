@@ -315,6 +315,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       pageStore.userData.priority = profile!.userData!.priority;
       pageStore.userData.workplace = profile!.valueToWorkplace();
 
+      pageStore.savePhoneNumber();
+      pageStore.saveSecondPhoneNumber();
+
       if (!profile!.isLoading)
         pageStore.userData.userSpecializations =
             _controller!.getSkillAndSpecialization();

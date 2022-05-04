@@ -1,9 +1,12 @@
+import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,6 +41,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   String? url2;
   String? chatType;
   String? chatName;
+  UserRole? role1;
+  UserRole? role2;
 
   @override
   void initState() {
@@ -53,6 +58,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     url1 = _store.chat?.chatModel.userMembers[0].avatar?.url ?? defaultImageUrl;
     chatType = _store.chat?.chatModel.type ?? "";
     chatName = _store.chat?.chatModel.name ?? "--";
+    role1 = _store.chat?.chatModel.userMembers[0].role;
 
     if (_store.chat!.chatModel.type == "group")
       _store.generateListUserInChat();
@@ -62,6 +68,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       lastName2 = _store.chat?.chatModel.userMembers[1].lastName ?? "--";
       url2 =
           _store.chat?.chatModel.userMembers[1].avatar?.url ?? defaultImageUrl;
+      role2 = _store.chat?.chatModel.userMembers[1].role;
     }
   }
 
@@ -70,57 +77,93 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     return Observer(
       builder: (_) => Scaffold(
         appBar: _store.messageSelected ? _selectedMessages() : _appBar(),
-        body: Container(
-          alignment: Alignment.bottomLeft,
-          height: MediaQuery.of(context).size.height,
-          child: Observer(
-            builder: (_) => Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
+        body: Observer(
+          builder: (_) => _store.isLoading
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Container(
+                  alignment: Alignment.bottomLeft,
+                  height: MediaQuery.of(context).size.height,
                   child: Observer(
-                    builder: (_) => _store.isLoading
-                        ? Center(child: CircularProgressIndicator.adaptive())
-                        : NotificationListener<ScrollStartNotification>(
-                            onNotification: (scrollStart) {
-                              final metrics = scrollStart.metrics;
-                              if (metrics.maxScrollExtent < metrics.pixels) {
-                                _store.getMessages(true);
-                              }
-                              return true;
-                            },
-                            child: ListView.builder(
-                              physics: const BouncingScrollPhysics(
-                                parent: AlwaysScrollableScrollPhysics(),
-                              ),
-                              itemCount: _store.chat?.messages.length,
-                              itemBuilder: (context, index) => MessageCell(
-                                UniqueKey(),
-                                _store.chat!.messages[index],
-                                profile!.userData!.id,
-                              ),
-                              reverse: true,
-                            ),
+                    builder: (_) => Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                          child: Observer(
+                            builder: (_) => _store.isLoading
+                                ? Center(
+                                    child: CircularProgressIndicator.adaptive())
+                                : NotificationListener<ScrollStartNotification>(
+                                    onNotification: (scrollStart) {
+                                      final metrics = scrollStart.metrics;
+                                      if (metrics.maxScrollExtent <
+                                          metrics.pixels) {
+                                        _store.getMessages(true);
+                                      }
+                                      return true;
+                                    },
+                                    child: ListView.builder(
+                                      physics: const BouncingScrollPhysics(
+                                        parent: AlwaysScrollableScrollPhysics(),
+                                      ),
+                                      itemCount: _store.chat?.messages.length,
+                                      itemBuilder: (context, index) =>
+                                          MessageCell(
+                                        UniqueKey(),
+                                        _store.chat!.messages[index],
+                                        profile!.userData!.id,
+                                      ),
+                                      reverse: true,
+                                    ),
+                                  ),
                           ),
-                  ),
-                ),
-                InputToolbar(_store, profile!.userData!.id),
-                if (_store.media.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
-                      top: 16.0,
+                        ),
+                        _store.chat!.chatModel.questChat?.quest?.status != 5
+                            ? InputToolbar(_store, profile!.userData!.id)
+                            : profile!.userData!.role == UserRole.Employer
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: LoginButton(
+                                      title: "quests.addToQuest".tr(),
+                                      onTap: () async {
+                                        await _store.getCompanion(
+                                          profile!.userData!.id != id1
+                                              ? id1!
+                                              : id2!,
+                                        );
+                                        await Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pushNamed(
+                                          ChooseQuest.routeName,
+                                          arguments: ChooseQuestArguments(
+                                            workerId: _store.companion!.id,
+                                            workerAddress: _store
+                                                .companion!.walletAddress!,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : SizedBox(),
+                        if (_store.media.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 16.0,
+                              right: 16.0,
+                              top: 16.0,
+                            ),
+                            child: _media(),
+                          ),
+                        const SizedBox(
+                          height: 16.0,
+                        ),
+                      ],
                     ),
-                    child: _media(),
                   ),
-                const SizedBox(
-                  height: 16.0,
                 ),
-              ],
-            ),
-          ),
         ),
       ),
     );
@@ -291,11 +334,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             )
           : GestureDetector(
               onTap: () async {
-                await _store
-                    .getCompanion(profile!.userData!.id != id1! ? id1! : id2!);
                 Navigator.of(context, rootNavigator: true).pushNamed(
                   UserProfile.routeName,
-                  arguments: _store.companion,
+                  arguments: ProfileArguments(
+                    role: profile!.userData!.role != role1! ? role1! : role2!,
+                    userId: profile!.userData!.id != id1! ? id1! : id2!,
+                  ),
                 );
                 _store.companion = null;
               },
@@ -328,7 +372,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       profile!.userData!.id != id1! ? id1! : id2!);
                   Navigator.of(context, rootNavigator: true).pushNamed(
                     UserProfile.routeName,
-                    arguments: _store.companion,
+                    arguments: ProfileArguments(
+                      role: profile!.userData!.role != role1! ? role1! : role2!,
+                      userId: profile!.userData!.id != id1! ? id1! : id2!,
+                    ),
                   );
                   _store.companion = null;
                 },
