@@ -35,6 +35,8 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
+  ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,6 +70,7 @@ class _WalletPageState extends State<WalletPage> {
     final store = GetIt.I.get<WalletStore>();
     final address = AccountRepository().userAddress ?? '1234567890';
     return CustomScrollView(
+      controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         CupertinoSliverNavigationBar(
@@ -224,7 +227,9 @@ class _WalletPageState extends State<WalletPage> {
         ),
         SliverPadding(
           padding: _padding,
-          sliver: const ListTransactions(),
+          sliver: ListTransactions(
+            scrollController: _scrollController,
+          ),
         ),
       ],
     );
@@ -403,16 +408,16 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                       onPageChanged: (int index, _) {
                         switch (index) {
                           case 0:
-                            GetIt.I.get<WalletStore>().setType(TYPE_COINS.WUSD);
-                            GetIt.I
-                                .get<TransactionsStore>()
-                                .setType(TYPE_COINS.WUSD);
-                            break;
-                          case 1:
                             GetIt.I.get<WalletStore>().setType(TYPE_COINS.WQT);
                             GetIt.I
                                 .get<TransactionsStore>()
                                 .setType(TYPE_COINS.WQT);
+                            break;
+                          case 1:
+                            GetIt.I.get<WalletStore>().setType(TYPE_COINS.WUSD);
+                            GetIt.I
+                                .get<TransactionsStore>()
+                                .setType(TYPE_COINS.WUSD);
                             break;
                           case 2:
                             GetIt.I.get<WalletStore>().setType(TYPE_COINS.wBNB);

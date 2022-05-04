@@ -39,6 +39,22 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
     });
   }
 
+  final _$canMoreLoadingAtom =
+  Atom(name: 'TransactionsStoreBase.canMoreLoading');
+
+  @override
+  bool get canMoreLoading {
+    _$canMoreLoadingAtom.reportRead();
+    return super.canMoreLoading;
+  }
+
+  @override
+  set canMoreLoading(bool value) {
+    _$canMoreLoadingAtom.reportWrite(value, super.canMoreLoading, () {
+      super.canMoreLoading = value;
+    });
+  }
+
   final _$typeAtom = Atom(name: 'TransactionsStoreBase.type');
 
   @override
@@ -55,7 +71,7 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
   }
 
   final _$getTransactionsAsyncAction =
-      AsyncAction('TransactionsStoreBase.getTransactions');
+  AsyncAction('TransactionsStoreBase.getTransactions');
 
   @override
   Future getTransactions({bool isForce = false}) {
@@ -64,7 +80,7 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
   }
 
   final _$getTransactionsMoreAsyncAction =
-      AsyncAction('TransactionsStoreBase.getTransactionsMore');
+  AsyncAction('TransactionsStoreBase.getTransactionsMore');
 
   @override
   Future getTransactionsMore() {
@@ -73,7 +89,7 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
   }
 
   final _$TransactionsStoreBaseActionController =
-      ActionController(name: 'TransactionsStoreBase');
+  ActionController(name: 'TransactionsStoreBase');
 
   @override
   dynamic setType(TYPE_COINS value) {
@@ -91,6 +107,7 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
     return '''
 transactions: ${transactions},
 isMoreLoading: ${isMoreLoading},
+canMoreLoading: ${canMoreLoading},
 type: ${type}
     ''';
   }

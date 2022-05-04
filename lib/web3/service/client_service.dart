@@ -73,7 +73,7 @@ class ClientService implements ClientServiceI {
     final credentials = await getCredentials(privateKey);
     final myAddress = await AddressService().getPublicAddress(privateKey);
 
-    if (coin == TYPE_COINS.WUSD) {
+    if (coin == TYPE_COINS.WQT) {
       hash = await _client.sendTransaction(
         credentials,
         Transaction(
@@ -89,10 +89,10 @@ class ClientService implements ClientServiceI {
     } else {
       String addressToken = '';
       switch (coin) {
-        case TYPE_COINS.WUSD:
-          break;
         case TYPE_COINS.WQT:
-          addressToken = AddressCoins.wqt;
+          break;
+        case TYPE_COINS.WUSD:
+          addressToken = AddressCoins.wUsd;
           break;
         case TYPE_COINS.wBNB:
           addressToken = AddressCoins.wBnb;
