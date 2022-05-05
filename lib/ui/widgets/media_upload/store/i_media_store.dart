@@ -12,30 +12,42 @@ part 'i_media_store.g.dart';
 class IMediaStore<T> extends _IMediaStore<T> with _$IMediaStore<T> {}
 
 abstract class _IMediaStore<T> extends IStore<T> with Store {
-
   @observable
   StateLoading state = StateLoading.nothing;
 
   @observable
-  ObservableList<ValueNotifier<LoadImageState>> progressImages = ObservableList.of([]);
+  ObservableList<ValueNotifier<LoadImageState>> progressImages =
+      ObservableList.of([]);
 
   @observable
   ObservableList<Media> medias = ObservableList.of([]);
 
   @action
-  setImage(File file) {
-    progressImages
-        .add(ValueNotifier<LoadImageState>(LoadImageState(file: file)));
+  setImage({
+    required String url,
+    File? file,
+  }) {
+    if (url.isNotEmpty) {
+      progressImages.add(ValueNotifier<LoadImageState>(LoadImageState(
+        url: url,
+        state: StateImage.success,
+        processLoading: 1,
+      )));
+    }
+    if (file != null) {
+      progressImages
+          .add(ValueNotifier<LoadImageState>(LoadImageState(file: file)));
+    }
   }
 
   @action
-  deleteImage(File file) {
-    progressImages.removeWhere((element) => element.value.file == file);
+  deleteImage(ValueNotifier<LoadImageState> value) {
+    progressImages.remove(value);
   }
 
   @action
-  deleteMedia(Media media) {
-    medias.remove(media);
+  deleteMedia(String url) {
+    medias.removeWhere((element) => element.url == url);
   }
 
   @action
@@ -45,7 +57,7 @@ abstract class _IMediaStore<T> extends IStore<T> with Store {
 
       await Stream.fromIterable(progressImages).asyncMap((notifier) async {
         final media = await apiProvider.uploadMediaWithProgress(
-          media: notifier.value.file,
+          media: notifier.value.file!,
           notifier: notifier,
         );
         medias.add(media);
@@ -64,12 +76,14 @@ enum StateLoading {
 }
 
 class LoadImageState {
-  File file;
+  File? file;
+  String? url;
   StateImage state;
   double processLoading;
 
   LoadImageState({
-    required this.file,
+    this.file,
+    this.url,
     this.processLoading = 0.0,
     this.state = StateImage.compression,
   });

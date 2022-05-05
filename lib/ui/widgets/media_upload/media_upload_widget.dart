@@ -72,7 +72,7 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
                       );
                       if (result != null) {
                         result.files.map((file) {
-                          store.setImage(File(file.path!));
+                          store.setImage(file: File(file.path!), url: '');
                         }).toList();
                       }
                     },
@@ -116,16 +116,28 @@ class _ListMediaView extends StatelessWidget {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         children: [
-          ...store.medias
-              .map((element) =>
-                  _ImageNetworkEntity(media: element, store: store))
-              .toList(),
           ...store.progressImages
-              .map((element) => _ImageEntity(
-                    store: store,
-                    notifier: element,
-                  ))
+              .where((element) => element.value.url != null)
               .toList()
+              .map(
+                (e) => _ImageNetworkEntity(
+                  store: store,
+                  media: Media(
+                    id: '',
+                    url: e.value.url!,
+                    type: TypeMedia.Image,
+                  ),
+                ),
+              ).toList(),
+          ...store.progressImages
+              .where((element) => element.value.file != null)
+              .toList()
+              .map(
+                (e) => _ImageEntity(
+                  store: store,
+                  notifier: e,
+                ),
+              ).toList(),
         ],
       ),
     );
@@ -150,7 +162,7 @@ class _GalleryView extends StatelessWidget {
         );
         if (result != null) {
           result.files.map((file) {
-            store.setImage(File(file.path!));
+            store.setImage(file: File(file.path!), url: '');
           }).toList();
         }
       },
@@ -226,7 +238,7 @@ class _ImageNetworkEntity extends StatelessWidget {
                 child: IconButton(
                   onPressed: () {
                     print('delete media');
-                    store.deleteMedia(media);
+                    store.deleteMedia(media.url);
                   },
                   icon: Icon(Icons.cancel),
                   iconSize: 25.0,
@@ -271,7 +283,7 @@ class _ImageEntity extends StatelessWidget {
                 child: IconButton(
                   onPressed: () {
                     print('delete image');
-                    store.deleteImage(notifier.value.file);
+                    store.deleteImage(notifier);
                   },
                   icon: Icon(Icons.cancel),
                   iconSize: 25.0,
@@ -313,7 +325,7 @@ class _ImageWidgetState extends State<_ImageWidget> {
   @override
   Widget build(BuildContext context) {
     if (file == null || file != widget.notifier.value.file) {
-      future = widget.notifier.value.file.readAsBytes();
+      future = widget.notifier.value.file!.readAsBytes();
       file = widget.notifier.value.file;
     }
 

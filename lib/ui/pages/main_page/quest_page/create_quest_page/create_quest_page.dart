@@ -13,7 +13,7 @@ import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mobx/mobx.dart';
+
 import "package:provider/provider.dart";
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -65,7 +65,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.description = widget.questInfo!.description;
       store.price = widget.questInfo!.price;
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
-      store.medias = ObservableList.of(widget.questInfo!.medias ?? []);
+      (widget.questInfo!.medias ?? []).map((e) => store.setImage(url: e.url)).toList();
+      // store.medias = ObservableList.of(widget.questInfo!.medias ?? []);
       _controller = SkillSpecializationController(
           initialValue: widget.questInfo!.questSpecializations);
     } else

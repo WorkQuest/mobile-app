@@ -64,33 +64,33 @@ mixin _$IMediaStore<T> on _IMediaStore<T>, Store {
   final _$_IMediaStoreActionController = ActionController(name: '_IMediaStore');
 
   @override
-  dynamic setImage(File file) {
+  dynamic setImage({File? file, required String url}) {
     final _$actionInfo = _$_IMediaStoreActionController.startAction(
         name: '_IMediaStore.setImage');
     try {
-      return super.setImage(file);
+      return super.setImage(file: file, url: url);
     } finally {
       _$_IMediaStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  dynamic deleteImage(File file) {
+  dynamic deleteImage(ValueNotifier<LoadImageState> value) {
     final _$actionInfo = _$_IMediaStoreActionController.startAction(
         name: '_IMediaStore.deleteImage');
     try {
-      return super.deleteImage(file);
+      return super.deleteImage(value);
     } finally {
       _$_IMediaStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  dynamic deleteMedia(Media media) {
+  dynamic deleteMedia(String url) {
     final _$actionInfo = _$_IMediaStoreActionController.startAction(
         name: '_IMediaStore.deleteMedia');
     try {
-      return super.deleteMedia(media);
+      return super.deleteMedia(url);
     } finally {
       _$_IMediaStoreActionController.endAction(_$actionInfo);
     }
