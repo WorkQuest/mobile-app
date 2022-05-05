@@ -35,6 +35,7 @@ Future confirmTransaction(
               ),
               actions: [
                 CupertinoDialogAction(
+                  onPressed: onPress,
                   child: Text('meta.confirm'.tr()),
                 ),
                 CupertinoDialogAction(
