@@ -110,8 +110,17 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   void changePageNumber(int value) => pageNumber = value;
 
   @action
-  void setMessageSelected(bool value) {
-    messageSelected = value;
+  void setMessageSelected(bool value) => messageSelected = value;
+
+  @action
+  Future<void> leaveFromChat() async {
+    try {
+      this.onLoading();
+      await _apiProvider.leaveFromChat(chatId: idChat!);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
   }
 
   void uncheck() {

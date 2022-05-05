@@ -3,10 +3,12 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/login_button.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +29,7 @@ class ChatRoomPage extends StatefulWidget {
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
   late final ChatRoomStore _store;
+  ChatStore? _chatStore;
   final String defaultImageUrl =
       "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs";
   ProfileMeStore? profile;
@@ -49,6 +52,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     super.initState();
     _store = context.read<ChatRoomStore>();
     profile = context.read<ProfileMeStore>();
+    _chatStore = context.read<ChatStore>();
     _store.idChat = widget.idChat;
     _store.getMessages(true);
     id1 = _store.chat?.chatModel.userMembers[0].id ?? "--";
@@ -368,8 +372,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 : SizedBox()
             : GestureDetector(
                 onTap: () async {
-                  await _store.getCompanion(
-                      profile!.userData!.id != id1! ? id1! : id2!);
                   Navigator.of(context, rootNavigator: true).pushNamed(
                     UserProfile.routeName,
                     arguments: ProfileArguments(
@@ -386,7 +388,39 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   maxRadius: 20,
                 ),
               ),
-        const SizedBox(width: 16),
+        chatType == "group"
+            ? PopupMenuButton<String>(
+                elevation: 10,
+                icon: Icon(Icons.more_vert),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6.0),
+                ),
+                onSelected: (value) async {
+                  switch (value) {
+                    case "Leave from chat":
+                      await _store.leaveFromChat();
+                      if (_store.isSuccess) {
+                        await _chatStore!.loadChats(true, false);
+                        Navigator.pop(context);
+                        AlertDialogUtils.showSuccessDialog(context);
+                      }
+                      break;
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return {
+                    "Leave from chat",
+                  }.map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(
+                        choice.tr(),
+                      ),
+                    );
+                  }).toList();
+                },
+              )
+            : const SizedBox(width: 16),
       ],
     );
   }

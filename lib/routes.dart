@@ -637,6 +637,9 @@ class Routes {
                 create: (context) => getIt.get<ChatRoomStore>(),
               ),
               Provider(
+                create: (context) => getIt.get<ChatStore>(),
+              ),
+              Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
             ],
