@@ -763,7 +763,7 @@ extension UserInfoService on ApiProvider {
         },
         "profileVisibility": {
           "network": 0,
-          "ratingStatus": 4,
+          "ratingStatus": 7,
         }
       };
 

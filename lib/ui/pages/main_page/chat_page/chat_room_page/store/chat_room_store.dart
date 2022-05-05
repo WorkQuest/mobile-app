@@ -36,6 +36,9 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
 
   String idGroupChat = "";
 
+  @observable
+  ObservableMap<int, String> filesPath = ObservableMap.of({});
+
   final _atomMessages = Atom(name: '_ChatRoomStore.uncheck');
 
   final _atomSendMessage = Atom(name: '_ChatRoomStore.SengMessage');
@@ -108,6 +111,9 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
 
   @action
   void changePageNumber(int value) => pageNumber = value;
+
+  @action
+  void addFilePath(int index, String path) => filesPath[index] = path;
 
   @action
   void setMessageSelected(bool value) => messageSelected = value;

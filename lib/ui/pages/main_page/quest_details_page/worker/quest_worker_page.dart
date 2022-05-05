@@ -524,6 +524,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               await store.rejectInvite(store.quest.value!.invited!.id);
               questStore.getQuests(true);
             }
+            chatStore!.loadChats(true, false);
             _updateLoading();
             await Future.delayed(const Duration(milliseconds: 250));
             Navigator.pop(context);

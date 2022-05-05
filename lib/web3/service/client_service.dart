@@ -46,8 +46,9 @@ class ClientService implements ClientServiceI {
   static final apiUrl = "https://dev-node-nyc3.workquest.co";
   static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
   final int _chainId = 20220112;
-  final abiFactoryAddress = '0x894E261DF9791aa6001f8d800169bA1fDa6F1Af5';
-  final abiBridgeAddress = "0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE";
+  final abiFactoryAddress = '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066';
+  ///ADDRESS WUSD_TOKEN
+  final abiBridgeAddress = "0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa";
   String addressNewContract = "";
 
   final Web3Client _client = Web3Client(
@@ -279,6 +280,7 @@ extension CreateContract on ClientService {
     required String deadline,
     required String nonce,
   }) async {
+    print("Create contract");
     final credentials = await getCredentials(AccountRepository().privateKey);
     final contract =
         await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
@@ -342,6 +344,7 @@ extension ApproveCoin on ClientService {
   Future<bool> approveCoin({
     required String cost,
   }) async {
+    print("Approve coin");
     final credentials = await getCredentials(AccountRepository().privateKey);
     final contract =
         await getDeployedContract("WQBridgeToken", abiBridgeAddress);
