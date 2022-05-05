@@ -86,6 +86,17 @@ mixin _$IMediaStore<T> on _IMediaStore<T>, Store {
   }
 
   @override
+  dynamic deleteMedia(Media media) {
+    final _$actionInfo = _$_IMediaStoreActionController.startAction(
+        name: '_IMediaStore.deleteMedia');
+    try {
+      return super.deleteMedia(media);
+    } finally {
+      _$_IMediaStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 state: ${state},

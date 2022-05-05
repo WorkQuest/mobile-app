@@ -34,6 +34,11 @@ abstract class _IMediaStore<T> extends IStore<T> with Store {
   }
 
   @action
+  deleteMedia(Media media) {
+    medias.remove(media);
+  }
+
+  @action
   sendImages(ApiProvider apiProvider) async {
     try {
       state = StateLoading.loading;

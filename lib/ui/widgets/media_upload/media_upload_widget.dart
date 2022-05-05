@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../../constants.dart';
+import '../../../model/quests_models/media_model.dart';
 
 class MediaUploadWithProgress<T extends IMediaStore> extends StatefulWidget {
   final T store;
@@ -109,21 +110,24 @@ class _ListMediaView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(
-      builder: (context) =>
-          ListView(
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            children: store.progressImages
-                .map(
-                  (element) =>
-                  _ImageEntity(
+      builder: (context) => ListView(
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(vertical: 10.0),
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        children: [
+          ...store.medias
+              .map((element) =>
+                  _ImageNetworkEntity(media: element, store: store))
+              .toList(),
+          ...store.progressImages
+              .map((element) => _ImageEntity(
                     store: store,
                     notifier: element,
-                  ),
-            ).toList(),
-          ),
+                  ))
+              .toList()
+        ],
+      ),
     );
   }
 }
@@ -177,6 +181,65 @@ class _GalleryView extends StatelessWidget {
   }
 }
 
+class _ImageNetworkEntity extends StatelessWidget {
+  final IMediaStore store;
+  final Media media;
+
+  const _ImageNetworkEntity({
+    Key? key,
+    required this.media,
+    required this.store,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(right: 10.0),
+      child: Container(
+        width: 150,
+        child: Stack(
+          clipBehavior: Clip.none,
+          fit: StackFit.expand,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                FadeInImage(
+                  width: MediaQuery.of(context).size.width,
+                  height: 300,
+                  placeholder: MemoryImage(
+                    Uint8List.fromList(
+                        base64Decode(Constants.base64WhiteHolder)),
+                  ),
+                  image: NetworkImage(
+                    media.url,
+                  ),
+                  fit: BoxFit.cover,
+                ),
+                _SuccessWidget(),
+              ],
+            ),
+            if (store.state == StateLoading.nothing)
+              Positioned(
+                top: -15.0,
+                right: -15.0,
+                child: IconButton(
+                  onPressed: () {
+                    print('delete media');
+                    store.deleteMedia(media);
+                  },
+                  icon: Icon(Icons.cancel),
+                  iconSize: 25.0,
+                  color: Colors.redAccent,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _ImageEntity extends StatelessWidget {
   final IMediaStore store;
   final ValueNotifier<LoadImageState> notifier;
@@ -197,7 +260,10 @@ class _ImageEntity extends StatelessWidget {
           clipBehavior: Clip.none,
           fit: StackFit.expand,
           children: [
-            _ImageWidget(notifier: notifier, stateLoading: store.state,),
+            _ImageWidget(
+              notifier: notifier,
+              stateLoading: store.state,
+            ),
             if (store.state == StateLoading.nothing)
               Positioned(
                 top: -15.0,
@@ -267,7 +333,8 @@ class _ImageWidgetState extends State<_ImageWidget> {
                       width: MediaQuery.of(context).size.width,
                       height: 300,
                       placeholder: MemoryImage(
-                        Uint8List.fromList(base64Decode(Constants.base64WhiteHolder)),
+                        Uint8List.fromList(
+                            base64Decode(Constants.base64WhiteHolder)),
                       ),
                       image: MemoryImage(
                         snapshot.data!,
@@ -281,8 +348,7 @@ class _ImageWidgetState extends State<_ImageWidget> {
                         SizedBox(
                           height: 4,
                         ),
-                        Text(
-                            _textState(value),
+                        Text(_textState(value),
                             style: TextStyle(
                               shadows: [
                                 Shadow(
@@ -293,8 +359,7 @@ class _ImageWidgetState extends State<_ImageWidget> {
                               ],
                               fontSize: 14,
                               color: Colors.white,
-                            )
-                        ),
+                            )),
                       ],
                     ),
                   ],
@@ -315,7 +380,8 @@ class _ImageWidgetState extends State<_ImageWidget> {
   }
 
   String _textState(LoadImageState value) {
-    if (widget.stateLoading != null && widget.stateLoading != StateLoading.nothing) {
+    if (widget.stateLoading != null &&
+        widget.stateLoading != StateLoading.nothing) {
       switch (value.state) {
         case StateImage.compression:
           return "Compression...";
@@ -365,7 +431,6 @@ class _SuccessWidgetState extends State<_SuccessWidget>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
 
-
   @override
   void initState() {
     super.initState();
@@ -375,7 +440,6 @@ class _SuccessWidgetState extends State<_SuccessWidget>
     );
     _animationController.forward();
   }
-
 
   @override
   void dispose() {
@@ -396,7 +460,6 @@ class _SuccessWidgetState extends State<_SuccessWidget>
             Icons.check_circle_outline,
             color: Colors.white,
           ),
-        )
-    );
+        ));
   }
 }
