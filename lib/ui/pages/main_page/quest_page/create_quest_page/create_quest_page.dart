@@ -65,7 +65,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.description = widget.questInfo!.description;
       store.price = widget.questInfo!.price;
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
-      store.medias = ObservableList.of(widget.questInfo!.medias);
+      store.medias = ObservableList.of(widget.questInfo!.medias ?? []);
       _controller = SkillSpecializationController(
           initialValue: widget.questInfo!.questSpecializations);
     } else
