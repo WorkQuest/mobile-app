@@ -47,8 +47,10 @@ class ClientService implements ClientServiceI {
   static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
   final int _chainId = 20220112;
   final abiFactoryAddress = '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066';
+
   ///ADDRESS WUSD_TOKEN
   final abiBridgeAddress = "0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa";
+  final abiPromotionAddress = "0xB778e471833102dBe266DE2747D72b91489568c2";
   String addressNewContract = "";
 
   final Web3Client _client = Web3Client(
@@ -438,8 +440,8 @@ extension Promote on ClientService {
     print('period: $period');
     print('amount: $amount');
     print('questAddress: $questAddress');
-    final contract = await getDeployedContract(
-        "WQPromotion", '0xEcC78f46d19DE638ECFB71423857bC6B50F5aED1');
+    final contract =
+        await getDeployedContract("WQPromotion", abiPromotionAddress);
     final function = contract.function(WQPromotionFunctions.promoteQuest.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await _client.getGasPrice();
@@ -491,8 +493,8 @@ extension Promote on ClientService {
     print('tariff: $tariff');
     print('period: $period');
     print('amount: $amount');
-    final contract = await getDeployedContract(
-        "WQPromotion", '0xc14e047639d531e863702BeF5D8E4c8CAE02d379');
+    final contract =
+        await getDeployedContract("WQPromotion", abiPromotionAddress);
     final function = contract.function(WQPromotionFunctions.promoteUser.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await _client.getGasPrice();
