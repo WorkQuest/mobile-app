@@ -24,7 +24,10 @@ class WorkersItem extends StatelessWidget {
       onTap: () async {
         await Navigator.of(context, rootNavigator: true).pushNamed(
           UserProfile.routeName,
-          arguments: workersInfo,
+          arguments: ProfileArguments(
+            role: workersInfo.role,
+            userId: workersInfo.id,
+          ),
         );
       },
       child: Container(
@@ -53,13 +56,9 @@ class WorkersItem extends StatelessWidget {
               //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: UserAvatar(
-                    width: 61,
-                    height: 61,
-                    url:  workersInfo.avatar?.url
-                  )
-                ),
+                    borderRadius: BorderRadius.circular(100),
+                    child: UserAvatar(
+                        width: 61, height: 61, url: workersInfo.avatar?.url)),
                 const SizedBox(
                   width: 15,
                 ),
@@ -201,10 +200,12 @@ class WorkersItem extends StatelessWidget {
       switch (type) {
         case 0:
           return Color(0xFFF6CF00);
+        case 1:
+          return Color(0xFFF6CF00);
         case 2:
           return Color(0xFFBBC0C7);
         case 3:
-          return Color(0xC3936C);
+          return Color(0xFFB79768);
         default:
           return Colors.transparent;
       }

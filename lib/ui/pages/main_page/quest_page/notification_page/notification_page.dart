@@ -1,4 +1,5 @@
 import 'package:app/constants.dart';
+import 'package:app/enums.dart';
 import 'package:app/model/quests_models/notifications.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
@@ -86,21 +87,19 @@ class _NotificationPageState extends State<NotificationPage> {
                             body: store.listOfNotifications[index],
                             onTap: () async {
                               final body = store.listOfNotifications[index];
-                              if (body.notification.data.user.id !=
-                                  profileMeStore.userData?.id) {
-                                await chatStore.getUserData(
-                                    body.notification.data.user.id);
-                              } else {
-                                chatStore.userData = profileMeStore.userData;
-                              }
-                              if (chatStore.userData != null) {
-                                await Navigator.of(context, rootNavigator: true)
-                                    .pushNamed(
-                                  UserProfile.routeName,
-                                  arguments: chatStore.userData,
-                                );
-                                chatStore.userData = null;
-                              }
+                              await Navigator.of(context, rootNavigator: true)
+                                  .pushNamed(
+                                UserProfile.routeName,
+                                arguments: body.notification.data.user.id !=
+                                        profileMeStore.userData!.id
+                                    ? ProfileArguments(
+                                        //TODO: FIX ROLE
+                                        role: UserRole.Worker,
+                                        userId: body.notification.data.user.id,
+                                      )
+                                    : null,
+                              );
+                              chatStore.userData = null;
                             },
                             onTabOk: () => store.deleteNotification(
                                 store.listOfNotifications[index].id),

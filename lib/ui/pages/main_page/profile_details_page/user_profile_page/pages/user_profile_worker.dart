@@ -1,5 +1,4 @@
 import 'package:app/enums.dart';
-import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
@@ -15,7 +14,7 @@ import '../../../raise_views_page/raise_views_page.dart';
 import '../../../../../widgets/animation_show_more.dart';
 
 class WorkerProfile extends UserProfile {
-  WorkerProfile(ProfileMeResponse? info) : super(info);
+  WorkerProfile(ProfileArguments? arguments) : super(arguments);
 
   @override
   _WorkerProfileState createState() => _WorkerProfileState();
@@ -28,7 +27,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
 
   List<Widget> questPortfolio() => [
         ///Add new portfolio
-        if (widget.info == null)
+        if (viewOtherUser?.userData == null)
           Container(
             color: Colors.white,
             padding: const EdgeInsets.symmetric(
@@ -79,11 +78,14 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                         index++)
                       PortfolioWidget(
                         index: index,
-                        imageUrl: portfolioStore!.portfolioList[index].medias.isEmpty
+                        imageUrl: portfolioStore!
+                                .portfolioList[index].medias.isEmpty
                             ? "https://app-ver1.workquest.co/_nuxt/img/logo.1baae1e.svg"
-                            : portfolioStore!.portfolioList[index].medias.first.url,
+                            : portfolioStore!
+                                .portfolioList[index].medias.first.url,
                         title: portfolioStore!.portfolioList[index].title,
-                        isProfileYour: widget.info == null ? true : false,
+                        isProfileYour:
+                            viewOtherUser?.userData == null ? true : false,
                       ),
                   ],
                 ),
@@ -104,7 +106,9 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   arguments: portfolioStore!,
                 );
                 await portfolioStore!.getPortfolio(
-                  userId: widget.info == null ? userStore!.userData!.id : widget.info!.id,
+                  userId: viewOtherUser?.userData == null
+                      ? userStore!.userData!.id
+                      : viewOtherUser!.userData!.id,
                   newList: true,
                 );
               },
@@ -121,12 +125,14 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
         Padding(
           padding: const EdgeInsets.only(bottom: 5.0),
           child: Text(
-            widget.info == null ? "skills.yourSkills".tr() : "skills.title".tr(),
+            viewOtherUser?.userData == null
+                ? "skills.yourSkills".tr()
+                : "skills.title".tr(),
             textAlign: TextAlign.start,
             style: style,
           ),
         ),
-        widget.info == null
+        viewOtherUser?.userData == null
             ? (userStore!.userData!.userSpecializations.isEmpty)
                 ? Text(
                     "skills.noSkills".tr(),
@@ -137,7 +143,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   )
                 : Observer(
                     builder: (_) => SkillsWidget(
-                      skills: store.parser(userStore!.userData!.userSpecializations),
+                      skills: store
+                          .parser(userStore!.userData!.userSpecializations),
                       isProfileMy: true,
                       isExpanded: store.expandedSkills ||
                           userStore!.userData!.userSpecializations.length < 5,
@@ -146,7 +153,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                       },
                     ),
                   )
-            : (widget.info!.userSpecializations.isEmpty)
+            : (viewOtherUser!.userData!.userSpecializations.isEmpty)
                 ? Text(
                     "skills.noSkills".tr(),
                     style: style.copyWith(
@@ -156,7 +163,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   )
                 : Observer(
                     builder: (_) => SkillsWidget(
-                      skills: store.parser(widget.info!.userSpecializations),
+                      skills: store
+                          .parser(viewOtherUser!.userData!.userSpecializations),
                       isProfileMy: false,
                       isExpanded: store.expandedSkills ||
                           userStore!.userData!.userSpecializations.length < 5,
@@ -177,10 +185,11 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           ),
         ),
         Observer(builder: (_) {
-          final description = widget.info == null
+          final description = viewOtherUser?.userData == null
               ? userStore!.userData?.additionalInfo?.description ??
                   "modals.noDescription".tr()
-              : widget.info!.additionalInfo?.description ?? "modals.noDescription".tr();
+              : viewOtherUser!.userData!.additionalInfo?.description ??
+                  "modals.noDescription".tr();
           return AnimationShowMore(
             text: description,
             enabled: store.expandedDescription || description.length < 100,
@@ -200,16 +209,17 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
             ),
           ),
         ),
-        widget.info == null
+        viewOtherUser?.userData == null
             ? (userStore!.userData!.additionalInfo!.educations.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: userStore!.userData!.additionalInfo!.educations.length,
+                    itemCount:
+                        userStore!.userData!.additionalInfo!.educations.length,
                     itemBuilder: (_, index) {
-                      final education =
-                          userStore!.userData!.additionalInfo!.educations[index];
+                      final education = userStore!
+                          .userData!.additionalInfo!.educations[index];
                       return experience(
                           place: education["place"] ?? "--",
                           from: education["from"] ?? "--",
@@ -218,14 +228,16 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                 : Text(
                     "profiler.noInformation".tr(),
                   )
-            : (widget.info!.additionalInfo!.educations.isNotEmpty)
+            : (viewOtherUser!.userData!.additionalInfo!.educations.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: widget.info!.additionalInfo!.educations.length,
+                    itemCount: viewOtherUser!
+                        .userData!.additionalInfo!.educations.length,
                     itemBuilder: (_, index) {
-                      final education = widget.info!.additionalInfo!.educations[index];
+                      final education = viewOtherUser!
+                          .userData!.additionalInfo!.educations[index];
                       return experience(
                           place: education["place"] ?? "--",
                           from: education["from"] ?? "--",
@@ -248,17 +260,17 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
             ),
           ),
         ),
-        widget.info == null
+        viewOtherUser?.userData == null
             ? (userStore!.userData!.additionalInfo!.workExperiences.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount:
-                        userStore!.userData!.additionalInfo!.workExperiences.length,
+                    itemCount: userStore!
+                        .userData!.additionalInfo!.workExperiences.length,
                     itemBuilder: (_, index) {
-                      final userExperience =
-                          userStore!.userData!.additionalInfo!.workExperiences[index];
+                      final userExperience = userStore!
+                          .userData!.additionalInfo!.workExperiences[index];
                       return experience(
                           place: userExperience["place"] ?? "--",
                           from: userExperience["from"] ?? "--",
@@ -271,15 +283,17 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                       fontWeight: FontWeight.normal,
                     ),
                   )
-            : (widget.info!.additionalInfo!.workExperiences.isNotEmpty)
+            : (viewOtherUser!
+                    .userData!.additionalInfo!.workExperiences.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: widget.info!.additionalInfo!.workExperiences.length,
+                    itemCount: viewOtherUser!
+                        .userData!.additionalInfo!.workExperiences.length,
                     itemBuilder: (_, index) {
-                      final userExperience =
-                          widget.info!.additionalInfo!.workExperiences[index];
+                      final userExperience = viewOtherUser!
+                          .userData!.additionalInfo!.workExperiences[index];
                       return experience(
                           place: userExperience["place"] ?? "--",
                           from: userExperience["from"] ?? "--",
@@ -295,7 +309,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
       ];
 
   List<Widget> addToQuest() => [
-        if (widget.info != null && userStore!.userData!.role == UserRole.Employer)
+        if (viewOtherUser?.userData != null &&
+            userStore!.userData!.role == UserRole.Employer)
           Column(
             children: [
               spacer,
@@ -304,10 +319,13 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   viewOtherUser!.offset = 0;
                   viewOtherUser!.quests.clear();
                   viewOtherUser!.questId = "";
-                  viewOtherUser!.workerId = widget.info!.id;
+                  viewOtherUser!.workerId = viewOtherUser!.userData!.id;
                   await Navigator.of(context, rootNavigator: true).pushNamed(
                     ChooseQuest.routeName,
-                    arguments: widget.info!.id,
+                    arguments: ChooseQuestArguments(
+                      workerId: viewOtherUser!.userData!.id,
+                      workerAddress: viewOtherUser!.userData!.walletAddress!,
+                    ),
                   );
                   viewOtherUser!.quests.clear();
                   viewOtherUser!.offset = 0;
@@ -318,7 +336,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               ),
             ],
           ),
-        if (widget.info == null)
+        if (viewOtherUser?.userData == null)
           Column(
             children: [
               spacer,
@@ -339,27 +357,31 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
 
   List<Widget> ratingsWidget() => [
         workerRating(
-          completedQuests: widget.info == null
+          completedQuests: viewOtherUser?.userData == null
               ? userStore!.userData!.questsStatistic == null
                   ? '0'
                   : userStore!.userData!.questsStatistic!.completed.toString()
-              : widget.info!.questsStatistic == null
+              : viewOtherUser!.userData!.questsStatistic == null
                   ? '0'
-                  : widget.info!.questsStatistic!.completed.toString(),
-          activeQuests: widget.info == null
+                  : viewOtherUser!.userData!.questsStatistic!.completed
+                      .toString(),
+          activeQuests: viewOtherUser?.userData == null
               ? userStore!.userData!.questsStatistic == null
                   ? '0'
                   : userStore!.userData!.questsStatistic!.opened.toString()
-              : widget.info!.questsStatistic == null
+              : viewOtherUser!.userData!.questsStatistic == null
                   ? '0'
-                  : widget.info!.questsStatistic!.opened.toString(),
-          averageRating: widget.info == null
+                  : viewOtherUser!.userData!.questsStatistic!.opened.toString(),
+          averageRating: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.averageMark
-              : widget.info!.ratingStatistic!.averageMark,
-          reviews: widget.info == null
+              : viewOtherUser!.userData!.ratingStatistic!.averageMark,
+          reviews: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
-              : widget.info!.ratingStatistic!.reviewCount.toString(),
-          userId: widget.info == null ? userStore!.userData!.id : widget.info!.id,
+              : viewOtherUser!.userData!.ratingStatistic!.reviewCount
+                  .toString(),
+          userId: viewOtherUser?.userData == null
+              ? userStore!.userData!.id
+              : viewOtherUser!.userData!.id,
           context: context,
         ),
       ];

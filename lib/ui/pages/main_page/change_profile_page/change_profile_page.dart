@@ -46,6 +46,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
+
     oldPhone = Phone(
       codeRegion: profile!.userData?.phone?.codeRegion ??
           (profile!.userData?.tempPhone?.codeRegion ?? ''),
@@ -139,7 +140,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     type: FileType.image,
                   );
                   if (result != null) {
-                    List<File> files = result.paths.map((path) => File(path!)).toList();
+                    List<File> files =
+                        result.paths.map((path) => File(path!)).toList();
                     pageStore.media = files.first;
                   }
                 },
@@ -286,8 +288,19 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   _onSave() async {
+    if ((pageStore.userData.tempPhone?.fullPhone ?? "").contains("-") ||
+        (pageStore.userData.tempPhone?.fullPhone ?? "").contains(" ")) {
+      AlertDialogUtils.showInfoAlertDialog(
+        context,
+        title: "Warning",
+        content: "The number must not contain dashes or spaces",
+      );
+      return;
+    }
     if (_formKey.currentState?.validate() ?? false) {
-      if (!pageStore.validationKnowledge(_controllerKnowledge!.getListMap(), context))
+      if (!pageStore.validationKnowledge(
+          _controllerKnowledge!.getListMap(), context)) return;
+      if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
         return;
       if (!pageStore.validationWork(_controllerWork!.getListMap(), context)) return;
 
@@ -302,8 +315,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       pageStore.userData.priority = profile!.userData!.priority;
       pageStore.userData.workplace = profile!.valueToWorkplace();
 
+      pageStore.savePhoneNumber();
+      pageStore.saveSecondPhoneNumber();
+
       if (!profile!.isLoading)
-        pageStore.userData.userSpecializations = _controller!.getSkillAndSpecialization();
+        pageStore.userData.userSpecializations =
+            _controller!.getSkillAndSpecialization();
       await profile!.changeProfile(
         pageStore.userData,
         media: pageStore.media,
@@ -313,10 +330,23 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   }
 
   _changePhone() async {
-    if (pageStore.numberChanged(oldPhone!.fullPhone)) {
+    Phone? userPhone = profile!.userData!.phone ?? profile!.userData!.tempPhone;
+    if (userPhone != null &&
+        userPhone.fullPhone.isNotEmpty &&
+        pageStore.numberChanged(userPhone.fullPhone)) {
       await profile!.submitPhoneNumber(pageStore.userData.tempPhone!.fullPhone);
       profile!.userData?.phone = null;
-      oldPhone = profile!.userData!.tempPhone;
+      userPhone = profile!.userData!.tempPhone;
+    }
+    if (profile!.isSuccess) {
+      if (userPhone != null &&
+          userPhone.fullPhone.isNotEmpty &&
+          !pageStore.numberChanged(userPhone.fullPhone)) {
+        await AlertDialogUtils.showSuccessDialog(context);
+      } else {
+        await AlertDialogUtils.showSuccessDialog(context,
+            text: 'Enter code from SMS in SMS Verification');
+      }
     }
   }
 
@@ -609,6 +639,11 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           child: InternationalPhoneNumberInput(
+            validator: widget.title == "modals.secondPhoneNumber"
+                ? (value) {
+                    return null;
+                  }
+                : Validators.phoneNumberValidator,
             initialValue: widget.initialValue,
             errorMessage: "modals.invalidPhone".tr(),
             autoValidateMode: AutovalidateMode.onUserInteraction,

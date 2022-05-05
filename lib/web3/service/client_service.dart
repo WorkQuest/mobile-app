@@ -14,7 +14,8 @@ import '../contractEnums.dart';
 import 'address_service.dart';
 
 abstract class ClientServiceI {
-  Future<List<BalanceItem>> getBalanceFromList(List<EtherUnit> units, String privateKey);
+  Future<List<BalanceItem>> getBalanceFromList(
+      List<EtherUnit> units, String privateKey);
 
   Future<num> getBalanceInUnit(EtherUnit unit, String privateKey);
 
@@ -45,7 +46,8 @@ class ClientService implements ClientServiceI {
   static final apiUrl = "https://dev-node-nyc3.workquest.co";
   static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
   final int _chainId = 20220112;
-  final _abiAddress = '0xF38E33e7DD7e1a91c772aF51A366cd126e4552BB';
+  final abiFactoryAddress = '0x894E261DF9791aa6001f8d800169bA1fDa6F1Af5';
+  final abiBridgeAddress = "0x917dc1a9E858deB0A5bDCb44C7601F655F728DfE";
   String addressNewContract = "";
 
   final Web3Client _client = Web3Client(
@@ -101,8 +103,8 @@ class ClientService implements ClientServiceI {
           addressToken = AddressCoins.wEth;
           break;
       }
-      final contract =
-          Erc20(address: EthereumAddress.fromHex(addressToken), client: _client);
+      final contract = Erc20(
+          address: EthereumAddress.fromHex(addressToken), client: _client);
       hash = await contract.transfer(
         // myAddress,
         EthereumAddress.fromHex(address),
@@ -131,9 +133,10 @@ class ClientService implements ClientServiceI {
   Future<double> getBalanceFromContract(String address) async {
     try {
       address = address.toLowerCase();
-      final contract = Erc20(address: EthereumAddress.fromHex(address), client: _client);
-      final balance = await contract.balanceOf(
-          EthereumAddress.fromHex(AccountRepository().userAddresses!.first.address!));
+      final contract =
+          Erc20(address: EthereumAddress.fromHex(address), client: _client);
+      final balance = await contract.balanceOf(EthereumAddress.fromHex(
+          AccountRepository().userAddresses!.first.address!));
       return balance.toDouble() * pow(10, -18);
     } catch (e, trace) {
       print('e: $e, trace: $trace');
@@ -178,7 +181,8 @@ class ClientService implements ClientServiceI {
 
   @override
   Future<List<BalanceItem>> getAllBalance(String privateKey) async {
-    final list = await Stream.fromIterable(EtherUnit.values).asyncMap((unit) async {
+    final list =
+        await Stream.fromIterable(EtherUnit.values).asyncMap((unit) async {
       final balance = await getBalanceInUnit(unit, privateKey);
       return BalanceItem(unit.name, balance.toString());
     }).toList();
@@ -223,7 +227,7 @@ extension CreateQuestContract on ClientService {
     return bytes32;
   }
 
-  Future<List<dynamic>> handleContract({
+  Future<TransactionReceipt> handleContract({
     required DeployedContract contract,
     required ContractFunction function,
     required List<dynamic> params,
@@ -239,7 +243,7 @@ extension CreateQuestContract on ClientService {
           contract: contract,
           function: function,
           gasPrice: _gasPrice,
-          maxGas: 2000000,
+          maxGas: 3000000,
           parameters: params,
           from: from,
           value: value,
@@ -249,21 +253,18 @@ extension CreateQuestContract on ClientService {
 
       print("transactionHash: $transactionHash");
 
-      Timer.periodic(Duration(seconds: 10), (timer) async {
-        timer.cancel();
-        TransactionReceipt? transactionReceipt =
-            await _client.getTransactionReceipt(transactionHash);
-
-        if (transactionReceipt != null) {
-          addressNewContract = transactionReceipt.logs[0].address.toString();
-          print("Logs:");
-          transactionReceipt.logs.forEach((element) {
-            print(element);
-          });
+      int attempts = 0;
+      TransactionReceipt? result;
+      while (result == null) {
+        result = await _client.getTransactionReceipt(transactionHash);
+        if (result != null) print('Block: ${result.blockNumber}');
+        await Future.delayed(const Duration(seconds: 3));
+        attempts++;
+        if (attempts == 5) {
+          throw Exception("The waiting time is over. Expect a balance update.");
         }
-        checkStatus();
-      });
-      return [];
+      }
+      return result;
     } catch (e, tr) {
       print("ERROR: $e \n trace: $tr");
       throw Exception("Unable to call");
@@ -279,44 +280,35 @@ extension CreateContract on ClientService {
     required String nonce,
   }) async {
     final credentials = await getCredentials(AccountRepository().privateKey);
-    final contract = await getDeployedContract("WorkQuestFactory", _abiAddress);
-    final ethFunction = contract.function(WQFContractFunctions.newWorkQuest.name);
+    final contract =
+        await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
+    final ethFunction =
+        contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
-    final depositAmount = (double.parse(cost) * 1.01) * pow(10, 18);
-
-    final transferEvent = contract.event(WQFContractEvents.WorkQuestCreated.name);
-    final subscription = _client
-        .events(FilterOptions.events(contract: contract, event: transferEvent))
-        .take(1)
-        .listen((event) {
-      addressNewContract = event.address.toString();
-    });
-
-    handleContract(
+    await handleContract(
       contract: contract,
       function: ethFunction,
       params: [
         stringToBytes32(jobHash),
-        BigInt.parse(cost),
+        //TODO Find out why a transaction with a commission does not pass
+        BigInt.from(double.parse(cost)),
         BigInt.parse(deadline),
-        BigInt.parse("123"),
+        BigInt.parse(nonce),
       ],
       from: fromAddress,
-      value: EtherAmount.inWei(BigInt.parse(depositAmount.ceil().toString())),
     );
-    await subscription.asFuture();
-    await subscription.cancel();
   }
 }
 
 extension HandleEvent on ClientService {
-  Future<void> handleEvent(
-    WQContractFunctions function, [
+  Future<void> handleEvent({
+    required WQContractFunctions function,
+    required String contractAddress,
     List<dynamic> params = const [],
-  ]) async {
-    final contract = await getDeployedContract("WorkQuest", addressNewContract);
+  }) async {
+    final contract = await getDeployedContract("WorkQuest", contractAddress);
     final ethFunction = contract.function(function.name);
-    handleContract(
+    await handleContract(
       contract: contract,
       function: ethFunction,
       params: params,
@@ -330,7 +322,8 @@ extension GetContract on ClientService {
     String contractAddress,
   ) async {
     try {
-      final _abiJson = await rootBundle.loadString("assets/contracts/$contractName.json");
+      final _abiJson =
+          await rootBundle.loadString("assets/contracts/$contractName.json");
       // dev.log(_abiJson);
       final _contractAbi = ContractAbi.fromJson(_abiJson, contractName);
       final _contractAddress = EthereumAddress.fromHex(
@@ -339,8 +332,52 @@ extension GetContract on ClientService {
       final contract = DeployedContract(_contractAbi, _contractAddress);
       return contract;
     } catch (e, tr) {
-      print("Error: $e \n Trace: $tr");
+      print("getDeployedContract | Error: $e \n Trace: $tr");
       throw Exception("Error Creating Contract");
+    }
+  }
+}
+
+extension ApproveCoin on ClientService {
+  Future<bool> approveCoin({
+    required String cost,
+  }) async {
+    final credentials = await getCredentials(AccountRepository().privateKey);
+    final contract =
+        await getDeployedContract("WQBridgeToken", abiBridgeAddress);
+    final ethFunction = contract.function(WQBridgeTokenFunctions.approve.name);
+    final fromAddress = await credentials.extractAddress();
+    final _cost = double.parse(cost) + double.parse(cost) * 0.025;
+    final result = await handleContract(
+      contract: contract,
+      function: ethFunction,
+      from: fromAddress,
+      params: [
+        EthereumAddress.fromHex(abiFactoryAddress),
+        BigInt.from(_cost * pow(10, 18)),
+      ],
+    );
+
+    if (result.status ?? false)
+      return true;
+    else
+      return false;
+  }
+}
+
+extension CheckFunction on ClientService {
+  void checkFunction() async {
+    try {
+      final contract = await getDeployedContract(
+          "WQBridgeToken", "0xD92E713d051C37EbB2561803a3b5FBAbc4962431");
+      final outputs = contract.functions;
+      print("Contract function:");
+      outputs.forEach((element) {
+        print(element.name);
+      });
+    } catch (e, tr) {
+      print("Error: $e \n Trace: $tr");
+      throw Exception("Error handling event");
     }
   }
 }
@@ -348,8 +385,10 @@ extension GetContract on ClientService {
 extension CheckAddres on ClientService {
   Future<List<dynamic>> checkAdders(String address) async {
     try {
-      final contract = await getDeployedContract("WorkQuestFactory", _abiAddress);
-      final ethFunction = contract.function(WQFContractFunctions.getWorkQuests.name);
+      final contract =
+          await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
+      final ethFunction =
+          contract.function(WQFContractFunctions.getWorkQuests.name);
       final outputs = await _client.call(
         contract: contract,
         function: ethFunction,
@@ -366,7 +405,8 @@ extension CheckAddres on ClientService {
 extension CheckStatus on ClientService {
   Future<List<dynamic>> checkStatus() async {
     try {
-      final contract = await getDeployedContract("WorkQuest", addressNewContract);
+      final contract =
+          await getDeployedContract("WorkQuest", addressNewContract);
       final ethFunction = contract.function(WQContractFunctions.status.name);
       final outputs = await _client.call(
         contract: contract,
@@ -384,7 +424,62 @@ extension CheckStatus on ClientService {
   }
 }
 
-extension PromoteUser on ClientService {
+extension Promote on ClientService {
+  Future<TransactionReceipt?> promoteQuest({
+    required int tariff,
+    required int period,
+    required String amount,
+    required String questAddress,
+  }) async {
+    print('tariff: $tariff');
+    print('period: $period');
+    print('amount: $amount');
+    print('questAddress: $questAddress');
+    final contract = await getDeployedContract(
+        "WQPromotion", '0xEcC78f46d19DE638ECFB71423857bC6B50F5aED1');
+    final function = contract.function(WQPromotionFunctions.promoteQuest.name);
+    final _credentials = await getCredentials(AccountRepository().privateKey);
+    final _gasPrice = await _client.getGasPrice();
+    final _fromAddress = await _credentials.extractAddress();
+    final _value = EtherAmount.fromUnitAndValue(
+      EtherUnit.wei,
+      BigInt.from(double.parse(amount) * pow(10, 18)),
+    );
+    final _transactionHash = await _client.sendTransaction(
+      _credentials,
+      Transaction.callContract(
+        contract: contract,
+        function: function,
+        gasPrice: _gasPrice,
+        maxGas: 2000000,
+        parameters: [
+          EthereumAddress.fromHex(questAddress),
+          BigInt.from(tariff),
+          BigInt.from(period),
+        ],
+        from: _fromAddress,
+        value: _value,
+      ),
+      chainId: _chainId,
+    );
+    int attempts = 0;
+    TransactionReceipt? result;
+    while (result == null) {
+      result = await _client.getTransactionReceipt(_transactionHash);
+      if (result != null) {
+        print('result - ${result.blockNumber}');
+        print("_transactionHash: $_transactionHash");
+        print("result: $result");
+      }
+      await Future.delayed(const Duration(seconds: 3));
+      attempts++;
+      if (attempts == 5) {
+        throw Exception("The waiting time is over. Expect a balance update.");
+      }
+    }
+    return result;
+  }
+
   Future<TransactionReceipt?> promoteUser({
     required int tariff,
     required int period,
@@ -425,6 +520,8 @@ extension PromoteUser on ClientService {
       result = await _client.getTransactionReceipt(_transactionHash);
       if (result != null) {
         print('result - ${result.blockNumber}');
+        print("_transactionHash: $_transactionHash");
+        print("result: $result");
       }
       await Future.delayed(const Duration(seconds: 3));
       attempts++;

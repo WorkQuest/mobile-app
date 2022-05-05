@@ -105,7 +105,7 @@ extension QuestService on ApiProvider {
       query: '/v1/quest/create',
       data: quest.toJson(),
     );
-    return responseData["id"];
+    return responseData['nonce'];
   }
 
   Future<void> editQuest({
@@ -128,12 +128,8 @@ extension QuestService on ApiProvider {
         '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
         'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}';
 
-    final response = await httpClient.post(
-      query: query,
-      data: {
-        "specializations": []
-      }
-    );
+    final response =
+        await httpClient.post(query: query, data: {"specializations": []});
     return List<BaseQuestResponse>.from(
       response["quests"].map(
         (x) => BaseQuestResponse.fromJson(x),
@@ -145,16 +141,14 @@ extension QuestService on ApiProvider {
     LatLngBounds bounds,
   ) async {
     final response = await httpClient.post(
-      query: '/v1/profile/workers/map/get-points'
-              '?northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}&' +
-              'northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
-              'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}&' +
-              'northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}'
-          ,
-      data: {
-        "specializations": [],
-      }
-    );
+        query: '/v1/profile/workers/map/get-points'
+                '?northAndSouthCoordinates[north][longitude]=${bounds.northeast.longitude.toString()}&' +
+            'northAndSouthCoordinates[north][latitude]=${bounds.northeast.latitude.toString()}&' +
+            'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}&' +
+            'northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}',
+        data: {
+          "specializations": [],
+        });
     return List<ProfileMeResponse>.from(
       response["users"].map(
         (x) => ProfileMeResponse.fromJson(x),
@@ -166,29 +160,33 @@ extension QuestService on ApiProvider {
     String userId = "",
     int limit = 10,
     int offset = 0,
-    int? priority,
     String sort = "",
+    bool invited = false,
     List<int> statuses = const [],
-    bool? invited,
-    bool? performing,
-    bool? starred,
+    required bool me,
   }) async {
     try {
       String status = "";
       statuses.forEach((text) {
         status += "statuses[]=$text&";
       });
-      final responseData = await httpClient.get(
-        query: "/v1/employer/$userId/quests?$status$sort",
-        queryParameters: {
-          "offset": offset,
-          "limit": limit,
-          if (priority != null) "priority": priority,
-          if (invited != null) "invited": invited,
-          if (performing != null) "performing": performing,
-          if (starred != null) "starred": starred,
-        },
-      );
+      var responseData;
+      if (me)
+        responseData = await httpClient.post(
+          query: "/v1/me/employer/get-quests?offset=$offset&limit=$limit"
+              "&invited=$invited&$status$sort",
+          data: {
+            "specializations": [],
+          },
+        );
+      else
+        responseData = await httpClient.post(
+          query: "/v1/employer/$userId/get-quests?offset=$offset&limit=$limit"
+              "&invited=$invited&$status$sort",
+          data: {
+            "specializations": [],
+          },
+        );
       return List<BaseQuestResponse>.from(
           responseData["quests"].map((x) => BaseQuestResponse.fromJson(x)));
     } catch (e, trace) {
@@ -220,30 +218,34 @@ extension QuestService on ApiProvider {
     String userId = "",
     int limit = 10,
     int offset = 0,
-    List<int> statuses = const [],
     String sort = "",
-    bool? invited,
-    bool? performing,
-    bool? starred,
-    String? north,
-    String? south,
+    bool invited = false,
+    bool starred = false,
+    List<int> statuses = const [],
+    required bool me,
   }) async {
     String status = "";
     statuses.forEach((text) {
       status += "statuses[]=$text&";
     });
-    final responseData = await httpClient.get(
-      query: '/v1/worker/$userId/quests?$status$sort',
-      queryParameters: {
-        "offset": offset,
-        "limit": limit,
-        if (invited != null) "invited": invited,
-        if (performing != null) "performing": performing,
-        if (starred != null) "starred": starred,
-        if (north != null) "north": north,
-        if (south != null) "south": south,
-      },
-    );
+    var responseData;
+    if (me)
+      responseData = await httpClient.post(
+        query: '/v1/me/worker/get-quests?limit=$limit&offset=$offset&$status'
+            '&starred=$starred&$sort',
+        data: {
+          "specializations": [],
+        },
+      );
+    else
+      responseData = await httpClient.post(
+        query:
+            '/v1/worker/$userId/get-quests?limit=$limit&offset=$offset&$status'
+            'invited=$invited&$sort',
+        data: {
+          "specializations": [],
+        },
+      );
 
     return List<BaseQuestResponse>.from(
       responseData["quests"].map(
@@ -261,24 +263,19 @@ extension QuestService on ApiProvider {
 
   Future<List<BaseQuestResponse>> getQuests({
     String price = '',
-    List<String> workplace = const [],
-    List<String> employment = const [],
     int limit = 10,
     int offset = 0,
+    String sort = "",
+    bool starred = false,
     String searchWord = "",
+    List<String>? specializations,
     List<int> priority = const [],
     List<int> statuses = const [],
-    String sort = "",
-    List<String> specializations = const [],
-    bool? invited,
-    bool? performing,
-    bool? starred,
-    String? north,
-    String? south,
+    List<String> workplace = const [],
+    List<String> employment = const [],
   }) async {
     String status = "";
     statuses.forEach((text) {
-      print(text);
       status += "statuses[]=$text&";
     });
     String priorities = "";
@@ -296,23 +293,16 @@ extension QuestService on ApiProvider {
       print(text);
       employments += "employments[]=$text&";
     });
+    String search = '';
+    if (searchWord.isNotEmpty) {
+      search = 'q=$searchWord&';
+    }
     final responseData = await httpClient.post(
       query:
-          '/v1/get-quests?$workplaces$employments$status$priorities$sort$price&offset=$offset&limit=$limit',
+          '/v1/get-quests?offset=$offset&limit=$limit&$workplaces$employments'
+          '$priorities$price&starred=$starred&$status$search$sort',
       data: {
-        // if (workplace.isNotEmpty) "workplaces": workplaces,
-        // if (employment.isNotEmpty) "employments": employments,
-        // if (statuses.isNotEmpty) "statuses": status,
-        // if (specializations.isNotEmpty) "specializations": specialization,
-        // if (priority.isNotEmpty) "priorities": priorities,
-        // "sort": sort,
-        if (searchWord.isNotEmpty) "q": searchWord,
-        if (invited != null) "invited": invited,
-        if (performing != null) "performing": performing,
-        if (starred != null) "starred": starred,
-        if (north != null) "north": north,
-        if (south != null) "south": south,
-        "specializations": specializations,
+        if (specializations != null) "specializations": specializations,
       },
     );
 
@@ -334,7 +324,7 @@ extension QuestService on ApiProvider {
     List<int> priority = const [],
     List<int> ratingStatus = const [],
     List<String> workplace = const [],
-    List<String> specializations = const [],
+    List<String>? specializations,
   }) async {
     String priorities = "";
     String ratingStatuses = "";
@@ -344,20 +334,20 @@ extension QuestService on ApiProvider {
     ratingStatus.forEach((text) {
       ratingStatuses += "ratingStatuses[]=$text&";
     });
-
     String workplaces = "";
     workplace.forEach((text) {
       workplaces += "workplaces[]=$text&";
     });
+    String search = '';
+    if (searchWord.isNotEmpty) {
+      search = 'q=$searchWord&';
+    }
     final responseData = await httpClient.post(
       query:
-          '/v1/profile/get-workers?$priorities$ratingStatuses$workplaces$sort&$price&offset=$offset&limit=$limit',
+          '/v1/profile/get-workers?$search$priorities$ratingStatuses$workplaces'
+          '$sort&$price&offset=$offset&limit=$limit',
       data: {
-        if (searchWord.isNotEmpty) "q": searchWord,
-        if (north != null) "north": north,
-        if (south != null) "south": south,
-        "specializations": specializations,
-        //"sort": sort,
+        "specializations": specializations ?? [],
       },
     );
 
@@ -382,8 +372,8 @@ extension QuestService on ApiProvider {
       query: '/v1/skill-filters',
     );
     Map<int, List<int>> list = (responseData as Map).map((key, value) {
-      return MapEntry<int, List<int>>(
-          value["id"], (value["skills"] as Map).values.map((e) => e as int).toList());
+      return MapEntry<int, List<int>>(value["id"],
+          (value["skills"] as Map).values.map((e) => e as int).toList());
     });
     return list;
   }
@@ -425,7 +415,8 @@ extension QuestService on ApiProvider {
 
   Future<List<BaseQuestResponse>> responsesQuests() async {
     try {
-      final responseData = await httpClient.get(query: '/v1/quest/responses/my');
+      final responseData =
+          await httpClient.get(query: '/v1/quest/responses/my');
       return List<BaseQuestResponse>.from(
         responseData["responses"].map(
           (x) => BaseQuestResponse.fromJson(x),
@@ -436,23 +427,23 @@ extension QuestService on ApiProvider {
     }
   }
 
-  Future<bool> startQuest({
-    required String questId,
-    required String userId,
-  }) async {
-    try {
-      final body = {
-        "assignedWorkerId": userId,
-      };
-      final responseData = await httpClient.post(
-        query: '/v1/quest/$questId/start',
-        data: body,
-      );
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> startQuest({
+  //   required String questId,
+  //   required String userId,
+  // }) async {
+  //   try {
+  //     final body = {
+  //       "assignedWorkerId": userId,
+  //     };
+  //     final responseData = await httpClient.post(
+  //       query: '/v1/quest/$questId/start',
+  //       data: body,
+  //     );
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Future<bool> inviteOnQuest({
     required String questId,
@@ -473,40 +464,41 @@ extension QuestService on ApiProvider {
     }
   }
 
-  Future<bool> acceptCompletedWork({
-    required String questId,
-  }) async {
-    try {
-      final responseData =
-          await httpClient.post(query: '/v1/quest/$questId/accept-completed-work');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> acceptCompletedWork({
+  //   required String questId,
+  // }) async {
+  //   try {
+  //     final responseData = await httpClient.post(
+  //         query: '/v1/quest/$questId/accept-completed-work');
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Future<bool> rejectCompletedWork({
     required String questId,
   }) async {
     try {
       final responseData =
-          await httpClient.post(query: '/v1/quest/$questId/reject-completed-work');
+          await httpClient.post(query: '/v1/quest/employer/$questId/reject');
       return responseData == null;
     } catch (e) {
       return false;
     }
   }
 
-  Future<bool> acceptOnQuest({
-    required String questId,
-  }) async {
-    try {
-      final responseData = await httpClient.post(query: '/v1/quest/$questId/accept-work');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> acceptOnQuest({
+  //   required String questId,
+  // }) async {
+  //   try {
+  //     final responseData =
+  //         await httpClient.post(query: '/v1/quest/$questId/accept-work');
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Future<bool> acceptInvite({
     required String responseId,
@@ -524,7 +516,8 @@ extension QuestService on ApiProvider {
     required String questId,
   }) async {
     try {
-      final responseData = await httpClient.post(query: '/v1/quest/$questId/reject-work');
+      final responseData =
+          await httpClient.post(query: '/v1/quest/$questId/reject-work');
       return responseData == null;
     } catch (e) {
       return false;
@@ -543,28 +536,28 @@ extension QuestService on ApiProvider {
     }
   }
 
-  Future<bool> completeWork({
-    required String questId,
-  }) async {
-    try {
-      final responseData =
-          await httpClient.post(query: '/v1/quest/$questId/complete-work');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> completeWork({
+  //   required String questId,
+  // }) async {
+  //   try {
+  //     final responseData =
+  //         await httpClient.post(query: '/v1/quest/$questId/complete-work');
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> deleteQuest({
-    required String questId,
-  }) async {
-    try {
-      final responseData = await httpClient.delete(query: '/v1/quest/$questId');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> deleteQuest({
+  //   required String questId,
+  // }) async {
+  //   try {
+  //     final responseData = await httpClient.delete(query: '/v1/quest/$questId');
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Future<List<RespondModel>> responsesQuest(String id) async {
     try {
@@ -587,25 +580,20 @@ extension Notification on ApiProvider {
     required int offset,
   }) async {
     try {
-      // String workplaces = "";
-      // workplace.forEach((text) {
-      //   workplaces += "workplaces[]=$text&";
-      // });
-      // final responseData = await httpClient.get(
-      //   query:
-      //   '/v1/profile/workers?$priorities$ratingStatuses$workplaces$sort&$specialization',
       final responseData = await httpClient.get(
-        query: 'https://notifications.workquest.co/api/notifications',
+        query: 'https://notifications.workquest.co/api/notifications?',
+            // 'exclude[]=dao&exclude[]=bridge&exclude[]=proposal&'
+            // 'exclude[]=referral&exclude[]=pensionFund&exclude[]=dailyLiquidity',
         queryParameters: {
           "offset": offset,
-          "exclude": [
-            "dao",
-            "bridge",
-            "proposal",
-            "referral",
-            "pensionFund",
-            "dailyLiquidity"
-          ],
+          // "exclude": [
+          //   "dao",
+          //   "bridge",
+          //   "proposal",
+          //   "referral",
+          //   "pensionFund",
+          //   "dailyLiquidity"
+          // ],
         },
         useBaseUrl: false,
       );
@@ -615,17 +603,19 @@ extension Notification on ApiProvider {
       print("ERROR: $trace");
 
       final responseData = await httpClient.get(
-        query: 'https://notifications.workquest.co/api/notifications',
+        query: 'https://notifications.workquest.co/api/notifications?'
+            'exclude[]=dao&exclude[]=bridge&exclude[]=proposal&'
+            'exclude[]=referral&exclude[]=pensionFund&exclude[]=dailyLiquidity',
         queryParameters: {
           "offset": offset,
-          "exclude": [
-            "dao",
-            "bridge",
-            "proposal",
-            "referral",
-            "pensionFund",
-            "dailyLiquidity",
-          ],
+          // "exclude": [
+          //   "dao",
+          //   "bridge",
+          //   "proposal",
+          //   "referral",
+          //   "pensionFund",
+          //   "dailyLiquidity",
+          // ],
         },
       );
       return Notifications.fromJson(responseData);
@@ -699,41 +689,51 @@ extension UserInfoService on ApiProvider {
         },
         "firstName": userData.firstName,
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
-        if (userData.role == UserRole.Worker) "wagePerHour": userData.wagePerHour,
-        if (userData.role == UserRole.Worker) "priority": userData.priority.index,
+        if (userData.role == UserRole.Worker)
+          "wagePerHour": userData.wagePerHour,
+        if (userData.role == UserRole.Worker)
+          "priority": userData.priority.index,
         if (userData.role == UserRole.Worker) "workplace": userData.workplace,
         "additionalInfo": {
-          "secondMobileNumber": userData.additionalInfo?.secondMobileNumber != null
+          "secondMobileNumber": userData.additionalInfo?.secondMobileNumber !=
+                  null
               ? {
-                  "codeRegion": userData.additionalInfo?.secondMobileNumber!.codeRegion,
+                  "codeRegion":
+                      userData.additionalInfo?.secondMobileNumber!.codeRegion,
                   "phone": userData.additionalInfo?.secondMobileNumber!.phone,
-                  "fullPhone": userData.additionalInfo?.secondMobileNumber!.fullPhone,
+                  "fullPhone":
+                      userData.additionalInfo?.secondMobileNumber!.fullPhone,
                 }
               : null,
           "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
               ? userData.additionalInfo?.address
               : null,
           "socialNetwork": {
-            "instagram":
-                (userData.additionalInfo?.socialNetwork?.instagram?.isNotEmpty ?? false)
-                    ? userData.additionalInfo?.socialNetwork?.instagram
-                    : null,
+            "instagram": (userData
+                        .additionalInfo?.socialNetwork?.instagram?.isNotEmpty ??
+                    false)
+                ? userData.additionalInfo?.socialNetwork?.instagram
+                : null,
             "twitter":
-                (userData.additionalInfo?.socialNetwork?.twitter?.isNotEmpty ?? false)
+                (userData.additionalInfo?.socialNetwork?.twitter?.isNotEmpty ??
+                        false)
                     ? userData.additionalInfo?.socialNetwork?.twitter
                     : null,
             "linkedin":
-                (userData.additionalInfo?.socialNetwork?.linkedin?.isNotEmpty ?? false)
+                (userData.additionalInfo?.socialNetwork?.linkedin?.isNotEmpty ??
+                        false)
                     ? userData.additionalInfo?.socialNetwork?.linkedin
                     : null,
             "facebook":
-                (userData.additionalInfo?.socialNetwork?.facebook?.isNotEmpty ?? false)
+                (userData.additionalInfo?.socialNetwork?.facebook?.isNotEmpty ??
+                        false)
                     ? userData.additionalInfo?.socialNetwork?.facebook
                     : null,
           },
-          "description": (userData.additionalInfo?.description?.isNotEmpty ?? false)
-              ? userData.additionalInfo?.description
-              : null,
+          "description":
+              (userData.additionalInfo?.description?.isNotEmpty ?? false)
+                  ? userData.additionalInfo?.description
+                  : null,
           if (userData.role == UserRole.Employer)
             "company": (userData.additionalInfo?.company?.isNotEmpty ?? false)
                 ? userData.additionalInfo?.company
@@ -760,16 +760,21 @@ extension UserInfoService on ApiProvider {
             "latitude": userData.locationCode?.latitude ?? 0
           },
           "locationPlaceName": userData.locationPlaceName ?? "",
+        },
+        "profileVisibility": {
+          "network": 0,
+          "ratingStatus": 4,
         }
       };
 
       if (userData.firstName.isEmpty) throw Exception("firstName is empty");
       final responseData;
       if (role == UserRole.Worker)
-        responseData = await httpClient.put(query: '/v1/worker/profile/edit', data: body);
-      else
         responseData =
-            await httpClient.put(query: '/v1/employer/profile/edit', data: body);
+            await httpClient.put(query: '/v1/worker/profile/edit', data: body);
+      else
+        responseData = await httpClient.put(
+            query: '/v1/employer/profile/edit', data: body);
       return ProfileMeResponse.fromJson(responseData);
     } catch (e, trace) {
       print('tag: $e\ntrace: $trace');

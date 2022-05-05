@@ -1,4 +1,5 @@
 import 'package:app/constants.dart';
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
@@ -369,7 +370,8 @@ class SignInPage extends StatelessWidget {
         onTabCancel: null,
         onTabOk: () {
           _onPressedSignIn(context,
-              signInStore: signInStore, profile: context.read<ProfileMeStore>());
+              signInStore: signInStore,
+              profile: context.read<ProfileMeStore>());
         },
         colorCancel: Colors.red,
         colorOk: AppColor.enabledButton,

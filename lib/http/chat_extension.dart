@@ -129,6 +129,14 @@ extension ChatsService on ApiProvider {
     );
   }
 
+  Future<void> leaveFromChat({
+    required String chatId,
+  }) async {
+    await httpClient.post(
+      query: '/v1/user/me/chat/group/$chatId/leave',
+    );
+  }
+
   Future<void> setMessageRead({
     required String chatId,
     required String messageId,

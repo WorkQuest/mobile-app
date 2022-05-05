@@ -21,13 +21,14 @@ class RaiseViews extends StatelessWidget {
   Widget build(BuildContext context) {
     final raiseViewStore = context.read<RaiseViewStore>();
     raiseViewStore.initPrice();
+    raiseViewStore.setQuestId(questId);
     return Observer(
       builder: (_) => Scaffold(
         persistentFooterButtons: [
           ElevatedButton(
             onPressed: () {
               Navigator.of(context, rootNavigator: true)
-                  .pushNamed(PaymentPage.routeName, arguments: questId);
+                  .pushNamed(PaymentPage.routeName, arguments: raiseViewStore);
             },
             child: Text(
               "Go to the payment",
@@ -74,14 +75,14 @@ class RaiseViews extends StatelessWidget {
                     ),
                     _divider,
                     _PeriodCard(
-                      period: "For 7 days",
+                      period: questId.isEmpty ? "For 7 days" : "For 5 days",
                       groupValue: raiseViewStore.periodGroupValue,
                       value: 2,
                       onChanged: raiseViewStore.changePeriod,
                     ),
                     _divider,
                     _PeriodCard(
-                      period: "For 30 days",
+                      period: questId.isEmpty ? "For 30 days" : "For 7 days",
                       groupValue: raiseViewStore.periodGroupValue,
                       value: 3,
                       onChanged: raiseViewStore.changePeriod,

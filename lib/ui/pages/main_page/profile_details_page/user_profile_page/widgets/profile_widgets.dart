@@ -157,24 +157,34 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
               Flexible(
                 child: GestureDetector(
                   onTap: () async {
-                    if (widget.id != profile.userData!.id)
-                      await profile.getAssignedWorker(widget.id);
-                    else
-                      profile.assignedWorker = profile.userData!;
                     if (profile.assignedWorker != null) {
                       portfolioStore.clearData();
-                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(
                         UserProfile.routeName,
-                        arguments: profile.assignedWorker,
+                        arguments: ProfileArguments(
+                          role: widget.role,
+                          userId: widget.id,
+                        ),
                       );
                       portfolioStore.clearData();
                       if (widget.role == UserRole.Worker)
-                        portfolioStore.getPortfolio(userId: widget.myId, newList: true);
+                        portfolioStore.getPortfolio(
+                          userId: widget.myId,
+                          newList: true,
+                        );
                       else {
                         userProfileStore.quests.clear();
-                        userProfileStore.getQuests(widget.myId, widget.role, true);
+                        userProfileStore.getQuests(
+                          userId: widget.myId,
+                          role: widget.role,
+                          newList: true,
+                          isProfileYours:
+                              widget.id == widget.myId ? true : false,
+                        );
                       }
-                      portfolioStore.getReviews(userId: widget.myId, newList: true);
+                      portfolioStore.getReviews(
+                          userId: widget.myId, newList: true);
                     }
                     profile.assignedWorker = null;
                   },
@@ -197,7 +207,10 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                     ),
                     subtitle: Text(
                       widget.userRole.tr(),
-                      style: TextStyle(fontSize: 12.0, color: Color(0xFF00AA5B)),
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Color(0xFF00AA5B),
+                      ),
                     ),
                   ),
                 ),
@@ -373,7 +386,8 @@ Widget employerRating({
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (userId != profile.userData!.id && completedQuests != "0") {
+                    if (userId != profile.userData!.id &&
+                        completedQuests != "0") {
                       // profile.offset = 0;
                       // profile.setUserId(userId);
                       // await profile.getCompletedQuests();
@@ -390,7 +404,8 @@ Widget employerRating({
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: userId != profile.userData!.id && completedQuests != "0"
+                      color: userId != profile.userData!.id &&
+                              completedQuests != "0"
                           ? Color(0xFF00AA5B)
                           : Color(0xFFF7F8FA),
                       fontSize: 12.0,
@@ -509,8 +524,9 @@ Widget workerQuestStats({
               child: Text(
                 thirdLine.tr(),
                 style: TextStyle(
-                  decoration:
-                      title == "quests.activeQuests" ? TextDecoration.underline : null,
+                  decoration: title == "quests.activeQuests"
+                      ? TextDecoration.underline
+                      : null,
                   color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
                 ),
@@ -897,7 +913,9 @@ class _SkillsWidgetState extends State<SkillsWidget>
           alignment: Alignment.topCenter,
           child: skills(
             isProfileMy: widget.isProfileMy,
-            skills: widget.isExpanded ? widget.skills : widget.skills!.sublist(0, 5),
+            skills: widget.isExpanded
+                ? widget.skills
+                : widget.skills!.sublist(0, 5),
             context: context,
           ),
         ),

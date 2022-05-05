@@ -307,7 +307,10 @@ class SettingsPage extends StatelessWidget {
     AlertDialogUtils.showAlertDialog(
       context,
       title: Text("Warning"),
-      content: Text(title),
+      content: Padding(
+        padding: const EdgeInsets.only(left: 25.0, top: 16.0),
+        child: Text(title),
+      ),
       needCancel: false,
       titleCancel: null,
       titleOk: "Ok",

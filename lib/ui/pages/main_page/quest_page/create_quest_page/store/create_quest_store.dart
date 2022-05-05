@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:app/http/api_provider.dart';
@@ -9,6 +11,7 @@ import 'package:app/model/quests_models/location_full.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
 import 'package:app/web3/contractEnums.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/client_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
@@ -16,6 +19,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:web3dart/web3dart.dart';
 
 part 'create_quest_store.g.dart';
 
@@ -89,6 +93,9 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   String price = "";
 
   @observable
+  String contractAddress = "";
+
+  @observable
   int adType = 0;
 
   @observable
@@ -98,6 +105,12 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   List<String> skillFilters = [];
 
   String? idNewQuest;
+
+  @action
+  void increaseRuntime() {}
+
+  @action
+  void decreaseRuntime() {}
 
   @action
   void setQuestTitle(String value) => questTitle = value;
@@ -112,10 +125,12 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   void changedPriority(String selectedPriority) => priority = selectedPriority;
 
   @action
-  void changedEmployment(String selectedEmployment) => employment = selectedEmployment;
+  void changedEmployment(String selectedEmployment) =>
+      employment = selectedEmployment;
 
   @action
-  void changedDistantWork(String selectedEmployment) => workplace = selectedEmployment;
+  void changedDistantWork(String selectedEmployment) =>
+      workplace = selectedEmployment;
 
   @computed
   bool get canCreateQuest =>
@@ -249,33 +264,47 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         media: medias.map((media) => media.id).toList(),
         title: questTitle,
         description: description,
-        price: price,
+        price:
+            (BigInt.parse(price).toDouble() * pow(10, 18)).toStringAsFixed(0),
       );
       if (isEdit) {
+        await ClientService().handleEvent(
+            function: WQContractFunctions.editJob,
+            contractAddress: contractAddress,
+            params: [
+              Uint8List.fromList(
+                utf8.encode(
+                  description.padRight(32).substring(0, 32),
+                ),
+              ),
+              BigInt.parse(price)
+            ]);
         await apiProvider.editQuest(
           quest: questModel,
           questId: questId,
         );
-        ClientService().handleEvent(WQContractFunctions.editJob, [
-          Uint8List.fromList(
-            utf8.encode(
-              description.padRight(32).substring(0, 32),
-            ),
-          ),
-          BigInt.parse(price)
-        ]);
       } else {
-        ClientService().createNewContract(
-          jobHash: description,
-          cost: price,
-          deadline: 0.toString(),
-          nonce: description,
-        );
+        final balanceWusd = await ClientService()
+            .getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
+        final gas = await ClientService().getGas();
 
-        idNewQuest = await apiProvider.createQuest(
+        if (balanceWusd < double.parse(price) + (gas.getInEther).toDouble()) {
+          throw Exception('Not enough balance.');
+        }
+
+        final nonce = await apiProvider.createQuest(
           quest: questModel,
         );
-        // Web3().connect();
+
+        final approveCoin = await ClientService().approveCoin(cost: price);
+
+        if (approveCoin)
+          await ClientService().createNewContract(
+            jobHash: description,
+            cost: price,
+            deadline: 0.toString(),
+            nonce: nonce,
+          );
       }
 
       this.onSuccess(true);

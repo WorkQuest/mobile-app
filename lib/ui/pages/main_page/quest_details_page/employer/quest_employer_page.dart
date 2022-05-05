@@ -1,15 +1,16 @@
+import 'package:app/enums.dart';
 import 'package:app/model/quests_models/assigned_worker.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
-import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
-import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -19,7 +20,8 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import 'package:share/share.dart';
 
-import '../../../../../constants.dart';
+import '../../../../widgets/quest_header.dart';
+import '../../raise_views_page/raise_views_page.dart';
 
 class QuestEmployer extends QuestDetails {
   QuestEmployer(BaseQuestResponse questInfo) : super(questInfo);
@@ -31,6 +33,7 @@ class QuestEmployer extends QuestDetails {
 class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   late EmployerStore store;
   late MyQuestStore questStore;
+  late ChatStore chatStore;
   AnimationController? controller;
 
   @override
@@ -38,10 +41,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     store = context.read<EmployerStore>();
     questStore = context.read<MyQuestStore>();
     profile = context.read<ProfileMeStore>();
+    chatStore = context.read<ChatStore>();
     profile!.getProfileMe().then((value) => {
           if (widget.questInfo.userId == profile!.userData!.id)
             store.getRespondedList(
-                widget.questInfo.id, widget.questInfo.assignedWorker?.id ?? ""),
+              widget.questInfo.id,
+              widget.questInfo.assignedWorker?.id ?? "",
+            ),
         });
     store.quest.value = widget.questInfo;
     controller = BottomSheet.createAnimationController(this);
@@ -57,14 +63,15 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share("https://app.workquest.co/quests/${widget.questInfo.id}");
+          Share.share(
+              "https://app-ver1.workquest.co/quests/${widget.questInfo.id}");
         },
       ),
-      if (widget.questInfo.userId == profile!.userData!.id &&
-          (widget.questInfo.status == 0 ||
-              widget.questInfo.status == 1 ||
-              widget.questInfo.status == 4 ||
-              widget.questInfo.status == 5))
+      if (store.quest.value!.userId == profile!.userData!.id &&
+          (store.quest.value!.status == 1 ||
+              store.quest.value!.status == 2 ||
+              store.quest.value!.status == 3 ||
+              store.quest.value!.status == 4))
         PopupMenuButton<String>(
           elevation: 10,
           icon: Icon(Icons.more_vert),
@@ -72,138 +79,63 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            if (widget.questInfo.status == 0 || widget.questInfo.status == 4)
+            if (store.quest.value!.status == 1 ||
+                store.quest.value!.status == 2)
               switch (value) {
                 case "quests.raiseViews":
-                  // await Navigator.pushNamed(
-                  //   context,
-                  //   RaiseViews.routeName,
-                  //   arguments: widget.questInfo.id,
-                  // );
+                  await Navigator.pushNamed(
+                    context,
+                    RaiseViews.routeName,
+                    arguments: store.quest.value!.id,
+                  );
                   break;
                 case "registration.edit":
-                  if (profile?.userData?.isTotpActive == true) {
-                    AlertDialogUtils.showAlertDialog(
-                      context,
-                      title: const Text("Security check"),
-                      content: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Google confirmation code"),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Observer(
-                            builder: (_) => TextField(
-                              onChanged: store.setTotp,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            "Enter the 6-digit code from the Google Authentication app",
-                          ),
-                        ],
-                      ),
-                      needCancel: true,
-                      titleCancel: "Cancel",
-                      titleOk: "Send",
-                      onTabCancel: null,
-                      onTabOk: () async {
-                        await store.validateTotp();
-                        if (store.isValid) {
-                          await Navigator.pushNamed(
-                            context,
-                            CreateQuestPage.routeName,
-                            arguments: widget.questInfo,
-                          );
-                        } else {
-                          await errorAlert(context, "Invalid 2FA");
-                        }
-                      },
-                      colorCancel: AppColor.enabledButton,
-                      colorOk: Colors.red,
-                    );
-                  } else {
-                    errorAlert(context, "You can't edit quest without connected 2FA");
-                  }
-
+                  await Navigator.pushNamed(
+                    context,
+                    CreateQuestPage.routeName,
+                    arguments: widget.questInfo,
+                  );
                   break;
                 case "settings.delete":
-                  if (profile?.userData?.isTotpActive == true) {
-                    AlertDialogUtils.showAlertDialog(
-                      context,
-                      title: const Text("Security check"),
-                      content: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Google confirmation code"),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Observer(
-                            builder: (_) => TextFormField(
-                              onChanged: store.setTotp,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            "Enter the 6-digit code from the Google Authentication app",
-                          ),
-                        ],
-                      ),
-                      needCancel: true,
-                      titleCancel: "Cancel",
-                      titleOk: "Send",
-                      onTabCancel: null,
-                      onTabOk: () async {
-                        await store.validateTotp();
-                        if (store.isValid) {
-                          await dialog(
-                            context,
-                            title: "quests.deleteQuest".tr(),
-                            message: "quests.deleteQuestMessage".tr(),
-                            confirmAction: () async {
-                              await store.deleteQuest(questId: widget.questInfo.id);
-                              questStore.deleteQuest(widget.questInfo);
-                              if (profile!.userData!.questsStatistic != null)
-                                profile!.userData!.questsStatistic!.opened -= 1;
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                          );
-                        }
-                      },
-                      colorCancel: AppColor.enabledButton,
-                      colorOk: Colors.red,
-                    );
-                  } else {
-                    errorAlert(context, "You can't delete quest without connected 2FA");
-                  }
-
+                  await dialog(
+                    context,
+                    title: "quests.deleteQuest".tr(),
+                    message: "quests.deleteQuestMessage".tr(),
+                    confirmAction: () async {
+                      await store.deleteQuest(questId: widget.questInfo.id);
+                      questStore.deleteQuest(widget.questInfo.id);
+                      if (profile!.userData!.questsStatistic != null)
+                        profile!.userData!.questsStatistic!.opened -= 1;
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                  );
                   break;
                 default:
               }
-            if ((widget.questInfo.status == 1 || widget.questInfo.status == 5) &&
+            if ((widget.questInfo.status == 3 ||
+                    widget.questInfo.status == 4) &&
                 value == "chat.report") {
-              await Navigator.of(context, rootNavigator: true).pushNamed(
-                OpenDisputePage.routeName,
-                arguments: widget.questInfo,
+              AlertDialogUtils.showInfoAlertDialog(
+                context,
+                title: 'Warning'.tr(),
+                content: 'Service temporarily unavailable',
               );
             }
           },
           itemBuilder: (BuildContext context) {
             return {
-              if (widget.questInfo.status == 0 || widget.questInfo.status == 4)
+              if (store.quest.value!.status == 1 ||
+                  store.quest.value!.status == 2)
                 'quests.raiseViews',
-              if (widget.questInfo.status == 0 || widget.questInfo.status == 4)
+              if (store.quest.value!.status == 1 ||
+                  store.quest.value!.status == 2)
                 'registration.edit',
-              if (widget.questInfo.status == 0 || widget.questInfo.status == 4)
+              if (store.quest.value!.status == 1 ||
+                  store.quest.value!.status == 2)
                 'settings.delete',
-              if (widget.questInfo.status == 1 || widget.questInfo.status == 5)
+              if (store.quest.value!.status == 3 ||
+                  store.quest.value!.status == 4)
                 "chat.report",
             }.map((String choice) {
               return PopupMenuItem<String>(
@@ -220,6 +152,66 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   Widget getBody() {
     return store.quest.value?.userId == (profile?.userData?.id ?? "myId")
         ? respondedList()
+        : SizedBox();
+  }
+
+  @override
+  Widget questHeader() {
+    return QuestHeader(
+      storeQuest.getQuestType(
+        store.quest.value!,
+        profile!.userData!.role,
+      ),
+      store.quest.value!.status,
+      false,
+      false,
+      true,
+    );
+  }
+
+  @override
+  Widget review() {
+    return storeQuest.questInfo!.status == 5 &&
+            !profile!.review &&
+            (storeQuest.questInfo!.userId == profile!.userData!.id ||
+                storeQuest.questInfo!.assignedWorker?.id ==
+                    profile!.userData!.id)
+        ? Column(
+            children: [
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () async {
+                  await Navigator.pushNamed(
+                    context,
+                    CreateReviewPage.routeName,
+                    arguments: storeQuest.questInfo,
+                  );
+                  widget.questInfo.yourReview != null
+                      ? profile!.review = true
+                      : profile!.review = false;
+                },
+                child: Text(
+                  "quests.addReview".tr(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(
+                    Size(double.maxFinite, 43),
+                  ),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed))
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
+                      return const Color(0xFF0083C7);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          )
         : SizedBox();
   }
 
@@ -246,14 +238,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           const SizedBox(height: 10),
           GestureDetector(
             onTap: () async {
-              await profile!.getAssignedWorker(widget.questInfo.assignedWorker!.id);
-              if (profile!.assignedWorker?.id != null) {
-                await Navigator.of(context, rootNavigator: true).pushNamed(
-                  UserProfile.routeName,
-                  arguments: profile!.assignedWorker,
-                );
-                profile!.assignedWorker = null;
-              }
+              await Navigator.of(context, rootNavigator: true).pushNamed(
+                UserProfile.routeName,
+                arguments: ProfileArguments(
+                  role: UserRole.Worker,
+                  userId: store.quest.value!.assignedWorker!.id,
+                ),
+              );
             },
             child: Row(
               children: [
@@ -264,14 +255,14 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   child: UserAvatar(
                     width: 30,
                     height: 30,
-                    url: widget.questInfo.assignedWorker?.avatar?.url,
+                    url: store.quest.value!.assignedWorker?.avatar?.url,
                   ),
                 ),
                 const SizedBox(width: 10),
                 Flexible(
                   child: Text(
-                    "${widget.questInfo.assignedWorker!.firstName} " +
-                        "${widget.questInfo.assignedWorker!.lastName}",
+                    "${store.quest.value!.assignedWorker!.firstName} "
+                    "${store.quest.value!.assignedWorker!.lastName}",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -294,7 +285,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           ? Center(
               child: CircularProgressIndicator.adaptive(),
             )
-          : widget.questInfo.status == 5
+          : store.quest.value!.status == 4
               ? TextButton(
                   onPressed: () {
                     bottomForm();
@@ -310,13 +301,17 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
                         if (states.contains(MaterialState.pressed))
-                          return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                          return Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.5);
                         return const Color(0xFF0083C7);
                       },
                     ),
                   ),
                 )
-              : (store.respondedList.isNotEmpty && (widget.questInfo.status == 0))
+              : (store.respondedList.isNotEmpty &&
+                      (store.quest.value!.status == 1))
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -339,18 +334,24 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                               : () async {
                                   await store.startQuest(
                                     userId: store.selectedResponders!.workerId,
-                                    questId: widget.questInfo.id,
+                                    questId: store.quest.value!.id,
                                   );
-                                  widget.questInfo.assignedWorker = AssignedWorker(
-                                    firstName: store.selectedResponders!.worker.firstName,
-                                    lastName: store.selectedResponders!.worker.lastName,
-                                    avatar: store.selectedResponders!.worker.avatar,
+                                  store.quest.value!.assignedWorker =
+                                      AssignedWorker(
+                                    firstName: store
+                                        .selectedResponders!.worker.firstName,
+                                    lastName: store
+                                        .selectedResponders!.worker.lastName,
+                                    avatar:
+                                        store.selectedResponders!.worker.avatar,
                                     id: store.selectedResponders!.id,
                                   );
-                                  questStore.deleteQuest(widget.questInfo);
-                                  questStore.addQuest(widget.questInfo, true);
-                                  Navigator.pop(context);
-                                  await AlertDialogUtils.showSuccessDialog(context);
+                                  store.setQuestStatus(2);
+                                  questStore.deleteQuest(store.quest.value!.id);
+                                  questStore.addQuest(
+                                      store.quest.value!, false);
+                                  await AlertDialogUtils.showSuccessDialog(
+                                      context);
                                 },
                           child: Text(
                             "quests.chooseWorker".tr(),
@@ -361,7 +362,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                             ),
                           ),
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
                               (Set<MaterialState> states) {
                                 if (states.contains(MaterialState.disabled))
                                   return const Color(0xFFF7F8FA);
@@ -434,11 +436,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   const SizedBox(height: 15),
                   TextButton(
                     onPressed: () async {
-                      store.acceptCompletedWork(questId: widget.questInfo.id);
-                      widget.questInfo.status = 6;
-                      questStore.deleteQuest(widget.questInfo);
-                      questStore.addQuest(widget.questInfo, true);
-                      Navigator.pop(context);
+                      store.acceptCompletedWork(questId: store.quest.value!.id);
+                      store.setQuestStatus(5);
+                      questStore.deleteQuest(store.quest.value!.id);
+                      questStore.addQuest(store.quest.value!, false);
+                      chatStore.loadChats(true, false);
                       Navigator.pop(context);
                       await AlertDialogUtils.showSuccessDialog(context);
                     },
@@ -453,7 +455,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
@@ -495,7 +500,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   value: respond,
                   groupValue: store.selectedResponders,
-                  onChanged: (RespondModel? user) => store.selectedResponders = user,
+                  onChanged: (RespondModel? user) =>
+                      store.selectedResponders = user,
                 ),
               ),
             ],
@@ -527,14 +533,14 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   Widget respondedUser(RespondModel respond) {
     return GestureDetector(
       onTap: () async {
-        await profile!.getAssignedWorker(respond.worker.id);
-        if (profile!.assignedWorker?.id != null) {
-          await Navigator.of(context, rootNavigator: true).pushNamed(
-            UserProfile.routeName,
-            arguments: profile!.assignedWorker,
-          );
-          profile!.assignedWorker = null;
-        }
+        await Navigator.of(context, rootNavigator: true).pushNamed(
+          UserProfile.routeName,
+          arguments: ProfileArguments(
+            role: UserRole.Worker,
+            userId: respond.workerId,
+          ),
+        );
+        profile!.assignedWorker = null;
       },
       child: Row(
         children: [

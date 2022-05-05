@@ -279,6 +279,7 @@
       "active": "Active",
       "closed": "Closed",
       "dispute": "Dispute",
+      "responded": "Responded",
       "waitWorker": "Wait worker",
       "waitConfirm": "Wait confirm",
       "done": "Done"
@@ -331,6 +332,7 @@
     "disputeQuest": "Dispute quest",
     "waitConfirm": "Wait confirm",
     "employerConfirmationPending": "Employer confirmation pending",
+    "pending": "Pending",
     "questText": "Quest text",
     "hours": "hours",
     "invited": "Invited",
@@ -367,7 +369,7 @@
     "proposal": "Proposal",
     "category": "Select a category",
     "address": "Address",
-    "runtime": "Runtime (hours)",
+    "runtime": "Runtime",
     "workplace": "Workplace",
     "uploadMaterials": "Upload documents to better describe the quest",
     "uploadQuestMaterials": "Add a detailed description",
@@ -451,9 +453,9 @@
     "time": "Creation time",
     "priority": {
       "all": "All priorities",
-      "low": "Low",
-      "normal": "Normal",
-      "urgent": "Urgent"
+      "low": "Fixed delivery",
+      "normal": "Short term 1 week",
+      "urgent": "Urgent 24-72h"
     },
     "ui": {
       "showMap": "Show map",

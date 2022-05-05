@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:app/constants.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
@@ -74,6 +76,12 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
                 const SizedBox(
                   height: 10,
                 ),
+                // TextButton(
+                //   onPressed: () {
+                //     print((BigInt.parse('4').toDouble() * pow(10, 18)).toStringAsFixed(0));
+                //   },
+                //   child: Text('test'),
+                // ),
                 Spacer(),
                 ObserverListener<SMSVerificationStore>(
                   onFailure: () {

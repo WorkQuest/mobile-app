@@ -8,11 +8,6 @@
       },
       {
         "internalType": "uint256",
-        "name": "_fee",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "_cost",
         "type": "uint256"
       },
@@ -22,34 +17,13 @@
         "type": "uint256"
       },
       {
-        "internalType": "address payable",
-        "name": "_feeReceiver",
-        "type": "address"
-      },
-      {
-        "internalType": "address payable",
-        "name": "_pensionFund",
-        "type": "address"
-      },
-      {
-        "internalType": "address payable",
+        "internalType": "address",
         "name": "_employer",
-        "type": "address"
-      },
-      {
-        "internalType": "address payable",
-        "name": "_arbiter",
-        "type": "address"
-      },
-      {
-        "internalType": "address payable",
-        "name": "_referal",
         "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
-    "type": "constructor",
-    "outputs": []
+    "type": "constructor"
   },
   {
     "anonymous": false,
@@ -97,19 +71,7 @@
   {
     "anonymous": false,
     "inputs": [],
-    "name": "JobAccepted",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
     "name": "JobCancelled",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [],
-    "name": "JobDeclined",
     "type": "event"
   },
   {
@@ -121,12 +83,6 @@
   {
     "anonymous": false,
     "inputs": [
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "jobHash",
-        "type": "bytes32"
-      },
       {
         "indexed": false,
         "internalType": "uint256",
@@ -154,12 +110,6 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
@@ -183,6 +133,19 @@
   },
   {
     "inputs": [],
+    "name": "ARBITER_ROLE",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "acceptJob",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -197,22 +160,9 @@
   },
   {
     "inputs": [],
-    "name": "arbiter",
-    "outputs": [
-      {
-        "internalType": "address payable",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "arbitration",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -252,7 +202,7 @@
   {
     "inputs": [
       {
-        "internalType": "address payable",
+        "internalType": "address",
         "name": "_worker",
         "type": "address"
       }
@@ -296,19 +246,7 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "declineJob",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "_jobHash",
-        "type": "bytes32"
-      },
       {
         "internalType": "uint256",
         "name": "_cost",
@@ -325,7 +263,7 @@
     "name": "employer",
     "outputs": [
       {
-        "internalType": "address payable",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -335,23 +273,10 @@
   },
   {
     "inputs": [],
-    "name": "fee",
+    "name": "factory",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "feeReceiver",
-    "outputs": [
-      {
-        "internalType": "address payable",
+        "internalType": "contract WorkQuestFactoryInterface",
         "name": "",
         "type": "address"
       }
@@ -403,7 +328,7 @@
       },
       {
         "internalType": "address",
-        "name": "_arbiter",
+        "name": "_factory",
         "type": "address"
       },
       {
@@ -428,32 +353,6 @@
         "internalType": "bytes32",
         "name": "",
         "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "pensionFund",
-    "outputs": [
-      {
-        "internalType": "address payable",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "referal",
-    "outputs": [
-      {
-        "internalType": "address payable",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -497,7 +396,7 @@
     "name": "worker",
     "outputs": [
       {
-        "internalType": "address payable",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }

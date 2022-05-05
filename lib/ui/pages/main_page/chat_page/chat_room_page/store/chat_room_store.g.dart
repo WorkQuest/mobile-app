@@ -332,6 +332,14 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
+  final _$leaveFromChatAsyncAction =
+      AsyncAction('_ChatRoomStore.leaveFromChat');
+
+  @override
+  Future<void> leaveFromChat() {
+    return _$leaveFromChatAsyncAction.run(() => super.leaveFromChat());
+  }
+
   final _$setStarAsyncAction = AsyncAction('_ChatRoomStore.setStar');
 
   @override

@@ -4,6 +4,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../../../web3/contractEnums.dart';
+import '../../../../../web3/service/client_service.dart';
 
 part 'raise_views_store.g.dart';
 
@@ -31,11 +32,15 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
 
   int periodValue = 0;
 
+  String questId = "";
+
   Map<int, List<String>> price = {};
 
   List<String> forDay = [r"20$", r"12$", r"9$", r"7$"];
   List<String> forWeek = [r"35$", r"28$", r"22$", r"18$"];
   List<String> forMonth = [r"50$", r"35$", r"29$", r"21$"];
+
+  setQuestId(String value) => questId = value;
 
   @action
   setTitleSelectedCoin(TYPE_COINS? value) => typeCoin = value;
@@ -50,14 +55,25 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
     price[3] = forMonth;
   }
 
-  int getPeriod() {
-    switch (periodGroupValue) {
-      case 1:
-        return periodValue = 1;
-      case 2:
-        return periodValue = 7;
-      case 3:
-        return periodValue = 30;
+  int getPeriod({bool isQuest = false}) {
+    if (isQuest) {
+      switch (periodGroupValue) {
+        case 1:
+          return periodValue = 1;
+        case 2:
+          return periodValue = 5;
+        case 3:
+          return periodValue = 7;
+      }
+    } else {
+      switch (periodGroupValue) {
+        case 1:
+          return periodValue = 1;
+        case 2:
+          return periodValue = 7;
+        case 3:
+          return periodValue = 30;
+      }
     }
     return periodValue;
   }
@@ -83,17 +99,17 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onLoading();
       final _period = getPeriod();
       print('levelGroupValue: $levelGroupValue | period: ${getPeriod()}');
+      await ClientService().promoteUser(
+        tariff: levelGroupValue - 1,
+        period: _period,
+        amount: _getAmount(
+          isQuest: false,
+          tariff: levelGroupValue,
+          period: _period,
+        ),
+      );
       // await apiProvider.raiseProfile(
       //     duration: getPeriod(), type: levelGroupValue - 1);
-      // await ClientService().promoteUser(
-      //   tariff: levelGroupValue,
-      //   period: _period,
-      //   amount: _getAmount(
-      //     isQuest: false,
-      //     tariff: levelGroupValue,
-      //     period: _period,
-      //   ),
-      // );
       this.onSuccess(true);
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
@@ -105,9 +121,20 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   Future<void> raiseQuest(String questId) async {
     try {
       this.onLoading();
-
-      await apiProvider.raiseQuest(
-          questId: questId, duration: getPeriod(), type: levelGroupValue - 1);
+      final _quest = await apiProvider.getQuest(id: questId);
+      final _period = getPeriod(isQuest: true);
+      await ClientService().promoteQuest(
+        tariff: levelGroupValue - 1,
+        period: _period,
+        amount: _getAmount(
+          isQuest: true,
+          tariff: levelGroupValue,
+          period: _period,
+        ),
+        questAddress: _quest.contractAddress!,
+      );
+      // await apiProvider.raiseQuest(
+      //     questId: questId, duration: getPeriod(), type: levelGroupValue - 1);
 
       this.onSuccess(true);
     } catch (e) {
@@ -123,10 +150,40 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
     if (isQuest) {
       switch (period) {
         case 1:
+          switch (tariff) {
+            case 1:
+              return '20';
+            case 2:
+              return '12';
+            case 3:
+              return '9';
+            case 4:
+              return '7';
+          }
           break;
         case 5:
+          switch (tariff) {
+            case 1:
+              return '35';
+            case 2:
+              return '28';
+            case 3:
+              return '22';
+            case 4:
+              return '18';
+          }
           break;
         case 7:
+          switch (tariff) {
+            case 1:
+              return '50';
+            case 2:
+              return '35';
+            case 3:
+              return '29';
+            case 4:
+              return '21';
+          }
           break;
       }
     } else {

@@ -125,21 +125,34 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getCompletedQuests(String userId, bool newList) async {
+  Future<void> getCompletedQuests({
+    required String userId,
+    required bool newList,
+    required bool isProfileYours,
+  }) async {
     try {
-      if (newList){
+      if (newList) {
         offset = 0;
         quests.clear();
       }
       if (offset == quests.length) {
         this.onLoading();
         quests.addAll(
-          await _apiProvider.getEmployerQuests(
-            offset: offset,
-            sort: sort,
-            userId: userId,
-            statuses: [6],
-          ),
+          userData!.role == UserRole.Employer
+              ? await _apiProvider.getEmployerQuests(
+                  offset: offset,
+                  sort: sort,
+                  invited: false,
+                  statuses: [5],
+                  me: isProfileYours ? true : false,
+                )
+              : await _apiProvider.getWorkerQuests(
+                  offset: offset,
+                  sort: sort,
+                  invited: false,
+                  statuses: [5],
+                  me: isProfileYours ? true : false,
+                ),
         );
         offset += 10;
         this.onSuccess(true);
@@ -149,9 +162,13 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getActiveQuests(String userId, bool newList) async {
+  Future<void> getActiveQuests({
+    required String userId,
+    required bool newList,
+    required bool isProfileYours,
+  }) async {
     try {
-      if (newList){
+      if (newList) {
         offset = 0;
         quests.clear();
       }
@@ -162,7 +179,8 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
             offset: offset,
             sort: sort,
             userId: userId,
-            statuses: [1, 3, 5],
+            statuses: [3, 4],
+            me: isProfileYours ? true : false,
           ),
         );
         offset += 10;
@@ -194,7 +212,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
-
 
   changeProfile(ProfileMeResponse userData, {File? media}) async {
     try {

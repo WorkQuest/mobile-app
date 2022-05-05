@@ -67,6 +67,7 @@ class SignUpPage extends StatelessWidget {
                   Padding(
                     padding: _padding.copyWith(top: 30.0),
                     child: DefaultTextField(
+                      validator: Validators.firstNameValidator,
                       controller: _firstNameController,
                       onChanged: store.setFirstName,
                       keyboardType: TextInputType.name,
@@ -83,6 +84,7 @@ class SignUpPage extends StatelessWidget {
                   Padding(
                     padding: _padding,
                     child: DefaultTextField(
+                      validator: Validators.lastNameValidator,
                       controller: _lastNameController,
                       keyboardType: TextInputType.name,
                       onChanged: store.setLastName,

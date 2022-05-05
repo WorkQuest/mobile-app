@@ -58,6 +58,7 @@ import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
@@ -83,7 +84,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
 import 'di/injector.dart';
-import 'model/profile_response/profile_me_response.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
@@ -249,6 +249,9 @@ class Routes {
                   Provider(
                     create: (context) => getIt.get<QuestDetailsStore>(),
                   ),
+                  Provider(
+                    create: (context) => getIt.get<ChatStore>(),
+                  ),
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),
@@ -272,6 +275,9 @@ class Routes {
                   ),
                   Provider(
                     create: (context) => getIt.get<QuestDetailsStore>(),
+                  ),
+                  Provider(
+                    create: (context) => getIt.get<ChatStore>(),
                   ),
                 ],
                 child: Directionality(
@@ -368,7 +374,7 @@ class Routes {
             create: (context) => getIt.get<UserProfileStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ChooseQuest(settings.arguments as String),
+              child: ChooseQuest(arguments: settings.arguments as ChooseQuestArguments),
             ),
           ),
         );
@@ -386,7 +392,7 @@ class Routes {
 
       case UserProfile.routeName:
         final role = getIt.get<ProfileMeStore>().userData?.role;
-        final arguments = settings.arguments as ProfileMeResponse?;
+        final arguments = settings.arguments as ProfileArguments?;
         final isViewProfile;
         if (settings.arguments == null)
           isViewProfile = role ?? UserRole.Worker;
@@ -490,6 +496,9 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
+              Provider(
+                create: (context) => getIt.get<TransferStore>(),
+              ),
             ],
             child: Directionality(
               textDirection: checkDirection(context),
@@ -550,7 +559,7 @@ class Routes {
             create: (context) => getIt.get<RaiseViewStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: PaymentPage(settings.arguments as String),
+              child: PaymentPage(settings.arguments as RaiseViewStore),
             ),
           ),
         );
@@ -626,6 +635,9 @@ class Routes {
             providers: [
               Provider(
                 create: (context) => getIt.get<ChatRoomStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChatStore>(),
               ),
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),

@@ -215,8 +215,15 @@ class CreateGroupPage extends StatelessWidget {
                             AlertDialogUtils.showAlertDialog(
                               context,
                               title: Text("Error"),
-                              content: Text(
-                                "You can't create a chat before working on a quest",
+                              content: Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 25.0,
+                                  top: 16,
+                                ),
+                                child: Text(
+                                  "You can't create a chat before"
+                                  "\nworking on a quest",
+                                ),
                               ),
                               needCancel: false,
                               titleCancel: null,
@@ -229,7 +236,6 @@ class CreateGroupPage extends StatelessWidget {
                         }
                       }
                     : store.usersId.isNotEmpty &&
-                            store.usersId.length > 1 &&
                             !store.isLoading &&
                             store.index == 1
                         ? () async {

@@ -17,6 +17,7 @@ Future confirmTransaction(
   required String address,
   required String amount,
   required String fee,
+  required void Function()? onPress,
 }) =>
     Platform.isIOS
         ? showCupertinoDialog(
@@ -59,7 +60,7 @@ Future confirmTransaction(
               ),
               actions: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: onPress,
                   child: Text('meta.confirm'.tr()),
                 ),
                 TextButton(

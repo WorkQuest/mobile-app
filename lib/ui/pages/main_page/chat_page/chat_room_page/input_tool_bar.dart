@@ -19,7 +19,6 @@ class InputToolbar extends StatefulWidget {
 
 class _InputToolbarState extends State<InputToolbar> {
   TextEditingController _controller = TextEditingController();
-  bool checkPermission = false;
   FilePickerResult? result;
   List<File> files = [];
 
@@ -42,10 +41,16 @@ class _InputToolbarState extends State<InputToolbar> {
                 switch (value) {
                   case "modals.uploadAImages":
                     result = await FilePicker.platform.pickFiles(
-                      allowMultiple: true,
-                      type: FileType.custom,
-                      allowedExtensions: ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png']
-                    );
+                        allowMultiple: true,
+                        type: FileType.custom,
+                        allowedExtensions: [
+                          'jpeg',
+                          'webp',
+                          'mp4',
+                          'mov',
+                          'jpg',
+                          'png'
+                        ]);
                     break;
                   case "modals.uploadADocuments":
                     result = await FilePicker.platform.pickFiles(
@@ -94,7 +99,7 @@ class _InputToolbarState extends State<InputToolbar> {
             ),
           ),
           Observer(
-            builder:(_) => InkWell(
+            builder: (_) => InkWell(
               onTap: (_controller.text.isNotEmpty ||
                           widget.store.media.isNotEmpty) &&
                       !widget.store.isLoading

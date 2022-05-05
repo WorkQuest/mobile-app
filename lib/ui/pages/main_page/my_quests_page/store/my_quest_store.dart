@@ -18,7 +18,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
   _MyQuestStore(this._apiProvider) {
-    WebSocket().handlerQuests = this.changeQuest;
+    WebSocket().handlerQuestList = this.changeLists;
   }
 
   @observable
@@ -60,10 +60,15 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   String myId = "";
 
-  void setId(String value) => myId = value;
+  UserRole role = UserRole.Worker;
 
-  void changeQuest(dynamic json) {
+  void setId(String value) => myId = value;
+  void setRole(UserRole value) => role = value;
+
+  @action
+  void changeLists(dynamic json) {
     try {
+      print("MyQuestStore");
       var quest =
           BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
       (json["recipients"] as List).forEach((element) {
@@ -79,8 +84,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             updatedAt: DateTime.now(),
           );
       });
-      deleteQuest(quest);
-      addQuest(quest, true);
+      deleteQuest(quest.id);
+      addQuest(quest, quest.star);
     } catch (e) {
       print("ERROR: $e");
     }
@@ -106,24 +111,26 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   }
 
   @action
-  deleteQuest(BaseQuestResponse quest) {
-    active.removeWhere((element) => element.id == quest.id);
-    performed.removeWhere((element) => element.id == quest.id);
-    invited.removeWhere((element) => element.id == quest.id);
-    starred.removeWhere((element) => element.id == quest.id);
+  deleteQuest(String id) {
+    active.removeWhere((element) => element.id == id);
+    performed.removeWhere((element) => element.id == id);
+    invited.removeWhere((element) => element.id == id);
+    starred.removeWhere((element) => element.id == id);
   }
 
   @action
   addQuest(BaseQuestResponse quest, bool restoreStarred) {
-    if (quest.status == 0 ||
+    if ((quest.status == 0 ||
         quest.status == 1 ||
         quest.status == 3 ||
-        quest.status == 5)
+        quest.status == 5) &&
+        (role != UserRole.Worker || quest.assignedWorker?.id == myId))
       active.add(quest);
-    else if (quest.status == 4) {
+    else if (quest.status == 4 && (role != UserRole.Worker || quest.assignedWorker?.id == myId)) {
       invited.add(quest);
       // requested.add(quest);
-    } else if (quest.status == 6) performed.add(quest);
+    } else if (quest.status == 6 && (role != UserRole.Worker || quest.assignedWorker?.id == myId))
+      performed.add(quest);
     if (restoreStarred) starred.add(quest);
     sortQuests();
   }
@@ -157,6 +164,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   @action
   Future getQuests(String userId, UserRole role, bool createNewList) async {
+    await Future.delayed(const Duration(milliseconds: 250));
     try {
       this.onLoading();
       if (createNewList) {
@@ -165,11 +173,10 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         this.offsetPerformed = 0;
         this.offsetStarred = 0;
 
-        active.clear();
-        invited.clear();
-        performed.clear();
-        starred.clear();
-
+        active = ObservableList.of([]);
+        invited = ObservableList.of([]);
+        performed = ObservableList.of([]);
+        starred = ObservableList.of([]);
         loadActive = true;
         loadInvited = true;
         loadPerformed = true;
@@ -179,26 +186,29 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       if (role == UserRole.Employer) {
         if (loadActive)
           active.addAll(await _apiProvider.getEmployerQuests(
-            userId: userId,
             sort: sort,
             offset: this.offsetActive,
-            statuses: [0, 1, 3, 5],
+            statuses: [0, 1, 3, 4],
+            invited: false,
+            me: true,
           ));
 
         if (loadInvited)
           invited.addAll(await _apiProvider.getEmployerQuests(
-            userId: userId,
             sort: sort,
             offset: this.offsetInvited,
-            statuses: [4],
+            statuses: [2],
+            invited: true,
+            me: true,
           ));
 
         if (loadPerformed) {
           performed.addAll(await _apiProvider.getEmployerQuests(
-            userId: userId,
             sort: sort,
             offset: this.offsetPerformed,
-            statuses: [6],
+            statuses: [5],
+            invited: false,
+            me: true,
           ));
         }
       } else {
@@ -206,24 +216,25 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           active.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetActive,
             sort: sort,
-            userId: userId,
-            statuses: [1, 3, 5],
+            statuses: [3, 4],
+            me: true,
           ));
 
         if (loadInvited)
           invited.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetInvited,
             sort: sort,
-            userId: userId,
-            statuses: [4],
+            statuses: [2],
+            invited: true,
+            me: true,
           ));
 
         if (loadPerformed)
           performed.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetPerformed,
             sort: sort,
-            userId: userId,
-            statuses: [6],
+            statuses: [5],
+            me: true,
           ));
 
         if (loadStarred)

@@ -219,6 +219,21 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
+  final _$contractAddressAtom = Atom(name: '_CreateQuestStore.contractAddress');
+
+  @override
+  String get contractAddress {
+    _$contractAddressAtom.reportRead();
+    return super.contractAddress;
+  }
+
+  @override
+  set contractAddress(String value) {
+    _$contractAddressAtom.reportWrite(value, super.contractAddress, () {
+      super.contractAddress = value;
+    });
+  }
+
   final _$adTypeAtom = Atom(name: '_CreateQuestStore.adType');
 
   @override
@@ -291,6 +306,28 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
 
   final _$_CreateQuestStoreActionController =
       ActionController(name: '_CreateQuestStore');
+
+  @override
+  void increaseRuntime() {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.increaseRuntime');
+    try {
+      return super.increaseRuntime();
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void decreaseRuntime() {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.decreaseRuntime');
+    try {
+      return super.decreaseRuntime();
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setQuestTitle(String value) {
@@ -385,6 +422,7 @@ latitude: ${latitude},
 questTitle: ${questTitle},
 description: ${description},
 price: ${price},
+contractAddress: ${contractAddress},
 adType: ${adType},
 locationPlaceName: ${locationPlaceName},
 skillFilters: ${skillFilters},

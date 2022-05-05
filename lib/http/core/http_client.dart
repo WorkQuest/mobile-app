@@ -123,7 +123,7 @@ class _HttpClient implements IHttpClient {
         },
         onResponse: (response, handler) {
           final options = response.requestOptions;
-          println("\n---------- DioResponse ----------"
+          print("\n---------- DioResponse ----------"
               "\n\turl: ${options.baseUrl}${options.path}"
               "\n\tmethod: ${options.method}"
               "\n\tresponse: $response"
