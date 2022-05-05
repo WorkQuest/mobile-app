@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
@@ -15,7 +17,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:path_provider/path_provider.dart';
 import "package:provider/provider.dart";
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class ChatRoomPage extends StatefulWidget {
   static const String routeName = "/chatRoomPage";
@@ -192,6 +196,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 .split(".")
                 .reversed
                 .toList()[0];
+            if (dataType == "mp4" || dataType == "mov")
+              getThumbnail(_store.media[index].path, index);
+
             return SizedBox(
               width: 120.0,
               child: Stack(
@@ -218,14 +225,36 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                     ),
                                   ),
                                   child: Center(
-                                    child: SvgPicture.asset(
-                                      dataType == "mp4" || dataType == "mov"
-                                          ? 'assets/play.svg'
-                                          : 'assets/document.svg',
-                                      color: Color(0xFFAAB0B9),
-                                      width: MediaQuery.of(context).size.width *
-                                          0.1,
-                                    ),
+                                    child: dataType == "mp4" ||
+                                            dataType == "mov"
+                                        ? Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              if (_store.filesPath[index] !=
+                                                  null)
+                                                Image.file(
+                                                  File(
+                                                    _store.filesPath[index]!,
+                                                  ),
+                                                ),
+                                              SvgPicture.asset(
+                                                'assets/play.svg',
+                                                color: Color(0xFFAAB0B9),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.1,
+                                              ),
+                                            ],
+                                          )
+                                        : SvgPicture.asset(
+                                            'assets/document.svg',
+                                            color: Color(0xFFAAB0B9),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.1,
+                                          ),
                                   ),
                                 ),
                               ],
@@ -250,6 +279,17 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         ),
       ),
     );
+  }
+
+  Future<void> getThumbnail(String pathVideo, int index) async {
+    final filePath = await VideoThumbnail.thumbnailFile(
+          video: pathVideo,
+          thumbnailPath: (await getTemporaryDirectory()).path,
+          imageFormat: ImageFormat.PNG,
+          quality: 100,
+        ) ??
+        "";
+    _store.addFilePath(index, filePath);
   }
 
   PreferredSizeWidget _selectedMessages() {

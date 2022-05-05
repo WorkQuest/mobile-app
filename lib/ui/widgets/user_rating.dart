@@ -13,12 +13,12 @@ class UserRating extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (status) {
-      case 0:
+      case 8:
         return tag(
           text: isWorker ? "TOP RANKED" : "GOLD PLUS",
           color: Color(0xFFF6CF00),
         );
-      case 1:
+      case 4:
         return tag(
           text: isWorker ? "RELIABLE" : "SILVER",
           color: Color(0xFFBBC0C7),
@@ -34,7 +34,7 @@ class UserRating extends StatelessWidget {
     }
   }
 
-  Widget tag({required String text, required Color color}) => Container(
+  Widget tag({required String text, required Color color,}) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
         decoration: BoxDecoration(
           color: color,
