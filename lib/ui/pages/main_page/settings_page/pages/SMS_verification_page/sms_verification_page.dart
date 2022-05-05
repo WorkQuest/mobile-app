@@ -11,8 +11,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../../test_page/send_media_page.dart';
-
 class SMSVerificationPage extends StatefulWidget {
   static const String routeName = "/smsVerificationPage";
 
@@ -75,17 +73,6 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
                 ),
                 const SizedBox(
                   height: 10,
-                ),
-                TextButton(
-                  child: Text('Go to test page'),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const SendMediaPage(),
-                      ),
-                    );
-                  },
                 ),
                 Spacer(),
                 ObserverListener<SMSVerificationStore>(
