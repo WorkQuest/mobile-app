@@ -1,15 +1,13 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:app/http/api_provider.dart';
-import 'package:app/base_store/i_store.dart';
 import 'package:app/keys.dart';
 import 'package:app/model/quests_models/create_quest_request_model.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/location_full.dart';
-import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/ui/widgets/error_dialog.dart';
+import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/service/client_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,7 +24,7 @@ class CreateQuestStore extends _CreateQuestStore with _$CreateQuestStore {
   CreateQuestStore(ApiProvider questApiProvider) : super(questApiProvider);
 }
 
-abstract class _CreateQuestStore extends IStore<bool> with Store {
+abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   final ApiProvider apiProvider;
 
   _CreateQuestStore(this.apiProvider);
@@ -92,12 +90,6 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
 
   @observable
   int adType = 0;
-
-  @observable
-  ObservableList<File> mediaFile = ObservableList();
-
-  @observable
-  ObservableList<Media> mediaIds = ObservableList();
 
   @observable
   String locationPlaceName = '';
@@ -245,6 +237,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
           latitude: latitude,
         ),
       );
+      await sendImages(apiProvider);
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         employment: getEmploymentValue(),
         workplace: getWorkplaceValue(),
@@ -253,10 +246,7 @@ abstract class _CreateQuestStore extends IStore<bool> with Store {
         location: location,
         adType: adType,
         category: category,
-        media: mediaIds.map((e) => e.id).toList() +
-            await apiProvider.uploadMedia(
-              medias: mediaFile,
-            ),
+        media: medias.map((media) => media.id).toList(),
         title: questTitle,
         description: description,
         price: price,

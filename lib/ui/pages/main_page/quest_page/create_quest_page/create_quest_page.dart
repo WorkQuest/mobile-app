@@ -6,7 +6,6 @@ import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/login_button.dart';
-import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/validator.dart';
@@ -19,6 +18,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../../enums.dart';
 import '../../../../../observer_consumer.dart';
+import '../../../../widgets/media_upload/media_upload_widget.dart';
 
 class CreateQuestPage extends StatefulWidget {
   static const String routeName = '/createQuestPage';
@@ -51,7 +51,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.description = widget.questInfo!.description;
       store.price = widget.questInfo!.price;
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
-      store.mediaIds = ObservableList.of(widget.questInfo!.medias);
+      store.medias = ObservableList.of(widget.questInfo!.medias);
       _controller = SkillSpecializationController(
           initialValue: widget.questInfo!.questSpecializations);
     } else
@@ -112,8 +112,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     onChanged: (String? value) {
                                       store.changedPriority(value!);
                                     },
-                                    items:
-                                        store.priorityList.map<DropdownMenuItem<String>>(
+                                    items: store.priorityList
+                                        .map<DropdownMenuItem<String>>(
                                       (String value) {
                                         return DropdownMenuItem<String>(
                                           value: value.tr(),
@@ -219,7 +219,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       store.changedEmployment(value!);
                                     },
                                     items: store.employmentList
-                                        .map<DropdownMenuItem<String>>((String value) {
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -272,7 +273,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       store.changedDistantWork(value!);
                                     },
                                     items: store.distantWorkList
-                                        .map<DropdownMenuItem<String>>((String value) {
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -337,10 +339,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       padding: const EdgeInsets.only(
                         top: 20.0,
                       ),
-                      child: MediaUpload(
-                        store.mediaIds,
-                        mediaFile: store.mediaFile,
-                      ),
+                      child: MediaUploadWithProgress(store: store),
                     ),
                     titledField(
                       "quests.price".tr(),
@@ -396,23 +395,27 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               onTap: store.isLoading
                                   ? null
                                   : () async {
-                                      store.skillFilters =
-                                          _controller!.getSkillAndSpecialization();
+                                      store.skillFilters = _controller!
+                                          .getSkillAndSpecialization();
                                       if (isEdit) {
                                         if (store.canSubmitEditQuest) {
-                                          if (_formKey.currentState?.validate() ?? false)
+                                          if (_formKey.currentState
+                                                  ?.validate() ??
+                                              false)
                                             await store.createQuest(
                                               isEdit: true,
                                               questId: widget.questInfo!.id,
                                             );
                                         }
                                       } else if (store.canCreateQuest) {
-                                        if (_formKey.currentState?.validate() ?? false)
-                                          await store.createQuest();
+                                        if (_formKey.currentState?.validate() ??
+                                            false) await store.createQuest();
                                       } else
                                         store.emptyField(context);
                                     },
-                              title: isEdit ? "Edit Quest" : 'quests.createAQuest'.tr()),
+                              title: isEdit
+                                  ? "Edit Quest"
+                                  : 'quests.createAQuest'.tr()),
                         ),
                       ),
                     ),
@@ -481,7 +484,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
             var changedEmployment = value;
             return Container(
               height: 150.0 + MediaQuery.of(context).padding.bottom,
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -493,7 +497,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       onSelectedItemChanged: (int index) {
                         changedEmployment = children[index];
                       },
-                      children: children.map((e) => Center(child: Text(e))).toList(),
+                      children:
+                          children.map((e) => Center(child: Text(e))).toList(),
                     ),
                   ),
                   CupertinoButton(

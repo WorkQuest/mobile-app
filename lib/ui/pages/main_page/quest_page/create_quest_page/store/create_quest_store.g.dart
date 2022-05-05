@@ -234,36 +234,6 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
-  final _$mediaFileAtom = Atom(name: '_CreateQuestStore.mediaFile');
-
-  @override
-  ObservableList<File> get mediaFile {
-    _$mediaFileAtom.reportRead();
-    return super.mediaFile;
-  }
-
-  @override
-  set mediaFile(ObservableList<File> value) {
-    _$mediaFileAtom.reportWrite(value, super.mediaFile, () {
-      super.mediaFile = value;
-    });
-  }
-
-  final _$mediaIdsAtom = Atom(name: '_CreateQuestStore.mediaIds');
-
-  @override
-  ObservableList<Media> get mediaIds {
-    _$mediaIdsAtom.reportRead();
-    return super.mediaIds;
-  }
-
-  @override
-  set mediaIds(ObservableList<Media> value) {
-    _$mediaIdsAtom.reportWrite(value, super.mediaIds, () {
-      super.mediaIds = value;
-    });
-  }
-
   final _$locationPlaceNameAtom =
       Atom(name: '_CreateQuestStore.locationPlaceName');
 
@@ -416,8 +386,6 @@ questTitle: ${questTitle},
 description: ${description},
 price: ${price},
 adType: ${adType},
-mediaFile: ${mediaFile},
-mediaIds: ${mediaIds},
 locationPlaceName: ${locationPlaceName},
 skillFilters: ${skillFilters},
 canCreateQuest: ${canCreateQuest},
