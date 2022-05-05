@@ -1,5 +1,4 @@
 import 'package:app/constants.dart';
-import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
@@ -317,13 +316,13 @@ class SignInPage extends StatelessWidget {
     if (signInStore.isSuccess)
       await profile.getProfileMe();
     else {
-      _errorHandler(context, signInStore: signInStore);
+      _errorHandler(context, signInStore: signInStore, profile: profile);
       return;
     }
     if (profile.error.isEmpty)
       await signInStore.signInWallet();
     else {
-      _errorMessage(context, profile.error);
+      _errorHandler(context, signInStore: signInStore, profile: profile);
       return;
     }
     if (signInStore.isSuccess && signInStore.error.isEmpty) {
@@ -334,13 +333,14 @@ class SignInPage extends StatelessWidget {
         (_) => false,
       );
     } else {
-      _errorMessage(context, signInStore.error);
+      _errorHandler(context, signInStore: signInStore, profile: profile);
     }
   }
 
   _errorHandler(
     BuildContext context, {
     required SignInStore signInStore,
+    required ProfileMeStore profile,
   }) async {
     print('error handler: ${signInStore.errorMessage}');
     if (signInStore.errorMessage == "unconfirmed") {
@@ -348,7 +348,10 @@ class SignInPage extends StatelessWidget {
       await AlertDialogUtils.showSuccessDialog(context);
       Navigator.pushNamed(context, ConfirmEmail.routeName,
           arguments: signInStore.getUsername());
-    } else if (signInStore.errorMessage == "TOTP is invalid") {
+    } else if (signInStore.errorMessage == "TOTP is invalid" ||
+        signInStore.errorMessage == "User must pass 2FA" ||
+        profile.errorMessage == "TOTP is invalid" ||
+        profile.errorMessage == "User must pass 2FA") {
       AlertDialogUtils.showAlertDialog(
         context,
         title: Text('Warning'),
@@ -382,7 +385,8 @@ class SignInPage extends StatelessWidget {
   }
 
   void _errorMessage(BuildContext context, String msg) =>
-      AlertDialogUtils.showInfoAlertDialog(context, title: "Error", content: msg);
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: "Error", content: msg);
 
   Widget _iconButton(
     String iconPath,
