@@ -6,6 +6,7 @@ import 'package:mobx/mobx.dart';
 
 import '../../../../../http/api_provider.dart';
 import '../../../../model/quests_models/media_model.dart';
+import '../../../../utils/file_methods.dart';
 
 part 'i_media_store.g.dart';
 
@@ -23,21 +24,31 @@ abstract class _IMediaStore<T> extends IStore<T> with Store {
   ObservableList<Media> medias = ObservableList.of([]);
 
   @action
-  setImage({
-    required String url,
-    File? file,
-  }) {
-    if (url.isNotEmpty) {
-      progressImages.add(ValueNotifier<LoadImageState>(LoadImageState(
-        url: url,
-        state: StateImage.success,
-        processLoading: 1,
-      )));
+  setImages(List<Media> medias) {
+    for (Media media in medias) {
+      progressImages.add(
+        ValueNotifier<LoadImageState>(
+          LoadImageState(
+            url: media.url,
+            state: StateImage.success,
+            processLoading: 1,
+            typeFile: FileUtils.getTypeFileFromTypeMedia(media.type),
+          ),
+        ),
+      );
     }
-    if (file != null) {
-      progressImages
-          .add(ValueNotifier<LoadImageState>(LoadImageState(file: file)));
-    }
+  }
+
+  @action
+  setImage(File file) {
+    progressImages.add(
+      ValueNotifier<LoadImageState>(
+        LoadImageState(
+          file: file,
+          typeFile: FileUtils.getTypeFile(file.path),
+        ),
+      ),
+    );
   }
 
   @action
@@ -79,12 +90,14 @@ class LoadImageState {
   File? file;
   String? url;
   StateImage state;
+  TypeFile typeFile;
   double processLoading;
 
   LoadImageState({
     this.file,
     this.url,
     this.processLoading = 0.0,
+    required this.typeFile,
     this.state = StateImage.compression,
   });
 
@@ -95,6 +108,7 @@ class LoadImageState {
   }) {
     return LoadImageState(
       file: this.file,
+      typeFile: this.typeFile,
       state: state ?? this.state,
       processLoading: processLoading ?? this.processLoading,
     );
