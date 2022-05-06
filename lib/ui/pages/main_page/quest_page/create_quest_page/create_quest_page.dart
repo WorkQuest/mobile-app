@@ -65,8 +65,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.description = widget.questInfo!.description;
       store.price = widget.questInfo!.price;
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
-      (widget.questInfo!.medias ?? []).map((e) => store.setImage(url: e.url)).toList();
-      // store.medias = ObservableList.of(widget.questInfo!.medias ?? []);
+      store.setImages(widget.questInfo!.medias ?? []);
       _controller = SkillSpecializationController(
           initialValue: widget.questInfo!.questSpecializations);
     } else
@@ -363,7 +362,10 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       padding: const EdgeInsets.only(
                         top: 20.0,
                       ),
-                      child: MediaUploadWithProgress(store: store),
+                      child: MediaUploadWithProgress(
+                        store: store,
+                        type: TypeMedia.images,
+                      ),
                     ),
                     titledField(
                       "quests.price".tr(),

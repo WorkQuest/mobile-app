@@ -3,20 +3,26 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
+import 'package:app/utils/file_methods.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../../constants.dart';
-import '../../../model/quests_models/media_model.dart';
+
+enum TypeMedia { images, video, any }
 
 class MediaUploadWithProgress<T extends IMediaStore> extends StatefulWidget {
+  final TypeMedia type;
   final T store;
 
   const MediaUploadWithProgress({
     required this.store,
+    required this.type,
   });
 
   @override
@@ -66,13 +72,35 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
                 if (store.state == StateLoading.nothing)
                   IconButton(
                     onPressed: () async {
-                      final result = await FilePicker.platform.pickFiles(
-                        allowMultiple: true,
-                        type: FileType.image,
-                      );
+                      FilePickerResult? result;
+                      if (widget.type == TypeMedia.images) {
+                        result = await FilePicker.platform.pickFiles(
+                          allowMultiple: true,
+                          type: FileType.image,
+                        );
+                      }
+                      if (widget.type == TypeMedia.video) {
+                        result = await FilePicker.platform.pickFiles(
+                          allowMultiple: true,
+                          type: FileType.video,
+                        );
+                      }
+                      if (widget.type == TypeMedia.any) {
+                        result = await FilePicker.platform.pickFiles(
+                            allowMultiple: true,
+                            type: FileType.custom,
+                            allowedExtensions: [
+                              'jpeg',
+                              'webp',
+                              'mp4',
+                              'mov',
+                              'jpg',
+                              'png'
+                            ]);
+                      }
                       if (result != null) {
                         result.files.map((file) {
-                          store.setImage(file: File(file.path!), url: '');
+                          store.setImage(File(file.path!));
                         }).toList();
                       }
                     },
@@ -117,18 +145,16 @@ class _ListMediaView extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: [
           ...store.progressImages
-              .where((element) => element.value.url != null)
+              .where((element) =>
+                  element.value.url != null && element.value.url!.isNotEmpty)
               .toList()
               .map(
-                (e) => _ImageNetworkEntity(
+                (notifier) => _ImageNetworkEntity(
                   store: store,
-                  media: Media(
-                    id: '',
-                    url: e.value.url!,
-                    type: TypeMedia.Image,
-                  ),
+                  notifier: notifier,
                 ),
-              ).toList(),
+              )
+              .toList(),
           ...store.progressImages
               .where((element) => element.value.file != null)
               .toList()
@@ -137,7 +163,8 @@ class _ListMediaView extends StatelessWidget {
                   store: store,
                   notifier: e,
                 ),
-              ).toList(),
+              )
+              .toList(),
         ],
       ),
     );
@@ -162,7 +189,7 @@ class _GalleryView extends StatelessWidget {
         );
         if (result != null) {
           result.files.map((file) {
-            store.setImage(file: File(file.path!), url: '');
+            store.setImage(File(file.path!));
           }).toList();
         }
       },
@@ -195,11 +222,11 @@ class _GalleryView extends StatelessWidget {
 
 class _ImageNetworkEntity extends StatelessWidget {
   final IMediaStore store;
-  final Media media;
+  final ValueNotifier<LoadImageState> notifier;
 
   const _ImageNetworkEntity({
     Key? key,
-    required this.media,
+    required this.notifier,
     required this.store,
   }) : super(key: key);
 
@@ -224,7 +251,7 @@ class _ImageNetworkEntity extends StatelessWidget {
                         base64Decode(Constants.base64WhiteHolder)),
                   ),
                   image: NetworkImage(
-                    media.url,
+                    notifier.value.url!,
                   ),
                   fit: BoxFit.cover,
                 ),
@@ -237,8 +264,8 @@ class _ImageNetworkEntity extends StatelessWidget {
                 right: -15.0,
                 child: IconButton(
                   onPressed: () {
-                    print('delete media');
-                    store.deleteMedia(media.url);
+                    store.deleteMedia(notifier.value.url!);
+                    store.deleteImage(notifier);
                   },
                   icon: Icon(Icons.cancel),
                   iconSize: 25.0,
@@ -341,18 +368,23 @@ class _ImageWidgetState extends State<_ImageWidget> {
                 return Stack(
                   alignment: Alignment.center,
                   children: [
-                    FadeInImage(
-                      width: MediaQuery.of(context).size.width,
-                      height: 300,
-                      placeholder: MemoryImage(
-                        Uint8List.fromList(
-                            base64Decode(Constants.base64WhiteHolder)),
+                    if (widget.notifier.value.typeFile == TypeFile.video)
+                      _VideoThumbnail(
+                        file: file!,
+                      )
+                    else
+                      FadeInImage(
+                        width: MediaQuery.of(context).size.width,
+                        height: 300,
+                        placeholder: MemoryImage(
+                          Uint8List.fromList(
+                              base64Decode(Constants.base64WhiteHolder)),
+                        ),
+                        image: MemoryImage(
+                          snapshot.data!,
+                        ),
+                        fit: BoxFit.cover,
                       ),
-                      image: MemoryImage(
-                        snapshot.data!,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -405,6 +437,79 @@ class _ImageWidgetState extends State<_ImageWidget> {
     } else {
       return '';
     }
+  }
+}
+
+class _VideoThumbnail extends StatefulWidget {
+  final File file;
+
+  const _VideoThumbnail({
+    Key? key,
+    required this.file,
+  }) : super(key: key);
+
+  @override
+  _VideoThumbnailState createState() => _VideoThumbnailState();
+}
+
+class _VideoThumbnailState extends State<_VideoThumbnail> {
+  late Future<String> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _getFuture();
+  }
+
+  _getFuture() async {
+    final result = await VideoThumbnail.thumbnailFile(
+            video: widget.file.path,
+            thumbnailPath: (await getTemporaryDirectory()).path,
+            imageFormat: ImageFormat.PNG,
+            quality: 100) ??
+        '';
+    _future = Future.value(result);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+        future: _future,
+        builder: (_, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.data!.isEmpty) {
+              return SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 300,
+                child: Center(
+                  child: Text(
+                    "Error load video.",
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                ),
+              );
+            } else {
+              return FadeInImage(
+                width: MediaQuery.of(context).size.width,
+                height: 300,
+                placeholder: MemoryImage(
+                  Uint8List.fromList(base64Decode(Constants.base64WhiteHolder)),
+                ),
+                image: AssetImage(
+                  snapshot.data!,
+                ),
+                fit: BoxFit.cover,
+              );
+            }
+          }
+          return SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: 300,
+            child: Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
+          );
+        });
   }
 }
 
