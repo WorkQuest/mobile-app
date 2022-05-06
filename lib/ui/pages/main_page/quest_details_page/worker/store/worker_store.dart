@@ -88,7 +88,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   sendRejectOnQuest() async {
     try {
       this.onLoading();
-      await _apiProvider.rejectOnQuest(questId: quest.value!.id);
+      // await _apiProvider.rejectOnQuest(questId: quest.value!.id);
       ClientService().handleEvent(
         function: WQContractFunctions.declineJob,
         contractAddress: quest.value!.contractAddress!,

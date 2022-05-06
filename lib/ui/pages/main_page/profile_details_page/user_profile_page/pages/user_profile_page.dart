@@ -4,6 +4,7 @@ import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_shimmer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
@@ -90,6 +91,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
       viewOtherUser!.getProfile(userId: widget.arguments!.userId).then((value) {
         portfolioStore!.setOtherUserData(viewOtherUser!.userData);
+        role = viewOtherUser!.userData!.role;
 
         if (viewOtherUser!.quests.isEmpty)
           viewOtherUser!.getQuests(
@@ -161,9 +163,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
       body: Observer(
         builder: (_) => (userStore?.isLoading ?? false) ||
                 (viewOtherUser?.isLoading ?? false)
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
+            ? ProfileShimmer()
             : NotificationListener<ScrollNotification>(
                 onNotification: (scrollNotification) {
                   if (controllerMain.offset < 180) {

@@ -16,6 +16,21 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
           Computed<Chats?>(() => super.chat, name: '_ChatRoomStore.chat'))
       .value;
 
+  final _$filesPathAtom = Atom(name: '_ChatRoomStore.filesPath');
+
+  @override
+  ObservableMap<int, String> get filesPath {
+    _$filesPathAtom.reportRead();
+    return super.filesPath;
+  }
+
+  @override
+  set filesPath(ObservableMap<int, String> value) {
+    _$filesPathAtom.reportWrite(value, super.filesPath, () {
+      super.filesPath = value;
+    });
+  }
+
   final _$chatNameAtom = Atom(name: '_ChatRoomStore.chatName');
 
   @override
@@ -418,6 +433,17 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   }
 
   @override
+  void addFilePath(int index, String path) {
+    final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
+        name: '_ChatRoomStore.addFilePath');
+    try {
+      return super.addFilePath(index, path);
+    } finally {
+      _$_ChatRoomStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setMessageSelected(bool value) {
     final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
         name: '_ChatRoomStore.setMessageSelected');
@@ -530,6 +556,7 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   @override
   String toString() {
     return '''
+filesPath: ${filesPath},
 chatName: ${chatName},
 idMessagesForStar: ${idMessagesForStar},
 idMessages: ${idMessages},

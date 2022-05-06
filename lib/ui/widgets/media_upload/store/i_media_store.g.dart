@@ -64,11 +64,11 @@ mixin _$IMediaStore<T> on _IMediaStore<T>, Store {
   final _$_IMediaStoreActionController = ActionController(name: '_IMediaStore');
 
   @override
-  dynamic setImage({File? file, required String url}) {
+  dynamic setImage({required String url, File? file}) {
     final _$actionInfo = _$_IMediaStoreActionController.startAction(
         name: '_IMediaStore.setImage');
     try {
-      return super.setImage(file: file, url: url);
+      return super.setImage(url: url, file: file);
     } finally {
       _$_IMediaStoreActionController.endAction(_$actionInfo);
     }

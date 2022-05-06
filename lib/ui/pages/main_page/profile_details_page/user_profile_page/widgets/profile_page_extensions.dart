@@ -11,13 +11,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/svg.dart';
 
 extension CustomAppBar on UserProfileState {
-  Widget sliverAppBar(ProfileMeResponse? info,
+  Widget sliverAppBar(ProfileMeResponse info,
       StreamController<AppBarParams> streamController, Function() updateState) {
     final String defaultImage =
         'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
-    final mark = info == null
-        ? userStore!.userData!.ratingStatistic!.averageMark
-        : info.ratingStatistic!.averageMark;
+    final mark = info.ratingStatistic!.averageMark;
     final markDev = mark.toInt();
     final markMod = (mark % (markDev == 0 ? 1 : markDev) * 10).round() / 10;
     return StreamBuilder<AppBarParams>(
@@ -34,7 +32,7 @@ extension CustomAppBar on UserProfileState {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          if (info!.id == userStore!.userData!.id)
+          if (info.id == userStore!.userData!.id)
             IconButton(
                 icon: Icon(
                   Icons.edit,
@@ -66,23 +64,13 @@ extension CustomAppBar on UserProfileState {
             fit: StackFit.expand,
             children: [
               Image.network(
-                info == null
-                    ? userStore!.userData!.avatar != null
-                        ? userStore!.userData!.avatar!.url ?? defaultImage
-                        : defaultImage
-                    : info.avatar != null
-                        ? info.avatar!.url ?? defaultImage
-                        : defaultImage,
+                info.avatar != null
+                    ? info.avatar!.url ?? defaultImage
+                    : defaultImage,
                 fit: BoxFit.cover,
               ),
               Positioned(
-                bottom: info == null
-                    ? userStore!.userData!.ratingStatistic!.status != 3
-                        ? 85.0
-                        : 67.0
-                    : info.ratingStatistic!.status != 3
-                        ? 85.0
-                        : 67.0,
+                bottom: info.ratingStatistic!.status == 1 ? 67.0 : 85.0,
                 left: 15.0,
                 child: Row(
                   children: [
@@ -125,13 +113,9 @@ extension CustomAppBar on UserProfileState {
             ],
           ),
           title: appBarTitle(
-            info == null
-                ? "${userStore!.userData!.firstName} ${userStore!.userData!.lastName}"
-                : "${info.firstName} ${info.lastName}",
+            "${info.firstName} ${info.lastName}",
             snapshot.data!.appBarPosition,
-            info == null
-                ? userStore!.userData!.ratingStatistic?.status ?? 3
-                : info.ratingStatistic?.status ?? 3,
+            info.ratingStatistic?.status ?? 1,
             snapshot.data!.width,
           ),
         ),

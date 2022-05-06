@@ -512,17 +512,17 @@ extension QuestService on ApiProvider {
     }
   }
 
-  Future<bool> rejectOnQuest({
-    required String questId,
-  }) async {
-    try {
-      final responseData =
-          await httpClient.post(query: '/v1/quest/$questId/reject-work');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> rejectOnQuest({
+  //   required String questId,
+  // }) async {
+  //   try {
+  //     final responseData =
+  //         await httpClient.post(query: '/v1/quest/$questId/reject-work');
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Future<bool> rejectInvite({
     required String responseId,
