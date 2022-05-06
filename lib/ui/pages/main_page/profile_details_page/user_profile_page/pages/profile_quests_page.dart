@@ -100,19 +100,21 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
                 return true;
               },
               child: Observer(
-                  builder: (_) => profileMeStore!.questHolder == null &&
-                          profileMeStore!.isLoading &&
-                          profileMeStore!.quests.isEmpty
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : QuestsList(
-                          snapshot.data == UserRole.Worker
-                              ? QuestItemPriorityType.Active
-                              : QuestItemPriorityType.Performed,
-                          profileMeStore!.quests,
-                          isLoading: profileMeStore!.isLoading,
-                        )),
+                builder: (_) => profileMeStore!.questHolder == null &&
+                        profileMeStore!.isLoading &&
+                        profileMeStore!.quests.isEmpty
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : QuestsList(
+                        snapshot.data == UserRole.Worker
+                            ? QuestItemPriorityType.Active
+                            : QuestItemPriorityType.Performed,
+                        profileMeStore!.quests,
+                        isLoading: profileMeStore!.isLoading,
+                        from: FromQuestList.questSearch,
+                      ),
+              ),
             );
           }
           return Center(child: CircularProgressIndicator());
