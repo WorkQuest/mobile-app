@@ -59,6 +59,7 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
             if (store.progressImages.isEmpty) {
               return _GalleryView(
                 store: store,
+                type: widget.type,
               );
             }
             return Column(
@@ -82,7 +83,7 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
                       if (widget.type == TypeMedia.video) {
                         result = await FilePicker.platform.pickFiles(
                           allowMultiple: true,
-                          type: FileType.video,
+                          type: FileType.media,
                         );
                       }
                       if (widget.type == TypeMedia.any) {
@@ -173,20 +174,37 @@ class _ListMediaView extends StatelessWidget {
 
 class _GalleryView extends StatelessWidget {
   final IMediaStore store;
+  final TypeMedia type;
 
   const _GalleryView({
     Key? key,
     required this.store,
+    required this.type,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        final result = await FilePicker.platform.pickFiles(
-          allowMultiple: true,
-          type: FileType.image,
-        );
+        FilePickerResult? result;
+        if (type == TypeMedia.images) {
+          result = await FilePicker.platform.pickFiles(
+            allowMultiple: true,
+            type: FileType.image,
+          );
+        }
+        if (type == TypeMedia.video) {
+          result = await FilePicker.platform.pickFiles(
+            allowMultiple: true,
+            type: FileType.media,
+          );
+        }
+        if (type == TypeMedia.any) {
+          result = await FilePicker.platform.pickFiles(
+              allowMultiple: true,
+              type: FileType.custom,
+              allowedExtensions: ['jpeg', 'webp', 'mp4', 'mov', 'jpg', 'png']);
+        }
         if (result != null) {
           result.files.map((file) {
             store.setImage(File(file.path!));
@@ -453,22 +471,21 @@ class _VideoThumbnail extends StatefulWidget {
 }
 
 class _VideoThumbnailState extends State<_VideoThumbnail> {
-  late Future<String> _future;
+  Future<String>? _future;
 
   @override
   void initState() {
     super.initState();
-    _getFuture();
+    _future = _getFuture();
   }
 
-  _getFuture() async {
-    final result = await VideoThumbnail.thumbnailFile(
+  Future<String> _getFuture() async {
+    return await VideoThumbnail.thumbnailFile(
             video: widget.file.path,
             thumbnailPath: (await getTemporaryDirectory()).path,
             imageFormat: ImageFormat.PNG,
             quality: 100) ??
         '';
-    _future = Future.value(result);
   }
 
   @override
@@ -489,16 +506,30 @@ class _VideoThumbnailState extends State<_VideoThumbnail> {
                 ),
               );
             } else {
-              return FadeInImage(
-                width: MediaQuery.of(context).size.width,
-                height: 300,
-                placeholder: MemoryImage(
-                  Uint8List.fromList(base64Decode(Constants.base64WhiteHolder)),
-                ),
-                image: AssetImage(
-                  snapshot.data!,
-                ),
-                fit: BoxFit.cover,
+              return Stack(
+                children: [
+                  FadeInImage(
+                    width: MediaQuery.of(context).size.width,
+                    height: 300,
+                    placeholder: MemoryImage(
+                      Uint8List.fromList(
+                          base64Decode(Constants.base64WhiteHolder)),
+                    ),
+                    image: FileImage(File(snapshot.data!)),
+                    fit: BoxFit.cover,
+                  ),
+                  Positioned(
+                    bottom: 0.0,
+                    right: 0.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.videocam_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                ],
               );
             }
           }
