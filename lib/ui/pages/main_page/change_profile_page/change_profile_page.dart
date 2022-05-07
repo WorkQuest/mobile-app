@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
@@ -104,12 +105,16 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               oldPhone!.fullPhone.isNotEmpty &&
               !pageStore.numberChanged(oldPhone!.fullPhone)) {
             await AlertDialogUtils.showSuccessDialog(context);
+            await profile!.getProfileMe();
+            Navigator.pop(context, true);
           } else {
             await AlertDialogUtils.showSuccessDialog(context,
                 text: 'Enter code from SMS in SMS Verification');
+            await profile!.getProfileMe();
+            await Navigator.of(context, rootNavigator: true).pushReplacementNamed(
+              SMSVerificationPage.routeName,
+            );
           }
-          await profile!.getProfileMe();
-          Navigator.pop(context, true);
         },
         child: Observer(
           builder: (_) => profile!.isLoading
