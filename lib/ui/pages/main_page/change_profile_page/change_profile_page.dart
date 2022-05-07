@@ -637,7 +637,8 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
             onInputChanged: widget.onChanged,
             selectorConfig: SelectorConfig(
               setSelectorButtonAsPrefixIcon: true,
-              selectorType: PhoneInputSelectorType.DROPDOWN,
+              leadingPadding: 8.0,
+              selectorType: PhoneInputSelectorType.DIALOG,
             ),
             hintText: "modals.phoneNumber".tr(),
             keyboardType: TextInputType.number,
