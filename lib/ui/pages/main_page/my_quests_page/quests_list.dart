@@ -92,6 +92,7 @@ class QuestsList extends StatelessWidget {
 
   Widget getEmptyBody(BuildContext context) {
     return SingleChildScrollView(
+      physics: physics,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
