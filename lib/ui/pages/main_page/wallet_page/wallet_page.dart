@@ -367,20 +367,28 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                     onPageChanged: (int index, _) {
                       switch (index) {
                         case 0:
-                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.WUSD);
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.WUSD);
+                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.WQT);
+                          GetIt.I
+                              .get<TransactionsStore>()
+                              .setType(TYPE_COINS.WQT);
                           break;
                         case 1:
-                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.WQT);
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.WQT);
+                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.WUSD);
+                          GetIt.I
+                              .get<TransactionsStore>()
+                              .setType(TYPE_COINS.WUSD);
                           break;
                         case 2:
                           GetIt.I.get<WalletStore>().setType(TYPE_COINS.wBNB);
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wBNB);
+                          GetIt.I
+                              .get<TransactionsStore>()
+                              .setType(TYPE_COINS.wBNB);
                           break;
                         case 3:
                           GetIt.I.get<WalletStore>().setType(TYPE_COINS.wETH);
-                          GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wETH);
+                          GetIt.I
+                              .get<TransactionsStore>()
+                              .setType(TYPE_COINS.wETH);
                           break;
                       }
                       GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
