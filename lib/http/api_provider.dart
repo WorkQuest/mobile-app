@@ -232,7 +232,7 @@ extension QuestService on ApiProvider {
     if (me)
       responseData = await httpClient.post(
         query: '/v1/me/worker/get-quests?limit=$limit&offset=$offset&$status'
-            '&starred=$starred&$sort',
+            'invited=$invited&$sort',
         data: {
           "specializations": [],
         },

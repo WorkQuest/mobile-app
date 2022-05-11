@@ -224,7 +224,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           invited.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetInvited,
             sort: sort,
-            statuses: [2],
+            // statuses: [2],
             invited: true,
             me: true,
           ));

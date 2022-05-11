@@ -52,8 +52,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           (profile!.userData?.tempPhone?.codeRegion ?? ''),
       fullPhone: profile!.userData?.phone?.fullPhone ??
           (profile!.userData?.tempPhone?.fullPhone ?? ''),
-      phone:
-          profile!.userData?.phone?.phone ?? (profile!.userData?.tempPhone?.phone ?? ''),
+      phone: profile!.userData?.phone?.phone ??
+          (profile!.userData?.tempPhone?.phone ?? ''),
     );
     if (profile!.userData!.additionalInfo?.address != null)
       pageStore.address = profile!.userData!.additionalInfo!.address!;
@@ -155,6 +155,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                   pageStore.setUserData(data);
                 },
                 validator: Validators.firstNameValidator,
+                maxLength: 15,
               ),
               _InputWidget(
                 title: "labels.lastName".tr(),
@@ -165,10 +166,14 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                   pageStore.setUserData(data);
                 },
                 validator: Validators.lastNameValidator,
+                maxLength: 15,
               ),
               Observer(
                 builder: (_) => _AddressProfileWidget(
-                  address: pageStore.address.isEmpty ? profile!.userData!.additionalInfo?.address.toString() ?? pageStore.address : pageStore.address,
+                  address: pageStore.address.isEmpty
+                      ? profile!.userData!.additionalInfo?.address.toString() ??
+                          pageStore.address
+                      : pageStore.address,
                   onTap: () {
                     pageStore.getPrediction(context);
                   },
@@ -202,10 +207,12 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                   pageStore.setUserData(data);
                 },
                 validator: Validators.emailValidator,
+                maxLength: 15,
               ),
               _InputWidget(
                 title: "modals.title".tr(),
-                initialValue: pageStore.userData.additionalInfo!.description ?? "",
+                initialValue:
+                    pageStore.userData.additionalInfo!.description ?? "",
                 onChanged: (text) {
                   ProfileMeResponse data = pageStore.userData;
                   data.additionalInfo!.description = text;
@@ -213,6 +220,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 },
                 maxLines: null,
                 validator: Validators.descriptionValidator,
+                maxLength: null,
               ),
               if (pageStore.userData.role == UserRole.Worker)
                 _FieldsForWorkerWidget(
@@ -225,46 +233,54 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               _InputWidget(
                 title: "settings.twitterUsername".tr(),
                 initialValue:
-                    pageStore.userData.additionalInfo!.socialNetwork?.twitter ?? "",
+                    pageStore.userData.additionalInfo!.socialNetwork?.twitter ??
+                        "",
                 onChanged: (text) {
                   ProfileMeResponse data = pageStore.userData;
                   data.additionalInfo!.socialNetwork?.twitter = text;
                   pageStore.setUserData(data);
                 },
                 validator: Validators.nicknameTwitterValidator,
+                maxLength: 30,
               ),
               _InputWidget(
                 title: "settings.facebookUsername".tr(),
-                initialValue:
-                    pageStore.userData.additionalInfo!.socialNetwork?.facebook ?? "",
+                initialValue: pageStore
+                        .userData.additionalInfo!.socialNetwork?.facebook ??
+                    "",
                 onChanged: (text) {
                   ProfileMeResponse data = pageStore.userData;
                   data.additionalInfo!.socialNetwork?.facebook = text;
                   pageStore.setUserData(data);
                 },
                 validator: Validators.nicknameFacebookValidator,
+                maxLength: 50,
               ),
               _InputWidget(
                 title: "settings.linkedInUsername".tr(),
-                initialValue:
-                    pageStore.userData.additionalInfo!.socialNetwork?.linkedin ?? "",
+                initialValue: pageStore
+                        .userData.additionalInfo!.socialNetwork?.linkedin ??
+                    "",
                 onChanged: (text) {
                   ProfileMeResponse data = pageStore.userData;
                   data.additionalInfo!.socialNetwork?.linkedin = text;
                   pageStore.setUserData(data);
                 },
                 validator: Validators.nicknameLinkedInValidator,
+                maxLength: 30,
               ),
               _InputWidget(
                 title: "settings.instagramUsername".tr(),
-                initialValue:
-                    pageStore.userData.additionalInfo!.socialNetwork?.instagram ?? "",
+                initialValue: pageStore
+                        .userData.additionalInfo!.socialNetwork?.instagram ??
+                    "",
                 onChanged: (text) {
                   ProfileMeResponse data = pageStore.userData;
                   data.additionalInfo!.socialNetwork?.instagram = text;
                   pageStore.setUserData(data);
                 },
                 validator: Validators.nicknameLinkedInValidator,
+                maxLength: 30,
               ),
               const SizedBox(height: 20),
             ],
@@ -302,13 +318,16 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           _controllerKnowledge!.getListMap(), context)) return;
       if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
         return;
-      if (!pageStore.validationWork(_controllerWork!.getListMap(), context)) return;
+      if (!pageStore.validationWork(_controllerWork!.getListMap(), context))
+        return;
 
       if (pageStore.userData.additionalInfo?.secondMobileNumber?.phone == "")
         pageStore.userData.additionalInfo?.secondMobileNumber = null;
-      pageStore.userData.additionalInfo?.educations = _controllerKnowledge!.getListMap();
-      pageStore.userData.additionalInfo?.workExperiences = _controllerWork!.getListMap();
-      if (pageStore.address.isNotEmpty ) {
+      pageStore.userData.additionalInfo?.educations =
+          _controllerKnowledge!.getListMap();
+      pageStore.userData.additionalInfo?.workExperiences =
+          _controllerWork!.getListMap();
+      if (pageStore.address.isNotEmpty) {
         pageStore.userData.additionalInfo!.address = pageStore.address;
         pageStore.userData.locationPlaceName = pageStore.address;
       }
@@ -461,6 +480,7 @@ class _FieldsForWorkerWidgetState extends State<_FieldsForWorkerWidget> {
           initialValue: widget.pageStore.userData.wagePerHour,
           onChanged: (text) => widget.pageStore.userData.wagePerHour = text,
           validator: Validators.emptyValidator,
+          maxLength: null,
         ),
         Observer(
           builder: (_) => _dropDownMenuWidget(
@@ -704,6 +724,7 @@ class _InputWidget extends StatelessWidget {
   final String? Function(String?) validator;
   final bool readOnly;
   final int? maxLines;
+  final int? maxLength;
 
   const _InputWidget({
     Key? key,
@@ -711,6 +732,7 @@ class _InputWidget extends StatelessWidget {
     required this.initialValue,
     required this.onChanged,
     required this.validator,
+    required this.maxLength,
     this.readOnly = false,
     this.maxLines = 1,
   }) : super(key: key);
@@ -723,6 +745,7 @@ class _InputWidget extends StatelessWidget {
         Text(title),
         const SizedBox(height: 5),
         TextFormField(
+          maxLength: maxLength,
           initialValue: initialValue,
           maxLines: maxLines,
           readOnly: readOnly,

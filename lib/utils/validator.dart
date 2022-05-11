@@ -73,19 +73,19 @@ class Validators {
   }
 
   static String? nicknameTwitterValidator(String? text) {
-    return (text?.length ?? 0) < 400
+    return (text?.length ?? 0) < 15
         ? null
         : "Too many characters ${text!.length}/15";
   }
 
   static String? nicknameFacebookValidator(String? text) {
-    return (text?.length ?? 0) < 400
+    return (text?.length ?? 0) < 50
         ? null
         : "Too many characters ${text!.length}/50";
   }
 
   static String? nicknameLinkedInValidator(String? text) {
-    return (text?.length ?? 0) < 400
+    return (text?.length ?? 0) < 30
         ? null
         : "Too many characters ${text!.length}/30";
   }
