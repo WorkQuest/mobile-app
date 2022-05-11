@@ -34,7 +34,8 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
   @observable
   String description = '';
 
-  bool isButtonEnable() => theme != "dispute.theme" && description.isNotEmpty;
+  bool isButtonEnable() =>
+      theme != "dispute.theme" && description.isNotEmpty && !this.isLoading;
 
   @action
   void setDescription(String value) => description = value;

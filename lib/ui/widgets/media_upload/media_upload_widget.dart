@@ -9,6 +9,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -66,7 +67,7 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Expanded(
-                  child: _ListMediaView(
+                  child: ListMediaView(
                     store: store,
                   ),
                 ),
@@ -128,10 +129,10 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
   }
 }
 
-class _ListMediaView extends StatelessWidget {
+class ListMediaView extends StatelessWidget {
   final IMediaStore store;
 
-  const _ListMediaView({
+  const ListMediaView({
     Key? key,
     required this.store,
   }) : super(key: key);
@@ -390,13 +391,21 @@ class _ImageWidgetState extends State<_ImageWidget> {
                       _VideoThumbnail(
                         file: file!,
                       )
+                    else if (widget.notifier.value.typeFile ==
+                        TypeFile.documents)
+                      SvgPicture.asset(
+                        'assets/document.svg',
+                        color: Color(0xFFAAB0B9),
+                        width: MediaQuery.of(context).size.width * 0.1,
+                      )
                     else
                       FadeInImage(
                         width: MediaQuery.of(context).size.width,
                         height: 300,
                         placeholder: MemoryImage(
                           Uint8List.fromList(
-                              base64Decode(Constants.base64WhiteHolder)),
+                            base64Decode(Constants.base64WhiteHolder),
+                          ),
                         ),
                         image: MemoryImage(
                           snapshot.data!,

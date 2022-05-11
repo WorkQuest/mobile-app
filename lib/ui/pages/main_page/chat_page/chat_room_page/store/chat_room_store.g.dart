@@ -16,21 +16,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
           Computed<Chats?>(() => super.chat, name: '_ChatRoomStore.chat'))
       .value;
 
-  final _$filesPathAtom = Atom(name: '_ChatRoomStore.filesPath');
-
-  @override
-  ObservableMap<int, String> get filesPath {
-    _$filesPathAtom.reportRead();
-    return super.filesPath;
-  }
-
-  @override
-  set filesPath(ObservableMap<int, String> value) {
-    _$filesPathAtom.reportWrite(value, super.filesPath, () {
-      super.filesPath = value;
-    });
-  }
-
   final _$chatNameAtom = Atom(name: '_ChatRoomStore.chatName');
 
   @override
@@ -43,6 +28,21 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   set chatName(String value) {
     _$chatNameAtom.reportWrite(value, super.chatName, () {
       super.chatName = value;
+    });
+  }
+
+  final _$sendingMessageAtom = Atom(name: '_ChatRoomStore.sendingMessage');
+
+  @override
+  bool get sendingMessage {
+    _$sendingMessageAtom.reportRead();
+    return super.sendingMessage;
+  }
+
+  @override
+  set sendingMessage(bool value) {
+    _$sendingMessageAtom.reportWrite(value, super.sendingMessage, () {
+      super.sendingMessage = value;
     });
   }
 
@@ -287,21 +287,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
-  final _$mediaAtom = Atom(name: '_ChatRoomStore.media');
-
-  @override
-  ObservableList<File> get media {
-    _$mediaAtom.reportRead();
-    return super.media;
-  }
-
-  @override
-  set media(ObservableList<File> value) {
-    _$mediaAtom.reportWrite(value, super.media, () {
-      super.media = value;
-    });
-  }
-
   final _$pageNumberAtom = Atom(name: '_ChatRoomStore.pageNumber');
 
   @override
@@ -433,11 +418,11 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   }
 
   @override
-  void addFilePath(int index, String path) {
+  void setSendingMessage(bool value) {
     final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
-        name: '_ChatRoomStore.addFilePath');
+        name: '_ChatRoomStore.setSendingMessage');
     try {
-      return super.addFilePath(index, path);
+      return super.setSendingMessage(value);
     } finally {
       _$_ChatRoomStoreActionController.endAction(_$actionInfo);
     }
@@ -556,8 +541,8 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   @override
   String toString() {
     return '''
-filesPath: ${filesPath},
 chatName: ${chatName},
+sendingMessage: ${sendingMessage},
 idMessagesForStar: ${idMessagesForStar},
 idMessages: ${idMessages},
 index: ${index},
@@ -573,7 +558,6 @@ availableUsers: ${availableUsers},
 foundUsers: ${foundUsers},
 selectedUsers: ${selectedUsers},
 starredMessage: ${starredMessage},
-media: ${media},
 pageNumber: ${pageNumber},
 star: ${star},
 mapOfPath: ${mapOfPath},

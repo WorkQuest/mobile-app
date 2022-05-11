@@ -18,10 +18,6 @@ class Storage {
     await _secureStorage.write(key: key.toString(), value: value);
   }
 
-  static Future<void> writeNotificationToken(String token) async {
-    _secureStorage.write(key: "notificationToken", value: token);
-  }
-
   static Future<void> writeRefreshToken(String token) async {
     _secureStorage.write(key: "refreshToken", value: token);
   }
@@ -52,10 +48,6 @@ class Storage {
 
   static Future<String?> readAccessToken() async {
     return await _secureStorage.read(key: "accessToken");
-  }
-
-  static Future<String?> readNotificationToken() async {
-    return await _secureStorage.read(key: "notificationToken");
   }
 
   static deleteAllFromSecureStorage() async {

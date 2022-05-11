@@ -8,10 +8,12 @@ import 'package:app/model/quests_models/media_model.dart';
 import 'package:flutter/material.dart';
 
 class ImageViewerWidget extends StatelessWidget {
-  ImageViewerWidget(this.medias, this.textColor);
+  ImageViewerWidget(this.medias, this.textColor, this.thumbnail, this.loading);
 
   final List<Media> medias;
   final Color? textColor;
+  final List<String>? thumbnail;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
@@ -119,12 +121,31 @@ class ImageViewerWidget extends StatelessWidget {
                 height: index == 0 ? 200 : 60,
                 width: double.maxFinite,
                 alignment: Alignment.center,
-                child: SvgPicture.asset(
-                  'assets/play.svg',
-                  width: MediaQuery.of(context).size.width * 0.1,
-                  height: MediaQuery.of(context).size.height * 0.1,
-                  color: Color(0xFFE9EDF2),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    loading
+                        ? Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          )
+                        : Image.file(
+                            File(
+                              thumbnail![index],
+                            ),
+                          ),
+                    SvgPicture.asset(
+                      'assets/play.svg',
+                      color: Color(0xFFAAB0B9),
+                      width: MediaQuery.of(context).size.width * 0.1,
+                    ),
+                  ],
                 ),
+                // SvgPicture.asset(
+                //   'assets/play.svg',
+                //   width: MediaQuery.of(context).size.width * 0.1,
+                //   height: MediaQuery.of(context).size.height * 0.1,
+                //   color: Color(0xFFE9EDF2),
+                // ),
               ),
       ),
     );
@@ -157,8 +178,8 @@ class ImageViewerWidget extends StatelessWidget {
                 medias[index].type == TypeMedia.Pdf
                     ? "assets/pdf.svg"
                     : "assets/doc.svg",
-                  width: 30,
-                  height: 30,
+                width: 30,
+                height: 30,
               ),
               const SizedBox(
                 width: 14,

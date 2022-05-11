@@ -739,7 +739,7 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: CreateReviewPage(
-                quest: settings.arguments as BaseQuestResponse,
+                settings.arguments as ReviewArguments,
               ),
             ),
           ),

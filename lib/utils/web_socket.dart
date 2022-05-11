@@ -28,7 +28,7 @@ class WebSocket {
 
   void connect() async {
     shouldReconnectFlag = true;
-    token = await Storage.readNotificationToken();
+    token = await Storage.readAccessToken();
     print("[WebSocket]  connecting ...");
     _connectWallet();
     _connectListen();

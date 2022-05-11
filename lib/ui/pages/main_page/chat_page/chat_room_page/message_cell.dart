@@ -4,7 +4,9 @@ import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class MessageCell extends StatefulWidget {
   final LocalKey key;
@@ -20,6 +22,8 @@ class MessageCell extends StatefulWidget {
 class _MessageCellState extends State<MessageCell> {
   late ChatRoomStore store;
   late String date;
+  List<String> pathList = [];
+  bool loading = false;
 
   @override
   void initState() {
@@ -29,6 +33,7 @@ class _MessageCellState extends State<MessageCell> {
             widget.mess.createdAt.day == DateTime.now().day
         ? DateFormat('kk:mm').format(widget.mess.createdAt)
         : DateFormat('dd MMM, kk:mm').format(widget.mess.createdAt);
+    getThumbnail();
     super.initState();
   }
 
@@ -98,6 +103,8 @@ class _MessageCellState extends State<MessageCell> {
                                   widget.mess.senderUserId != widget.userId
                                       ? Color(0xFFFFFFFF)
                                       : Color(0xFF1D2127),
+                                  pathList,
+                                  loading,
                                 ),
                               ),
                             Row(
@@ -140,5 +147,22 @@ class _MessageCellState extends State<MessageCell> {
         ),
       ),
     );
+  }
+
+  Future<void> getThumbnail() async {
+    String filePath = "";
+    loading = true;
+    for (int i = 0; i < widget.mess.medias.length; i++) {
+      filePath = await VideoThumbnail.thumbnailFile(
+            video: widget.mess.medias[i].url,
+            thumbnailPath: (await getTemporaryDirectory()).path,
+            imageFormat: ImageFormat.PNG,
+            quality: 100,
+          ) ??
+          "";
+      pathList.add(filePath);
+    }
+    loading = false;
+    setState(() {});
   }
 }

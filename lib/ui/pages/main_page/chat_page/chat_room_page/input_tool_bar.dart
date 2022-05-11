@@ -61,11 +61,9 @@ class _InputToolbarState extends State<InputToolbar> {
                     break;
                 }
                 if (result != null) {
-                  files.addAll(
-                      result!.paths.map((path) => File(path!)).toList());
-                  widget.store.media.addAll(files);
-                  files.clear();
-                  result = null;
+                  result!.files.map((file) {
+                    widget.store.setImage(File(file.path!));
+                  }).toList();
                 }
               },
               itemBuilder: (BuildContext context) {
@@ -101,14 +99,13 @@ class _InputToolbarState extends State<InputToolbar> {
           Observer(
             builder: (_) => InkWell(
               onTap: (_controller.text.isNotEmpty ||
-                          widget.store.media.isNotEmpty) &&
-                      !widget.store.isLoading
+                          widget.store.progressImages.isNotEmpty) &&
+                      !widget.store.sendingMessage
                   ? () {
                       widget.store.sendMessage(
                         _controller.text,
                         widget.store.chat!.chatModel.id,
                         widget.userId,
-                        // _store.media,
                       );
                       _controller.text = "";
                     }
@@ -121,15 +118,13 @@ class _InputToolbarState extends State<InputToolbar> {
                   bottom: 10,
                 ),
                 child: Observer(
-                  builder: (_) => widget.store.isLoading
-                      ? CircularProgressIndicator.adaptive()
-                      : SvgPicture.asset(
-                          "assets/send_message_icon.svg",
-                          color: _controller.text.isNotEmpty ||
-                                  widget.store.media.isNotEmpty
-                              ? Color(0xFF0083C7)
-                              : Colors.grey,
-                        ),
+                  builder: (_) => SvgPicture.asset(
+                    "assets/send_message_icon.svg",
+                    color: _controller.text.isNotEmpty ||
+                            widget.store.progressImages.isNotEmpty
+                        ? Color(0xFF0083C7)
+                        : Colors.grey,
+                  ),
                 ),
               ),
             ),

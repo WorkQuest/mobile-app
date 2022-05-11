@@ -6,6 +6,7 @@ import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -105,9 +106,14 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            AlertDialogUtils.showInfoAlertDialog(context,
-                title: 'Warning'.tr(),
-                content: 'Service temporarily unavailable');
+            await Navigator.pushNamed(
+              context,
+              OpenDisputePage.routeName,
+              arguments: storeQuest.questInfo,
+            );
+            // AlertDialogUtils.showInfoAlertDialog(context,
+            //     title: 'Warning'.tr(),
+            //     content: 'Service temporarily unavailable');
           },
           itemBuilder: (BuildContext context) {
             return {

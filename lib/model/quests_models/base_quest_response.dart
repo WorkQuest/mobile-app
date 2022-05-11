@@ -2,7 +2,6 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/model/quests_models/your_review.dart';
-
 import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -11,35 +10,38 @@ import '../user_model.dart';
 import 'assigned_worker.dart';
 import 'invited.dart';
 import 'location_full.dart';
+import 'open_dispute.dart';
 
 class BaseQuestResponse with ClusterItem {
-  BaseQuestResponse(
-      {required this.id,
-      required this.userId,
-      required this.medias,
-      required this.user,
-      required this.category,
-      required this.status,
-      required this.priority,
-      required this.locationCode,
-      required this.title,
-      required this.assignedWorkerId,
-      required this.contractAddress,
-      required this.nonce,
-      required this.description,
-      required this.price,
-      required this.createdAt,
-      required this.star,
-      required this.locationPlaceName,
-      required this.assignedWorker,
-      required this.employment,
-      required this.questSpecializations,
-      required this.workplace,
-      required this.invited,
-      required this.responded,
-      required this.yourReview,
-      required this.questChat,
-      required this.raiseView});
+  BaseQuestResponse({
+    required this.id,
+    required this.userId,
+    required this.medias,
+    required this.user,
+    required this.category,
+    required this.status,
+    required this.priority,
+    required this.locationCode,
+    required this.title,
+    required this.assignedWorkerId,
+    required this.contractAddress,
+    required this.nonce,
+    required this.description,
+    required this.price,
+    required this.createdAt,
+    required this.star,
+    required this.locationPlaceName,
+    required this.assignedWorker,
+    required this.employment,
+    required this.questSpecializations,
+    required this.workplace,
+    required this.invited,
+    required this.responded,
+    required this.yourReview,
+    required this.questChat,
+    required this.raiseView,
+    required this.openDispute,
+  });
 
   String id;
   String userId;
@@ -68,6 +70,7 @@ class BaseQuestResponse with ClusterItem {
   QuestChat? questChat;
   bool showAnimation = true;
   RaiseView? raiseView;
+  dynamic openDispute;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(
@@ -115,7 +118,12 @@ class BaseQuestResponse with ClusterItem {
       questChat: json["questChat"] == null
           ? null
           : QuestChat.fromJson(json["questChat"]),
-      raiseView: json["raiseView"] == null ? null : RaiseView.fromJson(json["raiseView"]),
+      raiseView: json["raiseView"] == null
+          ? null
+          : RaiseView.fromJson(json["raiseView"]),
+      openDispute: json["openDispute"] == null
+          ? null
+          : OpenDispute.fromJson(json["openDispute"]),
     );
   }
 
@@ -143,6 +151,7 @@ class BaseQuestResponse with ClusterItem {
     this.yourReview = updateQuest.yourReview;
     this.questChat = updateQuest.questChat;
     this.raiseView = updateQuest.raiseView;
+    this.openDispute = updateQuest.openDispute;
   }
 
   Map<String, dynamic> toJson() => {

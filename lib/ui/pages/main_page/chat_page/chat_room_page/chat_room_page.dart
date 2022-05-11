@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
@@ -7,6 +5,7 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dar
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/login_button.dart';
@@ -17,9 +16,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:path_provider/path_provider.dart';
 import "package:provider/provider.dart";
-import 'package:video_thumbnail/video_thumbnail.dart';
+
+import '../../../../widgets/media_upload/media_upload_widget.dart';
 
 class ChatRoomPage extends StatefulWidget {
   static const String routeName = "/chatRoomPage";
@@ -85,212 +84,207 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     return Observer(
       builder: (_) => Scaffold(
         appBar: _store.messageSelected ? _selectedMessages() : _appBar(),
-        body: Observer(
-          builder: (_) => _store.isLoading
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : Container(
-                  alignment: Alignment.bottomLeft,
-                  height: MediaQuery.of(context).size.height,
+        body: Container(
+          alignment: Alignment.bottomLeft,
+          height: MediaQuery.of(context).size.height,
+          child: Observer(
+            builder: (_) => Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
                   child: Observer(
-                    builder: (_) => Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(
-                          child: Observer(
-                            builder: (_) => _store.isLoading
-                                ? Center(
-                                    child: CircularProgressIndicator.adaptive())
-                                : NotificationListener<ScrollStartNotification>(
-                                    onNotification: (scrollStart) {
-                                      final metrics = scrollStart.metrics;
-                                      if (metrics.maxScrollExtent <
-                                          metrics.pixels) {
-                                        _store.getMessages(true);
-                                      }
-                                      return true;
-                                    },
-                                    child: ListView.builder(
-                                      physics: const BouncingScrollPhysics(
-                                        parent: AlwaysScrollableScrollPhysics(),
-                                      ),
-                                      itemCount: _store.chat?.messages.length,
-                                      itemBuilder: (context, index) =>
-                                          MessageCell(
-                                        UniqueKey(),
-                                        _store.chat!.messages[index],
-                                        profile!.userData!.id,
-                                      ),
-                                      reverse: true,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                        _store.chat!.chatModel.questChat?.quest?.status != 5
-                            ? InputToolbar(_store, profile!.userData!.id)
-                            : profile!.userData!.role == UserRole.Employer
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16),
-                                    child: LoginButton(
-                                      title: "quests.addToQuest".tr(),
-                                      onTap: () async {
-                                        await _store.getCompanion(
-                                          profile!.userData!.id != id1
-                                              ? id1!
-                                              : id2!,
-                                        );
-                                        await Navigator.of(context,
-                                                rootNavigator: true)
-                                            .pushNamed(
-                                          ChooseQuest.routeName,
-                                          arguments: ChooseQuestArguments(
-                                            workerId: _store.companion!.id,
-                                            workerAddress: _store
-                                                .companion!.walletAddress!,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  )
-                                : SizedBox(),
-                        if (_store.media.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 16.0,
-                              right: 16.0,
-                              top: 16.0,
+                    builder: (_) => _store.isLoading
+                        ? Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          )
+                        : NotificationListener<ScrollStartNotification>(
+                            onNotification: (scrollStart) {
+                              final metrics = scrollStart.metrics;
+                              if (metrics.maxScrollExtent < metrics.pixels) {
+                                _store.getMessages(true);
+                              }
+                              return true;
+                            },
+                            child: ListView.builder(
+                              physics: const BouncingScrollPhysics(
+                                parent: AlwaysScrollableScrollPhysics(),
+                              ),
+                              itemCount: _store.chat?.messages.length,
+                              itemBuilder: (context, index) => MessageCell(
+                                UniqueKey(),
+                                _store.chat!.messages[index],
+                                profile!.userData!.id,
+                              ),
+                              reverse: true,
                             ),
-                            child: _media(),
                           ),
-                        const SizedBox(
-                          height: 16.0,
-                        ),
-                      ],
-                    ),
                   ),
                 ),
-        ),
-      ),
-    );
-  }
-
-  Widget _media() {
-    return SizedBox(
-      height: 150.0,
-      child: Observer(
-        builder: (_) => ListView.separated(
-          separatorBuilder: (_, index) => SizedBox(
-            width: 10.0,
-          ),
-          shrinkWrap: false,
-          scrollDirection: Axis.horizontal,
-          itemCount: _store.media.length,
-          itemBuilder: (_, index) {
-            String dataType = _store.media[index].path
-                .split("/")
-                .reversed
-                .first
-                .split(".")
-                .reversed
-                .toList()[0];
-            if (dataType == "mp4" || dataType == "mov")
-              getThumbnail(_store.media[index].path, index);
-
-            return SizedBox(
-              width: 120.0,
-              child: Stack(
-                clipBehavior: Clip.none,
-                fit: StackFit.expand,
-                children: [
-                  // Media
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: Observer(
-                      builder: (_) => dataType == "jpeg" ||
-                              dataType == "png" ||
-                              dataType == "jpg"
-                          ? Image.memory(
-                              _store.media[index].readAsBytesSync(),
-                              fit: BoxFit.cover,
-                            )
-                          : Stack(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Color(0xFFE9EDF2),
-                                    ),
+                _store.chat!.chatModel.questChat?.questChatInfo?.status != 5
+                    ? InputToolbar(_store, profile!.userData!.id)
+                    : profile!.userData!.role == UserRole.Employer
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: LoginButton(
+                              title: "quests.addToQuest".tr(),
+                              onTap: () async {
+                                await _store.getCompanion(
+                                  profile!.userData!.id != id1 ? id1! : id2!,
+                                );
+                                await Navigator.of(context, rootNavigator: true)
+                                    .pushNamed(
+                                  ChooseQuest.routeName,
+                                  arguments: ChooseQuestArguments(
+                                    workerId: _store.companion!.id,
+                                    workerAddress:
+                                        _store.companion!.walletAddress!,
                                   ),
-                                  child: Center(
-                                    child: dataType == "mp4" ||
-                                            dataType == "mov"
-                                        ? Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              if (_store.filesPath[index] !=
-                                                  null)
-                                                Image.file(
-                                                  File(
-                                                    _store.filesPath[index]!,
-                                                  ),
-                                                ),
-                                              SvgPicture.asset(
-                                                'assets/play.svg',
-                                                color: Color(0xFFAAB0B9),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.1,
-                                              ),
-                                            ],
-                                          )
-                                        : SvgPicture.asset(
-                                            'assets/document.svg',
-                                            color: Color(0xFFAAB0B9),
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.1,
-                                          ),
-                                  ),
-                                ),
-                              ],
+                                );
+                              },
                             ),
+                          )
+                        : SizedBox(),
+                if (_store.progressImages.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      top: 16.0,
                     ),
-                  ),
-                  Positioned(
-                    top: -15.0,
-                    right: -15.0,
-                    child: IconButton(
-                      onPressed: () => !_store.isLoading
-                          ? _store.media.removeAt(index)
-                          : null,
-                      icon: Icon(Icons.cancel_outlined),
-                      color: Colors.black,
+                    child: Container(
+                      height: 250,
+                      child: ListMediaView(
+                        store: _store,
+                      ),
                     ),
+                    // _media(),
                   ),
-                ],
-              ),
-            );
-          },
+                const SizedBox(
+                  height: 16.0,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Future<void> getThumbnail(String pathVideo, int index) async {
-    final filePath = await VideoThumbnail.thumbnailFile(
-          video: pathVideo,
-          thumbnailPath: (await getTemporaryDirectory()).path,
-          imageFormat: ImageFormat.PNG,
-          quality: 100,
-        ) ??
-        "";
-    _store.addFilePath(index, filePath);
-  }
+  // Widget _media() {
+  //   return SizedBox(
+  //     height: 150.0,
+  //     child: Observer(
+  //       builder: (_) => ListView.separated(
+  //         separatorBuilder: (_, index) => SizedBox(
+  //           width: 10.0,
+  //         ),
+  //         shrinkWrap: false,
+  //         scrollDirection: Axis.horizontal,
+  //         itemCount: _store.media.length,
+  //         itemBuilder: (_, index) {
+  //           String dataType = _store.media[index].path
+  //               .split("/")
+  //               .reversed
+  //               .first
+  //               .split(".")
+  //               .reversed
+  //               .toList()[0];
+  //           if (dataType == "mp4" || dataType == "mov")
+  //             getThumbnail(_store.media[index].path, index);
+  //
+  //           return SizedBox(
+  //             width: 120.0,
+  //             child: Stack(
+  //               clipBehavior: Clip.none,
+  //               fit: StackFit.expand,
+  //               children: [
+  //                 // Media
+  //                 ClipRRect(
+  //                   borderRadius: BorderRadius.circular(10.0),
+  //                   child: Observer(
+  //                     builder: (_) => dataType == "jpeg" ||
+  //                             dataType == "png" ||
+  //                             dataType == "jpg"
+  //                         ? Image.memory(
+  //                             _store.media[index].readAsBytesSync(),
+  //                             fit: BoxFit.cover,
+  //                           )
+  //                         : Stack(
+  //                             children: [
+  //                               Container(
+  //                                 decoration: BoxDecoration(
+  //                                   border: Border.all(
+  //                                     color: Color(0xFFE9EDF2),
+  //                                   ),
+  //                                 ),
+  //                                 child: Center(
+  //                                   child: dataType == "mp4" ||
+  //                                           dataType == "mov"
+  //                                       ? Stack(
+  //                                           alignment: Alignment.center,
+  //                                           children: [
+  //                                             if (_store.filesPath[index] !=
+  //                                                 null)
+  //                                               Image.file(
+  //                                                 File(
+  //                                                   _store.filesPath[index]!,
+  //                                                 ),
+  //                                               ),
+  //                                             SvgPicture.asset(
+  //                                               'assets/play.svg',
+  //                                               color: Color(0xFFAAB0B9),
+  //                                               width: MediaQuery.of(context)
+  //                                                       .size
+  //                                                       .width *
+  //                                                   0.1,
+  //                                             ),
+  //                                           ],
+  //                                         )
+  //                                       : SvgPicture.asset(
+  //                                           'assets/document.svg',
+  //                                           color: Color(0xFFAAB0B9),
+  //                                           width: MediaQuery.of(context)
+  //                                                   .size
+  //                                                   .width *
+  //                                               0.1,
+  //                                         ),
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                   ),
+  //                 ),
+  //                 Positioned(
+  //                   top: -15.0,
+  //                   right: -15.0,
+  //                   child: IconButton(
+  //                     onPressed: () => !_store.isLoading
+  //                         ? _store.media.removeAt(index)
+  //                         : null,
+  //                     icon: Icon(Icons.cancel_outlined),
+  //                     color: Colors.black,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  // Future<void> getThumbnail(String pathVideo, int index) async {
+  //   final filePath = await VideoThumbnail.thumbnailFile(
+  //         video: pathVideo,
+  //         thumbnailPath: (await getTemporaryDirectory()).path,
+  //         imageFormat: ImageFormat.PNG,
+  //         quality: 100,
+  //       ) ??
+  //       "";
+  //   _store.addFilePath(index, filePath);
+  // }
 
   PreferredSizeWidget _selectedMessages() {
     return AppBar(
@@ -450,6 +444,39 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 itemBuilder: (BuildContext context) {
                   return {
                     "Leave from chat",
+                  }.map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(
+                        choice.tr(),
+                      ),
+                    );
+                  }).toList();
+                },
+              )
+            : const SizedBox(width: 16),
+        _store.chat!.chatModel.questChat!.questChatInfo?.quest?.openDispute !=
+                null
+            ? PopupMenuButton<String>(
+                elevation: 10,
+                icon: Icon(Icons.more_vert),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6.0),
+                ),
+                onSelected: (value) async {
+                  switch (value) {
+                    case "Add review to the arbiter":
+                      await Navigator.pushNamed(
+                        context,
+                        CreateReviewPage.routeName,
+                        arguments: ReviewArguments(null, null),
+                      );
+                      break;
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return {
+                    "Add review to the arbiter",
                   }.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,

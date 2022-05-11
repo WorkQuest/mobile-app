@@ -112,7 +112,6 @@ abstract class _SignInStore extends IStore<bool> with Store {
         return;
       }
       await Storage.writeRefreshToken(bearerToken.refresh);
-      await Storage.writeNotificationToken(bearerToken.access);
       await Storage.writeAccessToken(bearerToken.access);
       if (totp.isNotEmpty) if (!await _apiProvider.validateTotp(totp: totp)) {
         error = "Invalid TOTP";

@@ -1,3 +1,5 @@
+import 'package:app/model/quests_models/base_quest_response.dart';
+
 class QuestChat {
   QuestChat({
     required this.id,
@@ -7,7 +9,7 @@ class QuestChat {
     required this.responseId,
     required this.chatId,
     required this.status,
-    required this.quest,
+    required this.questChatInfo,
   });
 
   String? id;
@@ -17,7 +19,7 @@ class QuestChat {
   String? responseId;
   String? chatId;
   int? status;
-  QuestChatInfo? quest;
+  QuestChatInfo? questChatInfo;
 
   factory QuestChat.fromJson(Map<String, dynamic> json) => QuestChat(
         id: json["id"],
@@ -27,7 +29,7 @@ class QuestChat {
         responseId: json["responseId"],
         chatId: json["chatId"],
         status: json["status"],
-        quest: json["quest"] == null
+        questChatInfo: json["quest"] == null
             ? null
             : QuestChatInfo.fromJson(json["quest"]),
       );
@@ -40,28 +42,30 @@ class QuestChat {
         "responseId": responseId,
         "chatId": chatId,
         "status": status,
-        "quest": quest!.toJson(),
+        "quest": questChatInfo!.toJson(),
       };
 }
 
-class QuestChatInfo{
-  QuestChatInfo({
-    required this.id,
-    required this.status,
-  });
+class QuestChatInfo {
+  QuestChatInfo({required this.id, required this.status, required this.quest});
 
   String? id;
   int? status;
+  BaseQuestResponse? quest;
 
   factory QuestChatInfo.fromJson(Map<String, dynamic> json) => QuestChatInfo(
-    id: json["id"],
-    status: json["status"],
-  );
+        id: json["id"],
+        status: json["status"],
+        quest: json["quest"] == null
+            ? null
+            : BaseQuestResponse.fromJson(
+                json["quest"],
+              ),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "status": status,
-  };
+        "id": id,
+        "status": status,
+        "quest": quest,
+      };
 }
-
-

@@ -184,7 +184,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   await Navigator.pushNamed(
                     context,
                     CreateReviewPage.routeName,
-                    arguments: storeQuest.questInfo,
+                    arguments: ReviewArguments(
+                      widget.questInfo,
+                      null,
+                    ),
                   );
                   widget.questInfo.yourReview != null
                       ? profile!.review = true

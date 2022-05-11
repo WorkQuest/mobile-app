@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/info_message.dart';
@@ -14,6 +12,7 @@ import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/http/chat_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
 
 part 'chat_room_store.g.dart';
 
@@ -23,7 +22,7 @@ class ChatRoomStore extends _ChatRoomStore with _$ChatRoomStore {
       : super(apiProvider, chats);
 }
 
-abstract class _ChatRoomStore extends IStore<bool> with Store {
+abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
   final ApiProvider _apiProvider;
   final ChatStore chats;
 
@@ -36,8 +35,8 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
 
   String idGroupChat = "";
 
-  @observable
-  ObservableMap<int, String> filesPath = ObservableMap.of({});
+  // @observable
+  // ObservableMap<int, String> filesPath = ObservableMap.of({});
 
   final _atomMessages = Atom(name: '_ChatRoomStore.uncheck');
 
@@ -45,6 +44,9 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
 
   @observable
   String chatName = "";
+
+  @observable
+  bool sendingMessage = false;
 
   @observable
   ObservableMap<String, bool> idMessagesForStar = ObservableMap.of({});
@@ -97,8 +99,8 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   @observable
   ObservableList<MessageModel> starredMessage = ObservableList.of([]);
 
-  @observable
-  ObservableList<File> media = ObservableList.of([]);
+  // @observable
+  // ObservableList<File> media = ObservableList.of([]);
 
   @observable
   int pageNumber = 0;
@@ -113,7 +115,10 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   void changePageNumber(int value) => pageNumber = value;
 
   @action
-  void addFilePath(int index, String path) => filesPath[index] = path;
+  void setSendingMessage(bool value) => sendingMessage = value;
+
+  // @action
+  // void addFilePath(int index, String path) => filesPath[index] = path;
 
   @action
   void setMessageSelected(bool value) => messageSelected = value;
@@ -481,14 +486,16 @@ abstract class _ChatRoomStore extends IStore<bool> with Store {
   }
 
   Future sendMessage(String text, String chatId, String userId) async {
-    this.onLoading();
+    setSendingMessage(true);
+    await sendImages(_apiProvider);
     WebSocket().sendMessage(
       chatId: chatId,
       text: text,
-      medias: await _apiProvider.uploadMedia(medias: media),
+      medias: medias.map((media) => media.id).toList(),
     );
-    media.clear();
-    this.onSuccess(true);
+    progressImages.clear();
+    // media.clear();
+    setSendingMessage(false);
     _atomSendMessage.reportChanged();
   }
 }
