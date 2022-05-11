@@ -23,8 +23,8 @@ const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 final String coinsPath = "assets/coins";
 List<_CoinItem> _coins = [
-  _CoinItem("$coinsPath/wusd.svg", 'WUSD', TYPE_COINS.WUSD, true),
   _CoinItem("$coinsPath/wqt.svg", 'WQT', TYPE_COINS.WQT, true),
+  _CoinItem("$coinsPath/wusd.svg", 'WUSD', TYPE_COINS.WUSD, true),
   _CoinItem("$coinsPath/wbnb.svg", 'wBNB', TYPE_COINS.wBNB, true),
   _CoinItem("$coinsPath/weth.svg", 'wETH', TYPE_COINS.wETH, true),
 ];

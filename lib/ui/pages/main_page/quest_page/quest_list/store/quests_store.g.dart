@@ -17,6 +17,21 @@ mixin _$QuestsStore on _QuestsStore, Store {
               name: '_QuestsStore.emptySearch'))
           .value;
 
+  final _$isLoadingMoreAtom = Atom(name: '_QuestsStore.isLoadingMore');
+
+  @override
+  bool get isLoadingMore {
+    _$isLoadingMoreAtom.reportRead();
+    return super.isLoadingMore;
+  }
+
+  @override
+  set isLoadingMore(bool value) {
+    _$isLoadingMoreAtom.reportWrite(value, super.isLoadingMore, () {
+      super.isLoadingMore = value;
+    });
+  }
+
   final _$searchWordAtom = Atom(name: '_QuestsStore.searchWord');
 
   @override
@@ -342,6 +357,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
   @override
   String toString() {
     return '''
+isLoadingMore: ${isLoadingMore},
 searchWord: ${searchWord},
 sort: ${sort},
 fromPrice: ${fromPrice},

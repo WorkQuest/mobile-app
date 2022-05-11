@@ -277,7 +277,7 @@ class _QuestListState extends State<QuestList> {
           ),
           SliverToBoxAdapter(
             child: Observer(
-              builder: (_) => questsStore!.isLoading
+              builder: (_) => (questsStore!.isLoading || questsStore!.isLoadingMore)
                   ? Center(
                       child: CircularProgressIndicator.adaptive(),
                     )

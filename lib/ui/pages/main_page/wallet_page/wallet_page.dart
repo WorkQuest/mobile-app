@@ -33,6 +33,7 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
+  ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,6 +66,7 @@ class _WalletPageState extends State<WalletPage> {
   Widget layout() {
     final address = AccountRepository().userAddress ?? '1234567890';
     return CustomScrollView(
+      controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         CupertinoSliverNavigationBar(
@@ -183,7 +185,9 @@ class _WalletPageState extends State<WalletPage> {
         ),
         SliverPadding(
           padding: _padding,
-          sliver: const ListTransactions(),
+          sliver: ListTransactions(
+            scrollController: _scrollController,
+          ),
         ),
       ],
     );

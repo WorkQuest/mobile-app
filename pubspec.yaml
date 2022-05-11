@@ -55,6 +55,7 @@ dependencies:
   maps_launcher: ^2.0.1
   google_maps_cluster_manager: ^3.0.0+1
   flutter_cache_manager: ^3.3.0
+  expandable: ^5.0.1
 
   permission_handler: ^8.1.4
   flutter_secure_storage: ^4.2.0

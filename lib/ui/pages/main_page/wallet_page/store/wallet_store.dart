@@ -29,6 +29,12 @@ abstract class _WalletStore extends IStore<bool> with Store {
   @observable
   ObservableList<BalanceItem> coins = ObservableList.of([]);
 
+  @observable
+  bool isLoadingTest = false;
+
+  @observable
+  String errorTest = '';
+
   @action
   getCoins({bool isForce = true}) async {
     if (isForce) {
@@ -36,33 +42,41 @@ abstract class _WalletStore extends IStore<bool> with Store {
     }
     try {
       final list =
-          await ClientService().getAllBalance(AccountRepository().privateKey);
+      await ClientService().getAllBalance(AccountRepository().privateKey);
       print(list);
-      final ether = list.firstWhere((element) => element.title == 'ether');
-      print('address: ${AccountRepository().userAddresses!.first.address!}');
-      final wqt = await ClientService()
-          .getBalanceFromContract(AddressCoins.wqt);
-      final wEth = await ClientService()
-          .getBalanceFromContract(AddressCoins.wEth);
-      final wBnb = await ClientService()
-          .getBalanceFromContract(AddressCoins.wBnb);
-      print('wqt: $wqt');
-      print('wEth: $wEth');
-      print('wBnb: $wBnb');
+      final wqt = list.firstWhere((element) => element.title == 'ether');
+      final wUsd =
+      await ClientService().getBalanceFromContract(AddressCoins.wUsd);
+      final wEth =
+      await ClientService().getBalanceFromContract(AddressCoins.wEth);
+      final wBnb =
+      await ClientService().getBalanceFromContract(AddressCoins.wBnb);
       if (coins.isNotEmpty) {
-        coins[0].amount = ether.amount;
-        coins[1].amount = wqt.toString();
-        coins[2].amount = wBnb.toString();
-        coins[3].amount =  wEth.toString();
+        coins[0] = BalanceItem(
+          "WQT",
+          wqt.amount,
+        );
+        coins[1] = BalanceItem(
+          "WUSD",
+          wUsd.toString(),
+        );
+        coins[2] = BalanceItem(
+          "wBNB",
+          wBnb.toString(),
+        );
+        coins[3] = BalanceItem(
+          "wETH",
+          wEth.toString(),
+        );
       } else {
         coins.addAll([
           BalanceItem(
-            "WUSD",
-            ether.amount,
+            "WQT",
+            wqt.amount,
           ),
           BalanceItem(
-            "WQT",
-            wqt.toString(),
+            "WUSD",
+            wUsd.toString(),
           ),
           BalanceItem(
             "wBNB",
@@ -83,4 +97,29 @@ abstract class _WalletStore extends IStore<bool> with Store {
     }
   }
 
+  // @action
+  // getTestCoinsWUSD() async {
+  //   errorTest = '';
+  //   try {
+  //     isLoadingTest = true;
+  //     // await Future.delayed(const Duration(seconds: 2));
+  //     await _apiProvider.getTestCoinsWUSD();
+  //   } catch (e) {
+  //     errorTest = e.toString();
+  //   }
+  //   isLoadingTest = false;
+  // }
+  //
+  // @action
+  // getTestCoinsWQT() async {
+  //   errorTest = '';
+  //   try {
+  //     isLoadingTest = true;
+  //     // await Future.delayed(const Duration(seconds: 2));
+  //     await _apiProvider.getTestCoinsWQT();
+  //   } catch (e) {
+  //     errorTest = e.toString();
+  //   }
+  //   isLoadingTest = false;
+  // }
 }
