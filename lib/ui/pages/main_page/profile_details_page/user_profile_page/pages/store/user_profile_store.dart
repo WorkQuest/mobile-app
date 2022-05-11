@@ -94,12 +94,13 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
     required bool isProfileYours,
   }) async {
     try {
+      // await Future.delayed(const Duration(seconds: 1));
+      this.onLoading();
       if (newList) {
         quests.clear();
         offset = 0;
       }
       if (offset == quests.length) {
-        this.onLoading();
         if (role == UserRole.Employer) {
           quests.addAll(await _apiProvider.getEmployerQuests(
             offset: offset,

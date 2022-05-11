@@ -42,10 +42,13 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
           builder: (_) => ElevatedButton(
             onPressed: store.isButtonEnable()
                 ? () async {
-                    await store.openDispute(widget.quest.id, widget.quest.contractAddress!);
+                    await store.openDispute(
+                      widget.quest.id,
+                      widget.quest.contractAddress!,
+                    );
                     if (store.isSuccess) {
                       await AlertDialogUtils.showSuccessDialog(context);
-                      widget.quest.status = 3;
+                      widget.quest.status = -2;
                       Navigator.pop(context);
                       Navigator.pop(context);
                     }

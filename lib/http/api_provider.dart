@@ -512,17 +512,17 @@ extension QuestService on ApiProvider {
     }
   }
 
-  Future<bool> rejectOnQuest({
-    required String questId,
-  }) async {
-    try {
-      final responseData =
-          await httpClient.post(query: '/v1/quest/$questId/reject-work');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
-  }
+  // Future<bool> rejectOnQuest({
+  //   required String questId,
+  // }) async {
+  //   try {
+  //     final responseData =
+  //         await httpClient.post(query: '/v1/quest/$questId/reject-work');
+  //     return responseData == null;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   Future<bool> rejectInvite({
     required String responseId,
@@ -582,8 +582,8 @@ extension Notification on ApiProvider {
     try {
       final responseData = await httpClient.get(
         query: 'https://notifications.workquest.co/api/notifications?',
-            // 'exclude[]=dao&exclude[]=bridge&exclude[]=proposal&'
-            // 'exclude[]=referral&exclude[]=pensionFund&exclude[]=dailyLiquidity',
+        // 'exclude[]=dao&exclude[]=bridge&exclude[]=proposal&'
+        // 'exclude[]=referral&exclude[]=pensionFund&exclude[]=dailyLiquidity',
         queryParameters: {
           "offset": offset,
           // "exclude": [
@@ -855,15 +855,62 @@ extension SMSVerification on ApiProvider {
 
 ///Media Upload
 extension GetUploadLink on ApiProvider {
-
   Future<Media> uploadMediaWithProgress({
     required File media,
     ValueNotifier<LoadImageState>? notifier,
   }) async {
+    TypeMedia? typeMedia;
+    String contentType = "";
+    final type = media.path
+        .split("/")
+        .reversed
+        .first
+        .split(".")
+        .reversed
+        .toList()[0]
+        .toLowerCase();
+    switch (type) {
+      case "mp4":
+        contentType = "video/mp4";
+        typeMedia = TypeMedia.Video;
+        break;
+      case "mov":
+        contentType = "video/mp4";
+        typeMedia = TypeMedia.Video;
+        break;
+      case "jpeg":
+        contentType = "image/jpeg";
+        typeMedia = TypeMedia.Image;
+        break;
+      case "webp":
+        contentType = "image/jpeg";
+        typeMedia = TypeMedia.Image;
+        break;
+      case "jpg":
+        contentType = "image/jpeg";
+        typeMedia = TypeMedia.Image;
+        break;
+      case "png":
+        contentType = "image/png";
+        typeMedia = TypeMedia.Image;
+        break;
+      case "pdf":
+        contentType = "application/pdf";
+        typeMedia = TypeMedia.Pdf;
+        break;
+      case "doc":
+        contentType = "application/msword";
+        typeMedia = TypeMedia.Doc;
+        break;
+      case "docx":
+        contentType = "application/msword";
+        typeMedia = TypeMedia.Doc;
+        break;
+    }
     final response = await httpClient.post(
       query: '/v1/storage/get-upload-link',
       data: {
-        "contentType": 'image/png',
+        "contentType": '$contentType',
       },
     );
 
@@ -876,7 +923,7 @@ extension GetUploadLink on ApiProvider {
       data: MultipartFile.fromBytes(bytes).finalize(),
       options: Options(
         headers: {
-          'Content-Type': 'image/png',
+          'Content-Type': '$contentType',
           "x-amz-acl": " public-read",
           'Connection': 'keep-alive',
           'Content-Length': bytes.length,
@@ -895,7 +942,7 @@ extension GetUploadLink on ApiProvider {
         }
       },
     );
-    if (notifier != null ) {
+    if (notifier != null) {
       notifier.value = notifier.value.clone(
         processLoading: 1.0,
         state: StateImage.success,
@@ -905,7 +952,7 @@ extension GetUploadLink on ApiProvider {
     return Media(
       id: response['mediaId'],
       url: response['url'],
-      type: TypeMedia.Image,
+      type: typeMedia!,
     );
   }
 

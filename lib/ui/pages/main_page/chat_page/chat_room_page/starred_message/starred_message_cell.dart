@@ -2,6 +2,8 @@ import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../../../../widgets/image_viewer_widget.dart';
 
@@ -23,6 +25,15 @@ class StarredMessageCell extends StatefulWidget {
 }
 
 class _StarredMessageCellState extends State<StarredMessageCell> {
+  List<String> pathList = [];
+  bool loading = false;
+
+  @override
+  void initState() {
+    getThumbnail();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -99,6 +110,8 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
                     widget.message.senderUserId != widget.userId
                         ? Color(0xFFFFFFFF)
                         : Color(0xFF1D2127),
+                    pathList,
+                      loading,
                   ),
                 ),
               Row(
@@ -122,5 +135,22 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
         ),
       ],
     );
+  }
+
+  Future<void> getThumbnail() async {
+    String filePath = "";
+    loading = true;
+    for (int i = 0; i < widget.message.medias.length; i++) {
+      filePath = await VideoThumbnail.thumbnailFile(
+            video: widget.message.medias[i].url,
+            thumbnailPath: (await getTemporaryDirectory()).path,
+            imageFormat: ImageFormat.PNG,
+            quality: 100,
+          ) ??
+          "";
+      pathList.add(filePath);
+    }
+    loading = false;
+    setState(() {});
   }
 }

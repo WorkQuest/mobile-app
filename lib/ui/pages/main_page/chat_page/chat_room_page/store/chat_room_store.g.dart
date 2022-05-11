@@ -31,6 +31,21 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
+  final _$sendingMessageAtom = Atom(name: '_ChatRoomStore.sendingMessage');
+
+  @override
+  bool get sendingMessage {
+    _$sendingMessageAtom.reportRead();
+    return super.sendingMessage;
+  }
+
+  @override
+  set sendingMessage(bool value) {
+    _$sendingMessageAtom.reportWrite(value, super.sendingMessage, () {
+      super.sendingMessage = value;
+    });
+  }
+
   final _$idMessagesForStarAtom =
       Atom(name: '_ChatRoomStore.idMessagesForStar');
 
@@ -272,21 +287,6 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
-  final _$mediaAtom = Atom(name: '_ChatRoomStore.media');
-
-  @override
-  ObservableList<File> get media {
-    _$mediaAtom.reportRead();
-    return super.media;
-  }
-
-  @override
-  set media(ObservableList<File> value) {
-    _$mediaAtom.reportWrite(value, super.media, () {
-      super.media = value;
-    });
-  }
-
   final _$pageNumberAtom = Atom(name: '_ChatRoomStore.pageNumber');
 
   @override
@@ -418,6 +418,17 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   }
 
   @override
+  void setSendingMessage(bool value) {
+    final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
+        name: '_ChatRoomStore.setSendingMessage');
+    try {
+      return super.setSendingMessage(value);
+    } finally {
+      _$_ChatRoomStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setMessageSelected(bool value) {
     final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
         name: '_ChatRoomStore.setMessageSelected');
@@ -531,6 +542,7 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   String toString() {
     return '''
 chatName: ${chatName},
+sendingMessage: ${sendingMessage},
 idMessagesForStar: ${idMessagesForStar},
 idMessages: ${idMessages},
 index: ${index},
@@ -546,7 +558,6 @@ availableUsers: ${availableUsers},
 foundUsers: ${foundUsers},
 selectedUsers: ${selectedUsers},
 starredMessage: ${starredMessage},
-media: ${media},
 pageNumber: ${pageNumber},
 star: ${star},
 mapOfPath: ${mapOfPath},

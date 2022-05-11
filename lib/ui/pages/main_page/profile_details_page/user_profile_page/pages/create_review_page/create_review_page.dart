@@ -12,9 +12,9 @@ import "package:provider/provider.dart";
 class CreateReviewPage extends StatefulWidget {
   static const String routeName = '/createReviewPage';
 
-  final BaseQuestResponse quest;
+  final ReviewArguments arguments;
 
-  const CreateReviewPage({required this.quest});
+  const CreateReviewPage(this.arguments);
 
   @override
   _CreateReviewPageState createState() => _CreateReviewPageState();
@@ -102,19 +102,21 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () async{
+                      onPressed: () async {
                         if (_formKey.currentState?.validate() ?? false) {
-                          await store.addReview(widget.quest.id);
-                          widget.quest.yourReview = YourReview(
-                            id: "",
-                            questId: widget.quest.id,
-                            fromUserId: "",
-                            toUserId: "",
-                            message: store.message,
-                            mark: store.mark,
-                            createdAt: DateTime.now(),
-                            updatedAt: DateTime.now(),
-                          );
+                          if (widget.arguments.quest != null) {
+                            await store.addReview(widget.arguments.quest!.id);
+                            widget.arguments.quest!.yourReview = YourReview(
+                              id: "",
+                              questId: widget.arguments.quest!.id,
+                              fromUserId: "",
+                              toUserId: "",
+                              message: store.message,
+                              mark: store.mark,
+                              createdAt: DateTime.now(),
+                              updatedAt: DateTime.now(),
+                            );
+                          } else {}
                           Navigator.pop(context);
                           await AlertDialogUtils.showSuccessDialog(context);
                         }
@@ -132,4 +134,11 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
       ),
     );
   }
+}
+
+class ReviewArguments {
+  ReviewArguments(this.quest, this.disputeId);
+
+  BaseQuestResponse? quest;
+  String? disputeId;
 }
