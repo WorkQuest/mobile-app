@@ -2,6 +2,7 @@ import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/notifications.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/notification_page/store/notification_store.dart';
@@ -83,38 +84,49 @@ class _NotificationPageState extends State<NotificationPage> {
                           separatorBuilder: (context, index) => Divider(
                             thickness: 1,
                           ),
-                          itemBuilder: (context, index) => _NotificationView(
-                            body: store.listOfNotifications[index],
-                            onTap: () async {
-                              final body = store.listOfNotifications[index];
-                              await Navigator.of(context, rootNavigator: true)
-                                  .pushNamed(
-                                UserProfile.routeName,
-                                arguments: body.notification.data.user.id !=
-                                        profileMeStore.userData!.id
-                                    ? ProfileArguments(
-                                        //TODO: FIX ROLE
-                                        role: UserRole.Worker,
-                                        userId: body.notification.data.user.id,
-                                      )
-                                    : null,
-                              );
-                              chatStore.userData = null;
-                            },
-                            onTabOk: () => store.deleteNotification(
-                                store.listOfNotifications[index].id),
-                            onTapPushQuest: () async {
-                              await store.getQuest(store
-                                  .listOfNotifications[index]
-                                  .notification
-                                  .data
-                                  .id);
-                              await Navigator.of(context, rootNavigator: true)
-                                  .pushNamed(
-                                QuestDetails.routeName,
-                                arguments: store.quest,
-                              );
-                            },
+                          itemBuilder: (context, index) => Column(
+                            children: [
+                              _NotificationView(
+                                body: store.listOfNotifications[index],
+                                onTap: () async {
+                                  final body = store.listOfNotifications[index];
+                                  await Navigator.of(context,
+                                          rootNavigator: true)
+                                      .pushNamed(
+                                    UserProfile.routeName,
+                                    arguments: body.notification.data.user.id !=
+                                            profileMeStore.userData!.id
+                                        ? ProfileArguments(
+                                            //TODO: FIX ROLE
+                                            role: UserRole.Worker,
+                                            userId:
+                                                body.notification.data.user.id,
+                                          )
+                                        : null,
+                                  );
+                                  chatStore.userData = null;
+                                },
+                                onTabOk: () => store.deleteNotification(
+                                    store.listOfNotifications[index].id),
+                                onTapPushQuest: () async {
+                                  await store.getQuest(store
+                                      .listOfNotifications[index]
+                                      .notification
+                                      .data
+                                      .id);
+                                  await Navigator.of(context,
+                                          rootNavigator: true)
+                                      .pushNamed(
+                                    QuestDetails.routeName,
+                                    arguments: store.quest,
+                                  );
+                                },
+                              ),
+                              if (index == store.listOfNotifications.length - 1)
+                                Divider(
+                                  thickness: 1,
+                                ),
+                            ],
                           ),
                         );
                       },
@@ -156,30 +168,45 @@ class _NotificationView extends StatelessWidget {
         children: [
           Column(
             children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: () {
-                    AlertDialogUtils.showAlertDialog(
-                      context,
-                      title: Text("Are you sure?"),
-                      content: Text(
-                        "Do you really want to delete this notification?",
-                      ),
-                      needCancel: true,
-                      titleCancel: "Cancel",
-                      titleOk: "Ok",
-                      onTabCancel: null,
-                      onTabOk: onTabOk,
-                      colorCancel: AppColor.enabledButton,
-                      colorOk: Colors.red,
-                    );
-                  },
-                  icon: Icon(
-                    Icons.close,
-                    color: Colors.black,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //TODO: FIND CONDITION
+                  body.notification.action == "Add review"
+                      ? TextButton(
+                          onPressed: () async {
+                            await Navigator.pushNamed(
+                              context,
+                              CreateReviewPage.routeName,
+                              arguments: ReviewArguments(null, "dispute id"),
+                            );
+                          },
+                          child: Text("Add review to the arbiter"),
+                        )
+                      : const SizedBox(),
+                  IconButton(
+                    onPressed: () {
+                      AlertDialogUtils.showAlertDialog(
+                        context,
+                        title: Text("Are you sure?"),
+                        content: Text(
+                          "Do you really want to delete this notification?",
+                        ),
+                        needCancel: true,
+                        titleCancel: "Cancel",
+                        titleOk: "Ok",
+                        onTabCancel: null,
+                        onTabOk: onTabOk,
+                        colorCancel: AppColor.enabledButton,
+                        colorOk: Colors.red,
+                      );
+                    },
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
+                ],
               ),
               GestureDetector(
                 onTap: onTap,

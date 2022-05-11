@@ -469,7 +469,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       await Navigator.pushNamed(
                         context,
                         CreateReviewPage.routeName,
-                        arguments: ReviewArguments(null, null),
+                        arguments: ReviewArguments(null, "dispute id"),
                       );
                       break;
                   }
