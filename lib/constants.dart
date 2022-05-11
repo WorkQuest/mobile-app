@@ -48,9 +48,9 @@ abstract class AppColor {
 }
 
 class AddressCoins {
-  static const wUsd = '0x917dc1a9e858deb0a5bdcb44c7601f655f728dfe';
-  static const wEth = '0x34808eb7d2bf0b935bdefb20ff77aa77d59f7cc3';
-  static const wBnb = '0x631e327ea88c37d4238b5c559a715332266e7ec1';
+  static const wUsd = '0x0ed13a696fa29151f3064077acb2a281e68df2aa';
+  static const wEth = '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24';
+  static const wBnb = '0x75349c3f2c3cfd94488a71a350ba841c14309c5b';
 }
 
 class WorkerBadge {
