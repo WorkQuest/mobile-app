@@ -336,7 +336,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       }
       if (offsetWorkers == workersList.length) {
         workersList.addAll(await _apiProvider.getWorkers(
-          searchWord: searchWord,
+          // searchWord: searchWord,
           sort: this.sort,
           price: getFilterPrice(isWorker: true),
           offset: this.offsetWorkers,
