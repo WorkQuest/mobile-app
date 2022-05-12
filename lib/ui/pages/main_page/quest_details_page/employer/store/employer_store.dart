@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
@@ -36,6 +39,8 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   @observable
   String totp = "";
 
+  String fee = "";
+
   Observable<BaseQuestResponse?> quest = Observable(null);
 
   @action
@@ -69,6 +74,15 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       quest.value = changedQuest;
       _getQuest();
       getRespondedList(changedQuest.id, changedQuest.assignedWorker?.id ?? "");
+    }
+  }
+
+  Future<void> getFee() async {
+    try {
+      final gas = await ClientService().getGas();
+      fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
+    } on SocketException catch (_) {
+      onError("Lost connection to server");
     }
   }
 

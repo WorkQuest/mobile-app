@@ -448,7 +448,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                           address: contractAddress,
                                           amount: transferStore.amount,
                                           onPress: () async {
-                                            store.createQuest();
+                                            await store.createQuest();
                                             Navigator.pop(context);
                                           },
                                         );

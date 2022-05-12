@@ -15,7 +15,7 @@ Future confirmTransaction(
   BuildContext context, {
   required String transaction,
   required String address,
-  required String amount,
+  required String? amount,
   required String fee,
   required void Function()? onPress,
 }) =>
@@ -75,7 +75,7 @@ Future confirmTransaction(
 Widget content({
   required String transaction,
   required String address,
-  required String amount,
+  required String? amount,
   required String fee,
 }) =>
     Container(
@@ -104,10 +104,11 @@ Widget content({
             "modals.amount".tr(),
             style: titleTextStyle,
           ),
-          Text(
-            "$amount WUSD",
-            style: valueTextStyle,
-          ),
+          if (amount != null)
+            Text(
+              "$amount WUSD",
+              style: valueTextStyle,
+            ),
           const SizedBox(
             height: 10.0,
           ),

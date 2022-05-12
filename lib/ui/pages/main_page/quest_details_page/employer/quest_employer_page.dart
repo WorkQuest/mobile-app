@@ -9,6 +9,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
+import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
@@ -335,26 +336,41 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           onPressed: store.selectedResponders == null
                               ? null
                               : () async {
-                                  await store.startQuest(
-                                    userId: store.selectedResponders!.workerId,
-                                    questId: store.quest.value!.id,
+                                  await store.getFee();
+                                  confirmTransaction(
+                                    context,
+                                    fee: store.fee,
+                                    transaction: "Transaction info",
+                                    address:
+                                        store.quest.value!.contractAddress!,
+                                    amount: null,
+                                    onPress: () async {
+                                      await store.startQuest(
+                                        userId:
+                                            store.selectedResponders!.workerId,
+                                        questId: store.quest.value!.id,
+                                      );
+                                    },
                                   );
-                                  store.quest.value!.assignedWorker =
-                                      AssignedWorker(
-                                    firstName: store
-                                        .selectedResponders!.worker.firstName,
-                                    lastName: store
-                                        .selectedResponders!.worker.lastName,
-                                    avatar:
-                                        store.selectedResponders!.worker.avatar,
-                                    id: store.selectedResponders!.id,
-                                  );
-                                  store.setQuestStatus(2);
-                                  questStore.deleteQuest(store.quest.value!.id);
-                                  questStore.addQuest(
-                                      store.quest.value!, false);
-                                  await AlertDialogUtils.showSuccessDialog(
-                                      context);
+                                  if (store.isSuccess) {
+                                    store.quest.value!.assignedWorker =
+                                        AssignedWorker(
+                                      firstName: store
+                                          .selectedResponders!.worker.firstName,
+                                      lastName: store
+                                          .selectedResponders!.worker.lastName,
+                                      avatar: store
+                                          .selectedResponders!.worker.avatar,
+                                      id: store.selectedResponders!.id,
+                                    );
+                                    store.setQuestStatus(2);
+                                    questStore
+                                        .deleteQuest(store.quest.value!.id);
+                                    questStore.addQuest(
+                                        store.quest.value!, false);
+                                    await AlertDialogUtils.showSuccessDialog(
+                                        context);
+                                  }
                                 },
                           child: Text(
                             "quests.chooseWorker".tr(),
@@ -439,13 +455,27 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   const SizedBox(height: 15),
                   TextButton(
                     onPressed: () async {
-                      store.acceptCompletedWork(questId: store.quest.value!.id);
-                      store.setQuestStatus(5);
-                      questStore.deleteQuest(store.quest.value!.id);
-                      questStore.addQuest(store.quest.value!, false);
-                      chatStore.loadChats(true, false);
-                      Navigator.pop(context);
-                      await AlertDialogUtils.showSuccessDialog(context);
+                      await store.getFee();
+                      confirmTransaction(
+                        context,
+                        fee: store.fee,
+                        transaction: "Transaction info",
+                        address: store.quest.value!.contractAddress!,
+                        amount: null,
+                        onPress: () async {
+                          await store.acceptCompletedWork(
+                            questId: store.quest.value!.id,
+                          );
+                        },
+                      );
+                      if (store.isSuccess) {
+                        store.setQuestStatus(5);
+                        questStore.deleteQuest(store.quest.value!.id);
+                        questStore.addQuest(store.quest.value!, false);
+                        chatStore.loadChats(true, false);
+                        Navigator.pop(context);
+                        await AlertDialogUtils.showSuccessDialog(context);
+                      }
                     },
                     child: Text(
                       "quests.answerOnQuest.acceptCompleted".tr(),

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
@@ -27,11 +28,22 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   @observable
   bool response = false;
 
+  String fee = "";
+
   @observable
   ObservableList<File> mediaFile = ObservableList();
 
   @observable
   ObservableList<Media> mediaIds = ObservableList();
+
+  Future<void> getFee() async {
+    try {
+      final gas = await ClientService().getGas();
+      fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
+    } on SocketException catch (_) {
+      onError("Lost connection to server");
+    }
+  }
 
   @action
   void setOpinion(String value) => opinion = value;
