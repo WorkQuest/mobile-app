@@ -374,7 +374,8 @@ class Routes {
             create: (context) => getIt.get<UserProfileStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ChooseQuest(arguments: settings.arguments as ChooseQuestArguments),
+              child: ChooseQuest(
+                  arguments: settings.arguments as ChooseQuestArguments),
             ),
           ),
         );
@@ -665,8 +666,15 @@ class Routes {
 
       case CreateGroupPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<ChatRoomStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<ChatRoomStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChatStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: CreateGroupPage(

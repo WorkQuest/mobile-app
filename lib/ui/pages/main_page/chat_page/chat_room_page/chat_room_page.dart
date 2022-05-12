@@ -455,7 +455,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 },
               )
             : const SizedBox(width: 16),
-        _store.chat!.chatModel.questChat!.questChatInfo?.quest?.openDispute !=
+        _store.chat!.chatModel.questChat?.questChatInfo?.quest?.openDispute !=
                 null
             ? PopupMenuButton<String>(
                 elevation: 10,

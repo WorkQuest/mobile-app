@@ -40,7 +40,7 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
   }
 
   final _$canMoreLoadingAtom =
-  Atom(name: 'TransactionsStoreBase.canMoreLoading');
+      Atom(name: 'TransactionsStoreBase.canMoreLoading');
 
   @override
   bool get canMoreLoading {
@@ -71,7 +71,7 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
   }
 
   final _$getTransactionsAsyncAction =
-  AsyncAction('TransactionsStoreBase.getTransactions');
+      AsyncAction('TransactionsStoreBase.getTransactions');
 
   @override
   Future getTransactions({bool isForce = false}) {
@@ -80,7 +80,7 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
   }
 
   final _$getTransactionsMoreAsyncAction =
-  AsyncAction('TransactionsStoreBase.getTransactionsMore');
+      AsyncAction('TransactionsStoreBase.getTransactionsMore');
 
   @override
   Future getTransactionsMore() {
@@ -89,7 +89,7 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
   }
 
   final _$TransactionsStoreBaseActionController =
-  ActionController(name: 'TransactionsStoreBase');
+      ActionController(name: 'TransactionsStoreBase');
 
   @override
   dynamic setType(TYPE_COINS value) {

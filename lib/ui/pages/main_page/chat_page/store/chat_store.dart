@@ -142,9 +142,9 @@ abstract class _ChatStore extends IStore<bool> with Store {
   void setMessages(List<MessageModel> messages, ChatModel chat) {
     if (chats[chat.id] == null) chats[chat.id] = Chats(chat);
     chats[chat.id]!.messages = messages;
-    print(chats[chat.id]?.chatModel.lastMessage.infoMessage);
     chats[chat.id]!.update();
     _atomChats.reportChanged();
+    chatSort();
   }
 
   void addAllMessages(List<MessageModel> messages, String id) {

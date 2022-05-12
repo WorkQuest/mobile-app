@@ -1,6 +1,7 @@
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members/add_user_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/utils/alert_dialog.dart';
 
@@ -20,7 +21,8 @@ class CreateGroupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final store = context.read<ChatRoomStore>();
+    final chatRoomStore = context.read<ChatRoomStore>();
+    final chatStore = context.read<ChatStore>();
     return DismissKeyboard(
       child: Scaffold(
         appBar: AppBar(
@@ -44,10 +46,10 @@ class CreateGroupPage extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           child: Observer(
             builder: (_) => IndexedStack(
-              index: store.index,
+              index: chatRoomStore.index,
               children: [
-                addName(store, context),
-                addUser(store, context),
+                addName(chatRoomStore, chatStore, context),
+                addUser(chatRoomStore, chatStore, context),
               ],
             ),
           ),
@@ -56,7 +58,12 @@ class CreateGroupPage extends StatelessWidget {
     );
   }
 
-  Widget addName(ChatRoomStore store, BuildContext context) => Column(
+  Widget addName(
+    ChatRoomStore store,
+    ChatStore chatStore,
+    BuildContext context,
+  ) =>
+      Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -99,6 +106,7 @@ class CreateGroupPage extends StatelessWidget {
           _spacer,
           buttonRow(
             store,
+            chatStore,
             forward: "meta.next".tr(),
             back: "meta.cancel".tr(),
             context: context,
@@ -106,7 +114,12 @@ class CreateGroupPage extends StatelessWidget {
         ],
       );
 
-  Widget addUser(ChatRoomStore store, BuildContext context) => Column(
+  Widget addUser(
+    ChatRoomStore store,
+    ChatStore chatStore,
+    BuildContext context,
+  ) =>
+      Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -161,6 +174,7 @@ class CreateGroupPage extends StatelessWidget {
           ),
           buttonRow(
             store,
+            chatStore,
             forward: "profiler.create".tr(),
             back: "meta.back".tr(),
             context: context,
@@ -169,7 +183,8 @@ class CreateGroupPage extends StatelessWidget {
       );
 
   Widget buttonRow(
-    ChatRoomStore store, {
+    ChatRoomStore store,
+    ChatStore chatStore, {
     required String forward,
     required String back,
     required BuildContext context,
@@ -241,6 +256,7 @@ class CreateGroupPage extends StatelessWidget {
                         ? () async {
                             await store.createGroupChat();
                             if (store.isSuccess) {
+                              await chatStore.loadChats(true, false);
                               Navigator.of(context, rootNavigator: true)
                                   .pushReplacementNamed(ChatRoomPage.routeName,
                                       arguments: store.idGroupChat);
