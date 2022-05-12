@@ -262,20 +262,23 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          WorkplaceView(storeQuest.questInfo!.workplace),
-                          const SizedBox(width: 5),
-                          tagEmployment(),
-                          const SizedBox(width: 5),
-                          PriorityView(
-                            storeQuest.questInfo!.priority != 0
-                                ? storeQuest.questInfo!.priority - 1
-                                : 0,
-                            true,
-                          ),
-                        ],
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            WorkplaceView(storeQuest.questInfo!.workplace),
+                            const SizedBox(width: 5),
+                            tagEmployment(),
+                            const SizedBox(width: 5),
+                            PriorityView(
+                              storeQuest.questInfo!.priority != 0
+                                  ? storeQuest.questInfo!.priority - 1
+                                  : 0,
+                              true,
+                            ),
+                          ],
+                        ),
                       ),
                       getBody(),
                       const SizedBox(height: 20),

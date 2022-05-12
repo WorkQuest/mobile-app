@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:app/routes.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/start_page/start_page.dart';
@@ -15,6 +17,22 @@ class WorkQuestApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: _theme,
+      builder: (context, child) {
+        final mq = MediaQuery.of(context);
+        double fontScale;
+        if (window.textScaleFactor > 1.1) {
+          fontScale = 1.1;
+        } else if (window.textScaleFactor < 0.9) {
+          fontScale = 0.8;
+        } else {
+          fontScale = window.textScaleFactor;
+        }
+        print('fontScale: $fontScale');
+        return MediaQuery(
+          data: mq.copyWith(textScaleFactor: fontScale),
+          child: child!,
+        );
+      },
       debugShowCheckedModeBanner: false,
       onGenerateRoute: Routes.generateRoute,
       initialRoute: isToken ? PinCodePage.routeName : StartPage.routeName,
