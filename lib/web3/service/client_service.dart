@@ -136,7 +136,7 @@ class ClientService implements ClientServiceI {
           EthereumAddress.fromHex(AccountRepository().userAddresses!.first.address!));
       return balance.toDouble() * pow(10, -18);
     } catch (e, trace) {
-      print('e: $e, trace: $trace');
+      print('getBalanceFromContract | e: $e, trace: $trace');
       return 0;
     }
   }
