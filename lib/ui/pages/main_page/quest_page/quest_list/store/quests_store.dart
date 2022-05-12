@@ -301,7 +301,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       }
       if (this.offset == questsList.length) {
         questsList.addAll(await _apiProvider.getQuests(
-          searchWord: searchWord,
+          // searchWord: searchWord,
           price: getFilterPrice(),
           statuses: [-2, 1, 2, 3, 4, 5],
           employment: employments,
