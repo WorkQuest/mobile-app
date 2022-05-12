@@ -171,121 +171,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     );
   }
 
-  // Widget _media() {
-  //   return SizedBox(
-  //     height: 150.0,
-  //     child: Observer(
-  //       builder: (_) => ListView.separated(
-  //         separatorBuilder: (_, index) => SizedBox(
-  //           width: 10.0,
-  //         ),
-  //         shrinkWrap: false,
-  //         scrollDirection: Axis.horizontal,
-  //         itemCount: _store.media.length,
-  //         itemBuilder: (_, index) {
-  //           String dataType = _store.media[index].path
-  //               .split("/")
-  //               .reversed
-  //               .first
-  //               .split(".")
-  //               .reversed
-  //               .toList()[0];
-  //           if (dataType == "mp4" || dataType == "mov")
-  //             getThumbnail(_store.media[index].path, index);
-  //
-  //           return SizedBox(
-  //             width: 120.0,
-  //             child: Stack(
-  //               clipBehavior: Clip.none,
-  //               fit: StackFit.expand,
-  //               children: [
-  //                 // Media
-  //                 ClipRRect(
-  //                   borderRadius: BorderRadius.circular(10.0),
-  //                   child: Observer(
-  //                     builder: (_) => dataType == "jpeg" ||
-  //                             dataType == "png" ||
-  //                             dataType == "jpg"
-  //                         ? Image.memory(
-  //                             _store.media[index].readAsBytesSync(),
-  //                             fit: BoxFit.cover,
-  //                           )
-  //                         : Stack(
-  //                             children: [
-  //                               Container(
-  //                                 decoration: BoxDecoration(
-  //                                   border: Border.all(
-  //                                     color: Color(0xFFE9EDF2),
-  //                                   ),
-  //                                 ),
-  //                                 child: Center(
-  //                                   child: dataType == "mp4" ||
-  //                                           dataType == "mov"
-  //                                       ? Stack(
-  //                                           alignment: Alignment.center,
-  //                                           children: [
-  //                                             if (_store.filesPath[index] !=
-  //                                                 null)
-  //                                               Image.file(
-  //                                                 File(
-  //                                                   _store.filesPath[index]!,
-  //                                                 ),
-  //                                               ),
-  //                                             SvgPicture.asset(
-  //                                               'assets/play.svg',
-  //                                               color: Color(0xFFAAB0B9),
-  //                                               width: MediaQuery.of(context)
-  //                                                       .size
-  //                                                       .width *
-  //                                                   0.1,
-  //                                             ),
-  //                                           ],
-  //                                         )
-  //                                       : SvgPicture.asset(
-  //                                           'assets/document.svg',
-  //                                           color: Color(0xFFAAB0B9),
-  //                                           width: MediaQuery.of(context)
-  //                                                   .size
-  //                                                   .width *
-  //                                               0.1,
-  //                                         ),
-  //                                 ),
-  //                               ),
-  //                             ],
-  //                           ),
-  //                   ),
-  //                 ),
-  //                 Positioned(
-  //                   top: -15.0,
-  //                   right: -15.0,
-  //                   child: IconButton(
-  //                     onPressed: () => !_store.isLoading
-  //                         ? _store.media.removeAt(index)
-  //                         : null,
-  //                     icon: Icon(Icons.cancel_outlined),
-  //                     color: Colors.black,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Future<void> getThumbnail(String pathVideo, int index) async {
-  //   final filePath = await VideoThumbnail.thumbnailFile(
-  //         video: pathVideo,
-  //         thumbnailPath: (await getTemporaryDirectory()).path,
-  //         imageFormat: ImageFormat.PNG,
-  //         quality: 100,
-  //       ) ??
-  //       "";
-  //   _store.addFilePath(index, filePath);
-  // }
-
   PreferredSizeWidget _selectedMessages() {
     return AppBar(
       elevation: 0,
@@ -422,7 +307,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   maxRadius: 20,
                 ),
               ),
-        chatType == "group"
+        chatType == "group" && ownersChatId != profile!.userData!.id
             ? PopupMenuButton<String>(
                 elevation: 10,
                 icon: Icon(Icons.more_vert),
