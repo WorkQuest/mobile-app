@@ -5,6 +5,7 @@ import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/chat_model/star.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
@@ -161,6 +162,14 @@ abstract class _ChatStore extends IStore<bool> with Store {
   void addedMessage(dynamic json) {
     try {
       var message;
+      if (json["path"] == "/notifications/quest") {
+        final quest = BaseQuestResponse.fromJson(
+            json["message"]["data"]["quest"] ?? json["message"]["data"]);
+        if (quest.status == 5) {
+          loadChats(true, null);
+        }
+        return;
+      }
       if (json["type"] == "request") {
         message = MessageModel.fromJson(json["payload"]["result"]);
       } else if (json["message"]["action"] == "groupChatCreate") {
@@ -262,7 +271,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   @action
-  Future loadChats(bool isNewList, bool starred) async {
+  Future loadChats(bool isNewList, bool? starred) async {
     if (isNewList) {
       chats = {};
       // starredChats.clear();

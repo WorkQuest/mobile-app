@@ -169,7 +169,7 @@ mixin _$ChatStore on _ChatStore, Store {
   final _$loadChatsAsyncAction = AsyncAction('_ChatStore.loadChats');
 
   @override
-  Future<dynamic> loadChats(bool isNewList, bool starred) {
+  Future<dynamic> loadChats(bool isNewList, bool? starred) {
     return _$loadChatsAsyncAction
         .run(() => super.loadChats(isNewList, starred));
   }

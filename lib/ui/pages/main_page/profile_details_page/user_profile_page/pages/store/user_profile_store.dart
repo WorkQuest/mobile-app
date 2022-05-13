@@ -103,6 +103,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
       if (offset == quests.length) {
         if (role == UserRole.Employer) {
           quests.addAll(await _apiProvider.getEmployerQuests(
+            userId:userId,
             offset: offset,
             invited: false,
             sort: "sort[createdAt]=desc",

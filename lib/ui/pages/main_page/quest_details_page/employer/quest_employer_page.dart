@@ -66,8 +66,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share(
-              "https://app.workquest.co/quests/${widget.questInfo.id}");
+          Share.share("https://app.workquest.co/quests/${widget.questInfo.id}");
         },
       ),
       if (store.quest.value!.userId == profile!.userData!.id &&
@@ -347,27 +346,27 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                       );
                                       Navigator.pop(context);
                                     },
+                                    nextStep: () async {
+                                      store.quest.value!.assignedWorker =
+                                          AssignedWorker(
+                                        firstName: store.selectedResponders!
+                                            .worker.firstName,
+                                        lastName: store.selectedResponders!
+                                            .worker.lastName,
+                                        avatar: store
+                                            .selectedResponders!.worker.avatar,
+                                        id: store.selectedResponders!.id,
+                                      );
+                                      store.setQuestStatus(2);
+                                      questStore
+                                          .deleteQuest(store.quest.value!.id);
+                                      questStore.addQuest(
+                                          store.quest.value!, false);
+                                      Navigator.pop(context);
+                                      await AlertDialogUtils.showSuccessDialog(
+                                          context);
+                                    },
                                   );
-                                  if (store.isSuccess) {
-                                    store.quest.value!.assignedWorker =
-                                        AssignedWorker(
-                                      firstName: store
-                                          .selectedResponders!.worker.firstName,
-                                      lastName: store
-                                          .selectedResponders!.worker.lastName,
-                                      avatar: store
-                                          .selectedResponders!.worker.avatar,
-                                      id: store.selectedResponders!.id,
-                                    );
-                                    store.setQuestStatus(2);
-                                    questStore
-                                        .deleteQuest(store.quest.value!.id);
-                                    questStore.addQuest(
-                                        store.quest.value!, false);
-                                    Navigator.pop(context);
-                                    await AlertDialogUtils.showSuccessDialog(
-                                        context);
-                                  }
                                 },
                           child: Text(
                             "quests.chooseWorker".tr(),
@@ -459,15 +458,15 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           );
                           Navigator.pop(context);
                         },
+                        nextStep: () async {
+                          store.setQuestStatus(5);
+                          questStore.deleteQuest(store.quest.value!.id);
+                          questStore.addQuest(store.quest.value!, false);
+                          chatStore.loadChats(true, false);
+                          Navigator.pop(context);
+                          await AlertDialogUtils.showSuccessDialog(context);
+                        },
                       );
-                      if (store.isSuccess) {
-                        store.setQuestStatus(5);
-                        questStore.deleteQuest(store.quest.value!.id);
-                        questStore.addQuest(store.quest.value!, false);
-                        chatStore.loadChats(true, false);
-                        Navigator.pop(context);
-                        await AlertDialogUtils.showSuccessDialog(context);
-                      }
                     },
                     child: Text(
                       "quests.answerOnQuest.acceptCompleted".tr(),
@@ -501,6 +500,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   Future<void> sendTransaction({
     required void Function()? onPress,
+    required void Function() nextStep,
   }) async {
     await store.getFee();
     await confirmTransaction(
@@ -516,6 +516,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       if (!store.isLoading) {
         timer.cancel();
         Navigator.pop(context);
+        nextStep();
       }
     });
   }

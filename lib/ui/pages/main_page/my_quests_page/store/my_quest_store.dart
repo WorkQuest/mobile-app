@@ -93,7 +93,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       addAllQuests();
       for (int i = 0; i < allQuests.length; i++)
         if (allQuests[i].status == quest.status &&
-            allQuests[i].id == quest.id && quest.status == 1) {
+            allQuests[i].id == quest.id &&
+            quest.status == 1) {
           return;
         }
       deleteQuest(quest.id);
@@ -139,19 +140,14 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   @action
   addQuest(BaseQuestResponse quest, bool restoreStarred) {
-    if ((quest.status == 0 ||
-            quest.status == 1 ||
-            quest.status == 3 ||
-            quest.status == 4) &&
-        (role != UserRole.Worker || quest.assignedWorker?.id == myId))
+    if (quest.status == 0 ||
+        quest.status == 1 ||
+        quest.status == 3 ||
+        quest.status == 4)
       active.add(quest);
-    else if (quest.status == 2 &&
-        (role != UserRole.Worker || quest.assignedWorker?.id == myId)) {
+    else if (quest.status == 2) {
       invited.add(quest);
-      // requested.add(quest);
-    } else if (quest.status == 5 &&
-        (role != UserRole.Worker || quest.assignedWorker?.id == myId))
-      performed.add(quest);
+    } else if (quest.status == 5) performed.add(quest);
     if (restoreStarred) starred.add(quest);
     sortQuests();
   }
@@ -181,6 +177,13 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
     else
       starred.removeWhere((element) => element.id == quest.id);
     sortQuests();
+  }
+
+  void removeDuplicate() {
+    for (int i = 0; i < invited.length; i++) {
+      for (int j = 1; j < invited.length; j++)
+        if (invited[i].id == invited[j].id) invited.removeAt(j);
+    }
   }
 
   @action
@@ -287,6 +290,9 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             starred: true,
           ));
       }
+
+      removeDuplicate();
+
       if (active.length % 10 == 0 && active.length != 0)
         offsetActive += 10;
       else

@@ -498,30 +498,30 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             if (store.quest.value!.invited == null) {
               await sendTransaction(
                 onPress: () async {
-                  Navigator.pop(context);
                   store.sendAcceptOnQuest();
+                  Navigator.pop(context);
+                },
+                nextStep: () {
+                  store.setQuestStatus(3);
+                  myQuestStore.deleteQuest(store.quest.value!.id);
+                  myQuestStore.addQuest(
+                    store.quest.value!,
+                    store.quest.value!.star,
+                  );
                 },
               );
-              if (store.isSuccess) {
-                store.setQuestStatus(3);
-                myQuestStore.deleteQuest(store.quest.value!.id);
-                myQuestStore.addQuest(
-                    store.quest.value!, store.quest.value!.star);
-              }
             } else {
               await sendTransaction(
                 onPress: () async {
                   store.acceptInvite(store.quest.value!.invited!.id);
                   Navigator.pop(context);
                 },
+                nextStep: () async {
+                  await questStore.getQuests(true);
+                },
               );
-              if (store.isSuccess) questStore.getQuests(true);
             }
-            Navigator.pop(context);
             _updateLoading();
-            await Future.delayed(const Duration(milliseconds: 250));
-            Navigator.pop(context);
-            await AlertDialogUtils.showSuccessDialog(context);
           },
           title: "quests.answerOnQuest.accept".tr(),
         ),
@@ -560,6 +560,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   Future<void> sendTransaction({
     required void Function()? onPress,
+    required void Function() nextStep,
   }) async {
     await store.getFee();
     await confirmTransaction(
@@ -571,10 +572,15 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       onPress: onPress,
     );
     AlertDialogUtils.showLoadingDialog(context);
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    Timer.periodic(Duration(seconds: 5), (timer) async{
       if (!store.isLoading) {
         timer.cancel();
         Navigator.pop(context);
+        if (store.isSuccess) nextStep();
+        Navigator.pop(context);
+        await Future.delayed(const Duration(milliseconds: 250));
+        Navigator.pop(context);
+        await AlertDialogUtils.showSuccessDialog(context);
       }
     });
   }
@@ -611,16 +617,16 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       store.sendCompleteWork();
                       Navigator.pop(context);
                     },
+                    nextStep: () async {
+                      store.setQuestStatus(4);
+                      await myQuestStore.deleteQuest(store.quest.value!.id);
+                      await myQuestStore.addQuest(store.quest.value!, true);
+                    },
                   );
-                  if (store.isSuccess) {
-                    store.setQuestStatus(4);
-                    await myQuestStore.deleteQuest(store.quest.value!.id);
-                    await myQuestStore.addQuest(store.quest.value!, true);
-                  }
                   _updateLoading();
-                  await Future.delayed(const Duration(milliseconds: 250));
-                  Navigator.pop(context);
-                  await AlertDialogUtils.showSuccessDialog(context);
+                  // await Future.delayed(const Duration(milliseconds: 250));
+                  // Navigator.pop(context);
+                  // await AlertDialogUtils.showSuccessDialog(context);
                 },
         ),
         const SizedBox(height: 15),

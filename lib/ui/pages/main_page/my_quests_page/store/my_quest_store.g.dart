@@ -129,6 +129,9 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     });
   }
 
+  final _$changeListsAsyncAction = AsyncAction('_MyQuestStore.changeLists');
+
+
   final _$getQuestsAsyncAction = AsyncAction('_MyQuestStore.getQuests');
 
   @override
@@ -139,17 +142,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
 
   final _$_MyQuestStoreActionController =
       ActionController(name: '_MyQuestStore');
-
-  @override
-  void changeLists(dynamic json) {
-    final _$actionInfo = _$_MyQuestStoreActionController.startAction(
-        name: '_MyQuestStore.changeLists');
-    try {
-      return super.changeLists(json);
-    } finally {
-      _$_MyQuestStoreActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   dynamic deleteQuest(String id) {

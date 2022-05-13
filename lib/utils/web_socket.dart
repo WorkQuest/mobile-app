@@ -129,12 +129,12 @@ class WebSocket {
   void _handleSubscription(dynamic json) async {
     try {
       print("notification path: ${json["path"]}");
-      if (json["path"] == "/notifications/quest") {
+      if (json["path"] == "/notifications/quest")
         questNotification(json["message"]);
-      } else if (json["path"] == "/notifications/chat") {
-        getMessage(json);
-      } else
-        print("new message");
+      // } else if (json["path"] == "/notifications/chat") {
+      getMessage(json);
+      // } else
+      //   print("new message");
     } catch (e, trace) {
       print("ERROR: $e \n $trace");
     }
@@ -198,7 +198,8 @@ class WebSocket {
 
   void _onDone(IOWebSocketChannel channel, bool connectNotify) {
     print("WebSocket onDone ${channel.closeReason}");
-    if (shouldReconnectFlag) connectNotify ? _connectSender() : _connectListen();
+    if (shouldReconnectFlag)
+      connectNotify ? _connectSender() : _connectListen();
   }
 
   String get myAddress => AccountRepository().userAddress!;
@@ -216,7 +217,8 @@ class WebSocket {
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
         } else {
-          final decode = json.decode(transaction.result!.events!['tx_log.txLog']!.first);
+          final decode =
+              json.decode(transaction.result!.events!['tx_log.txLog']!.first);
           if ((decode['topics'] as List<dynamic>).last.substring(26) ==
               myAddress.substring(2)) {
             await Future.delayed(const Duration(seconds: 8));
