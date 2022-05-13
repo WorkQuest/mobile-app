@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:app/model/quests_models/Responded.dart';
@@ -95,7 +96,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           icon: Icon(Icons.share_outlined),
           onPressed: () {
             Share.share(
-                "https://app-ver1.workquest.co/quests/${widget.questInfo.id}");
+                "https://app.workquest.co/quests/${widget.questInfo.id}");
           },
         ),
       if (store.quest.value!.assignedWorker?.id == profile!.userData!.id &&
@@ -495,15 +496,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           onTap: () async {
             _updateLoading();
             if (store.quest.value!.invited == null) {
-              await store.getFee();
-              confirmTransaction(
-                context,
-                fee: store.fee,
-                transaction: "Transaction info",
-                address: store.quest.value!.contractAddress!,
-                amount: null,
+              await sendTransaction(
                 onPress: () async {
-                  await store.sendAcceptOnQuest();
+                  Navigator.pop(context);
+                  store.sendAcceptOnQuest();
                 },
               );
               if (store.isSuccess) {
@@ -513,9 +509,15 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     store.quest.value!, store.quest.value!.star);
               }
             } else {
-              await store.acceptInvite(store.quest.value!.invited!.id);
-              questStore.getQuests(true);
+              await sendTransaction(
+                onPress: () async {
+                  store.acceptInvite(store.quest.value!.invited!.id);
+                  Navigator.pop(context);
+                },
+              );
+              if (store.isSuccess) questStore.getQuests(true);
             }
+            Navigator.pop(context);
             _updateLoading();
             await Future.delayed(const Duration(milliseconds: 250));
             Navigator.pop(context);
@@ -556,6 +558,27 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     );
   }
 
+  Future<void> sendTransaction({
+    required void Function()? onPress,
+  }) async {
+    await store.getFee();
+    await confirmTransaction(
+      context,
+      fee: store.fee,
+      transaction: "Transaction info",
+      address: store.quest.value!.contractAddress!,
+      amount: null,
+      onPress: onPress,
+    );
+    AlertDialogUtils.showLoadingDialog(context);
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      if (!store.isLoading) {
+        timer.cancel();
+        Navigator.pop(context);
+      }
+    });
+  }
+
   _updateLoading() {
     setState(() {
       isLoading = !isLoading;
@@ -579,29 +602,26 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           withColumn: true,
           enabled: store.isLoading,
           title: "quests.completeTheQuest".tr(),
-          onTap: () async {
-            _updateLoading();
-            await store.getFee();
-            confirmTransaction(
-              context,
-              fee: store.fee,
-              transaction: "Transaction info",
-              address: store.quest.value!.contractAddress!,
-              amount: null,
-              onPress: () async {
-                await store.sendCompleteWork();
-              },
-            );
-            if (store.isSuccess) {
-              store.setQuestStatus(4);
-              await myQuestStore.deleteQuest(store.quest.value!.id);
-              await myQuestStore.addQuest(store.quest.value!, true);
-            }
-            _updateLoading();
-            await Future.delayed(const Duration(milliseconds: 250));
-            Navigator.pop(context);
-            await AlertDialogUtils.showSuccessDialog(context);
-          },
+          onTap: store.isLoading
+              ? null
+              : () async {
+                  _updateLoading();
+                  await sendTransaction(
+                    onPress: () async {
+                      store.sendCompleteWork();
+                      Navigator.pop(context);
+                    },
+                  );
+                  if (store.isSuccess) {
+                    store.setQuestStatus(4);
+                    await myQuestStore.deleteQuest(store.quest.value!.id);
+                    await myQuestStore.addQuest(store.quest.value!, true);
+                  }
+                  _updateLoading();
+                  await Future.delayed(const Duration(milliseconds: 250));
+                  Navigator.pop(context);
+                  await AlertDialogUtils.showSuccessDialog(context);
+                },
         ),
         const SizedBox(height: 15),
       ],

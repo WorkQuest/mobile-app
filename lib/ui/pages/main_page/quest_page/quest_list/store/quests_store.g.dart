@@ -292,17 +292,18 @@ mixin _$QuestsStore on _QuestsStore, Store {
       AsyncAction('_QuestsStore.getSearchedQuests');
 
   @override
-  Future<dynamic> getSearchedQuests() {
-    return _$getSearchedQuestsAsyncAction.run(() => super.getSearchedQuests());
+  Future<dynamic> getSearchedQuests(bool newList) {
+    return _$getSearchedQuestsAsyncAction
+        .run(() => super.getSearchedQuests(newList));
   }
 
   final _$getSearchedWorkersAsyncAction =
       AsyncAction('_QuestsStore.getSearchedWorkers');
 
   @override
-  Future<dynamic> getSearchedWorkers() {
+  Future<dynamic> getSearchedWorkers(bool newList) {
     return _$getSearchedWorkersAsyncAction
-        .run(() => super.getSearchedWorkers());
+        .run(() => super.getSearchedWorkers(newList));
   }
 
   final _$getQuestsAsyncAction = AsyncAction('_QuestsStore.getQuests');

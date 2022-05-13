@@ -144,7 +144,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                           .pushNamed<bool>(CreateQuestPage.routeName)
                           .then(
                             (value) =>
-                                myQuests!.getQuests(userID, role, false),
+                                myQuests!.getQuests(userID, role, true),
                           );
                     },
                     child: Text(

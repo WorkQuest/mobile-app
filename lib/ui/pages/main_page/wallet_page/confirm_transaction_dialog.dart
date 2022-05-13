@@ -97,17 +97,21 @@ Widget content({
             "$address",
             style: valueTextStyle,
           ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Text(
-            "modals.amount".tr(),
-            style: titleTextStyle,
-          ),
           if (amount != null)
-            Text(
-              "$amount WUSD",
-              style: valueTextStyle,
+            Column(
+              children: [
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  "modals.amount".tr(),
+                  style: titleTextStyle,
+                ),
+                Text(
+                  "$amount WUSD",
+                  style: valueTextStyle,
+                ),
+              ],
             ),
           const SizedBox(
             height: 10.0,

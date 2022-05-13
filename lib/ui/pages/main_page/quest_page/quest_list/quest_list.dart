@@ -36,7 +36,8 @@ class _QuestListState extends State<QuestList> {
 
   FilterQuestsStore? filterQuestsStore;
 
-  final QuestItemPriorityType questItemPriorityType = QuestItemPriorityType.Starred;
+  final QuestItemPriorityType questItemPriorityType =
+      QuestItemPriorityType.Starred;
   final scrollKey = new GlobalKey();
 
   @override
@@ -97,7 +98,11 @@ class _QuestListState extends State<QuestList> {
     return RefreshIndicator(
       triggerMode: RefreshIndicatorTriggerMode.anywhere,
       onRefresh: () async {
-        if (role == UserRole.Worker && !questsStore!.isLoading)
+        if (questsStore!.searchWord.isNotEmpty) if (role == UserRole.Worker)
+          return questsStore!.getSearchedQuests(true);
+        else
+          return questsStore!.getSearchedWorkers(true);
+        else if (role == UserRole.Worker && !questsStore!.isLoading)
           return questsStore!.getQuests(true);
         else
           return questsStore!.getWorkers(true);
@@ -113,7 +118,7 @@ class _QuestListState extends State<QuestList> {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       ClientService().checkFunction();
                     },
                     child: Text(
@@ -166,9 +171,9 @@ class _QuestListState extends State<QuestList> {
                   padding: const EdgeInsets.all(20.0),
                   child: OutlinedButton(
                     onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true).pushNamed(
-                          FilterQuestsPage.routeName,
-                          arguments: filterQuestsStore!.skillFilters);
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(FilterQuestsPage.routeName,
+                              arguments: filterQuestsStore!.skillFilters);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(
@@ -277,11 +282,12 @@ class _QuestListState extends State<QuestList> {
           ),
           SliverToBoxAdapter(
             child: Observer(
-              builder: (_) => (questsStore!.isLoading || questsStore!.isLoadingMore)
-                  ? Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    )
-                  : const SizedBox(),
+              builder: (_) =>
+                  (questsStore!.isLoading || questsStore!.isLoadingMore)
+                      ? Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        )
+                      : const SizedBox(),
             ),
           ),
         ],
@@ -314,11 +320,11 @@ class _QuestListState extends State<QuestList> {
         if (questsStore!.isLoading) return;
         if (profileMeStore!.userData!.role == UserRole.Worker)
           questsStore!.searchWord.length > 2
-              ? questsStore!.getSearchedQuests()
+              ? questsStore!.getSearchedQuests(false)
               : questsStore!.getQuests(false);
         else
           questsStore!.searchWord.length > 2
-              ? questsStore!.getSearchedWorkers()
+              ? questsStore!.getSearchedWorkers(false)
               : questsStore!.getWorkers(false);
       }
     }
@@ -338,11 +344,12 @@ class _AnimationWorkersQuestsItems extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AnimationWorkersQuestsItemsState createState() => _AnimationWorkersQuestsItemsState();
+  _AnimationWorkersQuestsItemsState createState() =>
+      _AnimationWorkersQuestsItemsState();
 }
 
-class _AnimationWorkersQuestsItemsState extends State<_AnimationWorkersQuestsItems>
-    with TickerProviderStateMixin {
+class _AnimationWorkersQuestsItemsState
+    extends State<_AnimationWorkersQuestsItems> with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override

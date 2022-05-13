@@ -230,7 +230,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       this.onSuccess(true);
     }
     if (searchWord.length > 0)
-      role == UserRole.Worker ? getSearchedQuests() : getSearchedWorkers();
+      role == UserRole.Worker
+          ? getSearchedQuests(false)
+          : getSearchedWorkers(false);
     else {
       role == UserRole.Worker ? getQuests(true) : getWorkers(true);
     }
@@ -241,8 +243,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       workersList.isEmpty && questsList.isEmpty && !this.isLoading;
 
   @action
-  Future getSearchedQuests() async {
+  Future getSearchedQuests(bool newList) async {
     try {
+      if (newList) {
+        offset = 0;
+        questsList.clear();
+      }
       if (offset == questsList.length) {
         this.onLoading();
         debounce = Timer(const Duration(milliseconds: 300), () async {
@@ -268,7 +274,11 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   }
 
   @action
-  Future getSearchedWorkers() async {
+  Future getSearchedWorkers(bool newList) async {
+    if (newList) {
+      offset = 0;
+      workersList.clear();
+    }
     if (this.offset == workersList.length) {
       this.onLoading();
       debounce = Timer(const Duration(milliseconds: 300), () async {
@@ -328,7 +338,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   Future getWorkers(bool newList) async {
     try {
       if (newList) {
-      this.onLoading();
+        this.onLoading();
         workersList.clear();
         offsetWorkers = 0;
       } else {

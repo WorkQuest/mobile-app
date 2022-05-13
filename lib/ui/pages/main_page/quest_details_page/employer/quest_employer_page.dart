@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/assigned_worker.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
@@ -65,7 +67,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         icon: Icon(Icons.share_outlined),
         onPressed: () {
           Share.share(
-              "https://app-ver1.workquest.co/quests/${widget.questInfo.id}");
+              "https://app.workquest.co/quests/${widget.questInfo.id}");
         },
       ),
       if (store.quest.value!.userId == profile!.userData!.id &&
@@ -336,20 +338,14 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           onPressed: store.selectedResponders == null
                               ? null
                               : () async {
-                                  await store.getFee();
-                                  confirmTransaction(
-                                    context,
-                                    fee: store.fee,
-                                    transaction: "Transaction info",
-                                    address:
-                                        store.quest.value!.contractAddress!,
-                                    amount: null,
+                                  await sendTransaction(
                                     onPress: () async {
-                                      await store.startQuest(
+                                      store.startQuest(
                                         userId:
                                             store.selectedResponders!.workerId,
                                         questId: store.quest.value!.id,
                                       );
+                                      Navigator.pop(context);
                                     },
                                   );
                                   if (store.isSuccess) {
@@ -368,6 +364,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                         .deleteQuest(store.quest.value!.id);
                                     questStore.addQuest(
                                         store.quest.value!, false);
+                                    Navigator.pop(context);
                                     await AlertDialogUtils.showSuccessDialog(
                                         context);
                                   }
@@ -455,17 +452,12 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   const SizedBox(height: 15),
                   TextButton(
                     onPressed: () async {
-                      await store.getFee();
-                      confirmTransaction(
-                        context,
-                        fee: store.fee,
-                        transaction: "Transaction info",
-                        address: store.quest.value!.contractAddress!,
-                        amount: null,
+                      await sendTransaction(
                         onPress: () async {
-                          await store.acceptCompletedWork(
+                          store.acceptCompletedWork(
                             questId: store.quest.value!.id,
                           );
+                          Navigator.pop(context);
                         },
                       );
                       if (store.isSuccess) {
@@ -505,6 +497,27 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         );
       },
     );
+  }
+
+  Future<void> sendTransaction({
+    required void Function()? onPress,
+  }) async {
+    await store.getFee();
+    await confirmTransaction(
+      context,
+      fee: store.fee,
+      transaction: "Transaction info",
+      address: store.quest.value!.contractAddress!,
+      amount: null,
+      onPress: onPress,
+    );
+    AlertDialogUtils.showLoadingDialog(context);
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      if (!store.isLoading) {
+        timer.cancel();
+        Navigator.pop(context);
+      }
+    });
   }
 
   Widget selectableMember(RespondModel respond) {

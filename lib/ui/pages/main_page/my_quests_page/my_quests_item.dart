@@ -83,7 +83,7 @@ class MyQuestsItem extends StatelessWidget {
                 if (questInfo.responded != null)
                   if (questInfo.responded!.workerId ==
                               context.read<ProfileMeStore>().userData!.id &&
-                          (questInfo.status == 0 || questInfo.status == 4) ||
+                          (questInfo.status == 1 || questInfo.status == 2) ||
                       questInfo.invited != null &&
                           questInfo.invited?.status == 1)
                     Row(
