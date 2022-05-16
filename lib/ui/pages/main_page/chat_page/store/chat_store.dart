@@ -78,30 +78,18 @@ abstract class _ChatStore extends IStore<bool> with Store {
     return keys;
   }
 
+  int compareTest(int a, int b) {
+    if (a == b) return 0;
+    return a > b ? 1 : -1;
+  }
+
   @action
   void chatSort() {
-    var keys = chats.keys.toList();
-    var values = chats.values.toList();
-
-    for (int i = 0; i < values.length - 1; ++i) {
-      for (int j = i; j < values.length - 1; j++) {
-        if (values[j].chatModel.lastMessage.createdAt.millisecondsSinceEpoch >
-            values[j + 1]
-                .chatModel
-                .lastMessage
-                .createdAt
-                .millisecondsSinceEpoch) {
-          var buff1 = values[j];
-          values[j] = values[j + 1];
-          values[j + 1] = buff1;
-          var buff2 = keys[j];
-          keys[j] = keys[j + 1];
-          keys[j + 1] = buff2;
-        }
-      }
-    }
-    chats = Map.fromIterables(
-        keys.reversed.take(keys.length), values.reversed.take(values.length));
+    chats = Map.fromEntries(chats.entries.toList()
+      ..sort((a, b) => compareTest(
+          b.value.chatModel.lastMessage.createdAt.millisecondsSinceEpoch,
+          a.value.chatModel.lastMessage.createdAt.millisecondsSinceEpoch))
+      ..takeWhile((_) => true));
   }
 
   @action
