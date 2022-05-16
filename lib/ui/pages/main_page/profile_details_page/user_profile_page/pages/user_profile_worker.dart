@@ -8,6 +8,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/wi
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../../raise_views_page/raise_views_page.dart';
 
@@ -64,8 +65,27 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
         Observer(
           builder: (_) => portfolioStore!.portfolioList.isEmpty
               ? Center(
-                  child: Text(
-                    "profiler.dontHavePortfolioOtherUser".tr(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        height: 18.0,
+                      ),
+                      SvgPicture.asset(
+                        "assets/empty_quest_icon.svg",
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(
+                        "profiler.dontHavePortfolioOtherUser".tr(),
+                        style: TextStyle(
+                          color: Color(0xFFD8DFE3),
+                        ),
+                      ),
+                    ],
                   ),
                 )
               : Column(

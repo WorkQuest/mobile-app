@@ -1220,6 +1220,7 @@
     "enterAddress": "Enter address",
     "scanQr": "Scan QR Code or copy address to receive payment",
     "time": "Processing Time",
+    "noTransactions": "No transactions",
     "table": {
       "trx": "Transactions",
       "TxHash": "Transaction hash",

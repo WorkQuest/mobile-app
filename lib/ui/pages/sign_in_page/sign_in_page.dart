@@ -32,280 +32,232 @@ class SignInPage extends StatelessWidget {
   static const String routeName = "/";
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController usernameController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
   final TextEditingController totpController = new TextEditingController();
-  final TextEditingController mnemonicController = new TextEditingController();
 
   SignInPage();
 
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQuery.of(context);
     final signInStore = context.read<SignInStore>();
     final profile = context.read<ProfileMeStore>();
 
     return Form(
       key: _formKey,
       child: Scaffold(
-        body: SingleChildScrollView(
+        body: CustomScrollView(
           physics: const ClampingScrollPhysics(),
-          child: SizedBox(
-            height: mq.size.height,
-            child: SafeArea(
-              top: false,
-              bottom: false,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  AutofillGroup(
-                    child: Expanded(
-                      child: Container(
-                        alignment: Alignment.bottomLeft,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            colorFilter: ColorFilter.mode(
-                              Color(0xFF103D7C),
-                              BlendMode.color,
-                            ),
-                            image: AssetImage(
-                              "assets/login_page_header.png",
-                            ),
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            16.0,
-                            0.0,
-                            16.0,
-                            30.0,
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "modals.welcomeToWorkQuest".tr(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 34,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10.0),
-                                child: Text(
-                                  "signIn.pleaseSignIn".tr(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.44,
+                alignment: Alignment.bottomLeft,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Color(0xFF103D7C),
+                      BlendMode.color,
+                    ),
+                    image: AssetImage(
+                      "assets/login_page_header.png",
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
-                    child: DefaultTextField(
-                      controller: usernameController,
-                      keyboardType: TextInputType.emailAddress,
-                      onChanged: signInStore.setUsername,
-                      validator: Validators.emailValidator,
-                      autofillHints: [AutofillHints.email],
-                      prefixIconConstraints: _prefixConstraints,
-                      prefixIcon: SvgPicture.asset(
-                        "assets/user.svg",
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      hint: "signIn.username".tr(),
-                      inputFormatters: [],
-                      suffixIcon: null,
-                    ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    16.0,
+                    0.0,
+                    16.0,
+                    30.0,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
-                    child: DefaultTextField(
-                      controller: passwordController,
-                      isPassword: true,
-                      onChanged: signInStore.setPassword,
-                      inputFormatters: [],
-                      prefixIconConstraints: _prefixConstraints,
-                      autofillHints: [AutofillHints.password],
-                      prefixIcon: SvgPicture.asset(
-                        "assets/lock.svg",
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      hint: "signIn.password".tr(),
-                      suffixIcon: null,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
-                    child: DefaultTextField(
-                      controller: mnemonicController,
-                      isPassword: true,
-                      onChanged: signInStore.setMnemonic,
-                      validator: Validators.mnemonicValidator,
-                      suffixIcon: CupertinoButton(
-                        minSize: 22.0,
-                        padding: EdgeInsets.zero,
-                        onPressed: () async {
-                          ClipboardData? data =
-                              await Clipboard.getData(Clipboard.kTextPlain);
-                          mnemonicController.text = data?.text ?? "";
-                          signInStore.setMnemonic(data?.text ?? "");
-                        },
-                        child: Icon(
-                          Icons.paste,
-                          size: 22.0,
-                          color: AppColor.primary,
-                        ),
-                      ),
-                      hint: "signIn.enterMnemonicPhrase".tr(),
-                      inputFormatters: [],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
-                    child: Observer(
-                      builder: (context) {
-                        return LoginButton(
-                          onTap: signInStore.canSignIn
-                              ? signInStore.isLoading
-                                  ? () {}
-                                  : () async {
-                                      if (_formKey.currentState!.validate()) {
-                                        _onPressedSignIn(
-                                          context,
-                                          signInStore: signInStore,
-                                          profile: profile,
-                                        );
-                                      }
-                                    }
-                              : null,
-                          title: "signIn.login".tr(),
-                          enabled: signInStore.isLoading,
-                        );
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Center(
-                      child: Text(
-                        "signIn.or".tr(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "modals.welcomeToWorkQuest".tr(),
                         style: TextStyle(
-                          color: Color(0xFFCBCED2),
+                          color: Colors.white,
+                          fontSize: 34,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      top: 20.0,
-                      right: 16,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _iconButton(
-                          "assets/google_icon.svg",
-                          "google",
-                          context,
-                        ),
-                        // _iconButton(
-                        //   "assets/instagram.svg",
-                        //   "https://www.instagram.com/zuck/?hl=ru",
-                        // ),
-                        _iconButton(
-                          "assets/twitter_icon.svg",
-                          "twitter",
-                          context,
-                        ),
-                        _iconButton(
-                          "assets/facebook_icon.svg",
-                          "facebook",
-                          context,
-                        ),
-                        _iconButton(
-                          "assets/linkedin_icon.svg",
-                          "linkedin",
-                          context,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      top: 40.0,
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          "signIn.dontHaveAnAccount".tr(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                SignUpPage.routeName,
-                              );
-                            },
-                            child: Text(
-                              "signIn.signUp".tr(),
-                              style: TextStyle(
-                                color: Color(0xFF0083C7),
-                              ),
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Text(
+                          "signIn.pleaseSignIn".tr(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      top: 10.0,
-                      bottom: 40.0,
-                    ),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => Navigator.pushNamed(
-                            context,
-                            SendEmail.routeName,
-                          ),
-                          child: Text(
-                            "signIn.forgotYourPass".tr(),
-                            style: TextStyle(
-                              color: Color(0xFF0083C7),
-                            ),
-                          ),
-                        ),
-                        Spacer(),
-                        //const Text("Version 1.0.26"),
-                        const SizedBox(width: 15)
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
+            SliverToBoxAdapter(
+              child: _InputFieldsWidget(
+                signInStore: signInStore,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
+                child: Observer(
+                  builder: (context) {
+                    return LoginButton(
+                      withColumn: true,
+                      onTap: signInStore.canSignIn
+                          ? signInStore.isLoading
+                              ? () {}
+                              : () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    _onPressedSignIn(
+                                      context,
+                                      signInStore: signInStore,
+                                      profile: profile,
+                                    );
+                                  }
+                                }
+                          : null,
+                      title: "signIn.login".tr(),
+                      enabled: signInStore.isLoading,
+                    );
+                  },
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Center(
+                  child: Text(
+                    "signIn.or".tr(),
+                    style: TextStyle(
+                      color: Color(0xFFCBCED2),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: const _SocialLoginWidget(),
+            ),
+            SliverToBoxAdapter(
+              child: const _HintsAccountWidget(),
+            ),
+          ],
         ),
       ),
     );
   }
+
+  // SizedBox(
+  //   height: mq.size.height,
+  //   child: SafeArea(
+  //     top: false,
+  //     bottom: false,
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       crossAxisAlignment: CrossAxisAlignment.center,
+  //       children: [
+  //         AutofillGroup(
+  //           child: Expanded(
+  //             child: Container(
+  //               alignment: Alignment.bottomLeft,
+  //               decoration: BoxDecoration(
+  //                 image: DecorationImage(
+  //                   fit: BoxFit.cover,
+  //                   colorFilter: ColorFilter.mode(
+  //                     Color(0xFF103D7C),
+  //                     BlendMode.color,
+  //                   ),
+  //                   image: AssetImage(
+  //                     "assets/login_page_header.png",
+  //                   ),
+  //                 ),
+  //               ),
+  //               child: Padding(
+  //                 padding: const EdgeInsets.fromLTRB(
+  //                   16.0,
+  //                   0.0,
+  //                   16.0,
+  //                   30.0,
+  //                 ),
+  //                 child: Column(
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Text(
+  //                       "modals.welcomeToWorkQuest".tr(),
+  //                       style: TextStyle(
+  //                         color: Colors.white,
+  //                         fontSize: 34,
+  //                         fontWeight: FontWeight.bold,
+  //                       ),
+  //                     ),
+  //                     Padding(
+  //                       padding: const EdgeInsets.only(top: 10.0),
+  //                       child: Text(
+  //                         "signIn.pleaseSignIn".tr(),
+  //                         style: TextStyle(
+  //                           color: Colors.white,
+  //                           fontSize: 16,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //         _InputFieldsWidget(
+  //           signInStore: signInStore,
+  //         ),
+  //         Padding(
+  //           padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
+  //           child: Observer(
+  //             builder: (context) {
+  //               return LoginButton(
+  //                 onTap: signInStore.canSignIn
+  //                     ? signInStore.isLoading
+  //                         ? () {}
+  //                         : () async {
+  //                             if (_formKey.currentState!.validate()) {
+  //                               _onPressedSignIn(
+  //                                 context,
+  //                                 signInStore: signInStore,
+  //                                 profile: profile,
+  //                               );
+  //                             }
+  //                           }
+  //                     : null,
+  //                 title: "signIn.login".tr(),
+  //                 enabled: signInStore.isLoading,
+  //               );
+  //             },
+  //           ),
+  //         ),
+  //         Padding(
+  //           padding: const EdgeInsets.only(top: 20.0),
+  //           child: Center(
+  //             child: Text(
+  //               "signIn.or".tr(),
+  //               style: TextStyle(
+  //                 color: Color(0xFFCBCED2),
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //         const _SocialLoginWidget(),
+  //         const _HintsAccountWidget(),
+  //       ],
+  //     ),
+  //   ),
+  // ),
 
   _onPressedSignIn(
     BuildContext context, {
@@ -387,6 +339,118 @@ class SignInPage extends StatelessWidget {
   void _errorMessage(BuildContext context, String msg) =>
       AlertDialogUtils.showInfoAlertDialog(context,
           title: "Error", content: msg);
+}
+
+class _HintsAccountWidget extends StatelessWidget {
+  const _HintsAccountWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 16.0,
+            top: 40.0,
+          ),
+          child: Row(
+            children: [
+              Text(
+                "signIn.dontHaveAnAccount".tr(),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      SignUpPage.routeName,
+                    );
+                  },
+                  child: Text(
+                    "signIn.signUp".tr(),
+                    style: TextStyle(
+                      color: Color(0xFF0083C7),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 16.0,
+            top: 10.0,
+            bottom: 40.0,
+          ),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  SendEmail.routeName,
+                ),
+                child: Text(
+                  "signIn.forgotYourPass".tr(),
+                  style: TextStyle(
+                    color: Color(0xFF0083C7),
+                  ),
+                ),
+              ),
+              Spacer(),
+              //const Text("Version 1.0.26"),
+              const SizedBox(width: 15)
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SocialLoginWidget extends StatelessWidget {
+  const _SocialLoginWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 16,
+        top: 20.0,
+        right: 16,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _iconButton(
+            "assets/google_icon.svg",
+            "google",
+            context,
+          ),
+          // _iconButton(
+          //   "assets/instagram.svg",
+          //   "https://www.instagram.com/zuck/?hl=ru",
+          // ),
+          _iconButton(
+            "assets/twitter_icon.svg",
+            "twitter",
+            context,
+          ),
+          _iconButton(
+            "assets/facebook_icon.svg",
+            "facebook",
+            context,
+          ),
+          _iconButton(
+            "assets/linkedin_icon.svg",
+            "linkedin",
+            context,
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _iconButton(
     String iconPath,
@@ -407,6 +471,93 @@ class SignInPage extends StatelessWidget {
           arguments: "api/v1/auth/login/$link",
         );
       },
+    );
+  }
+}
+
+class _InputFieldsWidget extends StatefulWidget {
+  final SignInStore signInStore;
+
+  const _InputFieldsWidget({
+    Key? key,
+    required this.signInStore,
+  }) : super(key: key);
+
+  @override
+  _InputFieldsWidgetState createState() => _InputFieldsWidgetState();
+}
+
+class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
+  final TextEditingController usernameController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController mnemonicController = new TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
+          child: DefaultTextField(
+            controller: usernameController,
+            keyboardType: TextInputType.emailAddress,
+            onChanged: widget.signInStore.setUsername,
+            validator: Validators.emailValidator,
+            autofillHints: [AutofillHints.email],
+            prefixIconConstraints: _prefixConstraints,
+            prefixIcon: SvgPicture.asset(
+              "assets/user.svg",
+              color: Theme.of(context).iconTheme.color,
+            ),
+            hint: "signIn.username".tr(),
+            inputFormatters: [],
+            suffixIcon: null,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
+          child: DefaultTextField(
+            controller: passwordController,
+            isPassword: true,
+            onChanged: widget.signInStore.setPassword,
+            inputFormatters: [],
+            prefixIconConstraints: _prefixConstraints,
+            autofillHints: [AutofillHints.password],
+            prefixIcon: SvgPicture.asset(
+              "assets/lock.svg",
+              color: Theme.of(context).iconTheme.color,
+            ),
+            hint: "signIn.password".tr(),
+            suffixIcon: null,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
+          child: DefaultTextField(
+            controller: mnemonicController,
+            isPassword: true,
+            onChanged: widget.signInStore.setMnemonic,
+            validator: Validators.mnemonicValidator,
+            suffixIcon: CupertinoButton(
+              minSize: 22.0,
+              padding: EdgeInsets.zero,
+              onPressed: () async {
+                ClipboardData? data =
+                    await Clipboard.getData(Clipboard.kTextPlain);
+                mnemonicController.text = data?.text ?? "";
+                widget.signInStore.setMnemonic(data?.text ?? "");
+              },
+              child: Icon(
+                Icons.paste,
+                size: 22.0,
+                color: AppColor.primary,
+              ),
+            ),
+            hint: "signIn.enterMnemonicPhrase".tr(),
+            inputFormatters: [],
+          ),
+        ),
+      ],
     );
   }
 }
