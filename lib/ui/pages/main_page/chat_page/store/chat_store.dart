@@ -50,9 +50,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   Map<String, Chats> chats = {};
 
-  // @observable
-  // List<String> starredChats = [];
-
   @observable
   ObservableList<String> chatsId = ObservableList.of([]);
 
@@ -83,15 +80,28 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   @action
   void chatSort() {
-    chats.keys.toList().sort((key1, key2) {
-      final chat1 = chats[key1]!.chatModel;
-      final chat2 = chats[key2]!.chatModel;
+    var keys = chats.keys.toList();
+    var values = chats.values.toList();
 
-      return chat1.lastMessage.createdAt.millisecondsSinceEpoch <
-              chat2.lastMessage.createdAt.millisecondsSinceEpoch
-          ? 1
-          : 0;
-    });
+    for (int i = 0; i < values.length - 1; ++i) {
+      for (int j = i; j < values.length - 1; j++) {
+        if (values[j].chatModel.lastMessage.createdAt.millisecondsSinceEpoch >
+            values[j + 1]
+                .chatModel
+                .lastMessage
+                .createdAt
+                .millisecondsSinceEpoch) {
+          var buff1 = values[j];
+          values[j] = values[j + 1];
+          values[j + 1] = buff1;
+          var buff2 = keys[j];
+          keys[j] = keys[j + 1];
+          keys[j + 1] = buff2;
+        }
+      }
+    }
+    chats = Map.fromIterables(
+        keys.reversed.take(keys.length), values.reversed.take(values.length));
   }
 
   @action
