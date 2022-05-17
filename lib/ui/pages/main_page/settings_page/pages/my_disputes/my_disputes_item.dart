@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_store.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +34,7 @@ class MyDisputesItem extends StatelessWidget {
             children: [
               row(
                 title: "modals.numberDispute",
-                disputeInfo: store.disputes[index].disputeNumber.toString(),
+                disputeInfo: store.disputes[index].number.toString(),
               ),
               space(),
               row(
@@ -42,21 +44,23 @@ class MyDisputesItem extends StatelessWidget {
               space(),
               row(
                 title: "dispute.employer",
-                disputeInfo: store.disputes[index].quest.user.firstName +
+                disputeInfo: store.disputes[index].quest.user!.firstName +
                     " " +
-                    store.disputes[index].quest.user.lastName,
+                    store.disputes[index].quest.user!.lastName,
               ),
               space(),
               row(
                 title: "dispute.questSalary",
-                disputeInfo: store.disputes[index].quest.price,
+                disputeInfo: (double.parse(store.disputes[index].quest.price) *
+                        pow(10, -18))
+                    .toString(),
               ),
               space(),
               row(
                 title: "dispute.status",
                 disputeInfo:
-                    store.getStatus(store.disputes[index].quest.status).tr(),
-                color: getColor(store.disputes[index].quest.status),
+                    store.getStatus(store.disputes[index].status).tr(),
+                color: getColor(store.disputes[index].status),
               ),
               if (store.disputes[index].decisionDescription != null &&
                   store.disputes[index].decisionDescription != "")
@@ -107,11 +111,13 @@ class MyDisputesItem extends StatelessWidget {
 
   Color getColor(int status) {
     switch (status) {
+      case 0:
+        return Colors.yellow;
       case 1:
-        return Colors.green;
+        return Colors.blue;
+      case 2:
+        return Colors.yellow;
       case 3:
-        return Colors.red;
-      case 5:
         return Colors.green;
     }
     return Colors.green;

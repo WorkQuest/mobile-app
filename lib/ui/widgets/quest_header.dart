@@ -5,13 +5,13 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../enums.dart';
 
 class QuestHeader extends StatelessWidget {
-  const QuestHeader(
-    this.itemType,
-    this.questStatus,
-    this.rounded,
-    this.responded,
-    this.forMe,
-  );
+  const QuestHeader({
+    required this.itemType,
+    required this.questStatus,
+    required this.rounded,
+    required this.responded,
+    required this.forMe,
+  });
 
   final QuestItemPriorityType itemType;
   final int questStatus;

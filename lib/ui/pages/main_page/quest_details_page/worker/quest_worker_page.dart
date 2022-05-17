@@ -135,15 +135,17 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   Widget questHeader() {
+    print("myId: ${profile!.userData!.id}");
+    print("assignedWorkerId: ${store.quest.value!.assignedWorker?.id}");
     return QuestHeader(
-      storeQuest.getQuestType(
+      itemType: storeQuest.getQuestType(
         store.quest.value!,
         profile!.userData!.role,
       ),
-      store.quest.value!.status,
-      false,
-      store.response,
-      profile!.userData!.id == store.quest.value!.assignedWorker?.id,
+      questStatus: store.quest.value!.status,
+      rounded: false,
+      responded: store.response,
+      forMe: store.quest.value!.status == 2 ? true : false,
     );
   }
 
@@ -572,7 +574,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       onPress: onPress,
     );
     AlertDialogUtils.showLoadingDialog(context);
-    Timer.periodic(Duration(seconds: 5), (timer) async{
+    Timer.periodic(Duration(seconds: 5), (timer) async {
       if (!store.isLoading) {
         timer.cancel();
         Navigator.pop(context);

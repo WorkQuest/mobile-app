@@ -121,7 +121,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           ),
                   ),
                 ),
-                _store.chat!.chatModel.questChat?.questChatInfo?.status != 5
+                _store.chat!.chatModel.questChat?.quest?.status != 5
                     ? InputToolbar(_store, profile!.userData!.id)
                     : profile!.userData!.role == UserRole.Employer
                         ? Padding(
@@ -340,8 +340,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 },
               )
             : const SizedBox(width: 16),
-        _store.chat!.chatModel.questChat?.questChatInfo?.quest?.openDispute !=
-                null
+        _store.chat!.chatModel.questChat?.quest?.openDispute?.status == 2
             ? PopupMenuButton<String>(
                 elevation: 10,
                 icon: Icon(Icons.more_vert),
@@ -354,7 +353,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       await Navigator.pushNamed(
                         context,
                         CreateReviewPage.routeName,
-                        arguments: ReviewArguments(null, "dispute id"),
+                        arguments: ReviewArguments(
+                          null,
+                          _store.chat!.chatModel.questChat!.quest!.openDispute!
+                              .id,
+                        ),
                       );
                       break;
                   }

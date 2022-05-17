@@ -79,6 +79,7 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
         params: [
           EthereumAddress.fromHex(user.walletAddress!),
         ],
+        value: null,
       );
       this.onSuccess(true);
     } catch (e) {
@@ -118,8 +119,8 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
         }
 
         quests.toList().sort((key1, key2) =>
-            key1.createdAt.millisecondsSinceEpoch <
-                    key2.createdAt.millisecondsSinceEpoch
+            key1.createdAt!.millisecondsSinceEpoch <
+                    key2.createdAt!.millisecondsSinceEpoch
                 ? 1
                 : 0);
         offset += 10;

@@ -25,12 +25,14 @@ abstract class _MyDisputesStore extends IStore<bool> with Store {
 
   String getStatus(int value) {
     switch (value) {
+      case 0:
+        return status = "dispute.statuses.pending";
       case 1:
-        return status = "quests.statuses.active";
+        return status = "dispute.statuses.created";
+      case 2:
+        return status = "dispute.statuses.inProgress";
       case 3:
-        return status = "quests.statuses.dispute";
-      case 5:
-        return status = "quests.statuses.waitConfirm";
+        return status = "dispute.statuses.closed";
     }
     return status;
   }

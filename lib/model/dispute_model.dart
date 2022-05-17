@@ -9,7 +9,7 @@ class DisputeModel {
     required this.openDisputeUserId,
     required this.opponentUserId,
     required this.assignedAdminId,
-    required this.disputeNumber,
+    required this.number,
     required this.status,
     required this.reason,
     required this.openOnQuestStatus,
@@ -28,7 +28,7 @@ class DisputeModel {
   String openDisputeUserId;
   String opponentUserId;
   String? assignedAdminId;
-  int disputeNumber;
+  int number;
   int status;
   String reason;
   int openOnQuestStatus;
@@ -47,7 +47,7 @@ class DisputeModel {
         openDisputeUserId: json["openDisputeUserId"],
         opponentUserId: json["opponentUserId"],
         assignedAdminId: json["assignedAdminId"],
-        disputeNumber: json["disputeNumber"],
+        number: json["number"],
         status: json["status"],
         reason: json["reason"],
         openOnQuestStatus: json["openOnQuestStatus"],
@@ -71,7 +71,7 @@ class DisputeModel {
         "openDisputeUserId": openDisputeUserId,
         "opponentUserId": opponentUserId,
         "assignedAdminId": assignedAdminId,
-        "disputeNumber": disputeNumber,
+        "number": number,
         "status": status,
         "reason": reason,
         "openOnQuestStatus": openOnQuestStatus,

@@ -113,20 +113,20 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   void sortQuests() {
     active.sort((key2, key1) {
-      return key1.createdAt.millisecondsSinceEpoch
-          .compareTo(key2.createdAt.millisecondsSinceEpoch);
+      return key1.createdAt!.millisecondsSinceEpoch
+          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
     });
     starred.sort((key2, key1) {
-      return key1.createdAt.millisecondsSinceEpoch
-          .compareTo(key2.createdAt.millisecondsSinceEpoch);
+      return key1.createdAt!.millisecondsSinceEpoch
+          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
     });
     performed.sort((key2, key1) {
-      return key1.createdAt.millisecondsSinceEpoch
-          .compareTo(key2.createdAt.millisecondsSinceEpoch);
+      return key1.createdAt!.millisecondsSinceEpoch
+          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
     });
     invited.sort((key2, key1) {
-      return key1.createdAt.millisecondsSinceEpoch
-          .compareTo(key2.createdAt.millisecondsSinceEpoch);
+      return key1.createdAt!.millisecondsSinceEpoch
+          .compareTo(key2.createdAt!.millisecondsSinceEpoch);
     });
   }
 
@@ -216,7 +216,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           active.addAll(await _apiProvider.getEmployerQuests(
             sort: sort,
             offset: this.offsetActive,
-            statuses: [0, 1, 3, 4],
+            statuses: [-2, 0, 1, 3, 4],
             invited: false,
             me: true,
           ));
@@ -253,7 +253,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           active.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetActive,
             sort: sort,
-            statuses: [3, 4],
+            statuses: [-2, 3, 4],
             me: true,
           ));
 

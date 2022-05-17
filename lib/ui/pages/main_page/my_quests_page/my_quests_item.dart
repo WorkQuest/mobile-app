@@ -55,11 +55,11 @@ class MyQuestsItem extends StatelessWidget {
           children: [
             if (!isExpanded)
               QuestHeader(
-                itemType,
-                questInfo.status,
-                true,
-                false,
-                true,
+                itemType: itemType,
+                questStatus: questInfo.status,
+                rounded: true,
+                responded: false,
+                forMe: true,
               ),
             Row(
               children: [
@@ -68,14 +68,14 @@ class MyQuestsItem extends StatelessWidget {
                     child: UserAvatar(
                       width: 30,
                       height: 30,
-                      url: questInfo.user.avatar?.url,
+                      url: questInfo.user!.avatar?.url,
                     )),
                 const SizedBox(
                   width: 5,
                 ),
                 Expanded(
                   child: Text(
-                    questInfo.user.firstName + " " + questInfo.user.lastName,
+                    questInfo.user!.firstName + " " + questInfo.user!.lastName,
                     style: TextStyle(fontSize: 16),
                     overflow: TextOverflow.ellipsis,
                   ),

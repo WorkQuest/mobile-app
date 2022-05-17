@@ -106,8 +106,8 @@ class ClientService implements ClientServiceI {
           addressToken = AddressCoins.wEth;
           break;
       }
-      final contract =
-      Erc20(address: EthereumAddress.fromHex(addressToken), client: _client);
+      final contract = Erc20(
+          address: EthereumAddress.fromHex(addressToken), client: _client);
       hash = await contract.transfer(
         // myAddress,
         EthereumAddress.fromHex(address),
@@ -308,6 +308,7 @@ extension HandleEvent on ClientService {
   Future<void> handleEvent({
     required WQContractFunctions function,
     required String contractAddress,
+    required String? value,
     List<dynamic> params = const [],
   }) async {
     final contract = await getDeployedContract("WorkQuest", contractAddress);
@@ -316,6 +317,12 @@ extension HandleEvent on ClientService {
       contract: contract,
       function: ethFunction,
       params: params,
+      value: value != null
+          ? EtherAmount.fromUnitAndValue(
+              EtherUnit.wei,
+              BigInt.from(double.parse(value) * pow(10, 18)),
+            )
+          : null,
     );
   }
 }

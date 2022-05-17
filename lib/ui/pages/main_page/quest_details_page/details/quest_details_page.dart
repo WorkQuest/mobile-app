@@ -120,7 +120,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(100),
                                     child: Image.network(
-                                      storeQuest.questInfo!.user.avatar?.url ??
+                                      storeQuest.questInfo!.user!.avatar?.url ??
                                           "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
                                       width: 30,
                                       height: 30,
@@ -130,7 +130,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(
-                                      "${storeQuest.questInfo!.user.firstName} ${storeQuest.questInfo!.user.lastName}",
+                                      "${storeQuest.questInfo!.user!.firstName} ${storeQuest.questInfo!.user!.lastName}",
                                       style: TextStyle(fontSize: 16),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -208,7 +208,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       ],
                       Text(
                         DateFormat('dd MMMM yyyy, kk:mm')
-                            .format(storeQuest.questInfo!.createdAt),
+                            .format(storeQuest.questInfo!.createdAt!),
                         style: TextStyle(
                           color: Color(0xFFAAB0B9),
                           fontSize: 12,
@@ -218,8 +218,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       InkWell(
                         onTap: () {
                           MapsLauncher.launchCoordinates(
-                            storeQuest.questInfo!.locationCode.latitude,
-                            storeQuest.questInfo!.locationCode.longitude,
+                            storeQuest.questInfo!.locationCode!.latitude,
+                            storeQuest.questInfo!.locationCode!.longitude,
                           );
                         },
                         child: Container(
@@ -237,9 +237,10 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                 initialCameraPosition: CameraPosition(
                                   bearing: 0,
                                   target: LatLng(
-                                    storeQuest.questInfo!.locationCode.latitude,
                                     storeQuest
-                                        .questInfo!.locationCode.longitude,
+                                        .questInfo!.locationCode!.latitude,
+                                    storeQuest
+                                        .questInfo!.locationCode!.longitude,
                                   ),
                                   zoom: 15.0,
                                 ),
@@ -353,13 +354,13 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   Widget tagEmployment() {
     String employment = "";
     switch (widget.questInfo.employment) {
-      case "fullTime":
+      case "FullTime":
         employment = "Full time";
         break;
-      case "partTime":
+      case "PartTime":
         employment = "Part time";
         break;
-      case "fixedTerm":
+      case "FixedTerm":
         employment = "Fixed term";
         break;
     }

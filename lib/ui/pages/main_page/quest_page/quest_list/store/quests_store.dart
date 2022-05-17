@@ -92,6 +92,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   List<String> workplaces = [];
 
+  List<String> payPeriod = [];
+
   List<int> employeeRatings = [];
 
   List<int> priorities = [];
@@ -122,6 +124,10 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     sort = value;
   }
 
+  setPayPeriod(List<String> value) {
+    payPeriod = value;
+  }
+
   setSkillFilters(List<String> value) {
     selectedSkill = value;
   }
@@ -140,6 +146,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   void clearFilters() {
     employments.clear();
+    payPeriod.clear();
     workplaces.clear();
     priorities.clear();
     selectedSkill.clear();
@@ -159,8 +166,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     String result = '';
     if (isWorker) {
       if (fromPrice.isNotEmpty)
-        result += '&betweenWagePerHour[from]=$fromPrice';
-      if (toPrice.isNotEmpty) result += '&betweenWagePerHour[to]=$toPrice';
+        result += '&betweenCostPerHour[from]=$fromPrice';
+      if (toPrice.isNotEmpty) result += '&betweenCostPerHour[to]=$toPrice';
     } else {
       if (fromPrice.isNotEmpty) result += '&priceBetween[from]=$fromPrice';
       if (toPrice.isNotEmpty) result += '&priceBetween[to]=$toPrice';
@@ -289,6 +296,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
           sort: this.sort,
           limit: this.limit,
           workplace: workplaces,
+          payPeriod: payPeriod,
           priority: priorities,
           ratingStatus: employeeRatings,
           specializations: selectedSkill,
@@ -317,6 +325,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
           employment: employments,
           workplace: workplaces,
           priority: priorities,
+          payPeriod: payPeriod,
           offset: this.offset,
           limit: this.limit,
           sort: this.sort,
@@ -352,6 +361,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
           offset: this.offsetWorkers,
           limit: this.limit,
           workplace: workplaces,
+          payPeriod: payPeriod,
           priority: priorities,
           ratingStatus: employeeRatings,
           specializations: selectedSkill,

@@ -39,8 +39,10 @@ abstract class _DisputeStore extends IStore<bool> with Store {
       case 0:
         return status = "dispute.statuses.pending";
       case 1:
-        return status = "dispute.statuses.inProgress";
+        return status = "dispute.statuses.created";
       case 2:
+        return status = "dispute.statuses.inProgress";
+      case 3:
         return status = "dispute.statuses.closed";
     }
     return status;

@@ -181,7 +181,7 @@ class _DisputePageState extends State<DisputePage> {
               Padding(
                 padding: EdgeInsets.only(top: 9),
                 child: Text(
-                  "№${store.dispute!.disputeNumber}",
+                  "№${store.dispute!.number}",
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     color: Color(0xFF7C838D),
@@ -198,7 +198,7 @@ class _DisputePageState extends State<DisputePage> {
                   store.getStatus(store.dispute!.status).tr(),
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
-                    color: Colors.yellow,
+                    color: getColor(store.dispute!.status),
                     fontSize: 10.0,
                   ),
                 ),
@@ -208,5 +208,19 @@ class _DisputePageState extends State<DisputePage> {
         ),
       ),
     );
+  }
+
+  Color getColor(int status) {
+    switch (status) {
+      case 0:
+        return Colors.yellow;
+      case 1:
+        return Colors.blue;
+      case 2:
+        return Colors.yellow;
+      case 3:
+        return Colors.green;
+    }
+    return Colors.green;
   }
 }

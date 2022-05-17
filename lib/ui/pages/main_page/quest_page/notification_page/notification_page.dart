@@ -189,8 +189,14 @@ class _NotificationView extends StatelessWidget {
                       AlertDialogUtils.showAlertDialog(
                         context,
                         title: Text("Are you sure?"),
-                        content: Text(
-                          "Do you really want to delete this notification?",
+                        content: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 25.0,
+                            top: 16,
+                          ),
+                          child: Text(
+                            "Do you really want \nto delete this notification?",
+                          ),
                         ),
                         needCancel: true,
                         titleCancel: "Cancel",

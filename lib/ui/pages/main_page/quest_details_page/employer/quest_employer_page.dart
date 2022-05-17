@@ -8,6 +8,7 @@ import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
@@ -118,11 +119,16 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             if ((widget.questInfo.status == 3 ||
                     widget.questInfo.status == 4) &&
                 value == "chat.report") {
-              AlertDialogUtils.showInfoAlertDialog(
+              await Navigator.pushNamed(
                 context,
-                title: 'Warning'.tr(),
-                content: 'Service temporarily unavailable',
+                OpenDisputePage.routeName,
+                arguments: store.quest.value!,
               );
+              // AlertDialogUtils.showInfoAlertDialog(
+              //   context,
+              //   title: 'Warning'.tr(),
+              //   content: 'Service temporarily unavailable',
+              // );
             }
           },
           itemBuilder: (BuildContext context) {
@@ -160,14 +166,14 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   @override
   Widget questHeader() {
     return QuestHeader(
-      storeQuest.getQuestType(
+      itemType: storeQuest.getQuestType(
         store.quest.value!,
         profile!.userData!.role,
       ),
-      store.quest.value!.status,
-      false,
-      false,
-      true,
+      questStatus: store.quest.value!.status,
+      rounded: false,
+      responded: false,
+      forMe: true,
     );
   }
 

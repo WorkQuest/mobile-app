@@ -88,6 +88,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       await ClientService().handleEvent(
         function: WQContractFunctions.acceptJob,
         contractAddress: quest.value!.contractAddress!,
+        value: null,
       );
       await _getQuest();
       this.onSuccess(true);
@@ -104,6 +105,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       ClientService().handleEvent(
         function: WQContractFunctions.declineJob,
         contractAddress: quest.value!.contractAddress!,
+        value: null,
       );
       await _getQuest();
       this.onSuccess(true);
@@ -120,6 +122,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       await ClientService().handleEvent(
         function: WQContractFunctions.acceptJob,
         contractAddress: quest.value!.contractAddress!,
+        value: null,
       );
       await _getQuest();
       this.onSuccess(true);
@@ -136,6 +139,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       ClientService().handleEvent(
         function: WQContractFunctions.declineJob,
         contractAddress: quest.value!.contractAddress!,
+        value: null,
       );
       await _getQuest();
       this.onSuccess(true);
@@ -152,6 +156,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       await ClientService().handleEvent(
         function: WQContractFunctions.verificationJob,
         contractAddress: quest.value!.contractAddress!,
+        value: null,
       );
       await _getQuest();
       this.onSuccess(true);

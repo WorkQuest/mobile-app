@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:app/http/api_provider.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/service/client_service.dart';
@@ -34,6 +37,8 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
   @observable
   String description = '';
 
+  String fee = "";
+
   bool isButtonEnable() =>
       theme != "dispute.theme" && description.isNotEmpty && !this.isLoading;
 
@@ -69,36 +74,49 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
   String getTheme() {
     switch (theme) {
       case "chat.disputeTheme.noResponse":
-        return themeValue = "noAnswer";
+        return themeValue = "NoAnswer";
       case "chat.disputeTheme.badlyDone":
-        return themeValue = "poorlyDoneJob";
+        return themeValue = "PoorlyDoneJob";
       case "chat.disputeTheme.additionalRequirements":
-        return themeValue = "additionalRequirement";
+        return themeValue = "AdditionalRequirement";
       case "chat.disputeTheme.inconsistencies":
-        return themeValue = "requirementDoesNotMatch";
+        return themeValue = "RequirementDoesNotMatch";
       case "chat.disputeTheme.notConfirmed":
-        return themeValue = "noConfirmationOfComplete";
+        return themeValue = "NoConfirmationOfComplete";
       case "chat.disputeTheme.anotherReason":
-        return themeValue = "anotherReason";
+        return themeValue = "AnotherReason";
     }
     return themeValue;
+  }
+
+  Future<void> getFee() async {
+    try {
+      final gas = await ClientService().getGas();
+      fee = (1 + (gas.getInWei.toInt() / pow(10, 18))).toStringAsFixed(17);
+    } on SocketException catch (_) {
+      onError("Lost connection to server");
+    }
   }
 
   Future<void> openDispute(String questId, String contractAddress) async {
     try {
       this.onLoading();
-      await ClientService().handleEvent(
-        function: WQContractFunctions.arbitration,
-        contractAddress: contractAddress,
+      final result = await _apiProvider.openDispute(
+        questId: questId,
+        reason: getTheme(),
+        problemDescription: description,
       );
-      // await _apiProvider.openDispute(
-      //   questId: questId,
-      //   reason: getTheme(),
-      //   problemDescription: description,
-      // );
-      this.onSuccess(true);
-    } on Exception catch (e) {
-      onError(e.toString());
+      if (result) {
+        await ClientService().handleEvent(
+          function: WQContractFunctions.arbitration,
+          contractAddress: contractAddress,
+          value: "1",
+        );
+        this.onSuccess(true);
+      } else
+        this.onError("Dispute not created");
+    } catch (e) {
+      this.onError(e.toString());
     }
   }
 }

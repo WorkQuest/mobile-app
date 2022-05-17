@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../wallet_page/confirm_transaction_dialog.dart';
 import 'store/open_dispute_store.dart';
 
 class OpenDisputePage extends StatefulWidget {
@@ -42,16 +45,40 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
           builder: (_) => ElevatedButton(
             onPressed: store.isButtonEnable()
                 ? () async {
-                    await store.openDispute(
-                      widget.quest.id,
-                      widget.quest.contractAddress!,
+                    await store.getFee();
+                    await confirmTransaction(
+                      context,
+                      fee: store.fee,
+                      transaction: "Transaction info",
+                      address: widget.quest.contractAddress!,
+                      amount: null,
+                      onPress: () async {
+                        await store.openDispute(
+                          widget.quest.id,
+                          widget.quest.contractAddress!,
+                        );
+                        Navigator.pop(context);
+                      },
                     );
-                    if (store.isSuccess) {
-                      await AlertDialogUtils.showSuccessDialog(context);
-                      widget.quest.status = -2;
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    }
+                    AlertDialogUtils.showLoadingDialog(context);
+                    Timer.periodic(Duration(seconds: 1), (timer) async {
+                      if (!store.isLoading) {
+                        timer.cancel();
+                        Navigator.pop(context);
+                        if (store.isSuccess) {
+                          await AlertDialogUtils.showSuccessDialog(context);
+                          widget.quest.status = -2;
+                        }
+                        setState(() {});
+                        Navigator.pop(context);
+                        if (!store.isSuccess)
+                          await AlertDialogUtils.showInfoAlertDialog(
+                            context,
+                            title: "Warning",
+                            content: "Dispute not created",
+                          );
+                      }
+                    });
                   }
                 : null,
             child: Text(

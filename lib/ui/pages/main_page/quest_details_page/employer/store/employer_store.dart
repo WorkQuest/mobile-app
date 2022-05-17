@@ -103,6 +103,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
         params: [
           EthereumAddress.fromHex(user.walletAddress!),
         ],
+        value: null,
       );
       await _getQuest();
       this.onSuccess(true);
@@ -122,6 +123,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       await ClientService().handleEvent(
         function: WQContractFunctions.acceptJobResult,
         contractAddress: quest.value!.contractAddress!,
+        value: null,
       );
       await _getQuest();
       this.onSuccess(true);
@@ -142,6 +144,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       await ClientService().handleEvent(
         function: WQContractFunctions.cancelJob,
         contractAddress: quest.value!.contractAddress!,
+        value: null,
       );
       this.onSuccess(true);
     } catch (e, trace) {
