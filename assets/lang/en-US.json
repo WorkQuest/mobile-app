@@ -289,6 +289,7 @@
     "notification": {
       "QuestEditedOnContract": "Quest edited on contract",
       "QuestStatusUpdated": "Quest status updated",
+      "questStatusUpdated": "Quest status updated",
       "QuestEndSoon": "Quest end soon",
       "OpenDispute": "Open dispute",
       "QuestStarted": "Quest started",
@@ -305,7 +306,8 @@
       "WaitWorker": "Wait worker",
       "WaitConfirm": "Wait confirm",
       "QuestEdited": "Quest edited",
-      "WorkerRespondedToQuest": "Worker responded to quest"
+      "WorkerRespondedToQuest": "Worker responded to quest",
+      "workerRespondedToQuest": "Worker responded to quest"
     },
     "youResponded": "You responded",
     "title": "Quest Title",
@@ -322,12 +324,28 @@
       "workInOffice": "Work in the office",
       "bothVariant": "Both options"
     },
+    "payPeriod": {
+      "title": "Pay period",
+      "hourly": "Hourly",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "biWeekly": "BiWeekly",
+      "semiMonthly": "Semi monthly",
+      "monthly": "Monthly",
+      "quarterly": "Quarterly",
+      "semiAnnually": "Semi annually",
+      "annually": "Annually",
+      "fixedPeriod": "Fixed period",
+      "byAgreement": "By agreement"
+    },
     "chooseWorker": "Choose a worker",
     "employment": {
       "title": "Employment",
       "fullTime": "Full time",
       "partTime": "Part time",
-      "fixedTerm": "Fixed term"
+      "fixedTerm": "Fixed term",
+      "RemoteWork": "Remote work",
+      "EmploymentContract": "Employment contract"
     },
     "addNewQuest": "Add new quest",
     "youDontHaveAny": "You don't have any",
@@ -420,7 +438,8 @@
         "fullTime": "Full-time",
         "partTime": "Part-time",
         "fixedTerm": "Fixed term",
-        "contract": "Contract"
+        "remoteWork": "Remote work",
+        "employmentContract": "Employment contract"
       },
       "sortByEmployeeRating": {
         "selectAll": "Select all",
@@ -1371,6 +1390,7 @@
   "dispute": {
     "statuses": {
       "pending": "Pending",
+      "created": "Created",
       "inProgress": "In progress",
       "closed": "Completed"
     },

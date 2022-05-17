@@ -14,6 +14,7 @@ class CreateQuestRequestModel {
   List media;
   List<String> specializationKeys;
   String employment;
+  String payPeriod;
   int adType;
 
   CreateQuestRequestModel({
@@ -23,6 +24,7 @@ class CreateQuestRequestModel {
     required this.priority,
     required this.employment,
     required this.specializationKeys,
+    required this.payPeriod,
     // required this.locationPlaceName,
     required this.workplace,
     required this.title,
@@ -36,6 +38,7 @@ class CreateQuestRequestModel {
     questData['priority'] = this.priority;
     questData['workplace'] = this.workplace;
     questData['locationFull'] = this.location.toJson();
+    questData['payPeriod'] = this.payPeriod;
 
     // questData['locationPlaceName'] = this.locationPlaceName;
     questData['title'] = this.title;
@@ -43,7 +46,7 @@ class CreateQuestRequestModel {
     questData['medias'] = this.media;
     questData['description'] = this.description;
     questData['price'] = this.price;
-    questData['employment'] = this.employment;
+    questData['typeOfEmployment'] = this.employment;
     return questData;
   }
 }

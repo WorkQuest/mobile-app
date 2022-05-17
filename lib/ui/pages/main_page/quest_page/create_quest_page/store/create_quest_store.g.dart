@@ -84,6 +84,21 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
+  final _$payPeriodAtom = Atom(name: '_CreateQuestStore.payPeriod');
+
+  @override
+  String get payPeriod {
+    _$payPeriodAtom.reportRead();
+    return super.payPeriod;
+  }
+
+  @override
+  set payPeriod(String value) {
+    _$payPeriodAtom.reportWrite(value, super.payPeriod, () {
+      super.payPeriod = value;
+    });
+  }
+
   final _$categoryAtom = Atom(name: '_CreateQuestStore.category');
 
   @override
@@ -385,6 +400,17 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
+  void changedPayPeriod(String value) {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.changedPayPeriod');
+    try {
+      return super.changedPayPeriod(value);
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void changedDistantWork(String selectedEmployment) {
     final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
         name: '_CreateQuestStore.changedDistantWork');
@@ -413,6 +439,7 @@ employment: ${employment},
 employmentValue: ${employmentValue},
 workplaceValue: ${workplaceValue},
 workplace: ${workplace},
+payPeriod: ${payPeriod},
 category: ${category},
 categoryValue: ${categoryValue},
 priority: ${priority},

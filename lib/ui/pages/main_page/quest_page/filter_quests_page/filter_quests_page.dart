@@ -242,6 +242,12 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                           value ?? false;
                                     },
                                   ),
+                                  _checkButton(
+                                    title: "quests.payPeriod.title".tr(),
+                                    list: storeFilter!.sortByPayPeriod,
+                                    selected: storeFilter!.selectPayPeriod,
+                                    onChange: storeFilter!.setSelectedPayPeriod,
+                                  ),
                                 ],
                               )
                             : Column(
@@ -265,6 +271,12 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                     list: storeFilter!.sortByWorkplace,
                                     selected: storeFilter!.selectWorkplace,
                                     onChange: storeFilter!.setSelectedWorkplace,
+                                  ),
+                                  _checkButton(
+                                    title: "quests.payPeriod.title".tr(),
+                                    list: storeFilter!.sortByPayPeriod,
+                                    selected: storeFilter!.selectPayPeriod,
+                                    onChange: storeFilter!.setSelectedPayPeriod,
                                   ),
                                 ],
                               ),
@@ -307,6 +319,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                 storeQuest.setPriority(storeFilter!.getPriorityValue());
                 storeQuest.setSortBy(storeFilter!.getSortByValue());
                 storeQuest.setEmployeeRating(storeFilter!.getEmployeeRating());
+                storeQuest.setPayPeriod(storeFilter!.getPayPeriodValue());
                 storeQuest.setPrice(
                     fromPriceController.text, toPriceController.text);
                 storeQuest.setSkillFilters(storeFilter!.selectedSkill);

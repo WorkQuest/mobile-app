@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -40,9 +39,11 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   ];
 
   final List<String> employmentList = [
-    "quests.employment.fullTime".tr(),
-    "quests.employment.partTime".tr(),
-    "quests.employment.fixedTerm".tr(),
+    "Full time",
+    "Part time",
+    "Fixed term",
+    "Remote work",
+    "Employment contract",
   ];
 
   final List<String> distantWorkList = [
@@ -51,19 +52,39 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
     "Both variant",
   ];
 
+  final List<String> payPeriodList = [
+    "quests.payPeriod.hourly",
+    "quests.payPeriod.daily",
+    "quests.payPeriod.weekly",
+    "quests.payPeriod.biWeekly",
+    "quests.payPeriod.semiMonthly",
+    "quests.payPeriod.monthly",
+    "quests.payPeriod.quarterly",
+    "quests.payPeriod.semiAnnually",
+    "quests.payPeriod.annually",
+    "quests.payPeriod.fixedPeriod",
+    "quests.payPeriod.byAgreement",
+  ];
+
   /// location, runtime, images and videos ,priority undone
 
   @observable
   String employment = "Full time";
 
   @observable
-  String employmentValue = "fullTime";
+  String employmentValue = "FullTime";
 
   @observable
-  String workplaceValue = "distant";
+  String workplaceValue = "Remote";
 
   @observable
   String workplace = "Distant work";
+
+  @observable
+  String payPeriod = "Hourly";
+
+  @observable
+  String payPeriodValue = "Hourly";
 
   @observable
   String category = 'Choose';
@@ -129,6 +150,9 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       employment = selectedEmployment;
 
   @action
+  void changedPayPeriod(String value) => payPeriod = value;
+
+  @action
   void changedDistantWork(String selectedEmployment) =>
       workplace = selectedEmployment;
 
@@ -149,11 +173,11 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   String getWorkplaceValue() {
     switch (workplace) {
       case "Distant work":
-        return workplaceValue = "distant";
+        return workplaceValue = "Remote";
       case "Work in the office":
-        return workplaceValue = "office";
+        return workplaceValue = "InOffice";
       case "Both variant":
-        return workplaceValue = "both";
+        return workplaceValue = "Hybrid";
     }
     return workplaceValue;
   }
@@ -161,25 +185,85 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   String getEmploymentValue() {
     switch (employment) {
       case "Full time":
-        return employmentValue = "fullTime";
+        return employmentValue = "FullTime";
       case "Part time":
-        return employmentValue = "partTime";
+        return employmentValue = "PartTime";
       case "Fixed term":
-        return employmentValue = "fixedTerm";
+        return employmentValue = "FixedTerm";
+      case "Remote Work":
+        return employmentValue = "RemoteWork";
+      case "Employment Contract":
+        return employmentValue = "EmploymentContract";
     }
     return employmentValue;
   }
 
   String getWorkplace(String workplaceValue) {
     switch (workplaceValue) {
-      case "distant":
+      case "Remote":
         return workplace = "Distant work";
-      case "office":
+      case "InOffice":
         return workplace = "Work in the office";
-      case "both":
+      case "Hybrid":
         return workplace = "Both variant";
     }
     return workplace;
+  }
+
+  String getPayPeriodValue() {
+    switch (payPeriod) {
+      case "Hourly":
+        return payPeriodValue = "Hourly";
+      case "Daily":
+        return payPeriodValue = "Daily";
+      case "Weekly":
+        return payPeriodValue = "Weekly";
+      case "BiWeekly":
+        return payPeriodValue = "BiWeekly";
+      case "Semi monthly":
+        return payPeriodValue = "SemiMonthly";
+      case "Monthly":
+        return payPeriodValue = "Monthly";
+      case "Quarterly":
+        return payPeriodValue = "Quarterly";
+      case "Semi annually":
+        return payPeriodValue = "SemiAnnually";
+      case "Annually":
+        return payPeriodValue = "Annually";
+      case "Fixed period":
+        return payPeriodValue = "FixedPeriod";
+      case "By agreement":
+        return payPeriodValue = "ByAgreement";
+    }
+    return payPeriodValue;
+  }
+
+  String getPayPeriod(String value) {
+    switch (value) {
+      case "Hourly":
+        return payPeriod = "Hourly";
+      case "Daily":
+        return payPeriod = "Daily";
+      case "Weekly":
+        return payPeriod = "Weekly";
+      case "BiWeekly":
+        return payPeriod = "BiWeekly";
+      case "SemiMonthly":
+        return payPeriod = "Semi monthly";
+      case "Monthly":
+        return payPeriod = "Monthly";
+      case "Quarterly":
+        return payPeriod = "Quarterly";
+      case "SemiAnnually":
+        return payPeriod = "Semi annually";
+      case "Annually":
+        return payPeriod = "Annually";
+      case "FixedPeriod":
+        return payPeriod = "Fixed period";
+      case "ByAgreement":
+        return payPeriod = "By agreement";
+    }
+    return payPeriod;
   }
 
   String getEmployment(String employmentValue) {
@@ -190,6 +274,10 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         return employment = "Part time";
       case "fixedTerm":
         return employment = "Fixed term";
+      case "RemoteWork":
+        return employment = "Remote Work";
+      case "EmploymentContract":
+        return employment = "Employment Contract";
     }
     return employment;
   }
@@ -256,6 +344,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         employment: getEmploymentValue(),
         workplace: getWorkplaceValue(),
+        payPeriod: getPayPeriodValue(),
         specializationKeys: skillFilters,
         priority: getPriority(),
         location: location,
@@ -269,16 +358,18 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       );
       if (isEdit) {
         await ClientService().handleEvent(
-            function: WQContractFunctions.editJob,
-            contractAddress: contractAddress,
-            params: [
-              Uint8List.fromList(
-                utf8.encode(
-                  description.padRight(32).substring(0, 32),
-                ),
+          function: WQContractFunctions.editJob,
+          contractAddress: contractAddress,
+          params: [
+            Uint8List.fromList(
+              utf8.encode(
+                description.padRight(32).substring(0, 32),
               ),
-              BigInt.parse(price)
-            ]);
+            ),
+            BigInt.parse(price)
+          ],
+          value: null,
+        );
         await apiProvider.editQuest(
           quest: questModel,
           questId: questId,

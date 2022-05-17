@@ -35,6 +35,7 @@ class BaseQuestResponse with ClusterItem {
     required this.employment,
     required this.questSpecializations,
     required this.workplace,
+    required this.payPeriod,
     required this.invited,
     required this.responded,
     required this.yourReview,
@@ -47,10 +48,10 @@ class BaseQuestResponse with ClusterItem {
   String userId;
   String? category;
   List<Media>? medias;
-  User user;
+  User? user;
   int status;
   int priority;
-  LocationCode locationCode;
+  LocationCode? locationCode;
   String locationPlaceName;
   String title;
   String? assignedWorkerId;
@@ -58,55 +59,60 @@ class BaseQuestResponse with ClusterItem {
   String? nonce;
   String description;
   String price;
-  DateTime createdAt;
+  DateTime? createdAt;
   bool star;
   AssignedWorker? assignedWorker;
   String employment;
   List<String> questSpecializations;
   String workplace;
+  String payPeriod;
   Invited? invited;
   Responded? responded;
   YourReview? yourReview;
   QuestChat? questChat;
   bool showAnimation = true;
   RaiseView? raiseView;
-  dynamic openDispute;
+  OpenDispute? openDispute;
 
   factory BaseQuestResponse.fromJson(Map<String, dynamic> json) {
     return BaseQuestResponse(
       id: json["id"],
-      userId: json["userId"],
+      userId: json["userId"] ?? "",
       category: json["category"] == null ? null : json["category"],
       medias: json["medias"] == null
           ? null
           : (json["medias"] as List<dynamic>)
               .map((e) => Media.fromJson(e as Map<String, dynamic>))
               .toList(),
-      user: User.fromJson(json["user"]),
+      user: json["user"] == null ? null : User.fromJson(json["user"]),
       status: json["status"],
-      priority: json["priority"],
-      locationCode: LocationCode.fromJson(json["location"]),
-      locationPlaceName: json["locationPlaceName"],
-      title: json["title"],
-      assignedWorkerId: json["title"],
-      contractAddress: json["contractAddress"],
-      nonce: json["title"],
-      description: json["description"],
-      price: json["price"],
-      createdAt: DateTime.parse(json["createdAt"]),
+      priority: json["priority"] ?? 0,
+      locationCode: json["location"] == null
+          ? null
+          : LocationCode.fromJson(json["location"]),
+      locationPlaceName: json["locationPlaceName"] ?? "",
+      title: json["title"] ?? "",
+      assignedWorkerId: json["assignedWorkerId"] ?? "",
+      contractAddress: json["contractAddress"] ?? "",
+      nonce: json["nonce"] ?? "",
+      description: json["description"] ?? "",
+      price: json["price"] ?? "",
+      createdAt:
+          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
       star: json["star"] == null ? false : true,
       assignedWorker: json["assignedWorker"] == null
           ? null
           : AssignedWorker.fromJson(json["assignedWorker"]),
-      employment: json["employment"],
+      employment: json["typeOfEmployment"] ?? "",
+      payPeriod: json["payPeriod"] ?? "",
       questSpecializations: (List<Map<String, dynamic>> skills) {
         List<String> skillsString = [];
         for (var skill in skills) {
           skillsString.add(skill.values.toString());
         }
         return skillsString;
-      }([...json["questSpecializations"]]),
-      workplace: json["workplace"],
+      }([...json["questSpecializations"] ?? []]),
+      workplace: json["workplace"] ?? "",
       invited:
           json["invited"] == null ? null : Invited.fromJson(json["invited"]),
       responded: json["responded"] == null
@@ -146,6 +152,7 @@ class BaseQuestResponse with ClusterItem {
     this.employment = updateQuest.employment;
     this.questSpecializations = updateQuest.questSpecializations;
     this.workplace = updateQuest.workplace;
+    this.payPeriod = updateQuest.payPeriod;
     this.invited = updateQuest.invited;
     this.responded = updateQuest.responded;
     this.yourReview = updateQuest.yourReview;
@@ -159,14 +166,16 @@ class BaseQuestResponse with ClusterItem {
         "category": category,
         "status": status,
         "priority": priority,
-        "location": locationCode.toJson(),
+        "location": locationCode!.toJson(),
         "title": title,
         "description": description,
+        "payPeriod": payPeriod,
         "price": price,
-        "createdAt": createdAt.toIso8601String(),
+        "createdAt": createdAt!.toIso8601String(),
         "questChat": questChat,
       };
 
   @override
-  LatLng get location => LatLng(locationCode.latitude, locationCode.longitude);
+  LatLng get location =>
+      LatLng(locationCode!.latitude, locationCode!.longitude);
 }

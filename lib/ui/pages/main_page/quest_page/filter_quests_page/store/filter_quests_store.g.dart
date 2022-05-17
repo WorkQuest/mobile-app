@@ -64,21 +64,6 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     });
   }
 
-  final _$sortByAtom = Atom(name: 'FilterQuestsStoreBase.sortBy');
-
-  @override
-  List<String> get sortBy {
-    _$sortByAtom.reportRead();
-    return super.sortBy;
-  }
-
-  @override
-  set sortBy(List<String> value) {
-    _$sortByAtom.reportWrite(value, super.sortBy, () {
-      super.sortBy = value;
-    });
-  }
-
   final _$selectSortByAtom = Atom(name: 'FilterQuestsStoreBase.selectSortBy');
 
   @override
@@ -91,22 +76,6 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
   set selectSortBy(String value) {
     _$selectSortByAtom.reportWrite(value, super.selectSortBy, () {
       super.selectSortBy = value;
-    });
-  }
-
-  final _$sortByEmploymentAtom =
-      Atom(name: 'FilterQuestsStoreBase.sortByEmployment');
-
-  @override
-  ObservableList<String> get sortByEmployment {
-    _$sortByEmploymentAtom.reportRead();
-    return super.sortByEmployment;
-  }
-
-  @override
-  set sortByEmployment(ObservableList<String> value) {
-    _$sortByEmploymentAtom.reportWrite(value, super.sortByEmployment, () {
-      super.sortByEmployment = value;
     });
   }
 
@@ -141,39 +110,6 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     });
   }
 
-  final _$sortByPriorityAtom =
-      Atom(name: 'FilterQuestsStoreBase.sortByPriority');
-
-  @override
-  ObservableList<String> get sortByPriority {
-    _$sortByPriorityAtom.reportRead();
-    return super.sortByPriority;
-  }
-
-  @override
-  set sortByPriority(ObservableList<String> value) {
-    _$sortByPriorityAtom.reportWrite(value, super.sortByPriority, () {
-      super.sortByPriority = value;
-    });
-  }
-
-  final _$sortByEmployeeRatingAtom =
-      Atom(name: 'FilterQuestsStoreBase.sortByEmployeeRating');
-
-  @override
-  ObservableList<String> get sortByEmployeeRating {
-    _$sortByEmployeeRatingAtom.reportRead();
-    return super.sortByEmployeeRating;
-  }
-
-  @override
-  set sortByEmployeeRating(ObservableList<String> value) {
-    _$sortByEmployeeRatingAtom.reportWrite(value, super.sortByEmployeeRating,
-        () {
-      super.sortByEmployeeRating = value;
-    });
-  }
-
   final _$selectEmployeeRatingAtom =
       Atom(name: 'FilterQuestsStoreBase.selectEmployeeRating');
 
@@ -188,22 +124,6 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     _$selectEmployeeRatingAtom.reportWrite(value, super.selectEmployeeRating,
         () {
       super.selectEmployeeRating = value;
-    });
-  }
-
-  final _$sortByWorkplaceAtom =
-      Atom(name: 'FilterQuestsStoreBase.sortByWorkplace');
-
-  @override
-  ObservableList<String> get sortByWorkplace {
-    _$sortByWorkplaceAtom.reportRead();
-    return super.sortByWorkplace;
-  }
-
-  @override
-  set sortByWorkplace(ObservableList<String> value) {
-    _$sortByWorkplaceAtom.reportWrite(value, super.sortByWorkplace, () {
-      super.sortByWorkplace = value;
     });
   }
 
@@ -223,6 +143,22 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
     });
   }
 
+  final _$selectPayPeriodAtom =
+      Atom(name: 'FilterQuestsStoreBase.selectPayPeriod');
+
+  @override
+  ObservableList<bool> get selectPayPeriod {
+    _$selectPayPeriodAtom.reportRead();
+    return super.selectPayPeriod;
+  }
+
+  @override
+  set selectPayPeriod(ObservableList<bool> value) {
+    _$selectPayPeriodAtom.reportWrite(value, super.selectPayPeriod, () {
+      super.selectPayPeriod = value;
+    });
+  }
+
   final _$FilterQuestsStoreBaseActionController =
       ActionController(name: 'FilterQuestsStoreBase');
 
@@ -232,6 +168,17 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
         name: 'FilterQuestsStoreBase.setSelectedWorkplace');
     try {
       return super.setSelectedWorkplace(value, index);
+    } finally {
+      _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedPayPeriod(bool? value, int index) {
+    final _$actionInfo = _$FilterQuestsStoreBaseActionController.startAction(
+        name: 'FilterQuestsStoreBase.setSelectedPayPeriod');
+    try {
+      return super.setSelectedPayPeriod(value, index);
     } finally {
       _$FilterQuestsStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -353,16 +300,12 @@ mixin _$FilterQuestsStore on FilterQuestsStoreBase, Store {
 isLoading: ${isLoading},
 priority: ${priority},
 selectedSkillFilters: ${selectedSkillFilters},
-sortBy: ${sortBy},
 selectSortBy: ${selectSortBy},
-sortByEmployment: ${sortByEmployment},
 selectEmployment: ${selectEmployment},
 selectRating: ${selectRating},
-sortByPriority: ${sortByPriority},
-sortByEmployeeRating: ${sortByEmployeeRating},
 selectEmployeeRating: ${selectEmployeeRating},
-sortByWorkplace: ${sortByWorkplace},
 selectWorkplace: ${selectWorkplace},
+selectPayPeriod: ${selectPayPeriod},
 allSelected: ${allSelected}
     ''';
   }

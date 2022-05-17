@@ -271,6 +271,7 @@ extension QuestService on ApiProvider {
     List<String>? specializations,
     List<int> priority = const [],
     List<int> statuses = const [],
+    List<String> payPeriod = const [],
     List<String> workplace = const [],
     List<String> employment = const [],
   }) async {
@@ -293,6 +294,10 @@ extension QuestService on ApiProvider {
       print(text);
       employments += "employments[]=$text&";
     });
+    String payPeriods = "";
+    payPeriod.forEach((text) {
+      payPeriods += "payPeriods[]=$text&";
+    });
     String search = '';
     if (searchWord.isNotEmpty) {
       search = 'q=$searchWord&';
@@ -300,7 +305,7 @@ extension QuestService on ApiProvider {
     final responseData = await httpClient.post(
       query:
           '/v1/get-quests?offset=$offset&limit=$limit&$workplaces$employments'
-          '$priorities$price&starred=$starred&$status$search$sort',
+          '$priorities$payPeriods$price&starred=$starred&$status$search$sort',
       data: {
         if (specializations != null) "specializations": specializations,
       },
@@ -324,6 +329,7 @@ extension QuestService on ApiProvider {
     List<int> priority = const [],
     List<int> ratingStatus = const [],
     List<String> workplace = const [],
+    List<String> payPeriod = const [],
     List<String>? specializations,
   }) async {
     String priorities = "";
@@ -333,6 +339,10 @@ extension QuestService on ApiProvider {
     });
     ratingStatus.forEach((text) {
       ratingStatuses += "ratingStatuses[]=$text&";
+    });
+    String payPeriods = "";
+    payPeriod.forEach((text) {
+      payPeriods += "payPeriods[]=$text&";
     });
     String workplaces = "";
     workplace.forEach((text) {
@@ -345,7 +355,7 @@ extension QuestService on ApiProvider {
     final responseData = await httpClient.post(
       query:
           '/v1/profile/get-workers?$search$priorities$ratingStatuses$workplaces'
-          '$sort&$price&offset=$offset&limit=$limit',
+          '$payPeriods$sort&$price&offset=$offset&limit=$limit',
       data: {
         "specializations": specializations ?? [],
       },
@@ -690,7 +700,7 @@ extension UserInfoService on ApiProvider {
         "firstName": userData.firstName,
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
         if (userData.role == UserRole.Worker)
-          "wagePerHour": userData.wagePerHour,
+          "costPerHour": userData.wagePerHour,
         if (userData.role == UserRole.Worker)
           "priority": userData.priority.index,
         if (userData.role == UserRole.Worker) "workplace": userData.workplace,
@@ -1090,22 +1100,24 @@ extension Disputes on ApiProvider {
     }
   }
 
-  Future<void> openDispute({
+  Future<bool> openDispute({
     String questId = "",
     String reason = "",
     String problemDescription = "",
   }) async {
     try {
       await httpClient.post(
-        query: '/v1/quest/$questId/open-dispute',
+        query: '/v1/quest/$questId/dispute',
         data: {
           "reason": reason,
           "problemDescription": problemDescription,
         },
       );
+      return true;
     } on Exception catch (e, trace) {
       print("ERROR: $e");
       print("ERROR: $trace");
+      return false;
     }
   }
 }
