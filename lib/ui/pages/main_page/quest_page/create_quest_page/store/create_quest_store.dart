@@ -343,7 +343,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       await sendImages(apiProvider);
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         employment: getEmploymentValue(),
-        workplace: getWorkplaceValue(),
+        workplace: "Hybrid",
         payPeriod: getPayPeriodValue(),
         specializationKeys: skillFilters,
         priority: getPriority(),

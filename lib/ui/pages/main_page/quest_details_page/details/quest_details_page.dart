@@ -363,6 +363,12 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
       case "FixedTerm":
         employment = "Fixed term";
         break;
+      case "RemoteWork":
+        employment = "Remote work";
+        break;
+      case "EmploymentContract":
+        employment = "Employment contract";
+        break;
     }
 
     return Container(

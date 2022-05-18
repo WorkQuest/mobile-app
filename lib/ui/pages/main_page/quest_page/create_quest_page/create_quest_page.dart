@@ -265,60 +265,60 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         ),
                       ),
                     ),
-                    titledField(
-                      "quests.distantWork.title".tr(),
-                      Container(
-                        height: 50,
-                        padding: EdgeInsets.symmetric(horizontal: 15.0),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFF7F8FA),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(6.0),
-                          ),
-                        ),
-                        alignment: Alignment.centerLeft,
-                        child: Observer(
-                          builder: (_) => Platform.isIOS
-                              ? dropDownWithModalSheep(
-                                  value: store.workplace,
-                                  children: store.distantWorkList,
-                                  onPressed: (value) {
-                                    store.changedDistantWork(value);
-                                  },
-                                )
-                              : DropdownButtonHideUnderline(
-                                  child: DropdownButton(
-                                    isExpanded: true,
-                                    value: store.workplace,
-                                    onChanged: (String? value) {
-                                      store.changedDistantWork(value!);
-                                    },
-                                    items: store.distantWorkList
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: new Text(value),
-                                      );
-                                    }).toList(),
-                                    icon: Icon(
-                                      Icons.arrow_drop_down,
-                                      size: 30,
-                                      color: Colors.blueAccent,
-                                    ),
-                                    hint: Text(
-                                      'mining.choose'.tr(),
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
+                    // titledField(
+                    //   "quests.distantWork.title".tr(),
+                    //   Container(
+                    //     height: 50,
+                    //     padding: EdgeInsets.symmetric(horizontal: 15.0),
+                    //     decoration: BoxDecoration(
+                    //       color: Color(0xFFF7F8FA),
+                    //       borderRadius: BorderRadius.all(
+                    //         Radius.circular(6.0),
+                    //       ),
+                    //     ),
+                    //     alignment: Alignment.centerLeft,
+                    //     child: Observer(
+                    //       builder: (_) => Platform.isIOS
+                    //           ? dropDownWithModalSheep(
+                    //               value: store.workplace,
+                    //               children: store.distantWorkList,
+                    //               onPressed: (value) {
+                    //                 store.changedDistantWork(value);
+                    //               },
+                    //             )
+                    //           : DropdownButtonHideUnderline(
+                    //               child: DropdownButton(
+                    //                 isExpanded: true,
+                    //                 value: store.workplace,
+                    //                 onChanged: (String? value) {
+                    //                   store.changedDistantWork(value!);
+                    //                 },
+                    //                 items: store.distantWorkList
+                    //                     .map<DropdownMenuItem<String>>(
+                    //                         (String value) {
+                    //                   return DropdownMenuItem<String>(
+                    //                     value: value,
+                    //                     child: new Text(value),
+                    //                   );
+                    //                 }).toList(),
+                    //                 icon: Icon(
+                    //                   Icons.arrow_drop_down,
+                    //                   size: 30,
+                    //                   color: Colors.blueAccent,
+                    //                 ),
+                    //                 hint: Text(
+                    //                   'mining.choose'.tr(),
+                    //                   maxLines: 1,
+                    //                   style: TextStyle(
+                    //                     fontSize: 16,
+                    //                     color: Colors.grey,
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //     ),
+                    //   ),
+                    // ),
                     titledField(
                       "quests.payPeriod.title".tr(),
                       Container(
@@ -505,6 +505,11 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                           onPress: () async {
                                             store.createQuest();
                                             Navigator.pop(context);
+                                            if (store.isSuccess) {
+                                              Navigator.pop(context);
+                                              AlertDialogUtils
+                                                  .showSuccessDialog(context);
+                                            }
                                           },
                                         );
                                       }
