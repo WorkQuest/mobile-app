@@ -21,7 +21,7 @@ abstract class _WalletStore extends IStore<bool> with Store {
   _WalletStore(this._apiProvider);
 
   @observable
-  TYPE_COINS type = TYPE_COINS.WUSD;
+  TYPE_COINS type = TYPE_COINS.WQT;
 
   @action
   setType(TYPE_COINS value) => type = value;
