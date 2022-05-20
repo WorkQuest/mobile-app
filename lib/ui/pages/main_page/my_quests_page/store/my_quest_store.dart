@@ -51,6 +51,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   @observable
   ObservableList<BaseQuestResponse> invited = ObservableList.of([]);
 
+  List<BaseQuestResponse> allInvited = [];
+
   List<BaseQuestResponse> allQuests = [];
 
   bool loadActive = true;
@@ -180,10 +182,11 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   }
 
   void removeDuplicate() {
-    for (int i = 0; i < invited.length; i++) {
-      for (int j = 1; j < invited.length; j++)
-        if (invited[i].id == invited[j].id) invited.removeAt(j);
+    for (int i = 0; i < allInvited.length; i++) {
+      for (int j = 1; j < allInvited.length; j++)
+        if (allInvited[i].id == allInvited[j].id) allInvited.removeAt(j);
     }
+    invited .addAll(allInvited);
   }
 
   @action
@@ -203,6 +206,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         performed = ObservableList.of([]);
         starred = ObservableList.of([]);
         allQuests = [];
+        allInvited = [];
 
         loadActive = true;
         loadInvited = true;
@@ -222,7 +226,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           ));
 
         if (loadInvited)
-          invited.addAll(await _apiProvider.getEmployerQuests(
+          allInvited.addAll(await _apiProvider.getEmployerQuests(
             sort: sort,
             offset: this.offsetInvited,
             // statuses: [2],
@@ -231,7 +235,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           ));
 
         if (loadResponded)
-          invited.addAll(await _apiProvider.getEmployerQuests(
+          allInvited.addAll(await _apiProvider.getEmployerQuests(
             sort: sort,
             offset: this.offsetResponded,
             statuses: [2],
@@ -258,7 +262,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           ));
 
         if (loadInvited)
-          invited.addAll(await _apiProvider.getWorkerQuests(
+          allInvited.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetInvited,
             sort: sort,
             statuses: [2],
@@ -267,7 +271,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           ));
 
         if (loadResponded)
-          invited.addAll(await _apiProvider.getWorkerQuests(
+          allInvited.addAll(await _apiProvider.getWorkerQuests(
             sort: sort,
             offset: this.offsetResponded,
             statuses: [2],

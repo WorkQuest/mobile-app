@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_profile_store.dart';
+part of 'choose_quest_store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,23 +8,8 @@ part of 'user_profile_store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
-mixin _$UserProfileStore on _UserProfileStore, Store {
-  final _$userDataAtom = Atom(name: '_UserProfileStore.userData');
-
-  @override
-  ProfileMeResponse? get userData {
-    _$userDataAtom.reportRead();
-    return super.userData;
-  }
-
-  @override
-  set userData(ProfileMeResponse? value) {
-    _$userDataAtom.reportWrite(value, super.userData, () {
-      super.userData = value;
-    });
-  }
-
-  final _$questsAtom = Atom(name: '_UserProfileStore.quests');
+mixin _$ChooseQuestStore on _ChooseQuestStore, Store {
+  final _$questsAtom = Atom(name: '_ChooseQuestStore.quests');
 
   @override
   ObservableList<BaseQuestResponse> get quests {
@@ -39,7 +24,7 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
     });
   }
 
-  final _$questIdAtom = Atom(name: '_UserProfileStore.questId');
+  final _$questIdAtom = Atom(name: '_ChooseQuestStore.questId');
 
   @override
   String get questId {
@@ -54,7 +39,7 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
     });
   }
 
-  final _$contractAddressAtom = Atom(name: '_UserProfileStore.contractAddress');
+  final _$contractAddressAtom = Atom(name: '_ChooseQuestStore.contractAddress');
 
   @override
   String get contractAddress {
@@ -69,31 +54,50 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
     });
   }
 
-  final _$getProfileAsyncAction = AsyncAction('_UserProfileStore.getProfile');
+  final _$getUserAsyncAction = AsyncAction('_ChooseQuestStore.getUser');
 
   @override
-  Future<void> getProfile({required String userId}) {
-    return _$getProfileAsyncAction.run(() => super.getProfile(userId: userId));
+  Future<void> getUser({required String userId}) {
+    return _$getUserAsyncAction.run(() => super.getUser(userId: userId));
   }
 
-  final _$_UserProfileStoreActionController =
-      ActionController(name: '_UserProfileStore');
+  final _$getQuestsAsyncAction = AsyncAction('_ChooseQuestStore.getQuests');
+
+  @override
+  Future<void> getQuests(
+      {required String userId,
+      required bool newList,
+      required bool isProfileYours}) {
+    return _$getQuestsAsyncAction.run(() => super.getQuests(
+        userId: userId, newList: newList, isProfileYours: isProfileYours));
+  }
+
+  final _$startQuestAsyncAction = AsyncAction('_ChooseQuestStore.startQuest');
+
+  @override
+  Future<void> startQuest(
+      {required String userId, required String userAddress}) {
+    return _$startQuestAsyncAction
+        .run(() => super.startQuest(userId: userId, userAddress: userAddress));
+  }
+
+  final _$_ChooseQuestStoreActionController =
+      ActionController(name: '_ChooseQuestStore');
 
   @override
   void setQuest(String id, String contractAddress) {
-    final _$actionInfo = _$_UserProfileStoreActionController.startAction(
-        name: '_UserProfileStore.setQuest');
+    final _$actionInfo = _$_ChooseQuestStoreActionController.startAction(
+        name: '_ChooseQuestStore.setQuest');
     try {
       return super.setQuest(id, contractAddress);
     } finally {
-      _$_UserProfileStoreActionController.endAction(_$actionInfo);
+      _$_ChooseQuestStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
   String toString() {
     return '''
-userData: ${userData},
 quests: ${quests},
 questId: ${questId},
 contractAddress: ${contractAddress}

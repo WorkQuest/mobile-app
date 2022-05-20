@@ -1,6 +1,6 @@
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
-import 'package:app/ui/widgets/image_viewer_widget.dart';
+import 'package:app/ui/widgets/image_viewer/image_viewer_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -154,11 +154,11 @@ class _MessageCellState extends State<MessageCell> {
     loading = true;
     for (int i = 0; i < widget.mess.medias.length; i++) {
       filePath = await VideoThumbnail.thumbnailFile(
-            video: widget.mess.medias[i].url,
-            thumbnailPath: (await getTemporaryDirectory()).path,
-            imageFormat: ImageFormat.PNG,
-            quality: 100,
-          ) ??
+        video: widget.mess.medias[i].url,
+        thumbnailPath: (await getTemporaryDirectory()).path,
+        imageFormat: ImageFormat.PNG,
+        quality: 100,
+      ) ??
           "";
       pathList.add(filePath);
     }

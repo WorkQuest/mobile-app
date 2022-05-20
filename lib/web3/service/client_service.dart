@@ -43,8 +43,9 @@ abstract class ClientServiceI {
 
 @singleton
 class ClientService implements ClientServiceI {
-  static final apiUrl = "https://dev-node-nyc3.workquest.co";
-  static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
+  static final apiUrl = "https://dev-node-ams3.workquest.co/";
+
+  // static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
   final int _chainId = 20220112;
   final abiFactoryAddress = '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066';
 

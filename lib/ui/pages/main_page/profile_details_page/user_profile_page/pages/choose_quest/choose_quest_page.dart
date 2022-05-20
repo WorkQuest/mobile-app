@@ -1,5 +1,7 @@
-import 'package:app/enums.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
+import 'dart:async';
+
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -8,7 +10,7 @@ import 'package:provider/provider.dart';
 
 class ChooseQuestArguments {
   final String workerId;
-  final String workerAddress;
+  final String? workerAddress;
 
   ChooseQuestArguments({
     required this.workerId,
@@ -16,31 +18,33 @@ class ChooseQuestArguments {
   });
 }
 
-class ChooseQuest extends StatefulWidget {
-  static const String routeName = '/chooseQuest';
+class ChooseQuestPage extends StatefulWidget {
+  static const String routeName = '/chooseQuestPage';
 
-  const ChooseQuest({
+  const ChooseQuestPage({
     required this.arguments,
   });
 
   final ChooseQuestArguments arguments;
 
   @override
-  State<ChooseQuest> createState() => _ChooseQuestState();
+  State<ChooseQuestPage> createState() => _ChooseQuestPageState();
 }
 
-class _ChooseQuestState extends State<ChooseQuest> {
-  late UserProfileStore store;
+class _ChooseQuestPageState extends State<ChooseQuestPage> {
+  //TODO: CREATE NEW STORE
+  late ChooseQuestStore store;
 
   @override
   void initState() {
-    store = context.read<UserProfileStore>();
+    store = context.read<ChooseQuestStore>();
     store.getQuests(
       userId: widget.arguments.workerId,
-      role: UserRole.Worker,
       newList: true,
       isProfileYours: false,
     );
+    if (widget.arguments.workerAddress == null)
+      store.getUser(userId: widget.arguments.workerId);
     super.initState();
   }
 
@@ -81,7 +85,6 @@ class _ChooseQuestState extends State<ChooseQuest> {
                       !store.isLoading) {
                     store.getQuests(
                       userId: widget.arguments.workerId,
-                      role: UserRole.Worker,
                       newList: true,
                       isProfileYours: false,
                     );
@@ -113,7 +116,7 @@ class _ChooseQuestState extends State<ChooseQuest> {
 
   Widget buttonRow(
     BuildContext context,
-    UserProfileStore store,
+    ChooseQuestStore store,
   ) =>
       Padding(
         padding: const EdgeInsets.all(16.0),
@@ -146,14 +149,36 @@ class _ChooseQuestState extends State<ChooseQuest> {
                 builder: (_) => ElevatedButton(
                   onPressed: store.questId.isNotEmpty
                       ? () async {
-                          await store.startQuest(
-                            userId: widget.arguments.workerId,
-                            userAddress: widget.arguments.workerAddress,
+                          await store.getFee();
+                          await confirmTransaction(
+                            context,
+                            fee: store.fee,
+                            transaction: "Transaction info",
+                            address: store.quests
+                                .firstWhere(
+                                    (element) => element.id == store.questId)
+                                .contractAddress!,
+                            amount: null,
+                            onPress: () {
+                              store.startQuest(
+                                userId: widget.arguments.workerId,
+                                userAddress: widget.arguments.workerAddress ??
+                                    store.user!.walletAddress!,
+                              );
+                              Navigator.pop(context);
+                            },
                           );
-                          if (store.isSuccess) {
-                            Navigator.pop(context);
-                            await AlertDialogUtils.showSuccessDialog(context);
-                          }
+                          AlertDialogUtils.showLoadingDialog(context);
+                          Timer.periodic(Duration(seconds: 1), (timer) async {
+                            if (!store.isLoading) {
+                              timer.cancel();
+                              Navigator.pop(context);
+                              if (store.isSuccess)
+                                await AlertDialogUtils.showSuccessDialog(
+                                  context,
+                                );
+                            }
+                          });
                         }
                       : null,
                   child: Text(

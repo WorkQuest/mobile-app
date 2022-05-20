@@ -135,8 +135,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   Widget questHeader() {
-    print("myId: ${profile!.userData!.id}");
-    print("assignedWorkerId: ${store.quest.value!.assignedWorker?.id}");
     return QuestHeader(
       itemType: storeQuest.getQuestType(
         store.quest.value!,
@@ -163,7 +161,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   await Navigator.pushNamed(
                     context,
                     CreateReviewPage.routeName,
-                    arguments: storeQuest.questInfo,
+                    arguments: ReviewArguments(storeQuest.questInfo, null),
                   );
                   widget.questInfo.yourReview != null
                       ? profile!.review = true
@@ -191,7 +189,13 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               ),
             ],
           )
-        : SizedBox();
+        : store.quest.value!.status == 5 &&
+                profile!.review &&
+                (store.quest.value!.userId == profile!.userData!.id ||
+                    store.quest.value!.assignedWorker?.id ==
+                        profile!.userData!.id)
+            ? Text(store.quest.value!.yourReview!.message)
+            : SizedBox();
   }
 
   @override
@@ -534,18 +538,34 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           onTap: () async {
             _updateLoading();
             if (store.quest.value!.invited == null) {
-              await store.sendRejectOnQuest();
-              if (store.quest.value!.responded != null) {
-                store.quest.value!.responded?.status = -1;
-              }
-              store.setQuestStatus(1);
-              store.quest.value!.assignedWorker = null;
-              myQuestStore.deleteQuest(store.quest.value!.id);
-              myQuestStore.addQuest(
-                  store.quest.value!, store.quest.value!.star);
+              await sendTransaction(
+                onPress: () async {
+                  await store.sendRejectOnQuest();
+                  Navigator.pop(context);
+                },
+                nextStep: () {
+                  if (store.quest.value!.responded != null) {
+                    store.quest.value!.responded?.status = -1;
+                  }
+                  store.setQuestStatus(1);
+                  store.quest.value!.assignedWorker = null;
+                  myQuestStore.deleteQuest(store.quest.value!.id);
+                  myQuestStore.addQuest(
+                      store.quest.value!, store.quest.value!.star);
+                },
+              );
             } else {
-              await store.rejectInvite(store.quest.value!.invited!.id);
-              questStore.getQuests(true);
+              await sendTransaction(
+                onPress: () async {
+                  store.rejectInvite(store.quest.value!.invited!.id);
+                  // Navigator.pop(context);
+                },
+                nextStep: () async {
+                  await questStore.getQuests(true);
+                  store.setQuestStatus(1);
+                  store.quest.value!.invited = null;
+                },
+              );
             }
             chatStore!.loadChats(true, false);
             _updateLoading();

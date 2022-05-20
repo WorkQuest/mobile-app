@@ -5,8 +5,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-import '../../../../../widgets/image_viewer_widget.dart';
-
 class StarredMessageCell extends StatefulWidget {
   final MessageModel message;
   final int index;
@@ -103,17 +101,18 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
               const SizedBox(
                 height: 5,
               ),
-              if (widget.message.medias.isNotEmpty)
-                Center(
-                  child: ImageViewerWidget(
-                    widget.message.medias,
-                    widget.message.senderUserId != widget.userId
-                        ? Color(0xFFFFFFFF)
-                        : Color(0xFF1D2127),
-                    pathList,
-                      loading,
-                  ),
-                ),
+              //TODO: RETURN
+              // if (widget.message.medias.isNotEmpty)
+              //   Center(
+              //     child: ImageViewerWidget(
+              //       widget.message.medias,
+              //       widget.message.senderUserId != widget.userId
+              //           ? Color(0xFFFFFFFF)
+              //           : Color(0xFF1D2127),
+              //       // pathList,
+              //       //   loading,
+              //     ),
+              //   ),
               Row(
                 children: [
                   Text(

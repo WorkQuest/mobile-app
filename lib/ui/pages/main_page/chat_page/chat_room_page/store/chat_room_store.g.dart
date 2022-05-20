@@ -287,6 +287,21 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     });
   }
 
+  final _$mediaPathsAtom = Atom(name: '_ChatRoomStore.mediaPaths');
+
+  @override
+  ObservableMap<Media, String> get mediaPaths {
+    _$mediaPathsAtom.reportRead();
+    return super.mediaPaths;
+  }
+
+  @override
+  set mediaPaths(ObservableMap<Media, String> value) {
+    _$mediaPathsAtom.reportWrite(value, super.mediaPaths, () {
+      super.mediaPaths = value;
+    });
+  }
+
   final _$pageNumberAtom = Atom(name: '_ChatRoomStore.pageNumber');
 
   @override
@@ -338,6 +353,13 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   @override
   Future<void> leaveFromChat() {
     return _$leaveFromChatAsyncAction.run(() => super.leaveFromChat());
+  }
+
+  final _$getThumbnailAsyncAction = AsyncAction('_ChatRoomStore.getThumbnail');
+
+  @override
+  Future<void> getThumbnail(List<MessageModel> messages) {
+    return _$getThumbnailAsyncAction.run(() => super.getThumbnail(messages));
   }
 
   final _$setStarAsyncAction = AsyncAction('_ChatRoomStore.setStar');
@@ -558,6 +580,7 @@ availableUsers: ${availableUsers},
 foundUsers: ${foundUsers},
 selectedUsers: ${selectedUsers},
 starredMessage: ${starredMessage},
+mediaPaths: ${mediaPaths},
 pageNumber: ${pageNumber},
 star: ${star},
 mapOfPath: ${mapOfPath},

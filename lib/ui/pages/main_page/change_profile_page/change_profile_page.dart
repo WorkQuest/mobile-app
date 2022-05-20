@@ -207,7 +207,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                   pageStore.setUserData(data);
                 },
                 validator: Validators.emailValidator,
-                maxLength: 15,
+                maxLength: null,
               ),
               _InputWidget(
                 title: "modals.title".tr(),
@@ -669,8 +669,9 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
             autoValidateMode: AutovalidateMode.onUserInteraction,
             onInputChanged: widget.onChanged,
             selectorConfig: SelectorConfig(
+              leadingPadding: 16,
               setSelectorButtonAsPrefixIcon: true,
-              selectorType: PhoneInputSelectorType.DROPDOWN,
+              selectorType: PhoneInputSelectorType.DIALOG,
             ),
             hintText: "modals.phoneNumber".tr(),
             keyboardType: TextInputType.number,

@@ -16,15 +16,14 @@ class ImageViewerWidget extends StatelessWidget {
   final bool loading;
 
   @override
-  Widget build(BuildContext context) {
-    List<Media> documents = [];
-    List<Media> media = [];
-    medias.forEach((element) {
-      if (element.type == TypeMedia.Doc || element.type == TypeMedia.Pdf)
-        documents.add(element);
-      else
-        media.add(element);
-    });
+  Widget build(BuildContext context) {    List<Media> documents = [];
+  List<Media> media = [];
+  medias.forEach((element) {
+    if (element.type == TypeMedia.Doc || element.type == TypeMedia.Pdf)
+      documents.add(element);
+    else
+      media.add(element);
+  });
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 15),
       child: Column(
@@ -355,7 +354,21 @@ class _VideoWidgetState extends State<VideoWidget> {
             _controller!.value.isInitialized
                 ? AspectRatio(
                     aspectRatio: _controller!.value.aspectRatio,
-                    child: VideoPlayer(_controller!),
+                    child: Stack(
+                      children: [
+                        VideoPlayer(_controller!),
+                        // ClosedCaption(text: _controller!.value.caption.text),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: VideoProgressIndicator(
+                            _controller!,
+                            colors: VideoProgressColors(),
+                            allowScrubbing: true,
+                            // padding:EdgeInsets.only(top: 50),
+                          ),
+                        ),
+                      ],
+                    ),
                   )
                 : CircularProgressIndicator.adaptive(),
             if (!_controller!.value.isPlaying &&

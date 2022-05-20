@@ -1,3 +1,4 @@
+import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members/add_members.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_user_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
@@ -112,6 +113,7 @@ class EditGroupChat extends StatelessWidget {
                                 store.chat!.chatModel.userMembers[index].id ==
                                     store.chat!.chatModel.ownerUserId,
                                 store,
+                                store.myRole!,
                               ),
                               separatorBuilder: (context, index) =>
                                   const Divider(
@@ -125,7 +127,8 @@ class EditGroupChat extends StatelessWidget {
                           ),
                         ),
                 ),
-                buttonRow(store, context: context),
+                if (store.myRole == UserRole.Worker)
+                  buttonRow(store, context: context),
               ],
             ),
           ),

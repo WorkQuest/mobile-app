@@ -4,11 +4,6 @@ import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:web3dart/credentials.dart';
-import '../../../../../../../enums.dart';
-import '../../../../../../../web3/contractEnums.dart';
-import '../../../../../../../web3/service/client_service.dart';
 
 part 'user_profile_store.g.dart';
 
@@ -59,50 +54,18 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
     }
   }
 
-  @action
-  Future<void> startQuest({
-    required String userId,
-    required String userAddress,
-  }) async {
-    try {
-      this.onLoading();
-      final user = await _apiProvider.getProfileUser(userId: userId);
-      final quest = await _apiProvider.getQuest(id: questId);
-      await _apiProvider.inviteOnQuest(
-        questId: questId,
-        userId: userId,
-        message: "quests.inviteToQuest".tr(),
-      );
-      await ClientService().handleEvent(
-        function: WQContractFunctions.assignJob,
-        contractAddress: quest.contractAddress!,
-        params: [
-          EthereumAddress.fromHex(user.walletAddress!),
-        ],
-        value: null,
-      );
-      this.onSuccess(true);
-    } catch (e) {
-      print("getQuests error: $e");
-      this.onError(e.toString());
-    }
-  }
-
   Future<void> getQuests({
     required String userId,
-    required UserRole role,
     required bool newList,
     required bool isProfileYours,
   }) async {
     try {
-      // await Future.delayed(const Duration(seconds: 1));
       this.onLoading();
       if (newList) {
         quests.clear();
         offset = 0;
       }
       if (offset == quests.length) {
-        if (role == UserRole.Employer) {
           quests.addAll(await _apiProvider.getEmployerQuests(
             userId:userId,
             offset: offset,
@@ -110,13 +73,6 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
             sort: "sort[createdAt]=desc",
             me: isProfileYours ? true : false,
           ));
-        }
-        if (role == UserRole.Worker) {
-          quests.addAll(await _apiProvider.getAvailableQuests(
-            userId: userId,
-            offset: offset,
-          ));
-        }
 
         quests.toList().sort((key1, key2) =>
             key1.createdAt!.millisecondsSinceEpoch <

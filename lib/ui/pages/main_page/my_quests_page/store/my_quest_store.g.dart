@@ -134,6 +134,12 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
 
   final _$getQuestsAsyncAction = AsyncAction('_MyQuestStore.getQuests');
 
+  @override
+  Future<dynamic> getQuests(String userId, UserRole role, bool createNewList) {
+    return _$getQuestsAsyncAction
+        .run(() => super.getQuests(userId, role, createNewList));
+  }
+
   final _$_MyQuestStoreActionController =
       ActionController(name: '_MyQuestStore');
 

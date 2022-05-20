@@ -14,7 +14,8 @@ import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart'
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/choose_quest_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page.dart';
@@ -368,14 +369,15 @@ class Routes {
           ),
         );
 
-      case ChooseQuest.routeName:
+      case ChooseQuestPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
-            create: (context) => getIt.get<UserProfileStore>(),
+            create: (context) => getIt.get<ChooseQuestStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ChooseQuest(
-                  arguments: settings.arguments as ChooseQuestArguments),
+              child: ChooseQuestPage(
+                arguments: settings.arguments as ChooseQuestArguments,
+              ),
             ),
           ),
         );

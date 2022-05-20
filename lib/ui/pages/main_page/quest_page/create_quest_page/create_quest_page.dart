@@ -265,60 +265,60 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         ),
                       ),
                     ),
-                    // titledField(
-                    //   "quests.distantWork.title".tr(),
-                    //   Container(
-                    //     height: 50,
-                    //     padding: EdgeInsets.symmetric(horizontal: 15.0),
-                    //     decoration: BoxDecoration(
-                    //       color: Color(0xFFF7F8FA),
-                    //       borderRadius: BorderRadius.all(
-                    //         Radius.circular(6.0),
-                    //       ),
-                    //     ),
-                    //     alignment: Alignment.centerLeft,
-                    //     child: Observer(
-                    //       builder: (_) => Platform.isIOS
-                    //           ? dropDownWithModalSheep(
-                    //               value: store.workplace,
-                    //               children: store.distantWorkList,
-                    //               onPressed: (value) {
-                    //                 store.changedDistantWork(value);
-                    //               },
-                    //             )
-                    //           : DropdownButtonHideUnderline(
-                    //               child: DropdownButton(
-                    //                 isExpanded: true,
-                    //                 value: store.workplace,
-                    //                 onChanged: (String? value) {
-                    //                   store.changedDistantWork(value!);
-                    //                 },
-                    //                 items: store.distantWorkList
-                    //                     .map<DropdownMenuItem<String>>(
-                    //                         (String value) {
-                    //                   return DropdownMenuItem<String>(
-                    //                     value: value,
-                    //                     child: new Text(value),
-                    //                   );
-                    //                 }).toList(),
-                    //                 icon: Icon(
-                    //                   Icons.arrow_drop_down,
-                    //                   size: 30,
-                    //                   color: Colors.blueAccent,
-                    //                 ),
-                    //                 hint: Text(
-                    //                   'mining.choose'.tr(),
-                    //                   maxLines: 1,
-                    //                   style: TextStyle(
-                    //                     fontSize: 16,
-                    //                     color: Colors.grey,
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //     ),
-                    //   ),
-                    // ),
+                    titledField(
+                      "quests.distantWork.title".tr(),
+                      Container(
+                        height: 50,
+                        padding: EdgeInsets.symmetric(horizontal: 15.0),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFF7F8FA),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(6.0),
+                          ),
+                        ),
+                        alignment: Alignment.centerLeft,
+                        child: Observer(
+                          builder: (_) => Platform.isIOS
+                              ? dropDownWithModalSheep(
+                                  value: store.workplace,
+                                  children: store.distantWorkList,
+                                  onPressed: (value) {
+                                    store.changedDistantWork(value);
+                                  },
+                                )
+                              : DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                    isExpanded: true,
+                                    value: store.workplace,
+                                    onChanged: (String? value) {
+                                      store.changedDistantWork(value!);
+                                    },
+                                    items: store.distantWorkList
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: new Text(value),
+                                      );
+                                    }).toList(),
+                                    icon: Icon(
+                                      Icons.arrow_drop_down,
+                                      size: 30,
+                                      color: Colors.blueAccent,
+                                    ),
+                                    hint: Text(
+                                      'mining.choose'.tr(),
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
                     titledField(
                       "quests.payPeriod.title".tr(),
                       Container(
@@ -378,7 +378,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       "quests.title".tr(),
                       Container(
                         key: titleKey,
-                        height: 50,
+                        height: 60,
                         alignment: Alignment.centerLeft,
                         child: TextFormField(
                           onChanged: store.setQuestTitle,
@@ -426,7 +426,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       "quests.price".tr(),
                       Container(
                         key: priceKey,
-                        height: 50,
+                        height: 60,
                         child: TextFormField(
                           keyboardType: TextInputType.number,
                           onChanged: store.setPrice,
@@ -518,19 +518,24 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     }
                                     if (store.skillFilters.isEmpty)
                                       Scrollable.ensureVisible(
-                                          specializationKey.currentContext!);
+                                        specializationKey.currentContext!,
+                                      );
                                     else if (store.locationPlaceName.isEmpty)
                                       Scrollable.ensureVisible(
-                                          addressKey.currentContext!);
+                                        addressKey.currentContext!,
+                                      );
                                     else if (store.questTitle.isEmpty)
                                       Scrollable.ensureVisible(
-                                          titleKey.currentContext!);
+                                        titleKey.currentContext!,
+                                      );
                                     else if (store.description.isEmpty)
                                       Scrollable.ensureVisible(
-                                          descriptionKey.currentContext!);
+                                        descriptionKey.currentContext!,
+                                      );
                                     else if (store.price.isEmpty)
                                       Scrollable.ensureVisible(
-                                          priceKey.currentContext!);
+                                        priceKey.currentContext!,
+                                      );
                                   },
                             title: isEdit
                                 ? "Edit Quest"
@@ -624,14 +629,16 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
             return Container(
               height: 150.0 + MediaQuery.of(context).padding.bottom,
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
+                bottom: MediaQuery.of(context).padding.bottom,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: CupertinoPicker(
                       scrollController: FixedExtentScrollController(
-                          initialItem: children.indexOf(value)),
+                        initialItem: children.indexOf(value),
+                      ),
                       itemExtent: 32.0,
                       onSelectedItemChanged: (int index) {
                         changedEmployment = children[index];

@@ -177,7 +177,6 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                         userProfileStore.quests.clear();
                         userProfileStore.getQuests(
                           userId: widget.myId,
-                          role: widget.role,
                           newList: true,
                           isProfileYours:
                               widget.id == widget.myId ? true : false,
@@ -404,8 +403,7 @@ Widget employerRating({
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: userId != profile.userData!.id &&
-                              completedQuests != "0"
+                      color: completedQuests != "0"
                           ? Color(0xFF00AA5B)
                           : Color(0xFFF7F8FA),
                       fontSize: 12.0,

@@ -1,6 +1,6 @@
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/choose_quest_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_worker_store.dart';
@@ -341,7 +341,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   viewOtherUser!.questId = "";
                   viewOtherUser!.workerId = viewOtherUser!.userData!.id;
                   await Navigator.of(context, rootNavigator: true).pushNamed(
-                    ChooseQuest.routeName,
+                    ChooseQuestPage.routeName,
                     arguments: ChooseQuestArguments(
                       workerId: viewOtherUser!.userData!.id,
                       workerAddress: viewOtherUser!.userData!.walletAddress!,

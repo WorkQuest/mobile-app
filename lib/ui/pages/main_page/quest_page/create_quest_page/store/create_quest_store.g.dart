@@ -99,6 +99,21 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
+  final _$payPeriodValueAtom = Atom(name: '_CreateQuestStore.payPeriodValue');
+
+  @override
+  String get payPeriodValue {
+    _$payPeriodValueAtom.reportRead();
+    return super.payPeriodValue;
+  }
+
+  @override
+  set payPeriodValue(String value) {
+    _$payPeriodValueAtom.reportWrite(value, super.payPeriodValue, () {
+      super.payPeriodValue = value;
+    });
+  }
+
   final _$categoryAtom = Atom(name: '_CreateQuestStore.category');
 
   @override
@@ -440,6 +455,7 @@ employmentValue: ${employmentValue},
 workplaceValue: ${workplaceValue},
 workplace: ${workplace},
 payPeriod: ${payPeriod},
+payPeriodValue: ${payPeriodValue},
 category: ${category},
 categoryValue: ${categoryValue},
 priority: ${priority},

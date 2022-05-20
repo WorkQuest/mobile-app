@@ -4,7 +4,6 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
-import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:app/ui/widgets/workplace_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -199,12 +198,13 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        ImageViewerWidget(
-                          storeQuest.questInfo!.medias!,
-                          Color(0xFF1D2127),
-                          pathList,
-                          loading,
-                        ),
+                        //TODO: RETURN
+                        // ImageViewerWidget(
+                        //   storeQuest.questInfo!.medias!,
+                        //   Color(0xFF1D2127),
+                        //   // pathList,
+                        //   // loading,
+                        // ),
                       ],
                       Text(
                         DateFormat('dd MMMM yyyy, kk:mm')

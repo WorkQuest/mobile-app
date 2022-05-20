@@ -93,10 +93,9 @@ class UserProfileState<T extends UserProfile> extends State<T>
         portfolioStore!.setOtherUserData(viewOtherUser!.userData);
         role = viewOtherUser!.userData!.role;
 
-        if (viewOtherUser!.quests.isEmpty)
+        if (viewOtherUser!.quests.isEmpty && role == UserRole.Employer)
           viewOtherUser!.getQuests(
             userId: viewOtherUser!.userData!.id,
-            role: role,
             newList: true,
             isProfileYours: false,
           );

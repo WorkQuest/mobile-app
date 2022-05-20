@@ -1,4 +1,3 @@
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/dispute_store.dart';
 import 'package:flutter/material.dart';
@@ -127,15 +126,16 @@ class _DisputePageState extends State<DisputePage> {
             ),
           ),
         ),
-        Column(
-          children: store.messages
-              .map((element) => MessageCell(
-                    UniqueKey(),
-                    element,
-                    element.senderUserId,
-                  ))
-              .toList(),
-        ),
+        //TODO: RETURN
+        // Column(
+        //   children: store.messages
+        //       .map((element) => MessageCell(
+        //             UniqueKey(),
+        //             element,
+        //             element.senderUserId,
+        //           ))
+        //       .toList(),
+        // ),
       ],
     );
   }

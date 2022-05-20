@@ -223,7 +223,60 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               ),
             ],
           )
-        : SizedBox();
+        : storeQuest.questInfo!.status == 5 &&
+                profile!.review &&
+                (storeQuest.questInfo!.userId == profile!.userData!.id ||
+                    storeQuest.questInfo!.assignedWorker?.id ==
+                        profile!.userData!.id)
+            ? reviewCard()
+            : SizedBox();
+  }
+
+  Widget reviewCard() {
+    return Container(
+      width: double.maxFinite,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Color(0xFFF7F8FA),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Your review",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(storeQuest.questInfo!.yourReview!.message),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                for (int i = 0; i < storeQuest.questInfo!.yourReview!.mark; i++)
+                  Icon(
+                    Icons.star,
+                    color: Color(0xFFE8D20D),
+                    size: 20.0,
+                  ),
+                for (int i = 0;
+                    i < 5 - storeQuest.questInfo!.yourReview!.mark;
+                    i++)
+                  Icon(
+                    Icons.star,
+                    color: Color(0xFFE9EDF2),
+                    size: 20.0,
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -240,7 +293,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "quests.inProgressBy".tr(),
+            store.quest.value!.status == 5
+                ? "Finished by"
+                : "quests.inProgressBy".tr(),
             style: TextStyle(
               color: const Color(0xFF7C838D),
               fontSize: 12,

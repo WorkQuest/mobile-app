@@ -118,7 +118,8 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                             );
                           } else {}
                           Navigator.pop(context);
-                          await AlertDialogUtils.showSuccessDialog(context);
+                          if (store.isSuccess)
+                            await AlertDialogUtils.showSuccessDialog(context);
                         }
                       },
                       child: Text(

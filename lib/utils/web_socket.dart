@@ -205,7 +205,7 @@ class WebSocket {
   String get myAddress => AccountRepository().userAddress!;
 
   void handleSubscription(dynamic jsonResponse) async {
-    print("wallet $jsonResponse");
+    // print("wallet $jsonResponse");
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
       if (transaction.result?.events != null) {

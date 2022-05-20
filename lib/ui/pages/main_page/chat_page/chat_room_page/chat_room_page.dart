@@ -4,7 +4,7 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.d
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/choose_quest_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -57,6 +57,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     profile = context.read<ProfileMeStore>();
     _chatStore = context.read<ChatStore>();
     _store.idChat = widget.idChat;
+    _store.setMyRole(profile!.userData!.role);
     _store.getMessages(true);
     id1 = _store.chat?.chatModel.userMembers[0].id ?? "--";
     ownersChatId = _store.chat?.chatModel.ownerUserId ?? "--";
@@ -134,7 +135,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                 );
                                 await Navigator.of(context, rootNavigator: true)
                                     .pushNamed(
-                                  ChooseQuest.routeName,
+                                  ChooseQuestPage.routeName,
                                   arguments: ChooseQuestArguments(
                                     workerId: _store.companion!.id,
                                     workerAddress:
@@ -283,8 +284,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             ? profile!.userData!.id == ownersChatId
                 ? IconButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, EditGroupChat.routeName,
-                          arguments: _store);
+                      Navigator.pushNamed(
+                        context,
+                        EditGroupChat.routeName,
+                        arguments: _store,
+                      );
                     },
                     icon: Icon(Icons.edit),
                   )

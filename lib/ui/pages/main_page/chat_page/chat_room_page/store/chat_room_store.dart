@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/info_message.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/chat_model/star.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
+import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/utils/web_socket.dart';
@@ -13,6 +15,8 @@ import 'package:mobx/mobx.dart';
 import 'package:app/http/chat_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 part 'chat_room_store.g.dart';
 
@@ -69,6 +73,8 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
   @observable
   String _myId = "";
 
+  UserRole? myRole;
+
   @observable
   String infoMessageValue = "";
 
@@ -98,6 +104,9 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
 
   @observable
   ObservableList<MessageModel> starredMessage = ObservableList.of([]);
+
+  @observable
+  ObservableMap<Media, String> mediaPaths = ObservableMap.of({});
 
   // @observable
   // ObservableList<File> media = ObservableList.of([]);
@@ -132,6 +141,26 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
     } catch (e) {
       this.onError(e.toString());
     }
+  }
+
+  @action
+  Future<void> getThumbnail(List<MessageModel> messages) async {
+    String filePath = "";
+    messages.forEach((element) {
+      element.medias.forEach((media) async {
+        if (media.type == TypeMedia.Video)
+          filePath = await VideoThumbnail.thumbnailFile(
+                video: media.url,
+                thumbnailPath: (await getTemporaryDirectory()).path,
+                imageFormat: ImageFormat.PNG,
+                quality: 100,
+              ) ??
+              "";
+        else
+          filePath = media.url;
+        mediaPaths[media] = filePath;
+      });
+    });
   }
 
   void uncheck() {
@@ -455,6 +484,8 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
       }
   }
 
+  setMyRole(UserRole value) => myRole = value;
+
   @action
   getMessages(bool isPagination) async {
     if (chat!.messages.length >= _count && refresh) {
@@ -469,10 +500,10 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
     );
 
     _count = responseData["count"];
-    chats.addAllMessages(
-        List<MessageModel>.from(
-            responseData["messages"].map((x) => MessageModel.fromJson(x))),
-        chat!.chatModel.id);
+    final messages = List<MessageModel>.from(
+        responseData["messages"].map((x) => MessageModel.fromJson(x)));
+    chats.addAllMessages(messages, chat!.chatModel.id);
+    getThumbnail(messages);
 
     chat!.messages.forEach((element) {
       if (idMessagesForStar[element.id] == null)

@@ -34,19 +34,21 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
   Future<UserRole?> _getRole() async {
     UserRole? role;
     if (profileMeStore!.userData!.id != widget.userId) {
-      await profileMeStore!.getQuestHolder(widget.userId);
-      role = profileMeStore!.questHolder!.role;
-      role == UserRole.Worker
-          ? profileMeStore!.getActiveQuests(
-              userId: profileMeStore!.questHolder!.id,
-              newList: true,
-              isProfileYours: false,
-            )
-          : profileMeStore!.getCompletedQuests(
-              userId: profileMeStore!.questHolder!.id,
-              newList: true,
-              isProfileYours: false,
-            );
+      await Future.delayed(const Duration(microseconds: 250));
+      await profileMeStore!.getQuestHolder(widget.userId).then((value) {
+        role = profileMeStore!.questHolder!.role;
+        role == UserRole.Worker
+            ? profileMeStore!.getActiveQuests(
+                userId: widget.userId,
+                newList: true,
+                isProfileYours: false,
+              )
+            : profileMeStore!.getCompletedQuests(
+                userId: widget.userId,
+                newList: true,
+                isProfileYours: false,
+              );
+      });
     } else {
       await profileMeStore!.getCompletedQuests(
         userId: profileMeStore!.userData!.id,

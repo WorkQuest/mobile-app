@@ -167,6 +167,9 @@ extension QuestService on ApiProvider {
   }) async {
     try {
       String status = "";
+      String invite = "";
+      if (invited)
+        invite = "invited=$invited&";
       statuses.forEach((text) {
         status += "statuses[]=$text&";
       });
@@ -174,7 +177,7 @@ extension QuestService on ApiProvider {
       if (me)
         responseData = await httpClient.post(
           query: "/v1/me/employer/get-quests?offset=$offset&limit=$limit"
-              "&invited=$invited&$status$sort",
+              "&$invite$status$sort",
           data: {
             "specializations": [],
           },
@@ -182,7 +185,7 @@ extension QuestService on ApiProvider {
       else
         responseData = await httpClient.post(
           query: "/v1/employer/$userId/get-quests?offset=$offset&limit=$limit"
-              "&invited=$invited&$status$sort",
+              "&$invite$status$sort",
           data: {
             "specializations": [],
           },
@@ -224,6 +227,9 @@ extension QuestService on ApiProvider {
     List<int> statuses = const [],
     required bool me,
   }) async {
+    String invite = "";
+    if (invited)
+      invite = "invited=$invited&";
     String status = "";
     statuses.forEach((text) {
       status += "statuses[]=$text&";
@@ -232,7 +238,7 @@ extension QuestService on ApiProvider {
     if (me)
       responseData = await httpClient.post(
         query: '/v1/me/worker/get-quests?limit=$limit&offset=$offset&$status'
-            'invited=$invited&$sort',
+            '$invite$sort',
         data: {
           "specializations": [],
         },
@@ -241,7 +247,7 @@ extension QuestService on ApiProvider {
       responseData = await httpClient.post(
         query:
             '/v1/worker/$userId/get-quests?limit=$limit&offset=$offset&$status'
-            'invited=$invited&$sort',
+            '$invite$sort',
         data: {
           "specializations": [],
         },

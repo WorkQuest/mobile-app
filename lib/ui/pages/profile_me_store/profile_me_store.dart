@@ -140,18 +140,18 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
         quests.addAll(
           userData!.role == UserRole.Employer
               ? await _apiProvider.getEmployerQuests(
+                  userId: userId,
                   offset: offset,
                   sort: sort,
-                  invited: false,
                   statuses: [5],
-                  me: isProfileYours ? true : false,
+                  me: isProfileYours,
                 )
               : await _apiProvider.getWorkerQuests(
+                  userId: userId,
                   offset: offset,
                   sort: sort,
-                  invited: false,
                   statuses: [5],
-                  me: isProfileYours ? true : false,
+                  me: isProfileYours,
                 ),
         );
         offset += 10;
@@ -180,7 +180,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
             sort: sort,
             userId: userId,
             statuses: [3, 4],
-            me: isProfileYours ? true : false,
+            me: isProfileYours,
           ),
         );
         offset += 10;
