@@ -1,5 +1,6 @@
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:path_provider/path_provider.dart';
@@ -101,18 +102,16 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
               const SizedBox(
                 height: 5,
               ),
-              //TODO: RETURN
-              // if (widget.message.medias.isNotEmpty)
-              //   Center(
-              //     child: ImageViewerWidget(
-              //       widget.message.medias,
-              //       widget.message.senderUserId != widget.userId
-              //           ? Color(0xFFFFFFFF)
-              //           : Color(0xFF1D2127),
-              //       // pathList,
-              //       //   loading,
-              //     ),
-              //   ),
+              if (widget.message.medias.isNotEmpty)
+                Center(
+                  child: ImageViewerWidget(
+                    widget.message.medias,
+                    widget.message.senderUserId != widget.userId
+                        ? Color(0xFFFFFFFF)
+                        : Color(0xFF1D2127),
+                    widget.store.mediaPaths,
+                  ),
+                ),
               Row(
                 children: [
                   Text(

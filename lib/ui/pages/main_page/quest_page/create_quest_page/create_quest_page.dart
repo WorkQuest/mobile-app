@@ -419,7 +419,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       ),
                       child: MediaUploadWithProgress(
                         store: store,
-                        type: TypeMedia.images,
+                        type: MediaType.images,
                       ),
                     ),
                     titledField(

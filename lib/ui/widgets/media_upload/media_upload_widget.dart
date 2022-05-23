@@ -15,10 +15,10 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../../constants.dart';
 
-enum TypeMedia { images, video, any }
+enum MediaType { images, video, any }
 
 class MediaUploadWithProgress<T extends IMediaStore> extends StatefulWidget {
-  final TypeMedia type;
+  final MediaType type;
   final T store;
 
   const MediaUploadWithProgress({
@@ -75,19 +75,19 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
                   IconButton(
                     onPressed: () async {
                       FilePickerResult? result;
-                      if (widget.type == TypeMedia.images) {
+                      if (widget.type == MediaType.images) {
                         result = await FilePicker.platform.pickFiles(
                           allowMultiple: true,
                           type: FileType.image,
                         );
                       }
-                      if (widget.type == TypeMedia.video) {
+                      if (widget.type == MediaType.video) {
                         result = await FilePicker.platform.pickFiles(
                           allowMultiple: true,
                           type: FileType.media,
                         );
                       }
-                      if (widget.type == TypeMedia.any) {
+                      if (widget.type == MediaType.any) {
                         result = await FilePicker.platform.pickFiles(
                             allowMultiple: true,
                             type: FileType.custom,
@@ -175,7 +175,7 @@ class ListMediaView extends StatelessWidget {
 
 class _GalleryView extends StatelessWidget {
   final IMediaStore store;
-  final TypeMedia type;
+  final MediaType type;
 
   const _GalleryView({
     Key? key,
@@ -188,19 +188,19 @@ class _GalleryView extends StatelessWidget {
     return InkWell(
       onTap: () async {
         FilePickerResult? result;
-        if (type == TypeMedia.images) {
+        if (type == MediaType.images) {
           result = await FilePicker.platform.pickFiles(
             allowMultiple: true,
             type: FileType.image,
           );
         }
-        if (type == TypeMedia.video) {
+        if (type == MediaType.video) {
           result = await FilePicker.platform.pickFiles(
             allowMultiple: true,
             type: FileType.media,
           );
         }
-        if (type == TypeMedia.any) {
+        if (type == MediaType.any) {
           result = await FilePicker.platform.pickFiles(
               allowMultiple: true,
               type: FileType.custom,
@@ -388,7 +388,7 @@ class _ImageWidgetState extends State<_ImageWidget> {
                   alignment: Alignment.center,
                   children: [
                     if (widget.notifier.value.typeFile == TypeFile.video)
-                      _VideoThumbnail(
+                      GetVideoThumbnail(
                         file: file!,
                       )
                     else if (widget.notifier.value.typeFile ==
@@ -467,19 +467,19 @@ class _ImageWidgetState extends State<_ImageWidget> {
   }
 }
 
-class _VideoThumbnail extends StatefulWidget {
+class GetVideoThumbnail extends StatefulWidget {
   final File file;
 
-  const _VideoThumbnail({
+  const GetVideoThumbnail({
     Key? key,
     required this.file,
   }) : super(key: key);
 
   @override
-  _VideoThumbnailState createState() => _VideoThumbnailState();
+  _GetVideoThumbnailState createState() => _GetVideoThumbnailState();
 }
 
-class _VideoThumbnailState extends State<_VideoThumbnail> {
+class _GetVideoThumbnailState extends State<GetVideoThumbnail> {
   Future<String>? _future;
 
   @override

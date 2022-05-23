@@ -540,7 +540,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             if (store.quest.value!.invited == null) {
               await sendTransaction(
                 onPress: () async {
-                  await store.sendRejectOnQuest();
+                  store.sendRejectOnQuest();
                   Navigator.pop(context);
                 },
                 nextStep: () {
@@ -570,8 +570,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             chatStore!.loadChats(true, false);
             _updateLoading();
             await Future.delayed(const Duration(milliseconds: 250));
-            Navigator.pop(context);
-            await AlertDialogUtils.showSuccessDialog(context);
           },
           title: "quests.answerOnQuest.reject".tr(),
         ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:app/ui/widgets/media_upload/media_upload_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
@@ -7,23 +8,38 @@ import 'package:video_player/video_player.dart';
 import 'package:app/model/quests_models/media_model.dart';
 import 'package:flutter/material.dart';
 
-class ImageViewerWidget extends StatelessWidget {
-  ImageViewerWidget(this.medias, this.textColor, this.thumbnail, this.loading);
+class ImageViewerWidget extends StatefulWidget {
+  ImageViewerWidget(
+    this.medias,
+    this.textColor,
+    this.mediaPaths,
+  );
 
   final List<Media> medias;
   final Color? textColor;
-  final List<String>? thumbnail;
-  final bool loading;
+  final Map<Media, String>? mediaPaths;
 
   @override
-  Widget build(BuildContext context) {    List<Media> documents = [];
+  State<ImageViewerWidget> createState() => _ImageViewerWidgetState();
+}
+
+class _ImageViewerWidgetState extends State<ImageViewerWidget> {
+  List<Media> documents = [];
   List<Media> media = [];
-  medias.forEach((element) {
-    if (element.type == TypeMedia.Doc || element.type == TypeMedia.Pdf)
-      documents.add(element);
-    else
-      media.add(element);
-  });
+
+  @override
+  void initState() {
+    widget.medias.forEach((element) {
+      if (element.type == TypeMedia.Doc || element.type == TypeMedia.Pdf)
+        documents.add(element);
+      else
+        media.add(element);
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 15),
       child: Column(
@@ -32,7 +48,7 @@ class ImageViewerWidget extends StatelessWidget {
             children: [
               Flexible(
                 flex: 3,
-                child: getImageCell(0, context),
+                child: getImageCell(media, 0, context),
               ),
               if (media.length > 1) ...[
                 const SizedBox(width: 10),
@@ -43,11 +59,11 @@ class ImageViewerWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       if (media.length >= 2) ...[
-                        getImageCell(1, context),
+                        getImageCell(media, 1, context),
                         const SizedBox(height: 10),
                       ],
                       if (media.length >= 3) ...[
-                        getImageCell(2, context),
+                        getImageCell(media, 2, context),
                         const SizedBox(height: 10),
                       ],
                       TextButton(
@@ -90,27 +106,25 @@ class ImageViewerWidget extends StatelessWidget {
     );
   }
 
-  getImageCell(int index, BuildContext context) {
+  getImageCell(List<Media> media, int index, BuildContext context) {
+    print("TAG: ${widget.mediaPaths?[media[index]]}");
     return GestureDetector(
       onTap: () async {
-        if (medias[index].type == TypeMedia.Image ||
-            medias[index].type == TypeMedia.Video) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => ScrollingImages(
-                medias,
-                index: index,
-              ),
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ScrollingImages(
+              media,
+              index: index,
             ),
-          );
-        } else {}
+          ),
+        );
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
-        child: medias[index].type == TypeMedia.Image
+        child: media[index].type == TypeMedia.Image
             ? Image.network(
-                medias[index].url,
+                media[index].url,
                 fit: BoxFit.cover,
                 height: index == 0 ? 200 : 60,
                 width: double.maxFinite,
@@ -123,14 +137,12 @@ class ImageViewerWidget extends StatelessWidget {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    loading
-                        ? Center(
-                            child: CircularProgressIndicator.adaptive(),
+                    widget.mediaPaths?[media[index]] != null
+                        ? GetVideoThumbnail(
+                            file: File(widget.mediaPaths![media[index]]!),
                           )
-                        : Image.file(
-                            File(
-                              thumbnail![index],
-                            ),
+                        : Center(
+                            child: CircularProgressIndicator.adaptive(),
                           ),
                     SvgPicture.asset(
                       'assets/play.svg',
@@ -139,12 +151,6 @@ class ImageViewerWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                // SvgPicture.asset(
-                //   'assets/play.svg',
-                //   width: MediaQuery.of(context).size.width * 0.1,
-                //   height: MediaQuery.of(context).size.height * 0.1,
-                //   color: Color(0xFFE9EDF2),
-                // ),
               ),
       ),
     );
@@ -159,12 +165,12 @@ class ImageViewerWidget extends StatelessWidget {
         } else if (Platform.isIOS) {
           dir = (await getApplicationDocumentsDirectory()).path;
         }
-        if (medias[index].type == TypeMedia.Pdf)
-          final f = downloadFile(medias[index].url,
-              medias[index].url.split("/").reversed.first + ".pdf", dir);
-        if (medias[index].type == TypeMedia.Doc)
-          final f = downloadFile(medias[index].url,
-              medias[index].url.split("/").reversed.first + ".doc", dir);
+        if (widget.medias[index].type == TypeMedia.Pdf)
+          final f = downloadFile(widget.medias[index].url,
+              widget.medias[index].url.split("/").reversed.first + ".pdf", dir);
+        if (widget.medias[index].type == TypeMedia.Doc)
+          final f = downloadFile(widget.medias[index].url,
+              widget.medias[index].url.split("/").reversed.first + ".doc", dir);
       },
       child: Column(
         children: [
@@ -174,7 +180,7 @@ class ImageViewerWidget extends StatelessWidget {
           Row(
             children: [
               SvgPicture.asset(
-                medias[index].type == TypeMedia.Pdf
+                widget.medias[index].type == TypeMedia.Pdf
                     ? "assets/pdf.svg"
                     : "assets/doc.svg",
                 width: 30,
@@ -185,8 +191,8 @@ class ImageViewerWidget extends StatelessWidget {
               ),
               Flexible(
                 child: Text(
-                  "${medias[index].url.split("/").reversed.first}",
-                  style: TextStyle(color: textColor),
+                  "${widget.medias[index].url.split("/").reversed.first}",
+                  style: TextStyle(color: widget.textColor),
                 ),
               ),
             ],

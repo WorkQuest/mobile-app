@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:app/http/api_provider.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/chat_extension.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/dispute_model.dart';
+import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'dispute_store.g.dart';
 
@@ -25,6 +30,11 @@ abstract class _DisputeStore extends IStore<bool> with Store {
 
   Chats? chat;
 
+  final _atomGetThumbnail = Atom(name: '_ChatRoomStore.GetThumbnail');
+
+  @observable
+  ObservableMap<Media, String> mediaPaths = ObservableMap.of({});
+
   @observable
   String status = "";
 
@@ -33,6 +43,47 @@ abstract class _DisputeStore extends IStore<bool> with Store {
 
   @observable
   ObservableList<MessageModel> messages = ObservableList.of([]);
+
+  @action
+  Future<void> getThumbnail(List<MessageModel> value) async {
+    for (int i = 0; i < value.length; i++) {
+      for (int j = 0; j < value[i].medias.length; j++)
+        if (value[i].medias[j].type == TypeMedia.Video) {
+          String dir = "";
+          if (Platform.isAndroid) {
+            dir = (await getExternalStorageDirectory())!.path;
+          } else if (Platform.isIOS) {
+            dir = (await getApplicationDocumentsDirectory()).path;
+          }
+          final f = await downloadFile(value[i].medias[j].url,
+              value[i].medias[j].url.split("/").reversed.first + ".mp4", dir);
+          mediaPaths[value[i].medias[j]] = f;
+        }
+      _atomGetThumbnail.reportChanged();
+    }
+  }
+
+  Future<String> downloadFile(String url, String fileName, String dir) async {
+    HttpClient httpClient = new HttpClient();
+    File file;
+    String filePath = '';
+
+    try {
+      var request = await httpClient.getUrl(Uri.parse(url));
+      var response = await request.close();
+      if (response.statusCode == 200) {
+        var bytes = await consolidateHttpClientResponseBytes(response);
+        filePath = '$dir/$fileName';
+        file = File(filePath);
+        await file.writeAsBytes(bytes);
+      } else
+        filePath = 'Error code: ' + response.statusCode.toString();
+    } catch (ex) {
+      filePath = 'Can not fetch url';
+    }
+
+    return filePath;
+  }
 
   String getStatus(int value) {
     switch (value) {

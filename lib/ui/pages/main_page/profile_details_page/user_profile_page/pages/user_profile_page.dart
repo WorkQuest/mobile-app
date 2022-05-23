@@ -59,7 +59,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
     super.initState();
 
     _tabController = TabController(vsync: this, length: 2);
-    _streamController = StreamController<AppBarParams>();
+    _streamController = StreamController<AppBarParams>.broadcast();
 
     portfolioStore = context.read<PortfolioStore>();
     myQuests = context.read<MyQuestStore>();
@@ -158,6 +158,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Observer(
         builder: (_) => (userStore?.isLoading ?? false) ||

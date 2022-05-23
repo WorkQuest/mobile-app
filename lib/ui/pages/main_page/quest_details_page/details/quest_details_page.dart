@@ -15,6 +15,7 @@ import "package:provider/provider.dart";
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
+import '../../../../widgets/image_viewer_widget.dart';
 import '../../../../widgets/priority_view.dart';
 
 class QuestDetails extends StatefulWidget {
@@ -198,13 +199,11 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        //TODO: RETURN
-                        // ImageViewerWidget(
-                        //   storeQuest.questInfo!.medias!,
-                        //   Color(0xFF1D2127),
-                        //   // pathList,
-                        //   // loading,
-                        // ),
+                        ImageViewerWidget(
+                          storeQuest.questInfo!.medias!,
+                          Color(0xFF1D2127),
+                          null,
+                        ),
                       ],
                       Text(
                         DateFormat('dd MMMM yyyy, kk:mm')

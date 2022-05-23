@@ -116,6 +116,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                 UniqueKey(),
                                 _store.chat!.messages[index],
                                 profile!.userData!.id,
+                                _store.mediaPaths,
                               ),
                               reverse: true,
                             ),

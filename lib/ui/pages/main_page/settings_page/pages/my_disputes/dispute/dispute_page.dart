@@ -6,6 +6,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../enums.dart';
+import '../../../../chat_page/chat_room_page/message_cell.dart';
 
 class DisputePage extends StatefulWidget {
   static const String routeName = "/disputesPage";
@@ -126,16 +127,18 @@ class _DisputePageState extends State<DisputePage> {
             ),
           ),
         ),
-        //TODO: RETURN
-        // Column(
-        //   children: store.messages
-        //       .map((element) => MessageCell(
-        //             UniqueKey(),
-        //             element,
-        //             element.senderUserId,
-        //           ))
-        //       .toList(),
-        // ),
+        Column(
+          children: store.messages
+              .map(
+                (element) => MessageCell(
+                  UniqueKey(),
+                  element,
+                  element.senderUserId,
+                  store.mediaPaths,
+                ),
+              )
+              .toList(),
+        ),
       ],
     );
   }

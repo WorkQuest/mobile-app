@@ -9,6 +9,21 @@ part of 'dispute_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$DisputeStore on _DisputeStore, Store {
+  final _$mediaPathsAtom = Atom(name: '_DisputeStore.mediaPaths');
+
+  @override
+  ObservableMap<Media, String> get mediaPaths {
+    _$mediaPathsAtom.reportRead();
+    return super.mediaPaths;
+  }
+
+  @override
+  set mediaPaths(ObservableMap<Media, String> value) {
+    _$mediaPathsAtom.reportWrite(value, super.mediaPaths, () {
+      super.mediaPaths = value;
+    });
+  }
+
   final _$statusAtom = Atom(name: '_DisputeStore.status');
 
   @override
@@ -54,6 +69,13 @@ mixin _$DisputeStore on _DisputeStore, Store {
     });
   }
 
+  final _$getThumbnailAsyncAction = AsyncAction('_DisputeStore.getThumbnail');
+
+  @override
+  Future<void> getThumbnail(List<MessageModel> value) {
+    return _$getThumbnailAsyncAction.run(() => super.getThumbnail(value));
+  }
+
   final _$getDisputeAsyncAction = AsyncAction('_DisputeStore.getDispute');
 
   @override
@@ -71,6 +93,7 @@ mixin _$DisputeStore on _DisputeStore, Store {
   @override
   String toString() {
     return '''
+mediaPaths: ${mediaPaths},
 status: ${status},
 dispute: ${dispute},
 messages: ${messages}

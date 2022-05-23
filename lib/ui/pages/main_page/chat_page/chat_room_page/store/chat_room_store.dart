@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
@@ -10,13 +11,13 @@ import 'package:app/model/quests_models/media_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/utils/web_socket.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/http/chat_extension.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 part 'chat_room_store.g.dart';
 
@@ -45,6 +46,8 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
   final _atomMessages = Atom(name: '_ChatRoomStore.uncheck');
 
   final _atomSendMessage = Atom(name: '_ChatRoomStore.SengMessage');
+
+  final _atomGetThumbnail = Atom(name: '_ChatRoomStore.GetThumbnail');
 
   @observable
   String chatName = "";
@@ -126,9 +129,6 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
   @action
   void setSendingMessage(bool value) => sendingMessage = value;
 
-  // @action
-  // void addFilePath(int index, String path) => filesPath[index] = path;
-
   @action
   void setMessageSelected(bool value) => messageSelected = value;
 
@@ -144,23 +144,44 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
   }
 
   @action
-  Future<void> getThumbnail(List<MessageModel> messages) async {
-    String filePath = "";
-    messages.forEach((element) {
-      element.medias.forEach((media) async {
-        if (media.type == TypeMedia.Video)
-          filePath = await VideoThumbnail.thumbnailFile(
-                video: media.url,
-                thumbnailPath: (await getTemporaryDirectory()).path,
-                imageFormat: ImageFormat.PNG,
-                quality: 100,
-              ) ??
-              "";
-        else
-          filePath = media.url;
-        mediaPaths[media] = filePath;
-      });
-    });
+  Future<void> getThumbnail(List<MessageModel> value) async {
+    for (int i = 0; i < value.length; i++) {
+      for (int j = 0; j < value[i].medias.length; j++)
+        if (value[i].medias[j].type == TypeMedia.Video) {
+          String dir = "";
+          if (Platform.isAndroid) {
+            dir = (await getExternalStorageDirectory())!.path;
+          } else if (Platform.isIOS) {
+            dir = (await getApplicationDocumentsDirectory()).path;
+          }
+          final f = await downloadFile(value[i].medias[j].url,
+              value[i].medias[j].url.split("/").reversed.first + ".mp4", dir);
+          mediaPaths[value[i].medias[j]] = f;
+        }
+      _atomGetThumbnail.reportChanged();
+    }
+  }
+
+  Future<String> downloadFile(String url, String fileName, String dir) async {
+    HttpClient httpClient = new HttpClient();
+    File file;
+    String filePath = '';
+
+    try {
+      var request = await httpClient.getUrl(Uri.parse(url));
+      var response = await request.close();
+      if (response.statusCode == 200) {
+        var bytes = await consolidateHttpClientResponseBytes(response);
+        filePath = '$dir/$fileName';
+        file = File(filePath);
+        await file.writeAsBytes(bytes);
+      } else
+        filePath = 'Error code: ' + response.statusCode.toString();
+    } catch (ex) {
+      filePath = 'Can not fetch url';
+    }
+
+    return filePath;
   }
 
   void uncheck() {
@@ -503,12 +524,13 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
     final messages = List<MessageModel>.from(
         responseData["messages"].map((x) => MessageModel.fromJson(x)));
     chats.addAllMessages(messages, chat!.chatModel.id);
-    getThumbnail(messages);
 
     chat!.messages.forEach((element) {
       if (idMessagesForStar[element.id] == null)
         idMessagesForStar[element.id] = false;
     });
+
+    getThumbnail(messages);
 
     _offset = chat!.messages.length;
     refresh = true;

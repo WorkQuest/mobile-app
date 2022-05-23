@@ -358,8 +358,8 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   final _$getThumbnailAsyncAction = AsyncAction('_ChatRoomStore.getThumbnail');
 
   @override
-  Future<void> getThumbnail(List<MessageModel> messages) {
-    return _$getThumbnailAsyncAction.run(() => super.getThumbnail(messages));
+  Future<void> getThumbnail(List<MessageModel> value) {
+    return _$getThumbnailAsyncAction.run(() => super.getThumbnail(value));
   }
 
   final _$setStarAsyncAction = AsyncAction('_ChatRoomStore.setStar');
