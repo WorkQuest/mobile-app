@@ -83,6 +83,14 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
             offset: isForce ? transactions.length : 0,
           );
           break;
+        case TYPE_COINS.USDT:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.uSdt,
+            limit: 10,
+            offset: isForce ? transactions.length : 0,
+          );
+          break;
       }
 
       result!.map((tran) {
@@ -96,6 +104,9 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
               break;
             case AddressCoins.wBnb:
               tran.coin = TYPE_COINS.wBNB;
+              break;
+            case AddressCoins.uSdt:
+              tran.coin = TYPE_COINS.USDT;
               break;
             default:
               tran.coin = TYPE_COINS.WQT;
@@ -111,6 +122,9 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
               break;
             case AddressCoins.wBnb:
               tran.coin = TYPE_COINS.wBNB;
+              break;
+            case AddressCoins.uSdt:
+              tran.coin = TYPE_COINS.USDT;
               break;
             default:
               tran.coin = TYPE_COINS.WQT;
@@ -171,6 +185,14 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
           result = await _apiProvider.getTransactionsByToken(
             address: AccountRepository().userAddress!,
             addressToken: AddressCoins.wEth,
+            limit: 10,
+            offset: transactions.length,
+          );
+          break;
+        case TYPE_COINS.USDT:
+          result = await _apiProvider.getTransactionsByToken(
+            address: AccountRepository().userAddress!,
+            addressToken: AddressCoins.uSdt,
             limit: 10,
             offset: transactions.length,
           );

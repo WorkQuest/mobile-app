@@ -97,6 +97,8 @@ class ListTransactions extends StatelessWidget {
           return "wBNB";
         case AddressCoins.wEth:
           return "wETH";
+        case AddressCoins.uSdt:
+          return "USDT";
         default:
           return "WQT";
       }
@@ -110,6 +112,8 @@ class ListTransactions extends StatelessWidget {
           return "WUSD";
         case TYPE_COINS.wBNB:
           return "wBNB";
+        case TYPE_COINS.USDT:
+          return "USDT";
         case TYPE_COINS.wETH:
           return "wETH";
         default:

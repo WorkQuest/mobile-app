@@ -69,6 +69,11 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
           final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
           amount = (count.toDouble() - _gas).toStringAsFixed(18);
           break;
+        case TYPE_COINS.USDT:
+          final count = await ClientService().getBalanceFromContract(AddressCoins.uSdt);
+          final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
+          amount = (count.toDouble() - _gas).toStringAsFixed(18);
+          break;
         default:
           break;
       }
