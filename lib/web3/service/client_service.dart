@@ -110,12 +110,13 @@ class ClientService implements ClientServiceI {
           addressToken = AddressCoins.uSdt;
           break;
       }
+      final degree = coin == TYPE_COINS.USDT ? 6 : 18;
       final contract = Erc20(
           address: EthereumAddress.fromHex(addressToken), client: _client);
       hash = await contract.transfer(
         // myAddress,
         EthereumAddress.fromHex(address),
-        BigInt.from(double.parse(amount) * pow(10, 18)),
+        BigInt.from(double.parse(amount) * pow(10, degree)),
         credentials: credentials,
       );
       print('${coin.toString()} hash - $hash');
