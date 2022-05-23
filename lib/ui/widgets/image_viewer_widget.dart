@@ -107,7 +107,13 @@ class _ImageViewerWidgetState extends State<ImageViewerWidget> {
   }
 
   getImageCell(List<Media> media, int index, BuildContext context) {
-    print("TAG: ${widget.mediaPaths?[media[index]]}");
+    if (widget.mediaPaths?[media[index]] == null)
+      Timer.periodic(Duration(seconds: 1), (timer) {
+        if (widget.mediaPaths?[media[index]] != null)
+          setState(() {
+            timer.cancel();
+          });
+      });
     return GestureDetector(
       onTap: () async {
         Navigator.push(

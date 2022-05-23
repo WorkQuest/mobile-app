@@ -131,7 +131,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
 
   final _$changeListsAsyncAction = AsyncAction('_MyQuestStore.changeLists');
 
-
   final _$getQuestsAsyncAction = AsyncAction('_MyQuestStore.getQuests');
 
   @override

@@ -146,7 +146,7 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
   @action
   Future<void> getThumbnail(List<MessageModel> value) async {
     for (int i = 0; i < value.length; i++) {
-      for (int j = 0; j < value[i].medias.length; j++)
+      for (int j = 0; j < value[i].medias.length; j++) {
         if (value[i].medias[j].type == TypeMedia.Video) {
           String dir = "";
           if (Platform.isAndroid) {
@@ -154,11 +154,21 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
           } else if (Platform.isIOS) {
             dir = (await getApplicationDocumentsDirectory()).path;
           }
-          final f = await downloadFile(value[i].medias[j].url,
-              value[i].medias[j].url.split("/").reversed.first + ".mp4", dir);
-          mediaPaths[value[i].medias[j]] = f;
+          var existsFile = await File(dir +
+                  "/" +
+                  "${value[i].medias[j].url.split("/").reversed.first}.mp4")
+              .exists();
+          if (!existsFile) {
+            final f = await downloadFile(value[i].medias[j].url,
+                value[i].medias[j].url.split("/").reversed.first + ".mp4", dir);
+            mediaPaths[value[i].medias[j]] = f;
+          } else
+            mediaPaths[value[i].medias[j]] = dir +
+                "/" +
+                "${value[i].medias[j].url.split("/").reversed.first}.mp4";
         }
-      _atomGetThumbnail.reportChanged();
+        _atomGetThumbnail.reportChanged();
+      }
     }
   }
 

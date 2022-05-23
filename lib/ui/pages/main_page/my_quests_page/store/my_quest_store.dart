@@ -183,10 +183,10 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   void removeDuplicate() {
     for (int i = 0; i < allInvited.length; i++) {
-      for (int j = 1; j < allInvited.length; j++)
+      for (int j = i + 1; j < allInvited.length; j++)
         if (allInvited[i].id == allInvited[j].id) allInvited.removeAt(j);
     }
-    invited .addAll(allInvited);
+    invited.addAll(allInvited);
   }
 
   @action
@@ -206,7 +206,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         performed = ObservableList.of([]);
         starred = ObservableList.of([]);
         allQuests = [];
-        allInvited = [];
 
         loadActive = true;
         loadInvited = true;
@@ -214,6 +213,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         loadPerformed = true;
         loadStarred = true;
       }
+      allInvited = [];
 
       if (role == UserRole.Employer) {
         if (loadActive)
@@ -265,8 +265,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
           allInvited.addAll(await _apiProvider.getWorkerQuests(
             offset: this.offsetInvited,
             sort: sort,
-            statuses: [2],
-            // invited: true,
+            // statuses: [2],
+            invited: true,
             me: true,
           ));
 

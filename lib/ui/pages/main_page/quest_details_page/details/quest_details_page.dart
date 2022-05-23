@@ -10,10 +10,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:path_provider/path_provider.dart';
 import "package:provider/provider.dart";
 import 'package:maps_launcher/maps_launcher.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../../../widgets/image_viewer_widget.dart';
 import '../../../../widgets/priority_view.dart';
@@ -51,7 +49,6 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
     storeQuest.questInfo!.yourReview != null
         ? profile!.review = true
         : profile!.review = false;
-    getThumbnail();
     super.initState();
   }
 
@@ -293,25 +290,6 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
         ),
       ),
     );
-  }
-
-  Future<void> getThumbnail() async {
-    String filePath = "";
-    loading = true;
-    if (storeQuest.questInfo!.medias != null)
-      for (int i = 0; i < storeQuest.questInfo!.medias!.length; i++) {
-        filePath = await VideoThumbnail.thumbnailFile(
-              video: storeQuest.questInfo!.medias![i].url,
-              thumbnailPath: (await getTemporaryDirectory()).path,
-              imageFormat: ImageFormat.PNG,
-              quality: 100,
-            ) ??
-            "";
-        pathList.add(filePath);
-      }
-
-    loading = false;
-    setState(() {});
   }
 
   Widget inProgressBy() {
