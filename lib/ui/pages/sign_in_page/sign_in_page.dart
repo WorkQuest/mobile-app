@@ -468,7 +468,7 @@ class _SocialLoginWidget extends StatelessWidget {
       onPressed: () async {
         Navigator.of(context, rootNavigator: true).pushNamed(
           WebViewPage.routeName,
-          arguments: "api/v1/auth/login/$link",
+          arguments: "api/v1/auth/login/main/$link",
         );
       },
     );

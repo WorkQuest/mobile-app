@@ -531,48 +531,48 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           },
           title: "quests.answerOnQuest.accept".tr(),
         ),
-        const SizedBox(height: 15),
-        LoginButton(
-          withColumn: true,
-          enabled: isLoading,
-          onTap: () async {
-            _updateLoading();
-            if (store.quest.value!.invited == null) {
-              await sendTransaction(
-                onPress: () async {
-                  store.sendRejectOnQuest();
-                  Navigator.pop(context);
-                },
-                nextStep: () {
-                  if (store.quest.value!.responded != null) {
-                    store.quest.value!.responded?.status = -1;
-                  }
-                  store.setQuestStatus(1);
-                  store.quest.value!.assignedWorker = null;
-                  myQuestStore.deleteQuest(store.quest.value!.id);
-                  myQuestStore.addQuest(
-                      store.quest.value!, store.quest.value!.star);
-                },
-              );
-            } else {
-              await sendTransaction(
-                onPress: () async {
-                  store.rejectInvite(store.quest.value!.invited!.id);
-                  // Navigator.pop(context);
-                },
-                nextStep: () async {
-                  await questStore.getQuests(true);
-                  store.setQuestStatus(1);
-                  store.quest.value!.invited = null;
-                },
-              );
-            }
-            chatStore!.loadChats(true, false);
-            _updateLoading();
-            await Future.delayed(const Duration(milliseconds: 250));
-          },
-          title: "quests.answerOnQuest.reject".tr(),
-        ),
+        // const SizedBox(height: 15),
+        // LoginButton(
+        //   withColumn: true,
+        //   enabled: isLoading,
+        //   onTap: () async {
+        //     _updateLoading();
+        //     if (store.quest.value!.invited == null) {
+        //       await sendTransaction(
+        //         onPress: () async {
+        //           store.sendRejectOnQuest();
+        //           Navigator.pop(context);
+        //         },
+        //         nextStep: () {
+        //           if (store.quest.value!.responded != null) {
+        //             store.quest.value!.responded?.status = -1;
+        //           }
+        //           store.setQuestStatus(1);
+        //           store.quest.value!.assignedWorker = null;
+        //           myQuestStore.deleteQuest(store.quest.value!.id);
+        //           myQuestStore.addQuest(
+        //               store.quest.value!, store.quest.value!.star);
+        //         },
+        //       );
+        //     } else {
+        //       await sendTransaction(
+        //         onPress: () async {
+        //           store.rejectInvite(store.quest.value!.invited!.id);
+        //           // Navigator.pop(context);
+        //         },
+        //         nextStep: () async {
+        //           await questStore.getQuests(true);
+        //           store.setQuestStatus(1);
+        //           store.quest.value!.invited = null;
+        //         },
+        //       );
+        //     }
+        //     chatStore!.loadChats(true, false);
+        //     _updateLoading();
+        //     await Future.delayed(const Duration(milliseconds: 250));
+        //   },
+        //   title: "quests.answerOnQuest.reject".tr(),
+        // ),
         const SizedBox(height: 15),
       ],
     );
