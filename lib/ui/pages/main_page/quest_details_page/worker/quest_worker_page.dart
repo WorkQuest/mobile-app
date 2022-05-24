@@ -466,7 +466,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                         myQuestStore.deleteQuest(widget.questInfo.id);
                         myQuestStore.addQuest(widget.questInfo, true);
                         _updateLoading();
-                        chatStore!.loadChats(true, false);
+                        chatStore!.loadChats(starred: false);
                         await Future.delayed(const Duration(milliseconds: 250));
                         Navigator.pop(context);
                         Navigator.pop(context);
@@ -567,7 +567,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 },
               );
             }
-            chatStore!.loadChats(true, false);
+            chatStore!.loadChats(starred: false);
             _updateLoading();
             await Future.delayed(const Duration(milliseconds: 250));
           },

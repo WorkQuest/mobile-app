@@ -72,8 +72,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
     chatSort();
 
     values.forEach((element) {
-      if (idChatsForStar[element.chatModel.id] == null)
-        idChatsForStar[element.chatModel.id] = false;
+      if (idChatsForStar[element.chatModel.id] == null) idChatsForStar[element.chatModel.id] = false;
     });
     return keys;
   }
@@ -86,8 +85,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
   @action
   void chatSort() {
     chats = Map.fromEntries(chats.entries.toList()
-      ..sort((a, b) => compareTest(
-          b.value.chatModel.lastMessage.createdAt.millisecondsSinceEpoch,
+      ..sort((a, b) => compareTest(b.value.chatModel.lastMessage.createdAt.millisecondsSinceEpoch,
           a.value.chatModel.lastMessage.createdAt.millisecondsSinceEpoch))
       ..takeWhile((_) => true));
   }
@@ -105,8 +103,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   @action
   setChatHighlighted(Chats chatDetails) {
-    idChatsForStar[chatDetails.chatModel.id] =
-        !idChatsForStar[chatDetails.chatModel.id]!;
+    idChatsForStar[chatDetails.chatModel.id] = !idChatsForStar[chatDetails.chatModel.id]!;
     for (int i = 0; i < chatsId.length; i++) {
       if (chatsId[i] == chatDetails.chatModel.id) {
         chatsId.removeAt(i);
@@ -161,10 +158,9 @@ abstract class _ChatStore extends IStore<bool> with Store {
     try {
       var message;
       if (json["path"] == "/notifications/quest") {
-        final quest = BaseQuestResponse.fromJson(
-            json["message"]["data"]["quest"] ?? json["message"]["data"]);
+        final quest = BaseQuestResponse.fromJson(json["message"]["data"]["quest"] ?? json["message"]["data"]);
         if (quest.status == 5) {
-          loadChats(true, null);
+          loadChats();
         }
         return;
       }
@@ -174,8 +170,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
         print(json["message"]["data"]);
         print(json["message"]["data"]["lastMessage"]);
         message = MessageModel.fromJson(json["message"]["data"]["lastMessage"]);
-        setMessages(
-            [MessageModel.fromJson(json["message"]["data"]["lastMessage"])],
+        setMessages([MessageModel.fromJson(json["message"]["data"]["lastMessage"])],
             ChatModel.fromJson(json["message"]["data"]));
         _atomChats.reportChanged();
         return;
@@ -225,8 +220,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
       case "groupChatCreate":
         return infoMessageValue = "chat.infoMessage.groupChatCreate".tr();
       case "employerRejectResponseOnQuest":
-        return infoMessageValue =
-            "chat.infoMessage.employerRejectResponseOnQuest".tr();
+        return infoMessageValue = "chat.infoMessage.employerRejectResponseOnQuest".tr();
       case "workerResponseOnQuest":
         return infoMessageValue = "chat.infoMessage.workerResponseOnQuest".tr();
       case "groupChatAddUser":
@@ -241,7 +235,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   initialSetup(String myId) async {
     this._myId = myId;
-    await loadChats(true, false);
+    await loadChats();
     WebSocket().connect();
   }
 
@@ -250,10 +244,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
     int i = 0;
     unread = false;
     while (i != chats.values.length && unread == false) {
-      if (chats.values.toList()[i].chatModel.lastMessage.senderStatus ==
-              "unread" &&
-          chats.values.toList()[i].chatModel.lastMessage.senderUserId !=
-              this._myId) {
+      if (chats.values.toList()[i].chatModel.lastMessage.senderStatus == "unread" &&
+          chats.values.toList()[i].chatModel.lastMessage.senderUserId != this._myId) {
         streamChatNotification!.sink.add(true);
         unread = true;
         return;
@@ -269,8 +261,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   @action
-  Future loadChats(bool isNewList, bool? starred) async {
-    if (isNewList) {
+  Future loadChats({bool loadMore = false, bool? starred, String query = ''}) async {
+    if (!loadMore) {
       chats = {};
       // starredChats.clear();
       this.offset = 0;
@@ -286,11 +278,12 @@ abstract class _ChatStore extends IStore<bool> with Store {
     }
     try {
       _count = chats.length;
-      if (isNewList) this.onLoading();
+      if (!loadMore) this.onLoading();
 
       final listChats = await _apiProvider.getChats(
         offset: this.offset,
         limit: this.limit,
+        query: query,
         starred: starred,
       );
       listChats.forEach((chat) {
@@ -326,3 +319,5 @@ abstract class _ChatStore extends IStore<bool> with Store {
     }
   }
 }
+
+enum TypeChat { active, favourites, group, completed, all }

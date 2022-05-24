@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
@@ -35,11 +36,19 @@ class _ChatPageState extends State<ChatPage> {
 
   late TextEditingController _searchTextController;
 
+  Timer? _timer;
+
   @override
   void initState() {
     store = context.read<ChatStore>();
     userData = context.read<ProfileMeStore>();
     _searchTextController = TextEditingController();
+    _searchTextController.addListener(() {
+      if (_timer?.isActive ?? false) _timer!.cancel();
+      _timer = Timer(const Duration(milliseconds: 300), () {
+        store.loadChats(query: _searchTextController.text);
+      });
+    });
     super.initState();
   }
 
@@ -76,11 +85,11 @@ class _ChatPageState extends State<ChatPage> {
                                     .pushNamed(StarredMessage.routeName, arguments: userData.userData!.id);
                                 break;
                               case "chat.starredChat":
-                                store.loadChats(true, true);
+                                store.loadChats(starred: true);
                                 store.starred = true;
                                 break;
                               case "chat.allChat":
-                                store.loadChats(true, false);
+                                store.loadChats(starred: false);
                                 store.starred = false;
                                 break;
                               case "chat.createGroupChat":
@@ -207,7 +216,7 @@ class _ListChatsWidget extends StatelessWidget {
       notificationPredicate: (ScrollNotification notification) {
         return notification.depth == 0;
       },
-      onRefresh: () => store.loadChats(true, store.starred),
+      onRefresh: () => store.loadChats(starred: store.starred),
       child: Observer(
         builder: (_) {
           if (store.isLoading) {
@@ -220,7 +229,7 @@ class _ListChatsWidget extends StatelessWidget {
               onNotification: (scrollEnd) {
                 final metrics = scrollEnd.metrics;
                 if (metrics.maxScrollExtent < metrics.pixels) {
-                  store.loadChats(false, store.starred);
+                  store.loadChats(loadMore: true, starred: store.starred);
                 }
                 return true;
               },

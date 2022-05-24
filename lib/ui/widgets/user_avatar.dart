@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../constants.dart';
 
@@ -21,14 +19,6 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return Container(
-    //   width: width,
-    //   height: height,
-    //   decoration: BoxDecoration(
-    //     shape: BoxShape.circle,
-    //   ),
-    //   child: Image.asset('assets/wq_default_avatar.png'),
-    // );
     return FadeInImage.memoryNetwork(
       width: width,
       height: height,

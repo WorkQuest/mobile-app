@@ -256,7 +256,7 @@ class CreateGroupPage extends StatelessWidget {
                         ? () async {
                             await store.createGroupChat();
                             if (store.isSuccess) {
-                              await chatStore.loadChats(true, false);
+                              await chatStore.loadChats(starred: false);
                               Navigator.of(context, rootNavigator: true)
                                   .pushReplacementNamed(ChatRoomPage.routeName,
                                       arguments: store.idGroupChat);

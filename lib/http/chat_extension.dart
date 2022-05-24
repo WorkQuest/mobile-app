@@ -8,6 +8,7 @@ extension ChatsService on ApiProvider {
   Future<List<ChatModel>> getChats({
     required int offset,
     required int limit,
+    required String query,
     bool? starred,
   }) async {
     try {
@@ -17,6 +18,7 @@ extension ChatsService on ApiProvider {
           "offset": offset,
           "limit": limit,
           if (starred != null) "starred": starred,
+          if (query.isNotEmpty) "q": query,
         },
       );
       return List<ChatModel>.from(
@@ -33,8 +35,7 @@ extension ChatsService on ApiProvider {
 
   Future<List<ProfileMeResponse>> getUsersForGroupCHat() async {
     try {
-      final responseData = await httpClient.get(
-          query: '/v1/user/me/chat/members/users-by-chats');
+      final responseData = await httpClient.get(query: '/v1/user/me/chat/members/users-by-chats');
       return List<ProfileMeResponse>.from(
         responseData["users"].map(
           (x) => ProfileMeResponse.fromJson(x),
@@ -49,8 +50,7 @@ extension ChatsService on ApiProvider {
 
   Future<List<MessageModel>> getStarredMessage() async {
     try {
-      final responseData =
-          await httpClient.get(query: '/v1/user/me/chat/messages/star');
+      final responseData = await httpClient.get(query: '/v1/user/me/chat/messages/star');
       return List<MessageModel>.from(
         responseData["messages"].map(
           (x) => MessageModel.fromJson(x),
@@ -141,8 +141,7 @@ extension ChatsService on ApiProvider {
     required String chatId,
     required String messageId,
   }) async {
-    await httpClient.post(
-        query: '/v1/read/message/$chatId', data: {"messageId": messageId});
+    await httpClient.post(query: '/v1/read/message/$chatId', data: {"messageId": messageId});
   }
 
   Future<Map<String, dynamic>> getMessages({
