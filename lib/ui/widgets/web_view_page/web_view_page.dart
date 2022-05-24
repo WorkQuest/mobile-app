@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'package:app/model/login_model.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import 'package:app/utils/storage.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +22,13 @@ class WebViewPage extends StatefulWidget {
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  final Completer<WebViewController> _controller =
+  final Completer<WebViewController> _controllerCompleter =
       Completer<WebViewController>();
 
   final String baseUrl = "https://app.workquest.co/";
   final storage = new FlutterSecureStorage();
+  WebViewController? _controller;
+  bool loading = false;
 
   @override
   void initState() {
@@ -34,50 +38,113 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("BaseUrl: ${baseUrl + widget.inputUrlRoute}");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter WebView example'),
         // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
         actions: <Widget>[
-          NavigationControls(_controller.future),
+          NavigationControls(_controllerCompleter.future),
         ],
       ),
       // We're using a Builder here so we have a context that is below the Scaffold
       // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {
-        return WebView(
-          initialUrl: baseUrl + widget.inputUrlRoute,
-          userAgent: "random",
-          javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (WebViewController webViewController) async {
-            _controller.complete(webViewController);
-          },
-          onProgress: (int progress) {
-            print("WebView is loading (progress : $progress%)");
-          },
-          navigationDelegate: (NavigationRequest request) {
-            if (request.url.startsWith('https://www.youtube.com/')) {
-              print('blocking navigation to $request}');
-              return NavigationDecision.prevent;
-            }
-            print('allowing navigation to $request');
-            return NavigationDecision.navigate;
-          },
-          onPageStarted: (String url) async {
-            print('Page started loading: $url');
-          },
-          onPageFinished: (String url) async {
-            print('Page finished loading: $url');
-            _getTokenThroughSocialMedia(url);
-            String? accessToken = await Storage.readAccessToken();
-            String? refreshToken = await Storage.readRefreshToken();
-            _controller.future.then((value) => value.evaluateJavascript(
-                """localStorage.setItem("accessToken","${accessToken ?? ''}");
-                localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
-          },
-          gestureNavigationEnabled: true,
+        return Stack(
+          children: [
+            WebView(
+              initialUrl: baseUrl + widget.inputUrlRoute,
+              userAgent: "random",
+              javascriptMode: JavascriptMode.unrestricted,
+              onWebViewCreated: (WebViewController webViewController) async {
+                _controllerCompleter.complete(webViewController);
+                _controller = webViewController;
+              },
+              onProgress: (int progress) {
+                print("WebView is loading (progress : $progress%)");
+              },
+              javascriptChannels: <JavascriptChannel>[
+                // Set Javascript Channel to WebView
+                _extractDataJSChannel(context),
+              ].toSet(),
+              navigationDelegate: (NavigationRequest request) {
+                if (request.url.startsWith('https://www.youtube.com/')) {
+                  print('blocking navigation to $request}');
+                  return NavigationDecision.prevent;
+                }
+                print('allowing navigation to $request');
+                return NavigationDecision.navigate;
+              },
+              onPageStarted: (String url) async {
+                print('Page started loading: $url');
+                if (url.contains("app.workquest.co"))
+                  setState(() {
+                    print("url: $url");
+                    loading = true;
+                  });
+                if (!url.contains(baseUrl + widget.inputUrlRoute))
+                  setState(() {
+                    loading = false;
+                  });
+              },
+              onPageFinished: (String url) async {
+                print('Page finished loading: $url');
+                _getTokenThroughSocialMedia(url);
+                String? accessToken = await Storage.readAccessToken();
+                String? refreshToken = await Storage.readRefreshToken();
+                _controllerCompleter.future
+                    .then((value) => value.runJavascriptReturningResult(
+                        // evaluateJavascript(
+                        """localStorage.setItem("accessToken","${accessToken ?? ''}");
+                    localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
+                if (url.contains('token?code=')) {
+                  _controller!.evaluateJavascript(
+                      "(function(){Flutter.postMessage(window.document.body.outerHTML)})();");
+                }
+              },
+              gestureNavigationEnabled: true,
+            ),
+            if (loading)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.white,
+                  child: Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
+                ),
+              ),
+          ],
         );
       }),
+    );
+  }
+
+  JavascriptChannel _extractDataJSChannel(BuildContext context) {
+    return JavascriptChannel(
+      name: 'Flutter',
+      onMessageReceived: (JavascriptMessage message) {
+        String pageBody = message.message;
+        final firstIndex = pageBody.indexOf("{");
+        final lastIndex = pageBody.lastIndexOf("}");
+        if (firstIndex >= 0) {
+          final response =
+              json.decode(pageBody.substring(firstIndex, lastIndex) + "}");
+          final LoginModel responseData =
+              LoginModel.fromJson(response["result"]);
+
+          Storage.writeAccessToken(responseData.access);
+          Storage.writeRefreshToken(responseData.refresh);
+          if (responseData.userStatus == 2)
+            Navigator.of(context, rootNavigator: false).pushNamed(
+              ChooseRolePage.routeName,
+            );
+          else if (responseData.userStatus == 1) {
+            Navigator.of(context, rootNavigator: false).pushNamed(
+              MnemonicPage.routeName,
+            );
+          }
+        }
+      },
     );
   }
 

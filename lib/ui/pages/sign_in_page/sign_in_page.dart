@@ -414,6 +414,7 @@ class _SocialLoginWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final signInStore = context.read<SignInStore>();
     return Padding(
       padding: const EdgeInsets.only(
         left: 16,
@@ -427,6 +428,7 @@ class _SocialLoginWidget extends StatelessWidget {
             "assets/google_icon.svg",
             "google",
             context,
+            signInStore,
           ),
           // _iconButton(
           //   "assets/instagram.svg",
@@ -436,16 +438,19 @@ class _SocialLoginWidget extends StatelessWidget {
             "assets/twitter_icon.svg",
             "twitter",
             context,
+            signInStore,
           ),
           _iconButton(
             "assets/facebook_icon.svg",
             "facebook",
             context,
+            signInStore,
           ),
           _iconButton(
             "assets/linkedin_icon.svg",
             "linkedin",
             context,
+            signInStore,
           ),
         ],
       ),
@@ -455,7 +460,8 @@ class _SocialLoginWidget extends StatelessWidget {
   Widget _iconButton(
     String iconPath,
     String link,
-    BuildContext context, [
+    BuildContext context,
+    SignInStore signInStore, [
     Color? color,
   ]) {
     return CupertinoButton(
@@ -466,9 +472,10 @@ class _SocialLoginWidget extends StatelessWidget {
         color: color,
       ),
       onPressed: () async {
+        // signInStore.loginSocialMedia(link);
         Navigator.of(context, rootNavigator: true).pushNamed(
           WebViewPage.routeName,
-          arguments: "api/v1/auth/login/main/$link",
+          arguments: "api/v1/auth/login/main/$link/token",
         );
       },
     );

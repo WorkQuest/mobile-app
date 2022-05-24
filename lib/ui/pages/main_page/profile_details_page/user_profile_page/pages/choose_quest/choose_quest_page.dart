@@ -173,6 +173,7 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                             if (!store.isLoading) {
                               timer.cancel();
                               Navigator.pop(context);
+                              Navigator.pop(context);
                               if (store.isSuccess)
                                 await AlertDialogUtils.showSuccessDialog(
                                   context,

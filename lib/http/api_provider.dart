@@ -95,6 +95,15 @@ extension LoginService on ApiProvider {
     httpClient.accessToken = bearerToken.access;
     return bearerToken;
   }
+
+  Future<void> loginSocialMedia(
+    String link,
+  ) async {
+    final responseData = await httpClient.get(
+      query: '/v1/auth/login/main/$link/token',
+    );
+    return responseData;
+  }
 }
 
 extension QuestService on ApiProvider {
@@ -168,8 +177,7 @@ extension QuestService on ApiProvider {
     try {
       String status = "";
       String invite = "";
-      if (invited)
-        invite = "invited=$invited&";
+      if (invited) invite = "invited=$invited&";
       statuses.forEach((text) {
         status += "statuses[]=$text&";
       });
@@ -228,8 +236,7 @@ extension QuestService on ApiProvider {
     required bool me,
   }) async {
     String invite = "";
-    if (invited)
-      invite = "invited=$invited&";
+    if (invited) invite = "invited=$invited&";
     String status = "";
     statuses.forEach((text) {
       status += "statuses[]=$text&";
@@ -778,8 +785,8 @@ extension UserInfoService on ApiProvider {
           "locationPlaceName": userData.locationPlaceName ?? "",
         },
         "profileVisibility": {
-          "network": 0,
-          "ratingStatus": 7,
+          "ratingStatusCanRespondToQuest": [15],
+          "ratingStatusInMySearch": [15]
         }
       };
 

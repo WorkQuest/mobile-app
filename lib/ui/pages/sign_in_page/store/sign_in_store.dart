@@ -59,6 +59,22 @@ abstract class _SignInStore extends IStore<bool> with Store {
   void setPassword(String value) => _password = value;
 
   @action
+  Future loginSocialMedia(String link) async {
+    try {
+      this.onLoading();
+      await _apiProvider.loginSocialMedia(link);
+      // String? token = await Storage.readRefreshToken();
+      // BearerToken bearerToken = await _apiProvider.refreshToken(token!);
+      // await Storage.writeRefreshToken(bearerToken.refresh);
+      // await Storage.writeAccessToken(bearerToken.access);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+
+  @action
   Future refreshToken() async {
     try {
       this.onLoading();

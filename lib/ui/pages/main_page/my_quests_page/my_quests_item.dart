@@ -160,12 +160,14 @@ class MyQuestsItem extends StatelessWidget {
                       ),
                     ],
                   ),
-                Text(
-                  questInfo.title,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Color(0xFF1D2127),
-                    fontSize: 18,
+                Expanded(
+                  child: Text(
+                    questInfo.title,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Color(0xFF1D2127),
+                      fontSize: 18,
+                    ),
                   ),
                 ),
               ],
