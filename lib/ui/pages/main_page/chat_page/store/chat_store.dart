@@ -275,9 +275,15 @@ abstract class _ChatStore extends IStore<bool> with Store {
       // starredChats.clear();
       this.offset = 0;
       refresh = false;
+      isLoadingChats = false;
+    } else {
+      isLoadingChats = true;
     }
 
-    if (this._myId.isEmpty || (_count == chats.length && refresh)) return;
+    if (this._myId.isEmpty || (_count == chats.length && refresh)) {
+      isLoadingChats = false;
+      return;
+    }
     try {
       _count = chats.length;
       if (isNewList) this.onLoading();
@@ -299,6 +305,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
     } catch (e) {
       this.onError(e.toString());
     }
+    isLoadingChats = false;
   }
 
   @action

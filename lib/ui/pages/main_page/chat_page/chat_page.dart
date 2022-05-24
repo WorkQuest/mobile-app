@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import '../../../../model/profile_response/profile_me_response.dart';
+import '../../../widgets/default_textfield.dart';
 import '../../../widgets/shimmer.dart';
 import 'chat_room_page/chat_room_page.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -31,10 +33,13 @@ class _ChatPageState extends State<ChatPage> {
 
   ScrollDirection prevScrollDirection = ScrollDirection.idle;
 
+  late TextEditingController _searchTextController;
+
   @override
   void initState() {
     store = context.read<ChatStore>();
     userData = context.read<ProfileMeStore>();
+    _searchTextController = TextEditingController();
     super.initState();
   }
 
@@ -94,99 +99,212 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ];
         },
-        body: RefreshIndicator(
-          displacement: 40,
-          triggerMode: RefreshIndicatorTriggerMode.anywhere,
-          notificationPredicate: (ScrollNotification notification) {
-            return notification.depth == 0;
-          },
-          onRefresh: () => store.loadChats(true, store.starred),
-          child: Observer(
-            builder: (_) {
-              if (store.isLoading) {
-                return SingleChildScrollView(
-                  child: Column(children: List.generate(10, (index) => const _ShimmerChatItem())),
-                );
-              }
-              if (store.chats.isNotEmpty) {
-                return NotificationListener<ScrollEndNotification>(
-                  onNotification: (scrollEnd) {
-                    final metrics = scrollEnd.metrics;
-                    if (metrics.maxScrollExtent < metrics.pixels) {
-                      store.loadChats(false, store.starred);
-                    }
-                    return true;
-                  },
-                  child: SingleChildScrollView(
-                    clipBehavior: Clip.none,
-                    physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics(),
-                    ),
-                    child: Observer(builder: (_) {
-                      return Column(
-                        children: store.chatKeyList.map((key) {
-                          final chat = store.chats[key]!;
-                          return _ChatListTileWidget(
-                            onLongPress: () {
-                              store.setChatSelected(true);
-                              store.setChatHighlighted(chat);
-                            },
-                            onTap: () {
-                              if (store.chatSelected) {
-                                store.setChatHighlighted(chat);
-                                for (int i = 0; i < store.idChatsForStar.values.length; i++)
-                                  if (store.idChatsForStar.values.toList()[i] == true) return;
-                                store.setChatSelected(false);
-                              } else {
-                                if (chat.chatModel.lastMessage.senderUserId != userData.userData!.id) {
-                                  store.setMessageRead(chat.chatModel.id, chat.chatModel.lastMessageId);
-                                  chat.chatModel.lastMessage.senderStatus = "read";
-                                }
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushNamed(ChatRoomPage.routeName, arguments: chat.chatModel.id);
-                                store.checkMessage();
-                              }
-                            },
-                            chatDetails: chat,
-                            userId: userData.userData!.id,
-                            infoActionMessage: () =>
-                                store.setInfoMessage(chat.chatModel.lastMessage.infoMessage!.messageAction),
-                            chatStarred: store.idChatsForStar[chat.chatModel.id]!,
-                          );
-                        }).toList(),
-                      );
-                    }),
+        body: DefaultTabController(
+          length: 4,
+          initialIndex: 0,
+          animationDuration: const Duration(milliseconds: 500),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.5, horizontal: 16.0),
+                child: DefaultTextField(
+                  hint: 'Name/Quest/Group',
+                  inputFormatters: [],
+                  prefixIcon: Icon(
+                    Icons.search,
+                    size: 24.0,
+                    color: AppColor.enabledButton,
                   ),
-                );
-              }
-              return Center(
-                child: SingleChildScrollView(
-                  physics: ClampingScrollPhysics(),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      SvgPicture.asset(
-                        "assets/empty_quest_icon.svg",
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "chat.noChats".tr(),
-                        style: TextStyle(
-                          color: Color(0xFFD8DFE3),
-                        ),
-                      ),
-                    ],
-                  ),
+                  controller: _searchTextController,
                 ),
-              );
-            },
+              ),
+              TabBar(
+                tabs: [
+                  Tab(
+                    child: Text(
+                      'chat.tabs.active'.tr(),
+                      style: TextStyle(
+                        color: AppColor.enabledButton,
+                        fontSize: 13.0,
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'chat.tabs.favorite'.tr(),
+                      style: TextStyle(
+                        color: AppColor.enabledButton,
+                        fontSize: 13.0,
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'chat.tabs.group'.tr(),
+                      style: TextStyle(
+                        color: AppColor.enabledButton,
+                        fontSize: 13.0,
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'chat.tabs.completed'.tr(),
+                      style: TextStyle(
+                        color: AppColor.enabledButton,
+                        fontSize: 13.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    _ListChatsWidget(
+                      userData: userData,
+                      store: store,
+                    ),
+                    _ListChatsWidget(
+                      userData: userData,
+                      store: store,
+                    ),
+                    _ListChatsWidget(
+                      userData: userData,
+                      store: store,
+                    ),
+                    _ListChatsWidget(
+                      userData: userData,
+                      store: store,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ListChatsWidget extends StatelessWidget {
+  final ChatStore store;
+  final ProfileMeStore userData;
+
+  const _ListChatsWidget({
+    Key? key,
+    required this.store,
+    required this.userData,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      displacement: 40,
+      triggerMode: RefreshIndicatorTriggerMode.anywhere,
+      notificationPredicate: (ScrollNotification notification) {
+        return notification.depth == 0;
+      },
+      onRefresh: () => store.loadChats(true, store.starred),
+      child: Observer(
+        builder: (_) {
+          if (store.isLoading) {
+            return SingleChildScrollView(
+              child: Column(children: List.generate(10, (index) => const _ShimmerChatItem())),
+            );
+          }
+          if (store.chats.isNotEmpty) {
+            return NotificationListener<ScrollEndNotification>(
+              onNotification: (scrollEnd) {
+                final metrics = scrollEnd.metrics;
+                if (metrics.maxScrollExtent < metrics.pixels) {
+                  store.loadChats(false, store.starred);
+                }
+                return true;
+              },
+              child: SingleChildScrollView(
+                clipBehavior: Clip.none,
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
+                child: Observer(builder: (_) {
+                  return Column(
+                    children: store.chatKeyList.map((key) {
+                      final chat = store.chats[key]!;
+                      final widget = _ChatListTileWidget(
+                        onLongPress: () {
+                          store.setChatSelected(true);
+                          store.setChatHighlighted(chat);
+                        },
+                        onTap: () {
+                          if (store.chatSelected) {
+                            store.setChatHighlighted(chat);
+                            for (int i = 0; i < store.idChatsForStar.values.length; i++)
+                              if (store.idChatsForStar.values.toList()[i] == true) return;
+                            store.setChatSelected(false);
+                          } else {
+                            if (chat.chatModel.lastMessage.senderUserId != userData.userData!.id) {
+                              store.setMessageRead(chat.chatModel.id, chat.chatModel.lastMessageId);
+                              chat.chatModel.lastMessage.senderStatus = "read";
+                            }
+                            Navigator.of(context, rootNavigator: true)
+                                .pushNamed(ChatRoomPage.routeName, arguments: chat.chatModel.id);
+                            store.checkMessage();
+                          }
+                        },
+                        chatDetails: chat,
+                        userId: userData.userData!.id,
+                        infoActionMessage: () =>
+                            store.setInfoMessage(chat.chatModel.lastMessage.infoMessage!.messageAction),
+                        chatStarred: store.idChatsForStar[chat.chatModel.id]!,
+                      );
+                      if (store.isLoadingChats && chat == store.chats[store.chatKeyList.last]) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            widget,
+                            SizedBox(
+                              height: 5,
+                            ),
+                            CircularProgressIndicator.adaptive(),
+                          ],
+                        );
+                      }
+                      return widget;
+                    }).toList(),
+                  );
+                }),
+              ),
+            );
+          }
+          return Center(
+            child: SingleChildScrollView(
+              physics: ClampingScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  SvgPicture.asset(
+                    "assets/empty_quest_icon.svg",
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "chat.noChats".tr(),
+                    style: TextStyle(
+                      color: Color(0xFFD8DFE3),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -311,7 +429,11 @@ class _ChatListTileWidget extends StatelessWidget {
     if (chatDetails.chatModel.userMembers[0].id != userId) {
       user = chatDetails.chatModel.userMembers[0];
     } else {
-      user = chatDetails.chatModel.userMembers[1];
+      try {
+        user = chatDetails.chatModel.userMembers[1];
+      } catch (e) {
+        user = chatDetails.chatModel.userMembers[0];
+      }
     }
     return GestureDetector(
       onLongPress: onLongPress,
