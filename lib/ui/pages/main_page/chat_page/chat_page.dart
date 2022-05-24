@@ -459,7 +459,7 @@ class _ChatListTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final differenceTime = DateTime.now().difference(chat.lastMessageDate).inDays;
+    final differenceTime = DateTime.now().difference(chat.lastMessage.createdAt).inDays;
     ProfileMeResponse user;
     if (chat.userMembers[0].id != userId) {
       user = chat.userMembers[0];
