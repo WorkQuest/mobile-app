@@ -51,6 +51,18 @@ abstract class _ChatStore extends IStore<bool> with Store {
   Map<String, Chats> chats = {};
 
   @observable
+  ObservableList<ChatModel> activeChats = ObservableList.of([]);
+
+  @observable
+  ObservableList<ChatModel> favouritesChats = ObservableList.of([]);
+
+  @observable
+  ObservableList<ChatModel> groupChats = ObservableList.of([]);
+
+  @observable
+  ObservableList<ChatModel> completedChats = ObservableList.of([]);
+
+  @observable
   ObservableList<String> chatsId = ObservableList.of([]);
 
   @observable
@@ -59,6 +71,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
   Chats? chatByID(String id) {
     if (chats[id] == null) return null;
     chats[id]!.read();
+    // updateListsChats();
     return chats[id];
   }
 
@@ -88,6 +101,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
       ..sort((a, b) => compareTest(b.value.chatModel.lastMessage.createdAt.millisecondsSinceEpoch,
           a.value.chatModel.lastMessage.createdAt.millisecondsSinceEpoch))
       ..takeWhile((_) => true));
+    updateListsChats();
   }
 
   @action
@@ -102,15 +116,15 @@ abstract class _ChatStore extends IStore<bool> with Store {
   setChatSelected(bool value) => chatSelected = value;
 
   @action
-  setChatHighlighted(Chats chatDetails) {
-    idChatsForStar[chatDetails.chatModel.id] = !idChatsForStar[chatDetails.chatModel.id]!;
+  setChatHighlighted(ChatModel chat) {
+    idChatsForStar[chat.id] = !idChatsForStar[chat.id]!;
     for (int i = 0; i < chatsId.length; i++) {
-      if (chatsId[i] == chatDetails.chatModel.id) {
+      if (chatsId[i] == chat.id) {
         chatsId.removeAt(i);
         return;
       }
     }
-    chatsId.add(chatDetails.chatModel.id);
+    chatsId.add(chat.id);
   }
 
   @action
@@ -131,6 +145,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
       }
       chats[element]!.update();
     });
+    updateListsChats();
     uncheck();
     _atomChats.reportRead();
   }
@@ -140,6 +155,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
     chats[chat.id]!.messages = messages;
     chats[chat.id]!.update();
     _atomChats.reportChanged();
+    updateListsChats();
     chatSort();
   }
 
@@ -149,6 +165,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
       chats[id]!.messages.addAll(messages);
       checkMessage();
       chats[id]!.update();
+      updateListsChats();
     } catch (e, trace) {
       print("$e $trace");
     }
@@ -192,7 +209,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
       // chats[message.chatId] = saveChat!;
 
       chatSort();
-
+      updateListsChats();
       checkMessage();
       _atomChats.reportChanged();
       chat.update();
@@ -261,10 +278,39 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   @action
-  Future loadChats({bool loadMore = false, bool? starred, String query = ''}) async {
+  updateListsChats() {
+    chats.forEach((key, value) {
+      final indexActive = activeChats.indexWhere((element) => element.id == key);
+      if (indexActive != -1) {
+        activeChats[indexActive] = value.chatModel;
+      }
+      activeChats.sort((a, b) {
+        final aTime = a.lastMessage.createdAt.millisecondsSinceEpoch;
+        final bTime = b.lastMessage.createdAt.millisecondsSinceEpoch;
+        if (aTime == bTime) return 0;
+        return aTime < bTime ? 1 : -1;
+      });
+      final indexFavourites = favouritesChats.indexWhere((element) => element.id == key);
+      if (indexFavourites != -1) {
+        favouritesChats[indexFavourites] = value.chatModel;
+      }
+      favouritesChats.sort((a, b) {
+        final aTime = a.lastMessage.createdAt.millisecondsSinceEpoch;
+        final bTime = b.lastMessage.createdAt.millisecondsSinceEpoch;
+        if (aTime == bTime) return 0;
+        return aTime < bTime ? 1 : -1;
+      });
+      //TODO: End update other lists where adding requests
+    });
+  }
+
+  @action
+  Future loadChats({bool loadMore = false, bool? starred, String query = '', TypeChat type = TypeChat.active}) async {
+    print('loadChats | loadMore = $loadMore | type = $type');
     if (!loadMore) {
-      chats = {};
+      // chats = {};
       // starredChats.clear();
+
       this.offset = 0;
       refresh = false;
       isLoadingChats = false;
@@ -279,13 +325,41 @@ abstract class _ChatStore extends IStore<bool> with Store {
     try {
       _count = chats.length;
       if (!loadMore) this.onLoading();
+      List<ChatModel> listChats;
+      switch (type) {
+        case TypeChat.active:
+          if (!loadMore) {
+            activeChats.clear();
+          }
+          listChats = await _apiProvider.getChats(
+            offset: this.activeChats.length,
+            limit: this.limit,
+            query: query,
+          );
+          activeChats.addAll(listChats);
+          break;
+        case TypeChat.favourites:
+          if (!loadMore) {
+            favouritesChats.clear();
+          }
+          listChats = await _apiProvider.getChats(
+            offset: this.favouritesChats.length,
+            limit: this.limit,
+            query: query,
+            starred: true,
+          );
+          favouritesChats.addAll(listChats);
+          break;
+        case TypeChat.group:
+          await Future.delayed(const Duration(seconds: 1));
+          listChats = [];
+          break;
+        case TypeChat.completed:
+          await Future.delayed(const Duration(seconds: 1));
+          listChats = [];
+          break;
+      }
 
-      final listChats = await _apiProvider.getChats(
-        offset: this.offset,
-        limit: this.limit,
-        query: query,
-        starred: starred,
-      );
       listChats.forEach((chat) {
         chats[chat.id] = Chats(chat);
         // if (chats[chat.id]!.chatModel.star != null)
@@ -320,4 +394,4 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 }
 
-enum TypeChat { active, favourites, group, completed, all }
+enum TypeChat { active, favourites, group, completed }

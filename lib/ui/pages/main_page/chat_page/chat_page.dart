@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:app/constants.dart';
+import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
@@ -38,10 +38,18 @@ class _ChatPageState extends State<ChatPage> {
 
   Timer? _timer;
 
+  _loadAllChats() {
+    store.loadChats(type: TypeChat.active);
+    store.loadChats(type: TypeChat.favourites);
+    store.loadChats(type: TypeChat.group);
+    store.loadChats(type: TypeChat.completed);
+  }
+
   @override
   void initState() {
     store = context.read<ChatStore>();
     userData = context.read<ProfileMeStore>();
+    _loadAllChats();
     _searchTextController = TextEditingController();
     _searchTextController.addListener(() {
       if (_timer?.isActive ?? false) _timer!.cancel();
@@ -174,18 +182,22 @@ class _ChatPageState extends State<ChatPage> {
                     _ListChatsWidget(
                       userData: userData,
                       store: store,
+                      typeChat: TypeChat.active,
                     ),
                     _ListChatsWidget(
                       userData: userData,
                       store: store,
+                      typeChat: TypeChat.favourites,
                     ),
                     _ListChatsWidget(
                       userData: userData,
                       store: store,
+                      typeChat: TypeChat.group,
                     ),
                     _ListChatsWidget(
                       userData: userData,
                       store: store,
+                      typeChat: TypeChat.completed,
                     ),
                   ],
                 ),
@@ -201,12 +213,27 @@ class _ChatPageState extends State<ChatPage> {
 class _ListChatsWidget extends StatelessWidget {
   final ChatStore store;
   final ProfileMeStore userData;
+  final TypeChat typeChat;
 
   const _ListChatsWidget({
     Key? key,
     required this.store,
     required this.userData,
+    required this.typeChat,
   }) : super(key: key);
+
+  List<ChatModel> _getListChats() {
+    switch (typeChat) {
+      case TypeChat.active:
+        return store.activeChats;
+      case TypeChat.favourites:
+        return store.favouritesChats;
+      case TypeChat.group:
+        return store.groupChats;
+      case TypeChat.completed:
+        return store.completedChats;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -216,15 +243,16 @@ class _ListChatsWidget extends StatelessWidget {
       notificationPredicate: (ScrollNotification notification) {
         return notification.depth == 0;
       },
-      onRefresh: () => store.loadChats(starred: store.starred),
+      onRefresh: () => store.loadChats(starred: store.starred, type: typeChat),
       child: Observer(
         builder: (_) {
+          final chats = _getListChats();
           if (store.isLoading) {
             return SingleChildScrollView(
               child: Column(children: List.generate(10, (index) => const _ShimmerChatItem())),
             );
           }
-          if (store.chats.isNotEmpty) {
+          if (chats.isNotEmpty) {
             return NotificationListener<ScrollEndNotification>(
               onNotification: (scrollEnd) {
                 final metrics = scrollEnd.metrics;
@@ -240,8 +268,7 @@ class _ListChatsWidget extends StatelessWidget {
                 ),
                 child: Observer(builder: (_) {
                   return Column(
-                    children: store.chatKeyList.map((key) {
-                      final chat = store.chats[key]!;
+                    children: chats.map((chat) {
                       final widget = _ChatListTileWidget(
                         onLongPress: () {
                           store.setChatSelected(true);
@@ -254,22 +281,21 @@ class _ListChatsWidget extends StatelessWidget {
                               if (store.idChatsForStar.values.toList()[i] == true) return;
                             store.setChatSelected(false);
                           } else {
-                            if (chat.chatModel.lastMessage.senderUserId != userData.userData!.id) {
-                              store.setMessageRead(chat.chatModel.id, chat.chatModel.lastMessageId);
-                              chat.chatModel.lastMessage.senderStatus = "read";
+                            if (chat.lastMessage.senderUserId != userData.userData!.id) {
+                              store.setMessageRead(chat.id, chat.lastMessageId);
+                              chat.lastMessage.senderStatus = "read";
                             }
                             Navigator.of(context, rootNavigator: true)
-                                .pushNamed(ChatRoomPage.routeName, arguments: chat.chatModel.id);
+                                .pushNamed(ChatRoomPage.routeName, arguments: chat.id);
                             store.checkMessage();
                           }
                         },
-                        chatDetails: chat,
+                        chat: chat,
                         userId: userData.userData!.id,
-                        infoActionMessage: () =>
-                            store.setInfoMessage(chat.chatModel.lastMessage.infoMessage!.messageAction),
-                        chatStarred: store.idChatsForStar[chat.chatModel.id]!,
+                        infoActionMessage: () => store.setInfoMessage(chat.lastMessage.infoMessage!.messageAction),
+                        chatStarred: store.idChatsForStar[chat.id] ?? false,
                       );
-                      if (store.isLoadingChats && chat == store.chats[store.chatKeyList.last]) {
+                      if (store.isLoadingChats && chat == chats.last) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -416,7 +442,7 @@ class _SelectedAppBarWidget extends StatelessWidget {
 class _ChatListTileWidget extends StatelessWidget {
   final Function()? onLongPress;
   final Function()? onTap;
-  final Chats chatDetails;
+  final ChatModel chat;
   final String userId;
   final Function infoActionMessage;
   final bool chatStarred;
@@ -425,7 +451,7 @@ class _ChatListTileWidget extends StatelessWidget {
     Key? key,
     required this.onLongPress,
     required this.onTap,
-    required this.chatDetails,
+    required this.chat,
     required this.userId,
     required this.infoActionMessage,
     required this.chatStarred,
@@ -433,15 +459,15 @@ class _ChatListTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final differenceTime = DateTime.now().difference(chatDetails.chatModel.lastMessageDate).inDays;
+    final differenceTime = DateTime.now().difference(chat.lastMessageDate).inDays;
     ProfileMeResponse user;
-    if (chatDetails.chatModel.userMembers[0].id != userId) {
-      user = chatDetails.chatModel.userMembers[0];
+    if (chat.userMembers[0].id != userId) {
+      user = chat.userMembers[0];
     } else {
       try {
-        user = chatDetails.chatModel.userMembers[1];
+        user = chat.userMembers[1];
       } catch (e) {
-        user = chatDetails.chatModel.userMembers[0];
+        user = chat.userMembers[0];
       }
     }
     return GestureDetector(
@@ -451,131 +477,125 @@ class _ChatListTileWidget extends StatelessWidget {
         color: chatStarred ? Color(0xFFE9EDF2) : Color(0xFFFFFFFF),
         child: Column(
           children: [
-            Observer(builder: (_) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12.5,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: chatDetails.chatModel.type != "group"
-                            ? UserAvatar(
-                                width: 56,
-                                height: 56,
-                                url: user.avatar?.url,
-                              )
-                            : Stack(
-                                children: [
-                                  Container(
-                                    color: _getRandomColor(
-                                      chatDetails.chatModel.id,
-                                    ),
-                                    height: 56,
-                                    width: 56,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 12.5,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: chat.type != "group"
+                          ? UserAvatar(
+                              width: 56,
+                              height: 56,
+                              url: user.avatar?.url,
+                            )
+                          : Stack(
+                              children: [
+                                Container(
+                                  color: _getRandomColor(
+                                    chat.id,
                                   ),
-                                  Positioned.fill(
-                                    child: Center(
-                                      child: Text(
-                                        chatDetails.chatModel.name!.length == 1
-                                            ? "${chatDetails.chatModel.name![0].toUpperCase()}"
-                                            : "${chatDetails.chatModel.name![0].toUpperCase()}" +
-                                                "${chatDetails.chatModel.name?[1]}",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 32,
-                                        ),
+                                  height: 56,
+                                  width: 56,
+                                ),
+                                Positioned.fill(
+                                  child: Center(
+                                    child: Text(
+                                      chat.name!.length == 1
+                                          ? "${chat.name![0].toUpperCase()}"
+                                          : "${chat.name![0].toUpperCase()}" + "${chat.name?[1]}",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 32,
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                      ),
+                                ),
+                              ],
+                            ),
                     ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            chatDetails.chatModel.name == null
-                                ? "${user.firstName} ${user.lastName}"
-                                : "${chatDetails.chatModel.name}",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            chatDetails.chatModel.lastMessage.senderUserId == userId
-                                ? "chat.you".tr() +
-                                    " ${chatDetails.chatModel.lastMessage.text ?? infoActionMessage.call()} "
-                                : "${chatDetails.chatModel.lastMessage.sender!.firstName}:" +
-                                    " ${chatDetails.chatModel.lastMessage.text ?? infoActionMessage.call()} ",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF7C838D),
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            differenceTime == 0
-                                ? "chat.today".tr()
-                                : differenceTime == 1
-                                    ? "$differenceTime " + "chat.day".tr()
-                                    : "$differenceTime " + "chat.days".tr(),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFFD8DFE3),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 50),
-                    Column(
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        if (chatDetails.chatModel.lastMessage.senderStatus == "unread")
-                          Container(
-                            width: 11,
-                            height: 11,
-                            margin: chatDetails.chatModel.star == null
-                                ? const EdgeInsets.only(top: 25, right: 16)
-                                : const EdgeInsets.only(top: 20, right: 16),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xFF0083C7),
-                            ),
+                        Text(
+                          chat.name == null ? "${user.firstName} ${user.lastName}" : "${chat.name}",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
                           ),
-                        if (chatDetails.chatModel.star != null)
-                          Container(
-                            margin: chatDetails.chatModel.lastMessage.senderStatus == "unread"
-                                ? const EdgeInsets.only(top: 3, right: 16)
-                                : const EdgeInsets.only(top: 23, right: 16),
-                            child: Icon(
-                              Icons.star,
-                              color: Color(0xFFE8D20D),
-                              size: 20.0,
-                            ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          chat.lastMessage.senderUserId == userId
+                              ? "chat.you".tr() + " ${chat.lastMessage.text ?? infoActionMessage.call()} "
+                              : "${chat.lastMessage.sender!.firstName}:" +
+                                  " ${chat.lastMessage.text ?? infoActionMessage.call()} ",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF7C838D),
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          differenceTime == 0
+                              ? "chat.today".tr()
+                              : differenceTime == 1
+                                  ? "$differenceTime " + "chat.day".tr()
+                                  : "$differenceTime " + "chat.days".tr(),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFFD8DFE3),
+                          ),
+                        )
                       ],
-                    )
-                  ],
-                ),
-              );
-            }),
+                    ),
+                  ),
+                  const SizedBox(width: 50),
+                  Column(
+                    children: [
+                      if (chat.lastMessage.senderStatus == "unread")
+                        Container(
+                          width: 11,
+                          height: 11,
+                          margin: chat.star == null
+                              ? const EdgeInsets.only(top: 25, right: 16)
+                              : const EdgeInsets.only(top: 20, right: 16),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFF0083C7),
+                          ),
+                        ),
+                      if (chat.star != null)
+                        Container(
+                          margin: chat.lastMessage.senderStatus == "unread"
+                              ? const EdgeInsets.only(top: 3, right: 16)
+                              : const EdgeInsets.only(top: 23, right: 16),
+                          child: Icon(
+                            Icons.star,
+                            color: Color(0xFFE8D20D),
+                            size: 20.0,
+                          ),
+                        ),
+                    ],
+                  )
+                ],
+              ),
+            ),
             Divider(
               height: 1,
               color: Color(0xFFF7F8FA),
