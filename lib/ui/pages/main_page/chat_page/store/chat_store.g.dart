@@ -238,8 +238,8 @@ mixin _$ChatStore on _ChatStore, Store {
   final _$getUserDataAsyncAction = AsyncAction('_ChatStore.getUserData');
 
   @override
-  Future<dynamic> getUserData(String idUser) {
-    return _$getUserDataAsyncAction.run(() => super.getUserData(idUser));
+  Future<dynamic> getUserData(ProfileMeResponse profile) {
+    return _$getUserDataAsyncAction.run(() => super.getUserData(profile));
   }
 
   final _$setMessageReadAsyncAction = AsyncAction('_ChatStore.setMessageRead');

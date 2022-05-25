@@ -49,6 +49,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     store = context.read<ChatStore>();
     userData = context.read<ProfileMeStore>();
+    store.getUserData(userData.userData!);
     _loadAllChats();
     _searchTextController = TextEditingController();
     _searchTextController.addListener(() {

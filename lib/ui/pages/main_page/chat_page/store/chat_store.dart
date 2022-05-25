@@ -24,6 +24,8 @@ class ChatStore extends _ChatStore with _$ChatStore {
 abstract class _ChatStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
   StreamController<bool>? streamChatNotification;
+
+  @observable
   ProfileMeResponse? userData;
 
   String _myId = "";
@@ -49,6 +51,9 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   Map<String, Chats> chats = {};
+
+  @observable
+  String query = '';
 
   @observable
   ObservableList<ChatModel> activeChats = ObservableList.of([]);
@@ -94,6 +99,9 @@ abstract class _ChatStore extends IStore<bool> with Store {
     if (a == b) return 0;
     return a > b ? 1 : -1;
   }
+
+  @action
+  setQuery(String value) => query = value;
 
   @action
   void chatSort() {
@@ -173,7 +181,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   void addedMessage(dynamic json) {
     try {
-      var message;
+      MessageModel? message;
       if (json["path"] == "/notifications/quest") {
         final quest = BaseQuestResponse.fromJson(json["message"]["data"]["quest"] ?? json["message"]["data"]);
         if (quest.status == 5) {
@@ -199,14 +207,33 @@ abstract class _ChatStore extends IStore<bool> with Store {
         _atomChats.reportChanged();
         return;
       }
-      var chat = chats[message.chatId];
-      if (chat == null) return;
-      chat.chatModel.lastMessage = message;
-      chat.messages.insert(0, message);
+      var chat = chats[message!.chatId];
+      print('chatId: ${message.chatId}');
+      if (chat == null) {
+        print('chat is null');
+        chat = Chats(ChatModel(
+          id: message.chatId,
+          ownerUserId: null,
+          lastMessageId: message.id,
+          lastMessageDate: message.createdAt,
+          name: null,
+          type: '',
+          owner: null,
+          lastMessage: message,
+          meMember: null,
+          userMembers: [userData!, message.sender!],
+          star: null,
+          questChat: null,
+        ));
+        chats[message.chatId] = chat;
+      } else {
+        chat.chatModel.lastMessage = message;
+        chat.messages.insert(0, message);
+      }
 
-      // final saveChat = chats.remove(message.chatId);
+      final saveChat = chats.remove(message.chatId);
 
-      // chats[message.chatId] = saveChat!;
+      chats[message.chatId] = saveChat!;
 
       chatSort();
       updateListsChats();
@@ -279,10 +306,13 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   @action
   updateListsChats() {
+    List<ChatModel> bufferActive = [];
     chats.forEach((key, value) {
       final indexActive = activeChats.indexWhere((element) => element.id == key);
       if (indexActive != -1) {
         activeChats[indexActive] = value.chatModel;
+      } else {
+        activeChats.add(value.chatModel);
       }
       activeChats.sort((a, b) {
         final aTime = a.lastMessage.createdAt.millisecondsSinceEpoch;
@@ -290,10 +320,22 @@ abstract class _ChatStore extends IStore<bool> with Store {
         if (aTime == bTime) return 0;
         return aTime < bTime ? 1 : -1;
       });
+      bufferActive.addAll(activeChats);
+      activeChats
+        ..clear()
+        ..addAll(bufferActive);
+      bufferActive.clear();
       final indexFavourites = favouritesChats.indexWhere((element) => element.id == key);
       if (indexFavourites != -1) {
         favouritesChats[indexFavourites] = value.chatModel;
+      } else {
+        favouritesChats.add(value.chatModel);
       }
+      bufferActive.addAll(favouritesChats);
+      favouritesChats
+        ..clear()
+        ..addAll(bufferActive);
+      bufferActive.clear();
       favouritesChats.sort((a, b) {
         final aTime = a.lastMessage.createdAt.millisecondsSinceEpoch;
         final bTime = b.lastMessage.createdAt.millisecondsSinceEpoch;
@@ -376,12 +418,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   @action
-  Future getUserData(String idUser) async {
-    try {
-      userData = await _apiProvider.getProfileUser(userId: idUser);
-    } catch (e) {
-      this.onError(e.toString());
-    }
+  Future getUserData(ProfileMeResponse profile) async {
+    userData = profile;
   }
 
   @action
