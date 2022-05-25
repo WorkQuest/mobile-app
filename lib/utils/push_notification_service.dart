@@ -22,7 +22,10 @@ class PushNotificationService {
     try {
       NotificationSettings settings = await _fcm.requestPermission(
         alert: true,
+        announcement: false,
         badge: true,
+        carPlay: false,
+        criticalAlert: false,
         provisional: false,
         sound: true,
       );
@@ -66,19 +69,22 @@ class PushNotificationService {
   ///BackGround Message Handler
 
 // Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await Firebase.initializeApp();
+//   // await Firebase.initializeApp();
 //   print("Handling a background message: ${message.messageId}");
 // }
 
   /// add function to an onpressed function
 
   Future<void> _getRemoteNotification() async {
+
     try {
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        print('Notif error');
         RemoteNotification? notification = message.notification;
         AndroidNotification? androidNotification =
             message.notification?.android;
         if (notification != null && androidNotification != null) {
+
           showNotification(
             notification.hashCode,
             notification.body,
@@ -117,7 +123,7 @@ class PushNotificationService {
         android: AndroidNotificationDetails(
           channel.id,
           channel.name,
-          channel.description,
+          channelDescription: channel.description,
           importance: Importance.high,
           color: Colors.blue,
           playSound: true,

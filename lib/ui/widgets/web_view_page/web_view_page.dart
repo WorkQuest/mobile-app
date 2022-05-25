@@ -97,7 +97,8 @@ class _WebViewPageState extends State<WebViewPage> {
                         // evaluateJavascript(
                         """localStorage.setItem("accessToken","${accessToken ?? ''}");
                     localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
-                if (url.contains('token?code=')) {
+                if (url.contains('token?code=') ||
+                    url.contains('token?state=')) {
                   _controller!.evaluateJavascript(
                       "(function(){Flutter.postMessage(window.document.body.outerHTML)})();");
                 }

@@ -14,28 +14,29 @@ import 'package:easy_localization/easy_localization.dart';
 const AndroidNotificationChannel _channel = AndroidNotificationChannel(
   'high_importance_channel',
   'High Importance Notification',
-  'This channel is used for important notifications',
+  description: 'This channel is used for important notifications',
   importance: Importance.max,
   playSound: true,
 );
 
 final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin();
 
 ///BackGround Message Handler
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await Firebase.initializeApp();
-//   print("Handling a background message: ${message.messageId}");
-// }
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //_initialisePushNotification();
   //init get_it
   injectDependencies(env: Environment.test);
-  // await Firebase.initializeApp().then(
-  //   (value) => _initialisePushNotification(),
-  // );
+  await Firebase.initializeApp().then(
+    (value) => _initialisePushNotification(),
+  );
 
   await EasyLocalization.ensureInitialized();
 
@@ -78,6 +79,6 @@ void _initialisePushNotification() {
     _flutterLocalNotificationsPlugin,
   );
   _firebaseMessaging.subscribeToTopic('all');
-  //firebaseMessaging.getToken().then((token) => print(" firebase token $token"));
-  //FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  _firebaseMessaging.getToken().then((token) => print(" firebase token $token"));
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 }

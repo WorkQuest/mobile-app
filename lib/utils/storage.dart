@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/web3/wallet.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Storage {
@@ -52,6 +53,7 @@ class Storage {
 
   static deleteAllFromSecureStorage() async {
     await _secureStorage.deleteAll();
+    FirebaseMessaging.instance.deleteToken();
   }
 
   ///Wallets
