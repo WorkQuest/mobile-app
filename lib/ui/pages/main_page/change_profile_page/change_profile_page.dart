@@ -209,6 +209,11 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 validator: Validators.emailValidator,
                 maxLength: null,
               ),
+              if (pageStore.userData.role == UserRole.Employer)
+                _FieldForEmployerWorker(
+                  pageStore: pageStore,
+                  profile: profile!,
+                ),
               _InputWidget(
                 title: "modals.title".tr(),
                 initialValue:
@@ -435,6 +440,63 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 ],
               );
       },
+    );
+  }
+}
+
+class _FieldForEmployerWorker extends StatefulWidget {
+  final ChangeProfileStore pageStore;
+  final ProfileMeStore profile;
+
+  const _FieldForEmployerWorker({
+    required this.pageStore,
+    required this.profile,
+  });
+
+  @override
+  State<_FieldForEmployerWorker> createState() =>
+      _FieldForEmployerWorkerState();
+}
+
+class _FieldForEmployerWorkerState extends State<_FieldForEmployerWorker> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _InputWidget(
+          title: "settings.workExps.CompanyName".tr(),
+          initialValue: widget.pageStore.userData.additionalInfo?.company ?? "",
+          onChanged: (text) {
+            ProfileMeResponse data = widget.pageStore.userData;
+            data.additionalInfo?.company = text;
+            widget.pageStore.setUserData(data);
+          },
+          validator: null,
+          maxLength: null,
+        ),
+        _InputWidget(
+          title: "settings.position".tr(),
+          initialValue: widget.pageStore.userData.additionalInfo?.ceo ?? "",
+          onChanged: (text) {
+            ProfileMeResponse data = widget.pageStore.userData;
+            data.additionalInfo?.ceo = text;
+            widget.pageStore.setUserData(data);
+          },
+          validator: null,
+          maxLength: null,
+        ),
+        _InputWidget(
+          title: "settings.site".tr(),
+          initialValue: widget.pageStore.userData.additionalInfo?.website ?? "",
+          onChanged: (text) {
+            ProfileMeResponse data = widget.pageStore.userData;
+            data.additionalInfo?.website = text;
+            widget.pageStore.setUserData(data);
+          },
+          validator: null,
+          maxLength: null,
+        ),
+      ],
     );
   }
 }
@@ -722,7 +784,7 @@ class _InputWidget extends StatelessWidget {
   final String title;
   final String initialValue;
   final void Function(String)? onChanged;
-  final String? Function(String?) validator;
+  final String? Function(String?)? validator;
   final bool readOnly;
   final int? maxLines;
   final int? maxLength;

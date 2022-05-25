@@ -753,6 +753,10 @@ Widget contactDetails({
   required String email,
   required String secondNumber,
   required bool isVerify,
+  required UserRole role,
+  required String? company,
+  required String? ceo,
+  required String? website,
 }) {
   return Padding(
     padding: const EdgeInsets.only(top: 20.0),
@@ -876,6 +880,121 @@ Widget contactDetails({
             ),
           ],
         ),
+        if (role == UserRole.Employer)
+          Column(
+            children: [
+              if ((company ?? "").isNotEmpty)
+                Column(
+                  children: [
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/union.svg",
+                          width: 20.0,
+                          height: 20.0,
+                          color: Color(0xFF7C838D),
+                        ),
+                        // Image.asset(
+                        //   "union.svg",
+                        //   width: 20.0,
+                        //   height: 20.0,
+                        //   color: Color(0xFF7C838D),
+                        // ),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              company!,
+                              overflow: TextOverflow.fade,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF7C838D),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              if ((ceo ?? "").isNotEmpty)
+                Column(
+                  children: [
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/ceo.svg",
+                          width: 20.0,
+                          height: 20.0,
+                          color: Color(0xFF7C838D),
+                        ),
+                        // Image.asset(
+                        //   "assets/union.svg",
+                        //   width: 20.0,
+                        //   height: 20.0,
+                        //   color: Color(0xFF7C838D),
+                        // ),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              ceo!,
+                              overflow: TextOverflow.fade,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF7C838D),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              if ((website ?? "").isNotEmpty)
+                Column(
+                  children: [
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          "assets/glob.svg",
+                          width: 20.0,
+                          height: 20.0,
+                          color: Color(0xFF7C838D),
+                        ),
+                        // Icon(
+                        //   Icons.web,
+                        //   size: 20.0,
+                        //   color: Color(0xFF7C838D),
+                        // ),
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              website!,
+                              overflow: TextOverflow.fade,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF7C838D),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+            ],
+          ),
       ],
     ),
   );

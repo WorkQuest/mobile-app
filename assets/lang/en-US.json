@@ -1366,6 +1366,8 @@
     "smsVerification": "Profile verification by SMS",
     "company": "Enter the name of the company",
     "ceo": "Add a position",
+    "position": "Position",
+    "site": "Website",
     "filterAllEmployeeProfiles": "Filter all employee profiles",
     "website": "Specify the company's website",
     "changeRole": "Change role",

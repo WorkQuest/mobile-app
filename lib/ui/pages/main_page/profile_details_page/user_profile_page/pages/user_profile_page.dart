@@ -158,7 +158,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Observer(
         builder: (_) => (userStore?.isLoading ?? false) ||
@@ -253,6 +252,30 @@ class UserProfileState<T extends UserProfile> extends State<T>
                                     ? userStore!.userData?.email ?? " "
                                     : viewOtherUser!.userData!.email ?? " ",
                                 isVerify: isVerify ?? false,
+                                role: viewOtherUser?.userData == null
+                                    ? userStore!.userData!.role
+                                    : viewOtherUser!.userData!.role,
+                                company: viewOtherUser?.userData == null
+                                    ? userStore!.userData!.additionalInfo
+                                            ?.company ??
+                                        ""
+                                    : viewOtherUser!.userData!.additionalInfo
+                                            ?.company ??
+                                        "",
+                                ceo: viewOtherUser?.userData == null
+                                    ? userStore!
+                                            .userData!.additionalInfo?.ceo ??
+                                        ""
+                                    : viewOtherUser!
+                                            .userData!.additionalInfo?.ceo ??
+                                        "",
+                                website: viewOtherUser?.userData == null
+                                    ? userStore!.userData!.additionalInfo
+                                            ?.website ??
+                                        ""
+                                    : viewOtherUser!.userData!.additionalInfo
+                                            ?.website ??
+                                        "",
                               ),
 
                               ...ratingsWidget(),
