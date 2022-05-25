@@ -328,8 +328,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
       final indexFavourites = favouritesChats.indexWhere((element) => element.id == key);
       if (indexFavourites != -1) {
         favouritesChats[indexFavourites] = value.chatModel;
-      } else {
-        favouritesChats.add(value.chatModel);
       }
       bufferActive.addAll(favouritesChats);
       favouritesChats
