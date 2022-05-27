@@ -22,7 +22,7 @@ class AccountRepository {
   }
 
   connectClient() {
-    service = AccountRepository().service!;
+    service = ClientService();
   }
 
   clearData() {

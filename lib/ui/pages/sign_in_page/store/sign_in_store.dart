@@ -78,19 +78,20 @@ abstract class _SignInStore extends IStore<bool> with Store {
     if (walletAddress == null) this.onError("Profile not found");
     try {
       Wallet? wallet = await Wallet.derive(mnemonic);
+      AccountRepository().connectClient();
+      AccountRepository().setWallet(wallet);
       if (wallet.address != walletAddress) throw FormatException("Incorrect mnemonic");
       final signature = await AccountRepository().service!.getSignature(wallet.privateKey!);
       await _apiProvider.walletLogin(signature, wallet.address!);
       await Storage.write(Storage.wallets, jsonEncode([wallet.toJson()]));
       await Storage.write(Storage.activeAddress, wallet.address!);
-      AccountRepository().clearData();
-      AccountRepository().setWallet(wallet);
-      AccountRepository().connectClient();
       this.onSuccess(true);
     } on FormatException catch (e) {
       this.onError(e.message);
+      AccountRepository().clearData();
       error = e.toString();
     } catch (e, tr) {
+      AccountRepository().clearData();
       print("error $e $tr");
       this.onError(e.toString());
     }
