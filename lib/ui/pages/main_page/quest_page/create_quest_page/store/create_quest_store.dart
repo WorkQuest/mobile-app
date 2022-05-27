@@ -357,7 +357,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
             (BigInt.parse(price).toDouble() * pow(10, 18)).toStringAsFixed(0),
       );
       if (isEdit) {
-        await ClientService().handleEvent(
+        await AccountRepository().service!.handleEvent(
           function: WQContractFunctions.editJob,
           contractAddress: contractAddress,
           params: [
@@ -375,9 +375,9 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           questId: questId,
         );
       } else {
-        final balanceWusd = await ClientService()
+        final balanceWusd = await AccountRepository().service!
             .getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
-        final gas = await ClientService().getGas();
+        final gas = await AccountRepository().service!.getGas();
 
         if (balanceWusd < double.parse(price) + (gas.getInEther).toDouble()) {
           throw Exception('Not enough balance.');
@@ -387,10 +387,10 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           quest: questModel,
         );
 
-        final approveCoin = await ClientService().approveCoin(cost: price);
+        final approveCoin = await AccountRepository().service!.approveCoin(cost: price);
 
         if (approveCoin)
-          await ClientService().createNewContract(
+          await AccountRepository().service!.createNewContract(
             jobHash: description,
             cost: price,
             deadline: 0.toString(),

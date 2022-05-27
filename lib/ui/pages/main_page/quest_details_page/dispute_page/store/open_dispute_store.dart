@@ -8,6 +8,8 @@ import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
 
+import '../../../../../../web3/repository/account_repository.dart';
+
 part 'open_dispute_store.g.dart';
 
 @injectable
@@ -91,7 +93,7 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
 
   Future<void> getFee() async {
     try {
-      final gas = await ClientService().getGas();
+      final gas = await AccountRepository().service!.getGas();
       fee = (1 + (gas.getInWei.toInt() / pow(10, 18))).toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -107,7 +109,7 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
         problemDescription: description,
       );
       if (result) {
-        await ClientService().handleEvent(
+        await AccountRepository().service!.handleEvent(
           function: WQContractFunctions.arbitration,
           contractAddress: contractAddress,
           value: "1",

@@ -6,6 +6,7 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/utils/web_socket.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/credentials.dart';
@@ -79,7 +80,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
 
   Future<void> getFee() async {
     try {
-      final gas = await ClientService().getGas();
+      final gas = await AccountRepository().service!.getGas();
       fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -97,7 +98,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       // Remove request
       // await _apiProvider.startQuest(questId: questId, userId: userId);
 
-      await ClientService().handleEvent(
+      await AccountRepository().service!.handleEvent(
         function: WQContractFunctions.assignJob,
         contractAddress: quest.value!.contractAddress!,
         params: [
@@ -120,7 +121,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       // await _apiProvider.acceptCompletedWork(questId: questId);
-      await ClientService().handleEvent(
+      await AccountRepository().service!.handleEvent(
         function: WQContractFunctions.acceptJobResult,
         contractAddress: quest.value!.contractAddress!,
         value: null,
@@ -141,7 +142,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       this.onLoading();
       await _getQuest();
       // await _apiProvider.deleteQuest(questId: questId);
-      await ClientService().handleEvent(
+      await AccountRepository().service!.handleEvent(
         function: WQContractFunctions.cancelJob,
         contractAddress: quest.value!.contractAddress!,
         value: null,

@@ -115,8 +115,7 @@ abstract class _CreateWalletStore extends IStore<bool> with Store {
       await _apiProvider.registerWallet(wallet.publicKey!, wallet.address!);
       await Storage.write("wallets", jsonEncode([wallet.toJson()]));
       await Storage.write("address", wallet.address!);
-      AccountRepository().userAddress = wallet.address;
-      AccountRepository().addWallet(wallet);
+      AccountRepository().setWallet(wallet);
       onSuccess(true);
     } on FormatException catch (e) {
       onError(e.message);

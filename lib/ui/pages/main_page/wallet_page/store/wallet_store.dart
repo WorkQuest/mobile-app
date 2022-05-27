@@ -1,7 +1,6 @@
 import 'package:app/http/api_provider.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
-import 'package:app/web3/service/client_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
@@ -42,13 +41,13 @@ abstract class _WalletStore extends IStore<bool> with Store {
     }
     try {
       final list =
-      await ClientService().getAllBalance(AccountRepository().privateKey);
+      await AccountRepository().service!.getAllBalance(AccountRepository().privateKey);
       print(list);
       final wqt = list.firstWhere((element) => element.title == 'ether');
-      final wUsd = await ClientService().getBalanceFromContract(AddressCoins.wUsd);
-      final wEth = await ClientService().getBalanceFromContract(AddressCoins.wEth);
-      final wBnb = await ClientService().getBalanceFromContract(AddressCoins.wBnb);
-      final uSdt = await ClientService().getBalanceFromContract(AddressCoins.uSdt);
+      final wUsd = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wUsd);
+      final wEth = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wEth);
+      final wBnb = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wBnb);
+      final uSdt = await AccountRepository().service!.getBalanceFromContract(AddressCoins.uSdt);
       if (coins.isNotEmpty) {
         coins[0] = BalanceItem(
           "WQT",

@@ -66,6 +66,7 @@ class _PinCodePageState extends State<PinCodePage>
             if (widget.isRecheck) {
               Navigator.pop(context);
             } else {
+              AccountRepository().connectClient();
               await AlertDialogUtils.showSuccessDialog(context);
               Navigator.pushNamedAndRemoveUntil(
                 context,
