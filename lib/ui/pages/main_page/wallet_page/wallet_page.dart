@@ -65,7 +65,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget layout() {
-    final address = AccountRepository().userAddress ?? '1234567890';
+    final address = AccountRepository().userAddress;
     return CustomScrollView(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
