@@ -1,9 +1,7 @@
-import 'package:app/ui/pages/main_page/wallet_page/bank_card_widget.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -113,7 +111,7 @@ class _DepositPageState extends State<DepositPage>
             Center(
               child: AccountRepository().userAddress != null
                   ? QrImage(
-                      data: AccountRepository().userAddress!,
+                      data: AccountRepository().userAddress,
                       version: QrVersions.auto,
                       size: 200.0,
                     )
@@ -149,8 +147,8 @@ class _DepositPageState extends State<DepositPage>
                 ),
               ),
               child: Text(
-                '${AccountRepository().userAddress!.substring(0, 9)}...'
-                '${AccountRepository().userAddress!.substring(AccountRepository().userAddress!.length - 3, AccountRepository().userAddress!.length)}',
+                '${AccountRepository().userAddress.substring(0, 9)}...'
+                '${AccountRepository().userAddress.substring(AccountRepository().userAddress.length - 3, AccountRepository().userAddress.length)}',
               ),
             ),
             Spacer(),
@@ -163,7 +161,7 @@ class _DepositPageState extends State<DepositPage>
                     height: 43.0,
                     child: OutlinedButton(
                       onPressed: () => AccountRepository().userAddress != null
-                          ? Share.share(AccountRepository().userAddress!)
+                          ? Share.share(AccountRepository().userAddress)
                           : null,
                       child: Text(
                         "sharing.title".tr(),
@@ -185,7 +183,7 @@ class _DepositPageState extends State<DepositPage>
                     onPressed: () => AccountRepository().userAddress != null
                         ? Clipboard.setData(
                             new ClipboardData(
-                              text: AccountRepository().userAddress!,
+                              text: AccountRepository().userAddress,
                             ),
                           ).then((_) {
                             ScaffoldMessenger.of(context).showSnackBar(
