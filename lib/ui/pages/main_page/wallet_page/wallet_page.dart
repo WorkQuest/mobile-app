@@ -34,6 +34,7 @@ class WalletPage extends StatefulWidget {
 
 class _WalletPageState extends State<WalletPage> {
   ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +65,7 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget layout() {
-    final address = AccountRepository().userAddress ?? '1234567890';
+    final address = AccountRepository().userAddress;
     return CustomScrollView(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
@@ -132,11 +133,13 @@ class _WalletPageState extends State<WalletPage> {
                 ),
                 Row(
                   children: [
-                    outlinedButton(route: WithdrawPage.routeName, title: "withdraw"),
+                    outlinedButton(
+                        route: WithdrawPage.routeName, title: "withdraw"),
                     const SizedBox(
                       width: 10,
                     ),
-                    outlinedButton(route: DepositPage.routeName, title: "deposit"),
+                    outlinedButton(
+                        route: DepositPage.routeName, title: "deposit"),
                     const SizedBox(
                       width: 10,
                     ),
@@ -174,7 +177,9 @@ class _WalletPageState extends State<WalletPage> {
               title: Text(
                 'wallet.table.trx'.tr(),
                 style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
               ),
             ),
             centerTitle: false,
@@ -259,26 +264,6 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
       ),
       child: Observer(
         builder: (_) {
-          if (store.errorMessage != null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    'Failed to get balance',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Text(
-                    'Swipe to update',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            );
-          }
           if (store.coins.isNotEmpty) {
             return Column(
               children: [
@@ -301,27 +286,14 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             height: 15,
                           ),
                           if (store.isLoading)
-                            SizedBox(
+                            const _ShimmerWidget(
                               width: double.infinity,
                               height: 30,
-                              child: Shimmer.fromColors(
-                                baseColor: const Color(0xfff1f0f0),
-                                highlightColor: Colors.white,
-                                child: Container(
-                                  width: 100,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(6.0),
-                                  ),
-                                ),
-                              ),
                             )
                           else
                             Text(
                               // '${num.parse(balance.amount).toInt()} ${balance.title}',
-                              '${num.parse(balance.amount).toDouble().toStringAsFixed(
-                                  8)} ${balance.title}',
+                              '${num.parse(balance.amount).toDouble().toStringAsFixed(8)} ${balance.title}',
                               style: const TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.w700,
@@ -332,21 +304,9 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             height: 5,
                           ),
                           if (store.isLoading)
-                            SizedBox(
+                            const _ShimmerWidget(
                               width: 140,
                               height: 15,
-                              child: Shimmer.fromColors(
-                                baseColor: const Color(0xfff1f0f0),
-                                highlightColor: Colors.white,
-                                child: Container(
-                                  width: 100,
-                                  height: 15,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12.0),
-                                  ),
-                                ),
-                              ),
                             )
                           else
                             Text(
@@ -364,38 +324,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                     height: 120.0,
                     viewportFraction: 1.0,
                     disableCenter: true,
-                    onPageChanged: (int index, _) {
-                      switch (index) {
-                        case 0:
-                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.WQT);
-                          GetIt.I
-                              .get<TransactionsStore>()
-                              .setType(TYPE_COINS.WQT);
-                          break;
-                        case 1:
-                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.WUSD);
-                          GetIt.I
-                              .get<TransactionsStore>()
-                              .setType(TYPE_COINS.WUSD);
-                          break;
-                        case 2:
-                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.wBNB);
-                          GetIt.I
-                              .get<TransactionsStore>()
-                              .setType(TYPE_COINS.wBNB);
-                          break;
-                        case 3:
-                          GetIt.I.get<WalletStore>().setType(TYPE_COINS.wETH);
-                          GetIt.I
-                              .get<TransactionsStore>()
-                              .setType(TYPE_COINS.wETH);
-                          break;
-                      }
-                      GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
-                      setState(() {
-                        _currencyIndex = index;
-                      });
-                    },
+                    onPageChanged: _onPageChanged,
                   ),
                 ),
                 Row(
@@ -413,8 +342,11 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           border: isCurrency
                               ? null
                               : Border.all(
-                              color: AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
+                                  color:
+                                      AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency
+                              ? AppColor.enabledButton
+                              : Colors.transparent,
                         ),
                       ),
                     );
@@ -424,55 +356,23 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
             );
           }
           if (store.isLoading) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            return const _ShimmerInfoCard();
+          }
+          if (store.errorMessage != null) {
+            return Center(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
                   Text(
-                    'wallet.balance'.tr(),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
+                    'Failed to get balance',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                   ),
                   SizedBox(
-                    width: double.infinity,
-                    height: 30,
-                    child: Shimmer.fromColors(
-                      baseColor: const Color(0xfff1f0f0),
-                      highlightColor: Colors.white,
-                      child: Container(
-                        width: 100,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(6.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  SizedBox(
-                    width: 140,
                     height: 15,
-                    child: Shimmer.fromColors(
-                      baseColor: const Color(0xfff1f0f0),
-                      highlightColor: Colors.white,
-                      child: Container(
-                        width: 100,
-                        height: 15,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                      ),
-                    ),
+                  ),
+                  Text(
+                    'Swipe to update',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -488,6 +388,35 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
     );
   }
 
+  _onPageChanged(int index, dynamic _) {
+    switch (index) {
+      case 0:
+        GetIt.I.get<WalletStore>().setType(TYPE_COINS.WQT);
+        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.WQT);
+        break;
+      case 1:
+        GetIt.I.get<WalletStore>().setType(TYPE_COINS.WUSD);
+        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.WUSD);
+        break;
+      case 2:
+        GetIt.I.get<WalletStore>().setType(TYPE_COINS.wBNB);
+        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wBNB);
+        break;
+      case 3:
+        GetIt.I.get<WalletStore>().setType(TYPE_COINS.wETH);
+        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wETH);
+        break;
+      case 4:
+        GetIt.I.get<WalletStore>().setType(TYPE_COINS.USDT);
+        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.USDT);
+        break;
+    }
+    GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
+    setState(() {
+      _currencyIndex = index;
+    });
+  }
+
   String _getCourseDollar(String title, String amount) {
     switch (title) {
       case 'WQT':
@@ -497,5 +426,97 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
       default:
         return '\$ ${num.parse(amount).toDouble().toStringAsFixed(4)}';
     }
+  }
+}
+
+class _ShimmerInfoCard extends StatelessWidget {
+  const _ShimmerInfoCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'wallet.balance'.tr(),
+            style: const TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          SizedBox(
+            width: double.infinity,
+            height: 30,
+            child: Shimmer.fromColors(
+              baseColor: const Color(0xfff1f0f0),
+              highlightColor: Colors.white,
+              child: Container(
+                width: 100,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(6.0),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          SizedBox(
+            width: 140,
+            height: 15,
+            child: Shimmer.fromColors(
+              baseColor: const Color(0xfff1f0f0),
+              highlightColor: Colors.white,
+              child: Container(
+                width: 100,
+                height: 15,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShimmerWidget extends StatelessWidget {
+  final double width;
+  final double height;
+
+  const _ShimmerWidget({
+    Key? key,
+    required this.width,
+    required this.height,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: Shimmer.fromColors(
+        baseColor: const Color(0xfff1f0f0),
+        highlightColor: Colors.white,
+        child: Container(
+          width: 100,
+          height: 15,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+        ),
+      ),
+    );
   }
 }

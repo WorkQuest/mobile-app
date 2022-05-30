@@ -25,6 +25,16 @@ class UserAvatar extends StatelessWidget {
       fit: BoxFit.cover,
       fadeOutDuration: const Duration(milliseconds: 250),
       image: url ?? Constants.defaultImageNetwork,
+      imageErrorBuilder: (context, error, _) {
+        return Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+          ),
+          child: Image.asset('assets/wq_default_avatar.png'),
+        );
+      },
       placeholder: Uint8List.fromList(
         base64Decode(Constants.base64WhiteHolder),
       ),

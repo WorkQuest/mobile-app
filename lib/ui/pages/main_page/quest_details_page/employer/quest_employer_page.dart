@@ -523,7 +523,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           store.setQuestStatus(5);
                           questStore.deleteQuest(store.quest.value!.id);
                           questStore.addQuest(store.quest.value!, false);
-                          chatStore.loadChats(true, false);
+                          chatStore.loadChats(starred: false);
                           Navigator.pop(context);
                           await AlertDialogUtils.showSuccessDialog(context);
                         },

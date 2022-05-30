@@ -28,13 +28,19 @@ const _prefixConstraints = const BoxConstraints(
   minWidth: _horizontalConstraints,
 );
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
   static const String routeName = "/";
+
+  SignInPage();
+
+  @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController totpController = new TextEditingController();
-
-  SignInPage();
 
   @override
   Widget build(BuildContext context) {
@@ -130,13 +136,18 @@ class SignInPage extends StatelessWidget {
               ),
             ),
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Center(
-                  child: Text(
-                    "signIn.or".tr(),
-                    style: TextStyle(
-                      color: Color(0xFFCBCED2),
+              child: InkWell(
+                onTap: () {
+                  _showAlertTotp(context, signInStore);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Center(
+                    child: Text(
+                      "signIn.or".tr(),
+                      style: TextStyle(
+                        color: Color(0xFFCBCED2),
+                      ),
                     ),
                   ),
                 ),
@@ -153,111 +164,6 @@ class SignInPage extends StatelessWidget {
       ),
     );
   }
-
-  // SizedBox(
-  //   height: mq.size.height,
-  //   child: SafeArea(
-  //     top: false,
-  //     bottom: false,
-  //     child: Column(
-  //       mainAxisAlignment: MainAxisAlignment.start,
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       children: [
-  //         AutofillGroup(
-  //           child: Expanded(
-  //             child: Container(
-  //               alignment: Alignment.bottomLeft,
-  //               decoration: BoxDecoration(
-  //                 image: DecorationImage(
-  //                   fit: BoxFit.cover,
-  //                   colorFilter: ColorFilter.mode(
-  //                     Color(0xFF103D7C),
-  //                     BlendMode.color,
-  //                   ),
-  //                   image: AssetImage(
-  //                     "assets/login_page_header.png",
-  //                   ),
-  //                 ),
-  //               ),
-  //               child: Padding(
-  //                 padding: const EdgeInsets.fromLTRB(
-  //                   16.0,
-  //                   0.0,
-  //                   16.0,
-  //                   30.0,
-  //                 ),
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Text(
-  //                       "modals.welcomeToWorkQuest".tr(),
-  //                       style: TextStyle(
-  //                         color: Colors.white,
-  //                         fontSize: 34,
-  //                         fontWeight: FontWeight.bold,
-  //                       ),
-  //                     ),
-  //                     Padding(
-  //                       padding: const EdgeInsets.only(top: 10.0),
-  //                       child: Text(
-  //                         "signIn.pleaseSignIn".tr(),
-  //                         style: TextStyle(
-  //                           color: Colors.white,
-  //                           fontSize: 16,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //         _InputFieldsWidget(
-  //           signInStore: signInStore,
-  //         ),
-  //         Padding(
-  //           padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
-  //           child: Observer(
-  //             builder: (context) {
-  //               return LoginButton(
-  //                 onTap: signInStore.canSignIn
-  //                     ? signInStore.isLoading
-  //                         ? () {}
-  //                         : () async {
-  //                             if (_formKey.currentState!.validate()) {
-  //                               _onPressedSignIn(
-  //                                 context,
-  //                                 signInStore: signInStore,
-  //                                 profile: profile,
-  //                               );
-  //                             }
-  //                           }
-  //                     : null,
-  //                 title: "signIn.login".tr(),
-  //                 enabled: signInStore.isLoading,
-  //               );
-  //             },
-  //           ),
-  //         ),
-  //         Padding(
-  //           padding: const EdgeInsets.only(top: 20.0),
-  //           child: Center(
-  //             child: Text(
-  //               "signIn.or".tr(),
-  //               style: TextStyle(
-  //                 color: Color(0xFFCBCED2),
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //         const _SocialLoginWidget(),
-  //         const _HintsAccountWidget(),
-  //       ],
-  //     ),
-  //   ),
-  // ),
 
   _onPressedSignIn(
     BuildContext context, {
@@ -294,51 +200,49 @@ class SignInPage extends StatelessWidget {
     required SignInStore signInStore,
     required ProfileMeStore profile,
   }) async {
-    print('error handler: ${signInStore.errorMessage}');
     if (signInStore.errorMessage == "unconfirmed") {
-      print("error");
       await AlertDialogUtils.showSuccessDialog(context);
-      Navigator.pushNamed(context, ConfirmEmail.routeName,
-          arguments: signInStore.getUsername());
+      Navigator.pushNamed(context, ConfirmEmail.routeName, arguments: signInStore.getUsername());
     } else if (signInStore.errorMessage == "TOTP is invalid" ||
         signInStore.errorMessage == "User must pass 2FA" ||
         profile.errorMessage == "TOTP is invalid" ||
         profile.errorMessage == "User must pass 2FA") {
-      AlertDialogUtils.showAlertDialog(
-        context,
-        title: Text('Warning'),
-        content: Builder(
-          builder: (context) {
-            var width = MediaQuery.of(context).size.width;
-            return Container(
-              width: width - 100,
-              child: _AlertTotpWidget(
-                text: totpController.text,
-                onChanged: signInStore.setTotp,
-              ),
-            );
-          },
-        ),
-        needCancel: true,
-        titleCancel: 'Cancel',
-        titleOk: 'OK',
-        onTabCancel: null,
-        onTabOk: () {
-          _onPressedSignIn(context,
-              signInStore: signInStore,
-              profile: context.read<ProfileMeStore>());
-        },
-        colorCancel: Colors.red,
-        colorOk: AppColor.enabledButton,
-      );
+      _showAlertTotp(context, signInStore);
     } else {
       _errorMessage(context, signInStore.error);
     }
   }
 
-  void _errorMessage(BuildContext context, String msg) =>
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: "Error", content: msg);
+  _showAlertTotp(BuildContext context, SignInStore signInStore) {
+    AlertDialogUtils.showAlertDialog(
+      context,
+      title: Text('Security check'),
+      content: Builder(
+        builder: (context) {
+          var width = MediaQuery.of(context).size.width;
+          return Container(
+            width: width - 20,
+            child: _AlertTotpWidget(
+              text: totpController.text,
+              onChanged: signInStore.setTotp,
+            ),
+          );
+        },
+      ),
+      needCancel: true,
+      titleCancel: 'Cancel',
+      titleOk: 'OK',
+      onTabCancel: null,
+      onTabOk: () {
+        _onPressedSignIn(context, signInStore: signInStore, profile: context.read<ProfileMeStore>());
+      },
+      colorCancel: Colors.red,
+      colorOk: AppColor.enabledButton,
+    );
+  }
+
+  _errorMessage(BuildContext context, String msg) =>
+      AlertDialogUtils.showInfoAlertDialog(context, title: "Error", content: msg);
 }
 
 class _HintsAccountWidget extends StatelessWidget {
@@ -549,8 +453,7 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
               minSize: 22.0,
               padding: EdgeInsets.zero,
               onPressed: () async {
-                ClipboardData? data =
-                    await Clipboard.getData(Clipboard.kTextPlain);
+                ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
                 mnemonicController.text = data?.text ?? "";
                 widget.signInStore.setMnemonic(data?.text ?? "");
               },
@@ -598,19 +501,40 @@ class _AlertTotpWidgetState extends State<_AlertTotpWidget> {
       builder: (context) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
-          child: DefaultTextField(
-            controller: _controller,
-            onChanged: widget.onChanged,
-            isPassword: true,
-            autofillHints: [AutofillHints.password],
-            prefixIconConstraints: _prefixConstraints,
-            prefixIcon: SvgPicture.asset(
-              "assets/lock.svg",
-              color: Theme.of(context).iconTheme.color,
-            ),
-            hint: "signIn.totp".tr(),
-            inputFormatters: [],
-            suffixIcon: null,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Google confirmation code'),
+              const SizedBox(
+                height: 6,
+              ),
+              DefaultTextField(
+                controller: _controller,
+                onChanged: widget.onChanged,
+                keyboardType: TextInputType.number,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                autofillHints: [AutofillHints.password],
+                prefixIconConstraints: _prefixConstraints,
+                hint: "123456",
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(6),
+                ],
+                suffixIcon: null,
+                validator: (_) {
+                  if (_controller.text.length < 6) {
+                    return 'Small length';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                'Enter the 6-digit code from the Google Authentication app',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
           ),
         );
       },

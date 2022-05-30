@@ -324,7 +324,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     case "Leave from chat":
                       await _store.leaveFromChat();
                       if (_store.isSuccess) {
-                        await _chatStore!.loadChats(true, false);
+                        await _chatStore!.loadChats(starred: false);
                         Navigator.pop(context);
                         AlertDialogUtils.showSuccessDialog(context);
                       }

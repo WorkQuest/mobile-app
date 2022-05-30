@@ -54,13 +54,13 @@ import '../ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sm
 import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i22;
 import '../ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart'
     as _i13;
-import '../ui/pages/main_page/wallet_page/store/wallet_store.dart' as _i42;
+import '../ui/pages/main_page/wallet_page/store/wallet_store.dart' as _i30;
 import '../ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart'
     as _i39;
 import '../ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart'
     as _i3;
 import '../ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart'
-    as _i30;
+    as _i29;
 import '../ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart'
     as _i25;
 import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i33;
@@ -72,7 +72,6 @@ import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
 import '../ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart'
     as _i12;
 import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i24;
-import '../web3/service/client_service.dart' as _i29;
 
 const String _test = 'test';
 const String _prod = 'prod';
@@ -133,8 +132,8 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i26.WorkerStore(get<_i8.ApiProvider>()));
     gh.factory<_i27.ChatRoomStore>(() =>
         _i27.ChatRoomStore(get<_i8.ApiProvider>(), get<_i28.ChatStore>()));
-    gh.singleton<_i29.ClientService>(_i29.ClientService());
-    gh.singleton<_i30.TransferStore>(_i30.TransferStore());
+    gh.singleton<_i29.TransferStore>(_i29.TransferStore());
+    gh.singleton<_i30.WalletStore>(_i30.WalletStore());
     gh.singleton<_i8.ApiProvider>(_i8.ApiProvider(get<_i4.IHttpClient>()));
     gh.singleton<_i28.ChatStore>(_i28.ChatStore(get<_i8.ApiProvider>()));
     gh.singleton<_i31.FilterQuestsStore>(
@@ -155,7 +154,6 @@ extension GetItInjectableX on _i1.GetIt {
     gh.singleton<_i40.TwoFAStore>(_i40.TwoFAStore(get<_i8.ApiProvider>()));
     gh.singleton<_i41.UserProfileStore>(
         _i41.UserProfileStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i42.WalletStore>(_i42.WalletStore(get<_i8.ApiProvider>()));
     return this;
   }
 }

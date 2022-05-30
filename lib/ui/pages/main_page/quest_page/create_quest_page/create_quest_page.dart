@@ -21,7 +21,6 @@ import '../../../../../enums.dart';
 import '../../../../../observer_consumer.dart';
 import '../../../../widgets/media_upload/media_upload_widget.dart';
 import '../../../../../web3/repository/account_repository.dart';
-import '../../../../../web3/service/client_service.dart';
 import '../../wallet_page/confirm_transaction_dialog.dart';
 
 class CreateQuestPage extends StatefulWidget {
@@ -46,7 +45,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   final titleKey = new GlobalKey();
   final descriptionKey = new GlobalKey();
   final priceKey = new GlobalKey();
-  final contractAddress = ClientService().abiFactoryAddress;
+  final contractAddress = AccountRepository().service!.abiFactoryAddress;
 
   bool isEdit = false;
 
@@ -560,7 +559,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       await transferStore.getFee();
     }
     if (transferStore.addressTo.toLowerCase() ==
-        AccountRepository().userAddress!.toLowerCase()) {
+        AccountRepository().userAddress.toLowerCase()) {
       AlertDialogUtils.showInfoAlertDialog(context,
           title: 'modals.error'.tr(),
           content: 'errors.provideYourAddress'.tr());

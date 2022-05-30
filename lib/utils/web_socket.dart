@@ -202,7 +202,7 @@ class WebSocket {
       connectNotify ? _connectSender() : _connectListen();
   }
 
-  String get myAddress => AccountRepository().userAddress!;
+  String get myAddress => AccountRepository().userAddress;
 
   void handleSubscription(dynamic jsonResponse) async {
     // print("wallet $jsonResponse");

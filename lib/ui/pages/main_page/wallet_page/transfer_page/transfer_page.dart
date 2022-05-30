@@ -27,6 +27,7 @@ List<_CoinItem> _coins = [
   _CoinItem("$coinsPath/wusd.svg", 'WUSD', TYPE_COINS.WUSD, true),
   _CoinItem("$coinsPath/wbnb.svg", 'wBNB', TYPE_COINS.wBNB, true),
   _CoinItem("$coinsPath/weth.svg", 'wETH', TYPE_COINS.wETH, true),
+  _CoinItem("$coinsPath/usdt.svg", 'USDT', TYPE_COINS.USDT, true),
 ];
 
 class TransferPage extends StatefulWidget {
@@ -114,9 +115,11 @@ class _TransferPageState extends State<TransferPage> {
                 child: Container(
                   height: 46,
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.5),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 15.0, vertical: 12.5),
                   decoration: BoxDecoration(
-                    color: _selectedCoin ? Colors.white : AppColor.disabledButton,
+                    color:
+                        _selectedCoin ? Colors.white : AppColor.disabledButton,
                     borderRadius: BorderRadius.circular(6.0),
                     border: Border.all(
                       color: AppColor.disabledButton,
@@ -146,10 +149,14 @@ class _TransferPageState extends State<TransferPage> {
                           ),
                         ),
                       Text(
-                        _selectedCoin ? _currentCoin!.title : 'wallet.enterCoin'.tr(),
+                        _selectedCoin
+                            ? _currentCoin!.title
+                            : 'wallet.enterCoin'.tr(),
                         style: TextStyle(
                           fontSize: 16,
-                          color: _selectedCoin ? Colors.black : AppColor.disabledText,
+                          color: _selectedCoin
+                              ? Colors.black
+                              : AppColor.disabledText,
                         ),
                       ),
                       const Spacer(),
@@ -232,7 +239,8 @@ class _TransferPageState extends State<TransferPage> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                 ],
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
               ),
               const SizedBox(
                 height: 20,
@@ -250,8 +258,9 @@ class _TransferPageState extends State<TransferPage> {
                   child: Observer(
                     builder: (_) => ElevatedButton(
                       child: Text('wallet.transfer'.tr()),
-                      onPressed:
-                          store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+                      onPressed: store.statusButtonTransfer
+                          ? _pushConfirmTransferPage
+                          : null,
                     ),
                   ),
                 ),
@@ -273,9 +282,10 @@ class _TransferPageState extends State<TransferPage> {
         await store.getFee();
       }
       if (store.addressTo.toLowerCase() ==
-          AccountRepository().userAddress!.toLowerCase()) {
+          AccountRepository().userAddress.toLowerCase()) {
         AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'modals.error'.tr(), content: 'errors.provideYourAddress'.tr());
+            title: 'modals.error'.tr(),
+            content: 'errors.provideYourAddress'.tr());
         return;
       }
       if (double.parse(store.amount) == 0.0) {
@@ -326,107 +336,135 @@ class _TransferPageState extends State<TransferPage> {
             color: Colors.white,
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-            child: SingleChildScrollView(
-              child: DismissKeyboard(
-                child: Column(
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: const Color(0xffE9EDF2),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            child: Column(
+              children: [
+                Container(
+                  width: 100,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: const Color(0xffE9EDF2),
+                  ),
+                ),
+                const SizedBox(
+                  height: 21,
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'wallet.chooseCoin'.tr(),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 16.5,
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: DismissKeyboard(
+                      child: Column(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ..._coins
+                                  .map(
+                                    (coin) => Column(
+                                      children: [
+                                        Material(
+                                          color: Colors.transparent,
+                                          shadowColor: Colors.transparent,
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            onTap: coin.isEnable
+                                                ? () {
+                                                    _selectCoin(coin);
+                                                    Navigator.pop(context);
+                                                  }
+                                                : null,
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 6.5,
+                                              ),
+                                              child: InkWell(
+                                                child: Container(
+                                                  height: 32,
+                                                  width: double.infinity,
+                                                  color: Colors.transparent,
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    children: [
+                                                      Container(
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          gradient:
+                                                              LinearGradient(
+                                                            begin: Alignment
+                                                                .topCenter,
+                                                            end: Alignment
+                                                                .bottomCenter,
+                                                            colors: [
+                                                              AppColor
+                                                                  .enabledButton,
+                                                              AppColor.blue,
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        child: SizedBox(
+                                                          width: 32,
+                                                          height: 32,
+                                                          child:
+                                                              SvgPicture.asset(
+                                                            coin.iconPath,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Text(
+                                                        coin.title,
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: coin.isEnable
+                                                              ? Colors.black
+                                                              : AppColor
+                                                                  .disabledText,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: double.infinity,
+                                          height: 1,
+                                          color: AppColor.disabledButton,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                  .toList(),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 21,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'wallet.chooseCoin'.tr(),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 16.5,
-                        ),
-                        ..._coins
-                            .map(
-                              (coin) => Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 6.5),
-                                    child: GestureDetector(
-                                      onTap: coin.isEnable
-                                          ? () {
-                                              _selectCoin(coin);
-                                              Navigator.pop(context);
-                                            }
-                                          : null,
-                                      child: Container(
-                                        height: 32,
-                                        width: double.infinity,
-                                        color: Colors.transparent,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Container(
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                gradient: LinearGradient(
-                                                  begin: Alignment.topCenter,
-                                                  end: Alignment.bottomCenter,
-                                                  colors: [
-                                                    AppColor.enabledButton,
-                                                    AppColor.blue,
-                                                  ],
-                                                ),
-                                              ),
-                                              child: SizedBox(
-                                                width: 32,
-                                                height: 32,
-                                                child: SvgPicture.asset(
-                                                  coin.iconPath,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              coin.title,
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: coin.isEnable
-                                                    ? Colors.black
-                                                    : AppColor.disabledText,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: AppColor.disabledButton,
-                                  ),
-                                ],
-                              ),
-                            )
-                            .toList(),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         );

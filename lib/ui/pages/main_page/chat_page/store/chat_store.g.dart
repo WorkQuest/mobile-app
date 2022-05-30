@@ -9,6 +9,21 @@ part of 'chat_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ChatStore on _ChatStore, Store {
+  final _$userDataAtom = Atom(name: '_ChatStore.userData');
+
+  @override
+  ProfileMeResponse? get userData {
+    _$userDataAtom.reportRead();
+    return super.userData;
+  }
+
+  @override
+  set userData(ProfileMeResponse? value) {
+    _$userDataAtom.reportWrite(value, super.userData, () {
+      super.userData = value;
+    });
+  }
+
   final _$unreadAtom = Atom(name: '_ChatStore.unread');
 
   @override
@@ -66,6 +81,81 @@ mixin _$ChatStore on _ChatStore, Store {
   set chatSelected(bool value) {
     _$chatSelectedAtom.reportWrite(value, super.chatSelected, () {
       super.chatSelected = value;
+    });
+  }
+
+  final _$queryAtom = Atom(name: '_ChatStore.query');
+
+  @override
+  String get query {
+    _$queryAtom.reportRead();
+    return super.query;
+  }
+
+  @override
+  set query(String value) {
+    _$queryAtom.reportWrite(value, super.query, () {
+      super.query = value;
+    });
+  }
+
+  final _$activeChatsAtom = Atom(name: '_ChatStore.activeChats');
+
+  @override
+  ObservableList<ChatModel> get activeChats {
+    _$activeChatsAtom.reportRead();
+    return super.activeChats;
+  }
+
+  @override
+  set activeChats(ObservableList<ChatModel> value) {
+    _$activeChatsAtom.reportWrite(value, super.activeChats, () {
+      super.activeChats = value;
+    });
+  }
+
+  final _$favouritesChatsAtom = Atom(name: '_ChatStore.favouritesChats');
+
+  @override
+  ObservableList<ChatModel> get favouritesChats {
+    _$favouritesChatsAtom.reportRead();
+    return super.favouritesChats;
+  }
+
+  @override
+  set favouritesChats(ObservableList<ChatModel> value) {
+    _$favouritesChatsAtom.reportWrite(value, super.favouritesChats, () {
+      super.favouritesChats = value;
+    });
+  }
+
+  final _$groupChatsAtom = Atom(name: '_ChatStore.groupChats');
+
+  @override
+  ObservableList<ChatModel> get groupChats {
+    _$groupChatsAtom.reportRead();
+    return super.groupChats;
+  }
+
+  @override
+  set groupChats(ObservableList<ChatModel> value) {
+    _$groupChatsAtom.reportWrite(value, super.groupChats, () {
+      super.groupChats = value;
+    });
+  }
+
+  final _$completedChatsAtom = Atom(name: '_ChatStore.completedChats');
+
+  @override
+  ObservableList<ChatModel> get completedChats {
+    _$completedChatsAtom.reportRead();
+    return super.completedChats;
+  }
+
+  @override
+  set completedChats(ObservableList<ChatModel> value) {
+    _$completedChatsAtom.reportWrite(value, super.completedChats, () {
+      super.completedChats = value;
     });
   }
 
@@ -169,16 +259,20 @@ mixin _$ChatStore on _ChatStore, Store {
   final _$loadChatsAsyncAction = AsyncAction('_ChatStore.loadChats');
 
   @override
-  Future<dynamic> loadChats(bool isNewList, bool? starred) {
-    return _$loadChatsAsyncAction
-        .run(() => super.loadChats(isNewList, starred));
+  Future<dynamic> loadChats(
+      {bool loadMore = false,
+      bool? starred,
+      String query = '',
+      TypeChat type = TypeChat.active}) {
+    return _$loadChatsAsyncAction.run(() => super.loadChats(
+        loadMore: loadMore, starred: starred, query: query, type: type));
   }
 
   final _$getUserDataAsyncAction = AsyncAction('_ChatStore.getUserData');
 
   @override
-  Future<dynamic> getUserData(String idUser) {
-    return _$getUserDataAsyncAction.run(() => super.getUserData(idUser));
+  Future<dynamic> getUserData(ProfileMeResponse profile) {
+    return _$getUserDataAsyncAction.run(() => super.getUserData(profile));
   }
 
   final _$setMessageReadAsyncAction = AsyncAction('_ChatStore.setMessageRead');
@@ -190,6 +284,17 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   final _$_ChatStoreActionController = ActionController(name: '_ChatStore');
+
+  @override
+  dynamic setQuery(String value) {
+    final _$actionInfo =
+        _$_ChatStoreActionController.startAction(name: '_ChatStore.setQuery');
+    try {
+      return super.setQuery(value);
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void chatSort() {
@@ -225,11 +330,11 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   @override
-  dynamic setChatHighlighted(Chats chatDetails) {
+  dynamic setChatHighlighted(ChatModel chat) {
     final _$actionInfo = _$_ChatStoreActionController.startAction(
         name: '_ChatStore.setChatHighlighted');
     try {
-      return super.setChatHighlighted(chatDetails);
+      return super.setChatHighlighted(chat);
     } finally {
       _$_ChatStoreActionController.endAction(_$actionInfo);
     }
@@ -258,12 +363,29 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   @override
+  dynamic updateListsChats() {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore.updateListsChats');
+    try {
+      return super.updateListsChats();
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
+userData: ${userData},
 unread: ${unread},
 starred: ${starred},
 idChat: ${idChat},
 chatSelected: ${chatSelected},
+query: ${query},
+activeChats: ${activeChats},
+favouritesChats: ${favouritesChats},
+groupChats: ${groupChats},
+completedChats: ${completedChats},
 chatsId: ${chatsId},
 idChatsForStar: ${idChatsForStar},
 infoMessageValue: ${infoMessageValue},

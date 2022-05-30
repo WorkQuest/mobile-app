@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
-import 'package:app/web3/service/client_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/web3dart.dart';
@@ -46,8 +45,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     this.onLoading();
     try {
       final balance =
-      await ClientService().getBalance(AccountRepository().privateKey);
-      final gas = await ClientService().getGas();
+      await AccountRepository().service!.getBalance(AccountRepository().privateKey);
+      final gas = await AccountRepository().service!.getGas();
       switch (typeCoin) {
         case TYPE_COINS.WQT:
           final count = (balance.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
@@ -55,17 +54,22 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
           amount = (count.toDouble() - _gas).toString();
           break;
         case TYPE_COINS.WUSD:
-          final count = await ClientService().getBalanceFromContract(AddressCoins.wUsd);
+          final count = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wUsd);
           final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
           amount = (count.toDouble() - _gas).toStringAsFixed(18);
           break;
         case TYPE_COINS.wETH:
-          final count = await ClientService().getBalanceFromContract(AddressCoins.wEth);
+          final count = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wEth);
           final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
           amount = (count.toDouble() - _gas).toStringAsFixed(18);
           break;
         case TYPE_COINS.wBNB:
-          final count = await ClientService().getBalanceFromContract(AddressCoins.wBnb);
+          final count = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wBnb);
+          final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
+          amount = (count.toDouble() - _gas).toStringAsFixed(18);
+          break;
+        case TYPE_COINS.USDT:
+          final count = await AccountRepository().service!.getBalanceFromContract(AddressCoins.uSdt);
           final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
           amount = (count.toDouble() - _gas).toStringAsFixed(18);
           break;
@@ -88,7 +92,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   @action
   getFee() async {
     try {
-      final gas = await ClientService().getGas();
+      final gas = await AccountRepository().service!.getGas();
       fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");

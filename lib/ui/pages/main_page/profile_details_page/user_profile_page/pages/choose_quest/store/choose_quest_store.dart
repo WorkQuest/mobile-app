@@ -11,6 +11,7 @@ import 'package:web3dart/credentials.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../../../../../web3/contractEnums.dart';
+import '../../../../../../../../web3/repository/account_repository.dart';
 import '../../../../../../../../web3/service/client_service.dart';
 
 part 'choose_quest_store.g.dart';
@@ -92,7 +93,7 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
 
   Future<void> getFee() async {
     try {
-      final gas = await ClientService().getGas();
+      final gas = await AccountRepository().service!.getGas();
       fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -113,7 +114,7 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
         userId: userId,
         message: "quests.inviteToQuest".tr(),
       );
-      await ClientService().handleEvent(
+      await AccountRepository().service!.handleEvent(
         function: WQContractFunctions.assignJob,
         contractAddress: quest.contractAddress!,
         params: [

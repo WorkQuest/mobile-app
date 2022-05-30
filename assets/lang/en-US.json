@@ -1292,6 +1292,12 @@
       "inconsistencies": "Inconsistencies in the requirements for the description of the quest",
       "notConfirmed": "The quest is completed but the employee / employer has not confirmed its completion",
       "anotherReason": "Another reason"
+    },
+    "tabs": {
+      "active": "Active",
+      "favorite": "Favourites",
+      "group": "Group",
+      "completed": "Completed"
     }
   },
   "settings": {

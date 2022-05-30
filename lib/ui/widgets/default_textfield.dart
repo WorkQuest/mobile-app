@@ -13,6 +13,7 @@ class DefaultTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final Iterable<String>? autofillHints;
+  final AutovalidateMode? autovalidateMode;
 
   final Function(String)? onChanged;
   final List<TextInputFormatter>? inputFormatters;
@@ -21,12 +22,13 @@ class DefaultTextField extends StatefulWidget {
     Key? key,
     required this.controller,
     required this.hint,
-    required this.suffixIcon,
     required this.inputFormatters,
+    this.suffixIcon,
     this.validator,
     this.onChanged,
     this.keyboardType,
     this.autofillHints,
+    this.autovalidateMode,
     this.prefixIcon,
     this.prefixIconConstraints,
     this.isPassword = false,
@@ -45,8 +47,7 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
     _visiblePassword = !widget.isPassword;
     widget.controller.addListener(() {
       if (widget.keyboardType == TextInputType.name) {
-        final result = widget.controller.value.text.isEmpty ? '' : '${_upperFirst(
-            widget.controller.text)}';
+        final result = widget.controller.value.text.isEmpty ? '' : '${_upperFirst(widget.controller.text)}';
         widget.controller.value = widget.controller.value.copyWith(text: result);
       }
       setState(() {});
@@ -69,10 +70,10 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
       onChanged: widget.onChanged,
       obscureText: !_visiblePassword,
       autofillHints: widget.autofillHints,
+      autovalidateMode: widget.autovalidateMode,
       decoration: InputDecoration(
         filled: true,
-        fillColor:
-        widget.controller.text.isEmpty ? AppColor.disabledButton : Colors.white,
+        fillColor: widget.controller.text.isEmpty ? AppColor.disabledButton : Colors.white,
         hintText: widget.hint,
         focusColor: Colors.red,
         hoverColor: Colors.green,
@@ -125,21 +126,19 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
         ),
         suffixIcon: widget.isPassword
             ? IconButton(
-          icon: Icon(
-            _visiblePassword ? Icons.visibility : Icons.visibility_off,
-            color: _visiblePassword ? Theme
-                .of(context)
-                .primaryColorDark : Colors.grey,
-            size: 20.0,
-          ),
-          padding: const EdgeInsets.only(right: 8.0),
-          splashRadius: 0.1,
-          onPressed: () {
-            setState(() {
-              _visiblePassword = !_visiblePassword;
-            });
-          },
-        )
+                icon: Icon(
+                  _visiblePassword ? Icons.visibility : Icons.visibility_off,
+                  color: _visiblePassword ? Theme.of(context).primaryColorDark : Colors.grey,
+                  size: 20.0,
+                ),
+                padding: const EdgeInsets.only(right: 8.0),
+                splashRadius: 0.1,
+                onPressed: () {
+                  setState(() {
+                    _visiblePassword = !_visiblePassword;
+                  });
+                },
+              )
             : widget.suffixIcon,
         prefixIconConstraints: widget.prefixIconConstraints,
         prefixIcon: widget.prefixIcon,

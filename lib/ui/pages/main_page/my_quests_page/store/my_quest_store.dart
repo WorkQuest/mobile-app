@@ -74,7 +74,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   void setRole(UserRole value) => role = value;
 
   @action
-  void changeLists(dynamic json) async {
+  dynamic changeLists(dynamic json) async {
     try {
       print("MyQuestStore");
       var quest =

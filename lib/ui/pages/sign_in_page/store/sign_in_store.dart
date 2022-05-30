@@ -7,7 +7,6 @@ import 'package:app/model/bearer_token.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/account_repository.dart';
-import 'package:app/web3/service/client_service.dart';
 import 'package:app/web3/wallet.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -95,19 +94,20 @@ abstract class _SignInStore extends IStore<bool> with Store {
     if (walletAddress == null) this.onError("Profile not found");
     try {
       Wallet? wallet = await Wallet.derive(mnemonic);
+      AccountRepository().connectClient();
+      AccountRepository().setWallet(wallet);
       if (wallet.address != walletAddress) throw FormatException("Incorrect mnemonic");
-      final signature = await ClientService().getSignature(wallet.privateKey!);
+      final signature = await AccountRepository().service!.getSignature(wallet.privateKey!);
       await _apiProvider.walletLogin(signature, wallet.address!);
       await Storage.write(Storage.wallets, jsonEncode([wallet.toJson()]));
       await Storage.write(Storage.activeAddress, wallet.address!);
-      AccountRepository().clearData();
-      AccountRepository().userAddress = wallet.address;
-      AccountRepository().addWallet(wallet);
       this.onSuccess(true);
     } on FormatException catch (e) {
       this.onError(e.message);
+      AccountRepository().clearData();
       error = e.toString();
     } catch (e, tr) {
+      AccountRepository().clearData();
       print("error $e $tr");
       this.onError(e.toString());
     }

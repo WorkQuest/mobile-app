@@ -10,6 +10,7 @@ import 'package:mobx/mobx.dart';
 import 'package:app/utils/web_socket.dart';
 
 import '../../../../../../web3/contractEnums.dart';
+import '../../../../../../web3/repository/account_repository.dart';
 import '../../../../../../web3/service/client_service.dart';
 
 part 'worker_store.g.dart';
@@ -38,7 +39,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
 
   Future<void> getFee() async {
     try {
-      final gas = await ClientService().getGas();
+      final gas = await AccountRepository().service!.getGas();
       fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -85,7 +86,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       // await _apiProvider.acceptOnQuest(questId: quest.value!.id);
-      await ClientService().handleEvent(
+      await AccountRepository().service!.handleEvent(
         function: WQContractFunctions.acceptJob,
         contractAddress: quest.value!.contractAddress!,
         value: null,
@@ -102,7 +103,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       // await _apiProvider.rejectOnQuest(questId: quest.value!.id);
-      ClientService().handleEvent(
+      AccountRepository().service!.handleEvent(
         function: WQContractFunctions.declineJob,
         contractAddress: quest.value!.contractAddress!,
         value: null,
@@ -119,7 +120,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptInvite(responseId: responseId);
-      await ClientService().handleEvent(
+      await AccountRepository().service!.handleEvent(
         function: WQContractFunctions.acceptJob,
         contractAddress: quest.value!.contractAddress!,
         value: null,
@@ -136,7 +137,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.rejectInvite(responseId: responseId);
-      ClientService().handleEvent(
+      AccountRepository().service!.handleEvent(
         function: WQContractFunctions.declineJob,
         contractAddress: quest.value!.contractAddress!,
         value: null,
@@ -153,7 +154,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       // await _apiProvider.completeWork(questId: quest.value!.id);
-      await ClientService().handleEvent(
+      await AccountRepository().service!.handleEvent(
         function: WQContractFunctions.verificationJob,
         contractAddress: quest.value!.contractAddress!,
         value: null,

@@ -30,7 +30,7 @@ class ListTransactions extends StatelessWidget {
         if (store.isLoading) {
           return SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
+              (BuildContext context, int index) {
                 return const _ShimmerTransactionItem();
               },
               childCount: 8,
@@ -49,7 +49,7 @@ class ListTransactions extends StatelessWidget {
           }
           return SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
+              (BuildContext context, int index) {
                 if (store.isMoreLoading && index == store.transactions.length) {
                   return Column(
                     children: const [
@@ -65,11 +65,11 @@ class ListTransactions extends StatelessWidget {
                         AccountRepository().userAddress;
                 return TransactionItem(
                   transaction: store.transactions[index],
-                  titleCoin: increase
+                  coin: increase
                       ? _getTitleCoin(
-                      store.transactions[index].fromAddressHash!.hex!)
+                          store.transactions[index].fromAddressHash!.hex!)
                       : _getTitleCoin(
-                      store.transactions[index].toAddressHash!.hex!),
+                          store.transactions[index].toAddressHash!.hex!),
                   opacity: !store.transactions[index].show,
                 );
               },
@@ -88,46 +88,48 @@ class ListTransactions extends StatelessWidget {
     );
   }
 
-  String _getTitleCoin(String? addressContract) {
+  TYPE_COINS _getTitleCoin(String? addressContract) {
     if (GetIt.I.get<TransactionsStore>().type == TYPE_COINS.WQT) {
-      switch(addressContract) {
+      switch (addressContract) {
         case AddressCoins.wUsd:
-          return "WUSD";
+          return TYPE_COINS.WUSD;
         case AddressCoins.wBnb:
-          return "wBNB";
+          return TYPE_COINS.wBNB;
         case AddressCoins.wEth:
-          return "wETH";
+          return TYPE_COINS.wETH;
+        case AddressCoins.uSdt:
+          return TYPE_COINS.USDT;
         default:
-          return "WQT";
+          return TYPE_COINS.WQT;
       }
     } else {
-      switch (GetIt.I
-          .get<TransactionsStore>()
-          .type) {
+      switch (GetIt.I.get<TransactionsStore>().type) {
         case TYPE_COINS.WQT:
-          return "WQT";
+          return TYPE_COINS.WQT;
         case TYPE_COINS.WUSD:
-          return "WUSD";
+          return TYPE_COINS.WUSD;
         case TYPE_COINS.wBNB:
-          return "wBNB";
+          return TYPE_COINS.wBNB;
+        case TYPE_COINS.USDT:
+          return TYPE_COINS.USDT;
         case TYPE_COINS.wETH:
-          return "wETH";
+          return TYPE_COINS.wETH;
         default:
-          return "WUSD";
+          return TYPE_COINS.WUSD;
       }
     }
   }
 }
 
 class TransactionItem extends StatefulWidget {
+  final TYPE_COINS coin;
   final Tx transaction;
-  final String titleCoin;
   final bool opacity;
 
   const TransactionItem({
     Key? key,
     required this.transaction,
-    required this.titleCoin,
+    required this.coin,
     this.opacity = false,
   }) : super(key: key);
 
@@ -161,20 +163,7 @@ class _TransactionItemState extends State<TransactionItem>
     bool increase = widget.transaction.fromAddressHash!.hex! !=
         AccountRepository().userAddress;
     Color color = increase ? Colors.green : Colors.red;
-    double score;
-    if (widget.transaction.tokenTransfers != null &&
-        widget.transaction.tokenTransfers!.isEmpty) {
-      score = BigInt.parse(widget.transaction.value!).toDouble() * pow(10, -18);
-    } else {
-      if (widget.transaction.amount != null) {
-        score =
-            BigInt.parse(widget.transaction.amount!).toDouble() * pow(10, -18);
-      } else {
-        score = BigInt.parse(widget.transaction.tokenTransfers!.first.amount!)
-            .toDouble() *
-            pow(10, -18);
-      }
-    }
+    double score = _getScore(widget.transaction);
     return AnimatedBuilder(
       animation: _animationController,
       builder: (context, child) {
@@ -186,9 +175,10 @@ class _TransactionItemState extends State<TransactionItem>
                   : 0.0,
               0.0),
           child: AnimatedOpacity(
-              opacity: widget.opacity ? _animationController.value : 1.0,
-              duration: const Duration(milliseconds: 450),
-              child: child!),
+            opacity: widget.opacity ? _animationController.value : 1.0,
+            duration: const Duration(milliseconds: 450),
+            child: child!,
+          ),
         );
       },
       child: ExpandablePanel(
@@ -200,7 +190,7 @@ class _TransactionItemState extends State<TransactionItem>
           color: color,
           score: score,
           increase: increase,
-          titleCoin: widget.titleCoin,
+          titleCoin: widget.coin.name,
           transaction: widget.transaction,
         ),
         collapsed: const SizedBox(),
@@ -213,6 +203,21 @@ class _TransactionItemState extends State<TransactionItem>
         ),
       ),
     );
+  }
+
+  double _getScore(Tx tx) {
+    if (tx.tokenTransfers != null && tx.tokenTransfers!.isEmpty) {
+      return BigInt.parse(tx.value!).toDouble() * pow(10, -18);
+    }
+    if (tx.amount != null) {
+      return BigInt.parse(tx.amount!).toDouble() * pow(10, -18);
+    }
+    if (widget.coin == TYPE_COINS.USDT) {
+      return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() *
+          pow(10, -6);
+    }
+    return BigInt.parse(tx.tokenTransfers!.first.amount!).toDouble() *
+        pow(10, -18);
   }
 }
 
@@ -273,8 +278,8 @@ class _HeaderTransactionWidget extends StatelessWidget {
               Text(
                 DateFormat('dd.MM.yy HH:mm')
                     .format(transaction.amount != null
-                    ? transaction.insertedAt!.toLocal()
-                    : transaction.block!.timestamp!.toLocal())
+                        ? transaction.insertedAt!.toLocal()
+                        : transaction.block!.timestamp!.toLocal())
                     .toString(),
                 style: const TextStyle(
                   fontSize: 14,

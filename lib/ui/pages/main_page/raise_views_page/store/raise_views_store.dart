@@ -4,6 +4,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../../../web3/contractEnums.dart';
+import '../../../../../web3/repository/account_repository.dart';
 import '../../../../../web3/service/client_service.dart';
 
 part 'raise_views_store.g.dart';
@@ -99,7 +100,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onLoading();
       final _period = getPeriod();
       print('levelGroupValue: $levelGroupValue | period: ${getPeriod()}');
-      await ClientService().promoteUser(
+      await AccountRepository().service!.promoteUser(
         tariff: levelGroupValue - 1,
         period: _period,
         amount: _getAmount(
@@ -123,7 +124,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onLoading();
       final _quest = await apiProvider.getQuest(id: questId);
       final _period = getPeriod(isQuest: true);
-      await ClientService().promoteQuest(
+      await AccountRepository().service!.promoteQuest(
         tariff: levelGroupValue - 1,
         period: _period,
         amount: _getAmount(

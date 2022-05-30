@@ -18,6 +18,8 @@ import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../../web3/repository/account_repository.dart';
+
 class QuestList extends StatefulWidget {
   final Function() changePage;
 
@@ -119,7 +121,7 @@ class _QuestListState extends State<QuestList> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      ClientService().checkFunction();
+                      AccountRepository().service!.checkFunction();
                     },
                     child: Text(
                       role == UserRole.Worker

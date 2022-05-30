@@ -1,7 +1,5 @@
-import 'package:app/http/api_provider.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
-import 'package:app/web3/service/client_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
@@ -12,13 +10,10 @@ part 'wallet_store.g.dart';
 
 @singleton
 class WalletStore extends _WalletStore with _$WalletStore {
-  WalletStore(ApiProvider apiProvider) : super(apiProvider);
+  WalletStore();
 }
 
 abstract class _WalletStore extends IStore<bool> with Store {
-  final ApiProvider _apiProvider;
-
-  _WalletStore(this._apiProvider);
 
   @observable
   TYPE_COINS type = TYPE_COINS.WUSD;
@@ -42,15 +37,13 @@ abstract class _WalletStore extends IStore<bool> with Store {
     }
     try {
       final list =
-      await ClientService().getAllBalance(AccountRepository().privateKey);
+      await AccountRepository().service!.getAllBalance(AccountRepository().privateKey);
       print(list);
       final wqt = list.firstWhere((element) => element.title == 'ether');
-      final wUsd =
-      await ClientService().getBalanceFromContract(AddressCoins.wUsd);
-      final wEth =
-      await ClientService().getBalanceFromContract(AddressCoins.wEth);
-      final wBnb =
-      await ClientService().getBalanceFromContract(AddressCoins.wBnb);
+      final wUsd = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wUsd);
+      final wEth = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wEth);
+      final wBnb = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wBnb);
+      final uSdt = await AccountRepository().service!.getBalanceFromContract(AddressCoins.uSdt);
       if (coins.isNotEmpty) {
         coins[0] = BalanceItem(
           "WQT",
@@ -67,6 +60,10 @@ abstract class _WalletStore extends IStore<bool> with Store {
         coins[3] = BalanceItem(
           "wETH",
           wEth.toString(),
+        );
+        coins[4] = BalanceItem(
+          "USDT",
+          uSdt.toString(),
         );
       } else {
         coins.addAll([
@@ -85,6 +82,10 @@ abstract class _WalletStore extends IStore<bool> with Store {
           BalanceItem(
             "wETH",
             wEth.toString(),
+          ),
+          BalanceItem(
+            "USDT",
+            uSdt.toString(),
           ),
         ]);
       }

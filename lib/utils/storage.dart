@@ -5,10 +5,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Storage {
-
   static const activeAddress = "address";
   static const wallets = "wallets";
-
 
   static FlutterSecureStorage get _secureStorage => FlutterSecureStorage();
 
@@ -27,7 +25,7 @@ class Storage {
     _secureStorage.write(key: "accessToken", value: token);
   }
 
-   static Future<void> writePinCode(String pinCode) async {
+  static Future<void> writePinCode(String pinCode) async {
     _secureStorage.write(key: "pinCode", value: pinCode);
   }
 
@@ -39,11 +37,9 @@ class Storage {
     return await _secureStorage.read(key: "refreshToken");
   }
 
-  static Future<bool> toLoginCheck()async{
-    if (!await _secureStorage.containsKey(key: "refreshToken"))
-      return false;
-    if(!await _secureStorage.containsKey(key: "pinCode"))
-      return false;
+  static Future<bool> toLoginCheck() async {
+    if (!await _secureStorage.containsKey(key: "refreshToken")) return false;
+    if (!await _secureStorage.containsKey(key: "pinCode")) return false;
     return true;
   }
 
@@ -69,14 +65,12 @@ class Storage {
     return await _secureStorage.delete(key: key);
   }
 
-  static Future<List<Wallet>> readWallets() async {
-    String? wallets = await _secureStorage.read(key: "wallets");
-    if (wallets == null || wallets.isEmpty) {
-      return [];
+  static Future<Wallet?> readWallet() async {
+    String? wallet = await _secureStorage.read(key: "wallet");
+    if (wallet == null) {
+      return null;
     }
 
-    return List.from(jsonDecode(wallets)).map((json) {
-      return Wallet.fromJson(json);
-    }).toList();
+    return Wallet.fromJson(jsonDecode(wallets));
   }
 }

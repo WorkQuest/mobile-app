@@ -41,13 +41,13 @@ void main() async {
   await EasyLocalization.ensureInitialized();
 
   //Init Wallet
-  final addressActive = await Storage.read(Storage.activeAddress);
-  if (addressActive != null) {
-    final wallets = await Storage.readWallets();
-    if (wallets.isNotEmpty) {
-      AccountRepository().userAddresses = wallets;
+  try {
+    final wallet = await Storage.readWallet();
+    if (wallet != null) {
+      AccountRepository().setWallet(wallet);
     }
-    AccountRepository().userAddress = addressActive;
+  } catch (e) {
+    AccountRepository().clearData();
   }
 
   runApp(

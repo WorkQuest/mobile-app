@@ -1,5 +1,6 @@
 import 'package:app/web3/service/client_service.dart';
 
+import '../../utils/storage.dart';
 import '../wallet.dart';
 
 class AccountRepository {
@@ -9,25 +10,32 @@ class AccountRepository {
 
   AccountRepository._internal();
 
-  String? userAddress;
-  List<Wallet>? userAddresses;
+  ClientService? service;
 
-  String get privateKey => userAddresses!.first.privateKey!;
+  Wallet? userWallet;
 
-  addWallet(Wallet wallet) {
-    if (userAddresses == null || userAddresses!.isEmpty) {
-      userAddresses = [];
-    }
-    userAddresses!.add(wallet);
+  String get userAddress => userWallet!.address!;
+  String get privateKey => userWallet!.privateKey!;
+
+  setWallet(Wallet wallet) {
+    userWallet = wallet;
   }
 
-  getAllBalances() async {
-    await ClientService().getAllBalance(userAddresses!.first.privateKey!);
+  connectClient() {
+    service = ClientService();
   }
 
   clearData() {
-    userAddress = null;
-    userAddresses?.clear();
+    userWallet = null;
+    Storage.deleteAllFromSecureStorage();
+    _disconnectWeb3Client();
+  }
+
+  _disconnectWeb3Client() {
+    if (service?.client != null) {
+      service!.client?.dispose();
+      service = null;
+    }
   }
 }
 

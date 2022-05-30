@@ -51,6 +51,7 @@ class AddressCoins {
   static const wUsd = '0x0ed13a696fa29151f3064077acb2a281e68df2aa';
   static const wEth = '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24';
   static const wBnb = '0x75349c3f2c3cfd94488a71a350ba841c14309c5b';
+  static const uSdt = '0xbd5bbed9677401e911044947cff9fa4979c29bd8';
 }
 
 class WorkerBadge {

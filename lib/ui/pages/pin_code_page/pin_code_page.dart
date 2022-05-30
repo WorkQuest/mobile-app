@@ -15,7 +15,6 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../constants.dart';
-import '../../../utils/storage.dart';
 import '../../../web3/repository/account_repository.dart';
 
 class PinCodePage extends StatefulWidget {
@@ -66,6 +65,7 @@ class _PinCodePageState extends State<PinCodePage>
             if (widget.isRecheck) {
               Navigator.pop(context);
             } else {
+              AccountRepository().connectClient();
               await AlertDialogUtils.showSuccessDialog(context);
               Navigator.pushNamedAndRemoveUntil(
                 context,
@@ -75,7 +75,6 @@ class _PinCodePageState extends State<PinCodePage>
             }
           } else if (store.successData == StatePinCode.ToLogin) {
             AccountRepository().clearData();
-            Storage.deleteAllFromSecureStorage();
             Navigator.pushNamedAndRemoveUntil(
               context,
               SignInPage.routeName,

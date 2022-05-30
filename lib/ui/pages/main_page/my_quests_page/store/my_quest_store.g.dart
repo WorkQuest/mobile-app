@@ -131,6 +131,10 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
 
   final _$changeListsAsyncAction = AsyncAction('_MyQuestStore.changeLists');
 
+  @override
+  Future changeLists(dynamic json) {
+    return _$changeListsAsyncAction.run(() => super.changeLists(json));
+  }
 
   final _$getQuestsAsyncAction = AsyncAction('_MyQuestStore.getQuests');
 
