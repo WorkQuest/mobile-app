@@ -91,6 +91,15 @@ mixin _$SignInStore on _SignInStore, Store {
     });
   }
 
+  final _$loginSocialMediaAsyncAction =
+      AsyncAction('_SignInStore.loginSocialMedia');
+
+  @override
+  Future<dynamic> loginSocialMedia(String link) {
+    return _$loginSocialMediaAsyncAction
+        .run(() => super.loginSocialMedia(link));
+  }
+
   final _$refreshTokenAsyncAction = AsyncAction('_SignInStore.refreshToken');
 
   @override

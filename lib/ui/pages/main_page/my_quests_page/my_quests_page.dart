@@ -14,6 +14,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 class MyQuestsPage extends StatefulWidget {
   static const String routeName = '/myQuestPage';
+
   MyQuestsPage();
 
   @override
@@ -87,8 +88,8 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                         ? QuestItemPriorityType.Requested
                         : QuestItemPriorityType.Invited,
                     // role == UserRole.Employer
-                        // ? myQuests!.requested
-                        myQuests!.invited,
+                    // ? myQuests!.requested
+                    myQuests!.invited,
                   ),
                 ),
                 Observer(
@@ -123,7 +124,8 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
         child: NotificationListener<ScrollEndNotification>(
           onNotification: (scrollEnd) {
             final metrics = scrollEnd.metrics;
-            if (metrics.atEdge || metrics.maxScrollExtent < metrics.pixels) {
+            if ((metrics.atEdge || metrics.maxScrollExtent < metrics.pixels) &&
+                !myQuests!.isLoading) {
               myQuests!.getQuests(userID, role, false);
             }
             return true;
@@ -143,8 +145,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                       await Navigator.of(context, rootNavigator: true)
                           .pushNamed<bool>(CreateQuestPage.routeName)
                           .then(
-                            (value) =>
-                                myQuests!.getQuests(userID, role, true),
+                            (value) => myQuests!.getQuests(userID, role, true),
                           );
                     },
                     child: Text(

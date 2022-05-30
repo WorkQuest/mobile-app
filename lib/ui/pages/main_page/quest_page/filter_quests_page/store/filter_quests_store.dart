@@ -209,7 +209,7 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     } else if (selectPayPeriod[0] == false) {
       payPeriodValue.clear();
     }
-    if (priority[1] == true) {
+    if (selectPayPeriod[1] == true) {
       payPeriodValue.add("Hourly");
     } else if (selectPayPeriod[1] == false) {
       payPeriodValue.remove("Hourly");
@@ -270,27 +270,27 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   List<String> getWorkplaceValue() {
     if (selectWorkplace[0] == true) {
       workplaceValue.clear();
-      workplaceValue.add("distant");
-      workplaceValue.add("office");
-      workplaceValue.add("both");
+      workplaceValue.add("Remote");
+      workplaceValue.add("InOffice");
+      workplaceValue.add("Hybrid");
       return workplaceValue;
     } else if (selectWorkplace[0] == false) {
       workplaceValue.clear();
     }
     if (selectWorkplace[1] == true) {
-      workplaceValue.add("distant");
+      workplaceValue.add("Remote");
     } else if (selectWorkplace[1] == false) {
-      workplaceValue.remove("distant");
+      workplaceValue.remove("Remote");
     }
     if (selectWorkplace[2] == true) {
-      workplaceValue.add("office");
+      workplaceValue.add("InOffice");
     } else if (selectWorkplace[2] == false) {
-      workplaceValue.remove("office");
+      workplaceValue.remove("InOffice");
     }
     if (selectWorkplace[3] == true) {
-      workplaceValue.add("both");
+      workplaceValue.add("Hybrid");
     } else if (selectWorkplace[3] == false) {
-      workplaceValue.remove("both");
+      workplaceValue.remove("Hybrid");
     }
     return workplaceValue;
   }
@@ -548,9 +548,9 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
         selectWorkplace[3] = true;
         return;
       }
-      if (element == "distant") selectWorkplace[1] = true;
-      if (element == "office") selectWorkplace[2] = true;
-      if (element == "both") selectWorkplace[3] = true;
+      if (element == "Remote") selectWorkplace[1] = true;
+      if (element == "InOffice") selectWorkplace[2] = true;
+      if (element == "Hybrid") selectWorkplace[3] = true;
     });
   }
 

@@ -714,9 +714,9 @@ extension UserInfoService on ApiProvider {
         "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
         if (userData.role == UserRole.Worker)
           "costPerHour": userData.wagePerHour,
-        if (userData.role == UserRole.Worker)
-          "priority": userData.priority.index,
+        if (userData.role == UserRole.Worker) "priority": userData.priority,
         if (userData.role == UserRole.Worker) "workplace": userData.workplace,
+        if (userData.role == UserRole.Worker) "payPeriod": userData.payPeriod,
         "additionalInfo": {
           "secondMobileNumber": userData.additionalInfo?.secondMobileNumber !=
                   null
@@ -785,7 +785,10 @@ extension UserInfoService on ApiProvider {
           "locationPlaceName": userData.locationPlaceName ?? "",
         },
         "profileVisibility": {
-          "ratingStatusCanRespondToQuest": [15],
+          if (userData.role == UserRole.Employer)
+            "ratingStatusCanRespondToQuest": [15],
+          if (userData.role == UserRole.Worker)
+            "ratingStatusCanInviteMeOnQuest": [15],
           "ratingStatusInMySearch": [15]
         }
       };

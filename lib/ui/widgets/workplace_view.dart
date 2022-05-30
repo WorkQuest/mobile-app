@@ -9,7 +9,7 @@ class WorkplaceView extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget returnWidget = Container();
     switch (workplace) {
-      case "distant":
+      case "Remote":
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(
@@ -24,7 +24,7 @@ class WorkplaceView extends StatelessWidget {
           ),
         );
         break;
-      case "office":
+      case "InOffice":
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(
@@ -39,7 +39,7 @@ class WorkplaceView extends StatelessWidget {
           ),
         );
         break;
-      case "both":
+      case "Hybrid":
         returnWidget = Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
           decoration: BoxDecoration(

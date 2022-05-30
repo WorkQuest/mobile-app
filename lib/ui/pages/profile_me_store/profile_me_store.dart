@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
@@ -31,21 +32,45 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   bool review = false;
 
   @observable
-  QuestPriority priorityValue = QuestPriority.Normal;
+  String priorityValue = "quests.priority.all";
 
   @observable
   ObservableList<BaseQuestResponse> quests = ObservableList.of([]);
 
   @observable
-  String distantWork = "Distant work";
+  String distantWork = "Remote work";
 
   @observable
   String wagePerHour = "";
 
-  List<String> distantWorkList = [
-    "Distant work",
-    "Work in office",
-    "Both options",
+  @observable
+  String payPeriod = "quests.payPeriod.hourly";
+
+  final List<String> payPeriodLists = [
+    "quests.payPeriod.hourly",
+    "quests.payPeriod.daily",
+    "quests.payPeriod.weekly",
+    "quests.payPeriod.biWeekly",
+    "quests.payPeriod.semiMonthly",
+    "quests.payPeriod.monthly",
+    "quests.payPeriod.quarterly",
+    "quests.payPeriod.semiAnnually",
+    "quests.payPeriod.annually",
+    "quests.payPeriod.fixedPeriod",
+    "quests.payPeriod.byAgreement",
+  ];
+
+  final List<String> priorityList = [
+    "quests.priority.all",
+    "quests.priority.urgent",
+    "quests.priority.normal",
+    "quests.priority.low",
+  ];
+
+  final List<String> distantWorkList = [
+    "Remote work",
+    "In-office",
+    "Hybrid workplace",
   ];
 
   int offset = 0;
@@ -54,18 +79,117 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   String error = "";
 
-  void setPriorityValue(String priority) =>
-      priorityValue = QuestPriority.values.byName(priority);
+  @action
+  void setPayPeriod(String value) => payPeriod = value;
+
+  void payPeriodToValue() {
+    switch (userData!.payPeriod) {
+      case "Hourly":
+        payPeriod = "quests.payPeriod.hourly";
+        break;
+      case "Daily":
+        payPeriod = "quests.payPeriod.daily";
+        break;
+      case "Weekly":
+        payPeriod = "quests.payPeriod.weekly";
+        break;
+      case "BiWeekly":
+        payPeriod = "quests.payPeriod.biWeekly";
+        break;
+      case "SemiMonthly":
+        payPeriod = "quests.payPeriod.semiMonthly";
+        break;
+      case "Monthly":
+        payPeriod = "quests.payPeriod.monthly";
+        break;
+      case "Quarterly":
+        payPeriod = "quests.payPeriod.quarterly";
+        break;
+      case "SemiAnnually":
+        payPeriod = "quests.payPeriod.semiAnnually";
+        break;
+      case "Annually":
+        payPeriod = "quests.payPeriod.fixedPeriod";
+        break;
+      case "FixedPeriod":
+        payPeriod = "quests.payPeriod.fixedPeriod";
+        break;
+      case "ByAgreement":
+        payPeriod = "quests.payPeriod.byAgreement";
+        break;
+    }
+  }
+
+  String valueToPayPeriod() {
+    switch (payPeriod) {
+      case "quests.payPeriod.hourly":
+        return userData!.payPeriod = "Hourly";
+      case "quests.payPeriod.daily":
+        return userData!.payPeriod = "Daily";
+      case "quests.payPeriod.weekly":
+        return userData!.payPeriod = "Weekly";
+      case "quests.payPeriod.biWeekly":
+        return userData!.payPeriod = "BiWeekly";
+      case "quests.payPeriod.semiMonthly":
+        return userData!.payPeriod = "SemiMonthly";
+      case "quests.payPeriod.monthly":
+        return userData!.payPeriod = "Monthly";
+      case "quests.payPeriod.quarterly":
+        return userData!.payPeriod = "Quarterly";
+      case "quests.payPeriod.semiAnnually":
+        return userData!.payPeriod = "SemiAnnually";
+      case "quests.payPeriod.fixedPeriod":
+        return userData!.payPeriod = "Annually";
+      case "quests.payPeriod.fixedPeriod":
+        return userData!.payPeriod = "FixedPeriod";
+      case "quests.payPeriod.byAgreement":
+        return userData!.payPeriod = "ByAgreement";
+    }
+    return userData?.payPeriod ?? "";
+  }
+
+  void setPriorityValue(String value) => priorityValue = value;
+
+  void priorityToValue() {
+    switch (userData!.priority) {
+      case 0:
+        priorityValue = "quests.priority.all";
+        break;
+      case 1:
+        priorityValue = "quests.priority.urgent";
+        break;
+      case 2:
+        priorityValue = "quests.priority.normal";
+        break;
+      case 3:
+        priorityValue = "quests.priority.low";
+        break;
+    }
+  }
+
+  int valueToPriority() {
+    switch (priorityValue) {
+      case "quests.priority.all":
+        return userData!.priority = 0;
+      case "quests.priority.urgent":
+        return userData!.priority = 1;
+      case "quests.priority.normal":
+        return userData!.priority = 2;
+      case "quests.priority.low":
+        return userData!.priority = 3;
+    }
+    return userData?.priority ?? 0;
+  }
 
   void workplaceToValue() {
     switch (userData!.workplace) {
-      case "distant":
+      case "Remote":
         distantWork = distantWorkList[0];
         break;
-      case "office":
+      case "InOffice":
         distantWork = distantWorkList[1];
         break;
-      case "both":
+      case "Hybrid":
         distantWork = distantWorkList[2];
         break;
     }
@@ -75,14 +199,14 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
 
   String valueToWorkplace() {
     switch (distantWork) {
-      case "Distant work":
-        return userData!.workplace = "distant";
-      case "Work in office":
-        return userData!.workplace = "office";
-      case "Both options":
-        return userData!.workplace = "both";
+      case "Remote work":
+        return userData!.workplace = "Remote";
+      case "In-office":
+        return userData!.workplace = "InOffice";
+      case "Hybrid workplace":
+        return userData!.workplace = "Hybrid";
       default:
-        return userData?.workplace ?? "both";
+        return userData?.workplace ?? "Hybrid";
     }
   }
 
@@ -114,10 +238,11 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   @action
   Future getProfileMe() async {
     try {
-      // this.onLoading();
+      this.onLoading();
+      Future.delayed(Duration(milliseconds: 250));
       error = "";
       userData = await _apiProvider.getProfileMe();
-      // this.onSuccess(true);
+      this.onSuccess(true);
     } catch (e, trace) {
       print(trace);
       error = e.toString();
@@ -126,11 +251,13 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
   }
 
   Future<void> getCompletedQuests({
+    required UserRole userRole,
     required String userId,
     required bool newList,
     required bool isProfileYours,
   }) async {
     try {
+      await Future.delayed(const Duration(microseconds: 250));
       if (newList) {
         offset = 0;
         quests.clear();
@@ -138,7 +265,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       if (offset == quests.length) {
         this.onLoading();
         quests.addAll(
-          userData!.role == UserRole.Employer
+          userRole == UserRole.Employer
               ? await _apiProvider.getEmployerQuests(
                   userId: userId,
                   offset: offset,
@@ -221,7 +348,6 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
             medias: ObservableList.of([media])))[0];
       final isTotpActive = this.userData?.isTotpActive;
       final tempPhone = this.userData?.tempPhone;
-      userData.priority = priorityValue;
       this.userData =
           await _apiProvider.changeProfileMe(userData, userData.role);
       this.userData?.tempPhone = tempPhone;

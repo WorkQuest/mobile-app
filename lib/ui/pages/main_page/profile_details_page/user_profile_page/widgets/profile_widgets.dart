@@ -393,7 +393,7 @@ Widget employerRating({
                       await Navigator.pushNamed(
                         context,
                         ProfileQuestsPage.routeName,
-                        arguments: userId,
+                        arguments: profile,
                       );
                       // profile.quests.clear();
                       // profile.offset = 0;
@@ -516,7 +516,7 @@ Widget workerQuestStats({
                   await Navigator.pushNamed(
                     context,
                     ProfileQuestsPage.routeName,
-                    arguments: userId,
+                    arguments: profile,
                   );
                 }
               },

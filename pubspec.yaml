@@ -84,13 +84,14 @@ dependencies:
   #url & app launcher
   url_launcher: ^6.0.10
   flutter_custom_tabs: ^1.0.3
+  uni_links: ^0.5.1
 
   #Media and Files
   video_thumbnail: ^0.5.0
   file_picker: ^4.2.7
   chewie: ^1.2.2
   path_provider: ^2.0.4
-  flutter_downloader: ^1.7.1
+  flutter_downloader: ^1.7.4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -27,7 +27,6 @@ class WorkQuestApp extends StatelessWidget {
         } else {
           fontScale = window.textScaleFactor;
         }
-        print('fontScale: $fontScale');
         return MediaQuery(
           data: mq.copyWith(textScaleFactor: fontScale),
           child: child!,

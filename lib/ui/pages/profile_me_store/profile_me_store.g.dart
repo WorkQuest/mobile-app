@@ -42,13 +42,13 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
   final _$priorityValueAtom = Atom(name: '_ProfileMeStore.priorityValue');
 
   @override
-  QuestPriority get priorityValue {
+  String get priorityValue {
     _$priorityValueAtom.reportRead();
     return super.priorityValue;
   }
 
   @override
-  set priorityValue(QuestPriority value) {
+  set priorityValue(String value) {
     _$priorityValueAtom.reportWrite(value, super.priorityValue, () {
       super.priorityValue = value;
     });
@@ -99,11 +99,40 @@ mixin _$ProfileMeStore on _ProfileMeStore, Store {
     });
   }
 
+  final _$payPeriodAtom = Atom(name: '_ProfileMeStore.payPeriod');
+
+  @override
+  String get payPeriod {
+    _$payPeriodAtom.reportRead();
+    return super.payPeriod;
+  }
+
+  @override
+  set payPeriod(String value) {
+    _$payPeriodAtom.reportWrite(value, super.payPeriod, () {
+      super.payPeriod = value;
+    });
+  }
+
   final _$getProfileMeAsyncAction = AsyncAction('_ProfileMeStore.getProfileMe');
 
   @override
   Future<dynamic> getProfileMe() {
     return _$getProfileMeAsyncAction.run(() => super.getProfileMe());
+  }
+
+  final _$_ProfileMeStoreActionController =
+      ActionController(name: '_ProfileMeStore');
+
+  @override
+  void setPayPeriod(String value) {
+    final _$actionInfo = _$_ProfileMeStoreActionController.startAction(
+        name: '_ProfileMeStore.setPayPeriod');
+    try {
+      return super.setPayPeriod(value);
+    } finally {
+      _$_ProfileMeStoreActionController.endAction(_$actionInfo);
+    }
   }
 
   @override
@@ -114,7 +143,8 @@ review: ${review},
 priorityValue: ${priorityValue},
 quests: ${quests},
 distantWork: ${distantWork},
-wagePerHour: ${wagePerHour}
+wagePerHour: ${wagePerHour},
+payPeriod: ${payPeriod}
     ''';
   }
 }

@@ -1,3 +1,4 @@
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,9 +10,9 @@ import 'package:provider/provider.dart';
 class ProfileQuestsPage extends StatefulWidget {
   static const String routeName = "/questsPage";
 
-  ProfileQuestsPage(this.userId);
+  ProfileQuestsPage(this.profile);
 
-  final String userId;
+  final ProfileMeResponse profile;
 
   @override
   _ProfileQuestsPageState createState() => _ProfileQuestsPageState();
@@ -20,44 +21,33 @@ class ProfileQuestsPage extends StatefulWidget {
 class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
   ProfileMeStore? profileMeStore;
 
-  late Future<UserRole?> future;
-
   @override
   void initState() {
     profileMeStore = context.read<ProfileMeStore>();
     profileMeStore!.offset = 0;
     profileMeStore!.quests.clear();
-    future = _getRole();
-    super.initState();
-  }
-
-  Future<UserRole?> _getRole() async {
-    UserRole? role;
-    if (profileMeStore!.userData!.id != widget.userId) {
-      await Future.delayed(const Duration(microseconds: 250));
-      await profileMeStore!.getQuestHolder(widget.userId).then((value) {
-        role = profileMeStore!.questHolder!.role;
-        role == UserRole.Worker
-            ? profileMeStore!.getActiveQuests(
-                userId: widget.userId,
-                newList: true,
-                isProfileYours: false,
-              )
-            : profileMeStore!.getCompletedQuests(
-                userId: widget.userId,
-                newList: true,
-                isProfileYours: false,
-              );
-      });
+    if (profileMeStore!.userData!.id != widget.profile.id) {
+      widget.profile.role == UserRole.Worker
+          ? profileMeStore!.getActiveQuests(
+              userId: widget.profile.id,
+              newList: true,
+              isProfileYours: false,
+            )
+          : profileMeStore!.getCompletedQuests(
+              userRole: widget.profile.role,
+              userId: widget.profile.id,
+              newList: true,
+              isProfileYours: false,
+            );
     } else {
-      await profileMeStore!.getCompletedQuests(
+      profileMeStore!.getCompletedQuests(
+        userRole: profileMeStore!.userData!.role,
         userId: profileMeStore!.userData!.id,
         newList: true,
         isProfileYours: false,
       );
-      role = profileMeStore!.userData!.role;
     }
-    return Future.value(role);
+    super.initState();
   }
 
   @override
@@ -69,56 +59,52 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
           "Quests",
         ),
       ),
-      body: FutureBuilder<UserRole?>(
-        future: future,
-        builder: (_, snapshot) {
-          print('snapshot.connectionState: ${snapshot.connectionState}');
-          if (snapshot.connectionState == ConnectionState.done) {
-            return NotificationListener<ScrollEndNotification>(
-              onNotification: (scrollEnd) {
-                final metrics = scrollEnd.metrics;
-                if (metrics.atEdge ||
-                    metrics.maxScrollExtent < metrics.pixels &&
-                        !profileMeStore!.isLoading) {
-                  if (snapshot.data == UserRole.Worker)
-                    profileMeStore!.getActiveQuests(
-                      userId: profileMeStore!.questHolder!.id,
-                      newList: true,
-                      isProfileYours:
-                          profileMeStore!.userData!.id != widget.userId
-                              ? false
-                              : true,
-                    );
-                  else
-                    profileMeStore!.getCompletedQuests(
-                      userId: widget.userId,
-                      newList: false,
-                      isProfileYours:
-                          profileMeStore!.userData!.id != widget.userId
-                              ? false
-                              : true,
-                    );
-                }
-                return true;
-              },
-              child: Observer(
-                  builder: (_) => profileMeStore!.questHolder == null &&
-                          profileMeStore!.isLoading &&
-                          profileMeStore!.quests.isEmpty
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : QuestsList(
-                          snapshot.data == UserRole.Worker
-                              ? QuestItemPriorityType.Active
-                              : QuestItemPriorityType.Performed,
-                          profileMeStore!.quests,
-                          isLoading: profileMeStore!.isLoading,
-                        )),
-            );
-          }
-          return Center(child: CircularProgressIndicator());
-        },
+      body: Observer(
+        builder: (_) => !profileMeStore!.isLoading
+            ? NotificationListener<ScrollEndNotification>(
+                onNotification: (scrollEnd) {
+                  final metrics = scrollEnd.metrics;
+                  if (metrics.atEdge ||
+                      metrics.maxScrollExtent < metrics.pixels &&
+                          !profileMeStore!.isLoading) {
+                    if (widget.profile.role == UserRole.Worker)
+                      profileMeStore!.getActiveQuests(
+                        userId: profileMeStore!.questHolder!.id,
+                        newList: true,
+                        isProfileYours:
+                            profileMeStore!.userData!.id != widget.profile.id
+                                ? false
+                                : true,
+                      );
+                    else
+                      profileMeStore!.getCompletedQuests(
+                        userRole: widget.profile.role,
+                        userId: widget.profile.id,
+                        newList: false,
+                        isProfileYours:
+                            profileMeStore!.userData!.id != widget.profile.id
+                                ? false
+                                : true,
+                      );
+                  }
+                  return true;
+                },
+                child: Observer(
+                    builder: (_) => profileMeStore!.questHolder == null &&
+                            profileMeStore!.isLoading &&
+                            profileMeStore!.quests.isEmpty
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : QuestsList(
+                            widget.profile.role == UserRole.Worker
+                                ? QuestItemPriorityType.Active
+                                : QuestItemPriorityType.Performed,
+                            profileMeStore!.quests,
+                            isLoading: profileMeStore!.isLoading,
+                          )),
+              )
+            : Center(child: CircularProgressIndicator()),
       ),
     );
   }

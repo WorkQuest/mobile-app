@@ -28,6 +28,7 @@ class ProfileMeResponse with ClusterItem {
     this.raiseView,
     required this.walletAddress,
     required this.isTotpActive,
+    required this.payPeriod,
     // required this.createdAt,
     // required this.updatedAt,
   });
@@ -49,12 +50,13 @@ class ProfileMeResponse with ClusterItem {
   String? locationPlaceName;
   String wagePerHour;
   String? workplace;
-  QuestPriority priority;
+  int priority;
   QuestsStatistic? questsStatistic;
   RaiseView? raiseView;
   String? walletAddress;
   bool? isTotpActive;
   bool showAnimation = true;
+  String? payPeriod;
 
   ProfileMeResponse.clone(ProfileMeResponse object)
       : this(
@@ -84,6 +86,7 @@ class ProfileMeResponse with ClusterItem {
           questsStatistic: object.questsStatistic,
           walletAddress: object.walletAddress,
           isTotpActive: object.isTotpActive,
+          payPeriod: object.payPeriod,
         );
 
   //RatingStatistic? ratingStatistic;
@@ -92,68 +95,73 @@ class ProfileMeResponse with ClusterItem {
 
   factory ProfileMeResponse.fromJson(Map<String, dynamic> json) {
     return ProfileMeResponse(
-      id: json["id"],
-      avatarId: json["avatarId"] ?? "",
-      firstName: json["firstName"] ?? "",
-      lastName: json["lastName"] ?? "",
-      phone: json["phone"] == null
-          ? null
-          : Phone.fromJson(
-              json["phone"] ??
-                  {
-                    "codeRegion": "",
-                    "fullPhone": "",
-                    "phone": "",
-                  },
-            ),
-      tempPhone: Phone.fromJson(
-        json["tempPhone"] ??
+        id: json["id"],
+        avatarId: json["avatarId"] ?? "",
+        firstName: json["firstName"] ?? "",
+        lastName: json["lastName"] ?? "",
+        phone: json["phone"] == null
+            ? null
+            : Phone.fromJson(
+                json["phone"] ??
+                    {
+                      "codeRegion": "",
+                      "fullPhone": "",
+                      "phone": "",
+                    },
+              ),
+        tempPhone: Phone.fromJson(
+          json["tempPhone"] ??
+              {
+                "codeRegion": "",
+                "fullPhone": "",
+                "phone": "",
+              },
+        ),
+        email: json["email"],
+        additionalInfo: json["additionalInfo"] == null
+            ? null
+            : AdditionalInfo.fromJson(json["additionalInfo"]),
+        role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
+        avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
+        userSpecializations: json["userSpecializations"] == null
+            ? []
+            : (List<Map<String, dynamic>> skills) {
+                List<String> skillsString = [];
+                for (var skill in skills) {
+                  skillsString.add(skill.values.toString());
+                }
+                return skillsString;
+              }([...json["userSpecializations"]]),
+        ratingStatistic: RatingStatistic.fromJson(json["ratingStatistic"] ??
             {
-              "codeRegion": "",
-              "fullPhone": "",
-              "phone": "",
-            },
-      ),
-      email: json["email"],
-      additionalInfo: json["additionalInfo"] == null
-          ? null
-          : AdditionalInfo.fromJson(json["additionalInfo"]),
-      role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
-      avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
-      userSpecializations: json["userSpecializations"] == null
-          ? []
-          : (List<Map<String, dynamic>> skills) {
-              List<String> skillsString = [];
-              for (var skill in skills) {
-                skillsString.add(skill.values.toString());
-              }
-              return skillsString;
-            }([...json["userSpecializations"]]),
-      ratingStatistic: RatingStatistic.fromJson(json["ratingStatistic"] ??
-          {
-            "id": "",
-            "userId": json["id"],
-            "reviewCount": 0,
-            "averageMark": 0,
-            "status": 3,
-            // createdAt: createdAt,
-            // updatedAt: updatedAt,
-          }),
-      locationCode:
-          json["location"] == null ? null : LocationCode.fromJson(json["location"]),
-      locationPlaceName: json["locationPlaceName"] ?? "",
-      wagePerHour: json["wagePerHour"] ?? "0",
-      workplace: json["workplace"],
-      priority: QuestPriority.values[json["priority"] ?? 0],
-      questsStatistic: json["questsStatistic"] == null
-          ? null
-          : QuestsStatistic.fromJson(json["questsStatistic"]),
-      raiseView: json["raiseView"] == null ? null : RaiseView.fromJson(json["raiseView"]),
-      walletAddress: json["wallet"]?["address"],
-      isTotpActive: json["totpIsActive"] == null ? false : json["totpIsActive"],
-      // createdAt: DateTime.parse(json["createdAt"]),
-      // updatedAt: DateTime.parse(json["updatedAt"]),
-    );
+              "id": "",
+              "userId": json["id"],
+              "reviewCount": 0,
+              "averageMark": 0,
+              "status": 3,
+              // createdAt: createdAt,
+              // updatedAt: updatedAt,
+            }),
+        locationCode: json["location"] == null
+            ? null
+            : LocationCode.fromJson(json["location"]),
+        locationPlaceName: json["locationPlaceName"] ?? "",
+        wagePerHour: json["wagePerHour"] ?? "0",
+        workplace: json["workplace"] ?? "",
+        priority: json["priority"] ?? 0,
+        questsStatistic: json["questsStatistic"] == null
+            ? null
+            : QuestsStatistic.fromJson(json["questsStatistic"]),
+        raiseView: json["raiseView"] == null
+            ? null
+            : RaiseView.fromJson(json["raiseView"]),
+        walletAddress: json["wallet"]?["address"],
+        isTotpActive:
+            json["totpIsActive"] == null ? false : json["totpIsActive"],
+        payPeriod: json["payPeriod"] ?? ""
+        // createdAt: DateTime.parse(json["createdAt"]),
+        // updatedAt: DateTime.parse(json["updatedAt"]),
+        );
   }
 
   Map<String, dynamic> toJson() => {
@@ -168,20 +176,23 @@ class ProfileMeResponse with ClusterItem {
         "role": role.toString().split(".").last,
         "avatar": avatar!.toJson(),
         // "skillFilter": skillFilters.map((item) => item.toJson()),
-        "ratingStatistic": ratingStatistic == null ? null : ratingStatistic!.toJson(),
+        "ratingStatistic":
+            ratingStatistic == null ? null : ratingStatistic!.toJson(),
         "location": locationCode == null ? null : locationCode!.toJson(),
         "locationPlaceName": locationPlaceName,
         "wagePerHour": wagePerHour,
         "workplace": workplace,
-        "priority": priority.index,
+        "priority": priority,
         "questsStatistic": questsStatistic,
+        "payPeriod": payPeriod,
         // "createdAt": createdAt.toIso8601String(),
         // "updatedAt": updatedAt.toIso8601String(),
       };
 
   @override
   // TODO: implement location
-  LatLng get location => LatLng(locationCode!.latitude, locationCode!.longitude);
+  LatLng get location =>
+      LatLng(locationCode!.latitude, locationCode!.longitude);
 }
 
 class QuestsStatistic {
@@ -199,7 +210,8 @@ class QuestsStatistic {
           opened: object.opened,
         );
 
-  factory QuestsStatistic.fromJson(Map<String, dynamic> json) => QuestsStatistic(
+  factory QuestsStatistic.fromJson(Map<String, dynamic> json) =>
+      QuestsStatistic(
         completed: json["completed"],
         opened: json["opened"],
       );
@@ -273,7 +285,8 @@ class RatingStatistic {
       id: json["id"],
       userId: json["userId"],
       reviewCount: json["reviewCount"],
-      averageMark: json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
+      averageMark:
+          json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
       status: status ?? 3,
       // createdAt: json["createdAt"],
       // updatedAt: json["updatedAt"],
@@ -351,9 +364,14 @@ class RaiseView {
         status: json["status"] == null ? null : json["status"],
         duration: json["duration"] == null ? null : json["duration"],
         type: json["type"] == null ? null : json["type"],
-        endedAt: json["endedAt"] == null ? null : DateTime.parse(json["endedAt"]),
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        endedAt:
+            json["endedAt"] == null ? null : DateTime.parse(json["endedAt"]),
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
       );
 
   Map<String, dynamic> toJson() => {

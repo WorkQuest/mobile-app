@@ -42,10 +42,11 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
 
   @override
   void initState() {
-    print('initState');
     profile = context.read<ProfileMeStore>();
     pageStore = ChangeProfileStore(ProfileMeResponse.clone(profile!.userData!));
     profile!.workplaceToValue();
+    profile!.priorityToValue();
+    profile!.payPeriodToValue();
 
     oldPhone = Phone(
       codeRegion: profile!.userData?.phone?.codeRegion ??
@@ -336,7 +337,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         pageStore.userData.additionalInfo!.address = pageStore.address;
         pageStore.userData.locationPlaceName = pageStore.address;
       }
-      pageStore.userData.priority = profile!.userData!.priority;
+      pageStore.userData.priority = profile!.valueToPriority();
+      pageStore.userData.payPeriod = profile!.valueToPayPeriod();
       pageStore.userData.workplace = profile!.valueToWorkplace();
 
       pageStore.savePhoneNumber();
@@ -530,8 +532,8 @@ class _FieldsForWorkerWidgetState extends State<_FieldsForWorkerWidget> {
         Observer(
           builder: (_) => _dropDownMenuWidget(
             title: "settings.priority",
-            value: widget.profile.priorityValue.name,
-            list: QuestPriority.values.map((e) => e.name).toList(),
+            value: widget.profile.priorityValue,
+            list: widget.profile.priorityList,
             onChanged: (priority) {
               widget.profile.setPriorityValue(priority!);
             },
@@ -551,6 +553,16 @@ class _FieldsForWorkerWidgetState extends State<_FieldsForWorkerWidget> {
             list: widget.profile.distantWorkList,
             onChanged: (text) {
               widget.profile.setWorkplaceValue(text!);
+            },
+          ),
+        ),
+        Observer(
+          builder: (_) => _dropDownMenuWidget(
+            title: "quests.payPeriod.title",
+            value: widget.profile.payPeriod,
+            list: widget.profile.payPeriodLists,
+            onChanged: (text) {
+              widget.profile.setPayPeriod(text!);
             },
           ),
         ),
@@ -607,7 +619,7 @@ class _FieldsForWorkerWidgetState extends State<_FieldsForWorkerWidget> {
               items: list.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value),
+                  child: Text(value.tr()),
                 );
               }).toList(),
               icon: Icon(

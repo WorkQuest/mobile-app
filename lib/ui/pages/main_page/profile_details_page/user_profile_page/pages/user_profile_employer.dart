@@ -52,8 +52,8 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                   context,
                   ProfileQuestsPage.routeName,
                   arguments: viewOtherUser?.userData == null
-                      ? userStore!.userData!.id
-                      : viewOtherUser!.userData!.id,
+                      ? userStore!.userData!
+                      : viewOtherUser!.userData!,
                 );
                 if (viewOtherUser?.userData == null)
                   myQuests!.getQuests(userStore!.userData!.id, role, true);
