@@ -318,24 +318,24 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               ),
             ],
           ),
-        if (widget.info == null)
-          Column(
-            children: [
-              spacer,
-              ElevatedButton(
-                onPressed: () async {
-                  AlertDialogUtils.showInfoAlertDialog(
-                    context,
-                    title: 'Warning'.tr(),
-                    content: 'Service temporarily unavailable',
-                  );
-                },
-                child: Text(
-                  "profiler.raiseViews".tr(),
-                ),
-              ),
-            ],
-          ),
+        // if (widget.info == null)
+        //   Column(
+        //     children: [
+        //       spacer,
+        //       ElevatedButton(
+        //         onPressed: () async {
+        //           AlertDialogUtils.showInfoAlertDialog(
+        //             context,
+        //             title: 'Warning'.tr(),
+        //             content: 'Service temporarily unavailable',
+        //           );
+        //         },
+        //         child: Text(
+        //           "profiler.raiseViews".tr(),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
       ];
 
   List<Widget> ratingsWidget() => [

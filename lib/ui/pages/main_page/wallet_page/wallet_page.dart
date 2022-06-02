@@ -133,11 +133,11 @@ class _WalletPageState extends State<WalletPage> {
                 ),
                 Row(
                   children: [
-                    outlinedButton(
-                        route: WithdrawPage.routeName, title: "withdraw"),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    // outlinedButton(
+                    //     route: WithdrawPage.routeName, title: "withdraw"),
+                    // const SizedBox(
+                    //   width: 10,
+                    // ),
                     outlinedButton(
                         route: DepositPage.routeName, title: "deposit"),
                     const SizedBox(

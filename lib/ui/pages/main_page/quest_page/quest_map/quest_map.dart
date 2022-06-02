@@ -193,7 +193,7 @@ class _QuestMapState extends State<QuestMap> {
 
     if (!hasPermission) {
       mapStore!.initialCameraPosition = CameraPosition(
-        bearing: 192.0,
+        bearing: 0,
         target: LatLng(37.4, -122.0),
         zoom: 19,
       );

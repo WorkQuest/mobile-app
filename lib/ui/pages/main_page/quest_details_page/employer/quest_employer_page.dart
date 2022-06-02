@@ -75,13 +75,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             if (store.quest.value!.status == 0 ||
                 store.quest.value!.status == 4)
               switch (value) {
-                case "quests.raiseViews":
+                // case "quests.raiseViews":
                   // await Navigator.pushNamed(
                   //   context,
                   //   RaiseViews.routeName,
                   //   arguments: store.quest.value!.id,
                   // );
-                  break;
+                  // break;
                 case "registration.edit":
                   await Navigator.pushNamed(
                     context,
@@ -116,9 +116,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           },
           itemBuilder: (BuildContext context) {
             return {
-              if (store.quest.value!.status == 0 ||
-                  store.quest.value!.status == 4)
-                'quests.raiseViews',
+              // if (store.quest.value!.status == 0 ||
+              //     store.quest.value!.status == 4)
+              //   'quests.raiseViews',
               if (store.quest.value!.status == 0 ||
                   store.quest.value!.status == 4)
                 'registration.edit',

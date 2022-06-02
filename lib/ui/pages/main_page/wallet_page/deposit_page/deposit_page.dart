@@ -49,55 +49,57 @@ class _DepositPageState extends State<DepositPage>
       body: CustomScrollView(
         physics: NeverScrollableScrollPhysics(),
         slivers: [
-          SliverPadding(
-            padding: EdgeInsets.only(top: 10.0),
-            sliver: SliverPersistentHeader(
-              pinned: true,
-              delegate: StickyTabBarDelegate(
-                child: TabBar(
-                  unselectedLabelColor: Color(0xFF8D96A1),
-                  indicator: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.0),
-                    color: Colors.white,
-                  ),
-                  labelColor: Colors.black,
-                  controller: this._tabController,
-                  tabs: <Widget>[
-                    Tab(
-                      child: Text(
-                        "wallet.cryptoWallet".tr(),
-                        style: TextStyle(fontSize: 14.0),
-                      ),
-                    ),
-                    Tab(
-                      child: Text(
-                        "wallet.bankCard".tr(),
-                        style: TextStyle(fontSize: 14.0),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          // SliverPadding(
+          //   padding: EdgeInsets.only(top: 10.0),
+          //   sliver: SliverPersistentHeader(
+          //     pinned: true,
+          //     delegate: StickyTabBarDelegate(
+          //       child: TabBar(
+          //         unselectedLabelColor: Color(0xFF8D96A1),
+          //         indicator: BoxDecoration(
+          //           borderRadius: BorderRadius.circular(6.0),
+          //           color: Colors.white,
+          //         ),
+          //         labelColor: Colors.black,
+          //         controller: this._tabController,
+          //         tabs: <Widget>[
+          //           Tab(
+          //             child: Text(
+          //               "wallet.cryptoWallet".tr(),
+          //               style: TextStyle(fontSize: 14.0),
+          //             ),
+          //           ),
+          //           Tab(
+          //             child: Text(
+          //               "wallet.bankCard".tr(),
+          //               style: TextStyle(fontSize: 14.0),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
           SliverFillRemaining(
             //hasScrollBody: true,
-            child: TabBarView(
-              controller: this._tabController,
-              children: [
-                ///Wallet Transfer
-                walletTab(),
-
-                Center(
-                  child: Text("This feature is currently unavailable"),
-                ),
-
-                ///Card Transfer
-                // BankCardTransaction(
-                //   transaction: "wallet.deposit".tr(),
-                // ),
-              ],
-            ),
+            child:
+            walletTab(),
+            // TabBarView(
+            //   controller: this._tabController,
+            //   children: [
+            //     ///Wallet Transfer
+            //     walletTab(),
+            //
+            //     Center(
+            //       child: Text("This feature is currently unavailable"),
+            //     ),
+            //
+            //     ///Card Transfer
+            //     // BankCardTransaction(
+            //     //   transaction: "wallet.deposit".tr(),
+            //     // ),
+            //   ],
+            // ),
           ),
         ],
       ),

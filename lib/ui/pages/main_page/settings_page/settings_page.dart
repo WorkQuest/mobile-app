@@ -37,16 +37,16 @@ class SettingsPage extends StatelessWidget {
                 Expanded(
                   child: Text("ui.profile.myProfile".tr()),
                 ),
-                InkWell(
-                  onTap: () {
-                    AlertDialogUtils.showInfoAlertDialog(context,
-                        title: 'Warning'.tr(),
-                        content: 'Service temporarily unavailable');
-                  },
-                  child: const Icon(
-                    Icons.settings_outlined,
-                  ),
-                ),
+                // InkWell(
+                //   onTap: () {
+                //     AlertDialogUtils.showInfoAlertDialog(context,
+                //         title: 'Warning'.tr(),
+                //         content: 'Service temporarily unavailable');
+                //   },
+                //   child: const Icon(
+                //     Icons.settings_outlined,
+                //   ),
+                // ),
                 const SizedBox(width: 20.0)
               ],
             ),
@@ -120,73 +120,73 @@ class SettingsPage extends StatelessWidget {
                               _spacer,
 
                               ///Change Role
-                              SettingsCard(
-                                icon: GradientIcon(
-                                  SvgPicture.asset(
-                                    "assets/settings_role_icon.svg",
-                                  ),
-                                  20.0,
-                                ),
-                                title: "settings.changeRole".tr(),
-                                onTap: () => _onChangePressed(
-                                  context,
-                                  userStore: userStore,
-                                  chooseRoleStore: chooseRoleStore,
-                                ),
-                              ),
+                              // SettingsCard(
+                              //   icon: GradientIcon(
+                              //     SvgPicture.asset(
+                              //       "assets/settings_role_icon.svg",
+                              //     ),
+                              //     20.0,
+                              //   ),
+                              //   title: "settings.changeRole".tr(),
+                              //   onTap: () => _onChangePressed(
+                              //     context,
+                              //     userStore: userStore,
+                              //     chooseRoleStore: chooseRoleStore,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ///My Disputes
-                              SettingsCard(
-                                icon: GradientIcon(
-                                  SvgPicture.asset(
-                                    "assets/unread_chat.svg",
-                                  ),
-                                  20.0,
-                                ),
-                                title: "btn.myDisputes".tr(),
-                                onTap: () {
-                                  _showAlertInfo(
-                                    context,
-                                    title: "Service temporarily unavailable",
-                                  );
-                                  // Navigator.of(context, rootNavigator: true)
-                                  //     .pushNamed(MyDisputesPage.routeName);
-                                },
-                              ),
-                              _spacer,
-
-                              ///Change Language
-                              SettingsCard(
-                                icon: GradientIcon(
-                                  SvgPicture.asset(
-                                    "assets/settings_language_icon.svg",
-                                  ),
-                                  20.0,
-                                ),
-                                title:
-                                    "Language \n${Constants.languageList.keys.firstWhere(
-                                  (k) => Constants.languageList[k] == context.locale,
-                                )}",
-                                onTap: () {
-                                  AlertDialogUtils.showInfoAlertDialog(context,
-                                      title: 'Warning'.tr(),
-                                      content: 'Service temporarily unavailable');
-
-                                  // Navigator.of(context, rootNavigator: true)
-                                  //     .pushNamed(ChangeLanguagePage.routeName);
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(top: 15.0),
+                        //   child: Row(
+                        //     mainAxisSize: MainAxisSize.max,
+                        //     mainAxisAlignment: MainAxisAlignment.center,
+                        //     children: [
+                        //       ///My Disputes
+                        //       SettingsCard(
+                        //         icon: GradientIcon(
+                        //           SvgPicture.asset(
+                        //             "assets/unread_chat.svg",
+                        //           ),
+                        //           20.0,
+                        //         ),
+                        //         title: "btn.myDisputes".tr(),
+                        //         onTap: () {
+                        //           _showAlertInfo(
+                        //             context,
+                        //             title: "Service temporarily unavailable",
+                        //           );
+                        //           // Navigator.of(context, rootNavigator: true)
+                        //           //     .pushNamed(MyDisputesPage.routeName);
+                        //         },
+                        //       ),
+                        //       _spacer,
+                        //
+                        //       ///Change Language
+                        //       SettingsCard(
+                        //         icon: GradientIcon(
+                        //           SvgPicture.asset(
+                        //             "assets/settings_language_icon.svg",
+                        //           ),
+                        //           20.0,
+                        //         ),
+                        //         title:
+                        //             "Language \n${Constants.languageList.keys.firstWhere(
+                        //           (k) => Constants.languageList[k] == context.locale,
+                        //         )}",
+                        //         onTap: () {
+                        //           AlertDialogUtils.showInfoAlertDialog(context,
+                        //               title: 'Warning'.tr(),
+                        //               content: 'Service temporarily unavailable');
+                        //
+                        //           // Navigator.of(context, rootNavigator: true)
+                        //           //     .pushNamed(ChangeLanguagePage.routeName);
+                        //         },
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -222,36 +222,36 @@ class SettingsPage extends StatelessWidget {
                   const SizedBox(
                     height: 10.0,
                   ),
-                  InstrumentCard(
-                    urlArgument: "pension",
-                    iconPath: "assets/settings_pension_icon.svg",
-                    title: "ui.menu.pension.title".tr(),
-                    enable: false,
-                  ),
-                  InstrumentCard(
-                    urlArgument: "referral",
-                    iconPath: "assets/settings_referral_icon.svg",
-                    title: "ui.menu.referral.title".tr(),
-                    enable: false,
-                  ),
-                  InstrumentCard(
-                    urlArgument: "insuring",
-                    iconPath: "assets/settings_p2p_icon.svg",
-                    title: "ui.menu.p2p.title".tr(),
-                    enable: false,
-                  ),
-                  InstrumentCard(
-                    urlArgument: "savings",
-                    iconPath: "assets/setting_saving_product_icon.svg",
-                    title: "ui.menu.savings.title".tr(),
-                    enable: false,
-                  ),
-                  InstrumentCard(
-                    urlArgument: "crediting",
-                    iconPath: "assets/settings_wallet.svg",
-                    title: "crediting.lending".tr(),
-                    enable: false,
-                  ),
+                  // InstrumentCard(
+                  //   urlArgument: "pension",
+                  //   iconPath: "assets/settings_pension_icon.svg",
+                  //   title: "ui.menu.pension.title".tr(),
+                  //   enable: false,
+                  // ),
+                  // InstrumentCard(
+                  //   urlArgument: "referral",
+                  //   iconPath: "assets/settings_referral_icon.svg",
+                  //   title: "ui.menu.referral.title".tr(),
+                  //   enable: false,
+                  // ),
+                  // InstrumentCard(
+                  //   urlArgument: "insuring",
+                  //   iconPath: "assets/settings_p2p_icon.svg",
+                  //   title: "ui.menu.p2p.title".tr(),
+                  //   enable: false,
+                  // ),
+                  // InstrumentCard(
+                  //   urlArgument: "savings",
+                  //   iconPath: "assets/setting_saving_product_icon.svg",
+                  //   title: "ui.menu.savings.title".tr(),
+                  //   enable: false,
+                  // ),
+                  // InstrumentCard(
+                  //   urlArgument: "crediting",
+                  //   iconPath: "assets/settings_wallet.svg",
+                  //   title: "crediting.lending".tr(),
+                  //   enable: false,
+                  // ),
                   InstrumentCard(
                     urlArgument: "mining",
                     iconPath: "assets/setting_chart.svg",
@@ -264,12 +264,12 @@ class SettingsPage extends StatelessWidget {
                     title: "WorkQuest Bridge",
                     enable: true,
                   ),
-                  InstrumentCard(
-                    urlArgument: "staking",
-                    iconPath: "assets/work_quest_icon.svg",
-                    title: "WorkQuest Staking",
-                    enable: false,
-                  ),
+                  // InstrumentCard(
+                  //   urlArgument: "staking",
+                  //   iconPath: "assets/work_quest_icon.svg",
+                  //   title: "WorkQuest Staking",
+                  //   enable: false,
+                  // ),
                 ],
               ),
             ),

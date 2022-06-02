@@ -195,53 +195,53 @@ class SignInPage extends StatelessWidget {
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Center(
-                      child: Text(
-                        "signIn.or".tr(),
-                        style: TextStyle(
-                          color: Color(0xFFCBCED2),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      top: 20.0,
-                      right: 16,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _iconButton(
-                          "assets/google_icon.svg",
-                          "google",
-                          context,
-                        ),
-                        // _iconButton(
-                        //   "assets/instagram.svg",
-                        //   "https://www.instagram.com/zuck/?hl=ru",
-                        // ),
-                        _iconButton(
-                          "assets/twitter_icon.svg",
-                          "twitter",
-                          context,
-                        ),
-                        _iconButton(
-                          "assets/facebook_icon.svg",
-                          "facebook",
-                          context,
-                        ),
-                        _iconButton(
-                          "assets/linkedin_icon.svg",
-                          "linkedin",
-                          context,
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 20.0),
+                  //   child: Center(
+                  //     child: Text(
+                  //       "signIn.or".tr(),
+                  //       style: TextStyle(
+                  //         color: Color(0xFFCBCED2),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(
+                  //     left: 16,
+                  //     top: 20.0,
+                  //     right: 16,
+                  //   ),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       _iconButton(
+                  //         "assets/google_icon.svg",
+                  //         "google",
+                  //         context,
+                  //       ),
+                  //       // _iconButton(
+                  //       //   "assets/instagram.svg",
+                  //       //   "https://www.instagram.com/zuck/?hl=ru",
+                  //       // ),
+                  //       _iconButton(
+                  //         "assets/twitter_icon.svg",
+                  //         "twitter",
+                  //         context,
+                  //       ),
+                  //       _iconButton(
+                  //         "assets/facebook_icon.svg",
+                  //         "facebook",
+                  //         context,
+                  //       ),
+                  //       _iconButton(
+                  //         "assets/linkedin_icon.svg",
+                  //         "linkedin",
+                  //         context,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   Padding(
                     padding: const EdgeInsets.only(
                       left: 16.0,
