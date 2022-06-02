@@ -24,6 +24,9 @@ abstract class _SignInStore extends IStore<bool> with Store {
   _SignInStore(this._apiProvider);
 
   @observable
+  String platform = '';
+
+  @observable
   String _username = '';
 
   @observable
@@ -39,6 +42,9 @@ abstract class _SignInStore extends IStore<bool> with Store {
   String error = "";
 
   @action
+  setPlatform(String value) => platform = value;
+
+  @action
   setMnemonic(String value) => mnemonic = value;
 
   @action
@@ -46,7 +52,10 @@ abstract class _SignInStore extends IStore<bool> with Store {
 
   @computed
   bool get canSignIn =>
-      !isLoading && _username.isNotEmpty && _password.isNotEmpty && mnemonic.isNotEmpty;
+      !isLoading &&
+      _username.isNotEmpty &&
+      _password.isNotEmpty &&
+      mnemonic.isNotEmpty;
 
   @action
   void setUsername(String value) => _username = value;
@@ -72,13 +81,12 @@ abstract class _SignInStore extends IStore<bool> with Store {
     }
   }
 
-
   @action
   Future refreshToken() async {
     try {
       this.onLoading();
       String? token = await Storage.readRefreshToken();
-      BearerToken bearerToken = await _apiProvider.refreshToken(token!);
+      BearerToken bearerToken = await _apiProvider.refreshToken(token!, platform);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
       this.onSuccess(true);
@@ -96,8 +104,10 @@ abstract class _SignInStore extends IStore<bool> with Store {
       Wallet? wallet = await Wallet.derive(mnemonic);
       AccountRepository().connectClient();
       AccountRepository().setWallet(wallet);
-      if (wallet.address != walletAddress) throw FormatException("Incorrect mnemonic");
-      final signature = await AccountRepository().service!.getSignature(wallet.privateKey!);
+      if (wallet.address != walletAddress)
+        throw FormatException("Incorrect mnemonic");
+      final signature =
+          await AccountRepository().service!.getSignature(wallet.privateKey!);
       await _apiProvider.walletLogin(signature, wallet.address!);
       await Storage.write(Storage.wallets, jsonEncode([wallet.toJson()]));
       await Storage.write(Storage.activeAddress, wallet.address!);
@@ -114,13 +124,17 @@ abstract class _SignInStore extends IStore<bool> with Store {
   }
 
   @action
-  Future signIn() async {
+  Future signIn(String platform) async {
     try {
       this.onLoading();
       await Future.delayed(const Duration(seconds: 1));
       error = "";
       BearerToken bearerToken = await _apiProvider.login(
-          email: _username.trim(), password: _password, totp: totp);
+        email: _username.trim(),
+        password: _password,
+        platform: platform,
+        totp: totp,
+      );
 
       if (bearerToken.status == 0) {
         error = 'unconfirmed';

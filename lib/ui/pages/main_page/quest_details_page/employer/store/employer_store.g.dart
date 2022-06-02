@@ -79,6 +79,13 @@ mixin _$EmployerStore on _EmployerStore, Store {
         .run(() => super.getRespondedList(id, idWorker));
   }
 
+  final _$getQuestAsyncAction = AsyncAction('_EmployerStore.getQuest');
+
+  @override
+  Future<void> getQuest(String questId) {
+    return _$getQuestAsyncAction.run(() => super.getQuest(questId));
+  }
+
   final _$startQuestAsyncAction = AsyncAction('_EmployerStore.startQuest');
 
   @override

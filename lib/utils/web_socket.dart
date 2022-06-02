@@ -38,7 +38,7 @@ class WebSocket {
 
   void _connectWallet() {
     walletChannel = IOWebSocketChannel.connect(
-        "wss://dev-node-nyc3.workquest.co/tendermint-rpc/websocket");
+        "${AccountRepository().getConfigNetwork().wss}/tendermint-rpc/websocket");
     walletChannel!.sink.add("""
       {
           "jsonrpc": "2.0",

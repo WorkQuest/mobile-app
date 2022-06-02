@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
@@ -28,6 +30,7 @@ class SettingsPage extends StatelessWidget {
     final settingStore = context.read<SettingsPageStore>();
     final userStore = context.read<ProfileMeStore>();
     final chooseRoleStore = context.read<ChooseRoleStore>();
+    chooseRoleStore.setPlatform(Platform.isIOS ? "iOS" : "Android");
 
     return Scaffold(
       body: CustomScrollView(

@@ -13,14 +13,13 @@ const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 const _errorColor = Colors.red;
 
 class VerifyWalletPage extends StatefulWidget {
-  const VerifyWalletPage() ;
+  const VerifyWalletPage();
 
   @override
   _VerifyWalletPageState createState() => _VerifyWalletPageState();
 }
 
 class _VerifyWalletPageState extends State<VerifyWalletPage> {
-
   @override
   void initState() {
     super.initState();
@@ -95,7 +94,8 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
               ),
               Container(
                 padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom + 10.0),
+                  bottom: MediaQuery.of(context).padding.bottom + 10.0,
+                ),
                 width: double.infinity,
                 child: ObserverListener<CreateWalletStore>(
                   onFailure: () {
@@ -233,8 +233,8 @@ class _WordsWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6.0),
                 border: Border.all(
-                    color: AppColor.disabledButton,
-                    ),
+                  color: AppColor.disabledButton,
+                ),
                 color: color ? AppColor.enabledButton : _errorColor,
               ),
               child: Text(

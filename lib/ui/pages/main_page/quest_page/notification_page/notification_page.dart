@@ -118,7 +118,10 @@ class _NotificationPageState extends State<NotificationPage> {
                                           rootNavigator: true)
                                       .pushNamed(
                                     QuestDetails.routeName,
-                                    arguments: store.quest,
+                                    arguments: QuestArguments(
+                                      questInfo: store.quest,
+                                      id: null,
+                                    ),
                                   );
                                 },
                               ),

@@ -1,7 +1,9 @@
 import 'package:app/base_store/i_store.dart';
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/bearer_token.dart';
 import 'package:app/utils/storage.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -71,6 +73,7 @@ abstract class _SignUpStore extends IStore<bool> with Store {
       );
       Storage.writeRefreshToken(bearerToken.refresh);
       Storage.writeAccessToken(bearerToken.access);
+      AccountRepository().setNetwork(ConfigNameNetwork.devnet.name);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

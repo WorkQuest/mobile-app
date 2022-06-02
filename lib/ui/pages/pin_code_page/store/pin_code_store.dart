@@ -49,6 +49,9 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   bool totpValid = false;
 
   @observable
+  String platform = "";
+
+  @observable
   String pin = "";
 
   @observable
@@ -68,6 +71,9 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
 
   @observable
   bool canCheckBiometrics = false;
+
+  @action
+  setPlatform(String value) => platform = value;
 
   @action
   inputPin(int num) {
@@ -176,7 +182,8 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         this.onSuccess(StatePinCode.ToLogin);
         return;
       }
-      BearerToken bearerToken = await _apiProvider.refreshToken(token);
+
+      BearerToken bearerToken = await _apiProvider.refreshToken(token, platform);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
       await getIt.get<ProfileMeStore>().getProfileMe();

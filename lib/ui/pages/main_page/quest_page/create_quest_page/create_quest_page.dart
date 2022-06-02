@@ -465,7 +465,10 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             Navigator.pushReplacementNamed(
                               context,
                               QuestDetails.routeName,
-                              arguments: updatedQuest,
+                              arguments: QuestArguments(
+                                questInfo: updatedQuest,
+                                id: null,
+                              ),
                             );
                           }
                           Navigator.pop(context, true);

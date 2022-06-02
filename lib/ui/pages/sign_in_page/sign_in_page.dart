@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/constants.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -39,14 +41,21 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
+  late SignInStore signInStore;
+  late ProfileMeStore profile;
 
   final TextEditingController totpController = new TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    final signInStore = context.read<SignInStore>();
-    final profile = context.read<ProfileMeStore>();
+  void initState() {
+    signInStore = context.read<SignInStore>();
+    profile = context.read<ProfileMeStore>();
+    signInStore.setPlatform(Platform.isIOS ? "iOS" : "Android");
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Form(
       key: _formKey,
       child: Scaffold(
@@ -170,7 +179,8 @@ class _SignInPageState extends State<SignInPage> {
     required SignInStore signInStore,
     required ProfileMeStore profile,
   }) async {
-    await signInStore.signIn();
+    final platform = Platform.isIOS ? "iOS" : "Android";
+    await signInStore.signIn(platform);
     if (signInStore.isSuccess)
       await profile.getProfileMe();
     else {
@@ -202,7 +212,8 @@ class _SignInPageState extends State<SignInPage> {
   }) async {
     if (signInStore.errorMessage == "unconfirmed") {
       await AlertDialogUtils.showSuccessDialog(context);
-      Navigator.pushNamed(context, ConfirmEmail.routeName, arguments: signInStore.getUsername());
+      Navigator.pushNamed(context, ConfirmEmail.routeName,
+          arguments: signInStore.getUsername());
     } else if (signInStore.errorMessage == "TOTP is invalid" ||
         signInStore.errorMessage == "User must pass 2FA" ||
         profile.errorMessage == "TOTP is invalid" ||
@@ -234,7 +245,8 @@ class _SignInPageState extends State<SignInPage> {
       titleOk: 'OK',
       onTabCancel: null,
       onTabOk: () {
-        _onPressedSignIn(context, signInStore: signInStore, profile: context.read<ProfileMeStore>());
+        _onPressedSignIn(context,
+            signInStore: signInStore, profile: context.read<ProfileMeStore>());
       },
       colorCancel: Colors.red,
       colorOk: AppColor.enabledButton,
@@ -242,7 +254,8 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   _errorMessage(BuildContext context, String msg) =>
-      AlertDialogUtils.showInfoAlertDialog(context, title: "Error", content: msg);
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: "Error", content: msg);
 }
 
 class _HintsAccountWidget extends StatelessWidget {
@@ -453,7 +466,8 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
               minSize: 22.0,
               padding: EdgeInsets.zero,
               onPressed: () async {
-                ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+                ClipboardData? data =
+                    await Clipboard.getData(Clipboard.kTextPlain);
                 mnemonicController.text = data?.text ?? "";
                 widget.signInStore.setMnemonic(data?.text ?? "");
               },

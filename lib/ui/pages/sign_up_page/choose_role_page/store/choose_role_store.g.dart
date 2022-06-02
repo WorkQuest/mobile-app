@@ -60,6 +60,21 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
     });
   }
 
+  final _$platformAtom = Atom(name: '_ChooseRoleStore.platform');
+
+  @override
+  String get platform {
+    _$platformAtom.reportRead();
+    return super.platform;
+  }
+
+  @override
+  set platform(String value) {
+    _$platformAtom.reportWrite(value, super.platform, () {
+      super.platform = value;
+    });
+  }
+
   final _$totpAtom = Atom(name: '_ChooseRoleStore.totp');
 
   @override
@@ -239,6 +254,7 @@ mixin _$ChooseRoleStore on _ChooseRoleStore, Store {
   @override
   String toString() {
     return '''
+platform: ${platform},
 totp: ${totp},
 userRole: ${userRole},
 canSubmitCode: ${canSubmitCode},

@@ -30,7 +30,7 @@ class MyQuestsItem extends StatelessWidget {
       onTap: () async {
         await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
-          arguments: questInfo,
+          arguments: QuestArguments(questInfo:questInfo, id: null),
         );
       },
       child: Container(

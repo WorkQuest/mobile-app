@@ -68,6 +68,17 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }
 
   @action
+  Future<void> getQuest(String questId) async {
+    try {
+      this.onLoading();
+      quest.value = await _apiProvider.getQuest(id: questId);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
   void changeQuest(dynamic json) {
     var changedQuest =
         BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
@@ -99,13 +110,13 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       // await _apiProvider.startQuest(questId: questId, userId: userId);
 
       await AccountRepository().service!.handleEvent(
-        function: WQContractFunctions.assignJob,
-        contractAddress: quest.value!.contractAddress!,
-        params: [
-          EthereumAddress.fromHex(user.walletAddress!),
-        ],
-        value: null,
-      );
+            function: WQContractFunctions.assignJob,
+            contractAddress: quest.value!.contractAddress!,
+            params: [
+              EthereumAddress.fromHex(user.walletAddress!),
+            ],
+            value: null,
+          );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -122,10 +133,10 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       this.onLoading();
       // await _apiProvider.acceptCompletedWork(questId: questId);
       await AccountRepository().service!.handleEvent(
-        function: WQContractFunctions.acceptJobResult,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
+            function: WQContractFunctions.acceptJobResult,
+            contractAddress: quest.value!.contractAddress!,
+            value: null,
+          );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -143,10 +154,10 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       await _getQuest();
       // await _apiProvider.deleteQuest(questId: questId);
       await AccountRepository().service!.handleEvent(
-        function: WQContractFunctions.cancelJob,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
+            function: WQContractFunctions.cancelJob,
+            contractAddress: quest.value!.contractAddress!,
+            value: null,
+          );
       this.onSuccess(true);
     } catch (e, trace) {
       print("accept error: $e\n$trace");

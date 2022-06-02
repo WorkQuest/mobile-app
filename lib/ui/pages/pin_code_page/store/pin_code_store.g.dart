@@ -24,6 +24,21 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
     });
   }
 
+  final _$platformAtom = Atom(name: '_PinCodeStore.platform');
+
+  @override
+  String get platform {
+    _$platformAtom.reportRead();
+    return super.platform;
+  }
+
+  @override
+  set platform(String value) {
+    _$platformAtom.reportWrite(value, super.platform, () {
+      super.platform = value;
+    });
+  }
+
   final _$pinAtom = Atom(name: '_PinCodeStore.pin');
 
   @override
@@ -153,6 +168,17 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
   }
 
   @override
+  dynamic setPlatform(String value) {
+    final _$actionInfo = _$_PinCodeStoreActionController.startAction(
+        name: '_PinCodeStore.setPlatform');
+    try {
+      return super.setPlatform(value);
+    } finally {
+      _$_PinCodeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic inputPin(int num) {
     final _$actionInfo = _$_PinCodeStoreActionController.startAction(
         name: '_PinCodeStore.inputPin');
@@ -178,6 +204,7 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
   String toString() {
     return '''
 totpValid: ${totpValid},
+platform: ${platform},
 pin: ${pin},
 attempts: ${attempts},
 statePin: ${statePin},

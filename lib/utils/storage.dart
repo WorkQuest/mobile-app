@@ -29,6 +29,14 @@ class Storage {
     _secureStorage.write(key: "pinCode", value: pinCode);
   }
 
+  static Future<void> writeConfig(String config) async {
+    _secureStorage.write(key: "configName", value: config);
+  }
+
+  static Future<String?> readConfig() async {
+    return await _secureStorage.read(key: "configName");
+  }
+
   static Future<String?> readPinCode() async {
     return await _secureStorage.read(key: "pinCode");
   }
@@ -67,6 +75,7 @@ class Storage {
 
   static Future<Wallet?> readWallet() async {
     String? wallet = await _secureStorage.read(key: "wallet");
+    print("WALLET: ${wallet}");
     if (wallet == null) {
       return null;
     }

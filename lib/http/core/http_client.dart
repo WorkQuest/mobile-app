@@ -31,6 +31,8 @@ class _HttpClient implements IHttpClient {
 
   @override
   String? accessToken;
+  @override
+  String? platform;
   bool tokenExpired = false;
 
   _HttpClient(this._dio) {
@@ -110,6 +112,8 @@ class _HttpClient implements IHttpClient {
             String? token = await Storage.readRefreshToken();
             options.headers["Authorization"] = "Bearer " + token.toString();
           }
+          if (options.uri.path.contains("auth/login") || options.uri.path.contains("refresh-tokens"))
+            options.headers["user-agent"] = platform;
 
           println("\n---------- DioRequest ----------"
               "\n\turl: ${options.baseUrl}${options.path}"

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:app/model/quests_models/Responded.dart';
-import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
@@ -24,12 +23,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:share/share.dart';
 
 class QuestWorker extends QuestDetails {
-  final bool isMyQuest;
-
-  QuestWorker(
-    BaseQuestResponse questInfo,
-    this.isMyQuest,
-  ) : super(questInfo);
+  QuestWorker(QuestArguments arguments) : super(arguments);
 
   @override
   _QuestWorkerState createState() => _QuestWorkerState();
@@ -45,6 +39,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   AnimationController? controller;
 
   bool isLoading = false;
+  bool isMyQuest = false;
 
   @override
   void initState() {
@@ -55,7 +50,14 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     chatStore = context.read<ChatStore>();
 
     profile!.getProfileMe();
-    store.quest.value = widget.questInfo;
+
+    if (widget.arguments.questInfo != null)
+      store.quest.value = widget.arguments.questInfo;
+    else
+      store.getQuest(widget.arguments.id ?? "").then(
+            (value) =>
+                isMyQuest = store.quest.value!.userId == profile!.userData!.id,
+          );
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
     respondedList.add(store.quest.value?.responded);
@@ -65,6 +67,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         return;
       }
     });
+
     super.initState();
   }
 
@@ -96,7 +99,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           icon: Icon(Icons.share_outlined),
           onPressed: () {
             Share.share(
-                "https://app.workquest.co/quests/${widget.questInfo.id}");
+                "https://app.workquest.co/quests/${store.quest.value!.id}");
           },
         ),
       if (store.quest.value!.assignedWorker?.id == profile!.userData!.id &&
@@ -163,7 +166,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     CreateReviewPage.routeName,
                     arguments: ReviewArguments(storeQuest.questInfo, null),
                   );
-                  widget.questInfo.yourReview != null
+                  store.quest.value!.yourReview != null
                       ? profile!.review = true
                       : profile!.review = false;
                 },
@@ -200,7 +203,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   Widget getBody() {
-    if (widget.isMyQuest) return const SizedBox();
+    if (isMyQuest) return const SizedBox();
     return Observer(
       builder: (_) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,10 +440,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       _updateLoading();
                       await store.sendRespondOnQuest(store.opinion);
                       if (store.isSuccess) {
-                        widget.questInfo.responded = Responded(
+                        store.quest.value!.responded = Responded(
                           id: "",
                           workerId: profile!.userData!.id,
-                          questId: widget.questInfo.id,
+                          questId: store.quest.value!.id,
                           status: 0,
                           type: 0,
                           message: store.opinion,
@@ -449,11 +452,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                         );
                         for (int i = 0; i < questStore.questsList.length; i++)
                           if (questStore.questsList[i].id ==
-                              widget.questInfo.id)
+                              store.quest.value!.id)
                             questStore.questsList[i].responded = Responded(
                               id: "",
                               workerId: profile!.userData!.id,
-                              questId: widget.questInfo.id,
+                              questId: store.quest.value!.id,
                               status: 0,
                               type: 0,
                               message: store.opinion,
@@ -463,8 +466,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                         questStore.searchWord.isEmpty
                             ? questStore.getQuests(true)
                             : questStore.setSearchWord(questStore.searchWord);
-                        myQuestStore.deleteQuest(widget.questInfo.id);
-                        myQuestStore.addQuest(widget.questInfo, true);
+                        myQuestStore.deleteQuest(store.quest.value!.id);
+                        myQuestStore.addQuest(store.quest.value!, true);
                         _updateLoading();
                         chatStore!.loadChats(starred: false);
                         await Future.delayed(const Duration(milliseconds: 250));

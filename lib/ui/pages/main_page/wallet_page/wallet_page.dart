@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
+import 'package:app/ui/pages/main_page/wallet_page/network_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/swap_page/swap_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
@@ -71,7 +73,44 @@ class _WalletPageState extends State<WalletPage> {
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
         CupertinoSliverNavigationBar(
-          largeTitle: Text("Wallet"),
+          largeTitle: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Wallet"),
+              PopupMenuButton<String>(
+                elevation: 10,
+                icon: Icon(Icons.more_vert),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6.0),
+                ),
+                onSelected: (value) async {
+                  switch (value) {
+                    case "Buy WQT":
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(SwapPage.routeName);
+                      break;
+                    case "Swap":
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(NetworkPage.routeName);
+                      break;
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return {
+                    "Buy WQT",
+                    "Swap",
+                  }.map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(
+                        choice,
+                      ),
+                    );
+                  }).toList();
+                },
+              ),
+            ],
+          ),
         ),
         if (Platform.isIOS)
           CupertinoSliverRefreshControl(
@@ -177,9 +216,10 @@ class _WalletPageState extends State<WalletPage> {
               title: Text(
                 'wallet.table.trx'.tr(),
                 style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
               ),
             ),
             centerTitle: false,

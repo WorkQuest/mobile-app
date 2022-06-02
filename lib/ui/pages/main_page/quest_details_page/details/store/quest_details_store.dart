@@ -22,10 +22,16 @@ abstract class _QuestDetailsStore extends IStore<bool> with Store {
   BaseQuestResponse? questInfo;
 
   @observable
+  String? questId;
+
+  @observable
   QuestItemPriorityType questType = QuestItemPriorityType.Active;
 
   @action
   initQuest(BaseQuestResponse quest) => questInfo = quest;
+
+  @action
+  initQuestId(String value) => questId = value;
 
   @action
   QuestItemPriorityType getQuestType(BaseQuestResponse quest, UserRole role) {
@@ -59,7 +65,7 @@ abstract class _QuestDetailsStore extends IStore<bool> with Store {
   updateQuest() async {
     try {
       onLoading();
-      final result = await _apiProvider.getQuest(id: questInfo!.id);
+      final result = await _apiProvider.getQuest(id: questInfo?.id ?? questId!);
       questInfo = result;
       onSuccess(true);
     } catch (e) {

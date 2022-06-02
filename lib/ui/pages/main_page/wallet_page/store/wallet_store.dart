@@ -40,10 +40,10 @@ abstract class _WalletStore extends IStore<bool> with Store {
       await AccountRepository().service!.getAllBalance(AccountRepository().privateKey);
       print(list);
       final wqt = list.firstWhere((element) => element.title == 'ether');
-      final wUsd = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wUsd);
-      final wEth = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wEth);
-      final wBnb = await AccountRepository().service!.getBalanceFromContract(AddressCoins.wBnb);
-      final uSdt = await AccountRepository().service!.getBalanceFromContract(AddressCoins.uSdt);
+      final wUsd = await AccountRepository().service!.getBalanceFromContract(Configs.configsNetwork[ConfigNameNetwork.devnet]!.addresses.wUsd);
+      final wEth = await AccountRepository().service!.getBalanceFromContract(Configs.configsNetwork[ConfigNameNetwork.devnet]!.addresses.wEth);
+      final wBnb = await AccountRepository().service!.getBalanceFromContract(Configs.configsNetwork[ConfigNameNetwork.devnet]!.addresses.wBnb);
+      final uSdt = await AccountRepository().service!.getBalanceFromContract(Configs.configsNetwork[ConfigNameNetwork.devnet]!.addresses.uSdt);
       if (coins.isNotEmpty) {
         coins[0] = BalanceItem(
           "WQT",

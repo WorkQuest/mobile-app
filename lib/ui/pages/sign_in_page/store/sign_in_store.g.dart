@@ -16,6 +16,21 @@ mixin _$SignInStore on _SignInStore, Store {
           Computed<bool>(() => super.canSignIn, name: '_SignInStore.canSignIn'))
       .value;
 
+  final _$platformAtom = Atom(name: '_SignInStore.platform');
+
+  @override
+  String get platform {
+    _$platformAtom.reportRead();
+    return super.platform;
+  }
+
+  @override
+  set platform(String value) {
+    _$platformAtom.reportWrite(value, super.platform, () {
+      super.platform = value;
+    });
+  }
+
   final _$_usernameAtom = Atom(name: '_SignInStore._username');
 
   @override
@@ -117,11 +132,22 @@ mixin _$SignInStore on _SignInStore, Store {
   final _$signInAsyncAction = AsyncAction('_SignInStore.signIn');
 
   @override
-  Future<dynamic> signIn() {
-    return _$signInAsyncAction.run(() => super.signIn());
+  Future<dynamic> signIn(String platform) {
+    return _$signInAsyncAction.run(() => super.signIn(platform));
   }
 
   final _$_SignInStoreActionController = ActionController(name: '_SignInStore');
+
+  @override
+  dynamic setPlatform(String value) {
+    final _$actionInfo = _$_SignInStoreActionController.startAction(
+        name: '_SignInStore.setPlatform');
+    try {
+      return super.setPlatform(value);
+    } finally {
+      _$_SignInStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   dynamic setMnemonic(String value) {
@@ -181,6 +207,7 @@ mixin _$SignInStore on _SignInStore, Store {
   @override
   String toString() {
     return '''
+platform: ${platform},
 mnemonic: ${mnemonic},
 totp: ${totp},
 error: ${error},

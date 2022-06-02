@@ -20,7 +20,7 @@ const AndroidNotificationChannel _channel = AndroidNotificationChannel(
 );
 
 final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 ///BackGround Message Handler
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -42,6 +42,8 @@ void main() async {
 
   //Init Wallet
   try {
+    String? configName = await Storage.readConfig();
+    AccountRepository().setNetwork(configName ?? "devnet");
     final wallet = await Storage.readWallet();
     if (wallet != null) {
       AccountRepository().setWallet(wallet);
@@ -79,6 +81,8 @@ void _initialisePushNotification() {
     _flutterLocalNotificationsPlugin,
   );
   _firebaseMessaging.subscribeToTopic('all');
-  _firebaseMessaging.getToken().then((token) => print(" firebase token $token"));
+  _firebaseMessaging
+      .getToken()
+      .then((token) => print(" firebase token $token"));
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 }

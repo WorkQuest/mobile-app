@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import "package:app/observer_consumer.dart";
@@ -33,8 +34,11 @@ class _PinCodePageState extends State<PinCodePage>
 
   @override
   void initState() {
-    Future.delayed(Duration.zero,(){
+    Future.delayed(Duration.zero, () {
       context.read<PinCodeStore>().initPage();
+      context.read<PinCodeStore>().setPlatform(
+            Platform.isIOS ? "iOS" : "Android",
+          );
     });
     controller = AnimationController(
       duration: const Duration(milliseconds: 300),

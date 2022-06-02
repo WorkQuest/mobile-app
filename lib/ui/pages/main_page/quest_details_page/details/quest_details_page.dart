@@ -19,9 +19,9 @@ import '../../../../widgets/priority_view.dart';
 class QuestDetails extends StatefulWidget {
   static const String routeName = "/QuestDetails";
 
-  const QuestDetails(this.questInfo);
+  const QuestDetails(this.arguments);
 
-  final BaseQuestResponse questInfo;
+  final QuestArguments arguments;
 
   @override
   QuestDetailsState createState() => QuestDetailsState();
@@ -44,11 +44,19 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   @override
   void initState() {
     storeQuest = context.read<QuestDetailsStore>();
-    storeQuest.initQuest(widget.questInfo);
+    if (widget.arguments.questInfo != null)
+      storeQuest.initQuest(widget.arguments.questInfo!);
+    else {
+      storeQuest.initQuestId(widget.arguments.id!);
+      storeQuest.updateQuest().then((value) {
+        storeQuest.initQuest(storeQuest.questInfo!);
+
+        storeQuest.questInfo!.yourReview != null
+            ? profile!.review = true
+            : profile!.review = false;
+      });
+    }
     profile = context.read<ProfileMeStore>();
-    storeQuest.questInfo!.yourReview != null
-        ? profile!.review = true
-        : profile!.review = false;
     super.initState();
   }
 
@@ -59,23 +67,23 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: actionAppBar(),
-      ),
-      body: Stack(
-        children: [
-          _getBody(),
-          if (isLoading)
-            Center(
-              child: Transform.scale(
-                scale: 1.5,
-                child: CircularProgressIndicator.adaptive(
-                  strokeWidth: 2.0,
-                ),
+    return Observer(
+      builder: (_) => Scaffold(
+        appBar: storeQuest.questInfo == null
+            ? null
+            : AppBar(
+                actions: actionAppBar(),
               ),
-            )
-        ],
+        body: storeQuest.questInfo == null
+            ? Center(
+                child: Transform.scale(
+                  scale: 1.5,
+                  child: CircularProgressIndicator.adaptive(
+                    strokeWidth: 2.0,
+                  ),
+                ),
+              )
+            : _getBody(),
       ),
     );
   }
@@ -330,7 +338,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
 
   Widget tagEmployment() {
     String employment = "";
-    switch (widget.questInfo.employment) {
+    switch (storeQuest.questInfo!.employment) {
       case "FullTime":
         employment = "Full time";
         break;
@@ -362,4 +370,14 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
       ),
     );
   }
+}
+
+class QuestArguments {
+  QuestArguments({
+    required this.questInfo,
+    required this.id,
+  });
+
+  BaseQuestResponse? questInfo;
+  String? id;
 }

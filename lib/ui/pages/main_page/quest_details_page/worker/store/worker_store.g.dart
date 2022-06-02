@@ -69,6 +69,13 @@ mixin _$WorkerStore on _WorkerStore, Store {
     });
   }
 
+  final _$getQuestAsyncAction = AsyncAction('_WorkerStore.getQuest');
+
+  @override
+  Future<void> getQuest(String questId) {
+    return _$getQuestAsyncAction.run(() => super.getQuest(questId));
+  }
+
   final _$_WorkerStoreActionController = ActionController(name: '_WorkerStore');
 
   @override

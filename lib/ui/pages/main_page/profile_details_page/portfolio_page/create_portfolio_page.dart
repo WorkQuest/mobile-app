@@ -93,7 +93,8 @@ class CreatePortfolioPage extends StatelessWidget {
                         "uploader.files".tr(),
                       ),
                       _spacer,
-                      MediaUpload(allowEdit ? store.mediaIds : ObservableList(),
+                      MediaUpload(
+                        allowEdit ? store.mediaIds : ObservableList(),
                         mediaFile: store.media,
                       )
                     ],
@@ -132,7 +133,9 @@ class CreatePortfolioPage extends StatelessWidget {
                                           );
                                     if (store.isSuccess) {
                                       Navigator.pop(context);
-                                      await AlertDialogUtils.showSuccessDialog(context);
+                                      await AlertDialogUtils.showSuccessDialog(
+                                        context,
+                                      );
                                     }
                                   }
                                 : null,

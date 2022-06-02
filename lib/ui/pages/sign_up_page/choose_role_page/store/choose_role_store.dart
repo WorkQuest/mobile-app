@@ -26,6 +26,9 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   bool isChange = false;
 
   @observable
+  String platform = "";
+
+  @observable
   String totp = "";
 
   @observable
@@ -41,6 +44,8 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   UserRole userRole = UserRole.Employer;
 
   void setRole(UserRole role)=> userRole = role;
+
+  void setPlatform(String value) => platform = value;
 
   String getRole() {
     if (userRole == UserRole.Employer)
@@ -117,7 +122,7 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
     try{
       this.onLoading();
       String? token = await Storage.readRefreshToken();
-      BearerToken bearerToken = await _apiProvider.refreshToken(token!);
+      BearerToken bearerToken = await _apiProvider.refreshToken(token!, platform);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
       this.onSuccess(true);

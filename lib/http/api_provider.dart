@@ -32,8 +32,10 @@ extension LoginService on ApiProvider {
   Future<BearerToken> login({
     required String email,
     required String password,
+    required String platform,
     String totp = '',
   }) async {
+    httpClient.platform = platform;
     final responseData = await httpClient.post(
       query: '/v1/auth/login',
       data: {
@@ -84,8 +86,10 @@ extension LoginService on ApiProvider {
 
   Future<BearerToken> refreshToken(
     String refreshToken,
+    String platform,
   ) async {
     httpClient.accessToken = refreshToken;
+    httpClient.platform = platform;
     final responseData = await httpClient.post(
       query: '/v1/auth/refresh-tokens',
     );

@@ -47,6 +47,17 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   }
 
   @action
+  Future<void> getQuest(String questId) async {
+    try {
+      this.onLoading();
+      quest.value = await _apiProvider.getQuest(id: questId);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
   void setOpinion(String value) => opinion = value;
 
   _WorkerStore(this._apiProvider) {

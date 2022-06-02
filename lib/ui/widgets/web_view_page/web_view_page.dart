@@ -89,7 +89,7 @@ class _WebViewPageState extends State<WebViewPage> {
               },
               onPageFinished: (String url) async {
                 print('Page finished loading: $url');
-                _getTokenThroughSocialMedia(url);
+                // _getTokenThroughSocialMedia(url);
                 String? accessToken = await Storage.readAccessToken();
                 String? refreshToken = await Storage.readRefreshToken();
                 _controllerCompleter.future
@@ -149,55 +149,55 @@ class _WebViewPageState extends State<WebViewPage> {
     );
   }
 
-  void _getTokenThroughSocialMedia(String url) async {
-    final socialMedia = widget.inputUrlRoute.split("/").last;
-    if (url.contains("access") && url.contains("refresh")) {
-      String accessToken = url
-          .split("/")
-          .where((element) => element.contains("access"))
-          .first
-          .split("&")
-          .first
-          .replaceRange(0, 8, "");
-      String refreshToken = url
-          .split("/")
-          .where((element) => element.contains("refresh"))
-          .first
-          .split("&")[1]
-          .replaceRange(0, 8, "");
-      String status = "";
-      if (socialMedia == "facebook")
-        status = url
-            .split("/")
-            .where((element) => element.contains("refresh"))
-            .first
-            .split("&")
-            .last
-            .split("")
-            .reversed
-            .toList()[4];
-      else
-        status = url
-            .split("/")
-            .where((element) => element.contains("refresh"))
-            .first
-            .split("&")
-            .last
-            .split("")
-            .last;
-      Storage.writeAccessToken(accessToken);
-      Storage.writeRefreshToken(refreshToken);
-      if (status == "2")
-        Navigator.of(context, rootNavigator: false).pushNamed(
-          ChooseRolePage.routeName,
-        );
-      else if (status == "1") {
-        Navigator.of(context, rootNavigator: false).pushNamed(
-          MnemonicPage.routeName,
-        );
-      }
-    }
-  }
+  // void _getTokenThroughSocialMedia(String url) async {
+  //   final socialMedia = widget.inputUrlRoute.split("/").last;
+  //   if (url.contains("access") && url.contains("refresh")) {
+  //     String accessToken = url
+  //         .split("/")
+  //         .where((element) => element.contains("access"))
+  //         .first
+  //         .split("&")
+  //         .first
+  //         .replaceRange(0, 8, "");
+  //     String refreshToken = url
+  //         .split("/")
+  //         .where((element) => element.contains("refresh"))
+  //         .first
+  //         .split("&")[1]
+  //         .replaceRange(0, 8, "");
+  //     String status = "";
+  //     if (socialMedia == "facebook")
+  //       status = url
+  //           .split("/")
+  //           .where((element) => element.contains("refresh"))
+  //           .first
+  //           .split("&")
+  //           .last
+  //           .split("")
+  //           .reversed
+  //           .toList()[4];
+  //     else
+  //       status = url
+  //           .split("/")
+  //           .where((element) => element.contains("refresh"))
+  //           .first
+  //           .split("&")
+  //           .last
+  //           .split("")
+  //           .last;
+  //     Storage.writeAccessToken(accessToken);
+  //     Storage.writeRefreshToken(refreshToken);
+  //     if (status == "2")
+  //       Navigator.of(context, rootNavigator: false).pushNamed(
+  //         ChooseRolePage.routeName,
+  //       );
+  //     else if (status == "1") {
+  //       Navigator.of(context, rootNavigator: false).pushNamed(
+  //         MnemonicPage.routeName,
+  //       );
+  //     }
+  //   }
+  // }
 
   void _onShowUserAgent(
       WebViewController controller, BuildContext context) async {

@@ -59,7 +59,10 @@ import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/network_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/swap_page/swap_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
@@ -94,7 +97,31 @@ class Routes {
         : TextDirection.ltr;
   }
 
+  static RouteSettings parseDeepLinks(RouteSettings settings) {
+    String name;
+    if (settings.name!.contains("quests"))
+      name = QuestDetails.routeName;
+    else if (settings.name!.contains("profile"))
+      name = UserProfile.routeName;
+    else
+      name = settings.name ?? "";
+    //TODO: FIX ROLE
+    var arguments;
+    if (settings.name!.contains("quests"))
+      arguments =
+          QuestArguments(questInfo: null, id: settings.name!.split("/").last);
+    else if (settings.name!.contains("profile"))
+      arguments = ProfileArguments(
+          role: UserRole.Employer, userId: settings.name!.split("/").last);
+    else
+      arguments = settings.arguments;
+    settings = RouteSettings(name: name, arguments: arguments);
+    return settings;
+  }
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    settings = parseDeepLinks(settings);
+    print("settings.name: ${settings.name}");
     switch (settings.name) {
       case SignInPage.routeName:
         return MaterialPageRoute(
@@ -235,7 +262,7 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) {
             final role = getIt.get<ProfileMeStore>().userData?.role;
-            final quest = settings.arguments as BaseQuestResponse;
+            final arguments = settings.arguments as QuestArguments;
             if (role == UserRole.Employer)
               return MultiProvider(
                 providers: [
@@ -257,7 +284,7 @@ class Routes {
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),
-                  child: QuestEmployer(quest),
+                  child: QuestEmployer(arguments),
                 ),
               );
             else {
@@ -284,10 +311,7 @@ class Routes {
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),
-                  child: QuestWorker(
-                    quest,
-                    getIt.get<ProfileMeStore>().userData!.id == quest.userId,
-                  ),
+                  child: QuestWorker(arguments),
                 ),
               );
             }
@@ -520,6 +544,28 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: WalletPage(),
+            ),
+          ),
+        );
+
+      case SwapPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<SwapStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: SwapPage(),
+            ),
+          ),
+        );
+
+      case NetworkPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => {},
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: NetworkPage(),
             ),
           ),
         );

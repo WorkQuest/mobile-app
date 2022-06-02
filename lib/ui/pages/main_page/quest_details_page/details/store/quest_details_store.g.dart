@@ -24,6 +24,21 @@ mixin _$QuestDetailsStore on _QuestDetailsStore, Store {
     });
   }
 
+  final _$questIdAtom = Atom(name: '_QuestDetailsStore.questId');
+
+  @override
+  String? get questId {
+    _$questIdAtom.reportRead();
+    return super.questId;
+  }
+
+  @override
+  set questId(String? value) {
+    _$questIdAtom.reportWrite(value, super.questId, () {
+      super.questId = value;
+    });
+  }
+
   final _$questTypeAtom = Atom(name: '_QuestDetailsStore.questType');
 
   @override
@@ -62,6 +77,17 @@ mixin _$QuestDetailsStore on _QuestDetailsStore, Store {
   }
 
   @override
+  dynamic initQuestId(String value) {
+    final _$actionInfo = _$_QuestDetailsStoreActionController.startAction(
+        name: '_QuestDetailsStore.initQuestId');
+    try {
+      return super.initQuestId(value);
+    } finally {
+      _$_QuestDetailsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   QuestItemPriorityType getQuestType(BaseQuestResponse quest, UserRole role) {
     final _$actionInfo = _$_QuestDetailsStoreActionController.startAction(
         name: '_QuestDetailsStore.getQuestType');
@@ -76,6 +102,7 @@ mixin _$QuestDetailsStore on _QuestDetailsStore, Store {
   String toString() {
     return '''
 questInfo: ${questInfo},
+questId: ${questId},
 questType: ${questType}
     ''';
   }

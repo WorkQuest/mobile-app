@@ -3,42 +3,116 @@ import 'dart:ui';
 import 'package:app/routes.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/start_page/start_page.dart';
+import 'package:app/ui/widgets/CustomBanner.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
+import 'package:uni_links/uni_links.dart';
 
 import 'constants.dart';
 
-class WorkQuestApp extends StatelessWidget {
+class WorkQuestApp extends StatefulWidget {
   final bool isToken;
+
   WorkQuestApp(this.isToken);
 
   @override
+  State<WorkQuestApp> createState() => _WorkQuestAppState();
+}
+
+class _WorkQuestAppState extends State<WorkQuestApp> {
+  String id = "";
+  Uri? _initialURI;
+  Uri? _currentURI;
+  Object? _err;
+  bool _initialURILinkHandled = false;
+
+  @override
+  void initState() {
+
+    _initURIHandler();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: _theme,
-      builder: (context, child) {
-        final mq = MediaQuery.of(context);
-        double fontScale;
-        if (window.textScaleFactor > 1.1) {
-          fontScale = 1.1;
-        } else if (window.textScaleFactor < 0.9) {
-          fontScale = 0.8;
+    return ValueListenableBuilder<ConfigNameNetwork?>(
+        valueListenable: AccountRepository().notifier,
+        builder: (_, value, child) {
+          final name = value?.name ?? ConfigNameNetwork.devnet.name;
+          final visible = name != ConfigNameNetwork.devnet.name;
+          return CustomBanner(
+            text: '${name.substring(0, 1).toUpperCase()}${name.substring(1)}',
+            visible: false,
+            color: visible ? AppColor.blue : Colors.transparent,
+            textStyle: visible
+                ? const TextStyle(
+                    color: AppColor.enabledText,
+                    fontWeight: FontWeight.bold,
+                  )
+                : const TextStyle(
+                    color: Colors.transparent,
+                    fontWeight: FontWeight.bold,
+                  ),
+            child: child!,
+          );
+        },
+        child: MaterialApp(
+          theme: _theme,
+          builder: (context, child) {
+            final mq = MediaQuery.of(context);
+            double fontScale;
+            if (window.textScaleFactor > 1.1) {
+              fontScale = 1.1;
+            } else if (window.textScaleFactor < 0.9) {
+              fontScale = 0.8;
+            } else {
+              fontScale = window.textScaleFactor;
+            }
+            return MediaQuery(
+              data: mq.copyWith(textScaleFactor: fontScale),
+              child: child!,
+            );
+          },
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: Routes.generateRoute,
+          initialRoute: widget.isToken ? PinCodePage.routeName : StartPage.routeName,
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+        ));
+  }
+
+  Future<void> _initURIHandler() async {
+    if (!_initialURILinkHandled) {
+      _initialURILinkHandled = true;
+      try {
+        var initialURI = await getInitialUri();
+        print("InitialUri: $initialURI");
+        if (initialURI != null) {
+          print("Initial URI received $initialURI");
+          if (!mounted) {
+            return;
+          }
+          initialURI = Uri();
+          setState(() {
+            _initialURI = initialURI;
+          });
         } else {
-          fontScale = window.textScaleFactor;
+          print("Null Initial URI received");
         }
-        return MediaQuery(
-          data: mq.copyWith(textScaleFactor: fontScale),
-          child: child!,
-        );
-      },
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: Routes.generateRoute,
-      initialRoute: isToken ? PinCodePage.routeName : StartPage.routeName,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-    );
+      } on PlatformException {
+        print("Failed to receive initial uri");
+      } on FormatException catch (err) {
+        if (!mounted) {
+          return;
+        }
+        print('Malformed Initial URI received');
+        setState(() => _err = err);
+      }
+    }
   }
 }
 

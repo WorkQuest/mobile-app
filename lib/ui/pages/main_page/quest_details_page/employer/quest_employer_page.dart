@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/assigned_worker.dart';
-import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -28,7 +27,7 @@ import '../../../../widgets/quest_header.dart';
 import '../../raise_views_page/raise_views_page.dart';
 
 class QuestEmployer extends QuestDetails {
-  QuestEmployer(BaseQuestResponse questInfo) : super(questInfo);
+  QuestEmployer(QuestArguments arguments) : super(arguments);
 
   @override
   _QuestEmployerState createState() => _QuestEmployerState();
@@ -46,14 +45,18 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     questStore = context.read<MyQuestStore>();
     profile = context.read<ProfileMeStore>();
     chatStore = context.read<ChatStore>();
-    profile!.getProfileMe().then((value) => {
-          if (widget.questInfo.userId == profile!.userData!.id)
-            store.getRespondedList(
-              widget.questInfo.id,
-              widget.questInfo.assignedWorker?.id ?? "",
-            ),
-        });
-    store.quest.value = widget.questInfo;
+    if (widget.arguments.questInfo != null) {
+      profile!.getProfileMe().then((value) => {
+            if (widget.arguments.questInfo!.userId == profile!.userData!.id)
+              store.getRespondedList(
+                widget.arguments.questInfo!.id,
+                widget.arguments.questInfo!.assignedWorker?.id ?? "",
+              ),
+          });
+
+      store.quest.value = widget.arguments.questInfo;
+    } else
+      store.getQuest(widget.arguments.id!);
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(
       milliseconds: 500,
@@ -67,7 +70,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share("https://app.workquest.co/quests/${widget.questInfo.id}");
+          Share.share(
+              "https://app.workquest.co/quests/${store.quest.value!.id}");
         },
       ),
       if (store.quest.value!.userId == profile!.userData!.id &&
@@ -96,7 +100,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   await Navigator.pushNamed(
                     context,
                     CreateQuestPage.routeName,
-                    arguments: widget.questInfo,
+                    arguments: store.quest.value!,
                   );
                   break;
                 case "settings.delete":
@@ -105,8 +109,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     title: "quests.deleteQuest".tr(),
                     message: "quests.deleteQuestMessage".tr(),
                     confirmAction: () async {
-                      await store.deleteQuest(questId: widget.questInfo.id);
-                      questStore.deleteQuest(widget.questInfo.id);
+                      await store.deleteQuest(questId: store.quest.value!.id);
+                      questStore.deleteQuest(store.quest.value!.id);
                       if (profile!.userData!.questsStatistic != null)
                         profile!.userData!.questsStatistic!.opened -= 1;
                       Navigator.pop(context);
@@ -116,8 +120,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   break;
                 default:
               }
-            if ((widget.questInfo.status == 3 ||
-                    widget.questInfo.status == 4) &&
+            if ((store.quest.value!.status == 3 ||
+                    store.quest.value!.status == 4) &&
                 value == "chat.report") {
               await Navigator.pushNamed(
                 context,
@@ -193,11 +197,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     context,
                     CreateReviewPage.routeName,
                     arguments: ReviewArguments(
-                      widget.questInfo,
+                      store.quest.value!,
                       null,
                     ),
                   );
-                  widget.questInfo.yourReview != null
+                  store.quest.value!.yourReview != null
                       ? profile!.review = true
                       : profile!.review = false;
                 },

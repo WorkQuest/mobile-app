@@ -1,6 +1,8 @@
 abstract class IHttpClient {
   String? accessToken;
 
+  String? platform;
+
   Future get({
     required query,
     Map<String, dynamic>? queryParameters,
@@ -17,7 +19,6 @@ abstract class IHttpClient {
     required query,
     Map<String, dynamic>? data,
     bool useBaseUrl = true,
-
   });
 
   Future delete({

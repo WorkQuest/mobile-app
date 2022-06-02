@@ -90,18 +90,33 @@ class ListTransactions extends StatelessWidget {
 
   TYPE_COINS _getTitleCoin(String? addressContract) {
     if (GetIt.I.get<TransactionsStore>().type == TYPE_COINS.WQT) {
-      switch (addressContract) {
-        case AddressCoins.wUsd:
-          return TYPE_COINS.WUSD;
-        case AddressCoins.wBnb:
-          return TYPE_COINS.wBNB;
-        case AddressCoins.wEth:
-          return TYPE_COINS.wETH;
-        case AddressCoins.uSdt:
-          return TYPE_COINS.USDT;
-        default:
-          return TYPE_COINS.WQT;
-      }
+      if (addressContract ==
+          AccountRepository().getConfigNetwork().addresses.wUsd)
+        return TYPE_COINS.WUSD;
+      else if (addressContract ==
+          AccountRepository().getConfigNetwork().addresses.wBnb)
+        return TYPE_COINS.wBNB;
+      else if (addressContract ==
+          AccountRepository().getConfigNetwork().addresses.wEth)
+        return TYPE_COINS.wETH;
+      else if (addressContract ==
+          AccountRepository().getConfigNetwork().addresses.uSdt)
+        return TYPE_COINS.USDT;
+      else
+        return TYPE_COINS.WQT;
+
+      // switch (addressContract) {
+      //   case AddressCoins.wUsd:
+      //     return TYPE_COINS.WUSD;
+      //   case AddressCoins.wBnb:
+      //     return TYPE_COINS.wBNB;
+      //   case AddressCoins.wEth:
+      //     return TYPE_COINS.wETH;
+      //   case AddressCoins.uSdt:
+      //     return TYPE_COINS.USDT;
+      //   default:
+      //     return TYPE_COINS.WQT;
+      // }
     } else {
       switch (GetIt.I.get<TransactionsStore>().type) {
         case TYPE_COINS.WQT:
