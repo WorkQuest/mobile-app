@@ -5,6 +5,7 @@ import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/layout_with_scroll.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/validator.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -95,94 +96,95 @@ class _TransferPageState extends State<TransferPage> {
           ),
         ),
       ),
-      body: LayoutWithScroll(
-        child: Padding(
-          padding: _padding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 10,
-                width: double.infinity,
-              ),
-              Text(
-                'wallet.chooseCoin'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              GestureDetector(
-                onTap: _chooseCoin,
-                child: Container(
-                  height: 46,
+      body: Form(
+        key: _key,
+        child: LayoutWithScroll(
+          child: Padding(
+            padding: _padding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 10,
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 15.0, vertical: 12.5),
-                  decoration: BoxDecoration(
-                    color:
-                        _selectedCoin ? Colors.white : AppColor.disabledButton,
-                    borderRadius: BorderRadius.circular(6.0),
-                    border: Border.all(
-                      color: AppColor.disabledButton,
+                ),
+                Text(
+                  'wallet.chooseCoin'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                GestureDetector(
+                  onTap: _chooseCoin,
+                  child: Container(
+                    height: 46,
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15.0, vertical: 12.5),
+                    decoration: BoxDecoration(
+                      color: _selectedCoin
+                          ? Colors.white
+                          : AppColor.disabledButton,
+                      borderRadius: BorderRadius.circular(6.0),
+                      border: Border.all(
+                        color: AppColor.disabledButton,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        if (_selectedCoin)
+                          Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  AppColor.enabledButton,
+                                  AppColor.blue,
+                                ],
+                              ),
+                            ),
+                            child: SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: SvgPicture.asset(
+                                _currentCoin!.iconPath,
+                              ),
+                            ),
+                          ),
+                        Text(
+                          _selectedCoin
+                              ? _currentCoin!.title
+                              : 'wallet.enterCoin'.tr(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: _selectedCoin
+                                ? Colors.black
+                                : AppColor.disabledText,
+                          ),
+                        ),
+                        const Spacer(),
+                        Icon(
+                          Icons.arrow_drop_down_outlined,
+                          size: 25.0,
+                        )
+                      ],
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      if (_selectedCoin)
-                        Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                AppColor.enabledButton,
-                                AppColor.blue,
-                              ],
-                            ),
-                          ),
-                          child: SizedBox(
-                            width: 32,
-                            height: 32,
-                            child: SvgPicture.asset(
-                              _currentCoin!.iconPath,
-                            ),
-                          ),
-                        ),
-                      Text(
-                        _selectedCoin
-                            ? _currentCoin!.title
-                            : 'wallet.enterCoin'.tr(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: _selectedCoin
-                              ? Colors.black
-                              : AppColor.disabledText,
-                        ),
-                      ),
-                      const Spacer(),
-                      Icon(
-                        Icons.arrow_drop_down_outlined,
-                        size: 25.0,
-                      )
-                    ],
-                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                'wallet.recipientsAddress'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Form(
-                key: _key,
-                child: DefaultTextField(
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'wallet.recipientsAddress'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                DefaultTextField(
                   controller: _addressController,
                   hint: 'wallet.enterAddress'.tr(),
                   inputFormatters: [
@@ -200,69 +202,71 @@ class _TransferPageState extends State<TransferPage> {
                   },
                   suffixIcon: null,
                 ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                'wallet.amount'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              DefaultTextField(
-                hint: 'wallet.enterAmount'.tr(),
-                controller: _amountController,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
-                ],
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-                suffixIcon: ObserverListener<TransferStore>(
-                  onSuccess: () {
-                    _amountController.text = store.amount;
-                  },
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.only(right: 12.5),
-                    child: Text(
-                      'wallet.max'.tr(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: AppColor.enabledButton,
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'wallet.amount'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                DefaultTextField(
+                  hint: 'wallet.enterAmount'.tr(),
+                  controller: _amountController,
+                  validator: Validators.amountValidator,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'^\d+\.?\d{0,18}')),
+                  ],
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  suffixIcon: ObserverListener<TransferStore>(
+                    onSuccess: () {
+                      _amountController.text = store.amount;
+                    },
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.only(right: 12.5),
+                      child: Text(
+                        'wallet.max'.tr(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppColor.enabledButton,
+                        ),
+                      ),
+                      onPressed: () async {
+                        store.getMaxAmount();
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: Container(),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Observer(
+                      builder: (_) => ElevatedButton(
+                        child: Text('wallet.transfer'.tr()),
+                        onPressed: store.statusButtonTransfer
+                            ? _pushConfirmTransferPage
+                            : null,
                       ),
                     ),
-                    onPressed: () async {
-                      store.getMaxAmount();
-                    },
                   ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: Container(),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Observer(
-                    builder: (_) => ElevatedButton(
-                      child: Text('wallet.transfer'.tr()),
-                      onPressed: store.statusButtonTransfer
-                          ? _pushConfirmTransferPage
-                          : null,
-                    ),
-                  ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),

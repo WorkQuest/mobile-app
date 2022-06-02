@@ -85,4 +85,12 @@ class Validators {
         ? null
         : "Too many characters ${text!.length}/30";
   }
+
+  static String? amountValidator(String? text) {
+    print("TAG: $text");
+    print("TAG: ${double.parse(text ?? "0")}");
+    return double.parse(text ?? "0") > 0.0
+        ? null
+        : "Please enter a value greater than 0";
+  }
 }

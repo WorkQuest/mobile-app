@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -211,18 +208,21 @@ class MyProfileImage extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: FadeInImage(
-                width: MediaQuery.of(context).size.width,
-                height: 300,
-                placeholder: MemoryImage(
-                  Uint8List.fromList(base64Decode(Constants.base64BlueHolder)),
-                ),
-                image: NetworkImage(
+              child: Image.network(
                   userStore.userData!.avatar?.url ??
                       Constants.defaultImageNetwork,
-                ),
-                fit: BoxFit.cover,
-              ),
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              }),
             ),
             Positioned(
               bottom: 16.0,
