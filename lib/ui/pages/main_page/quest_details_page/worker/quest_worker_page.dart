@@ -77,9 +77,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       Observer(
         builder: (_) => IconButton(
           icon: Icon(
-            store.quest.value!.star ? Icons.star : Icons.star_border,
-            color:
-                store.quest.value!.star ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
+            store.quest.value?.star ?? false ? Icons.star : Icons.star_border,
+            color: store.quest.value?.star ?? false
+                ? Color(0xFFE8D20D)
+                : Color(0xFFD8DFE3),
           ),
           onPressed: () {
             store.onStar();
@@ -94,7 +95,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           },
         ),
       ),
-      if (store.quest.value!.status == 0)
+      if (store.quest.value?.status == 0)
         IconButton(
           icon: Icon(Icons.share_outlined),
           onPressed: () {
@@ -102,8 +103,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 "https://app.workquest.co/quests/${store.quest.value!.id}");
           },
         ),
-      if (store.quest.value!.assignedWorker?.id == profile!.userData!.id &&
-          (store.quest.value!.status == 3 || store.quest.value!.status == 4))
+      if (store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
+          (store.quest.value?.status == 3 || store.quest.value?.status == 4))
         PopupMenuButton<String>(
           elevation: 10,
           icon: Icon(Icons.more_vert),
@@ -140,7 +141,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   Widget questHeader() {
     return QuestHeader(
       itemType: storeQuest.getQuestType(
-        store.quest.value!,
+        store.quest.value,
         profile!.userData!.role,
       ),
       questStatus: store.quest.value!.status,

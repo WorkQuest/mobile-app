@@ -97,31 +97,35 @@ class Routes {
         : TextDirection.ltr;
   }
 
-  static RouteSettings parseDeepLinks(RouteSettings settings) {
-    String name;
-    if (settings.name!.contains("quests"))
-      name = QuestDetails.routeName;
-    else if (settings.name!.contains("profile"))
-      name = UserProfile.routeName;
-    else
-      name = settings.name ?? "";
-    //TODO: FIX ROLE
-    var arguments;
-    if (settings.name!.contains("quests"))
-      arguments =
-          QuestArguments(questInfo: null, id: settings.name!.split("/").last);
-    else if (settings.name!.contains("profile"))
-      arguments = ProfileArguments(
-          role: UserRole.Employer, userId: settings.name!.split("/").last);
-    else
-      arguments = settings.arguments;
-    settings = RouteSettings(name: name, arguments: arguments);
-    return settings;
-  }
+  // static RouteSettings parseDeepLinks(RouteSettings settings) {
+  //   print("SettingsBefore: ${settings.name}");
+  //   if (settings.arguments.runtimeType == ProfileArguments)
+  //     print(
+  //         "SettingsBefore: ${(settings.arguments as ProfileArguments).userId}");
+  //   String name;
+  //   if (settings.name!.contains("quests"))
+  //     name = QuestDetails.routeName;
+  //   else if (settings.name!.contains("profile"))
+  //     name = UserProfile.routeName;
+  //   else
+  //     name = settings.name ?? "";
+  //   var arguments;
+  //   if (settings.name!.contains("quests"))
+  //     arguments =
+  //         QuestArguments(questInfo: null, id: settings.name!.split("/").last);
+  //   else if (settings.name!.contains("profile"))
+  //     arguments = ProfileArguments(
+  //         role: UserRole.Employer, userId: settings.name!.split("/").last);
+  //   else
+  //     arguments = settings.arguments;
+  //   settings = RouteSettings(name: name, arguments: arguments);
+  //   print("SettingsAfter: ${settings.name}");
+  //   print("SettingsAfter: ${settings.arguments}");
+  //   return settings;
+  // }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    settings = parseDeepLinks(settings);
-    print("settings.name: ${settings.name}");
+    print("SettingsAfter: ${settings.name}");
     switch (settings.name) {
       case SignInPage.routeName:
         return MaterialPageRoute(

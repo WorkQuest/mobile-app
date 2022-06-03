@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
@@ -13,12 +15,16 @@ import 'package:app/web3/service/client_service.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+import 'package:uni_links/uni_links.dart';
 
 import '../../../../../web3/repository/account_repository.dart';
+import '../../profile_details_page/user_profile_page/pages/user_profile_page.dart';
+import '../../quest_details_page/details/quest_details_page.dart';
 
 class QuestList extends StatefulWidget {
   final Function() changePage;
@@ -41,6 +47,9 @@ class _QuestListState extends State<QuestList> {
   final QuestItemPriorityType questItemPriorityType =
       QuestItemPriorityType.Starred;
   final scrollKey = new GlobalKey();
+  bool _initialURILinkHandled = false;
+  StreamSubscription? _streamSubscription;
+  String id = "";
 
   @override
   void initState() {
@@ -60,6 +69,8 @@ class _QuestListState extends State<QuestList> {
           : questsStore!.getWorkers(true);
       questsStore!.role = profileMeStore!.userData!.role;
     });
+    _incomingLinkHandler();
+    _initURIHandler();
   }
 
   @override
@@ -330,6 +341,83 @@ class _QuestListState extends State<QuestList> {
               : questsStore!.getWorkers(false);
       }
     }
+  }
+
+  Future<void> _initURIHandler() async {
+    if (!_initialURILinkHandled) {
+      _initialURILinkHandled = true;
+      try {
+        var initialURI = await getInitialUri();
+        print("InitialUri: $initialURI");
+        if (initialURI != null) {
+          print("Initial URI received $initialURI");
+          if (!mounted) {
+            return;
+          }
+          final argument = initialURI.path.split("/").last;
+          if (initialURI.path.contains("quests"))
+            Navigator.of(context, rootNavigator: true).pushNamed(
+              QuestDetails.routeName,
+              arguments: QuestArguments(
+                questInfo: null,
+                id: argument,
+              ),
+            );
+          else if (initialURI.path.contains("profile")) {
+            await profileMeStore!.getQuestHolder(argument);
+            await Navigator.of(context, rootNavigator: true).pushNamed(
+              UserProfile.routeName,
+              arguments: ProfileArguments(
+                role: profileMeStore!.questHolder!.role,
+                userId: profileMeStore!.questHolder!.id,
+              ),
+            );
+          }
+        } else {
+          print("Null Initial URI received");
+        }
+      } on PlatformException {
+        print("Failed to receive initial uri");
+      } on FormatException {
+        if (!mounted) {
+          return;
+        }
+        print('Malformed Initial URI received');
+      }
+    }
+  }
+
+  void _incomingLinkHandler() {
+    _streamSubscription = uriLinkStream.listen((Uri? uri) async {
+      if (!mounted) {
+        return;
+      }
+      print('Received URI: $uri');
+      final argument = uri?.path.split("/").last;
+      if ((uri?.path ?? "").contains("quests"))
+        Navigator.of(context, rootNavigator: true).pushNamed(
+          QuestDetails.routeName,
+          arguments: QuestArguments(
+            questInfo: null,
+            id: argument,
+          ),
+        );
+      else if ((uri?.path ?? "").contains("profile")) {
+        await profileMeStore!.getQuestHolder(argument!);
+        await Navigator.of(context, rootNavigator: true).pushNamed(
+          UserProfile.routeName,
+          arguments: ProfileArguments(
+            role: profileMeStore!.questHolder!.role,
+            userId: argument,
+          ),
+        );
+      }
+    }, onError: (Object err) {
+      if (!mounted) {
+        return;
+      }
+      print('Error occurred: $err');
+    });
   }
 }
 

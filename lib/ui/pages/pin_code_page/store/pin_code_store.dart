@@ -2,6 +2,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/di/injector.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/bearer_token.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
@@ -18,6 +19,7 @@ class PinCodeStore extends _PinCodeStore with _$PinCodeStore {
 
 abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   final ApiProvider _apiProvider;
+  ProfileMeResponse? userData;
 
   _PinCodeStore(this._apiProvider);
 
@@ -108,6 +110,16 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
     }
   }
 
+  Future<void> getProfile(String id) async {
+    try {
+      this.onLoading();
+      userData = await _apiProvider.getProfileUser(userId: id);
+      this.onSuccess(StatePinCode.Success);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
   ///TODO:clear password field on error password
 
   changeState(StatePinCode state, {errorAnimation = false}) {
@@ -183,7 +195,8 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         return;
       }
 
-      BearerToken bearerToken = await _apiProvider.refreshToken(token, platform);
+      BearerToken bearerToken =
+          await _apiProvider.refreshToken(token, platform);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
       await getIt.get<ProfileMeStore>().getProfileMe();
@@ -196,7 +209,6 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       if (e.toString() == "Token invalid" ||
           e.toString() == "Token expired" ||
           e.toString() == "Session not found") {
-
         await Storage.deleteAllFromSecureStorage();
         this.onSuccess(StatePinCode.ToLogin);
         return;

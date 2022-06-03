@@ -34,8 +34,8 @@ abstract class _QuestDetailsStore extends IStore<bool> with Store {
   initQuestId(String value) => questId = value;
 
   @action
-  QuestItemPriorityType getQuestType(BaseQuestResponse quest, UserRole role) {
-    switch (quest.status) {
+  QuestItemPriorityType getQuestType(BaseQuestResponse? quest, UserRole role) {
+    switch (quest?.status) {
       case -3:
         return questType = QuestItemPriorityType.Performed;
       case -2:

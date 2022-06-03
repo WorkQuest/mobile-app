@@ -76,8 +76,8 @@ import '../ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart'
 import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i25;
 
 const String _test = 'test';
-const String _prod = 'prod';
 const String _dev = 'dev';
+const String _prod = 'prod';
 
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: lines_longer_than_80_chars
@@ -90,10 +90,10 @@ extension GetItInjectableX on _i1.GetIt {
     gh.factory<_i3.ConfirmTransferStore>(() => _i3.ConfirmTransferStore());
     gh.factory<_i4.IHttpClient>(() => _i5.TestHttpClient(),
         registerFor: {_test});
-    gh.factory<_i6.LogService>(() => _i6.LogServiceProd(),
-        registerFor: {_prod});
     gh.factory<_i6.LogService>(() => _i6.LogServiceDev(),
         registerFor: {_dev, _test});
+    gh.factory<_i6.LogService>(() => _i6.LogServiceProd(),
+        registerFor: {_prod});
     gh.factory<_i7.SwapStore>(() => _i7.SwapStore());
     gh.factory<_i8.ChooseQuestStore>(
         () => _i8.ChooseQuestStore(get<_i9.ApiProvider>()));

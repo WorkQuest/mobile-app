@@ -88,7 +88,7 @@ mixin _$QuestDetailsStore on _QuestDetailsStore, Store {
   }
 
   @override
-  QuestItemPriorityType getQuestType(BaseQuestResponse quest, UserRole role) {
+  QuestItemPriorityType getQuestType(BaseQuestResponse? quest, UserRole role) {
     final _$actionInfo = _$_QuestDetailsStoreActionController.startAction(
         name: '_QuestDetailsStore.getQuestType');
     try {

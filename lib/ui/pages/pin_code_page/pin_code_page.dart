@@ -31,14 +31,16 @@ class PinCodePage extends StatefulWidget {
 class _PinCodePageState extends State<PinCodePage>
     with SingleTickerProviderStateMixin {
   AnimationController? controller;
+  late PinCodeStore store;
 
   @override
   void initState() {
+    store = context.read<PinCodeStore>();
     Future.delayed(Duration.zero, () {
-      context.read<PinCodeStore>().initPage();
-      context.read<PinCodeStore>().setPlatform(
-            Platform.isIOS ? "iOS" : "Android",
-          );
+      store.initPage();
+      store.setPlatform(
+        Platform.isIOS ? "iOS" : "Android",
+      );
     });
     controller = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -49,8 +51,6 @@ class _PinCodePageState extends State<PinCodePage>
 
   @override
   Widget build(BuildContext context) {
-    final store = context.read<PinCodeStore>();
-
     return WillPopScope(
       onWillPop: () async {
         if (widget.isRecheck) return false;

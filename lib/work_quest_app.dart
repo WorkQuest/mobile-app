@@ -8,33 +8,12 @@ import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/services.dart';
-import 'package:uni_links/uni_links.dart';
 
 import 'constants.dart';
 
-class WorkQuestApp extends StatefulWidget {
+class WorkQuestApp extends StatelessWidget {
   final bool isToken;
-
   WorkQuestApp(this.isToken);
-
-  @override
-  State<WorkQuestApp> createState() => _WorkQuestAppState();
-}
-
-class _WorkQuestAppState extends State<WorkQuestApp> {
-  String id = "";
-  Uri? _initialURI;
-  Uri? _currentURI;
-  Object? _err;
-  bool _initialURILinkHandled = false;
-
-  @override
-  void initState() {
-
-    _initURIHandler();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,41 +57,11 @@ class _WorkQuestAppState extends State<WorkQuestApp> {
           },
           debugShowCheckedModeBanner: false,
           onGenerateRoute: Routes.generateRoute,
-          initialRoute: widget.isToken ? PinCodePage.routeName : StartPage.routeName,
+          initialRoute: isToken ? PinCodePage.routeName : StartPage.routeName,
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
         ));
-  }
-
-  Future<void> _initURIHandler() async {
-    if (!_initialURILinkHandled) {
-      _initialURILinkHandled = true;
-      try {
-        var initialURI = await getInitialUri();
-        print("InitialUri: $initialURI");
-        if (initialURI != null) {
-          print("Initial URI received $initialURI");
-          if (!mounted) {
-            return;
-          }
-          initialURI = Uri();
-          setState(() {
-            _initialURI = initialURI;
-          });
-        } else {
-          print("Null Initial URI received");
-        }
-      } on PlatformException {
-        print("Failed to receive initial uri");
-      } on FormatException catch (err) {
-        if (!mounted) {
-          return;
-        }
-        print('Malformed Initial URI received');
-        setState(() => _err = err);
-      }
-    }
   }
 }
 
