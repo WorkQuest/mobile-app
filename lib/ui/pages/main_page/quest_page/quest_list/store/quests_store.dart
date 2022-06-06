@@ -45,6 +45,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   String fromPrice = '';
 
   @observable
+  bool isLoadingMore = false;
+
+  @observable
   String toPrice = '';
 
   @observable
@@ -289,10 +292,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   @action
   Future getQuests(bool newList) async {
     try {
-      this.onLoading();
       if (newList) {
+        this.onLoading();
         this.offset = 0;
         questsList.clear();
+      } else {
+        isLoadingMore = true;
       }
       if (this.offset == questsList.length) {
         questsList.addAll(await _apiProvider.getQuests(
@@ -316,15 +321,18 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
+    isLoadingMore = false;
   }
 
   @action
   Future getWorkers(bool newList) async {
     try {
-      this.onLoading();
       if (newList) {
+        this.onLoading();
         workersList.clear();
         offsetWorkers = 0;
+      } else {
+        isLoadingMore = true;
       }
       if (offsetWorkers == workersList.length) {
         workersList.addAll(await _apiProvider.getWorkers(
@@ -347,5 +355,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       print("getWorkers error: $e\n$trace");
       this.onError(e.toString());
     }
+    isLoadingMore = false;
   }
 }

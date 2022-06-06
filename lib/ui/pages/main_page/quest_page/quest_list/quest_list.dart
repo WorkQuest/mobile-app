@@ -5,7 +5,6 @@ import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -276,7 +275,7 @@ class _QuestListState extends State<QuestList> {
           ),
           SliverToBoxAdapter(
             child: Observer(
-              builder: (_) => questsStore!.isLoading
+              builder: (_) => (questsStore!.isLoading || questsStore!.isLoadingMore)
                   ? Center(
                       child: CircularProgressIndicator.adaptive(),
                     )

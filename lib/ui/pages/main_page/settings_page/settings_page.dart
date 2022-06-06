@@ -1,7 +1,6 @@
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -13,8 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
-
-import '../../../../constants.dart';
 
 class SettingsPage extends StatelessWidget {
   static const String routeName = "/settingsPageEmployer";
@@ -259,7 +256,7 @@ class SettingsPage extends StatelessWidget {
                     enable: true,
                   ),
                   InstrumentCard(
-                    urlArgument: "crosschain",
+                    urlArgument: "bridge",
                     iconPath: "assets/work_quest_icon.svg",
                     title: "WorkQuest Bridge",
                     enable: true,

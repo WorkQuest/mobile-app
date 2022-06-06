@@ -62,6 +62,21 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
+  final _$isLoadingMoreAtom = Atom(name: '_QuestsStore.isLoadingMore');
+
+  @override
+  bool get isLoadingMore {
+    _$isLoadingMoreAtom.reportRead();
+    return super.isLoadingMore;
+  }
+
+  @override
+  set isLoadingMore(bool value) {
+    _$isLoadingMoreAtom.reportWrite(value, super.isLoadingMore, () {
+      super.isLoadingMore = value;
+    });
+  }
+
   final _$toPriceAtom = Atom(name: '_QuestsStore.toPrice');
 
   @override
@@ -345,6 +360,7 @@ mixin _$QuestsStore on _QuestsStore, Store {
 searchWord: ${searchWord},
 sort: ${sort},
 fromPrice: ${fromPrice},
+isLoadingMore: ${isLoadingMore},
 toPrice: ${toPrice},
 offset: ${offset},
 offsetWorkers: ${offsetWorkers},

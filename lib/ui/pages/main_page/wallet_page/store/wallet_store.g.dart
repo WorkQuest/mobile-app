@@ -76,6 +76,22 @@ mixin _$WalletStore on _WalletStore, Store {
     return _$getCoinsAsyncAction.run(() => super.getCoins(isForce: isForce));
   }
 
+  final _$getTestCoinsWUSDAsyncAction =
+      AsyncAction('_WalletStore.getTestCoinsWUSD');
+
+  @override
+  Future getTestCoinsWUSD() {
+    return _$getTestCoinsWUSDAsyncAction.run(() => super.getTestCoinsWUSD());
+  }
+
+  final _$getTestCoinsWQTAsyncAction =
+      AsyncAction('_WalletStore.getTestCoinsWQT');
+
+  @override
+  Future getTestCoinsWQT() {
+    return _$getTestCoinsWQTAsyncAction.run(() => super.getTestCoinsWQT());
+  }
+
   final _$_WalletStoreActionController = ActionController(name: '_WalletStore');
 
   @override
@@ -84,28 +100,6 @@ mixin _$WalletStore on _WalletStore, Store {
         name: '_WalletStore.setType');
     try {
       return super.setType(value);
-    } finally {
-      _$_WalletStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic getTestCoinsWUSD() {
-    final _$actionInfo = _$_WalletStoreActionController.startAction(
-        name: '_WalletStore.getTestCoinsWUSD');
-    try {
-      return super.getTestCoinsWUSD();
-    } finally {
-      _$_WalletStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic getTestCoinsWQT() {
-    final _$actionInfo = _$_WalletStoreActionController.startAction(
-        name: '_WalletStore.getTestCoinsWQT');
-    try {
-      return super.getTestCoinsWQT();
     } finally {
       _$_WalletStoreActionController.endAction(_$actionInfo);
     }
