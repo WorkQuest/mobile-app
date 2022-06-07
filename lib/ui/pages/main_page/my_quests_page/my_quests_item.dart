@@ -1,28 +1,38 @@
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/quest_header.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
-import "package:provider/provider.dart";
+import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../widgets/shimmer.dart';
 
-class MyQuestsItem extends StatelessWidget {
-  const MyQuestsItem(this.questInfo,
-      {this.itemType = QuestItemPriorityType.Active, this.isExpanded = false});
+const defaultImage =
+    'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 
+class MyQuestsItem extends StatelessWidget {
+  final QuestItemPriorityType itemType;
   final BaseQuestResponse questInfo;
   final bool isExpanded;
-  final QuestItemPriorityType itemType;
-  final String defaultImage =
-      'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
+  final bool showStar;
+
+  const MyQuestsItem(
+    this.questInfo, {
+    this.isExpanded = false,
+    this.showStar = false,
+    this.itemType = QuestItemPriorityType.Active,
+
+  });
 
   @override
   Widget build(BuildContext context) {
+    final myQuestStore = GetIt.I.get<MyQuestStore>();
     return GestureDetector(
       onTap: () async {
         await Navigator.of(context, rootNavigator: true).pushNamed(
@@ -85,6 +95,21 @@ class MyQuestsItem extends StatelessWidget {
                         ),
                       ],
                     ),
+                if (showStar)
+                  IconButton(
+                    icon: Icon(
+                      Icons.star,
+                      color: Color(0xFFE8D20D),
+                    ),
+                    onPressed: () {
+                      myQuestStore.deleteQuest(questInfo.id);
+                      myQuestStore.addQuest(
+                        questInfo,
+                        questInfo.star ? true : false,
+                      );
+                      myQuestStore.setStar(questInfo, false);
+                    },
+                  ),
                 if (questInfo.invited != null && questInfo.invited?.status == 0)
                   Row(
                     children: [

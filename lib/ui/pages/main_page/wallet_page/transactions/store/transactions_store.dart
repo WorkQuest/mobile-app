@@ -28,14 +28,17 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   bool isMoreLoading = false;
 
   @observable
-  TYPE_COINS type = TYPE_COINS.WUSD;
+  bool canMoreLoading = true;
+
+  @observable
+  TYPE_COINS type = TYPE_COINS.WQT;
 
   @action
   setType(TYPE_COINS value) => type = value;
 
   @action
   getTransactions({bool isForce = false}) async {
-    if (isLoading) return;
+    canMoreLoading = true;
     if (isForce) {
       onLoading();
     }
@@ -49,17 +52,17 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       }
       List<Tx>? result;
       switch (type) {
-        case TYPE_COINS.WUSD:
+        case TYPE_COINS.WQT:
           result = await _apiProvider.getTransactions(
             AccountRepository().userAddress!,
             limit: 10,
             offset: isForce ? transactions.length : 0,
           );
           break;
-        case TYPE_COINS.WQT:
+        case TYPE_COINS.WUSD:
           result = await _apiProvider.getTransactionsByToken(
             address: AccountRepository().userAddress!,
-            addressToken: AddressCoins.wqt,
+            addressToken: AddressCoins.wUsd,
             limit: 10,
             offset: isForce ? transactions.length : 0,
           );
@@ -85,8 +88,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       result!.map((tran) {
         if (tran.toAddressHash!.hex! == AccountRepository().userAddress) {
           switch (tran.fromAddressHash!.hex!) {
-            case AddressCoins.wqt:
-              tran.coin = TYPE_COINS.WQT;
+            case AddressCoins.wUsd:
+              tran.coin = TYPE_COINS.WUSD;
               break;
             case AddressCoins.wEth:
               tran.coin = TYPE_COINS.wETH;
@@ -95,13 +98,13 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
               tran.coin = TYPE_COINS.wBNB;
               break;
             default:
-              tran.coin = TYPE_COINS.WUSD;
+              tran.coin = TYPE_COINS.WQT;
               break;
           }
         } else {
           switch (tran.toAddressHash!.hex!) {
-            case AddressCoins.wqt:
-              tran.coin = TYPE_COINS.WQT;
+            case AddressCoins.wUsd:
+              tran.coin = TYPE_COINS.WUSD;
               break;
             case AddressCoins.wEth:
               tran.coin = TYPE_COINS.wETH;
@@ -110,12 +113,11 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
               tran.coin = TYPE_COINS.wBNB;
               break;
             default:
-              tran.coin = TYPE_COINS.WUSD;
+              tran.coin = TYPE_COINS.WQT;
               break;
           }
         }
       }).toList();
-
       if (isForce) {
         transactions.addAll(result);
       } else {
@@ -130,8 +132,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     } on FormatException catch (e, trace) {
       print('$e\n$trace');
       onError(e.message);
-    } catch (e, trace) {
-      print('e: $e, trace: $trace');
+    } catch (e) {
+      print('$e');
       onError(e.toString());
     }
   }
@@ -142,17 +144,17 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     try {
       List<Tx>? result;
       switch (type) {
-        case TYPE_COINS.WUSD:
+        case TYPE_COINS.WQT:
           result = await _apiProvider.getTransactions(
             AccountRepository().userAddress!,
             limit: 10,
             offset: transactions.length,
           );
           break;
-        case TYPE_COINS.WQT:
+        case TYPE_COINS.WUSD:
           result = await _apiProvider.getTransactionsByToken(
             address: AccountRepository().userAddress!,
-            addressToken: AddressCoins.wqt,
+            addressToken: AddressCoins.wUsd,
             limit: 10,
             offset: transactions.length,
           );
@@ -174,9 +176,11 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
           );
           break;
       }
-      result!.map((tran) {
-        final index =
-            transactions.indexWhere((element) => element.hash == tran.hash);
+      if (result!.isEmpty) {
+        canMoreLoading = false;
+      }
+      result.map((tran) {
+        final index = transactions.indexWhere((element) => element.hash == tran.hash);
         if (index == -1) {
           transactions.add(tran);
         }

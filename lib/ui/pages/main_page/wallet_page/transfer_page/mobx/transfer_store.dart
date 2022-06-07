@@ -30,9 +30,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
 
   @computed
   bool get statusButtonTransfer =>
-      typeCoin != null &&
-      addressTo.isNotEmpty &&
-      amount.isNotEmpty;
+      typeCoin!=null && addressTo.isNotEmpty && amount.isNotEmpty;
 
   @action
   setAddressTo(String value) => addressTo = value;
@@ -51,28 +49,23 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
           await ClientService().getBalance(AccountRepository().privateKey);
       final gas = await ClientService().getGas();
       switch (typeCoin) {
-        case TYPE_COINS.WUSD:
-          final count = (balance.getValueInUnitBI(EtherUnit.wei).toDouble() *
-                  pow(10, -18))
-              .toDouble();
+        case TYPE_COINS.WQT:
+          final count = (balance.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
           final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 250);
           amount = (count.toDouble() - _gas).toString();
           break;
-        case TYPE_COINS.WQT:
-          final count =
-              await ClientService().getBalanceFromContract(AddressCoins.wqt);
+        case TYPE_COINS.WUSD:
+          final count = await ClientService().getBalanceFromContract(AddressCoins.wUsd);
           final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
           amount = (count.toDouble() - _gas).toStringAsFixed(18);
           break;
         case TYPE_COINS.wETH:
-          final count =
-              await ClientService().getBalanceFromContract(AddressCoins.wEth);
+          final count = await ClientService().getBalanceFromContract(AddressCoins.wEth);
           final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
           amount = (count.toDouble() - _gas).toStringAsFixed(18);
           break;
         case TYPE_COINS.wBNB:
-          final count =
-              await ClientService().getBalanceFromContract(AddressCoins.wBnb);
+          final count = await ClientService().getBalanceFromContract(AddressCoins.wBnb);
           final _gas = (gas.getInWei.toDouble() * pow(10, -16) * 10);
           amount = (count.toDouble() - _gas).toStringAsFixed(18);
           break;

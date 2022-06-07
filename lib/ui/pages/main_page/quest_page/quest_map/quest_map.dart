@@ -42,57 +42,55 @@ class _QuestMapState extends State<QuestMap> {
       builder: (_) => Scaffold(
         body: mapStore?.initialCameraPosition == null
             ? Center(child: CircularProgressIndicator())
-            : SafeArea(
-              child: Visibility(
-                  visible: hasPermission,
-                  maintainState: false,
-                  replacement: GoogleMap(
-                    mapType: MapType.normal,
-                    rotateGesturesEnabled: false,
-                    initialCameraPosition: mapStore!.initialCameraPosition!,
-                    minMaxZoomPreference: MinMaxZoomPreference(4, 17),
-                  ),
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      GoogleMap(
-                        onCameraMove: (CameraPosition position) {
-                          if (mapStore?.debounce != null)
-                            mapStore!.debounce!.cancel();
-                          mapStore!.debounce = Timer(
-                            const Duration(milliseconds: 200),
-                            () async {
-                              LatLngBounds bounds =
-                                  await _controller.getVisibleRegion();
-                              mapStore!.getQuestsOnMap(bounds);
-                            },
-                          );
-                        },
-                        mapType: MapType.normal,
-                        rotateGesturesEnabled: false,
-                        myLocationEnabled: true,
-                        initialCameraPosition: mapStore!.initialCameraPosition!,
-                        myLocationButtonEnabled: false,
-                        markers: mapStore!.markers.toSet(),
-                        minMaxZoomPreference: MinMaxZoomPreference(4, 17),
-                        onMapCreated: (GoogleMapController controller) async {
-                          _controller = controller;
-                          LatLngBounds bounds =
-                              await _controller.getVisibleRegion();
-                          mapStore!.getQuestsOnMap(bounds);
-                          _onMyLocationPressed();
-                        },
-                        onTap: (point) {
-                          if (mapStore!.infoPanel != InfoPanel.Nope)
-                            mapStore!.onCloseQuest();
-                        },
-                      ),
-                      QuestQuickInfo(),
-                      searchBar(),
-                    ],
-                  ),
+            : Visibility(
+                visible: hasPermission,
+                maintainState: false,
+                replacement: GoogleMap(
+                  mapType: MapType.normal,
+                  rotateGesturesEnabled: false,
+                  initialCameraPosition: mapStore!.initialCameraPosition!,
+                  minMaxZoomPreference: MinMaxZoomPreference(4, 17),
                 ),
-            ),
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    GoogleMap(
+                      onCameraMove: (CameraPosition position) {
+                        if (mapStore?.debounce != null)
+                          mapStore!.debounce!.cancel();
+                        mapStore!.debounce = Timer(
+                          const Duration(milliseconds: 200),
+                          () async {
+                            LatLngBounds bounds =
+                                await _controller.getVisibleRegion();
+                            mapStore!.getQuestsOnMap(bounds);
+                          },
+                        );
+                      },
+                      mapType: MapType.normal,
+                      rotateGesturesEnabled: false,
+                      myLocationEnabled: true,
+                      initialCameraPosition: mapStore!.initialCameraPosition!,
+                      myLocationButtonEnabled: false,
+                      markers: mapStore!.markers.toSet(),
+                      minMaxZoomPreference: MinMaxZoomPreference(4, 17),
+                      onMapCreated: (GoogleMapController controller) async {
+                        _controller = controller;
+                        LatLngBounds bounds =
+                            await _controller.getVisibleRegion();
+                        mapStore!.getQuestsOnMap(bounds);
+                        _onMyLocationPressed();
+                      },
+                      onTap: (point) {
+                        if (mapStore!.infoPanel != InfoPanel.Nope)
+                          mapStore!.onCloseQuest();
+                      },
+                    ),
+                    QuestQuickInfo(),
+                    searchBar(),
+                  ],
+                ),
+              ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: AnimatedContainer(
           padding: EdgeInsets.only(

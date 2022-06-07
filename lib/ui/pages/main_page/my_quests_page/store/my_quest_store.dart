@@ -115,7 +115,13 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
     active.removeWhere((element) => element.id == id);
     performed.removeWhere((element) => element.id == id);
     invited.removeWhere((element) => element.id == id);
-    starred.removeWhere((element) => element.id == id);
+    starred.removeWhere((element) {
+      final result = element.id == id;
+      if (result) {
+        _apiProvider.removeStar(id: id);
+      }
+      return result;
+    });
   }
 
   @action
