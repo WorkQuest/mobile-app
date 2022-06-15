@@ -180,7 +180,15 @@ extension ReviewsTab on UserProfileState {
                           await Navigator.pushNamed(
                             context,
                             ReviewPage.routeName,
-                            arguments: portfolioStore!,
+                            arguments: ReviewPageArguments(
+                              userId: widget.arguments?.userId == null
+                                  ? userStore!.userData!.id
+                                  : widget.arguments!.userId,
+                              role: widget.arguments?.userId == null
+                                  ? userStore!.userData!.role
+                                  : widget.arguments!.role,
+                              store: portfolioStore!,
+                            ),
                           );
                           await portfolioStore!.getReviews(
                             userId: viewOtherUser?.userData == null

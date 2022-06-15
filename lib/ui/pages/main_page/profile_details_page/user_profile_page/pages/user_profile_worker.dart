@@ -123,7 +123,15 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                 await Navigator.pushNamed(
                   context,
                   ReviewPage.routeName,
-                  arguments: portfolioStore!,
+                  arguments: ReviewPageArguments(
+                    userId: widget.arguments?.userId == null
+                        ? userStore!.userData!.id
+                        : widget.arguments!.userId,
+                    role: widget.arguments?.userId == null
+                        ? userStore!.userData!.role
+                        : widget.arguments!.role,
+                    store: portfolioStore!,
+                  ),
                 );
                 await portfolioStore!.getPortfolio(
                   userId: viewOtherUser?.userData == null
