@@ -1,4 +1,4 @@
-package com.example.app
+package com.company.workquestapp
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterFragmentActivity

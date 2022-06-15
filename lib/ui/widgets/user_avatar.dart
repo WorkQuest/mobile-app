@@ -23,18 +23,21 @@ class UserAvatar extends StatelessWidget {
       height: height,
       loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null)
-          return Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
+          return child;
         return Center(
-          child: CircularProgressIndicator.adaptive(
-            value: loadingProgress.expectedTotalBytes != null
-                ? loadingProgress.cumulativeBytesLoaded /
-                    loadingProgress.expectedTotalBytes!
-                : null,
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
           ),
         );
       },
+
     );
   }
 }
