@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 
 import '../../constants.dart';
@@ -19,25 +16,28 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FadeInImage.memoryNetwork(
+    return Image.network(
+      url ?? Constants.defaultImageNetwork,
+      fit: BoxFit.cover,
       width: width,
       height: height,
-      fit: BoxFit.cover,
-      fadeOutDuration: const Duration(milliseconds: 250),
-      image: url ?? Constants.defaultImageNetwork,
-      imageErrorBuilder: (context, error, _) {
-        return Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null)
+          return child;
+        return Center(
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
           ),
-          child: Image.asset('assets/wq_default_avatar.png'),
         );
       },
-      placeholder: Uint8List.fromList(
-        base64Decode(Constants.base64WhiteHolder),
-      ),
+
     );
   }
 }
