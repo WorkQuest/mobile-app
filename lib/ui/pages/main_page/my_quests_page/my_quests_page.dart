@@ -158,6 +158,7 @@ class _MyQuestsPageState extends State<MyQuestsPage> {
                   type,
                   list,
                   isLoading: myQuests!.isLoading,
+                  from: FromQuestList.myQuest,
                 ),
               ),
             ],

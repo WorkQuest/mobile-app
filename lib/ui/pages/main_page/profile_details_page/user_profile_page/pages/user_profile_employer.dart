@@ -21,8 +21,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
         SizedBox(
           height: 20,
         ),
-        myQuests?.performed != null ||
-                (viewOtherUser?.quests.isNotEmpty ?? false)
+        myQuests?.performed != null || (viewOtherUser?.quests.isNotEmpty ?? false)
             ? QuestsList(
                 QuestItemPriorityType.Performed,
                 viewOtherUser?.userData == null
@@ -31,6 +30,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                 physics: NeverScrollableScrollPhysics(),
                 isLoading: myQuests!.isLoading,
                 short: true,
+                from: FromQuestList.questSearch,
               )
             : Center(
                 child: Text(
@@ -39,8 +39,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                       : "errors.emptyData.worker.myQuests.noQuest".tr(),
                 ),
               ),
-        if (myQuests!.performed.isNotEmpty ||
-            (viewOtherUser?.quests.isNotEmpty ?? false))
+        if (myQuests!.performed.isNotEmpty || (viewOtherUser?.quests.isNotEmpty ?? false))
           Padding(
             padding: EdgeInsets.only(
               left: 16.0,
@@ -51,15 +50,12 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                 await Navigator.pushNamed(
                   context,
                   ProfileQuestsPage.routeName,
-                  arguments: viewOtherUser?.userData == null
-                      ? userStore!.userData!
-                      : viewOtherUser!.userData!,
+                  arguments: viewOtherUser?.userData == null ? userStore!.userData! : viewOtherUser!.userData!,
                 );
                 if (viewOtherUser?.userData == null)
                   myQuests!.getQuests(userStore!.userData!.id, role, true);
                 else
-                  portfolioStore!.getReviews(
-                      userId: viewOtherUser!.userData!.id, newList: true);
+                  portfolioStore!.getReviews(userId: viewOtherUser!.userData!.id, newList: true);
               },
               child: Text(
                 "meta.showAllQuests".tr(),
@@ -73,10 +69,8 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
 //_____________About______________/
         Text(
           viewOtherUser?.userData == null
-              ? userStore!.userData?.additionalInfo?.description ??
-                  "modals.noDescription".tr()
-              : viewOtherUser!.userData!.additionalInfo?.description ??
-                  "modals.noDescription".tr(),
+              ? userStore!.userData?.additionalInfo?.description ?? "modals.noDescription".tr()
+              : viewOtherUser!.userData!.additionalInfo?.description ?? "modals.noDescription".tr(),
         ),
       ];
 
@@ -87,19 +81,15 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                   ? userStore!.userData!.questsStatistic!.completed.toString()
                   : '0'
               : viewOtherUser!.userData!.questsStatistic != null
-                  ? viewOtherUser!.userData!.questsStatistic!.completed
-                      .toString()
+                  ? viewOtherUser!.userData!.questsStatistic!.completed.toString()
                   : '0',
           averageRating: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.averageMark
               : viewOtherUser!.userData!.ratingStatistic!.averageMark,
           reviews: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
-              : viewOtherUser!.userData!.ratingStatistic!.reviewCount
-                  .toString(),
-          userId: viewOtherUser?.userData == null
-              ? userStore!.userData!.id
-              : viewOtherUser!.userData!.id,
+              : viewOtherUser!.userData!.ratingStatistic!.reviewCount.toString(),
+          userId: viewOtherUser?.userData == null ? userStore!.userData!.id : viewOtherUser!.userData!.id,
           context: context,
         ),
       ];

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/priority_view.dart';
@@ -8,6 +9,7 @@ import 'package:app/ui/widgets/quest_header.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_it/get_it.dart';
 import "package:provider/provider.dart";
 import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -15,22 +17,28 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../../widgets/shimmer.dart';
 
 class MyQuestsItem extends StatelessWidget {
-  const MyQuestsItem(this.questInfo,
-      {this.itemType = QuestItemPriorityType.Active, this.isExpanded = false});
-
   final BaseQuestResponse questInfo;
   final bool isExpanded;
   final QuestItemPriorityType itemType;
+  final bool showStar;
   final String defaultImage =
       'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 
+  const MyQuestsItem(
+    this.questInfo, {
+    this.itemType = QuestItemPriorityType.Active,
+    this.isExpanded = false,
+    this.showStar = false,
+  });
+
   @override
   Widget build(BuildContext context) {
+    final myQuestStore = GetIt.I.get<MyQuestStore>();
     return GestureDetector(
       onTap: () async {
         await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
-          arguments: QuestArguments(questInfo:questInfo, id: null),
+          arguments: QuestArguments(questInfo: questInfo, id: null),
         );
       },
       child: Container(
@@ -81,11 +89,9 @@ class MyQuestsItem extends StatelessWidget {
                   ),
                 ),
                 if (questInfo.responded != null)
-                  if (questInfo.responded!.workerId ==
-                              context.read<ProfileMeStore>().userData!.id &&
+                  if (questInfo.responded!.workerId == context.read<ProfileMeStore>().userData!.id &&
                           (questInfo.status == 1 || questInfo.status == 2) ||
-                      questInfo.invited != null &&
-                          questInfo.invited?.status == 1)
+                      questInfo.invited != null && questInfo.invited?.status == 1)
                     Row(
                       children: [
                         const SizedBox(
@@ -96,6 +102,21 @@ class MyQuestsItem extends StatelessWidget {
                         ),
                       ],
                     ),
+                if (showStar)
+                  IconButton(
+                    icon: Icon(
+                      Icons.star,
+                      color: Color(0xFFE8D20D),
+                    ),
+                    onPressed: () {
+                      myQuestStore.deleteQuest(questInfo.id);
+                      myQuestStore.addQuest(
+                        questInfo,
+                        questInfo.star ? true : false,
+                      );
+                      myQuestStore.setStar(questInfo, false);
+                    },
+                  ),
                 if (questInfo.invited != null && questInfo.invited?.status == 0)
                   Row(
                     children: [
@@ -112,8 +133,7 @@ class MyQuestsItem extends StatelessWidget {
             const SizedBox(
               height: 17.5,
             ),
-            if (questInfo.userId !=
-                    context.read<ProfileMeStore>().userData!.id &&
+            if (questInfo.userId != context.read<ProfileMeStore>().userData!.id &&
                 questInfo.status != 5 &&
                 questInfo.status != 6)
               Column(
