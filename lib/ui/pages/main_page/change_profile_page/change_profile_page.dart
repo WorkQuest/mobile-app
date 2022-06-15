@@ -17,6 +17,7 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../constants.dart';
 import '../../../../enums.dart';
+import '../settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 
 class ChangeProfilePage extends StatefulWidget {
   static const String routeName = "/ChangeProfilePage";
@@ -106,12 +107,16 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               oldPhone!.fullPhone.isNotEmpty &&
               !pageStore.numberChanged(oldPhone!.fullPhone)) {
             await AlertDialogUtils.showSuccessDialog(context);
+            await profile!.getProfileMe();
+            Navigator.pop(context, true);
           } else {
             await AlertDialogUtils.showSuccessDialog(context,
                 text: 'Enter code from SMS in SMS Verification');
+            await profile!.getProfileMe();
+            await Navigator.of(context, rootNavigator: true).pushReplacementNamed(
+              SMSVerificationPage.routeName,
+            );
           }
-          await profile!.getProfileMe();
-          Navigator.pop(context, true);
         },
         child: Observer(
           builder: (_) => profile!.isLoading

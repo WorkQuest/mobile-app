@@ -492,8 +492,15 @@ class Routes {
 
       case ChangeProfilePage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<ProfileMeStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<SMSVerificationStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChangeProfilePage(),
