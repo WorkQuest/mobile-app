@@ -31,7 +31,8 @@ class AccountRepository {
   }
 
   connectClient() {
-    service = ClientService(Configs.configsNetwork[ConfigNameNetwork.devnet]!);
+    final config = Configs.configsNetwork[configName];
+    service = ClientService(config!);
   }
 
   clearData() {

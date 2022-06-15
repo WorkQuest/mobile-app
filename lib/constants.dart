@@ -64,8 +64,8 @@ class Configs {
       ),
     ),
     ConfigNameNetwork.testnet: ConfigNetwork(
-        rpc: 'https://test-gate-02.workquest.co/rpc',
-        wss: 'wss://wss-test-gate-02.workquest.co',
+        rpc: 'https://testnet-gate.workquest.co/rpc/',
+        wss: 'wss://testnet-gate.workquest.co',
         addresses: AddressCoins(
             wUsd: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
             wEth: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
