@@ -85,7 +85,7 @@ class WebSocket {
 
   void _connectListen() {
     _notificationChannel =
-        IOWebSocketChannel.connect("wss://notifications.workquest.co/api/");
+        IOWebSocketChannel.connect("wss://notifications.workquest.co/api/v1/notifications");
 
     _notificationChannel?.sink.add("""{
           "type": "hello",
@@ -227,7 +227,7 @@ class WebSocket {
           }
         }
       }
-    } catch (e, trace) {
+    } catch (e) {
       // print('web socket e - $e\ntrace - $trace');
     }
   }

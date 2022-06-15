@@ -6,7 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Storage {
   static const activeAddress = "address";
-  static const wallets = "wallets";
+  static const wallet = "wallet";
 
   static FlutterSecureStorage get _secureStorage => FlutterSecureStorage();
 
@@ -48,6 +48,7 @@ class Storage {
   static Future<bool> toLoginCheck() async {
     if (!await _secureStorage.containsKey(key: "refreshToken")) return false;
     if (!await _secureStorage.containsKey(key: "pinCode")) return false;
+    if (!await _secureStorage.containsKey(key: "wallet")) return false;
     return true;
   }
 
@@ -80,6 +81,6 @@ class Storage {
       return null;
     }
 
-    return Wallet.fromJson(jsonDecode(wallets));
+    return Wallet.fromJson(jsonDecode(wallet));
   }
 }

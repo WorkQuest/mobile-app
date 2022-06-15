@@ -109,7 +109,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
       final signature =
           await AccountRepository().service!.getSignature(wallet.privateKey!);
       await _apiProvider.walletLogin(signature, wallet.address!);
-      await Storage.write(Storage.wallets, jsonEncode([wallet.toJson()]));
+      await Storage.write(Storage.wallet, jsonEncode(wallet.toJson()));
       await Storage.write(Storage.activeAddress, wallet.address!);
       this.onSuccess(true);
     } on FormatException catch (e) {

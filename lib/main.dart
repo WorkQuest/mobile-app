@@ -48,7 +48,8 @@ void main() async {
     if (wallet != null) {
       AccountRepository().setWallet(wallet);
     }
-  } catch (e) {
+  } catch (e, trace) {
+    print('main | $e\n$trace');
     AccountRepository().clearData();
   }
 

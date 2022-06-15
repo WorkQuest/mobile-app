@@ -113,8 +113,8 @@ abstract class _CreateWalletStore extends IStore<bool> with Store {
       await Future.delayed(const Duration(seconds: 1));
       Wallet wallet = await Wallet.derive(mnemonic!);
       await _apiProvider.registerWallet(wallet.publicKey!, wallet.address!);
-      await Storage.write("wallets", jsonEncode([wallet.toJson()]));
-      await Storage.write("address", wallet.address!);
+      await Storage.write(Storage.wallet, jsonEncode(wallet.toJson()));
+      await Storage.write(Storage.activeAddress, wallet.address!);
       AccountRepository().setWallet(wallet);
       onSuccess(true);
     } on FormatException catch (e) {
