@@ -16,7 +16,7 @@ class WalletStore extends _WalletStore with _$WalletStore {
 abstract class _WalletStore extends IStore<bool> with Store {
 
   @observable
-  TYPE_COINS type = TYPE_COINS.WUSD;
+  TYPE_COINS type = TYPE_COINS.WQT;
 
   @action
   setType(TYPE_COINS value) => type = value;
