@@ -64,13 +64,15 @@ class Configs {
       ),
     ),
     ConfigNameNetwork.testnet: ConfigNetwork(
-        rpc: 'https://testnet-gate.workquest.co/rpc/',
-        wss: 'wss://testnet-gate.workquest.co',
-        addresses: AddressCoins(
-            wUsd: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
-            wEth: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
-            wBnb: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
-            uSdt: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859'))
+      rpc: 'https://testnet-gate.workquest.co/',
+      wss: 'wss://testnet-gate.workquest.co',
+      addresses: AddressCoins(
+        wUsd: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
+        wEth: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
+        wBnb: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
+        uSdt: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859',
+      ),
+    )
   };
 }
 
