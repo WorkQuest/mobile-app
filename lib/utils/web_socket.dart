@@ -65,6 +65,16 @@ class WebSocket {
     );
   }
 
+  _closeWalletSocket() {
+    if (walletChannel != null) {
+      walletChannel!.sink.close();
+    }
+  }
+
+  reconnectWalletSocket() {
+    _closeWalletSocket();
+  }
+
   void _connectSender() {
     _senderChannel = IOWebSocketChannel.connect("wss://app.workquest.co/api");
     _senderChannel?.sink.add("""{
@@ -205,7 +215,7 @@ class WebSocket {
   String get myAddress => AccountRepository().userAddress;
 
   void handleSubscription(dynamic jsonResponse) async {
-    // print("wallet $jsonResponse");
+    print("wallet $jsonResponse");
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
       if (transaction.result?.events != null) {

@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import '../../constants.dart';
 import '../../ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import '../../utils/storage.dart';
+import '../../utils/web_socket.dart';
 import '../wallet.dart';
 
 class AccountRepository {
@@ -44,6 +45,7 @@ class AccountRepository {
   changeNetwork(ConfigNameNetwork configName) {
     _saveNetwork(configName);
     _disconnectWeb3Client();
+    WebSocket().reconnectWalletSocket();
     connectClient();
     GetIt.I.get<TransactionsStore>().getTransactions();
     GetIt.I.get<WalletStore>().getCoins();
