@@ -64,13 +64,6 @@ class _TransferPageState extends State<TransferPage> {
   }
 
   @override
-  void dispose() {
-    // _addressController.dispose();
-    // _amountController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final store = context.read<TransferStore>();
     return Scaffold(
@@ -96,91 +89,85 @@ class _TransferPageState extends State<TransferPage> {
       body: LayoutWithScroll(
         child: Padding(
           padding: _padding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 10,
-                width: double.infinity,
-              ),
-              Text(
-                'wallet.chooseCoin'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              GestureDetector(
-                onTap: _chooseCoin,
-                child: Container(
-                  height: 46,
+          child: Form(
+            key: _key,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 10,
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 15.0, vertical: 12.5),
-                  decoration: BoxDecoration(
-                    color:
-                        _selectedCoin ? Colors.white : AppColor.disabledButton,
-                    borderRadius: BorderRadius.circular(6.0),
-                    border: Border.all(
-                      color: AppColor.disabledButton,
+                ),
+                Text(
+                  'wallet.chooseCoin'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                GestureDetector(
+                  onTap: _chooseCoin,
+                  child: Container(
+                    height: 46,
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.5),
+                    decoration: BoxDecoration(
+                      color: _selectedCoin ? Colors.white : AppColor.disabledButton,
+                      borderRadius: BorderRadius.circular(6.0),
+                      border: Border.all(
+                        color: AppColor.disabledButton,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        if (_selectedCoin)
+                          Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  AppColor.enabledButton,
+                                  AppColor.blue,
+                                ],
+                              ),
+                            ),
+                            child: SizedBox(
+                              width: 32,
+                              height: 32,
+                              child: SvgPicture.asset(
+                                _currentCoin!.iconPath,
+                              ),
+                            ),
+                          ),
+                        Text(
+                          _selectedCoin ? _currentCoin!.title : 'wallet.enterCoin'.tr(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: _selectedCoin ? Colors.black : AppColor.disabledText,
+                          ),
+                        ),
+                        const Spacer(),
+                        Icon(
+                          Icons.arrow_drop_down_outlined,
+                          size: 25.0,
+                        )
+                      ],
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      if (_selectedCoin)
-                        Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                AppColor.enabledButton,
-                                AppColor.blue,
-                              ],
-                            ),
-                          ),
-                          child: SizedBox(
-                            width: 32,
-                            height: 32,
-                            child: SvgPicture.asset(
-                              _currentCoin!.iconPath,
-                            ),
-                          ),
-                        ),
-                      Text(
-                        _selectedCoin
-                            ? _currentCoin!.title
-                            : 'wallet.enterCoin'.tr(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: _selectedCoin
-                              ? Colors.black
-                              : AppColor.disabledText,
-                        ),
-                      ),
-                      const Spacer(),
-                      Icon(
-                        Icons.arrow_drop_down_outlined,
-                        size: 25.0,
-                      )
-                    ],
-                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                'wallet.recipientsAddress'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Form(
-                key: _key,
-                child: TextFormField(
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'wallet.recipientsAddress'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                TextFormField(
                   controller: _addressController,
                   decoration: InputDecoration(
                     hintText: 'wallet.enterAddress'.tr(),
@@ -199,73 +186,85 @@ class _TransferPageState extends State<TransferPage> {
                     return null;
                   },
                 ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                'wallet.amount'.tr(),
-                style: const TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              TextFormField(
-                controller: _amountController,
-                decoration: InputDecoration(
-                  hintText: 'wallet.enterAmount'.tr(),
-                  suffixIcon: ObserverListener<TransferStore>(
-                    onSuccess: () {
-                      _amountController.text = store.amount;
-                    },
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.only(right: 12.5),
-                      child: Text(
-                        'wallet.max'.tr(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColor.enabledButton,
-                        ),
-                      ),
-                      onPressed: () async {
-                        store.getMaxAmount();
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  'wallet.amount'.tr(),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                TextFormField(
+                  controller: _amountController,
+                  decoration: InputDecoration(
+                    hintText: 'wallet.enterAmount'.tr(),
+                    suffixIcon: ObserverListener<TransferStore>(
+                      onSuccess: () {
+                        _amountController.text = store.amount;
                       },
+                      child: CupertinoButton(
+                        padding: const EdgeInsets.only(right: 12.5),
+                        child: Text(
+                          'wallet.max'.tr(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColor.enabledButton,
+                          ),
+                        ),
+                        onPressed: () async {
+                          store.getMaxAmount();
+                        },
+                      ),
                     ),
                   ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                  ],
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null) {
+                      return null;
+                    }
+                    if (store.maxAmount != null) {
+                      try {
+                        final amount = double.parse(value);
+                        if (amount > store.maxAmount!) {
+                          return 'The amount field must be ${store.maxAmount} or less';
+                        }
+                      } catch (e) {
+                        return 'Invalid format';
+                      }
+                    }
+                    return null;
+                  },
                 ),
-                // keyboardType: TextInputType.number,
-
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
-                ],
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: Container(),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Observer(
-                    builder: (_) => ElevatedButton(
-                      child: Text('wallet.transfer'.tr()),
-                      onPressed: store.statusButtonTransfer
-                          ? _pushConfirmTransferPage
-                          : null,
+                const SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: Container(),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Observer(
+                      builder: (_) => ElevatedButton(
+                        child: Text('wallet.transfer'.tr()),
+                        onPressed: store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+                      ),
                     ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -278,19 +277,16 @@ class _TransferPageState extends State<TransferPage> {
       if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
         FocusManager.instance.primaryFocus?.unfocus();
       }
-      if (store.fee.isEmpty) {
-        await store.getFee();
-      }
-      if (store.addressTo.toLowerCase() ==
-          AccountRepository().userAddress.toLowerCase()) {
+
+      await store.getFee();
+
+      if (store.addressTo.toLowerCase() == AccountRepository().userAddress.toLowerCase()) {
         AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'modals.error'.tr(),
-            content: 'errors.provideYourAddress'.tr());
+            title: 'modals.error'.tr(), content: 'errors.provideYourAddress'.tr());
         return;
       }
       if (double.parse(store.amount) == 0.0) {
-        AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'modals.error'.tr(), content: 'errors.invalidAmount'.tr());
+        AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
       final result = await Navigator.of(context, rootNavigator: true).push(
@@ -336,8 +332,7 @@ class _TransferPageState extends State<TransferPage> {
             color: Colors.white,
           ),
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Column(
               children: [
                 Container(
@@ -398,23 +393,16 @@ class _TransferPageState extends State<TransferPage> {
                                                   width: double.infinity,
                                                   color: Colors.transparent,
                                                   child: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
+                                                    mainAxisSize: MainAxisSize.max,
                                                     children: [
                                                       Container(
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                          shape:
-                                                              BoxShape.circle,
-                                                          gradient:
-                                                              LinearGradient(
-                                                            begin: Alignment
-                                                                .topCenter,
-                                                            end: Alignment
-                                                                .bottomCenter,
+                                                        decoration: const BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          gradient: LinearGradient(
+                                                            begin: Alignment.topCenter,
+                                                            end: Alignment.bottomCenter,
                                                             colors: [
-                                                              AppColor
-                                                                  .enabledButton,
+                                                              AppColor.enabledButton,
                                                               AppColor.blue,
                                                             ],
                                                           ),
@@ -422,8 +410,7 @@ class _TransferPageState extends State<TransferPage> {
                                                         child: SizedBox(
                                                           width: 32,
                                                           height: 32,
-                                                          child:
-                                                              SvgPicture.asset(
+                                                          child: SvgPicture.asset(
                                                             coin.iconPath,
                                                           ),
                                                         ),
@@ -435,10 +422,7 @@ class _TransferPageState extends State<TransferPage> {
                                                         coin.title,
                                                         style: TextStyle(
                                                           fontSize: 16,
-                                                          color: coin.isEnable
-                                                              ? Colors.black
-                                                              : AppColor
-                                                                  .disabledText,
+                                                          color: coin.isEnable ? Colors.black : AppColor.disabledText,
                                                         ),
                                                       ),
                                                     ],
@@ -477,6 +461,7 @@ class _TransferPageState extends State<TransferPage> {
       _currentCoin = coin;
     });
     store.setTitleSelectedCoin(coin.typeCoin);
+    _amountController.clear();
   }
 }
 

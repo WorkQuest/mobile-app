@@ -177,7 +177,7 @@ class _InformationWidget extends StatelessWidget {
             height: 5,
           ),
           Text(
-            '\$ $fee',
+            '$fee WQT',
             style: const TextStyle(
               fontSize: 14,
               color: AppColor.subtitleText,
