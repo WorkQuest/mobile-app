@@ -20,8 +20,8 @@ class WorkQuestApp extends StatelessWidget {
     return ValueListenableBuilder<ConfigNameNetwork?>(
         valueListenable: AccountRepository().notifier,
         builder: (_, value, child) {
-          final name = value?.name ?? ConfigNameNetwork.devnet.name;
-          final visible = name != ConfigNameNetwork.devnet.name;
+          final name = value?.name ?? ConfigNameNetwork.testnet.name;
+          final visible = name != ConfigNameNetwork.testnet.name;
           return CustomBanner(
             text: '${name.substring(0, 1).toUpperCase()}${name.substring(1)}',
             visible: false,

@@ -43,7 +43,7 @@ void main() async {
   //Init Wallet
   try {
     String? configName = await Storage.readConfig();
-    AccountRepository().setNetwork(configName ?? "devnet");
+    AccountRepository().setNetwork(configName ?? "testnet");
     final wallet = await Storage.readWallet();
     if (wallet != null) {
       AccountRepository().setWallet(wallet);
