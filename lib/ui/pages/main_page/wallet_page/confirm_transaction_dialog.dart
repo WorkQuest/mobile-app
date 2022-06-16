@@ -121,7 +121,7 @@ Widget content({
             style: titleTextStyle,
           ),
           Text(
-            "\$ $fee",
+            "$fee WQT",
             style: valueTextStyle,
           ),
         ],
