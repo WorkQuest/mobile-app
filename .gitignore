@@ -89,3 +89,4 @@ app.*.map.json
 # End of https://www.gitignore.io/api/flutter
 /lib/di/injector.config.dart
 **/keys.dart
+**/firebase_options.dart
