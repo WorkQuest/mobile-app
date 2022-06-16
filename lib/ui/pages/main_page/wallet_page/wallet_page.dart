@@ -39,16 +39,13 @@ class _WalletPageState extends State<WalletPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: Platform.isIOS ? _mainLayout() : _mainLayout());
+    return Scaffold(backgroundColor: Colors.white, body: Platform.isIOS ? _mainLayout() : _mainLayout());
   }
 
   Widget _mainLayout() {
     return NotificationListener<ScrollEndNotification>(
       onNotification: (scrollEnd) {
-        if (scrollEnd.metrics.atEdge) if (scrollEnd.metrics.pixels ==
-            scrollEnd.metrics.maxScrollExtent) {
+        if (scrollEnd.metrics.atEdge) if (scrollEnd.metrics.pixels == scrollEnd.metrics.maxScrollExtent) {
           if (!GetIt.I.get<TransactionsStore>().isMoreLoading) {
             GetIt.I.get<TransactionsStore>().getTransactionsMore();
           }
@@ -85,20 +82,14 @@ class _WalletPageState extends State<WalletPage> {
                 ),
                 onSelected: (value) async {
                   switch (value) {
-                    case "Buy WQT":
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(SwapPage.routeName);
-                      break;
-                    case "Swap":
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(NetworkPage.routeName);
+                    case "Change network":
+                      await Navigator.of(context, rootNavigator: true).pushNamed(NetworkPage.routeName);
                       break;
                   }
                 },
                 itemBuilder: (BuildContext context) {
                   return {
-                    "Buy WQT",
-                    "Swap",
+                    "Change network",
                   }.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
@@ -149,9 +140,8 @@ class _WalletPageState extends State<WalletPage> {
                         height: 34,
                         width: 34,
                         padding: const EdgeInsets.all(7.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6.0),
-                            color: AppColor.disabledButton),
+                        decoration:
+                            BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: AppColor.disabledButton),
                         child: SvgPicture.asset(
                           "assets/copy_icon.svg",
                           color: AppColor.enabledButton,
@@ -159,6 +149,16 @@ class _WalletPageState extends State<WalletPage> {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                _BannerBuyingWQT(
+                  button: outlinedButton(
+                    title: 'Buy WQT',
+                    route: SwapPage.routeName,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -172,13 +172,17 @@ class _WalletPageState extends State<WalletPage> {
                 ),
                 Row(
                   children: [
-                    outlinedButton(
-                        route: WithdrawPage.routeName, title: "withdraw"),
+                    Expanded(
+                      flex: 1,
+                      child: outlinedButton(route: WithdrawPage.routeName, title: "wallet.withdraw".tr()),
+                    ),
                     const SizedBox(
                       width: 10,
                     ),
-                    outlinedButton(
-                        route: DepositPage.routeName, title: "deposit"),
+                    Expanded(
+                      flex: 1,
+                      child: outlinedButton(route: DepositPage.routeName, title: "wallet.deposit".tr()),
+                    ),
                     const SizedBox(
                       width: 10,
                     ),
@@ -187,8 +191,7 @@ class _WalletPageState extends State<WalletPage> {
                       child: ElevatedButton(
                         child: Text('wallet'.tr(gender: 'transfer')),
                         onPressed: () async {
-                          Navigator.of(context, rootNavigator: true)
-                              .push(MaterialPageRoute(
+                          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
                             builder: (_) => Provider(
                               create: (context) => getIt.get<TransferStore>(),
                               child: TransferPage(),
@@ -241,31 +244,30 @@ class _WalletPageState extends State<WalletPage> {
   Widget outlinedButton({
     required String title,
     required String route,
+    Color? color,
   }) {
-    return Expanded(
-      flex: 1,
-      child: CupertinoButton(
-        padding: EdgeInsets.zero,
-        pressedOpacity: 0.2,
-        onPressed: () {
-          ///Route to withdraw page
-          Navigator.of(context, rootNavigator: true).pushNamed(route);
-        },
-        child: Container(
-          height: 43,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6.0),
-            border: Border.all(
-              color: Colors.blue.withOpacity(0.1),
-            ),
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      pressedOpacity: 0.2,
+      onPressed: () {
+        ///Route to withdraw page
+        Navigator.of(context, rootNavigator: true).pushNamed(route);
+      },
+      child: Container(
+        height: 43,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6.0),
+          border: Border.all(
+            color: Colors.blue.withOpacity(0.1),
           ),
-          child: Text(
-            'wallet'.tr(gender: title),
-            style: const TextStyle(
-              fontSize: 16,
-              color: AppColor.enabledButton,
-            ),
+          color: color,
+        ),
+        child: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 16,
+            color: AppColor.enabledButton,
           ),
         ),
       ),
@@ -275,6 +277,59 @@ class _WalletPageState extends State<WalletPage> {
   Future _onRefresh() async {
     GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
     return GetIt.I.get<WalletStore>().getCoins();
+  }
+}
+
+class _BannerBuyingWQT extends StatelessWidget {
+  final Widget button;
+
+  const _BannerBuyingWQT({
+    Key? key,
+    required this.button,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // height: 160,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: AppColor.enabledButton,
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      padding: EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Buy first WQT!',
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Text(
+            'Donec rutrum congue leo eget malesuada. Donec sollicitudin molestie malesuada. Quisque velit nisi, '
+            'pretium ut lacinia in, elementum id enim. Curabitur arcu erat, accumsan id imperdiet et, porttitor at '
+            'sem.',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: button,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -379,14 +434,8 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: isCurrency
-                              ? null
-                              : Border.all(
-                                  color:
-                                      AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency
-                              ? AppColor.enabledButton
-                              : Colors.transparent,
+                          border: isCurrency ? null : Border.all(color: AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
                         ),
                       ),
                     );
