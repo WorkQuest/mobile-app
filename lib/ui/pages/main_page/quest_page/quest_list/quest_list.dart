@@ -61,9 +61,9 @@ class _QuestListState extends State<QuestList> {
     profileMeStore = context.read<ProfileMeStore>();
     profileMeStore!.getProfileMe().then((value) {
       context.read<ChatStore>().initialSetup(
-            profileMeStore!.userData!.id,
+            profileMeStore!.userData!.id!,
           );
-      context.read<ChatStore>().role = profileMeStore!.userData!.role;
+      // context.read<ChatStore>().role = profileMeStore!.userData!.role;
       profileMeStore!.userData!.role == UserRole.Worker
           ? questsStore!.getQuests(true)
           : questsStore!.getWorkers(true);
@@ -369,7 +369,7 @@ class _QuestListState extends State<QuestList> {
               UserProfile.routeName,
               arguments: ProfileArguments(
                 role: profileMeStore!.questHolder!.role,
-                userId: profileMeStore!.questHolder!.id,
+                userId: profileMeStore!.questHolder!.id!,
               ),
             );
           }

@@ -1,30 +1,13 @@
 import 'package:app/model/chat_model/chat_model.dart';
-import 'package:app/model/chat_model/message_model.dart';
-import 'package:mobx/mobx.dart';
 
 class Chats {
-  final Atom _atom;
-  ChatModel _chatModel;
-  List<MessageModel> _messages = [];
+  Chats(this.chat);
 
-  ChatModel get chatModel {
-    read();
-    return _chatModel;
-  }
+  late List<ChatModel> chat;
 
-  List<MessageModel> get messages {
-    read();
-    return _messages;
-  }
+  void setChat(List<ChatModel> listChats) => chat.addAll(listChats);
 
-  set messages(List<MessageModel> list) {
-    _messages = list;
-    update();
-  }
+  void clearChat() => chat.clear();
 
-  void read() => _atom.reportRead();
-
-  void update() => _atom.reportChanged();
-
-  Chats(this._chatModel) : _atom = Atom(name: '_Chat${_chatModel.id}');
+  int? getQuestChatStatus() => chat.first.questChat?.status;
 }

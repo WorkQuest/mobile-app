@@ -26,7 +26,7 @@ class WorkersItem extends StatelessWidget {
           UserProfile.routeName,
           arguments: ProfileArguments(
             role: workersInfo.role,
-            userId: workersInfo.id,
+            userId: workersInfo.id!,
           ),
         );
       },

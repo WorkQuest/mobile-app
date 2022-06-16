@@ -1,4 +1,5 @@
-import 'package:app/model/quests_models/media_model.dart';
+import 'package:app/constants.dart';
+import 'package:app/model/media_model.dart';
 
 class PortfolioModel {
   PortfolioModel({
@@ -70,8 +71,7 @@ class User {
           json["avatar"] ??
               {
                 "id": "",
-                "url":
-                    "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                "url": Constants.defaultImageNetwork,
                 "contentType": "",
               },
         ),

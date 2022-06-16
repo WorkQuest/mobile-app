@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:app/constants.dart';
+import 'package:app/enums.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
-import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
-import '../../../../model/profile_response/profile_me_response.dart';
 import '../../../widgets/default_textfield.dart';
 import '../../../widgets/shimmer.dart';
 import 'chat_room_page/chat_room_page.dart';
@@ -28,34 +27,28 @@ class ChatPage extends StatefulWidget {
   _ChatPageState createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatPageState extends State<ChatPage>
+    with SingleTickerProviderStateMixin {
   late ChatStore store;
-  late ProfileMeStore userData;
 
   ScrollDirection prevScrollDirection = ScrollDirection.idle;
 
   late TextEditingController _searchTextController;
-
+  late TabController _tabController;
   Timer? _timer;
-
-  _loadAllChats() {
-    store.loadChats(type: TypeChat.active);
-    store.loadChats(type: TypeChat.favourites);
-    store.loadChats(type: TypeChat.group);
-    store.loadChats(type: TypeChat.completed);
-  }
 
   @override
   void initState() {
     store = context.read<ChatStore>();
-    userData = context.read<ProfileMeStore>();
-    store.getUserData(userData.userData!);
-    _loadAllChats();
     _searchTextController = TextEditingController();
+    _tabController = TabController(vsync: this, length: 5);
     _searchTextController.addListener(() {
       if (_timer?.isActive ?? false) _timer!.cancel();
       _timer = Timer(const Duration(milliseconds: 300), () {
-        store.loadChats(query: _searchTextController.text);
+        store.loadChats(
+          query: _searchTextController.text,
+          type: store.typeChat,
+        );
       });
     });
     super.initState();
@@ -64,176 +57,234 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        physics: const ClampingScrollPhysics(),
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            Observer(
-              builder: (_) => CupertinoSliverNavigationBar(
-                backgroundColor: store.chatSelected ? Color(0xFF0083C7) : Colors.white,
-                largeTitle: store.chatSelected
-                    ? Observer(
-                        builder: (_) => _SelectedAppBarWidget(
-                          onPressedClose: () {
-                            store.setChatSelected(false);
-                            store.uncheck();
-                          },
-                          onPressedStar: () {
-                            store.setChatSelected(false);
-                            store.setStar();
-                          },
-                          lengthSelectedChats: store.chatsId.length.toString(),
-                        ),
-                      )
-                    : Observer(
-                        builder: (_) => _AppBarWidget(
-                          onSelected: (value) {
-                            switch (value) {
-                              case "chat.starredMessage":
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushNamed(StarredMessage.routeName, arguments: userData.userData!.id);
-                                break;
-                              case "chat.starredChat":
-                                store.loadChats(starred: true);
-                                store.starred = true;
-                                break;
-                              case "chat.allChat":
-                                store.loadChats(starred: false);
-                                store.starred = false;
-                                break;
-                              case "chat.createGroupChat":
-                                Navigator.of(context, rootNavigator: true).pushNamed(
-                                  CreateGroupPage.routeName,
-                                  arguments: userData.userData!.id,
-                                );
-                                break;
-                            }
-                          },
-                          isStarred: store.starred,
-                        ),
-                      ),
-                border: const Border.fromBorderSide(BorderSide.none),
-              ),
-            ),
-          ];
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
         },
-        body: DefaultTabController(
-          length: 4,
-          initialIndex: 0,
-          animationDuration: const Duration(milliseconds: 500),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.5, horizontal: 16.0),
-                child: DefaultTextField(
-                  hint: 'Name/Quest/Group',
-                  inputFormatters: [],
-                  prefixIcon: Icon(
-                    Icons.search,
-                    size: 24.0,
-                    color: AppColor.enabledButton,
-                  ),
-                  controller: _searchTextController,
+        child: NestedScrollView(
+          physics: const ClampingScrollPhysics(),
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              Observer(
+                builder: (_) => CupertinoSliverNavigationBar(
+                  backgroundColor:
+                      store.chatSelected ? Color(0xFF0083C7) : Colors.white,
+                  largeTitle: store.chatSelected
+                      ? Observer(
+                          builder: (_) => _SelectedAppBarWidget(
+                            onPressedClose: () {
+                              store.setChatSelected(false);
+                              store.resetSelectedChats();
+                            },
+                            onPressedStar: () {
+                              store.setChatSelected(false);
+                              store.setStar();
+                            },
+                            lengthSelectedChats: store.getCountStarredChats(),
+                          ),
+                        )
+                      : Observer(
+                          builder: (_) => _AppBarWidget(
+                            onSelected: (value) {
+                              switch (value) {
+                                case "chat.starredMessage":
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed(
+                                    StarredMessage.routeName,
+                                    arguments: store.myId,
+                                  );
+                                  break;
+                                case "Create private chat":
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed(
+                                    CreateGroupPage.routeName,
+                                    arguments: false,
+                                  );
+                                  break;
+                                case "chat.createGroupChat":
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed(
+                                    CreateGroupPage.routeName,
+                                    arguments: true,
+                                  );
+                                  break;
+                              }
+                            },
+                            isStarred: store.starred,
+                          ),
+                        ),
+                  border: const Border.fromBorderSide(BorderSide.none),
                 ),
               ),
-              TabBar(
-                tabs: [
-                  Tab(
-                    child: Text(
-                      'chat.tabs.active'.tr(),
-                      style: TextStyle(
-                        color: AppColor.enabledButton,
-                        fontSize: 13.0,
-                      ),
-                    ),
+            ];
+          },
+          body: DefaultTabController(
+            length: 5,
+            initialIndex: 0,
+            animationDuration: const Duration(milliseconds: 500),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12.5,
+                    horizontal: 16.0,
                   ),
-                  Tab(
-                    child: Text(
-                      'chat.tabs.favorite'.tr(),
-                      style: TextStyle(
-                        color: AppColor.enabledButton,
-                        fontSize: 13.0,
-                      ),
+                  child: DefaultTextField(
+                    hint: 'Name/Quest/Group',
+                    inputFormatters: [],
+                    prefixIcon: Icon(
+                      Icons.search,
+                      size: 24.0,
+                      color: AppColor.enabledButton,
                     ),
+                    controller: _searchTextController,
                   ),
-                  Tab(
-                    child: Text(
-                      'chat.tabs.group'.tr(),
-                      style: TextStyle(
-                        color: AppColor.enabledButton,
-                        fontSize: 13.0,
-                      ),
-                    ),
-                  ),
-                  Tab(
-                    child: Text(
-                      'chat.tabs.completed'.tr(),
-                      style: TextStyle(
-                        color: AppColor.enabledButton,
-                        fontSize: 13.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    _ListChatsWidget(
-                      userData: userData,
-                      store: store,
-                      typeChat: TypeChat.active,
-                    ),
-                    _ListChatsWidget(
-                      userData: userData,
-                      store: store,
-                      typeChat: TypeChat.favourites,
-                    ),
-                    _ListChatsWidget(
-                      userData: userData,
-                      store: store,
-                      typeChat: TypeChat.group,
-                    ),
-                    _ListChatsWidget(
-                      userData: userData,
-                      store: store,
-                      typeChat: TypeChat.completed,
-                    ),
+                ),
+                TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    tab(text: 'chat.tabs.active'),
+                    tab(text: 'chat.tabs.privates'),
+                    tab(text: 'chat.tabs.favorite'),
+                    tab(text: 'chat.tabs.group'),
+                    tab(text: 'chat.tabs.completed'),
                   ],
                 ),
-              ),
-            ],
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      _ListChatsWidget(
+                        typeChat: TypeChat.active,
+                        query: _searchTextController.text,
+                        onLongPress: onLongPress,
+                        onPress: onPress,
+                        onSetTypeChat: onSetTypeChat,
+                      ),
+                      _ListChatsWidget(
+                        typeChat: TypeChat.privates,
+                        query: _searchTextController.text,
+                        onLongPress: onLongPress,
+                        onPress: onPress,
+                        onSetTypeChat: onSetTypeChat,
+                      ),
+                      _ListChatsWidget(
+                        typeChat: TypeChat.favourites,
+                        query: _searchTextController.text,
+                        onLongPress: onLongPress,
+                        onPress: onPress,
+                        onSetTypeChat: onSetTypeChat,
+                      ),
+                      _ListChatsWidget(
+                        typeChat: TypeChat.group,
+                        query: _searchTextController.text,
+                        onLongPress: onLongPress,
+                        onPress: onPress,
+                        onSetTypeChat: onSetTypeChat,
+                      ),
+                      _ListChatsWidget(
+                        typeChat: TypeChat.completed,
+                        query: _searchTextController.text,
+                        onLongPress: onLongPress,
+                        onPress: onPress,
+                        onSetTypeChat: onSetTypeChat,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  Widget tab({
+    required String text,
+  }) =>
+      Tab(
+        child: Text(
+          text.tr(),
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: AppColor.enabledButton,
+            fontSize: 13.0,
+          ),
+        ),
+      );
+
+  void onSetTypeChat(TypeChat type) => store.typeChat = type;
+
+  void onLongPress(ChatModel chat) {
+    store.setChatSelected(true);
+    store.setChatHighlighted(chat);
+  }
+
+  void onPress(ChatModel chat) {
+    if (store.chatSelected) {
+      store.setChatHighlighted(chat);
+      for (int i = 0; i < store.selectedChats.values.length; i++)
+        if (store.selectedChats.values.toList()[i] == true) return;
+      store.setChatSelected(false);
+    } else {
+      if (chat.chatData.lastMessage.senderMemberId != store.myId &&
+          chat.chatData.lastMessage.senderStatus == "Unread") {
+        store.setMessageRead(
+          chat.id,
+          chat.chatData.lastMessageId,
+        );
+        chat.chatData.lastMessage.senderStatus = "Read";
+      }
+      Navigator.of(context, rootNavigator: true).pushNamed(
+        ChatRoomPage.routeName,
+        arguments: chat.id,
+      );
+    }
+  }
 }
 
-class _ListChatsWidget extends StatelessWidget {
-  final ChatStore store;
-  final ProfileMeStore userData;
+class _ListChatsWidget extends StatefulWidget {
   final TypeChat typeChat;
+  final String query;
+  final void Function(ChatModel) onLongPress;
+  final void Function(ChatModel) onPress;
+  final void Function(TypeChat) onSetTypeChat;
 
   const _ListChatsWidget({
     Key? key,
-    required this.store,
-    required this.userData,
     required this.typeChat,
+    required this.query,
+    required this.onLongPress,
+    required this.onPress,
+    required this.onSetTypeChat,
   }) : super(key: key);
 
-  List<ChatModel> _getListChats() {
-    switch (typeChat) {
-      case TypeChat.active:
-        return store.activeChats;
-      case TypeChat.favourites:
-        return store.favouritesChats;
-      case TypeChat.group:
-        return store.groupChats;
-      case TypeChat.completed:
-        return store.completedChats;
-    }
+  @override
+  State<_ListChatsWidget> createState() => _ListChatsWidgetState();
+}
+
+class _ListChatsWidgetState extends State<_ListChatsWidget> {
+  late ChatStore store;
+
+  @override
+  void initState() {
+    store = context.read<ChatStore>();
+    Future.delayed(Duration.zero, () {
+      widget.onSetTypeChat(widget.typeChat);
+      store.loadChats(
+        starred: store.starred,
+        type: widget.typeChat,
+        questChatStatus: widget.typeChat == TypeChat.active
+            ? 0
+            : widget.typeChat == TypeChat.completed
+                ? -1
+                : null,
+        query: widget.query,
+      );
+    });
+    super.initState();
   }
 
   @override
@@ -244,21 +295,45 @@ class _ListChatsWidget extends StatelessWidget {
       notificationPredicate: (ScrollNotification notification) {
         return notification.depth == 0;
       },
-      onRefresh: () => store.loadChats(starred: store.starred, type: typeChat),
+      onRefresh: () => store.loadChats(
+        starred: store.starred,
+        type: widget.typeChat,
+        questChatStatus: widget.typeChat == TypeChat.active
+            ? 0
+            : widget.typeChat == TypeChat.completed
+                ? -1
+                : null,
+        query: widget.query,
+      ),
       child: Observer(
         builder: (_) {
-          final chats = _getListChats();
+          final chats = store.chats?.chat;
           if (store.isLoading) {
             return SingleChildScrollView(
-              child: Column(children: List.generate(10, (index) => const _ShimmerChatItem())),
+              child: Column(
+                children: List.generate(
+                  10,
+                  (index) => const _ShimmerChatItem(),
+                ),
+              ),
             );
           }
-          if (chats.isNotEmpty) {
+          if (chats?.isNotEmpty ?? false) {
             return NotificationListener<ScrollEndNotification>(
               onNotification: (scrollEnd) {
                 final metrics = scrollEnd.metrics;
                 if (metrics.maxScrollExtent < metrics.pixels) {
-                  store.loadChats(loadMore: true, starred: store.starred);
+                  store.loadChats(
+                    loadMore: true,
+                    starred: store.starred,
+                    type: widget.typeChat,
+                    questChatStatus: widget.typeChat == TypeChat.active
+                        ? 0
+                        : widget.typeChat == TypeChat.completed
+                            ? -1
+                            : null,
+                    query: widget.query,
+                  );
                 }
                 return true;
               },
@@ -269,38 +344,22 @@ class _ListChatsWidget extends StatelessWidget {
                 ),
                 child: Observer(builder: (_) {
                   return Column(
-                    children: chats.map((chat) {
-                      final widget = _ChatListTileWidget(
-                        onLongPress: () {
-                          store.setChatSelected(true);
-                          store.setChatHighlighted(chat);
-                        },
-                        onTap: () {
-                          if (store.chatSelected) {
-                            store.setChatHighlighted(chat);
-                            for (int i = 0; i < store.idChatsForStar.values.length; i++)
-                              if (store.idChatsForStar.values.toList()[i] == true) return;
-                            store.setChatSelected(false);
-                          } else {
-                            if (chat.lastMessage.senderUserId != userData.userData!.id) {
-                              store.setMessageRead(chat.id, chat.lastMessageId);
-                              chat.lastMessage.senderStatus = "read";
-                            }
-                            Navigator.of(context, rootNavigator: true)
-                                .pushNamed(ChatRoomPage.routeName, arguments: chat.id);
-                            store.checkMessage();
-                          }
-                        },
+                    children: chats!.map((chat) {
+                      final chatListWidget = _ChatListTileWidget(
+                        onLongPress: () => widget.onLongPress(chat),
+                        onTap: () => widget.onPress(chat),
                         chat: chat,
-                        userId: userData.userData!.id,
-                        infoActionMessage: () => store.setInfoMessage(chat.lastMessage.infoMessage!.messageAction),
-                        chatStarred: store.idChatsForStar[chat.id] ?? false,
+                        userId: store.myId,
+                        infoActionMessage: "chat.infoMessage."
+                                "${chat.chatData.lastMessage.infoMessage?.messageAction ?? "message"}"
+                            .tr(),
+                        chatStarred: store.selectedChats[chat]!,
                       );
-                      if (store.isLoadingChats && chat == chats.last) {
+                      if (store.isLoading && chat == chats.last) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            widget,
+                            chatListWidget,
                             SizedBox(
                               height: 5,
                             ),
@@ -308,7 +367,7 @@ class _ListChatsWidget extends StatelessWidget {
                           ],
                         );
                       }
-                      return widget;
+                      return chatListWidget;
                     }).toList(),
                   );
                 }),
@@ -361,9 +420,7 @@ class _AppBarWidget extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: Text(
-            "chat.chat".tr(),
-          ),
+          child: Text("chat.chat".tr()),
         ),
         PopupMenuButton<String>(
           elevation: 10,
@@ -375,7 +432,7 @@ class _AppBarWidget extends StatelessWidget {
           itemBuilder: (BuildContext context) {
             return {
               "chat.starredMessage",
-              !isStarred ? "chat.starredChat" : "chat.allChat",
+              "Create private chat",
               "chat.createGroupChat",
             }.map((String choice) {
               return PopupMenuItem<String>(
@@ -445,7 +502,7 @@ class _ChatListTileWidget extends StatelessWidget {
   final Function()? onTap;
   final ChatModel chat;
   final String userId;
-  final Function infoActionMessage;
+  final String infoActionMessage;
   final bool chatStarred;
 
   const _ChatListTileWidget({
@@ -460,17 +517,8 @@ class _ChatListTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final differenceTime = DateTime.now().difference(chat.lastMessage.createdAt).inDays;
-    ProfileMeResponse user;
-    if (chat.userMembers[0].id != userId) {
-      user = chat.userMembers[0];
-    } else {
-      try {
-        user = chat.userMembers[1];
-      } catch (e) {
-        user = chat.userMembers[0];
-      }
-    }
+    final differenceTime =
+        DateTime.now().difference(chat.chatData.lastMessage.createdAt).inDays;
     return GestureDetector(
       onLongPress: onLongPress,
       onTap: onTap,
@@ -493,11 +541,11 @@ class _ChatListTileWidget extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
-                      child: chat.type != "group"
+                      child: chat.type != TypeChat.group
                           ? UserAvatar(
                               width: 56,
                               height: 56,
-                              url: user.avatar?.url,
+                              url: chat.members[0].user!.avatar?.url,
                             )
                           : Stack(
                               children: [
@@ -511,9 +559,10 @@ class _ChatListTileWidget extends StatelessWidget {
                                 Positioned.fill(
                                   child: Center(
                                     child: Text(
-                                      chat.name!.length == 1
-                                          ? "${chat.name![0].toUpperCase()}"
-                                          : "${chat.name![0].toUpperCase()}" + "${chat.name?[1]}",
+                                      chat.groupChat!.name.length == 1
+                                          ? "${chat.groupChat!.name[0].toUpperCase()}"
+                                          : "${chat.groupChat!.name[0].toUpperCase()}" +
+                                              "${chat.groupChat!.name[1]}",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 32,
@@ -531,7 +580,9 @@ class _ChatListTileWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          chat.name == null ? "${user.firstName} ${user.lastName}" : "${chat.name}",
+                          chat.type != TypeChat.group
+                              ? "${chat.members[0].user!.firstName} ${chat.members[0].user!.lastName}"
+                              : "${chat.groupChat!.name}",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -540,10 +591,11 @@ class _ChatListTileWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          chat.lastMessage.senderUserId == userId
-                              ? "chat.you".tr() + " ${chat.lastMessage.text ?? infoActionMessage.call()} "
-                              : "${chat.lastMessage.sender!.firstName}:" +
-                                  " ${chat.lastMessage.text ?? infoActionMessage.call()} ",
+                          chat.chatData.lastMessage.senderMemberId == userId
+                              ? "chat.you".tr() +
+                                  " ${chat.chatData.lastMessage.text ?? infoActionMessage} "
+                              : "${chat.chatData.lastMessage.sender.user!.firstName}:" +
+                                  " ${chat.chatData.lastMessage.text ?? infoActionMessage} ",
                           style: TextStyle(
                             fontSize: 14,
                             color: Color(0xFF7C838D),
@@ -569,7 +621,7 @@ class _ChatListTileWidget extends StatelessWidget {
                   const SizedBox(width: 50),
                   Column(
                     children: [
-                      if (chat.lastMessage.senderStatus == "unread")
+                      if (chat.chatData.lastMessage.senderStatus == "unread")
                         Container(
                           width: 11,
                           height: 11,
@@ -583,9 +635,10 @@ class _ChatListTileWidget extends StatelessWidget {
                         ),
                       if (chat.star != null)
                         Container(
-                          margin: chat.lastMessage.senderStatus == "unread"
-                              ? const EdgeInsets.only(top: 3, right: 16)
-                              : const EdgeInsets.only(top: 23, right: 16),
+                          margin:
+                              chat.chatData.lastMessage.senderStatus == "unread"
+                                  ? const EdgeInsets.only(top: 3, right: 16)
+                                  : const EdgeInsets.only(top: 23, right: 16),
                           child: Icon(
                             Icons.star,
                             color: Color(0xFFE8D20D),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/assigned_worker.dart';
 import 'package:app/model/respond_model.dart';
@@ -71,7 +72,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         icon: Icon(Icons.share_outlined),
         onPressed: () {
           Share.share(
-              "https://app.workquest.co/quests/${store.quest.value!.id}");
+            "https://dev-app.workquest.co/quests/${store.quest.value!.id}",
+          );
         },
       ),
       if (store.quest.value!.userId == profile!.userData!.id &&
@@ -661,8 +663,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               Radius.circular(25),
             ),
             child: Image.network(
-              respond.worker.avatar?.url ??
-                  "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+              respond.worker.avatar?.url ?? Constants.defaultImageNetwork,
               fit: BoxFit.cover,
               height: 50,
               width: 50,

@@ -33,11 +33,10 @@ class ProfileMeResponse with ClusterItem {
     // required this.updatedAt,
   });
 
-  String id;
+  String? id;
   String avatarId;
   String firstName;
   String lastName;
-
   Phone? phone;
   Phone? tempPhone;
   String? email;
@@ -135,7 +134,7 @@ class ProfileMeResponse with ClusterItem {
         ratingStatistic: RatingStatistic.fromJson(json["ratingStatistic"] ??
             {
               "id": "",
-              "userId": json["id"],
+              "userId": json["id"] ?? "",
               "reviewCount": 0,
               "averageMark": 0,
               "status": 3,

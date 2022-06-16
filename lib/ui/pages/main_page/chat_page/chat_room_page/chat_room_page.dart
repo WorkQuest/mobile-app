@@ -1,5 +1,6 @@
+import 'package:app/constants.dart';
 import 'package:app/enums.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/edit_chat_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
@@ -10,14 +11,14 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
-import 'package:app/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import "package:provider/provider.dart";
 
+import '../../../../../utils/snack_bar.dart';
 import '../../../../widgets/media_upload/media_upload_widget.dart';
 
 class ChatRoomPage extends StatefulWidget {
@@ -33,19 +34,17 @@ class ChatRoomPage extends StatefulWidget {
 class _ChatRoomPageState extends State<ChatRoomPage> {
   late final ChatRoomStore _store;
   ChatStore? _chatStore;
-  final String defaultImageUrl =
-      "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs";
   ProfileMeStore? profile;
+
   String? id1;
   String? id2;
-  String? ownersChatId;
   String? firstName1;
   String? lastName1;
   String? firstName2;
   String? lastName2;
   String? url1;
   String? url2;
-  String? chatType;
+  TypeChat? chatType;
   String? chatName;
   UserRole? role1;
   UserRole? role2;
@@ -57,119 +56,118 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     profile = context.read<ProfileMeStore>();
     _chatStore = context.read<ChatStore>();
     _store.idChat = widget.idChat;
-    _store.setMyRole(profile!.userData!.role);
-    _store.getMessages(true);
-    id1 = _store.chat?.chatModel.userMembers[0].id ?? "--";
-    ownersChatId = _store.chat?.chatModel.ownerUserId ?? "--";
-    firstName1 = _store.chat?.chatModel.userMembers[0].firstName ?? "--";
-    lastName1 = _store.chat?.chatModel.userMembers[0].lastName ?? "--";
-    url1 = _store.chat?.chatModel.userMembers[0].avatar?.url ?? defaultImageUrl;
-    chatType = _store.chat?.chatModel.type ?? "";
-    chatName = _store.chat?.chatModel.name ?? "--";
-    role1 = _store.chat?.chatModel.userMembers[0].role;
+    _store.getMessages(chatId: _store.idChat!).then((value) {
+      chatType = _store.chatRoom?.type;
 
-    if (_store.chat!.chatModel.type == "group")
-      _store.generateListUserInChat();
-    else {
-      id2 = _store.chat?.chatModel.userMembers[1].id ?? "--";
-      firstName2 = _store.chat?.chatModel.userMembers[1].firstName ?? "--";
-      lastName2 = _store.chat?.chatModel.userMembers[1].lastName ?? "--";
-      url2 =
-          _store.chat?.chatModel.userMembers[1].avatar?.url ?? defaultImageUrl;
-      role2 = _store.chat?.chatModel.userMembers[1].role;
-    }
+      if (chatType == TypeChat.group) {
+        _store.getOwnerId();
+        chatName = _store.chatRoom!.groupChat?.name ?? "--";
+      } else {
+        id1 = _store.chatRoom?.members[0].userId ?? "--";
+        firstName1 = _store.chatRoom?.members[0].user!.firstName ?? "--";
+        lastName1 = _store.chatRoom?.members[0].user!.lastName ?? "--";
+        url1 = _store.chatRoom?.members[0].user!.avatar?.url ??
+            Constants.defaultImageNetwork;
+        id2 = _store.chatRoom?.members[1].userId ?? "--";
+        firstName2 = _store.chatRoom?.members[1].user!.firstName ?? "--";
+        lastName2 = _store.chatRoom?.members[1].user!.lastName ?? "--";
+        url2 = _store.chatRoom?.members[1].user!.avatar?.url ??
+            Constants.defaultImageNetwork;
+        if (_store.chatRoom?.questChat != null)
+          role1 = _store.chatRoom!.members[0].user!.role;
+        role2 = _store.chatRoom!.members[1].user!.role;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Observer(
-      builder: (_) => Scaffold(
-        appBar: _store.messageSelected ? _selectedMessages() : _appBar(),
-        body: Container(
-          alignment: Alignment.bottomLeft,
-          height: MediaQuery.of(context).size.height,
-          child: Observer(
-            builder: (_) => Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: Observer(
-                    builder: (_) => _store.isLoading
-                        ? Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          )
-                        : NotificationListener<ScrollStartNotification>(
-                            onNotification: (scrollStart) {
-                              final metrics = scrollStart.metrics;
-                              if (metrics.maxScrollExtent < metrics.pixels) {
-                                _store.getMessages(true);
-                              }
-                              return true;
-                            },
-                            child: ListView.builder(
-                              physics: const BouncingScrollPhysics(
-                                parent: AlwaysScrollableScrollPhysics(),
-                              ),
-                              itemCount: _store.chat?.messages.length,
-                              itemBuilder: (context, index) => MessageCell(
-                                UniqueKey(),
-                                _store.chat!.messages[index],
-                                profile!.userData!.id,
-                                _store.mediaPaths,
-                              ),
-                              reverse: true,
+      builder: (_) => _store.initPage
+          ? Scaffold(
+              body: Center(child: CircularProgressIndicator.adaptive()),
+            )
+          : Scaffold(
+              appBar: _store.messageSelected ? _selectedMessages() : _appBar(),
+              body: Container(
+                alignment: Alignment.bottomLeft,
+                height: MediaQuery.of(context).size.height,
+                child: Observer(
+                  builder: (_) => Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: NotificationListener<ScrollStartNotification>(
+                          onNotification: (scrollStart) {
+                            final metrics = scrollStart.metrics;
+                            if (metrics.maxScrollExtent < metrics.pixels &&
+                                !_store.loadMessage) {
+                              _store.getMessages(chatId: _store.idChat!);
+                            }
+                            return true;
+                          },
+                          child: ListView.builder(
+                            physics: const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics(),
+                            ),
+                            itemCount: _store.messages.length,
+                            itemBuilder: (context, index) => MessageCell(
+                              UniqueKey(),
+                              _store.messages[index],
+                              profile!.userData!.id!,
+                              _store.mediaPaths,
+                            ),
+                            reverse: true,
+                          ),
+                        ),
+                      ),
+                      _store.chatRoom!.questChat?.status != -1
+                          ? InputToolbar(_store, profile!.userData!.id!)
+                          : profile!.userData!.role == UserRole.Employer
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  child: LoginButton(
+                                    title: "quests.addToQuest".tr(),
+                                    onTap: () async {
+                                      await Navigator.of(
+                                        context,
+                                        rootNavigator: true,
+                                      ).pushNamed(
+                                        ChooseQuestPage.routeName,
+                                        arguments: ChooseQuestArguments(
+                                          workerId: profile!.userData!.id != id1
+                                              ? id1!
+                                              : id2!,
+                                          workerAddress: null,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : SizedBox(),
+                      if (_store.progressImages.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16.0,
+                            right: 16.0,
+                            top: 16.0,
+                          ),
+                          child: Container(
+                            height: 250,
+                            child: ListMediaView(
+                              store: _store,
                             ),
                           ),
+                        ),
+                      const SizedBox(height: 16.0),
+                    ],
                   ),
                 ),
-                _store.chat!.chatModel.questChat?.quest?.status != 5
-                    ? InputToolbar(_store, profile!.userData!.id)
-                    : profile!.userData!.role == UserRole.Employer
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: LoginButton(
-                              title: "quests.addToQuest".tr(),
-                              onTap: () async {
-                                await _store.getCompanion(
-                                  profile!.userData!.id != id1 ? id1! : id2!,
-                                );
-                                await Navigator.of(context, rootNavigator: true)
-                                    .pushNamed(
-                                  ChooseQuestPage.routeName,
-                                  arguments: ChooseQuestArguments(
-                                    workerId: _store.companion!.id,
-                                    workerAddress:
-                                        _store.companion!.walletAddress!,
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                        : SizedBox(),
-                if (_store.progressImages.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
-                      top: 16.0,
-                    ),
-                    child: Container(
-                      height: 250,
-                      child: ListMediaView(
-                        store: _store,
-                      ),
-                    ),
-                    // _media(),
-                  ),
-                const SizedBox(
-                  height: 16.0,
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -181,7 +179,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       leading: IconButton(
         onPressed: () {
           _store.setMessageSelected(false);
-          _store.uncheck();
+          _store.resetSelectedMessages();
         },
         icon: Icon(
           Icons.close,
@@ -191,7 +189,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       centerTitle: true,
       title: Observer(
         builder: (_) => Text(
-          "${_store.idMessages.length}",
+          "${_store.getCountStarredChats()}",
           style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.normal,
@@ -200,11 +198,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       ),
       actions: [
         IconButton(
-          onPressed: () {
-            _store.setStar(true);
-            _store.setMessageSelected(false);
-            _store.uncheck();
-          },
+          onPressed: _store.setStar,
           icon: Icon(
             Icons.star,
             color: Colors.white,
@@ -225,7 +219,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               },
             );
             _store.setMessageSelected(false);
-            _store.uncheck();
+            _store.resetSelectedMessages();
           },
           icon: SvgPicture.asset(
             "assets/copy_icon.svg",
@@ -248,7 +242,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         ),
       ),
       centerTitle: true,
-      title: chatType == "group"
+      title: chatType == TypeChat.group
           ? Text(
               "$chatName",
               style: TextStyle(
@@ -266,7 +260,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     userId: profile!.userData!.id != id1! ? id1! : id2!,
                   ),
                 );
-                _store.companion = null;
               },
               child: Text(
                 profile!.userData!.id != id1
@@ -281,14 +274,18 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               ),
             ),
       actions: [
-        chatType == "group"
-            ? profile!.userData!.id == ownersChatId
+        chatType == TypeChat.group
+            ? profile!.userData!.id == _store.ownerId
                 ? IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
+                    onPressed: () async {
+                      await Navigator.pushNamed(
                         context,
-                        EditGroupChat.routeName,
-                        arguments: _store,
+                        EditChatPage.routeName,
+                        arguments: _store.chatRoom,
+                      );
+                      await _store.getMessages(
+                        chatId: _store.idChat!,
+                        newList: true,
                       );
                     },
                     icon: Icon(Icons.edit),
@@ -303,7 +300,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       userId: profile!.userData!.id != id1! ? id1! : id2!,
                     ),
                   );
-                  _store.companion = null;
                 },
                 child: CircleAvatar(
                   backgroundImage: NetworkImage(
@@ -312,7 +308,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   maxRadius: 20,
                 ),
               ),
-        chatType == "group" && ownersChatId != profile!.userData!.id
+        chatType == TypeChat.group && _store.ownerId != profile!.userData!.id
             ? PopupMenuButton<String>(
                 elevation: 10,
                 icon: Icon(Icons.more_vert),
@@ -345,7 +341,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 },
               )
             : const SizedBox(width: 16),
-        _store.chat!.chatModel.questChat?.quest?.openDispute?.status == 2
+        _store.chatRoom!.questChat?.quest?.openDispute?.status == 2
             ? PopupMenuButton<String>(
                 elevation: 10,
                 icon: Icon(Icons.more_vert),
@@ -360,8 +356,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         CreateReviewPage.routeName,
                         arguments: ReviewArguments(
                           null,
-                          _store.chat!.chatModel.questChat!.quest!.openDispute!
-                              .id,
+                          _store.chatRoom!.questChat?.quest?.openDispute!.id,
                         ),
                       );
                       break;

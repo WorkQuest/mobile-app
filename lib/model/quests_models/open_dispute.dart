@@ -8,8 +8,8 @@ class OpenDispute {
   });
 
   String id;
-  String openDisputeUserId;
-  String opponentUserId;
+  String? openDisputeUserId;
+  String? opponentUserId;
   String? assignedAdminId;
   int status;
 

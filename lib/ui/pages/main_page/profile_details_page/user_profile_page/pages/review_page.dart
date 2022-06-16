@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -29,9 +30,9 @@ class _ReviewPageState extends State<ReviewPage> {
     else
       user = widget.store.otherUserData!;
     if (widget.store.titleName == "Reviews")
-      widget.store.getReviews(userId: user.id, newList: true);
+      widget.store.getReviews(userId: user.id!, newList: true);
     if (widget.store.titleName == "Portfolio")
-      widget.store.getPortfolio(userId: user.id, newList: true);
+      widget.store.getPortfolio(userId: user.id!, newList: true);
     super.initState();
   }
 
@@ -51,10 +52,10 @@ class _ReviewPageState extends State<ReviewPage> {
                   scrollNotification.metrics.maxScrollExtent &&
               !widget.store.isLoading) {
             if (widget.store.titleName == "Reviews")
-              widget.store.getReviews(userId: user.id, newList: false);
+              widget.store.getReviews(userId: user.id!, newList: false);
 
             if (widget.store.titleName == "Portfolio")
-              widget.store.getPortfolio(userId: user.id, newList: false);
+              widget.store.getPortfolio(userId: user.id!, newList: false);
           }
           setState(() {});
           return false;
@@ -77,7 +78,7 @@ class _ReviewPageState extends State<ReviewPage> {
                               ReviewsWidget(
                                 avatar: widget.store.reviewsList[index].fromUser
                                         .avatar?.url ??
-                                    "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                                    Constants.defaultImageNetwork,
                                 name: widget.store.reviewsList[index].fromUser
                                         .firstName +
                                     " " +
@@ -96,7 +97,7 @@ class _ReviewPageState extends State<ReviewPage> {
                                 message:
                                     widget.store.reviewsList[index].message,
                                 id: widget.store.reviewsList[index].fromUserId,
-                                myId: user.id,
+                                myId: user.id!,
                                 role: user.role,
                                 last:
                                     index == widget.store.reviewsList.length - 1

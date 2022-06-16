@@ -1282,8 +1282,14 @@
       "employerInviteOnQuest": "The employer invited on quest",
       "workerResponseOnQuest": "The worker responded to the quest",
       "groupChatAddUser": "User added",
+      "groupChatAddMember": "User added",
       "groupChatDeleteUser": "User deleted",
-      "groupChatLeaveUser": "User left chat"
+      "GroupChatDeleteMember": "User deleted",
+      "groupChatLeaveUser": "User left chat",
+      "groupChatLeaveMember": "User left chat",
+      "groupChatAddAdmin": "Added admin",
+      "groupChatLeaveAdmin": "Admin has left the chat",
+      "message": ""
     },
     "disputeTheme": {
       "noResponse": "There is no response from the employer / employee",
@@ -1297,7 +1303,8 @@
       "active": "Active",
       "favorite": "Favourites",
       "group": "Group",
-      "completed": "Completed"
+      "completed": "Completed",
+      "privates": "Privates"
     }
   },
   "settings": {

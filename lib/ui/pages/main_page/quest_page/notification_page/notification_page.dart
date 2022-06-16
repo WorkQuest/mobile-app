@@ -225,8 +225,7 @@ class _NotificationView extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: Image.network(
-                        body.notification.data.user.avatar?.url ??
-                            "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                        body.notification.data.user.avatar?.url ??Constants.defaultImageNetwork,
                         width: 40,
                         height: 40,
                         fit: BoxFit.cover,

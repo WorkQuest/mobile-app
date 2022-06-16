@@ -1,21 +1,35 @@
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members/add_user_cell.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/add_user_cell.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/store/edit_chat_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
+import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
-class AddMembers extends StatelessWidget {
+class AddMembers extends StatefulWidget {
   static const String routeName = "/addMembers";
 
-  final ChatRoomStore store;
+  final String chatId;
 
-  const AddMembers(this.store);
+  const AddMembers(this.chatId);
+
+  @override
+  State<AddMembers> createState() => _AddMembersState();
+}
+
+class _AddMembersState extends State<AddMembers> {
+  late EditChatStore store;
+
+  @override
+  void initState() {
+    store = context.read<EditChatStore>();
+    store.getUsersForChat(widget.chatId);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    store.availableUsersForAdding(store.chat!.chatModel.userMembers);
     return DismissKeyboard(
       child: Scaffold(
         appBar: AppBar(
@@ -42,7 +56,7 @@ class AddMembers extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                onChanged: (text) => store.findUser(text),
+                onChanged: store.findUser,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(
                     Icons.search,
@@ -66,9 +80,7 @@ class AddMembers extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 16.0,
-              ),
+              const SizedBox(height: 16.0),
               Expanded(
                 child: Observer(
                   builder: (_) => ListView.separated(
@@ -80,20 +92,21 @@ class AddMembers extends StatelessWidget {
                     ),
                     itemCount:
                         store.foundUsers.length == 0 && store.userName.isEmpty
-                            ? store.availableUsers.length
+                            ? store.users.length
                             : store.foundUsers.length,
                     itemBuilder: (context, index) => AddUserCell(
                       store.foundUsers.isEmpty && store.userName.isEmpty
-                          ? store.availableUsers[index]
+                          ? store.users.keys.toList()[index]
                           : store.foundUsers[index],
                       index,
                       store,
+                      true,
                     ),
                   ),
                 ),
               ),
               buttonRow(
-                store,
+                store: store,
                 forward: "profiler.create".tr(),
                 back: "meta.back".tr(),
                 context: context,
@@ -105,8 +118,8 @@ class AddMembers extends StatelessWidget {
     );
   }
 
-  Widget buttonRow(
-    ChatRoomStore store, {
+  Widget buttonRow({
+    required EditChatStore store,
     required String forward,
     required String back,
     required BuildContext context,
@@ -118,9 +131,7 @@ class AddMembers extends StatelessWidget {
               height: 45.0,
               child: OutlinedButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text(
-                  "meta.cancel".tr(),
-                ),
+                child: Text("meta.cancel".tr()),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(
                     width: 1.0,
@@ -130,16 +141,13 @@ class AddMembers extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(
-            width: 20.0,
-          ),
+          const SizedBox(width: 20.0),
           Expanded(
             child: Observer(
               builder: (_) => ElevatedButton(
-                onPressed: store.usersId.isNotEmpty
+                onPressed: store.isSelectedUsers
                     ? () async {
-                        await store.addUsersInChat();
-                        store.getMessages(true);
+                        await store.addUsers(widget.chatId);
                         if (!store.isLoading) {
                           Navigator.pop(context);
                           Navigator.pop(context);
@@ -147,12 +155,8 @@ class AddMembers extends StatelessWidget {
                       }
                     : null,
                 child: store.isLoading
-                    ? Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      )
-                    : Text(
-                        "meta.save".tr(),
-                      ),
+                    ? Center(child: CircularProgressIndicator.adaptive())
+                    : Text("meta.save".tr()),
               ),
             ),
           ),

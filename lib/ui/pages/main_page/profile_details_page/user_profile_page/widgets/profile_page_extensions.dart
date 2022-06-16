@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/constants.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
@@ -13,8 +14,6 @@ import 'package:flutter_svg/svg.dart';
 extension CustomAppBar on UserProfileState {
   Widget sliverAppBar(ProfileMeResponse info,
       StreamController<AppBarParams> streamController, Function() updateState) {
-    final String defaultImage =
-        'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
     final mark = info.ratingStatistic!.averageMark;
     final markDev = mark.toInt();
     final markMod = (mark % (markDev == 0 ? 1 : markDev) * 10).round() / 10;
@@ -65,8 +64,8 @@ extension CustomAppBar on UserProfileState {
             children: [
               Image.network(
                 info.avatar != null
-                    ? info.avatar!.url ?? defaultImage
-                    : defaultImage,
+                    ? info.avatar!.url ?? Constants.defaultImageNetwork
+                    : Constants.defaultImageNetwork,
                 fit: BoxFit.cover,
               ),
               Positioned(
@@ -142,7 +141,7 @@ extension ReviewsTab on UserProfileState {
                       ReviewsWidget(
                         avatar: portfolioStore!
                                 .reviewsList[index].fromUser.avatar?.url ??
-                            "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                            Constants.defaultImageNetwork,
                         name: portfolioStore!
                                 .reviewsList[index].fromUser.firstName +
                             " " +
@@ -160,8 +159,8 @@ extension ReviewsTab on UserProfileState {
                         message: portfolioStore!.reviewsList[index].message,
                         id: portfolioStore!.reviewsList[index].fromUserId,
                         myId: viewOtherUser?.userData == null
-                            ? userStore!.userData!.id
-                            : viewOtherUser!.userData!.id,
+                            ? userStore!.userData!.id!
+                            : viewOtherUser!.userData!.id!,
                         role: viewOtherUser?.userData == null
                             ? userStore!.userData!.role
                             : viewOtherUser!.userData!.role,
@@ -184,8 +183,8 @@ extension ReviewsTab on UserProfileState {
                           );
                           await portfolioStore!.getReviews(
                             userId: viewOtherUser?.userData == null
-                                ? userStore!.userData!.id
-                                : viewOtherUser!.userData!.id,
+                                ? userStore!.userData!.id!
+                                : viewOtherUser!.userData!.id!,
                             newList: true,
                           );
                         },

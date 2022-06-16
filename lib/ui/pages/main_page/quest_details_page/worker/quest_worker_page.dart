@@ -100,7 +100,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           icon: Icon(Icons.share_outlined),
           onPressed: () {
             Share.share(
-                "https://app.workquest.co/quests/${store.quest.value!.id}");
+                "https://dev-app.workquest.co/quests/${store.quest.value!.id}");
           },
         ),
       if (store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
@@ -443,7 +443,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       if (store.isSuccess) {
                         store.quest.value!.responded = Responded(
                           id: "",
-                          workerId: profile!.userData!.id,
+                          workerId: profile!.userData!.id!,
                           questId: store.quest.value!.id,
                           status: 0,
                           type: 0,
@@ -456,7 +456,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                               store.quest.value!.id)
                             questStore.questsList[i].responded = Responded(
                               id: "",
-                              workerId: profile!.userData!.id,
+                              workerId: profile!.userData!.id!,
                               questId: store.quest.value!.id,
                               status: 0,
                               type: 0,

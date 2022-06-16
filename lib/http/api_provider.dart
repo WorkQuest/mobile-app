@@ -16,7 +16,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 
-import '../model/quests_models/media_model.dart';
+import '../model/media_model.dart';
 import '../ui/widgets/media_upload/store/i_media_store.dart';
 
 @singleton

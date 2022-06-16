@@ -127,18 +127,18 @@ class _DisputePageState extends State<DisputePage> {
             ),
           ),
         ),
-        Column(
-          children: store.messages
-              .map(
-                (element) => MessageCell(
-                  UniqueKey(),
-                  element,
-                  element.senderUserId,
-                  store.mediaPaths,
-                ),
-              )
-              .toList(),
-        ),
+        // Column(
+        //   children: store.messages
+        //       .map(
+        //         (element) => MessageCell(
+        //           UniqueKey(),
+        //           element,
+        //           element.senderMemberId,
+        //           store.mediaPaths,
+        //         ),
+        //       )
+        //       .toList(),
+        // ),
       ],
     );
   }

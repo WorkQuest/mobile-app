@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -91,9 +92,6 @@ class _InputToolbarState extends State<InputToolbar> {
               decoration: InputDecoration(
                 hintText: 'Text',
               ),
-              style: TextStyle(
-                fontSize: 16,
-              ),
             ),
           ),
           Observer(
@@ -104,8 +102,12 @@ class _InputToolbarState extends State<InputToolbar> {
                   ? () {
                       widget.store.sendMessage(
                         _controller.text,
-                        widget.store.chat!.chatModel.id,
-                        widget.userId,
+                        widget.store.chatRoom!.type == TypeChat.group
+                            ? widget.store.chatRoom!.id
+                            : widget.userId,
+                        widget.store.chatRoom!.type == TypeChat.group
+                            ? "chat"
+                            : "user",
                       );
                       _controller.text = "";
                     }
@@ -117,14 +119,12 @@ class _InputToolbarState extends State<InputToolbar> {
                   top: 10,
                   bottom: 10,
                 ),
-                child: Observer(
-                  builder: (_) => SvgPicture.asset(
-                    "assets/send_message_icon.svg",
-                    color: _controller.text.isNotEmpty ||
-                            widget.store.progressImages.isNotEmpty
-                        ? Color(0xFF0083C7)
-                        : Colors.grey,
-                  ),
+                child: SvgPicture.asset(
+                  "assets/send_message_icon.svg",
+                  color: _controller.text.isNotEmpty ||
+                          widget.store.progressImages.isNotEmpty
+                      ? Color(0xFF0083C7)
+                      : Colors.grey,
                 ),
               ),
             ),

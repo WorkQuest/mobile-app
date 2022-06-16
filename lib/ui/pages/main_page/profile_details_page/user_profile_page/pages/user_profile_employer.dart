@@ -56,10 +56,10 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                       : viewOtherUser!.userData!,
                 );
                 if (viewOtherUser?.userData == null)
-                  myQuests!.getQuests(userStore!.userData!.id, role, true);
+                  myQuests!.getQuests(userStore!.userData!.id!, role, true);
                 else
                   portfolioStore!.getReviews(
-                      userId: viewOtherUser!.userData!.id, newList: true);
+                      userId: viewOtherUser!.userData!.id!, newList: true);
               },
               child: Text(
                 "meta.showAllQuests".tr(),
@@ -98,8 +98,8 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
               : viewOtherUser!.userData!.ratingStatistic!.reviewCount
                   .toString(),
           userId: viewOtherUser?.userData == null
-              ? userStore!.userData!.id
-              : viewOtherUser!.userData!.id,
+              ? userStore!.userData!.id!
+              : viewOtherUser!.userData!.id!,
           context: context,
         ),
       ];

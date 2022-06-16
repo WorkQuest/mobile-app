@@ -21,8 +21,6 @@ class MyQuestsItem extends StatelessWidget {
   final BaseQuestResponse questInfo;
   final bool isExpanded;
   final QuestItemPriorityType itemType;
-  final String defaultImage =
-      'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 
   @override
   Widget build(BuildContext context) {

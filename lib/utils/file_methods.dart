@@ -1,4 +1,4 @@
-import '../model/quests_models/media_model.dart';
+import '../model/media_model.dart';
 
 class FileUtils {
 

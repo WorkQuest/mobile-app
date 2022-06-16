@@ -1,13 +1,19 @@
 import 'package:app/enums.dart';
+import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members/add_members.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/create_private_chat/create_private_page.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/create_private_chat/store/create_private_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/add_members.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_group_chat.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/edit_chat_page.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/store/edit_chat_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/store/group_chat_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/store/starred_message_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
@@ -667,15 +673,8 @@ class Routes {
 
       case ChatPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MultiProvider(
-            providers: [
-              Provider(
-                create: (context) => getIt.get<ChatStore>(),
-              ),
-              Provider(
-                create: (context) => getIt.get<ProfileMeStore>(),
-              ),
-            ],
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ChatStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChatPage(),
@@ -709,7 +708,7 @@ class Routes {
       case StarredMessage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
-            create: (context) => getIt.get<ChatRoomStore>(),
+            create: (context) => getIt.get<StarredMessageStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: StarredMessage(settings.arguments as String),
@@ -719,20 +718,22 @@ class Routes {
 
       case CreateGroupPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => MultiProvider(
-            providers: [
-              Provider(
-                create: (context) => getIt.get<ChatRoomStore>(),
-              ),
-              Provider(
-                create: (context) => getIt.get<ChatStore>(),
-              ),
-            ],
+          builder: (context) => Provider(
+            create: (context) => getIt.get<GroupChatStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: CreateGroupPage(
-                settings.arguments as String,
-              ),
+              child: CreateGroupPage(settings.arguments as bool),
+            ),
+          ),
+        );
+
+      case CreatePrivatePage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<CreatePrivateStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: CreatePrivatePage(settings.arguments as String),
             ),
           ),
         );
@@ -740,23 +741,28 @@ class Routes {
       case AddMembers.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
-            create: (context) => getIt.get<ChatRoomStore>(),
+            create: (context) => getIt.get<EditChatStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: AddMembers(settings.arguments as ChatRoomStore),
+              child: AddMembers(settings.arguments as String),
             ),
           ),
         );
 
-      case EditGroupChat.routeName:
+      case EditChatPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<ChatRoomStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<EditChatStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: EditGroupChat(
-                settings.arguments as ChatRoomStore,
-              ),
+              child: EditChatPage(settings.arguments as ChatModel),
             ),
           ),
         );
@@ -782,9 +788,9 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
-              Provider(
-                create: (context) => getIt.get<ChatRoomStore>(),
-              ),
+              // Provider(
+              //   create: (context) => getIt.get<ChatRoomStore>(),
+              // ),
             ],
             child: Directionality(
               textDirection: checkDirection(context),

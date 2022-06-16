@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:app/model/web3/TrxEthereumResponse.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
@@ -38,7 +39,8 @@ class WebSocket {
 
   void _connectWallet() {
     walletChannel = IOWebSocketChannel.connect(
-        "${AccountRepository().getConfigNetwork().wss}/tendermint-rpc/websocket");
+      "${AccountRepository().getConfigNetwork().wss}/tendermint-rpc/websocket",
+    );
     walletChannel!.sink.add("""
       {
           "jsonrpc": "2.0",
@@ -66,7 +68,8 @@ class WebSocket {
   }
 
   void _connectSender() {
-    _senderChannel = IOWebSocketChannel.connect("wss://app.workquest.co/api");
+    _senderChannel =
+        IOWebSocketChannel.connect("wss://dev-app.workquest.co/api");
     _senderChannel?.sink.add("""{
           "type": "hello",
           "id": 1,
@@ -165,15 +168,16 @@ class WebSocket {
     required String chatId,
     required String text,
     required List<String> medias,
+    required String entity,
   }) async {
     Object payload = {
       "type": "request",
       "id": "$_senderCounter",
       "method": "POST",
-      "path": "/api/v1/chat/$chatId/send-message",
+      "path": "/api/v1/$entity/$chatId/send-message",
       "payload": {
         "text": "$text",
-        "medias": medias,
+        "mediaIds": medias,
       }
     };
     String textPayload = json.encode(payload).toString();
@@ -193,7 +197,7 @@ class WebSocket {
   }
 
   void _onError(error) {
-    print("WebSocket error: $error");
+    log("WebSocket error: $error");
   }
 
   void _onDone(IOWebSocketChannel channel, bool connectNotify) {
