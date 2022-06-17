@@ -95,7 +95,11 @@ class _HttpClient implements IHttpClient {
   Future _sendRequest(Future<Response> request) async {
     final Response response = await request.catchError((error) {
       if (error is DioError) {
-        throw RequestErrorModel.fromJson(error.response!.data);
+        if (error.response == null) {
+          throw FormatException('Server response timed out');
+        } else {
+          throw RequestErrorModel.fromJson(error.response!.data);
+        }
       }
     });
     return response.data["result"];

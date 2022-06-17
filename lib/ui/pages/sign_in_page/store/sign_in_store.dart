@@ -154,10 +154,15 @@ abstract class _SignInStore extends IStore<bool> with Store {
       // await signInWallet();
       this.successData = true;
       this.errorMessage = null;
+    } on FormatException catch (e, trace) {
+      print('e: $e\ntrace: $trace');
+      error = e.message;
+      this.onError(e.message);
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
       error = e.toString();
       this.onError(e.toString());
+
     }
   }
 }
