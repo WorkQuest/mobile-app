@@ -66,6 +66,10 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       await _connectRpc();
       isConnect = true;
       onSuccess(false);
+    } on FormatException catch (e, trace) {
+      print('setNetwork | $e\n$trace');
+      isConnect = false;
+      onError(e.message);
     } catch (e) {
       isConnect = false;
       onError(e.toString());
@@ -80,6 +84,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
 
   @action
   getMaxBalance() async {
+    print('address token: ${_getTokenUSDT(network!)}');
+    print('rpc: ${_getRpcNetwork(network!)}');
     maxAmount = await service!.getBalanceFromContract(_getTokenUSDT(network!), otherNetwork: true);
   }
 
@@ -186,16 +192,13 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     print('address: ${_cred.address}');
     final _spender = EthereumAddress.fromHex(_getAddressContract(network!));
     final _gas = await service!.getGas();
-    await contract.approve(
-        _spender,
-        BigInt.from(amount * pow(10, 6)),
+    await contract.approve(_spender, BigInt.from(amount * pow(10, 6)),
         credentials: _cred,
         transaction: Transaction(
           gasPrice: _gas,
           maxGas: 2000000,
           value: EtherAmount.zero(),
-        )
-    );
+        ));
   }
 
   Future<DeployedContract> _getContract() async {
@@ -221,23 +224,11 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   String _getRpcNetwork(SwapNetworks network) {
     switch (network) {
       case SwapNetworks.ethereum:
-        if (AccountRepository().configName == ConfigNameNetwork.devnet) {
-          return 'https://rinkeby.infura.io/v3/';
-        } else {
-          return 'https://mainnet.infura.io/v3/';
-        }
+        return 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161';
       case SwapNetworks.binance:
-        if (AccountRepository().configName == ConfigNameNetwork.devnet) {
-          return 'https://data-seed-prebsc-1-s1.binance.org:8545/';
-        } else {
-          return 'https://bsc-dataseed1.binance.org/';
-        }
+        return 'https://data-seed-prebsc-1-s1.binance.org:8545/';
       case SwapNetworks.matic:
-        if (AccountRepository().configName == ConfigNameNetwork.devnet) {
-          return 'https://rpc-mumbai.matic.today';
-        } else {
-          return 'https://rpc-mainnet.matic.network';
-        }
+        return 'https://rpc-mumbai.matic.today';
     }
   }
 

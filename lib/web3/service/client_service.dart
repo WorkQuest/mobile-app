@@ -173,7 +173,7 @@ class ClientService implements ClientServiceI {
       }
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
-      throw Exception("Error connection to network");
+      throw FormatException("Error connection to network");
     }
   }
 
