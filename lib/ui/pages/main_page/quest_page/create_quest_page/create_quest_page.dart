@@ -10,6 +10,7 @@ import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/validator.dart';
+import 'package:app/web3/contractEnums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../../../enums.dart';
 import '../../../../../observer_consumer.dart';
+import '../../../../../utils/web3_utils.dart';
 import '../../../../widgets/media_upload/media_upload_widget.dart';
 import '../../../../../web3/repository/account_repository.dart';
 import '../../wallet_page/confirm_transaction_dialog.dart';
@@ -65,8 +67,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.price = widget.questInfo!.price;
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
       store.setImages(widget.questInfo!.medias ?? []);
-      _controller = SkillSpecializationController(
-          initialValue: widget.questInfo!.questSpecializations);
+      _controller = SkillSpecializationController(initialValue: widget.questInfo!.questSpecializations);
     } else
       _controller = SkillSpecializationController();
   }
@@ -126,8 +127,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     onChanged: (String? value) {
                                       store.changedPriority(value!);
                                     },
-                                    items: store.priorityList
-                                        .map<DropdownMenuItem<String>>(
+                                    items: store.priorityList.map<DropdownMenuItem<String>>(
                                       (String value) {
                                         return DropdownMenuItem<String>(
                                           value: value.tr(),
@@ -238,9 +238,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     onChanged: (String? value) {
                                       store.changedEmployment(value!);
                                     },
-                                    items: store.employmentList
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
+                                    items: store.employmentList.map<DropdownMenuItem<String>>((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -292,9 +290,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     onChanged: (String? value) {
                                       store.changedDistantWork(value!);
                                     },
-                                    items: store.distantWorkList
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
+                                    items: store.distantWorkList.map<DropdownMenuItem<String>>((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value),
@@ -346,8 +342,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     onChanged: (String? value) {
                                       store.changedPayPeriod(value!);
                                     },
-                                    items: store.payPeriodList
-                                        .map<DropdownMenuItem<String>>(
+                                    items: store.payPeriodList.map<DropdownMenuItem<String>>(
                                       (String value) {
                                         return DropdownMenuItem<String>(
                                           value: value.tr(),
@@ -460,8 +455,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             true,
                           );
                           if (isEdit) {
-                            final updatedQuest =
-                                await store.getQuest(widget.questInfo!.id);
+                            final updatedQuest = await store.getQuest(widget.questInfo!.id);
                             Navigator.pushReplacementNamed(
                               context,
                               QuestDetails.routeName,
@@ -481,23 +475,28 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             onTap: store.isLoading
                                 ? null
                                 : () async {
-                                    store.skillFilters = _controller!
-                                        .getSkillAndSpecialization();
+                                    store.skillFilters = _controller!.getSkillAndSpecialization();
                                     if (isEdit) {
                                       if (store.canSubmitEditQuest) {
-                                        if (_formKey.currentState?.validate() ??
-                                            false)
+                                        if (_formKey.currentState?.validate() ?? false)
                                           await store.createQuest(
                                             isEdit: true,
                                             questId: widget.questInfo!.id,
                                           );
                                       }
                                     } else if (store.canCreateQuest) {
-                                      if (_formKey.currentState?.validate() ??
-                                          false) {
-                                        await _pushConfirmTransferPage(
-                                          store.price,
-                                        );
+                                      if (_formKey.currentState?.validate() ?? false) {
+                                        try {
+                                          await _checkPossibilityTx(store.price);
+                                        } on FormatException catch (e) {
+                                          AlertDialogUtils.showInfoAlertDialog(context,
+                                              title: 'modals.error'.tr(), content: e.message);
+                                          return;
+                                        } catch (e) {
+                                          AlertDialogUtils.showInfoAlertDialog(context,
+                                              title: 'modals.error'.tr(), content: e.toString());
+                                          return;
+                                        }
                                         confirmTransaction(
                                           context,
                                           fee: transferStore.fee,
@@ -509,8 +508,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                             Navigator.pop(context);
                                             if (store.isSuccess) {
                                               Navigator.pop(context);
-                                              AlertDialogUtils
-                                                  .showSuccessDialog(context);
+                                              AlertDialogUtils.showSuccessDialog(context);
                                             }
                                           },
                                         );
@@ -539,9 +537,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                         priceKey.currentContext!,
                                       );
                                   },
-                            title: isEdit
-                                ? "Edit Quest"
-                                : 'quests.createAQuest'.tr(),
+                            title: isEdit ? "Edit Quest" : 'quests.createAQuest'.tr(),
                           ),
                         ),
                       ),
@@ -556,22 +552,17 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     );
   }
 
-  Future<void> _pushConfirmTransferPage(String price) async {
+  Future<void> _checkPossibilityTx(String price) async {
     transferStore.setAmount(price);
     if (transferStore.fee.isEmpty) {
       await transferStore.getFee();
     }
-    if (transferStore.addressTo.toLowerCase() ==
-        AccountRepository().userAddress.toLowerCase()) {
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'modals.error'.tr(),
-          content: 'errors.provideYourAddress'.tr());
-      return;
+    await Web3Utils.checkPossibilityTx(TYPE_COINS.WUSD, double.parse(price));
+    if (transferStore.addressTo.toLowerCase() == AccountRepository().userAddress.toLowerCase()) {
+      throw FormatException('errors.provideYourAddress'.tr());
     }
     if (double.parse(transferStore.amount) == 0.0) {
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'modals.error'.tr(), content: 'errors.invalidAmount'.tr());
-      return;
+      throw FormatException('errors.invalidAmount'.tr());
     }
   }
 
@@ -645,8 +636,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       onSelectedItemChanged: (int index) {
                         changedEmployment = children[index];
                       },
-                      children:
-                          children.map((e) => Center(child: Text(e))).toList(),
+                      children: children.map((e) => Center(child: Text(e))).toList(),
                     ),
                   ),
                   CupertinoButton(

@@ -23,6 +23,8 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import 'package:share/share.dart';
 
+import '../../../../../utils/web3_utils.dart';
+import '../../../../../web3/contractEnums.dart';
 import '../../../../widgets/quest_header.dart';
 import '../../raise_views_page/raise_views_page.dart';
 
@@ -567,7 +569,15 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     required void Function()? onPress,
     required void Function() nextStep,
   }) async {
-    await store.getFee();
+    try {
+      await _checkPossibilityTx();
+    } on FormatException catch (e) {
+      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.message);
+      return;
+    } catch (e) {
+      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.toString());
+      return;
+    }
     await confirmTransaction(
       context,
       fee: store.fee,
@@ -585,6 +595,12 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       }
     });
   }
+
+  _checkPossibilityTx() async {
+    await store.getFee();
+    await Web3Utils.checkPossibilityTx(TYPE_COINS.WQT, 0.0);
+  }
+
 
   Widget selectableMember(RespondModel respond) {
     return Container(

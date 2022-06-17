@@ -8,6 +8,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../../../utils/web3_utils.dart';
+import '../../../../../../../web3/contractEnums.dart';
+
 class ChooseQuestArguments {
   final String workerId;
   final String? workerAddress;
@@ -43,8 +46,7 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
       newList: true,
       isProfileYours: false,
     );
-    if (widget.arguments.workerAddress == null)
-      store.getUser(userId: widget.arguments.workerId);
+    if (widget.arguments.workerAddress == null) store.getUser(userId: widget.arguments.workerId);
     super.initState();
   }
 
@@ -80,9 +82,7 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
             : NotificationListener<ScrollEndNotification>(
                 onNotification: (scrollEnd) {
                   final metrics = scrollEnd.metrics;
-                  if ((metrics.atEdge ||
-                          metrics.maxScrollExtent < metrics.pixels) &&
-                      !store.isLoading) {
+                  if ((metrics.atEdge || metrics.maxScrollExtent < metrics.pixels) && !store.isLoading) {
                     store.getQuests(
                       userId: widget.arguments.workerId,
                       newList: true,
@@ -149,21 +149,27 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                 builder: (_) => ElevatedButton(
                   onPressed: store.questId.isNotEmpty
                       ? () async {
-                          await store.getFee();
+                          try {
+                            await _checkPossibilityTx();
+                          } on FormatException catch (e) {
+                            AlertDialogUtils.showInfoAlertDialog(context,
+                                title: 'modals.error'.tr(), content: e.message);
+                            return;
+                          } catch (e) {
+                            AlertDialogUtils.showInfoAlertDialog(context,
+                                title: 'modals.error'.tr(), content: e.toString());
+                            return;
+                          }
                           await confirmTransaction(
                             context,
                             fee: store.fee,
                             transaction: "Transaction info",
-                            address: store.quests
-                                .firstWhere(
-                                    (element) => element.id == store.questId)
-                                .contractAddress!,
+                            address: store.quests.firstWhere((element) => element.id == store.questId).contractAddress!,
                             amount: null,
                             onPress: () {
                               store.startQuest(
                                 userId: widget.arguments.workerId,
-                                userAddress: widget.arguments.workerAddress ??
-                                    store.user!.walletAddress!,
+                                userAddress: widget.arguments.workerAddress ?? store.user!.walletAddress!,
                               );
                               Navigator.pop(context);
                             },
@@ -191,4 +197,9 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
           ],
         ),
       );
+
+  _checkPossibilityTx() async {
+    await store.getFee();
+    await Web3Utils.checkPossibilityTx(TYPE_COINS.WQT, 0.0);
+  }
 }

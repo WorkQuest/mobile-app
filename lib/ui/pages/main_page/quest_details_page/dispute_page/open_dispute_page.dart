@@ -8,6 +8,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../../utils/web3_utils.dart';
+import '../../../../../web3/contractEnums.dart';
 import '../../wallet_page/confirm_transaction_dialog.dart';
 import 'store/open_dispute_store.dart';
 
@@ -45,7 +47,15 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
           builder: (_) => ElevatedButton(
             onPressed: store.isButtonEnable()
                 ? () async {
-                    await store.getFee();
+                    try {
+                      await _checkPossibilityTx();
+                    } on FormatException catch (e) {
+                      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.message);
+                      return;
+                    } catch (e) {
+                      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.toString());
+                      return;
+                    }
                     await confirmTransaction(
                       context,
                       fee: store.fee,
@@ -239,4 +249,9 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
           );
         },
       );
+
+  _checkPossibilityTx() async {
+    await store.getFee();
+    await Web3Utils.checkPossibilityTx(TYPE_COINS.WQT, 0.0);
+  }
 }

@@ -1,13 +1,15 @@
-import 'package:app/ui/pages/main_page/wallet_page/bank_card_widget.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../../utils/alert_dialog.dart';
+import '../../../../../utils/web3_utils.dart';
+import '../../../../../web3/contractEnums.dart';
 import '../confirm_transaction_dialog.dart';
 
 final _divider = const SizedBox(
@@ -22,8 +24,7 @@ class WithdrawPage extends StatefulWidget {
   _WithdrawPageState createState() => _WithdrawPageState();
 }
 
-class _WithdrawPageState extends State<WithdrawPage>
-    with SingleTickerProviderStateMixin {
+class _WithdrawPageState extends State<WithdrawPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   void initState() {
@@ -36,7 +37,6 @@ class _WithdrawPageState extends State<WithdrawPage>
 
   @override
   Widget build(BuildContext context) {
-    final withdrawStore = context.read<WithdrawPageStore>();
     return Scaffold(
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
@@ -153,14 +153,28 @@ class _WithdrawPageState extends State<WithdrawPage>
               Spacer(),
               ElevatedButton(
                 onPressed: withdrawStore.canSubmit
-                    ? () => confirmTransaction(
+                    ? () async {
+                        final _amount = withdrawStore.getAmount();
+                        final _gas = await AccountRepository().service!.getGas();
+                        try {
+                          await _checkPossibilityTx(_amount);
+                        } on FormatException catch (e) {
+                          AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.message);
+                          return;
+                        } catch (e) {
+                          AlertDialogUtils.showInfoAlertDialog(context,
+                              title: 'modals.error'.tr(), content: e.toString());
+                          return;
+                        }
+                        confirmTransaction(
                           context,
                           transaction: "modals.withdraw".tr(),
                           address: withdrawStore.getAddress(),
-                          amount: withdrawStore.getAmount(),
-                          fee: "0.15",
+                          amount: _amount,
+                          fee: _gas.getInEther.toString(),
                           onPress: () {},
-                        )
+                        );
+                      }
                     : null,
                 child: Text(
                   "modals.withdraw".tr(),
@@ -173,4 +187,8 @@ class _WithdrawPageState extends State<WithdrawPage>
           ),
         ),
       );
+
+  _checkPossibilityTx(String price) async {
+    await Web3Utils.checkPossibilityTx(TYPE_COINS.WQT, 0.0);
+  }
 }
