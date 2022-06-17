@@ -178,13 +178,13 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
             await Future.delayed(const Duration(seconds: 1));
             break;
           case StatePinCode.ToLogin:
-            // TODO: Handle this case.
+          // TODO: Handle this case.
             break;
           case StatePinCode.Success:
-            // TODO: Handle this case.
+          // TODO: Handle this case.
             break;
           case StatePinCode.NaN:
-            // TODO: Handle this case.
+          // TODO: Handle this case.
             break;
         }
       }
@@ -196,15 +196,17 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       }
 
       BearerToken bearerToken =
-          await _apiProvider.refreshToken(token, platform);
+      await _apiProvider.refreshToken(token, platform);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
       await getIt.get<ProfileMeStore>().getProfileMe();
       totpValid = true;
       this.onSuccess(StatePinCode.Success);
       await Future.delayed(const Duration(milliseconds: 500));
-      startAnimation = false;
-      startSwitch = false;
+      Future.delayed(const Duration(seconds: 1)).then((value) {
+        startAnimation = false;
+          startSwitch = false;
+      });
     } catch (e) {
       if (e.toString() == "Token invalid" ||
           e.toString() == "Token expired" ||
