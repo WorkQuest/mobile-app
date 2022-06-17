@@ -156,26 +156,24 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<double> getBalanceFromContract(String address) async {
+  Future<double> getBalanceFromContract(String address, {bool otherNetwork = false}) async {
     try {
       address = address.toLowerCase();
-      final contract =
-          Erc20(address: EthereumAddress.fromHex(address), client: client!);
+      final contract = Erc20(address: EthereumAddress.fromHex(address), client: client!);
       final balance = await contract.balanceOf(
           EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
-      if (address == AccountRepository().getConfigNetwork().addresses.uSdt)
+      final addresses = AccountRepository().getConfigNetwork().addresses;
+      if (otherNetwork) {
         return balance.toDouble() * pow(10, -6);
-      else
+      }
+      if (address == addresses.uSdt) {
+        return balance.toDouble() * pow(10, -6);
+      } else {
         return balance.toDouble() * pow(10, -18);
-
-      // switch (address) {
-      //   case AddressCoins.uSdt:
-      //     return balance.toDouble() * pow(10, -6);
-      //   default:
-      //     return balance.toDouble() * pow(10, -18);
-      // }
-    } catch (e) {
-      return 0;
+      }
+    } catch (e, trace) {
+      print('e: $e\ntrace: $trace');
+      throw Exception("Error connection to network");
     }
   }
 

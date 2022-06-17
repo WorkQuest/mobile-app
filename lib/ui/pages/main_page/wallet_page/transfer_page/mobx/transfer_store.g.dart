@@ -77,6 +77,15 @@ mixin _$TransferStore on TransferStoreBase, Store {
     });
   }
 
+  final _$setTitleSelectedCoinAsyncAction =
+      AsyncAction('TransferStoreBase.setTitleSelectedCoin');
+
+  @override
+  Future setTitleSelectedCoin(TYPE_COINS? value) {
+    return _$setTitleSelectedCoinAsyncAction
+        .run(() => super.setTitleSelectedCoin(value));
+  }
+
   final _$getMaxAmountAsyncAction =
       AsyncAction('TransferStoreBase.getMaxAmount');
 
@@ -112,17 +121,6 @@ mixin _$TransferStore on TransferStoreBase, Store {
         name: 'TransferStoreBase.setAmount');
     try {
       return super.setAmount(value);
-    } finally {
-      _$TransferStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic setTitleSelectedCoin(TYPE_COINS? value) {
-    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
-        name: 'TransferStoreBase.setTitleSelectedCoin');
-    try {
-      return super.setTitleSelectedCoin(value);
     } finally {
       _$TransferStoreBaseActionController.endAction(_$actionInfo);
     }

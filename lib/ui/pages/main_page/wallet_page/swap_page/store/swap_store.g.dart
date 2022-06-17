@@ -57,13 +57,13 @@ mixin _$SwapStore on SwapStoreBase, Store {
   final _$maxAmountAtom = Atom(name: 'SwapStoreBase.maxAmount');
 
   @override
-  double get maxAmount {
+  double? get maxAmount {
     _$maxAmountAtom.reportRead();
     return super.maxAmount;
   }
 
   @override
-  set maxAmount(double value) {
+  set maxAmount(double? value) {
     _$maxAmountAtom.reportWrite(value, super.maxAmount, () {
       super.maxAmount = value;
     });
@@ -84,6 +84,51 @@ mixin _$SwapStore on SwapStoreBase, Store {
     });
   }
 
+  final _$convertWQTAtom = Atom(name: 'SwapStoreBase.convertWQT');
+
+  @override
+  double? get convertWQT {
+    _$convertWQTAtom.reportRead();
+    return super.convertWQT;
+  }
+
+  @override
+  set convertWQT(double? value) {
+    _$convertWQTAtom.reportWrite(value, super.convertWQT, () {
+      super.convertWQT = value;
+    });
+  }
+
+  final _$isLoadingCourseAtom = Atom(name: 'SwapStoreBase.isLoadingCourse');
+
+  @override
+  bool get isLoadingCourse {
+    _$isLoadingCourseAtom.reportRead();
+    return super.isLoadingCourse;
+  }
+
+  @override
+  set isLoadingCourse(bool value) {
+    _$isLoadingCourseAtom.reportWrite(value, super.isLoadingCourse, () {
+      super.isLoadingCourse = value;
+    });
+  }
+
+  final _$isSuccessCourseAtom = Atom(name: 'SwapStoreBase.isSuccessCourse');
+
+  @override
+  bool get isSuccessCourse {
+    _$isSuccessCourseAtom.reportRead();
+    return super.isSuccessCourse;
+  }
+
+  @override
+  set isSuccessCourse(bool value) {
+    _$isSuccessCourseAtom.reportWrite(value, super.isSuccessCourse, () {
+      super.isSuccessCourse = value;
+    });
+  }
+
   final _$setNetworkAsyncAction = AsyncAction('SwapStoreBase.setNetwork');
 
   @override
@@ -96,6 +141,14 @@ mixin _$SwapStore on SwapStoreBase, Store {
   @override
   Future getMaxBalance() {
     return _$getMaxBalanceAsyncAction.run(() => super.getMaxBalance());
+  }
+
+  final _$getCourseWQTAsyncAction = AsyncAction('SwapStoreBase.getCourseWQT');
+
+  @override
+  Future getCourseWQT({bool isForce = false}) {
+    return _$getCourseWQTAsyncAction
+        .run(() => super.getCourseWQT(isForce: isForce));
   }
 
   final _$createSwapAsyncAction = AsyncAction('SwapStoreBase.createSwap');
@@ -137,7 +190,10 @@ network: ${network},
 token: ${token},
 amount: ${amount},
 maxAmount: ${maxAmount},
-isConnect: ${isConnect}
+isConnect: ${isConnect},
+convertWQT: ${convertWQT},
+isLoadingCourse: ${isLoadingCourse},
+isSuccessCourse: ${isSuccessCourse}
     ''';
   }
 }
