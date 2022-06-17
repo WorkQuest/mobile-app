@@ -105,6 +105,9 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   double latitude = 0;
 
   @observable
+  bool confirmUnderstandAboutEdit = false;
+
+  @observable
   String questTitle = '';
 
   @observable
@@ -132,6 +135,9 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
 
   @action
   void decreaseRuntime() {}
+
+  @action
+  setConfirmUnderstandAboutEdit(bool value) => confirmUnderstandAboutEdit = value;
 
   @action
   void setQuestTitle(String value) => questTitle = value;
@@ -162,7 +168,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
 
   @computed
   bool get canSubmitEditQuest =>
-      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
+      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty && confirmUnderstandAboutEdit;
 
   @action
   void emptyField(BuildContext context) {
@@ -238,34 +244,6 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
     return payPeriodValue;
   }
 
-  String getPayPeriod(String value) {
-    switch (value) {
-      case "Hourly":
-        return payPeriod = "Hourly";
-      case "Daily":
-        return payPeriod = "Daily";
-      case "Weekly":
-        return payPeriod = "Weekly";
-      case "BiWeekly":
-        return payPeriod = "BiWeekly";
-      case "SemiMonthly":
-        return payPeriod = "Semi monthly";
-      case "Monthly":
-        return payPeriod = "Monthly";
-      case "Quarterly":
-        return payPeriod = "Quarterly";
-      case "SemiAnnually":
-        return payPeriod = "Semi annually";
-      case "Annually":
-        return payPeriod = "Annually";
-      case "FixedPeriod":
-        return payPeriod = "Fixed period";
-      case "ByAgreement":
-        return payPeriod = "By agreement";
-    }
-    return payPeriod;
-  }
-
   String getEmployment(String employmentValue) {
     switch (employmentValue) {
       case "fullTime":
@@ -286,9 +264,9 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
 
   int getPriority() {
     switch (priority) {
-      case "Low":
+      case "Fixed delivery":
         return priorityValue = 1;
-      case "Normal":
+      case "Short term":
         return priorityValue = 2;
       case "Urgent":
         return priorityValue = 3;

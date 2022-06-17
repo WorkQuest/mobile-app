@@ -204,6 +204,23 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     });
   }
 
+  final _$confirmUnderstandAboutEditAtom =
+      Atom(name: '_CreateQuestStore.confirmUnderstandAboutEdit');
+
+  @override
+  bool get confirmUnderstandAboutEdit {
+    _$confirmUnderstandAboutEditAtom.reportRead();
+    return super.confirmUnderstandAboutEdit;
+  }
+
+  @override
+  set confirmUnderstandAboutEdit(bool value) {
+    _$confirmUnderstandAboutEditAtom
+        .reportWrite(value, super.confirmUnderstandAboutEdit, () {
+      super.confirmUnderstandAboutEdit = value;
+    });
+  }
+
   final _$questTitleAtom = Atom(name: '_CreateQuestStore.questTitle');
 
   @override
@@ -360,6 +377,17 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
+  dynamic setConfirmUnderstandAboutEdit(bool value) {
+    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
+        name: '_CreateQuestStore.setConfirmUnderstandAboutEdit');
+    try {
+      return super.setConfirmUnderstandAboutEdit(value);
+    } finally {
+      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setQuestTitle(String value) {
     final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
         name: '_CreateQuestStore.setQuestTitle');
@@ -462,6 +490,7 @@ priority: ${priority},
 dateTime: ${dateTime},
 longitude: ${longitude},
 latitude: ${latitude},
+confirmUnderstandAboutEdit: ${confirmUnderstandAboutEdit},
 questTitle: ${questTitle},
 description: ${description},
 price: ${price},
