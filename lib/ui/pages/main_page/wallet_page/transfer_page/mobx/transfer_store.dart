@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:app/base_store/i_store.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:injectable/injectable.dart';
@@ -45,7 +46,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       final _gasInWei = await AccountRepository().service!.getGas();
       maxAmount = ((_balanceInWei - _gasInWei.getInWei).toDouble() * pow(10, -18)).toDouble();
     } else {
-      final _balance = await _getBalanceToken(_getAddressToken(typeCoin!));
+      final _balance = await _getBalanceToken(Web3Utils.getAddressToken(typeCoin!));
       maxAmount = _balance.toDouble();
     }
   }
@@ -60,7 +61,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
         final _gasInWei = await AccountRepository().service!.getGas();
         amount = ((_balanceInWei - _gasInWei.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(18);
       } else {
-        final _balance = await _getBalanceToken(_getAddressToken(typeCoin!));
+        final _balance = await _getBalanceToken(Web3Utils.getAddressToken(typeCoin!));
         amount = _balance.toStringAsFixed(18);
       }
       this.onSuccess(true);
@@ -93,15 +94,4 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     return _balance;
   }
 
-  String _getAddressToken(TYPE_COINS typeCoin) {
-    if (typeCoin == TYPE_COINS.WUSD) {
-      return AccountRepository().getConfigNetwork().addresses.wUsd;
-    } else if (typeCoin == TYPE_COINS.wETH) {
-      return AccountRepository().getConfigNetwork().addresses.wEth;
-    } else if (typeCoin == TYPE_COINS.wBNB) {
-      return AccountRepository().getConfigNetwork().addresses.wBnb;
-    } else {
-      return AccountRepository().getConfigNetwork().addresses.uSdt;
-    }
-  }
 }
