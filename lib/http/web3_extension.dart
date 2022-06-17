@@ -50,16 +50,12 @@ extension Web3Requests on ApiProvider {
   }
 
   Future<List<Tx>?> getTransactions(String address, {int limit = 10, int offset = 0}) async {
-    try {
-      final response = await httpClient.get(
-        query: '${_transactions(address)}?limit=$limit&offset=$offset',
-        useBaseUrl: false,
-      );
+    final response = await httpClient.get(
+      query: '${_transactions(address)}?limit=$limit&offset=$offset',
+      useBaseUrl: false,
+    );
 
-      return TransactionsResponse.fromJson(response).transactions;
-    } catch (e, trace) {
-      print('e: $e\ntrace: $trace');
-    }
+    return TransactionsResponse.fromJson(response).transactions;
   }
 
   Future<List<Tx>?> getTransactionsByToken({
@@ -68,18 +64,13 @@ extension Web3Requests on ApiProvider {
     int limit = 10,
     int offset = 0,
   }) async {
-    try {
-      print("Called Tansaction By roken");
-      final response = await httpClient.get(
-          query: '${_transactionsByToken(
-            address: address,
-            addressToken: addressToken,
-          )}?limit=$limit&offset=$offset',
-          useBaseUrl: false);
-      return TransactionsResponse.fromJsonToken(response).transactions!;
-    } catch (e, tr) {
-      print("$e $tr");
-    }
+    final response = await httpClient.get(
+        query: '${_transactionsByToken(
+          address: address,
+          addressToken: addressToken,
+        )}?limit=$limit&offset=$offset',
+        useBaseUrl: false);
+    return TransactionsResponse.fromJsonToken(response).transactions!;
   }
 
   Future walletLogin(String signature, String address) async {

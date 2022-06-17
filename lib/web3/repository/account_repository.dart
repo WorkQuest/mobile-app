@@ -84,15 +84,3 @@ class AccountRepository {
     }
   }
 }
-
-class BalanceItem {
-  String title;
-  String amount;
-
-  BalanceItem(this.title, this.amount);
-
-  @override
-  String toString() {
-    return 'BalanceItem {title: $title, amount: $amount}';
-  }
-}

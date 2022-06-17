@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:app/utils/web3_utils.dart';
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -58,6 +59,16 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   bool isSuccessCourse = false;
 
   @action
+  setToken(SwapToken value) => token = value;
+
+  @action
+  setAmount(double value) => amount = value;
+
+  @action
+  getMaxBalance() async =>
+      maxAmount = await service!.getBalanceFromContract(Web3Utils.getTokenUSDT(network!), otherNetwork: true);
+
+  @action
   setNetwork(SwapNetworks value) async {
     try {
       onLoading();
@@ -74,19 +85,6 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       isConnect = false;
       onError(e.toString());
     }
-  }
-
-  @action
-  setToken(SwapToken value) => token = value;
-
-  @action
-  setAmount(double value) => amount = value;
-
-  @action
-  getMaxBalance() async {
-    print('address token: ${_getTokenUSDT(network!)}');
-    print('rpc: ${_getRpcNetwork(network!)}');
-    maxAmount = await service!.getBalanceFromContract(_getTokenUSDT(network!), otherNetwork: true);
   }
 
   @action
@@ -170,6 +168,13 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     }
   }
 
+  Future<DeployedContract> _getContract() async {
+    final _abiJson = await rootBundle.loadString("assets/contracts/WQBridge.json");
+    final _contractAbi = ContractAbi.fromJson(_abiJson, 'WQBridge');
+    final _contractAddress = EthereumAddress.fromHex(Web3Utils.getAddressContractBridge(network!));
+    return DeployedContract(_contractAbi, _contractAddress);
+  }
+
   _connectRpc() async {
     if (service != null) {
       service!.client?.dispose();
@@ -178,68 +183,29 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     }
     service = ClientService(
       Configs.configsNetwork[ConfigNameNetwork.devnet]!,
-      customRpc: _getRpcNetwork(network!),
+      customRpc: Web3Utils.getRpcNetwork(network!),
     );
     await Future.delayed(const Duration(seconds: 2));
     await getMaxBalance();
   }
 
   _approve() async {
-    final contract = Erc20(address: EthereumAddress.fromHex(_getTokenUSDT(network!)), client: service!.client!);
-
-    print('address: ${AccountRepository().userWallet!.address!}');
-    final _cred = await service!.getCredentials(AccountRepository().userWallet!.privateKey!);
-    print('address: ${_cred.address}');
-    final _spender = EthereumAddress.fromHex(_getAddressContract(network!));
-    final _gas = await service!.getGas();
-    await contract.approve(_spender, BigInt.from(amount * pow(10, 6)),
-        credentials: _cred,
-        transaction: Transaction(
-          gasPrice: _gas,
-          maxGas: 2000000,
-          value: EtherAmount.zero(),
-        ));
-  }
-
-  Future<DeployedContract> _getContract() async {
-    final _abiJson = await rootBundle.loadString("assets/contracts/WQBridge.json");
-    final _contractAbi = ContractAbi.fromJson(_abiJson, 'WQBridge');
-    final _contractAddress = EthereumAddress.fromHex(
-      _getAddressContract(network!),
+    final contract = Erc20(
+      address: EthereumAddress.fromHex(Web3Utils.getTokenUSDT(network!)),
+      client: service!.client!,
     );
-    return DeployedContract(_contractAbi, _contractAddress);
-  }
-
-  String _getAddressContract(SwapNetworks network) {
-    switch (network) {
-      case SwapNetworks.ethereum:
-        return '0x9870a749Ae5CdbC4F96E3D0C067eB212779a8FA1';
-      case SwapNetworks.binance:
-        return '0x833d71EF0b51Aa9Fb69b1f986381132628ED10F3';
-      case SwapNetworks.matic:
-        return '0xE2e7518080a0097492087E652E8dEB1f6b96B62b';
-    }
-  }
-
-  String _getRpcNetwork(SwapNetworks network) {
-    switch (network) {
-      case SwapNetworks.ethereum:
-        return 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161';
-      case SwapNetworks.binance:
-        return 'https://data-seed-prebsc-1-s1.binance.org:8545/';
-      case SwapNetworks.matic:
-        return 'https://rpc-mumbai.matic.today';
-    }
-  }
-
-  String _getTokenUSDT(SwapNetworks network) {
-    switch (network) {
-      case SwapNetworks.ethereum:
-        return '0xD92E713d051C37EbB2561803a3b5FBAbc4962431';
-      case SwapNetworks.binance:
-        return '0xC9bda0FA861Bd3F66c7d0Fd75A9A8344e6Caa94A';
-      case SwapNetworks.matic:
-        return '0x631E327EA88C37D4238B5c559A715332266e7Ec1';
-    }
+    final _cred = await service!.getCredentials(AccountRepository().userWallet!.privateKey!);
+    final _spender = EthereumAddress.fromHex(Web3Utils.getAddressContractBridge(network!));
+    final _gas = await service!.getGas();
+    await contract.approve(
+      _spender,
+      BigInt.from(amount * pow(10, 6)),
+      credentials: _cred,
+      transaction: Transaction(
+        gasPrice: _gas,
+        maxGas: 2000000,
+        value: EtherAmount.zero(),
+      ),
+    );
   }
 }

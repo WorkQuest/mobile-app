@@ -27,13 +27,13 @@ mixin _$WalletStore on _WalletStore, Store {
   final _$coinsAtom = Atom(name: '_WalletStore.coins');
 
   @override
-  ObservableList<BalanceItem> get coins {
+  ObservableList<_CoinEntity> get coins {
     _$coinsAtom.reportRead();
     return super.coins;
   }
 
   @override
-  set coins(ObservableList<BalanceItem> value) {
+  set coins(ObservableList<_CoinEntity> value) {
     _$coinsAtom.reportWrite(value, super.coins, () {
       super.coins = value;
     });

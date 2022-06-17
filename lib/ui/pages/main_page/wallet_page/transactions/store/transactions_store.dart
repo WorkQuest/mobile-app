@@ -1,6 +1,7 @@
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/web3_extension.dart';
 import 'package:app/model/web3/transactions_response.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:injectable/injectable.dart';
@@ -19,10 +20,6 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   TransactionsStoreBase(this._apiProvider);
 
-  String _wUsd = AccountRepository().getConfigNetwork().addresses.wUsd;
-  String _wEth = AccountRepository().getConfigNetwork().addresses.wEth;
-  String _wBnb = AccountRepository().getConfigNetwork().addresses.wBnb;
-  String _uSdt = AccountRepository().getConfigNetwork().addresses.uSdt;
 
   @observable
   ObservableList<Tx> transactions = ObservableList<Tx>.of([]);
@@ -54,97 +51,24 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         isMoreLoading = false;
       }
       List<Tx>? result;
-      switch (type) {
-        case TYPE_COINS.WQT:
-          result = await _apiProvider.getTransactions(
-            AccountRepository().userAddress,
-            limit: 10,
-            offset: isForce ? transactions.length : 0,
-          );
-          break;
-        case TYPE_COINS.WUSD:
-          result = await _apiProvider.getTransactionsByToken(
-            address: AccountRepository().userAddress,
-            addressToken: _wUsd,
-            limit: 10,
-            offset: isForce ? transactions.length : 0,
-          );
-          break;
-        case TYPE_COINS.wBNB:
-          result = await _apiProvider.getTransactionsByToken(
-            address: AccountRepository().userAddress,
-            addressToken: _wEth,
-            limit: 10,
-            offset: isForce ? transactions.length : 0,
-          );
-          break;
-        case TYPE_COINS.wETH:
-          result = await _apiProvider.getTransactionsByToken(
-            address: AccountRepository().userAddress,
-            addressToken: _wEth,
-            limit: 10,
-            offset: isForce ? transactions.length : 0,
-          );
-          break;
-        case TYPE_COINS.USDT:
-          result = await _apiProvider.getTransactionsByToken(
-            address: AccountRepository().userAddress,
-            addressToken: _uSdt,
-            limit: 10,
-            offset: isForce ? transactions.length : 0,
-          );
-          break;
+      final _addressToken = Web3Utils.getAddressToken(type);
+      if (type == TYPE_COINS.WQT) {
+        result = await _apiProvider.getTransactions(
+          AccountRepository().userAddress,
+          limit: 10,
+          offset: isForce ? transactions.length : 0,
+        );
+      } else {
+        result = await _apiProvider.getTransactionsByToken(
+          address: AccountRepository().userAddress,
+          addressToken: _addressToken,
+          limit: 10,
+          offset: isForce ? transactions.length : 0,
+        );
       }
 
-      result!.map((tran) {
-        if (tran.fromAddressHash!.hex == _wUsd)
-          tran.coin = TYPE_COINS.WUSD;
-        else if (tran.fromAddressHash!.hex == _wEth)
-          tran.coin = TYPE_COINS.wETH;
-        else if (tran.fromAddressHash!.hex == _wBnb)
-          tran.coin = TYPE_COINS.wBNB;
-        else if (tran.fromAddressHash!.hex == _uSdt)
-          tran.coin = TYPE_COINS.USDT;
-        else
-          tran.coin = TYPE_COINS.WQT;
-        // if (tran.toAddressHash!.hex! == AccountRepository().userAddress) {
-        //   switch (tran.fromAddressHash!.hex!) {
-        //     case AddressCoins.wUsd:
-        //       tran.coin = TYPE_COINS.WUSD;
-        //       break;
-        //     case AddressCoins.wEth:
-        //       tran.coin = TYPE_COINS.wETH;
-        //       break;
-        //     case AddressCoins.wBnb:
-        //       tran.coin = TYPE_COINS.wBNB;
-        //       break;
-        //     case AddressCoins.uSdt:
-        //       tran.coin = TYPE_COINS.USDT;
-        //       break;
-        //     default:
-        //       tran.coin = TYPE_COINS.WQT;
-        //       break;
-        //   }
-        // } else {
-        //   switch (tran.toAddressHash!.hex!) {
-        //     case AddressCoins.wUsd:
-        //       tran.coin = TYPE_COINS.WUSD;
-        //       break;
-        //     case AddressCoins.wEth:
-        //       tran.coin = TYPE_COINS.wETH;
-        //       break;
-        //     case AddressCoins.wBnb:
-        //       tran.coin = TYPE_COINS.wBNB;
-        //       break;
-        //     case AddressCoins.uSdt:
-        //       tran.coin = TYPE_COINS.USDT;
-        //       break;
-        //     default:
-        //       tran.coin = TYPE_COINS.WQT;
-        //       break;
-        //   }
-        // }
-      }).toList();
+      _setTypeCoinInTxs(result!);
+
       if (isForce) {
         transactions.addAll(result);
       } else {
@@ -170,46 +94,20 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     isMoreLoading = true;
     try {
       List<Tx>? result;
-      switch (type) {
-        case TYPE_COINS.WQT:
-          result = await _apiProvider.getTransactions(
-            AccountRepository().userAddress,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.WUSD:
-          result = await _apiProvider.getTransactionsByToken(
-            address: AccountRepository().userAddress,
-            addressToken: _wUsd,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.wBNB:
-          result = await _apiProvider.getTransactionsByToken(
-            address: AccountRepository().userAddress,
-            addressToken: _wBnb,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.wETH:
-          result = await _apiProvider.getTransactionsByToken(
-            address: AccountRepository().userAddress,
-            addressToken: _wEth,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
-        case TYPE_COINS.USDT:
-          result = await _apiProvider.getTransactionsByToken(
-            address: AccountRepository().userAddress,
-            addressToken: _uSdt,
-            limit: 10,
-            offset: transactions.length,
-          );
-          break;
+      final _addressToken = Web3Utils.getAddressToken(type);
+      if (type == TYPE_COINS.WQT) {
+        result = await _apiProvider.getTransactions(
+          AccountRepository().userAddress,
+          limit: 10,
+          offset: transactions.length,
+        );
+      } else {
+        result = await _apiProvider.getTransactionsByToken(
+          address: AccountRepository().userAddress,
+          addressToken: _addressToken,
+          limit: 10,
+          offset: transactions.length,
+        );
       }
       if (result!.isEmpty) {
         canMoreLoading = false;
@@ -227,5 +125,20 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       print('$e\n$trace');
       onError(e.toString());
     }
+  }
+
+  _setTypeCoinInTxs(List<Tx> txs) {
+    txs.map((tran) {
+      if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TYPE_COINS.WUSD))
+        tran.coin = TYPE_COINS.WUSD;
+      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TYPE_COINS.wETH))
+        tran.coin = TYPE_COINS.wETH;
+      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TYPE_COINS.wBNB))
+        tran.coin = TYPE_COINS.wBNB;
+      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TYPE_COINS.USDT))
+        tran.coin = TYPE_COINS.USDT;
+      else
+        tran.coin = TYPE_COINS.WQT;
+    }).toList();
   }
 }

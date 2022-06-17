@@ -14,12 +14,7 @@ import '../contractEnums.dart';
 import 'address_service.dart';
 
 abstract class ClientServiceI {
-  Future<List<BalanceItem>> getBalanceFromList(
-      List<EtherUnit> units, String privateKey);
-
   Future<num> getBalanceInUnit(EtherUnit unit, String privateKey);
-
-  Future<List<BalanceItem>> getAllBalance(String privateKey);
 
   Future<EthPrivateKey> getCredentials(String privateKey);
 
@@ -129,8 +124,7 @@ class ClientService implements ClientServiceI {
           break;
       }
       final degree = coin == TYPE_COINS.USDT ? 6 : 18;
-      final contract = Erc20(
-          address: EthereumAddress.fromHex(addressToken), client: client!);
+      final contract = Erc20(address: EthereumAddress.fromHex(addressToken), client: client!);
       hash = await contract.transfer(
         // myAddress,
         EthereumAddress.fromHex(address),
@@ -160,8 +154,7 @@ class ClientService implements ClientServiceI {
     try {
       address = address.toLowerCase();
       final contract = Erc20(address: EthereumAddress.fromHex(address), client: client!);
-      final balance = await contract.balanceOf(
-          EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
+      final balance = await contract.balanceOf(EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
       final addresses = AccountRepository().getConfigNetwork().addresses;
       if (otherNetwork) {
         return balance.toDouble() * pow(10, -6);
@@ -196,30 +189,6 @@ class ClientService implements ClientServiceI {
   Future<EtherAmount> getBalance(String privateKey) async {
     final credentials = await getCredentials(privateKey);
     return client!.getBalance(credentials.address);
-  }
-
-  @override
-  Future<List<BalanceItem>> getBalanceFromList(
-      List<EtherUnit> units, String privateKey) async {
-    if (units.isEmpty) {
-      throw Exception("List units is empty");
-    }
-
-    final list = await Stream.fromIterable(units).asyncMap((unit) async {
-      final balance = await getBalanceInUnit(unit, privateKey);
-      return BalanceItem(unit.name, balance.toString());
-    }).toList();
-    return list;
-  }
-
-  @override
-  Future<List<BalanceItem>> getAllBalance(String privateKey) async {
-    final list =
-        await Stream.fromIterable(EtherUnit.values).asyncMap((unit) async {
-      final balance = await getBalanceInUnit(unit, privateKey);
-      return BalanceItem(unit.name, balance.toString());
-    }).toList();
-    return list;
   }
 
   @override
@@ -314,10 +283,8 @@ extension CreateContract on ClientService {
   }) async {
     print("Create contract");
     final credentials = await getCredentials(AccountRepository().privateKey);
-    final contract =
-        await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
-    final ethFunction =
-        contract.function(WQFContractFunctions.newWorkQuest.name);
+    final contract = await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
+    final ethFunction = contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
     await handleContract(
       contract: contract,
@@ -363,8 +330,7 @@ extension GetContract on ClientService {
     String contractAddress,
   ) async {
     try {
-      final _abiJson =
-          await rootBundle.loadString("assets/contracts/$contractName.json");
+      final _abiJson = await rootBundle.loadString("assets/contracts/$contractName.json");
       // dev.log(_abiJson);
       final _contractAbi = ContractAbi.fromJson(_abiJson, contractName);
       final _contractAddress = EthereumAddress.fromHex(
@@ -385,8 +351,7 @@ extension ApproveCoin on ClientService {
   }) async {
     print("Approve coin");
     final credentials = await getCredentials(AccountRepository().privateKey);
-    final contract =
-        await getDeployedContract("WQBridgeToken", abiBridgeAddress);
+    final contract = await getDeployedContract("WQBridgeToken", abiBridgeAddress);
     final ethFunction = contract.function(WQBridgeTokenFunctions.approve.name);
     final fromAddress = await credentials.extractAddress();
     final _cost = double.parse(cost) + double.parse(cost) * 0.025;
@@ -410,8 +375,7 @@ extension ApproveCoin on ClientService {
 extension CheckFunction on ClientService {
   void checkFunction() async {
     try {
-      final contract = await getDeployedContract(
-          "WQBridgeToken", "0xD92E713d051C37EbB2561803a3b5FBAbc4962431");
+      final contract = await getDeployedContract("WQBridgeToken", "0xD92E713d051C37EbB2561803a3b5FBAbc4962431");
       final outputs = contract.functions;
       print("Contract function:");
       outputs.forEach((element) {
@@ -427,10 +391,8 @@ extension CheckFunction on ClientService {
 extension CheckAddres on ClientService {
   Future<List<dynamic>> checkAdders(String address) async {
     try {
-      final contract =
-          await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
-      final ethFunction =
-          contract.function(WQFContractFunctions.getWorkQuests.name);
+      final contract = await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
+      final ethFunction = contract.function(WQFContractFunctions.getWorkQuests.name);
       final outputs = await client!.call(
         contract: contract,
         function: ethFunction,
@@ -447,8 +409,7 @@ extension CheckAddres on ClientService {
 extension CheckStatus on ClientService {
   Future<List<dynamic>> checkStatus() async {
     try {
-      final contract =
-          await getDeployedContract("WorkQuest", addressNewContract);
+      final contract = await getDeployedContract("WorkQuest", addressNewContract);
       final ethFunction = contract.function(WQContractFunctions.status.name);
       final outputs = await client!.call(
         contract: contract,
@@ -477,8 +438,7 @@ extension Promote on ClientService {
     print('period: $period');
     print('amount: $amount');
     print('questAddress: $questAddress');
-    final contract =
-        await getDeployedContract("WQPromotion", abiPromotionAddress);
+    final contract = await getDeployedContract("WQPromotion", abiPromotionAddress);
     final function = contract.function(WQPromotionFunctions.promoteQuest.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
@@ -530,8 +490,7 @@ extension Promote on ClientService {
     print('tariff: $tariff');
     print('period: $period');
     print('amount: $amount');
-    final contract =
-        await getDeployedContract("WQPromotion", abiPromotionAddress);
+    final contract = await getDeployedContract("WQPromotion", abiPromotionAddress);
     final function = contract.function(WQPromotionFunctions.promoteUser.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();

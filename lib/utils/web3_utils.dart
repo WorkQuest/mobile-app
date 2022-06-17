@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:web3dart/web3dart.dart';
 
+import '../ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
 import '../web3/contractEnums.dart';
 import '../web3/repository/account_repository.dart';
 
@@ -51,6 +52,39 @@ class Web3Utils {
       return 'wBNB';
     } else {
       return 'USDT';
+    }
+  }
+
+  static String getAddressContractBridge(SwapNetworks network) {
+    switch (network) {
+      case SwapNetworks.ethereum:
+        return '0x9870a749Ae5CdbC4F96E3D0C067eB212779a8FA1';
+      case SwapNetworks.binance:
+        return '0x833d71EF0b51Aa9Fb69b1f986381132628ED10F3';
+      case SwapNetworks.matic:
+        return '0xE2e7518080a0097492087E652E8dEB1f6b96B62b';
+    }
+  }
+
+  static String getRpcNetwork(SwapNetworks network) {
+    switch (network) {
+      case SwapNetworks.ethereum:
+        return 'https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161';
+      case SwapNetworks.binance:
+        return 'https://data-seed-prebsc-1-s1.binance.org:8545/';
+      case SwapNetworks.matic:
+        return 'https://rpc-mumbai.matic.today';
+    }
+  }
+
+  static String getTokenUSDT(SwapNetworks network) {
+    switch (network) {
+      case SwapNetworks.ethereum:
+        return '0xD92E713d051C37EbB2561803a3b5FBAbc4962431';
+      case SwapNetworks.binance:
+        return '0xC9bda0FA861Bd3F66c7d0Fd75A9A8344e6Caa94A';
+      case SwapNetworks.matic:
+        return '0x631E327EA88C37D4238B5c559A715332266e7Ec1';
     }
   }
 }
