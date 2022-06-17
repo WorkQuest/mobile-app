@@ -231,24 +231,29 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              GoogleMap(
-                                mapType: MapType.normal,
-                                tiltGesturesEnabled: false,
-                                rotateGesturesEnabled: false,
-                                zoomControlsEnabled: false,
-                                scrollGesturesEnabled: false,
-                                zoomGesturesEnabled: false,
-                                initialCameraPosition: CameraPosition(
-                                  bearing: 0,
-                                  target: LatLng(
-                                    storeQuest
-                                        .questInfo!.locationCode!.latitude,
-                                    storeQuest
-                                        .questInfo!.locationCode!.longitude,
+                              Stack(
+                                children: [
+                                  Positioned.fill(child: Container(color:Colors.black)),
+                                  GoogleMap(
+                                    mapType: MapType.normal,
+                                    tiltGesturesEnabled: false,
+                                    rotateGesturesEnabled: false,
+                                    zoomControlsEnabled: false,
+                                    scrollGesturesEnabled: false,
+                                    zoomGesturesEnabled: false,
+                                    initialCameraPosition: CameraPosition(
+                                      bearing: 0,
+                                      target: LatLng(
+                                        storeQuest
+                                            .questInfo!.locationCode!.latitude,
+                                        storeQuest
+                                            .questInfo!.locationCode!.longitude,
+                                      ),
+                                      zoom: 15.0,
+                                    ),
+                                    myLocationButtonEnabled: false,
                                   ),
-                                  zoom: 15.0,
-                                ),
-                                myLocationButtonEnabled: false,
+                                ],
                               ),
                               SvgPicture.asset(
                                 "assets/marker.svg",
