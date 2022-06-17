@@ -106,7 +106,6 @@ class _PinCodePageState extends State<PinCodePage>
                       title: 'pinCode.comeUp'.tr(),
                       pinCode: store.pin,
                       isLoading: store.startAnimation,
-                      activateAnimation: true,
                     )
                   else
                     AnimationSwitchWidget(
@@ -119,7 +118,6 @@ class _PinCodePageState extends State<PinCodePage>
                         title: 'pinCode.repeat'.tr(),
                         pinCode: store.pin,
                         isLoading: store.startAnimation,
-                        activateAnimation: true,
                       ),
                       enabled: store.startSwitch,
                     ),
@@ -162,7 +160,6 @@ class _PinCodePageState extends State<PinCodePage>
     required String title,
     required String pinCode,
     required bool isLoading,
-    bool activateAnimation = false,
   }) {
     return Column(
       children: [
@@ -180,7 +177,7 @@ class _PinCodePageState extends State<PinCodePage>
         const SizedBox(
           height: 40,
         ),
-        if (activateAnimation)
+        if (isLoading)
           AnimationCompression(
             first: SingleChildScrollView(
               scrollDirection: Axis.horizontal,

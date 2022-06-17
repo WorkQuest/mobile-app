@@ -215,6 +215,9 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         return;
       }
       totpValid = false;
+      pin = "";
+      changeState(StatePinCode.Check, errorAnimation: true);
+      startAnimation = false;
       this.onError(e.toString());
     }
   }
