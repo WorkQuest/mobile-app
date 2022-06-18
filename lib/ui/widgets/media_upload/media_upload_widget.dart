@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
 import 'package:app/utils/file_methods.dart';
+import 'package:app/utils/permission_util.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../../../constants.dart';
@@ -74,6 +76,11 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
                 if (store.state == StateLoading.nothing)
                   IconButton(
                     onPressed: () async {
+                      if (Platform.isIOS) {
+                        await PermissionUtil.requestForIos(Permission.photos);
+                      } else if (Platform.isAndroid) {
+                        await PermissionUtil.requestForAndroid(Permission.storage);
+                      }
                       FilePickerResult? result;
                       if (widget.type == MediaType.images) {
                         result = await FilePicker.platform.pickFiles(
@@ -187,6 +194,11 @@ class _GalleryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
+        if (Platform.isIOS) {
+          await PermissionUtil.requestForIos(Permission.photos);
+        } else if (Platform.isAndroid) {
+          await PermissionUtil.requestForAndroid(Permission.storage);
+        }
         FilePickerResult? result;
         if (type == MediaType.images) {
           result = await FilePicker.platform.pickFiles(
