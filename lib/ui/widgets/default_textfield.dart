@@ -7,11 +7,15 @@ class DefaultTextField extends StatefulWidget {
   final TextEditingController controller;
   final Widget? suffixIcon;
   final Widget? prefixIcon;
+  final TextAlign? textAlign;
+  final TextAlignVertical? textAlignVertical;
   final BoxConstraints? prefixIconConstraints;
   final String hint;
   final bool isPassword;
   final bool enableDispose;
   final bool enabled;
+  final bool expands;
+  final int? maxLength;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final Iterable<String>? autofillHints;
@@ -25,8 +29,12 @@ class DefaultTextField extends StatefulWidget {
     required this.controller,
     required this.hint,
     required this.inputFormatters,
+    this.textAlignVertical,
     this.suffixIcon,
     this.validator,
+    this.maxLength,
+    this.textAlign,
+    this.expands = false,
     this.onChanged,
     this.keyboardType,
     this.enabled = true,
@@ -51,11 +59,8 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
     _visiblePassword = !widget.isPassword;
     widget.controller.addListener(() {
       if (widget.keyboardType == TextInputType.name) {
-        final result = widget.controller.value.text.isEmpty
-            ? ''
-            : '${_upperFirst(widget.controller.text)}';
-        widget.controller.value =
-            widget.controller.value.copyWith(text: result);
+        final result = widget.controller.value.text.isEmpty ? '' : '${_upperFirst(widget.controller.text)}';
+        widget.controller.value = widget.controller.value.copyWith(text: result);
       }
       setState(() {});
     });
@@ -77,15 +82,18 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
       keyboardType: widget.keyboardType ?? TextInputType.text,
       validator: widget.validator,
       onChanged: widget.onChanged,
+      textAlign: widget.textAlign ?? TextAlign.start,
+      expands: widget.expands,
+      textAlignVertical: widget.textAlignVertical ?? TextAlignVertical.top,
+      maxLength: widget.maxLength,
       obscureText: !_visiblePassword,
       autofillHints: widget.autofillHints,
       autovalidateMode: widget.autovalidateMode,
       enabled: widget.enabled,
+      maxLines: null,
       decoration: InputDecoration(
         filled: true,
-        fillColor: widget.controller.text.isEmpty
-            ? AppColor.disabledButton
-            : Colors.white,
+        fillColor: widget.controller.text.isEmpty ? AppColor.disabledButton : Colors.white,
         hintText: widget.hint,
         focusColor: Colors.red,
         hoverColor: Colors.green,
@@ -140,9 +148,7 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
             ? IconButton(
                 icon: Icon(
                   _visiblePassword ? Icons.visibility : Icons.visibility_off,
-                  color: _visiblePassword
-                      ? Theme.of(context).primaryColorDark
-                      : Colors.grey,
+                  color: _visiblePassword ? Theme.of(context).primaryColorDark : Colors.grey,
                   size: 20.0,
                 ),
                 padding: const EdgeInsets.only(right: 8.0),
