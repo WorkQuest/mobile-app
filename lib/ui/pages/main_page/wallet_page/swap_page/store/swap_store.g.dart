@@ -129,18 +129,18 @@ mixin _$SwapStore on SwapStoreBase, Store {
     });
   }
 
-  final _$setNetworkAsyncAction = AsyncAction('SwapStoreBase.setNetwork');
-
-  @override
-  Future setNetwork(SwapNetworks value) {
-    return _$setNetworkAsyncAction.run(() => super.setNetwork(value));
-  }
-
   final _$getMaxBalanceAsyncAction = AsyncAction('SwapStoreBase.getMaxBalance');
 
   @override
   Future getMaxBalance() {
     return _$getMaxBalanceAsyncAction.run(() => super.getMaxBalance());
+  }
+
+  final _$setNetworkAsyncAction = AsyncAction('SwapStoreBase.setNetwork');
+
+  @override
+  Future setNetwork(SwapNetworks value) {
+    return _$setNetworkAsyncAction.run(() => super.setNetwork(value));
   }
 
   final _$getCourseWQTAsyncAction = AsyncAction('SwapStoreBase.getCourseWQT');

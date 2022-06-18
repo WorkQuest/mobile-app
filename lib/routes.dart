@@ -68,6 +68,8 @@ import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
+import 'package:app/ui/pages/report_page/report_page.dart';
+import 'package:app/ui/pages/report_page/store/report_store.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import 'package:app/ui/pages/restore_password_page/store.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
@@ -870,6 +872,19 @@ class Routes {
               textDirection: checkDirection(context),
               child: PortfolioDetails(
                 arguments: settings.arguments as PortfolioArguments,
+              ),
+            ),
+          ),
+        );
+
+      case ReportPage.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ReportStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ReportPage(
+                arguments: settings.arguments as ReportPageArguments,
               ),
             ),
           ),
