@@ -11,6 +11,7 @@ import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/validator.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:flutter/cupertino.dart';
@@ -63,11 +64,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       final store = context.read<CreateQuestStore>();
       store.setConfirmUnderstandAboutEdit(true);
       print("questInfo!.priority: ${widget.questInfo!.priority - 1}");
-      store.priority = store.priorityList[widget.questInfo!.priority - 1];
+      store.priority = QuestConstants.priorityList[widget.questInfo!.priority - 1];
       store.contractAddress = widget.questInfo!.contractAddress ?? '';
       store.questTitle = widget.questInfo!.title;
-      store.getWorkplace(widget.questInfo!.workplace);
-      store.getEmployment(widget.questInfo!.employment);
+      store.changedDistantWork(QuestUtils.getEmployment(widget.questInfo!.workplace));
+      store.changedEmployment(QuestUtils.getEmployment(widget.questInfo!.employment));
+      // store.getWorkplace(widget.questInfo!.workplace);
+      // store.getEmployment(widget.questInfo!.employment);
       store.description = widget.questInfo!.description;
       store.price = (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18)).toString();
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
@@ -121,7 +124,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             builder: (_) => Platform.isIOS
                                 ? dropDownWithModalSheep(
                                     value: store.priority,
-                                    children: store.priorityList,
+                                    children: QuestConstants.priorityList,
                                     onPressed: (value) {
                                       store.changedPriority(value);
                                     },
@@ -133,7 +136,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedPriority(value!);
                                       },
-                                      items: store.priorityList.map<DropdownMenuItem<String>>(
+                                      items: QuestConstants.priorityList.map<DropdownMenuItem<String>>(
                                         (String value) {
                                           return DropdownMenuItem<String>(
                                             value: value.tr(),
@@ -232,7 +235,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             builder: (_) => Platform.isIOS
                                 ? dropDownWithModalSheep(
                                     value: store.employment,
-                                    children: store.employmentList,
+                                    children: QuestConstants.employmentList,
                                     onPressed: (value) {
                                       store.changedEmployment(value);
                                     },
@@ -244,7 +247,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedEmployment(value!);
                                       },
-                                      items: store.employmentList.map<DropdownMenuItem<String>>((String value) {
+                                      items: QuestConstants.employmentList.map<DropdownMenuItem<String>>((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: new Text(value),
@@ -284,7 +287,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             builder: (_) => Platform.isIOS
                                 ? dropDownWithModalSheep(
                                     value: store.workplace,
-                                    children: store.distantWorkList,
+                                    children: QuestConstants.distantWorkList,
                                     onPressed: (value) {
                                       store.changedDistantWork(value);
                                     },
@@ -296,7 +299,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedDistantWork(value!);
                                       },
-                                      items: store.distantWorkList.map<DropdownMenuItem<String>>((String value) {
+                                      items: QuestConstants.distantWorkList.map<DropdownMenuItem<String>>((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: new Text(value),
@@ -336,7 +339,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             builder: (_) => Platform.isIOS
                                 ? dropDownWithModalSheep(
                                     value: store.payPeriod,
-                                    children: store.payPeriodList,
+                                    children: QuestConstants.payPeriodList,
                                     onPressed: (value) {
                                       store.changedPayPeriod(value);
                                     },
@@ -348,7 +351,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedPayPeriod(value!);
                                       },
-                                      items: store.payPeriodList.map<DropdownMenuItem<String>>(
+                                      items: QuestConstants.payPeriodList.map<DropdownMenuItem<String>>(
                                         (String value) {
                                           return DropdownMenuItem<String>(
                                             value: value.tr(),

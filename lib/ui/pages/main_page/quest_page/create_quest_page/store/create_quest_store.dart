@@ -7,8 +7,9 @@ import 'package:app/keys.dart';
 import 'package:app/model/quests_models/create_quest_request_model.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/location_full.dart';
-import 'package:app/ui/widgets/error_dialog.dart';
 import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
+import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/client_service.dart';
@@ -32,41 +33,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
 
   _CreateQuestStore(this.apiProvider);
 
-  final List<String> priorityList = [
-    "quests.priority.low".tr(),
-    "quests.priority.normal".tr(),
-    "quests.priority.urgent".tr(),
-  ];
-
-  final List<String> employmentList = [
-    "Full time",
-    "Part time",
-    "Fixed term",
-    "Remote work",
-    "Employment contract",
-  ];
-
-  final List<String> distantWorkList = [
-    "Distant work",
-    "Work in the office",
-    "Both variant",
-  ];
-
-  final List<String> payPeriodList = [
-    "quests.payPeriod.hourly",
-    "quests.payPeriod.daily",
-    "quests.payPeriod.weekly",
-    "quests.payPeriod.biWeekly",
-    "quests.payPeriod.semiMonthly",
-    "quests.payPeriod.monthly",
-    "quests.payPeriod.quarterly",
-    "quests.payPeriod.semiAnnually",
-    "quests.payPeriod.annually",
-    "quests.payPeriod.fixedPeriod",
-    "quests.payPeriod.byAgreement",
-  ];
-
-  /// location, runtime, images and videos ,priority undone
+  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @observable
   String employment = "Full time";
@@ -172,109 +139,14 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
 
   @action
   void emptyField(BuildContext context) {
-    if (locationPlaceName.isEmpty) errorAlert(context, "Address is empty");
-    if (skillFilters.isEmpty) errorAlert(context, "Skills are empty");
-  }
-
-  String getWorkplaceValue() {
-    switch (workplace) {
-      case "Distant work":
-        return workplaceValue = "Remote";
-      case "Work in the office":
-        return workplaceValue = "InOffice";
-      case "Both variant":
-        return workplaceValue = "Hybrid";
+    if (locationPlaceName.isEmpty) {
+      AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: "Address is empty");
     }
-    return workplaceValue;
-  }
-
-  String getEmploymentValue() {
-    switch (employment) {
-      case "Full time":
-        return employmentValue = "FullTime";
-      case "Part time":
-        return employmentValue = "PartTime";
-      case "Fixed term":
-        return employmentValue = "FixedTerm";
-      case "Remote Work":
-        return employmentValue = "RemoteWork";
-      case "Employment Contract":
-        return employmentValue = "EmploymentContract";
+    if (skillFilters.isEmpty) {
+      AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: "Skills are empty");
     }
-    return employmentValue;
   }
 
-  String getWorkplace(String workplaceValue) {
-    switch (workplaceValue) {
-      case "Remote":
-        return workplace = "Distant work";
-      case "InOffice":
-        return workplace = "Work in the office";
-      case "Hybrid":
-        return workplace = "Both variant";
-    }
-    return workplace;
-  }
-
-  String getPayPeriodValue() {
-    switch (payPeriod) {
-      case "Hourly":
-        return payPeriodValue = "Hourly";
-      case "Daily":
-        return payPeriodValue = "Daily";
-      case "Weekly":
-        return payPeriodValue = "Weekly";
-      case "BiWeekly":
-        return payPeriodValue = "BiWeekly";
-      case "Semi monthly":
-        return payPeriodValue = "SemiMonthly";
-      case "Monthly":
-        return payPeriodValue = "Monthly";
-      case "Quarterly":
-        return payPeriodValue = "Quarterly";
-      case "Semi annually":
-        return payPeriodValue = "SemiAnnually";
-      case "Annually":
-        return payPeriodValue = "Annually";
-      case "Fixed period":
-        return payPeriodValue = "FixedPeriod";
-      case "By agreement":
-        return payPeriodValue = "ByAgreement";
-    }
-    return payPeriodValue;
-  }
-
-  String getEmployment(String employmentValue) {
-    switch (employmentValue) {
-      case "fullTime":
-        return employment = "Full time";
-      case "partTime":
-        return employment = "Part time";
-      case "fixedTerm":
-        return employment = "Fixed term";
-      case "RemoteWork":
-        return employment = "Remote Work";
-      case "EmploymentContract":
-        return employment = "Employment Contract";
-    }
-    return employment;
-  }
-
-  int priorityValue = 0;
-
-  int getPriority() {
-    switch (priority) {
-      case "Fixed delivery":
-        return priorityValue = 1;
-      case "Short term":
-        return priorityValue = 2;
-      case "Urgent":
-        return priorityValue = 3;
-    }
-    return priorityValue;
-  }
-
-  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
   Future<Null> getPrediction(BuildContext context) async {
@@ -319,12 +191,16 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         ),
       );
       await sendImages(apiProvider);
+      print('employment: $employment');
+      print('workplace: $workplace');
+      print('payPeriod: $payPeriod');
+      print('priority: $priority');
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
-        employment: getEmploymentValue(),
-        workplace: getWorkplaceValue(),
-        payPeriod: getPayPeriodValue(),
+        employment: QuestUtils.getEmploymentValue(employment),
+        workplace: QuestUtils.getWorkplaceValue(workplace),
+        payPeriod: QuestUtils.getPayPeriodValue(payPeriod),
+        priority: QuestUtils.getPriority(priority),
         specializationKeys: skillFilters,
-        priority: getPriority(),
         location: location,
         adType: adType,
         category: category,
@@ -334,6 +210,8 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         price:
             (BigInt.parse(price).toDouble() * pow(10, 18)).toStringAsFixed(0),
       );
+      print('questModel: ${questModel.toJson()}');
+      //priority show item
       if (isEdit) {
         await AccountRepository().service!.handleEvent(
           function: WQContractFunctions.editJob,
@@ -377,6 +255,8 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       }
 
       this.onSuccess(true);
+    } on FormatException catch (e) {
+      this.onError(e.message);
     } catch (e) {
       this.onError(e.toString());
     }
