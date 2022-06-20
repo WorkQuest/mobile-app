@@ -699,7 +699,7 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChatRoomPage(
-                settings.arguments as String,
+                settings.arguments as ChatRoomArguments,
               ),
             ),
           ),
@@ -788,9 +788,9 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
-              // Provider(
-              //   create: (context) => getIt.get<ChatRoomStore>(),
-              // ),
+              Provider(
+                create: (context) => getIt.get<ChatRoomStore>(),
+              ),
             ],
             child: Directionality(
               textDirection: checkDirection(context),

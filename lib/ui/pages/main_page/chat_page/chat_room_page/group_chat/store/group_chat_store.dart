@@ -110,7 +110,7 @@ abstract class _GroupChatStore extends IStore<bool> with Store {
 
   void getOwnerInfo(ChatModel chat) {
     final ownerChatId = chat.groupChat!.ownerMemberId;
-    chat.members.forEach((element) {
+    chat.members!.forEach((element) {
       if (ownerChatId == element.id) {
         ownerId = element.userId;
         myRole = element.user!.role;

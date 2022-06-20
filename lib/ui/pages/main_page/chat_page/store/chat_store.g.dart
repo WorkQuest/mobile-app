@@ -9,21 +9,6 @@ part of 'chat_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ChatStore on _ChatStore, Store {
-  final _$userDataAtom = Atom(name: '_ChatStore.userData');
-
-  @override
-  ProfileMeResponse? get userData {
-    _$userDataAtom.reportRead();
-    return super.userData;
-  }
-
-  @override
-  set userData(ProfileMeResponse? value) {
-    _$userDataAtom.reportWrite(value, super.userData, () {
-      super.userData = value;
-    });
-  }
-
   final _$starredAtom = Atom(name: '_ChatStore.starred');
 
   @override
@@ -57,13 +42,13 @@ mixin _$ChatStore on _ChatStore, Store {
   final _$chatsAtom = Atom(name: '_ChatStore.chats');
 
   @override
-  Chats? get chats {
+  ObservableMap<TypeChat, Chats> get chats {
     _$chatsAtom.reportRead();
     return super.chats;
   }
 
   @override
-  set chats(Chats? value) {
+  set chats(ObservableMap<TypeChat, Chats> value) {
     _$chatsAtom.reportWrite(value, super.chats, () {
       super.chats = value;
     });
@@ -108,6 +93,13 @@ mixin _$ChatStore on _ChatStore, Store {
     return _$setStarAsyncAction.run(() => super.setStar());
   }
 
+  final _$getChatAsyncAction = AsyncAction('_ChatStore.getChat');
+
+  @override
+  Future<void> getChat(String chatId) {
+    return _$getChatAsyncAction.run(() => super.getChat(chatId));
+  }
+
   final _$setMessageReadAsyncAction = AsyncAction('_ChatStore.setMessageRead');
 
   @override
@@ -117,17 +109,6 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   final _$_ChatStoreActionController = ActionController(name: '_ChatStore');
-
-  @override
-  void chatSort() {
-    final _$actionInfo =
-        _$_ChatStoreActionController.startAction(name: '_ChatStore.chatSort');
-    try {
-      return super.chatSort();
-    } finally {
-      _$_ChatStoreActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   void setChatSelected(bool value) {
@@ -187,7 +168,6 @@ mixin _$ChatStore on _ChatStore, Store {
   @override
   String toString() {
     return '''
-userData: ${userData},
 starred: ${starred},
 chatSelected: ${chatSelected},
 chats: ${chats},

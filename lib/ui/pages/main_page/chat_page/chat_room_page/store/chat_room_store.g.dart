@@ -9,6 +9,36 @@ part of 'chat_room_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$ChatRoomStore on _ChatRoomStore, Store {
+  final _$questAtom = Atom(name: '_ChatRoomStore.quest');
+
+  @override
+  BaseQuestResponse? get quest {
+    _$questAtom.reportRead();
+    return super.quest;
+  }
+
+  @override
+  set quest(BaseQuestResponse? value) {
+    _$questAtom.reportWrite(value, super.quest, () {
+      super.quest = value;
+    });
+  }
+
+  final _$disputeAtom = Atom(name: '_ChatRoomStore.dispute');
+
+  @override
+  DisputeModel? get dispute {
+    _$disputeAtom.reportRead();
+    return super.dispute;
+  }
+
+  @override
+  set dispute(DisputeModel? value) {
+    _$disputeAtom.reportWrite(value, super.dispute, () {
+      super.dispute = value;
+    });
+  }
+
   final _$initPageAtom = Atom(name: '_ChatRoomStore.initPage');
 
   @override
@@ -197,6 +227,20 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
     return _$setStarAsyncAction.run(() => super.setStar());
   }
 
+  final _$getQuestAsyncAction = AsyncAction('_ChatRoomStore.getQuest');
+
+  @override
+  Future<void> getQuest(String id) {
+    return _$getQuestAsyncAction.run(() => super.getQuest(id));
+  }
+
+  final _$getDisputeAsyncAction = AsyncAction('_ChatRoomStore.getDispute');
+
+  @override
+  Future<void> getDispute(String disputeId) {
+    return _$getDisputeAsyncAction.run(() => super.getDispute(disputeId));
+  }
+
   final _$_ChatRoomStoreActionController =
       ActionController(name: '_ChatRoomStore');
 
@@ -245,8 +289,21 @@ mixin _$ChatRoomStore on _ChatRoomStore, Store {
   }
 
   @override
+  void addedMessage(dynamic json) {
+    final _$actionInfo = _$_ChatRoomStoreActionController.startAction(
+        name: '_ChatRoomStore.addedMessage');
+    try {
+      return super.addedMessage(json);
+    } finally {
+      _$_ChatRoomStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
+quest: ${quest},
+dispute: ${dispute},
 initPage: ${initPage},
 loadMessage: ${loadMessage},
 chatRoom: ${chatRoom},

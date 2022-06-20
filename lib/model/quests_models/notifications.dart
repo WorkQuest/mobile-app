@@ -1,3 +1,4 @@
+import 'package:app/enums.dart';
 import 'package:app/model/profile_response/avatar.dart';
 
 class Notifications {
@@ -89,27 +90,34 @@ class Data {
     required this.id,
     required this.title,
     required this.questId,
+    required this.disputeId,
     required this.user,
   });
 
   String id;
   String? title;
   String questId;
+  String? disputeId;
   User user;
 
   factory Data.fromJson(Map<String, dynamic> json) {
+    String title = "";
+    json["decision"] == null
+        ? json["title"] == null
+            ? json["quest"] == null
+                ? json["message"] == null
+                    ? title = json["text"]
+                    : title = json["message"]
+                : title = json["quest"]["title"]
+            : title = json["title"]
+        : title = json["decision"];
     return Data(
       id: json["quest"] == null
           ? (json["questId"] ?? json["id"])
           : json["quest"]["id"],
-      title: json["title"] == null
-          ? json["quest"] == null
-              ? json["message"] == null
-                  ? json["text"]
-                  : json["message"]
-              : json["quest"]["title"]
-          : json["title"],
+      title: title,
       questId: json["questId"] ?? "",
+      disputeId: json["decision"] == null ? null : json["id"],
       user: json["fromUser"] == null
           ? json["user"] == null
               ? User.fromJson(json["quest"]["user"])
@@ -130,18 +138,21 @@ class User {
     required this.id,
     required this.firstName,
     required this.lastName,
+    required this.role,
     required this.avatar,
   });
 
   String id;
   String firstName;
   String lastName;
+  UserRole role;
   Avatar? avatar;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
         firstName: json["firstName"],
         lastName: json["lastName"],
+        role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
         avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
       );
 }

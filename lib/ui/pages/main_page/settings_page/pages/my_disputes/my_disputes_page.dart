@@ -131,9 +131,7 @@ class _MyDisputesPageState extends State<MyDisputesPage> {
           itemBuilder: (BuildContext context, index) {
             return Column(
               children: [
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
                 MyDisputesItem(store, index),
               ],
             );
@@ -149,25 +147,16 @@ class _MyDisputesPageState extends State<MyDisputesPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SvgPicture.asset(
-          "assets/empty_disputes_icon.svg",
-        ),
-        const SizedBox(
-          height: 10.0,
-        ),
+        SvgPicture.asset("assets/empty_disputes_icon.svg"),
+        const SizedBox(height: 10.0),
         Text(
           "modals.noDisputes".tr(),
-          style: TextStyle(
-            color: Color(0xFFD8DFE3),
-          ),
+          style: TextStyle(color: Color(0xFFD8DFE3)),
         ),
       ],
     );
   }
 
-  Widget getLoadingBody() {
-    return Center(
-      child: CircularProgressIndicator.adaptive(),
-    );
-  }
+  Widget getLoadingBody() =>
+      Center(child: CircularProgressIndicator.adaptive());
 }

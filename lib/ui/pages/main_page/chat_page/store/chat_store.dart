@@ -3,7 +3,6 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
-import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
@@ -32,16 +31,13 @@ abstract class _ChatStore extends IStore<bool> with Store {
   int offset = 0;
 
   @observable
-  ProfileMeResponse? userData;
-
-  @observable
   bool starred = false;
 
   @observable
   bool chatSelected = false;
 
   @observable
-  Chats? chats;
+  ObservableMap<TypeChat, Chats> chats = ObservableMap.of({});
 
   @observable
   TypeChat typeChat = TypeChat.active;
@@ -66,13 +62,12 @@ abstract class _ChatStore extends IStore<bool> with Store {
     TypeChat type = TypeChat.active,
     int? questChatStatus,
   }) async {
-    if (this.myId.isEmpty) return;
-    chats ??= Chats([]);
+    chats[type] ??= Chats([]);
     if (!loadMore) {
-      chats!.clearChat();
+      chats[type]!.clearChat();
       offset = 0;
       this.onLoading();
-    } else if (chats!.chat.length != offset) return;
+    } else if (chats[type]!.chat.length != offset) return;
     try {
       final listChats = await _apiProvider.getChats(
         offset: this.offset,
@@ -81,25 +76,17 @@ abstract class _ChatStore extends IStore<bool> with Store {
         questChatStatus: questChatStatus,
         starred: type == TypeChat.favourites ? true : null,
       );
-      for (int i = 0; i < listChats.length;)
-        if (listChats[i].meMember?.status == -1)
-          listChats.removeAt(i);
-        else
-          i++;
 
-      for (int i = 0; i < listChats.length;)
-        if (listChats[i].type != typeChat && listChats[i].star == null)
-          listChats.removeAt(i);
-        else
-          i++;
+      listChats.removeWhere((element) => element.meMember?.status == -1);
 
-      chats!.setChat(listChats);
+      chats[type]!.setChats(listChats);
 
       listChats.forEach((element) {
         if (selectedChats[element] == null) selectedChats[element] = false;
       });
 
       offset += 10;
+      checkMessage();
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
@@ -121,14 +108,24 @@ abstract class _ChatStore extends IStore<bool> with Store {
     }
   }
 
-  @action
-  void chatSort() {
-    chats!.chat.sort((key1, key2) {
-      return key1.updatedAt.millisecondsSinceEpoch <
-              key2.updatedAt.millisecondsSinceEpoch
-          ? 1
-          : 0;
-    });
+  void getChatTypeFromIndex(int index) {
+    switch (index) {
+      case 0:
+        typeChat = TypeChat.active;
+        return;
+      case 1:
+        typeChat = TypeChat.privates;
+        return;
+      case 2:
+        typeChat = TypeChat.favourites;
+        return;
+      case 3:
+        typeChat = TypeChat.group;
+        return;
+      case 4:
+        typeChat = TypeChat.completed;
+        return;
+    }
   }
 
   @action
@@ -169,57 +166,29 @@ abstract class _ChatStore extends IStore<bool> with Store {
   void addedMessage(dynamic json) {
     try {
       MessageModel? message;
-      // if (json["path"] == "/notifications/quest") {
-      //   final quest = BaseQuestResponse.fromJson(
-      //       json["message"]["data"]["quest"] ?? json["message"]["data"]);
-      //   if (quest.status == 5) {
-      //     loadChats();
-      //   }
-      //   return;
-      // }
       if (json["type"] == "request") {
         message = MessageModel.fromJson(json["payload"]["result"]);
-        // } else if (json["message"]["action"] == "groupChatCreate") {
-        //   print(json["message"]["data"]);
-        //   print(json["message"]["data"]["lastMessage"]);
-        //   message = MessageModel.fromJson(json["message"]["data"]["lastMessage"]);
-        //   setMessages(
-        //       [MessageModel.fromJson(json["message"]["data"]["lastMessage"])],
-        //       ChatModel.fromJson(json["message"]["data"]));
-        //   _atomChats.reportChanged();
-        //   return;
-      } else if (json["type"] == "pub") {
+      } else if (json["message"]["action"] == "groupChatCreate") {
         message = MessageModel.fromJson(json["message"]["data"]);
-        // } else if (json["message"]["action"] == "messageReadByRecipient") {
-        //   message = MessageModel.fromJson(json["message"]["data"]);
-        //   chats[message.chatId]!.chatModel.chatData.lastMessage.senderStatus =
-        //       "read";
-        //   _atomChats.reportChanged();
-        //   return;
-      }
-      final chatIndex = chats?.chat
-          .indexWhere((element) => element.chatData.chatId == message?.chatId);
-      if (chatIndex! < 0) {
-        loadChats(
-          type: typeChat,
-          questChatStatus: typeChat == TypeChat.active
-              ? 0
-              : typeChat == TypeChat.completed
-                  ? -1
-                  : null,
-        );
-      } else {
-        chats!.chat[chatIndex].chatData.lastMessage = message!;
+      } else if (json["type"] == "pub" ||
+          json["message"]["action"] == "messageReadByRecipient") {
+        message = MessageModel.fromJson(json["message"]["data"]);
       }
 
-      // final saveChat = chats.remove(message.chatId);
-      //
-      // chats[message.chatId] = saveChat!;
-      //
-      // chatSort();
-      // updateListsChats();
-      // checkMessage();
-      chatSort();
+      bool isChatExist = false;
+      chats.forEach((key, value) {
+        value.chat.forEach((element) {
+          if (element.id == message!.chatId) {
+            chats[key]!.chat.removeWhere((chat) => chat.id == element.id);
+            element.chatData.lastMessage = message;
+            chats[key]!.chat.insert(0, element);
+            isChatExist = true;
+          }
+        });
+      });
+
+      if (!isChatExist) getChat(message!.chatId);
+      checkMessage();
     } catch (e, trace) {
       this.onError(e.toString());
       print("ERROR: $e");
@@ -228,15 +197,34 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   @action
-  void checkMessage() {
-    for (int i = 0; i < (chats?.chat.length ?? 0); i++) {
-      if (chats!.chat[i].chatData.lastMessage.senderStatus == "Unread" &&
-          chats!.chat[i].chatData.lastMessage.senderMemberId != myId) {
-        streamChatNotification!.sink.add(true);
-        return;
-      }
+  Future<void> getChat(String chatId) async {
+    try {
+      this.onLoading();
+      final response = await _apiProvider.getChat(chatId: chatId);
+      (chats[response.type] ?? Chats([])).chat.insert(0, response);
+      if (selectedChats[response] == null) selectedChats[response] = false;
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
     }
-    streamChatNotification!.sink.add(false);
+  }
+
+  @action
+  void checkMessage() {
+    bool check = false;
+    chats.forEach((key, value) {
+      value.chat.forEach((element) {
+        if (element.chatData.lastMessage.senderStatus == "Unread" &&
+            element.chatData.lastMessage.sender?.userId != myId) {
+          check = true;
+          return;
+        }
+      });
+    });
+    if (check)
+      streamChatNotification!.sink.add(true);
+    else
+      streamChatNotification!.sink.add(false);
   }
 
   @action

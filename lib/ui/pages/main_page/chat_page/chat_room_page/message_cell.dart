@@ -60,13 +60,13 @@ class MessageCell extends StatelessWidget {
             child: mess.infoMessage == null
                 ? Row(
                     children: [
-                      if (mess.sender.userId == userId) Spacer(),
+                      if (mess.sender!.userId == userId) Spacer(),
                       Container(
                         padding: const EdgeInsets.all(10),
                         margin: const EdgeInsets.only(bottom: 8, top: 8),
                         width: MediaQuery.of(context).size.width * 0.7,
                         decoration: BoxDecoration(
-                          color: mess.sender.userId != userId
+                          color: mess.sender!.userId != userId
                               ? Color(0xFF0083C7)
                               : Color(0xFFF7F8FA),
                           borderRadius: BorderRadius.circular(6),
@@ -77,19 +77,17 @@ class MessageCell extends StatelessWidget {
                             Text(
                               mess.text ?? "",
                               style: TextStyle(
-                                color: mess.sender.userId != userId
+                                color: mess.sender!.userId != userId
                                     ? Color(0xFFFFFFFF)
                                     : Color(0xFF1D2127),
                               ),
                             ),
-                            const SizedBox(
-                              height: 5,
-                            ),
+                            const SizedBox(height: 5),
                             if (mess.medias.isNotEmpty)
                               Center(
                                 child: ImageViewerWidget(
                                   mess.medias,
-                                  mess.sender.userId != userId
+                                  mess.sender!.userId != userId
                                       ? Color(0xFFFFFFFF)
                                       : Color(0xFF1D2127),
                                   medias,
@@ -100,7 +98,7 @@ class MessageCell extends StatelessWidget {
                                 Text(
                                   date,
                                   style: TextStyle(
-                                    color: mess.sender.userId != userId
+                                    color: mess.sender!.userId != userId
                                         ? Color(0xFFFFFFFF).withOpacity(0.4)
                                         : Color(0xFF8D96A1).withOpacity(0.4),
                                   ),
@@ -110,7 +108,7 @@ class MessageCell extends StatelessWidget {
                                   Icon(
                                     Icons.star,
                                     size: 16,
-                                    color: mess.sender.userId != userId
+                                    color: mess.sender!.userId != userId
                                         ? Color(0xFFFFFFFF).withOpacity(0.4)
                                         : Color(0xFF8D96A1).withOpacity(0.4),
                                   ),

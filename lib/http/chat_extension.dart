@@ -37,6 +37,24 @@ extension ChatsService on ApiProvider {
     }
   }
 
+  Future<ChatModel> getChat({
+    required String chatId,
+  }) async {
+    try {
+      final responseData = await httpClient.get(
+        query: '/v1/user/me/chat/$chatId',
+      );
+      return ChatModel.fromJson(responseData);
+    } catch (e, stack) {
+      print("ERROR $e");
+      print("ERROR $stack");
+      final responseData = await httpClient.get(
+        query: '/v1/user/me/chat/$chatId',
+      );
+      return ChatModel.fromJson(responseData);
+    }
+  }
+
   Future<List<ProfileMeResponse>> getUsersForChat({
     String? excludeMembersChatId,
   }) async {

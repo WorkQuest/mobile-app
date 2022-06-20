@@ -31,7 +31,7 @@ class _EditUserCellState extends State<EditUserCell> {
   @override
   void initState() {
     store = context.read<EditChatStore>();
-    store.getChatMembers(widget.chat.members);
+    store.getChatMembers(widget.chat.members!);
     profileStore = context.read<ProfileMeStore>();
     super.initState();
   }
@@ -120,10 +120,10 @@ class _EditUserCellState extends State<EditUserCell> {
           onTabOk: () async {
             await store.removeUser(
               widget.chat.id,
-              widget.user.userId,
+              widget.user.userId!,
             );
             if (store.isSuccess) {
-              widget.chat.members.remove(widget.user);
+              widget.chat.members!.remove(widget.user);
             }
           },
           colorCancel: Colors.blue,
@@ -140,7 +140,7 @@ class _EditUserCellState extends State<EditUserCell> {
         await Navigator.of(context, rootNavigator: true).pushNamed(
           ChooseQuestPage.routeName,
           arguments: ChooseQuestArguments(
-            workerId: widget.user.userId,
+            workerId: widget.user.userId!,
             workerAddress: null,
           ),
         );
@@ -173,10 +173,10 @@ class _EditUserCellState extends State<EditUserCell> {
           onTabOk: () async {
             await store.removeUser(
               widget.chat.id,
-              widget.user.userId,
+              widget.user.userId!,
             );
             if (store.isSuccess) {
-              widget.chat.members.remove(widget.user);
+              widget.chat.members!.remove(widget.user);
             }
           },
           colorCancel: Colors.blue,

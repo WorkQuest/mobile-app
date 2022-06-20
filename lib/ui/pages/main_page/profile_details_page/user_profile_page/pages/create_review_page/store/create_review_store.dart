@@ -52,4 +52,20 @@ abstract class _CreateReviewStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
   }
+
+  @action
+  Future<void> addReviewDispute(String disputeId) async {
+    try {
+      this.onLoading();
+      await _apiProvider.sendReviewDispute(
+        disputeId: disputeId,
+        message: message,
+        mark: mark,
+      );
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("getQuests error: $e\n$trace");
+      this.onError(e.toString());
+    }
+  }
 }

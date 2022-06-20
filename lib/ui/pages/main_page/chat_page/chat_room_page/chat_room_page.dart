@@ -1,5 +1,6 @@
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
+import 'package:app/model/chat_model/member.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/edit_chat_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/input_tool_bar.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/message_cell.dart';
@@ -23,9 +24,9 @@ import '../../../../widgets/media_upload/media_upload_widget.dart';
 
 class ChatRoomPage extends StatefulWidget {
   static const String routeName = "/chatRoomPage";
-  final String idChat;
+  final ChatRoomArguments arguments;
 
-  ChatRoomPage(this.idChat);
+  ChatRoomPage(this.arguments);
 
   @override
   _ChatRoomPageState createState() => _ChatRoomPageState();
@@ -55,7 +56,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     _store = context.read<ChatRoomStore>();
     profile = context.read<ProfileMeStore>();
     _chatStore = context.read<ChatStore>();
-    _store.idChat = widget.idChat;
+    _store.idChat = widget.arguments.chatId;
     _store.getMessages(chatId: _store.idChat!).then((value) {
       chatType = _store.chatRoom?.type;
 
@@ -63,111 +64,132 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         _store.getOwnerId();
         chatName = _store.chatRoom!.groupChat?.name ?? "--";
       } else {
-        id1 = _store.chatRoom?.members[0].userId ?? "--";
-        firstName1 = _store.chatRoom?.members[0].user!.firstName ?? "--";
-        lastName1 = _store.chatRoom?.members[0].user!.lastName ?? "--";
-        url1 = _store.chatRoom?.members[0].user!.avatar?.url ??
-            Constants.defaultImageNetwork;
-        id2 = _store.chatRoom?.members[1].userId ?? "--";
-        firstName2 = _store.chatRoom?.members[1].user!.firstName ?? "--";
-        lastName2 = _store.chatRoom?.members[1].user!.lastName ?? "--";
-        url2 = _store.chatRoom?.members[1].user!.avatar?.url ??
-            Constants.defaultImageNetwork;
+        if (_store.chatRoom?.questChat?.quest?.openDispute != null) {
+          _store.getQuest(_store.chatRoom!.questChat!.quest!.id);
+          _store.getDispute(_store.chatRoom!.questChat!.quest!.openDispute!.id);
+        }
+        List<Member> members = _store.chatRoom!.members!;
+        members.removeWhere((element) => element.type == "Admin");
+        id1 = members[0].userId;
+        firstName1 = members[0].user!.firstName;
+        lastName1 = members[0].user!.lastName;
+        url1 = members[0].user!.avatar?.url ?? Constants.defaultImageNetwork;
+        id2 = members[1].userId;
+        firstName2 = members[1].user!.firstName;
+        lastName2 = members[1].user!.lastName;
+        url2 = members[1].user!.avatar?.url ?? Constants.defaultImageNetwork;
         if (_store.chatRoom?.questChat != null)
-          role1 = _store.chatRoom!.members[0].user!.role;
-        role2 = _store.chatRoom!.members[1].user!.role;
+          role1 = _store.chatRoom!.members![0].user!.role;
+        role2 = _store.chatRoom!.members![1].user!.role;
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) => _store.initPage
-          ? Scaffold(
-              body: Center(child: CircularProgressIndicator.adaptive()),
-            )
-          : Scaffold(
-              appBar: _store.messageSelected ? _selectedMessages() : _appBar(),
-              body: Container(
-                alignment: Alignment.bottomLeft,
-                height: MediaQuery.of(context).size.height,
-                child: Observer(
-                  builder: (_) => Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(
-                        child: NotificationListener<ScrollStartNotification>(
-                          onNotification: (scrollStart) {
-                            final metrics = scrollStart.metrics;
-                            if (metrics.maxScrollExtent < metrics.pixels &&
-                                !_store.loadMessage) {
-                              _store.getMessages(chatId: _store.idChat!);
-                            }
-                            return true;
-                          },
-                          child: ListView.builder(
-                            physics: const BouncingScrollPhysics(
-                              parent: AlwaysScrollableScrollPhysics(),
-                            ),
-                            itemCount: _store.messages.length,
-                            itemBuilder: (context, index) => MessageCell(
-                              UniqueKey(),
-                              _store.messages[index],
-                              profile!.userData!.id!,
-                              _store.mediaPaths,
-                            ),
-                            reverse: true,
-                          ),
-                        ),
-                      ),
-                      _store.chatRoom!.questChat?.status != -1
-                          ? InputToolbar(_store, profile!.userData!.id!)
-                          : profile!.userData!.role == UserRole.Employer
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                  ),
-                                  child: LoginButton(
-                                    title: "quests.addToQuest".tr(),
-                                    onTap: () async {
-                                      await Navigator.of(
-                                        context,
-                                        rootNavigator: true,
-                                      ).pushNamed(
-                                        ChooseQuestPage.routeName,
-                                        arguments: ChooseQuestArguments(
-                                          workerId: profile!.userData!.id != id1
-                                              ? id1!
-                                              : id2!,
-                                          workerAddress: null,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
-                              : SizedBox(),
-                      if (_store.progressImages.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 16.0,
-                            right: 16.0,
-                            top: 16.0,
-                          ),
-                          child: Container(
-                            height: 250,
-                            child: ListMediaView(
-                              store: _store,
+    return WillPopScope(
+      onWillPop: () async {
+        if (widget.arguments.refreshChat)
+          _chatStore!.loadChats(
+            starred: _store.chatRoom!.star == null ? null : true,
+            type: _store.chatRoom!.type,
+            questChatStatus: _store.chatRoom!.type == TypeChat.active
+                ? 0
+                : _store.chatRoom!.type == TypeChat.completed
+                    ? -1
+                    : null,
+          );
+        return true;
+      },
+      child: Observer(
+        builder: (_) => _store.initPage || _store.isLoading
+            ? Scaffold(
+                body: Center(child: CircularProgressIndicator.adaptive()),
+              )
+            : Scaffold(
+                appBar:
+                    _store.messageSelected ? _selectedMessages() : _appBar(),
+                body: Container(
+                  alignment: Alignment.bottomLeft,
+                  height: MediaQuery.of(context).size.height,
+                  child: Observer(
+                    builder: (_) => Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                          child: NotificationListener<ScrollStartNotification>(
+                            onNotification: (scrollStart) {
+                              final metrics = scrollStart.metrics;
+                              if (metrics.maxScrollExtent < metrics.pixels &&
+                                  !_store.loadMessage) {
+                                _store.getMessages(chatId: _store.idChat!);
+                              }
+                              return true;
+                            },
+                            child: ListView.builder(
+                              physics: const BouncingScrollPhysics(
+                                parent: AlwaysScrollableScrollPhysics(),
+                              ),
+                              itemCount: _store.messages.length,
+                              itemBuilder: (context, index) => MessageCell(
+                                UniqueKey(),
+                                _store.messages[index],
+                                profile!.userData!.id!,
+                                _store.mediaPaths,
+                              ),
+                              reverse: true,
                             ),
                           ),
                         ),
-                      const SizedBox(height: 16.0),
-                    ],
+                        _store.chatRoom!.questChat?.status != -1
+                            ? InputToolbar(_store)
+                            : profile!.userData!.role == UserRole.Employer
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                    ),
+                                    child: LoginButton(
+                                      title: "quests.addToQuest".tr(),
+                                      onTap: () async {
+                                        await Navigator.of(
+                                          context,
+                                          rootNavigator: true,
+                                        ).pushNamed(
+                                          ChooseQuestPage.routeName,
+                                          arguments: ChooseQuestArguments(
+                                            workerId:
+                                                profile!.userData!.id != id1
+                                                    ? id1!
+                                                    : id2!,
+                                            workerAddress: null,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : SizedBox(),
+                        if (_store.progressImages.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 16.0,
+                              right: 16.0,
+                              top: 16.0,
+                            ),
+                            child: Container(
+                              height: 250,
+                              child: ListMediaView(
+                                store: _store,
+                              ),
+                            ),
+                          ),
+                        const SizedBox(height: 16.0),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+      ),
     );
   }
 
@@ -302,11 +324,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   );
                 },
                 child: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    profile!.userData!.id != id1! ? url1! : url2!,
-                  ),
-                  maxRadius: 20,
-                ),
+                    backgroundImage: NetworkImage(
+                      profile!.userData!.id != id1! ? url1! : url2!,
+                    ),
+                    maxRadius: 20),
               ),
         chatType == TypeChat.group && _store.ownerId != profile!.userData!.id
             ? PopupMenuButton<String>(
@@ -328,20 +349,16 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   }
                 },
                 itemBuilder: (BuildContext context) {
-                  return {
-                    "Leave from chat",
-                  }.map((String choice) {
+                  return {"Leave from chat"}.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
-                      child: Text(
-                        choice.tr(),
-                      ),
+                      child: Text(choice),
                     );
                   }).toList();
                 },
               )
             : const SizedBox(width: 16),
-        _store.chatRoom!.questChat?.quest?.openDispute?.status == 2
+        _store.dispute?.currentUserDisputeReview == null
             ? PopupMenuButton<String>(
                 elevation: 10,
                 icon: Icon(Icons.more_vert),
@@ -359,6 +376,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           _store.chatRoom!.questChat?.quest?.openDispute!.id,
                         ),
                       );
+                      await _store.getMessages(
+                        chatId: _store.chatRoom!.chatData.chatId,
+                      );
                       break;
                   }
                 },
@@ -368,9 +388,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   }.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
-                      child: Text(
-                        choice.tr(),
-                      ),
+                      child: Text(choice),
                     );
                   }).toList();
                 },
@@ -379,4 +397,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       ],
     );
   }
+}
+
+class ChatRoomArguments {
+  ChatRoomArguments(this.chatId, this.refreshChat);
+
+  final String chatId;
+  final bool refreshChat;
 }

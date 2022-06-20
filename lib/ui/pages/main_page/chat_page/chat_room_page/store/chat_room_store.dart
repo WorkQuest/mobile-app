@@ -3,7 +3,9 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/chat_model/star.dart';
+import 'package:app/model/dispute_model.dart';
 import 'package:app/model/media_model.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/utils/thumbnails.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:injectable/injectable.dart';
@@ -19,9 +21,17 @@ class ChatRoomStore extends _ChatRoomStore with _$ChatRoomStore {
 }
 
 abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
-  _ChatRoomStore(this._apiProvider);
+  _ChatRoomStore(this._apiProvider) {
+    WebSocket().handlerMessages = this.addedMessage;
+  }
 
   final ApiProvider _apiProvider;
+
+  @observable
+  BaseQuestResponse? quest;
+
+  @observable
+  DisputeModel? dispute;
 
   int _offset = 0;
 
@@ -104,8 +114,8 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
   void getOwnerId() {
     ///ownerMemberId isn't owner id!
     final ownerChatId = chatRoom!.groupChat!.ownerMemberId;
-    chatRoom!.members.forEach((element) {
-      if (ownerChatId == element.id) ownerId = element.userId;
+    chatRoom!.members!.forEach((element) {
+      if (ownerChatId == element.id) ownerId = element.userId!;
     });
   }
 
@@ -175,6 +185,28 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
     return text;
   }
 
+  @action
+  void addedMessage(dynamic json) {
+    try {
+      MessageModel? message;
+      if (json["type"] == "request")
+        message = MessageModel.fromJson(json["payload"]["result"]);
+      else if (json["type"] == "pub")
+        message = MessageModel.fromJson(json["message"]["data"]);
+
+      if (chatRoom!.chatData.chatId == message!.chatId) {
+        messages.insert(0, message);
+
+        if (selectedMessages[message] == null)
+          selectedMessages[message] = false;
+      }
+    } catch (e, trace) {
+      this.onError(e.toString());
+      print("ERROR: $e");
+      print("ERROR: $trace");
+    }
+  }
+
   Future sendMessage(
     String text,
     String chatId,
@@ -190,5 +222,27 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
     );
     progressImages.clear();
     setSendingMessage(false);
+  }
+
+  @action
+  Future<void> getQuest(String id) async {
+    try {
+      this.onLoading();
+      quest = await _apiProvider.getQuest(id: id);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future<void> getDispute(String disputeId) async {
+    try {
+      this.onLoading();
+      dispute = await _apiProvider.getDispute(disputeId: disputeId);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
   }
 }

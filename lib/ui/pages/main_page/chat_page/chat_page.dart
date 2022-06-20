@@ -3,13 +3,13 @@ import 'dart:math';
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/chat_model/chat_model.dart';
+import 'package:app/model/chat_model/member.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
@@ -31,8 +31,6 @@ class _ChatPageState extends State<ChatPage>
     with SingleTickerProviderStateMixin {
   late ChatStore store;
 
-  ScrollDirection prevScrollDirection = ScrollDirection.idle;
-
   late TextEditingController _searchTextController;
   late TabController _tabController;
   Timer? _timer;
@@ -41,7 +39,11 @@ class _ChatPageState extends State<ChatPage>
   void initState() {
     store = context.read<ChatStore>();
     _searchTextController = TextEditingController();
-    _tabController = TabController(vsync: this, length: 5);
+    _tabController = TabController(vsync: this, length: 5)
+      ..addListener(() {
+        store.getChatTypeFromIndex(_tabController.index);
+        setState(() {});
+      });
     _searchTextController.addListener(() {
       if (_timer?.isActive ?? false) _timer!.cancel();
       _timer = Timer(const Duration(milliseconds: 300), () {
@@ -158,37 +160,42 @@ class _ChatPageState extends State<ChatPage>
                       _ListChatsWidget(
                         typeChat: TypeChat.active,
                         query: _searchTextController.text,
+                        myId: store.myId,
+                        store: store,
                         onLongPress: onLongPress,
                         onPress: onPress,
-                        onSetTypeChat: onSetTypeChat,
                       ),
                       _ListChatsWidget(
                         typeChat: TypeChat.privates,
                         query: _searchTextController.text,
+                        myId: store.myId,
+                        store: store,
                         onLongPress: onLongPress,
                         onPress: onPress,
-                        onSetTypeChat: onSetTypeChat,
                       ),
                       _ListChatsWidget(
                         typeChat: TypeChat.favourites,
                         query: _searchTextController.text,
+                        myId: store.myId,
+                        store: store,
                         onLongPress: onLongPress,
                         onPress: onPress,
-                        onSetTypeChat: onSetTypeChat,
                       ),
                       _ListChatsWidget(
                         typeChat: TypeChat.group,
                         query: _searchTextController.text,
+                        myId: store.myId,
+                        store: store,
                         onLongPress: onLongPress,
                         onPress: onPress,
-                        onSetTypeChat: onSetTypeChat,
                       ),
                       _ListChatsWidget(
                         typeChat: TypeChat.completed,
                         query: _searchTextController.text,
+                        myId: store.myId,
+                        store: store,
                         onLongPress: onLongPress,
                         onPress: onPress,
-                        onSetTypeChat: onSetTypeChat,
                       ),
                     ],
                   ),
@@ -215,8 +222,6 @@ class _ChatPageState extends State<ChatPage>
         ),
       );
 
-  void onSetTypeChat(TypeChat type) => store.typeChat = type;
-
   void onLongPress(ChatModel chat) {
     store.setChatSelected(true);
     store.setChatHighlighted(chat);
@@ -229,7 +234,7 @@ class _ChatPageState extends State<ChatPage>
         if (store.selectedChats.values.toList()[i] == true) return;
       store.setChatSelected(false);
     } else {
-      if (chat.chatData.lastMessage.senderMemberId != store.myId &&
+      if (chat.chatData.lastMessage.sender?.userId != store.myId &&
           chat.chatData.lastMessage.senderStatus == "Unread") {
         store.setMessageRead(
           chat.id,
@@ -239,7 +244,7 @@ class _ChatPageState extends State<ChatPage>
       }
       Navigator.of(context, rootNavigator: true).pushNamed(
         ChatRoomPage.routeName,
-        arguments: chat.id,
+        arguments: ChatRoomArguments(chat.id, false),
       );
     }
   }
@@ -248,33 +253,38 @@ class _ChatPageState extends State<ChatPage>
 class _ListChatsWidget extends StatefulWidget {
   final TypeChat typeChat;
   final String query;
+  final String myId;
+  final ChatStore store;
   final void Function(ChatModel) onLongPress;
   final void Function(ChatModel) onPress;
-  final void Function(TypeChat) onSetTypeChat;
 
   const _ListChatsWidget({
     Key? key,
     required this.typeChat,
     required this.query,
+    required this.myId,
+    required this.store,
     required this.onLongPress,
     required this.onPress,
-    required this.onSetTypeChat,
   }) : super(key: key);
 
   @override
   State<_ListChatsWidget> createState() => _ListChatsWidgetState();
 }
 
-class _ListChatsWidgetState extends State<_ListChatsWidget> {
-  late ChatStore store;
+class _ListChatsWidgetState extends State<_ListChatsWidget>
+    with AutomaticKeepAliveClientMixin {
+  // late ChatStore store;
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    store = context.read<ChatStore>();
+    // store = ChatStore(GetIt.I.get<ApiProvider>());
+    // store.initialSetup(widget.myId);
     Future.delayed(Duration.zero, () {
-      widget.onSetTypeChat(widget.typeChat);
-      store.loadChats(
-        starred: store.starred,
+      // widget.onSetTypeChat(widget.typeChat);
+      widget.store.loadChats(
+        starred: widget.store.starred,
         type: widget.typeChat,
         questChatStatus: widget.typeChat == TypeChat.active
             ? 0
@@ -288,119 +298,107 @@ class _ListChatsWidgetState extends State<_ListChatsWidget> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      displacement: 40,
-      triggerMode: RefreshIndicatorTriggerMode.anywhere,
-      notificationPredicate: (ScrollNotification notification) {
-        return notification.depth == 0;
-      },
-      onRefresh: () => store.loadChats(
-        starred: store.starred,
-        type: widget.typeChat,
-        questChatStatus: widget.typeChat == TypeChat.active
-            ? 0
-            : widget.typeChat == TypeChat.completed
-                ? -1
-                : null,
-        query: widget.query,
-      ),
-      child: Observer(
-        builder: (_) {
-          final chats = store.chats?.chat;
-          if (store.isLoading) {
-            return SingleChildScrollView(
-              child: Column(
-                children: List.generate(
-                  10,
-                  (index) => const _ShimmerChatItem(),
-                ),
-              ),
-            );
-          }
-          if (chats?.isNotEmpty ?? false) {
-            return NotificationListener<ScrollEndNotification>(
-              onNotification: (scrollEnd) {
-                final metrics = scrollEnd.metrics;
-                if (metrics.maxScrollExtent < metrics.pixels) {
-                  store.loadChats(
-                    loadMore: true,
-                    starred: store.starred,
-                    type: widget.typeChat,
-                    questChatStatus: widget.typeChat == TypeChat.active
-                        ? 0
-                        : widget.typeChat == TypeChat.completed
-                            ? -1
-                            : null,
-                    query: widget.query,
-                  );
-                }
-                return true;
-              },
-              child: SingleChildScrollView(
-                clipBehavior: Clip.none,
-                physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics(),
-                ),
-                child: Observer(builder: (_) {
-                  return Column(
-                    children: chats!.map((chat) {
-                      final chatListWidget = _ChatListTileWidget(
-                        onLongPress: () => widget.onLongPress(chat),
-                        onTap: () => widget.onPress(chat),
-                        chat: chat,
-                        userId: store.myId,
-                        infoActionMessage: "chat.infoMessage."
-                                "${chat.chatData.lastMessage.infoMessage?.messageAction ?? "message"}"
-                            .tr(),
-                        chatStarred: store.selectedChats[chat]!,
-                      );
-                      if (store.isLoading && chat == chats.last) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            chatListWidget,
-                            SizedBox(
-                              height: 5,
-                            ),
-                            CircularProgressIndicator.adaptive(),
-                          ],
-                        );
-                      }
-                      return chatListWidget;
-                    }).toList(),
-                  );
-                }),
-              ),
-            );
-          }
-          return Center(
-            child: SingleChildScrollView(
-              physics: ClampingScrollPhysics(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  SvgPicture.asset(
-                    "assets/empty_quest_icon.svg",
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "chat.noChats".tr(),
-                    style: TextStyle(
-                      color: Color(0xFFD8DFE3),
-                    ),
-                  ),
-                ],
+    super.build(context);
+    return Observer(
+      builder: (_) {
+        final chats = widget.store.chats[widget.typeChat]?.chat;
+        if (widget.store.isLoading) {
+          return SingleChildScrollView(
+            child: Column(
+              children: List.generate(
+                10,
+                (index) => const _ShimmerChatItem(),
               ),
             ),
           );
-        },
-      ),
+        }
+        if (chats?.isNotEmpty ?? false) {
+          return NotificationListener<ScrollEndNotification>(
+            onNotification: (scrollEnd) {
+              final metrics = scrollEnd.metrics;
+              if (metrics.maxScrollExtent < metrics.pixels) {
+                widget.store.loadChats(
+                  loadMore: true,
+                  starred: widget.store.starred,
+                  type: widget.typeChat,
+                  questChatStatus: widget.typeChat == TypeChat.active
+                      ? 0
+                      : widget.typeChat == TypeChat.completed
+                          ? -1
+                          : null,
+                  query: widget.query,
+                );
+              }
+              return true;
+            },
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              clipBehavior: Clip.none,
+              physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
+              child: Observer(builder: (_) {
+                return Column(
+                  children: chats!.map((chat) {
+                    final chatListWidget = _ChatListTileWidget(
+                      onLongPress: () => widget.onLongPress(chat),
+                      onTap: () => widget.onPress(chat),
+                      chat: chat,
+                      userId: widget.store.myId,
+                      infoActionMessage: "chat.infoMessage."
+                              "${chat.chatData.lastMessage.infoMessage?.messageAction ?? "message"}"
+                          .tr(),
+                      chatStarred: widget.store.selectedChats[chat]!,
+                    );
+                    if (widget.store.isLoading && chat == chats.last) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          chatListWidget,
+                          SizedBox(
+                            height: 5,
+                          ),
+                          CircularProgressIndicator.adaptive(),
+                        ],
+                      );
+                    }
+                    return chatListWidget;
+                  }).toList(),
+                );
+              }),
+            ),
+          );
+        }
+        return Center(
+          child: SingleChildScrollView(
+            physics: ClampingScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  height: 15,
+                ),
+                SvgPicture.asset(
+                  "assets/empty_quest_icon.svg",
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  "chat.noChats".tr(),
+                  style: TextStyle(
+                    color: Color(0xFFD8DFE3),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -519,6 +517,10 @@ class _ChatListTileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final differenceTime =
         DateTime.now().difference(chat.chatData.lastMessage.createdAt).inDays;
+    Member? member;
+    chat.members?.forEach((element) {
+      if (element.type != "Admin") member = element;
+    });
     return GestureDetector(
       onLongPress: onLongPress,
       onTap: onTap,
@@ -545,7 +547,7 @@ class _ChatListTileWidget extends StatelessWidget {
                           ? UserAvatar(
                               width: 56,
                               height: 56,
-                              url: chat.members[0].user!.avatar?.url,
+                              url: member!.user!.avatar?.url,
                             )
                           : Stack(
                               children: [
@@ -581,7 +583,8 @@ class _ChatListTileWidget extends StatelessWidget {
                       children: [
                         Text(
                           chat.type != TypeChat.group
-                              ? "${chat.members[0].user!.firstName} ${chat.members[0].user!.lastName}"
+                              ? "${member!.user!.firstName} "
+                                  "${member!.user!.lastName}"
                               : "${chat.groupChat!.name}",
                           style: TextStyle(
                             fontSize: 16,
@@ -591,10 +594,10 @@ class _ChatListTileWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          chat.chatData.lastMessage.senderMemberId == userId
+                          chat.chatData.lastMessage.sender?.userId == userId
                               ? "chat.you".tr() +
                                   " ${chat.chatData.lastMessage.text ?? infoActionMessage} "
-                              : "${chat.chatData.lastMessage.sender.user!.firstName}:" +
+                              : "${chat.chatData.lastMessage.sender!.user?.firstName ?? member!.user!.firstName}:" +
                                   " ${chat.chatData.lastMessage.text ?? infoActionMessage} ",
                           style: TextStyle(
                             fontSize: 14,
@@ -621,7 +624,7 @@ class _ChatListTileWidget extends StatelessWidget {
                   const SizedBox(width: 50),
                   Column(
                     children: [
-                      if (chat.chatData.lastMessage.senderStatus == "unread")
+                      if (chat.chatData.lastMessage.senderStatus == "Unread")
                         Container(
                           width: 11,
                           height: 11,
@@ -636,7 +639,7 @@ class _ChatListTileWidget extends StatelessWidget {
                       if (chat.star != null)
                         Container(
                           margin:
-                              chat.chatData.lastMessage.senderStatus == "unread"
+                              chat.chatData.lastMessage.senderStatus == "Unread"
                                   ? const EdgeInsets.only(top: 3, right: 16)
                                   : const EdgeInsets.only(top: 23, right: 16),
                           child: Icon(

@@ -18,7 +18,7 @@ class Member {
 
   String id;
   String chatId;
-  String userId;
+  String? userId;
   String? adminId;
   String type;
   int status;

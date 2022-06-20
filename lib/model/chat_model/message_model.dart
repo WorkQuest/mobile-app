@@ -30,7 +30,7 @@ class MessageModel {
   DateTime createdAt;
   DateTime updatedAt;
   Star? star;
-  Member sender;
+  Member? sender;
   List<Media> medias;
   InfoMessage? infoMessage;
 
@@ -45,7 +45,7 @@ class MessageModel {
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
         star: json["star"] == null ? null : Star.fromJson(json["star"]),
-        sender: Member.fromJson(json["sender"]),
+        sender: json["sender"] == null ? null : Member.fromJson(json["sender"]),
         medias: json["medias"] == null
             ? []
             : (json["medias"] as List<dynamic>)
@@ -67,7 +67,7 @@ class MessageModel {
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
         "star": star,
-        "sender": sender.toJson(),
+        "sender": sender!.toJson(),
         "medias": List<dynamic>.from(medias.map((x) => x)),
         "infoMessage": infoMessage == null ? null : infoMessage,
       };

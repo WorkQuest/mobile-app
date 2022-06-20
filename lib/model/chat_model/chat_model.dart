@@ -26,7 +26,7 @@ class ChatModel {
   Member? meMember;
   Star? star;
   ChatData chatData;
-  List<Member> members;
+  List<Member>? members;
   QuestChat? questChat;
   GroupChat? groupChat;
 
@@ -53,8 +53,9 @@ class ChatModel {
             json["meMember"] == null ? null : Member.fromJson(json["meMember"]),
         star: json["star"] == null ? null : Star.fromJson(json["star"]),
         chatData: ChatData.fromJson(json["chatData"]),
-        members:
-            List<Member>.from(json["members"].map((x) => Member.fromJson(x))),
+        members: json["members"] == null
+            ? null
+            : List<Member>.from(json["members"].map((x) => Member.fromJson(x))),
         questChat: json["questChat"] == null
             ? null
             : QuestChat.fromJson(json["questChat"]),
@@ -71,7 +72,7 @@ class ChatModel {
         "meMember": meMember!.toJson(),
         "star": star,
         "chatData": chatData.toJson(),
-        "members": List<dynamic>.from(members.map((x) => x.toJson())),
+        "members": List<Member>.from(members!.map((x) => x.toJson())),
         "questChat": questChat,
         "groupChat": groupChat,
       };

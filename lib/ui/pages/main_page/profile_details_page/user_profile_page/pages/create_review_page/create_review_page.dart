@@ -31,9 +31,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
       child: Scaffold(
         appBar: CupertinoNavigationBar(
           automaticallyImplyLeading: true,
-          middle: Text(
-            "quests.addNewReview".tr(),
-          ),
+          middle: Text("quests.addNewReview".tr()),
         ),
         body: CustomScrollView(
           slivers: [
@@ -47,9 +45,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    Text(
-                      "quests.rateEmployer".tr(),
-                    ),
+                    Text("quests.rateEmployer".tr()),
                     const SizedBox(height: 24),
                     Observer(
                       builder: (_) => Row(
@@ -73,9 +69,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    Text(
-                      "quests.addYourReview".tr(),
-                    ),
+                    Text("quests.addYourReview".tr()),
                     const SizedBox(height: 16),
                     Container(
                       height: 200,
@@ -116,15 +110,17 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                               createdAt: DateTime.now(),
                               updatedAt: DateTime.now(),
                             );
-                          } else {}
+                          } else {
+                            await store.addReviewDispute(
+                              widget.arguments.disputeId!,
+                            );
+                          }
                           Navigator.pop(context);
                           if (store.isSuccess)
                             await AlertDialogUtils.showSuccessDialog(context);
                         }
                       },
-                      child: Text(
-                        "quests.addReview".tr(),
-                      ),
+                      child: Text("quests.addReview".tr()),
                     ),
                   ],
                 ),

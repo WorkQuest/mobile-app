@@ -17,6 +17,7 @@ class WebSocket {
   int closeCode = 4001;
   bool shouldReconnectFlag = true;
   void Function(dynamic)? handlerChats;
+  void Function(dynamic)? handlerMessages;
   void Function(dynamic)? handlerQuests;
   void Function(dynamic)? handlerQuestList;
   IOWebSocketChannel? walletChannel;
@@ -109,7 +110,7 @@ class WebSocket {
 
   void _onData(message, IOWebSocketChannel channel, String type) {
     try {
-      print("WebSocket message: $type $message");
+      log("WebSocket message: $type $message");
       final json = jsonDecode(message.toString());
       switch (json["type"]) {
         case "pub":
@@ -131,13 +132,9 @@ class WebSocket {
 
   void _handleSubscription(dynamic json) async {
     try {
-      print("notification path: ${json["path"]}");
       if (json["path"] == "/notifications/quest")
         questNotification(json["message"]);
-      // } else if (json["path"] == "/notifications/chat") {
       getMessage(json);
-      // } else
-      //   print("new message");
     } catch (e, trace) {
       print("ERROR: $e \n $trace");
     }
@@ -146,7 +143,7 @@ class WebSocket {
   void getMessage(dynamic json) async {
     try {
       if (handlerChats != null) handlerChats!(json);
-      print("chatMessage: ${json.toString()}");
+      if (handlerMessages != null) handlerMessages!(json);
     } catch (e, trace) {
       print("WebSocket message ERROR: $e \n $trace");
     }
@@ -154,11 +151,8 @@ class WebSocket {
 
   void questNotification(dynamic json) async {
     try {
-      print("quest notification");
-      print(json);
       if (handlerQuests != null) handlerQuests!(json);
       if (handlerQuestList != null) handlerQuestList!(json);
-      print("questMessage: ${json.toString()}");
     } catch (e, trace) {
       print("WebSocket message ERROR: $e \n $trace");
     }

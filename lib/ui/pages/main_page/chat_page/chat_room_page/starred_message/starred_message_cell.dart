@@ -32,14 +32,14 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            widget.message.sender.userId == widget.userId
+            widget.message.sender!.userId == widget.userId
                 ? Text("chat.you".tr())
                 : Row(
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: Image.network(
-                          widget.message.sender.user!.avatar?.url ??
+                          widget.message.sender!.user!.avatar?.url ??
                               Constants.defaultImageNetwork,
                           width: 30,
                           height: 30,
@@ -48,8 +48,8 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
                       ),
                       const SizedBox(width: 10.0),
                       Text(
-                        "${widget.message.sender.user!.firstName} "
-                        "${widget.message.sender.user!.lastName}:",
+                        "${widget.message.sender!.user!.firstName} "
+                        "${widget.message.sender!.user!.lastName}:",
                         style: TextStyle(fontSize: 16.0),
                       ),
                     ],
@@ -75,7 +75,7 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
           margin: const EdgeInsets.only(bottom: 16),
           width: MediaQuery.of(context).size.width * 0.85,
           decoration: BoxDecoration(
-            color: widget.message.sender.userId != widget.userId
+            color: widget.message.sender!.userId != widget.userId
                 ? Color(0xFF0083C7)
                 : Color(0xFFF7F8FA),
             borderRadius: BorderRadius.circular(6),
@@ -86,7 +86,7 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
               Text(
                 widget.message.text ?? "",
                 style: TextStyle(
-                  color: widget.message.sender.userId != widget.userId
+                  color: widget.message.sender!.userId != widget.userId
                       ? Color(0xFFFFFFFF)
                       : Color(0xFF1D2127),
                 ),
@@ -96,7 +96,7 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
                 Center(
                   child: ImageViewerWidget(
                     widget.message.medias,
-                    widget.message.sender.userId != widget.userId
+                    widget.message.sender!.userId != widget.userId
                         ? Color(0xFFFFFFFF)
                         : Color(0xFF1D2127),
                     widget.store.mediaPaths,
@@ -108,7 +108,7 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
                     "${widget.message.createdAt.hour < 10 ? "0${widget.message.createdAt.hour}" : widget.message.createdAt.hour}:" +
                         "${widget.message.createdAt.minute < 10 ? "0${widget.message.createdAt.minute}" : widget.message.createdAt.minute}",
                     style: TextStyle(
-                      color: widget.message.sender.userId != widget.userId
+                      color: widget.message.sender!.userId != widget.userId
                           ? Color(0xFFFFFFFF).withOpacity(0.4)
                           : Color(0xFF8D96A1).withOpacity(0.4),
                     ),

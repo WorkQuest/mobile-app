@@ -105,9 +105,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             ),
           ),
           const SizedBox(height: 16.0),
-          Text(
-            "modals.modals.chatName".tr(),
-          ),
+          Text("modals.modals.chatName".tr()),
           const SizedBox(height: 5.0),
           TextFormField(
             onChanged: store.setChatName,
@@ -146,9 +144,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   ) =>
       Observer(
         builder: (_) => store.isLoading
-            ? Center(
-                child: CircularProgressIndicator.adaptive(),
-              )
+            ? Center(child: CircularProgressIndicator.adaptive())
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,7 +291,10 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                                 Navigator.of(context, rootNavigator: true)
                                     .pushReplacementNamed(
                                   ChatRoomPage.routeName,
-                                  arguments: store.idGroupChat,
+                                  arguments: ChatRoomArguments(
+                                    store.idGroupChat,
+                                    true,
+                                  ),
                                 );
                               }
                             } else {
@@ -310,9 +309,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                           }
                         : null,
                 child: store.isLoading
-                    ? Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      )
+                    ? Center(child: CircularProgressIndicator.adaptive())
                     : Text(forward),
               ),
             ),

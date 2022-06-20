@@ -103,7 +103,7 @@ class _CreatePrivatePageState extends State<CreatePrivatePage> {
                             Navigator.of(context, rootNavigator: true)
                                 .pushReplacementNamed(
                               ChatRoomPage.routeName,
-                              arguments: store.chatId,
+                              arguments: ChatRoomArguments(store.chatId, true),
                             );
                           }
                         },

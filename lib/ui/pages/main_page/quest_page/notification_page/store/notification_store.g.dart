@@ -25,6 +25,21 @@ mixin _$NotificationStore on _NotificationStore, Store {
     });
   }
 
+  final _$disputesAtom = Atom(name: '_NotificationStore.disputes');
+
+  @override
+  ObservableMap<String, DisputeModel> get disputes {
+    _$disputesAtom.reportRead();
+    return super.disputes;
+  }
+
+  @override
+  set disputes(ObservableMap<String, DisputeModel> value) {
+    _$disputesAtom.reportWrite(value, super.disputes, () {
+      super.disputes = value;
+    });
+  }
+
   final _$getNotificationAsyncAction =
       AsyncAction('_NotificationStore.getNotification');
 
@@ -52,10 +67,18 @@ mixin _$NotificationStore on _NotificationStore, Store {
         .run(() => super.deleteNotification(notificationId));
   }
 
+  final _$getDisputeAsyncAction = AsyncAction('_NotificationStore.getDispute');
+
+  @override
+  Future<void> getDispute(String disputeId) {
+    return _$getDisputeAsyncAction.run(() => super.getDispute(disputeId));
+  }
+
   @override
   String toString() {
     return '''
-listOfNotifications: ${listOfNotifications}
+listOfNotifications: ${listOfNotifications},
+disputes: ${disputes}
     ''';
   }
 }

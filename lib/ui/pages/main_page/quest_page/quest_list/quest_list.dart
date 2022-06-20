@@ -11,7 +11,6 @@ import 'package:app/ui/pages/main_page/quest_page/notification_page/notification
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
-import 'package:app/web3/service/client_service.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +21,6 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import 'package:uni_links/uni_links.dart';
 
-import '../../../../../web3/repository/account_repository.dart';
 import '../../profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import '../../quest_details_page/details/quest_details_page.dart';
 
@@ -132,7 +130,7 @@ class _QuestListState extends State<QuestList> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      AccountRepository().service!.checkFunction();
+                      // AccountRepository().service!.checkFunction();
                     },
                     child: Text(
                       role == UserRole.Worker

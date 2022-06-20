@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -10,9 +9,8 @@ import 'package:easy_localization/easy_localization.dart';
 
 class InputToolbar extends StatefulWidget {
   final ChatRoomStore store;
-  final String userId;
 
-  InputToolbar(this.store, this.userId);
+  InputToolbar(this.store);
 
   @override
   _InputToolbarState createState() => _InputToolbarState();
@@ -102,12 +100,8 @@ class _InputToolbarState extends State<InputToolbar> {
                   ? () {
                       widget.store.sendMessage(
                         _controller.text,
-                        widget.store.chatRoom!.type == TypeChat.group
-                            ? widget.store.chatRoom!.id
-                            : widget.userId,
-                        widget.store.chatRoom!.type == TypeChat.group
-                            ? "chat"
-                            : "user",
+                        widget.store.chatRoom!.chatData.chatId,
+                        "chat",
                       );
                       _controller.text = "";
                     }

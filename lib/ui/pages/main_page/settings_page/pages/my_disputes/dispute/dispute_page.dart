@@ -74,7 +74,8 @@ class _DisputePageState extends State<DisputePage> {
                         if (metrics.maxScrollExtent < metrics.pixels &&
                             !store.isLoading) {
                           store.getMessages(
-                              store.dispute!.quest.questChat!.chatId!);
+                            store.dispute!.quest.questChat!.chatId!,
+                          );
                         }
                         return true;
                       },
@@ -84,9 +85,7 @@ class _DisputePageState extends State<DisputePage> {
                           parent: AlwaysScrollableScrollPhysics(),
                         ),
                         child: Observer(
-                          builder: (_) {
-                            return body();
-                          },
+                          builder: (_) => body(),
                         ),
                       ),
                     ),
@@ -104,9 +103,7 @@ class _DisputePageState extends State<DisputePage> {
           store.dispute!.quest,
           itemType: QuestItemPriorityType.Active,
         ),
-        const SizedBox(
-          height: 20,
-        ),
+        const SizedBox(height: 20),
         Container(
           color: Colors.white,
           child: Align(
@@ -127,18 +124,18 @@ class _DisputePageState extends State<DisputePage> {
             ),
           ),
         ),
-        // Column(
-        //   children: store.messages
-        //       .map(
-        //         (element) => MessageCell(
-        //           UniqueKey(),
-        //           element,
-        //           element.senderMemberId,
-        //           store.mediaPaths,
-        //         ),
-        //       )
-        //       .toList(),
-        // ),
+        Column(
+          children: store.messages
+              .map(
+                (element) => MessageCell(
+                  UniqueKey(),
+                  element,
+                  element.senderMemberId,
+                  store.mediaPaths,
+                ),
+              )
+              .toList(),
+        ),
       ],
     );
   }
@@ -178,9 +175,7 @@ class _DisputePageState extends State<DisputePage> {
                   fontSize: 20.0,
                 ),
               ),
-              const SizedBox(
-                width: 10,
-              ),
+              const SizedBox(width: 10),
               Padding(
                 padding: EdgeInsets.only(top: 9),
                 child: Text(
@@ -192,9 +187,7 @@ class _DisputePageState extends State<DisputePage> {
                   ),
                 ),
               ),
-              const SizedBox(
-                width: 5,
-              ),
+              const SizedBox(width: 5),
               Padding(
                 padding: EdgeInsets.only(top: 9),
                 child: Text(

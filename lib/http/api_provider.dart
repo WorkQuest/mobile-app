@@ -1104,7 +1104,28 @@ extension Disputes on ApiProvider {
     }
   }
 
-  Future<DisputeModel> getDispute({String disputeId = ""}) async {
+  Future<void> sendReviewDispute({
+    required String disputeId,
+    required int mark,
+    required String message,
+  }) async {
+    try {
+      await httpClient.post(
+        query: '/v1/quest/dispute/$disputeId/review/send',
+        data: {
+          "mark": mark,
+          "message": message,
+        },
+      );
+    } on Exception catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+    }
+  }
+
+  Future<DisputeModel> getDispute({
+    required String disputeId,
+  }) async {
     try {
       final responseData = await httpClient.get(
         query: '/v1/quest/dispute/$disputeId',

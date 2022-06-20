@@ -105,7 +105,7 @@ class EditChatPage extends StatelessWidget {
                           child: ListView.separated(
                             shrinkWrap: true,
                             itemBuilder: (context, index) => EditUserCell(
-                              chat.members[index],
+                              chat.members![index],
                               chat,
                             ),
                             separatorBuilder: (context, index) => const Divider(
@@ -113,7 +113,7 @@ class EditChatPage extends StatelessWidget {
                               endIndent: 50.0,
                               indent: 50.0,
                             ),
-                            itemCount: chat.members.length,
+                            itemCount: chat.members!.length,
                           ),
                         ),
                 ),

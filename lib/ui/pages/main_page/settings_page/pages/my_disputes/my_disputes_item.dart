@@ -58,8 +58,7 @@ class MyDisputesItem extends StatelessWidget {
               space(),
               row(
                 title: "dispute.status",
-                disputeInfo:
-                    store.getStatus(store.disputes[index].status).tr(),
+                disputeInfo: store.getStatus(store.disputes[index].status).tr(),
                 color: getColor(store.disputes[index].status),
               ),
               if (store.disputes[index].decisionDescription != null &&
@@ -75,22 +74,16 @@ class MyDisputesItem extends StatelessWidget {
   Widget decision() {
     return Column(
       children: [
-        const SizedBox(
-          height: 30,
-        ),
+        const SizedBox(height: 30),
         const Divider(
           color: Colors.black12,
           endIndent: 50.0,
           indent: 50.0,
         ),
-        const SizedBox(
-          height: 30,
-        ),
+        const SizedBox(height: 30),
         Container(
           alignment: Alignment.centerLeft,
-          child: Text(
-            "dispute.decision".tr(),
-          ),
+          child: Text("dispute.decision".tr()),
         ),
         space(),
         Container(
@@ -102,9 +95,7 @@ class MyDisputesItem extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(
-          height: 60,
-        ),
+        const SizedBox(height: 60),
       ],
     );
   }
@@ -119,15 +110,13 @@ class MyDisputesItem extends StatelessWidget {
         return Colors.yellow;
       case 3:
         return Colors.green;
+      case 4:
+        return Colors.green;
     }
     return Colors.green;
   }
 
-  Widget space() {
-    return const SizedBox(
-      height: 10,
-    );
-  }
+  Widget space() => const SizedBox(height: 10);
 
   Widget row({
     required String title,
@@ -136,14 +125,10 @@ class MyDisputesItem extends StatelessWidget {
   }) {
     return Row(
       children: [
-        Text(
-          title.tr(),
-        ),
+        Text(title.tr()),
         Text(
           " $disputeInfo",
-          style: TextStyle(
-            color: color,
-          ),
+          style: TextStyle(color: color),
         ),
       ],
     );
