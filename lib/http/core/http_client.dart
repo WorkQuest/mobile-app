@@ -27,7 +27,7 @@ class TestHttpClient extends _HttpClient {
 
 class _HttpClient implements IHttpClient {
   final Dio _dio;
-  final String _baseUrl = "https://testnet-app.workquest.co/api";
+  final String _baseUrl = "https://testner-app.workquest.co/api";
 
   @override
   String? accessToken;
@@ -98,11 +98,12 @@ class _HttpClient implements IHttpClient {
         if (error.response == null) {
           throw FormatException('Server response timed out');
         } else {
-          throw RequestErrorModel.fromJson(error.response!.data);
+          final response = RequestErrorModel.fromJson(error.response!.data);
+          throw CustomException(response.message);
         }
       }
     });
-    return response.data["result"];
+    return response.data["result"] ?? response.data;
   }
 
   void _setInterceptors() {
@@ -206,3 +207,15 @@ class _HttpClient implements IHttpClient {
     this.tokenExpired = false;
   }
 }
+
+class CustomException implements Exception{
+  final dynamic message;
+
+  CustomException([this.message]);
+
+  @override
+  String toString() {
+    return message;
+  }
+}
+
