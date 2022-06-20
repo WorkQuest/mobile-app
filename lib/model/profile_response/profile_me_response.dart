@@ -27,7 +27,7 @@ class ProfileMeResponse with ClusterItem {
     required this.questsStatistic,
     this.raiseView,
     required this.walletAddress,
-    required this.workerProfileVisibilitySetting,
+    required this.workerOrEmployerProfileVisibilitySetting,
     required this.isTotpActive,
     required this.payPeriod,
     // required this.createdAt,
@@ -54,7 +54,7 @@ class ProfileMeResponse with ClusterItem {
   int priority;
   QuestsStatistic? questsStatistic;
   RaiseView? raiseView;
-  WorkerProfileVisibilitySettingClass? workerProfileVisibilitySetting;
+  WorkerProfileVisibilitySettingClass? workerOrEmployerProfileVisibilitySetting;
   String? walletAddress;
   bool? isTotpActive;
   bool showAnimation = true;
@@ -81,7 +81,7 @@ class ProfileMeResponse with ClusterItem {
           priority: object.priority,
           questsStatistic: object.questsStatistic,
           walletAddress: object.walletAddress,
-          workerProfileVisibilitySetting: object.workerProfileVisibilitySetting,
+    workerOrEmployerProfileVisibilitySetting: object.workerOrEmployerProfileVisibilitySetting,
           isTotpActive: object.isTotpActive,
           payPeriod: object.payPeriod,
         );
@@ -144,12 +144,14 @@ class ProfileMeResponse with ClusterItem {
       priority: json["priority"] ?? 0,
       questsStatistic: json["questsStatistic"] == null ? null : QuestsStatistic.fromJson(json["questsStatistic"]),
       raiseView: json["raiseView"] == null ? null : RaiseView.fromJson(json["raiseView"]),
-      walletAddress: json["wallet"]?["address"],
+      walletAddress: json["wallet"]?["address"] ?? '',
       isTotpActive: json["totpIsActive"] == null ? false : json["totpIsActive"],
       payPeriod: json["payPeriod"] ?? "",
-      workerProfileVisibilitySetting: json["workerProfileVisibilitySetting"] == null
-          ? null
-          : WorkerProfileVisibilitySettingClass.fromJson(json["workerProfileVisibilitySetting"]),
+      workerOrEmployerProfileVisibilitySetting:
+          json[json["role"] == "employer" ? 'employerProfileVisibilitySetting' : 'workerProfileVisibilitySetting'] ==
+                  null
+              ? null
+              : WorkerProfileVisibilitySettingClass.fromJson(json[json["role"] == "employer" ? 'employerProfileVisibilitySetting' : 'workerProfileVisibilitySetting']),
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );
@@ -175,7 +177,7 @@ class ProfileMeResponse with ClusterItem {
         "priority": priority,
         "questsStatistic": questsStatistic,
         "payPeriod": payPeriod,
-        "workerProfileVisibilitySetting": workerProfileVisibilitySetting,
+        "workerOrEmployerProfileVisibilitySetting": workerOrEmployerProfileVisibilitySetting,
 
         // "createdAt": createdAt.toIso8601String(),
         // "updatedAt": updatedAt.toIso8601String(),
@@ -184,6 +186,18 @@ class ProfileMeResponse with ClusterItem {
   @override
   // TODO: implement location
   LatLng get location => LatLng(locationCode!.latitude, locationCode!.longitude);
+
+  List<int> getMySearchVisibilityList() {
+    return workerOrEmployerProfileVisibilitySetting?.arrayRatingStatusInMySearch ?? [];
+  }
+
+  List<int> getCanInviteOrRespondMeOnQuest() {
+    if (role == UserRole.Worker) {
+      return workerOrEmployerProfileVisibilitySetting?.arrayRatingStatusCanInviteMeOnQuest ?? [];
+    } else {
+      return workerOrEmployerProfileVisibilitySetting?.arrayRatingStatusCanRespondToQuest ?? [];
+    }
+  }
 }
 
 class QuestsStatistic {
@@ -373,6 +387,7 @@ class RaiseView {
 class WorkerProfileVisibilitySettingClass {
   WorkerProfileVisibilitySettingClass({
     this.arrayRatingStatusCanInviteMeOnQuest,
+    this.arrayRatingStatusCanRespondToQuest,
     this.arrayRatingStatusInMySearch,
     this.id,
     this.userId,
@@ -383,6 +398,7 @@ class WorkerProfileVisibilitySettingClass {
   });
 
   List<int>? arrayRatingStatusCanInviteMeOnQuest;
+  List<int>? arrayRatingStatusCanRespondToQuest;
   List<int>? arrayRatingStatusInMySearch;
   String? id;
   String? userId;
@@ -396,6 +412,9 @@ class WorkerProfileVisibilitySettingClass {
         arrayRatingStatusCanInviteMeOnQuest: json["arrayRatingStatusCanInviteMeOnQuest"] == null
             ? null
             : List<int>.from(json["arrayRatingStatusCanInviteMeOnQuest"].map((x) => x)),
+        arrayRatingStatusCanRespondToQuest: json["arrayRatingStatusCanRespondToQuest"] == null
+            ? null
+            : List<int>.from(json["arrayRatingStatusCanRespondToQuest"].map((x) => x)),
         arrayRatingStatusInMySearch: json["arrayRatingStatusInMySearch"] == null
             ? null
             : List<int>.from(json["arrayRatingStatusInMySearch"].map((x) => x)),

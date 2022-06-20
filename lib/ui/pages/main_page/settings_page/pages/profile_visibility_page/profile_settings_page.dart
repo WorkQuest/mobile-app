@@ -1,5 +1,10 @@
+import 'package:app/enums.dart';
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/store/profile_visibility_store.dart';
 import 'package:app/ui/widgets/default_app_bar.dart';
+import 'package:app/utils/alert_dialog.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -7,7 +12,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../constants.dart';
 import '../../../../../../model/profile_response/profile_me_response.dart';
-import '../../../../../../observer_consumer.dart';
 import '../../../../../widgets/default_radio.dart';
 
 const _padding = EdgeInsets.all(16.0);
@@ -35,64 +39,127 @@ class _ProfileSettingsState extends State<ProfileSettings> {
   @override
   Widget build(BuildContext context) {
     return ObserverListener<ProfileVisibilityStore>(
-      onSuccess: () {
-
+      onSuccess: () async {
+        await AlertDialogUtils.showSuccessDialog(context);
+        Navigator.pop(context, true);
       },
       onFailure: () {
         return false;
       },
-      child: Observer(
-        builder: (_) => Scaffold(
+      child: Observer(builder: (_) {
+        final _statusRespondOrInvite = _getStatusAllFromTypes(_store.canRespondOrInviteToQuest);
+        final _statusMySearch = _getStatusAllFromTypes(_store.mySearch);
+        return Scaffold(
           appBar: DefaultAppBar(
             title: 'ui.profile.settings'.tr(),
+            actions: [
+              if (!_store.isLoading)
+                CupertinoButton(
+                  child: Text(
+                    'Save',
+                    style: TextStyle(color: AppColor.enabledButton),
+                  ),
+                  onPressed: () {
+                    _store.editProfileVisibility(widget.profile);
+                  },
+                ),
+              if (_store.isLoading) Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            ],
           ),
           body: Padding(
             padding: _padding,
-            child: Column(
-              children: [
-                _CardOptionsWidget(
-                  children: [
-                    Text(
-                      'Who appears in my list of employers?',
-                      style: TextStyle(
-                        fontSize: 16.0,
+            child: AbsorbPointer(
+              absorbing: _store.isLoading,
+              child: Column(
+                children: [
+                  _CardOptionsWidget(
+                    children: [
+                      Text(
+                        widget.profile.role == UserRole.Worker
+                            ? 'Who appears in my list of employers?'
+                            : 'Who appears in my list of employees?',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                        ),
                       ),
-                    ),
-                    ...VisibilityTypes.values.map((type) {
-                      final _status = _store.mySearch[type]!;
-                      return _RadioTileWidget(
-                        type: type,
-                        status: _status,
-                        onPressed: () => _store.setMySearch(type, !_status),
-                      );
-                    }).toList(),
-                  ],
-                ),
-                SizedBox(height: 8,),
-                _CardOptionsWidget(
-                  children: [
-                    Text(
-                      'Who can invite me to a quest?',
-                      style: TextStyle(
-                        fontSize: 16.0,
+                      SizedBox(
+                        height: 4,
                       ),
-                    ),
-                    ...VisibilityTypes.values.map((type) {
-                      final _status = _store.canRespondOrInviteToQuest[type]!;
-                      return _RadioTileWidget(
-                        type: type,
-                        status: _status,
-                        onPressed: () => _store.setCanRespondOrInviteToQuest(type, !_status),
-                      );
-                    }).toList(),
-                  ],
-                ),
-              ],
+                      _RadioTileWidget(
+                        status: _getStatusAllFromTypes(_store.mySearch),
+                        type: null,
+                        onPressed: () {
+                          VisibilityTypes.values.map((type) {
+                            _store.setMySearch(type, !_statusMySearch);
+                          }).toList();
+                        },
+                      ),
+                      ...VisibilityTypes.values.map((type) {
+                        final _status = _store.mySearch[type]!;
+                        return _RadioTileWidget(
+                          type: type,
+                          status: _status,
+                          onPressed: () => _store.setMySearch(type, !_status),
+                        );
+                      }).toList(),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  _CardOptionsWidget(
+                    children: [
+                      Text(
+                        widget.profile.role == UserRole.Worker
+                            ? 'Who can invite me to a quest?'
+                            : 'Who can respond to my quests?',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      _RadioTileWidget(
+                        status: _getStatusAllFromTypes(_store.canRespondOrInviteToQuest),
+                        type: null,
+                        onPressed: () {
+                          VisibilityTypes.values.map((type) {
+                            _store.setCanRespondOrInviteToQuest(type, !_statusRespondOrInvite);
+                          }).toList();
+                        },
+                      ),
+                      ...VisibilityTypes.values.map((type) {
+                        final _status = _store.canRespondOrInviteToQuest[type]!;
+                        return _RadioTileWidget(
+                          type: type,
+                          status: _status,
+                          onPressed: () => _store.setCanRespondOrInviteToQuest(type, !_status),
+                        );
+                      }).toList(),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
+  }
+
+  bool _getStatusAllFromTypes(Map<VisibilityTypes, bool> types) {
+    bool _result = true;
+    types.forEach((key, value) {
+      /// false value
+      if (!types[key]!) {
+        _result = false;
+      }
+    });
+    return _result;
   }
 }
 
@@ -122,7 +189,7 @@ class _CardOptionsWidget extends StatelessWidget {
 
 class _RadioTileWidget extends StatelessWidget {
   final Function()? onPressed;
-  final VisibilityTypes type;
+  final VisibilityTypes? type;
   final bool status;
 
   const _RadioTileWidget({
@@ -164,15 +231,17 @@ class _RadioTileWidget extends StatelessWidget {
     );
   }
 
-  _getTitleType(VisibilityTypes type) {
+  _getTitleType(VisibilityTypes? type) {
     if (type == VisibilityTypes.notRated) {
       return 'Not rated';
     } else if (type == VisibilityTypes.topRanked) {
       return 'Top ranked';
     } else if (type == VisibilityTypes.reliable) {
       return 'Reliable';
-    } else {
+    } else if (type == VisibilityTypes.verified) {
       return 'Verified';
+    } else {
+      return 'All registered users';
     }
   }
 }

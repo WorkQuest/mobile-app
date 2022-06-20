@@ -17,6 +17,21 @@ abstract class _ProfileVisibilityStore extends IStore<bool> with Store {
 
   _ProfileVisibilityStore(this.apiProvider);
 
+  init(ProfileMeResponse profile) {
+    List<int> _mySearchVisibility = profile.getMySearchVisibilityList();
+    List<int> _canRespondOrInviteToQuestVisibility = profile.getCanInviteOrRespondMeOnQuest();
+
+    _mySearchVisibility.map((value) {
+      final _type = _getVisibilityType(value);
+      setMySearch(_type, true);
+    }).toList();
+
+    _canRespondOrInviteToQuestVisibility.map((type) {
+      final _type = _getVisibilityType(type);
+      setCanRespondOrInviteToQuest(_type, true);
+    }).toList();
+  }
+
   @observable
   ObservableMap<VisibilityTypes, bool> mySearch = ObservableMap.of({
     VisibilityTypes.topRanked: false,
@@ -43,20 +58,22 @@ abstract class _ProfileVisibilityStore extends IStore<bool> with Store {
     canRespondOrInviteToQuest[type] = value;
   }
 
-  init(ProfileMeResponse profile) {
-    List<int> _mySearchVisibility = profile.workerProfileVisibilitySetting?.arrayRatingStatusInMySearch ?? [];
-    List<int> _canRespondOrInviteToQuestVisibility =
-        profile.workerProfileVisibilitySetting?.arrayRatingStatusCanInviteMeOnQuest ?? [];
-
-    _mySearchVisibility.map((value) {
-      final _type = _getVisibilityType(value);
-      setMySearch(_type, true);
-    }).toList();
-
-    _canRespondOrInviteToQuestVisibility.map((type) {
-      final _type = _getVisibilityType(type);
-      setCanRespondOrInviteToQuest(_type, true);
-    }).toList();
+  @action
+  editProfileVisibility(ProfileMeResponse profile) async {
+    try {
+      onLoading();
+      profile.workerOrEmployerProfileVisibilitySetting = WorkerProfileVisibilitySettingClass(
+        arrayRatingStatusCanInviteMeOnQuest: _getVisibilityListValueType(canRespondOrInviteToQuest),
+        arrayRatingStatusCanRespondToQuest: _getVisibilityListValueType(canRespondOrInviteToQuest),
+        arrayRatingStatusInMySearch: _getVisibilityListValueType(mySearch),
+      );
+      await apiProvider.changeProfileMe(profile);
+      onSuccess(true);
+    } on FormatException catch (e) {
+      onError(e.message);
+    } catch (e) {
+      onError(e.toString());
+    }
   }
 
   VisibilityTypes _getVisibilityType(int value) {

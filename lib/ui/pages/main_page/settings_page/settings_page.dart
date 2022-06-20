@@ -6,7 +6,6 @@ import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/profile_settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
-import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
@@ -27,11 +26,10 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(context) {
-    final settingStore = context.read<SettingsPageStore>();
     final userStore = context.read<ProfileMeStore>();
     final chooseRoleStore = context.read<ChooseRoleStore>();
     chooseRoleStore.setPlatform(Platform.isIOS ? "iOS" : "Android");
-
+    bool isHavePhone = userStore.userData?.phone?.phone.isNotEmpty ?? false;
     return Scaffold(
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(),
@@ -42,17 +40,18 @@ class SettingsPage extends StatelessWidget {
                 Expanded(
                   child: Text("ui.profile.myProfile".tr()),
                 ),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context, rootNavigator: true).pushNamed(
-                      ProfileSettings.routeName,
-                      arguments: userStore.userData
-                    );
-                  },
-                  child: const Icon(
-                    Icons.settings_outlined,
+                if (isHavePhone)
+                  InkWell(
+                    onTap: () async {
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(ProfileSettings.routeName, arguments: userStore.userData);
+                      await Future.delayed(const Duration(seconds: 1));
+                      userStore.getProfileMe();
+                    },
+                    child: const Icon(
+                      Icons.settings_outlined,
+                    ),
                   ),
-                ),
                 const SizedBox(width: 20.0)
               ],
             ),
@@ -97,8 +96,7 @@ class SettingsPage extends StatelessWidget {
                               ),
                               title: "settings.2FA".tr(),
                               onTap: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushNamed(TwoFAPage.routeName);
+                                Navigator.of(context, rootNavigator: true).pushNamed(TwoFAPage.routeName);
                               },
                             ),
                           ],
@@ -118,8 +116,7 @@ class SettingsPage extends StatelessWidget {
                                   20.0,
                                 ),
                                 title: "settings.smsVerification2".tr(),
-                                onTap: () =>
-                                    Navigator.of(context, rootNavigator: true).pushNamed(
+                                onTap: () => Navigator.of(context, rootNavigator: true).pushNamed(
                                   SMSVerificationPage.routeName,
                                 ),
                               ),
@@ -159,8 +156,7 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title: "btn.myDisputes".tr(),
                                 onTap: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pushNamed(MyDisputesPage.routeName);
+                                  Navigator.of(context, rootNavigator: true).pushNamed(MyDisputesPage.routeName);
                                 },
                               ),
                               _spacer,
@@ -173,14 +169,12 @@ class SettingsPage extends StatelessWidget {
                                   ),
                                   20.0,
                                 ),
-                                title:
-                                    "Language \n${Constants.languageList.keys.firstWhere(
+                                title: "Language \n${Constants.languageList.keys.firstWhere(
                                   (k) => Constants.languageList[k] == context.locale,
                                 )}",
                                 onTap: () {
                                   AlertDialogUtils.showInfoAlertDialog(context,
-                                      title: 'Warning'.tr(),
-                                      content: 'Service temporarily unavailable');
+                                      title: 'Warning'.tr(), content: 'Service temporarily unavailable');
 
                                   // Navigator.of(context, rootNavigator: true)
                                   //     .pushNamed(ChangeLanguagePage.routeName);

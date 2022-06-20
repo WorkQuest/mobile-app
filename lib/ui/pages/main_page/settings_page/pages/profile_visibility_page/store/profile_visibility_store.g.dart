@@ -41,6 +41,15 @@ mixin _$ProfileVisibilityStore on _ProfileVisibilityStore, Store {
     });
   }
 
+  final _$editProfileVisibilityAsyncAction =
+      AsyncAction('_ProfileVisibilityStore.editProfileVisibility');
+
+  @override
+  Future editProfileVisibility(ProfileMeResponse profile) {
+    return _$editProfileVisibilityAsyncAction
+        .run(() => super.editProfileVisibility(profile));
+  }
+
   final _$_ProfileVisibilityStoreActionController =
       ActionController(name: '_ProfileVisibilityStore');
 
