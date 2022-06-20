@@ -27,7 +27,7 @@ class TestHttpClient extends _HttpClient {
 
 class _HttpClient implements IHttpClient {
   final Dio _dio;
-  final String _baseUrl = "https://testner-app.workquest.co/api";
+  final String _baseUrl = "https://testnet-app.workquest.co/api";
 
   @override
   String? accessToken;
