@@ -13,6 +13,7 @@ class Member {
     required this.updatedAt,
     required this.chatMemberDeletionData,
     required this.user,
+    required this.admin,
     required this.chatMemberData,
   });
 
@@ -26,6 +27,7 @@ class Member {
   DateTime? updatedAt;
   dynamic chatMemberDeletionData;
   ProfileMeResponse? user;
+  ProfileMeResponse? admin;
   ChatMemberData? chatMemberData;
 
   factory Member.fromJson(Map<String, dynamic> json) => Member(
@@ -43,6 +45,9 @@ class Member {
         user: json["user"] == null
             ? null
             : ProfileMeResponse.fromJson(json["user"]),
+        admin: json["admin"] == null
+            ? null
+            : ProfileMeResponse.fromJson(json["admin"]),
         chatMemberData: json["chatMemberData"] == null
             ? null
             : ChatMemberData.fromJson(json["chatMemberData"]),

@@ -519,8 +519,14 @@ class _ChatListTileWidget extends StatelessWidget {
         DateTime.now().difference(chat.chatData.lastMessage.createdAt).inDays;
     Member? member;
     chat.members?.forEach((element) {
-      if (element.type != "Admin") member = element;
+      if (element.type != "Admin" || chat.type != TypeChat.active)
+        member = element;
     });
+    final text = chat.chatData.lastMessage.sender?.userId == userId
+        ? "chat.you".tr() +
+            " ${chat.chatData.lastMessage.text ?? infoActionMessage} "
+        : "${chat.chatData.lastMessage.sender!.user?.firstName ?? member!.user?.firstName ?? member!.admin?.firstName ?? ""}:" +
+            " ${chat.chatData.lastMessage.text ?? infoActionMessage} ";
     return GestureDetector(
       onLongPress: onLongPress,
       onTap: onTap,
@@ -547,14 +553,13 @@ class _ChatListTileWidget extends StatelessWidget {
                           ? UserAvatar(
                               width: 56,
                               height: 56,
-                              url: member!.user!.avatar?.url,
+                              url: member!.user?.avatar?.url ??
+                                  Constants.defaultImageNetwork,
                             )
                           : Stack(
                               children: [
                                 Container(
-                                  color: _getRandomColor(
-                                    chat.id,
-                                  ),
+                                  color: _getRandomColor(chat.id),
                                   height: 56,
                                   width: 56,
                                 ),
@@ -583,8 +588,8 @@ class _ChatListTileWidget extends StatelessWidget {
                       children: [
                         Text(
                           chat.type != TypeChat.group
-                              ? "${member!.user!.firstName} "
-                                  "${member!.user!.lastName}"
+                              ? "${member!.user?.firstName ?? member!.admin?.firstName ?? "--"} "
+                                  "${member!.user?.lastName ?? member!.admin?.firstName ?? "--"}"
                               : "${chat.groupChat!.name}",
                           style: TextStyle(
                             fontSize: 16,
@@ -594,11 +599,7 @@ class _ChatListTileWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          chat.chatData.lastMessage.sender?.userId == userId
-                              ? "chat.you".tr() +
-                                  " ${chat.chatData.lastMessage.text ?? infoActionMessage} "
-                              : "${chat.chatData.lastMessage.sender!.user?.firstName ?? member!.user!.firstName}:" +
-                                  " ${chat.chatData.lastMessage.text ?? infoActionMessage} ",
+                          text,
                           style: TextStyle(
                             fontSize: 14,
                             color: Color(0xFF7C838D),
