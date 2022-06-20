@@ -90,7 +90,7 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
       autofillHints: widget.autofillHints,
       autovalidateMode: widget.autovalidateMode,
       enabled: widget.enabled,
-      maxLines: null,
+      maxLines: widget.expands ? null : 1,
       decoration: InputDecoration(
         filled: true,
         fillColor: widget.controller.text.isEmpty ? AppColor.disabledButton : Colors.white,
