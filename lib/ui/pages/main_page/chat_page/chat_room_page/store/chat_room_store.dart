@@ -460,6 +460,7 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
                     walletAddress: element.walletAddress,
                     isTotpActive: element.isTotpActive,
                     payPeriod: element.payPeriod,
+                    workerProfileVisibilitySetting: element.workerProfileVisibilitySetting,
                   )),
                 }
             });

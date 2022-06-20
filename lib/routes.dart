@@ -55,6 +55,8 @@ import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/d
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/dispute_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/profile_settings_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/store/profile_visibility_store.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
@@ -94,9 +96,7 @@ import 'di/injector.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    return context.locale.toString() == "ar_SA"
-        ? TextDirection.rtl
-        : TextDirection.ltr;
+    return context.locale.toString() == "ar_SA" ? TextDirection.rtl : TextDirection.ltr;
   }
 
   // static RouteSettings parseDeepLinks(RouteSettings settings) {
@@ -340,8 +340,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child:
-                  FilterQuestsPage(settings.arguments as Map<int, List<int>>),
+              child: FilterQuestsPage(settings.arguments as Map<int, List<int>>),
             ),
           ),
         );
@@ -885,6 +884,19 @@ class Routes {
               textDirection: checkDirection(context),
               child: ReportPage(
                 arguments: settings.arguments as ReportPageArguments,
+              ),
+            ),
+          ),
+        );
+
+      case ProfileSettings.routeName:
+        return MaterialPageRoute(
+          builder: (context) => Provider(
+            create: (context) => getIt.get<ProfileVisibilityStore>(),
+            child: Directionality(
+              textDirection: checkDirection(context),
+              child: ProfileSettings(
+                settings.arguments as ProfileMeResponse
               ),
             ),
           ),

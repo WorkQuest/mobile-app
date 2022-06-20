@@ -4,7 +4,7 @@ import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dar
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
-import 'package:app/ui/pages/main_page/settings_page/pages/profile_settings_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/profile_settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -44,10 +44,9 @@ class SettingsPage extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (context) => ProfileSettings(settingStore),
-                      ),
+                    Navigator.of(context, rootNavigator: true).pushNamed(
+                      ProfileSettings.routeName,
+                      arguments: userStore.userData
                     );
                   },
                   child: const Icon(
