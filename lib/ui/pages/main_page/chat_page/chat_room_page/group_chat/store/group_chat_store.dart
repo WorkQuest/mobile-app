@@ -92,7 +92,7 @@ abstract class _GroupChatStore extends IStore<bool> with Store {
 
   void getSelectedUsers() {
     users.forEach((key, value) {
-      if (value == true) usersId.add(key.id!);
+      if (value == true) usersId.add(key.id);
     });
   }
 

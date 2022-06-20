@@ -135,8 +135,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                 );
                 await portfolioStore!.getPortfolio(
                   userId: viewOtherUser?.userData == null
-                      ? userStore!.userData!.id!
-                      : viewOtherUser!.userData!.id!,
+                      ? userStore!.userData!.id: viewOtherUser!.userData!.id,
                   newList: true,
                 );
               },
@@ -347,11 +346,11 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   viewOtherUser!.offset = 0;
                   viewOtherUser!.quests.clear();
                   viewOtherUser!.questId = "";
-                  viewOtherUser!.workerId = viewOtherUser!.userData!.id!;
+                  viewOtherUser!.workerId = viewOtherUser!.userData!.id;
                   await Navigator.of(context, rootNavigator: true).pushNamed(
                     ChooseQuestPage.routeName,
                     arguments: ChooseQuestArguments(
-                      workerId: viewOtherUser!.userData!.id!,
+                      workerId: viewOtherUser!.userData!.id,
                       workerAddress: viewOtherUser!.userData!.walletAddress!,
                     ),
                   );
@@ -408,8 +407,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               : viewOtherUser!.userData!.ratingStatistic!.reviewCount
                   .toString(),
           userId: viewOtherUser?.userData == null
-              ? userStore!.userData!.id!
-              : viewOtherUser!.userData!.id!,
+              ? userStore!.userData!.id: viewOtherUser!.userData!.id,
           context: context,
         ),
       ];

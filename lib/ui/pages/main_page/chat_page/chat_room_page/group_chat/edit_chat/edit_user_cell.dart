@@ -57,7 +57,7 @@ class _EditUserCellState extends State<EditUserCell> {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        profileStore.userData!.id! == widget.user.userId
+        profileStore.userData!.id== widget.user.userId
             ? Text("chat.owner".tr())
             : PopupMenuButton<String>(
                 elevation: 10,

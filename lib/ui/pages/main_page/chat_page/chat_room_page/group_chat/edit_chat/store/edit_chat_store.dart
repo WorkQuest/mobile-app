@@ -46,7 +46,7 @@ abstract class _EditChatStore extends IStore<bool> with Store {
 
   void getIds() {
     users.forEach((key, value) {
-      if (value == true) userIds.add(key.id!);
+      if (value == true) userIds.add(key.id);
     });
   }
 

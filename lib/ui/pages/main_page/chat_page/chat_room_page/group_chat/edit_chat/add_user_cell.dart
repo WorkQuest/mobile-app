@@ -72,9 +72,9 @@ class _AddUserCellState extends State<AddUserCell> {
                   ),
                 ],
               ),
-              value: widget.user.id!,
+              value: widget.user.id,
               onChanged: (value) {
-                widget.store.setUserId(widget.user.id!);
+                widget.store.setUserId(widget.user.id);
               },
               groupValue: widget.store.userId,
               contentPadding: EdgeInsets.zero,

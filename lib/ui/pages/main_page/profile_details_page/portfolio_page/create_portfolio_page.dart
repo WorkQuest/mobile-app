@@ -123,13 +123,13 @@ class CreatePortfolioPage extends StatelessWidget {
                                 ? () async {
                                     allowEdit
                                         ? store.editPortfolio(
-                                            userId: userId!,
+                                            userId: userId,
                                             portfolioId: store
                                                 .portfolioList[
                                                     store.portfolioIndex]
                                                 .id)
                                         : store.createPortfolio(
-                                            userId: userId!,
+                                            userId: userId,
                                           );
                                     if (store.isSuccess) {
                                       Navigator.pop(context);

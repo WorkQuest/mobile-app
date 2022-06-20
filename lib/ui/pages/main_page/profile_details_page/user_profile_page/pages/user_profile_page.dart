@@ -72,16 +72,16 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(
-          userId: userStore!.userData!.id!,
+          userId: userStore!.userData!.id,
           newList: true,
         );
 
       portfolioStore!.getReviews(
-        userId: userStore!.userData!.id!,
+        userId: userStore!.userData!.id,
         newList: true,
       );
       portfolioStore!.setOtherUserData(userStore!.userData);
-      myQuests!.getQuests(userStore!.userData!.id!, role, true);
+      myQuests!.getQuests(userStore!.userData!.id, role, true);
 
       isVerify = userStore!.userData?.phone != null;
     } else {
@@ -95,16 +95,16 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
         if (viewOtherUser!.quests.isEmpty && role == UserRole.Employer)
           viewOtherUser!.getQuests(
-            userId: viewOtherUser!.userData!.id!,
+            userId: viewOtherUser!.userData!.id,
             newList: true,
             isProfileYours: false,
           );
 
         if (role == UserRole.Worker)
           portfolioStore!
-              .getPortfolio(userId: viewOtherUser!.userData!.id!, newList: true);
+              .getPortfolio(userId: viewOtherUser!.userData!.id, newList: true);
         portfolioStore!
-            .getReviews(userId: viewOtherUser!.userData!.id!, newList: true);
+            .getReviews(userId: viewOtherUser!.userData!.id, newList: true);
 
         isVerify = viewOtherUser!.userData!.phone != null;
       });

@@ -135,7 +135,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                               itemBuilder: (context, index) => MessageCell(
                                 UniqueKey(),
                                 _store.messages[index],
-                                profile!.userData!.id!,
+                                profile!.userData!.id,
                                 _store.mediaPaths,
                               ),
                               reverse: true,
