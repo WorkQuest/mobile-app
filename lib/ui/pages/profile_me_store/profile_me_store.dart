@@ -243,8 +243,11 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       error = "";
       userData = await _apiProvider.getProfileMe();
       this.onSuccess(true);
-    } catch (e, trace) {
+    } on FormatException catch (e, trace) {
       print(trace);
+      error = e.message;
+      this.onError(e.message);
+    } catch (e) {
       error = e.toString();
       this.onError(e.toString());
     }
@@ -349,7 +352,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       final isTotpActive = this.userData?.isTotpActive;
       final tempPhone = this.userData?.tempPhone;
       this.userData =
-          await _apiProvider.changeProfileMe(userData, userData.role);
+          await _apiProvider.changeProfileMe(userData);
       this.userData?.tempPhone = tempPhone;
       this.userData?.isTotpActive = isTotpActive;
       this.onSuccess(true);
