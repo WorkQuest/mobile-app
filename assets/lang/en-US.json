@@ -289,7 +289,6 @@
     "notification": {
       "QuestEditedOnContract": "Quest edited on contract",
       "QuestStatusUpdated": "Quest status updated",
-      "questStatusUpdated": "Quest status updated",
       "QuestEndSoon": "Quest end soon",
       "OpenDispute": "Open dispute",
       "QuestStarted": "Quest started",
@@ -307,7 +306,20 @@
       "WaitConfirm": "Wait confirm",
       "QuestEdited": "Quest edited",
       "WorkerRespondedToQuest": "Worker responded to quest",
-      "workerRespondedToQuest": "Worker responded to quest"
+      "DisputeDecision": "Dispute decision",
+      "questEdited": "Quest edited",
+      "questEditedOnContract": "Quest edited on contract",
+      "questStatusUpdated": "Quest status updated",
+      "questEndSoon": "Quest end soon",
+      "workerRejectedQuest": "Worker rejected quest",
+      "workerAcceptedQuest": "Worker accepted quest",
+      "workerRespondedToQuest": "Worker responded to quest",
+      "employerInvitedWorkerToQuest": "Employer invited worker to quest",
+      "workerAcceptedInvitationToQuest": "Worker accepted invitation to quest",
+      "workerRejectedInvitationToQuest": "Worker rejected invitation to quest",
+      "employerRejectedWorkersResponse": "Employer rejected workers response",
+      "userLeftReviewAboutQuest": "User left review about quest",
+      "openDispute": "Open dispute"
     },
     "youResponded": "You responded",
     "title": "Quest Title",
@@ -1277,13 +1289,22 @@
     "invitedYou": "invited you to an quest",
     "writeYouMessage": "Write your message",
     "infoMessage": {
-      "groupChatCreate": "Group chat created",
-      "employerRejectResponseOnQuest": "The employer rejected the response to the request",
-      "employerInviteOnQuest": "The employer invited on quest",
-      "workerResponseOnQuest": "The worker responded to the quest",
-      "groupChatAddUser": "User added",
-      "groupChatDeleteUser": "User deleted",
-      "groupChatLeaveUser": "User left chat"
+      "GroupChatCreate": "Group chat created",
+      "EmployerRejectResponseOnQuest": "The employer rejected the response to the request",
+      "EmployerInviteOnQuest": "The employer invited on quest",
+      "WorkerResponseOnQuest": "The worker responded to the quest",
+      "WorkerAcceptInviteOnQuest": "The worker accepted invite on quest",
+      "GroupChatAddUser": "User added",
+      "GroupChatAddMember": "User added",
+      "GroupChatDeleteUser": "User deleted",
+      "GroupChatDeleteMember": "User deleted",
+      "GroupChatLeaveUser": "User left chat",
+      "GroupChatLeaveMember": "User left chat",
+      "GroupChatAddAdmin": "Added admin",
+      "GroupChatLeaveAdmin": "Admin has left the chat",
+      "QuestChatLeaveDisputeAdmin": "Admin has left the chat",
+      "QuestChatAddDisputeAdmin": "Added admin",
+      "message": ""
     },
     "disputeTheme": {
       "noResponse": "There is no response from the employer / employee",
@@ -1297,7 +1318,8 @@
       "active": "Active",
       "favorite": "Favourites",
       "group": "Group",
-      "completed": "Completed"
+      "completed": "Completed",
+      "privates": "Privates"
     }
   },
   "settings": {
@@ -1400,6 +1422,7 @@
       "pending": "Pending",
       "created": "Created",
       "inProgress": "In progress",
+      "pendingClosed": "Completed",
       "closed": "Completed"
     },
     "myDispute": "My Dispute",

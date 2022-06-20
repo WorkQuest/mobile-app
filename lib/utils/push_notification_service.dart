@@ -84,7 +84,6 @@ class PushNotificationService {
         AndroidNotification? androidNotification =
             message.notification?.android;
         if (notification != null && androidNotification != null) {
-
           showNotification(
             notification.hashCode,
             notification.body,

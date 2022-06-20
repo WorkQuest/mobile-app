@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/model/quests_models/media_model.dart';
+import 'package:app/model/media_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/utils/web_socket.dart';

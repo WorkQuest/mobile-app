@@ -5,8 +5,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/chat_extension.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/dispute_model.dart';
-import 'package:app/model/quests_models/media_model.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat.dart';
+import 'package:app/model/media_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -27,8 +26,6 @@ abstract class _DisputeStore extends IStore<bool> with Store {
   int _count = 0;
   int _offset = 0;
   int _limit = 20;
-
-  Chats? chat;
 
   final _atomGetThumbnail = Atom(name: '_ChatRoomStore.GetThumbnail');
 
@@ -94,6 +91,8 @@ abstract class _DisputeStore extends IStore<bool> with Store {
       case 2:
         return status = "dispute.statuses.inProgress";
       case 3:
+        return status = "dispute.statuses.pendingClosed";
+      case 4:
         return status = "dispute.statuses.closed";
     }
     return status;

@@ -76,7 +76,6 @@ class Storage {
 
   static Future<Wallet?> readWallet() async {
     String? wallet = await _secureStorage.read(key: "wallet");
-    print("WALLET: ${wallet}");
     if (wallet == null) {
       return null;
     }

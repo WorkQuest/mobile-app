@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:app/model/quests_models/media_model.dart';
+import 'package:app/model/media_model.dart';
 import 'package:flutter/material.dart';
 
 class ImageViewerWidget extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/add_members/add_user_cell.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart';
-import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/create_private_chat/create_private_page.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/add_user_cell.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/store/group_chat_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/utils/alert_dialog.dart';
 
@@ -12,17 +12,30 @@ import 'package:provider/provider.dart';
 
 final _spacer = Spacer();
 
-class CreateGroupPage extends StatelessWidget {
+class CreateGroupPage extends StatefulWidget {
   static const String routeName = "/createGroupPage";
 
-  const CreateGroupPage(this.myId);
+  const CreateGroupPage(this.isGroupChat);
 
-  final String myId;
+  final bool isGroupChat;
+
+  @override
+  State<CreateGroupPage> createState() => _CreateGroupPageState();
+}
+
+class _CreateGroupPageState extends State<CreateGroupPage> {
+  late GroupChatStore store;
+
+  @override
+  void initState() {
+    store = context.read<GroupChatStore>();
+    store.getUsers();
+    store.setGroupChat(widget.isGroupChat);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final chatRoomStore = context.read<ChatRoomStore>();
-    final chatStore = context.read<ChatStore>();
     return DismissKeyboard(
       child: Scaffold(
         appBar: AppBar(
@@ -34,7 +47,9 @@ class CreateGroupPage extends StatelessWidget {
           ),
           centerTitle: true,
           title: Text(
-            "modals.modals.title".tr(),
+            widget.isGroupChat
+                ? "modals.modals.title".tr()
+                : "Create private chat",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -42,25 +57,40 @@ class CreateGroupPage extends StatelessWidget {
             ),
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Observer(
-            builder: (_) => IndexedStack(
-              index: chatRoomStore.index,
-              children: [
-                addName(chatRoomStore, chatStore, context),
-                addUser(chatRoomStore, chatStore, context),
-              ],
-            ),
-          ),
+        body: Observer(
+          builder: (_) => store.isLoading
+              ? Center(
+                  child: CircularProgressIndicator.adaptive(),
+                )
+              : Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: widget.isGroupChat
+                      ? Observer(
+                          builder: (_) => IndexedStack(
+                            index: store.index,
+                            children: [
+                              addName(store, context),
+                              addUser(
+                                store,
+                                context,
+                                store.isGroupChat!,
+                              ),
+                            ],
+                          ),
+                        )
+                      : addUser(
+                          store,
+                          context,
+                          store.isGroupChat!,
+                        ),
+                ),
         ),
       ),
     );
   }
 
   Widget addName(
-    ChatRoomStore store,
-    ChatStore chatStore,
+    GroupChatStore store,
     BuildContext context,
   ) =>
       Column(
@@ -74,17 +104,11 @@ class CreateGroupPage extends StatelessWidget {
               fontSize: 14.0,
             ),
           ),
-          const SizedBox(
-            height: 16.0,
-          ),
-          Text(
-            "modals.modals.chatName".tr(),
-          ),
-          const SizedBox(
-            height: 5.0,
-          ),
+          const SizedBox(height: 16.0),
+          Text("modals.modals.chatName".tr()),
+          const SizedBox(height: 5.0),
           TextFormField(
-            onChanged: (text) => store.setChatName(text),
+            onChanged: store.setChatName,
             decoration: InputDecoration(
               hintText: "modals.modals.enterName".tr(),
               fillColor: Colors.white,
@@ -106,7 +130,6 @@ class CreateGroupPage extends StatelessWidget {
           _spacer,
           buttonRow(
             store,
-            chatStore,
             forward: "meta.next".tr(),
             back: "meta.cancel".tr(),
             context: context,
@@ -115,76 +138,78 @@ class CreateGroupPage extends StatelessWidget {
       );
 
   Widget addUser(
-    ChatRoomStore store,
-    ChatStore chatStore,
+    GroupChatStore store,
     BuildContext context,
+    bool isGroupChat,
   ) =>
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextFormField(
-            onChanged: (text) => store.findUser(text),
-            decoration: InputDecoration(
-              prefixIcon: const Icon(
-                Icons.search,
-                size: 25.0,
-                color: Color(0xFF0083C7),
+      Observer(
+        builder: (_) => store.isLoading
+            ? Center(child: CircularProgressIndicator.adaptive())
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    onChanged: (text) => store.findUser(text),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        size: 25.0,
+                        color: Color(0xFF0083C7),
+                      ),
+                      hintText: "modals.modals.enterUserName".tr(),
+                      fillColor: Colors.white,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6.0),
+                        borderSide: BorderSide(
+                          color: Colors.blue,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6.0),
+                        borderSide: BorderSide(
+                          color: Color(0xFFf7f8fa),
+                          width: 2.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Expanded(
+                    child: Observer(
+                      builder: (_) => ListView.separated(
+                        separatorBuilder: (context, index) => const Divider(
+                          color: Colors.black12,
+                          endIndent: 50.0,
+                          indent: 50.0,
+                        ),
+                        itemCount: store.foundUsers.length == 0 &&
+                                store.userName.isEmpty
+                            ? store.users.length
+                            : store.foundUsers.length,
+                        itemBuilder: (context, index) => AddUserCell(
+                          store.foundUsers.isEmpty && store.userName.isEmpty
+                              ? store.users.keys.toList()[index]
+                              : store.foundUsers[index],
+                          index,
+                          store,
+                          isGroupChat,
+                        ),
+                      ),
+                    ),
+                  ),
+                  buttonRow(
+                    store,
+                    forward: "profiler.create".tr(),
+                    back: "meta.back".tr(),
+                    context: context,
+                  ),
+                ],
               ),
-              hintText: "modals.modals.enterUserName".tr(),
-              fillColor: Colors.white,
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.0),
-                borderSide: BorderSide(
-                  color: Colors.blue,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.0),
-                borderSide: BorderSide(
-                  color: Color(0xFFf7f8fa),
-                  width: 2.0,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 16.0,
-          ),
-          Expanded(
-            child: Observer(
-              builder: (_) => ListView.separated(
-                separatorBuilder: (context, index) => const Divider(
-                  color: Colors.black12,
-                  endIndent: 50.0,
-                  indent: 50.0,
-                ),
-                itemCount:
-                    store.foundUsers.length == 0 && store.userName.isEmpty
-                        ? store.availableUsers.length
-                        : store.foundUsers.length,
-                itemBuilder: (context, index) => AddUserCell(
-                    store.foundUsers.isEmpty && store.userName.isEmpty
-                        ? store.availableUsers[index]
-                        : store.foundUsers[index],
-                    index,
-                    store),
-              ),
-            ),
-          ),
-          buttonRow(
-            store,
-            chatStore,
-            forward: "profiler.create".tr(),
-            back: "meta.back".tr(),
-            context: context,
-          ),
-        ],
       );
 
   Widget buttonRow(
-    ChatRoomStore store,
-    ChatStore chatStore, {
+    GroupChatStore store, {
     required String forward,
     required String back,
     required BuildContext context,
@@ -201,7 +226,13 @@ class CreateGroupPage extends StatelessWidget {
                       context,
                       (route) => route.isFirst,
                     );
-                  if (store.index == 1) store.index--;
+                  if (store.index == 1 && store.isGroupChat!)
+                    store.index--;
+                  else if (store.index == 1 && !store.isGroupChat!)
+                    Navigator.popUntil(
+                      context,
+                      (route) => route.isFirst,
+                    );
                 },
                 child: Text(back),
                 style: OutlinedButton.styleFrom(
@@ -213,9 +244,7 @@ class CreateGroupPage extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(
-            width: 20.0,
-          ),
+          const SizedBox(width: 20.0),
           Expanded(
             child: Observer(
               builder: (_) => ElevatedButton(
@@ -225,8 +254,7 @@ class CreateGroupPage extends StatelessWidget {
                     ? () async {
                         if (store.index == 0) {
                           store.index++;
-                          await store.getUsersForGroupCHat();
-                          if (store.availableUsers.isEmpty)
+                          if (store.users.isEmpty)
                             AlertDialogUtils.showAlertDialog(
                               context,
                               title: Text("Error"),
@@ -250,23 +278,38 @@ class CreateGroupPage extends StatelessWidget {
                             );
                         }
                       }
-                    : store.usersId.isNotEmpty &&
+                    : ((store.isSelectedUsers && store.isGroupChat!) ||
+                                (store.userId.isNotEmpty &&
+                                    !store.isGroupChat!)) &&
                             !store.isLoading &&
                             store.index == 1
                         ? () async {
-                            await store.createGroupChat();
-                            if (store.isSuccess) {
-                              await chatStore.loadChats(starred: false);
-                              Navigator.of(context, rootNavigator: true)
-                                  .pushReplacementNamed(ChatRoomPage.routeName,
-                                      arguments: store.idGroupChat);
+                            if (store.isGroupChat!) {
+                              store.getSelectedUsers();
+                              await store.createGroupChat();
+                              if (store.isSuccess) {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushReplacementNamed(
+                                  ChatRoomPage.routeName,
+                                  arguments: ChatRoomArguments(
+                                    store.idGroupChat,
+                                    true,
+                                  ),
+                                );
+                              }
+                            } else {
+                              if (store.isSuccess) {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushReplacementNamed(
+                                  CreatePrivatePage.routeName,
+                                  arguments: store.userId,
+                                );
+                              }
                             }
                           }
                         : null,
                 child: store.isLoading
-                    ? Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      )
+                    ? Center(child: CircularProgressIndicator.adaptive())
                     : Text(forward),
               ),
             ),

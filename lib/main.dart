@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/utils/push_notification_service.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/account_repository.dart';
@@ -9,6 +11,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'di/injector.dart';
 import 'package:easy_localization/easy_localization.dart';
+
+import 'firebase_options.dart';
 
 ///Android Notification Channel
 const AndroidNotificationChannel _channel = AndroidNotificationChannel(
@@ -29,12 +33,25 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 void main() async {
+  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   //_initialisePushNotification();
   //init get_it
   injectDependencies(env: Environment.test);
-  await Firebase.initializeApp().then(
+  await Firebase.initializeApp(
+    name: "Work Quest",
+    options: DefaultFirebaseOptions.currentPlatform,
+  ).then(
     (value) => _initialisePushNotification(),
   );
 

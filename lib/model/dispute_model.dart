@@ -19,6 +19,7 @@ class DisputeModel {
     required this.opponentUser,
     required this.assignedAdmin,
     required this.quest,
+    required this.currentUserDisputeReview,
     required this.resolveAt,
     required this.createdAt,
   });
@@ -38,6 +39,7 @@ class DisputeModel {
   DisputeUser opponentUser;
   AssignedAdmin? assignedAdmin;
   BaseQuestResponse quest;
+  CurrentUserDisputeReview? currentUserDisputeReview;
   DateTime? resolveAt;
   DateTime createdAt;
 
@@ -59,6 +61,10 @@ class DisputeModel {
             ? null
             : AssignedAdmin.fromJson(json["assignedAdmin"]),
         quest: BaseQuestResponse.fromJson(json["quest"]),
+        currentUserDisputeReview: json["currentUserDisputeReview"] == null
+            ? null
+            : CurrentUserDisputeReview.fromJson(
+                json["currentUserDisputeReview"]),
         resolveAt: json["resolveAt"] == null
             ? null
             : DateTime.parse(json["resolveAt"]),
@@ -81,6 +87,7 @@ class DisputeModel {
         "opponentUser": opponentUser.toJson(),
         "assignedAdmin": assignedAdmin?.toJson(),
         "quest": quest.toJson(),
+        "currentUserDisputeReview": currentUserDisputeReview!.toJson(),
         "resolveAt": resolveAt?.toIso8601String(),
         "createdAt": createdAt.toIso8601String(),
       };
@@ -97,11 +104,11 @@ class AssignedAdmin {
   });
 
   String id;
-  String email;
+  String? email;
   String firstName;
   String lastName;
-  bool isActive;
-  String adminRole;
+  bool? isActive;
+  String? adminRole;
 
   factory AssignedAdmin.fromJson(Map<String, dynamic> json) => AssignedAdmin(
         id: json["id"],
@@ -153,8 +160,52 @@ class DisputeUser {
         "avatarId": avatarId,
         "firstName": firstName,
         "lastName": lastName,
-        "avatar": avatar == null ? null :avatar!.toJson(),
+        "avatar": avatar == null ? null : avatar!.toJson(),
         "ratingStatistic": ratingStatistic.toJson(),
       };
 }
 
+class CurrentUserDisputeReview {
+  CurrentUserDisputeReview({
+    required this.id,
+    required this.disputeId,
+    required this.fromUserId,
+    required this.toAdminId,
+    required this.message,
+    required this.mark,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  String id;
+  String disputeId;
+  String fromUserId;
+  String toAdminId;
+  String message;
+  int mark;
+  DateTime createdAt;
+  DateTime updatedAt;
+
+  factory CurrentUserDisputeReview.fromJson(Map<String, dynamic> json) =>
+      CurrentUserDisputeReview(
+        id: json["id"],
+        disputeId: json["disputeId"],
+        fromUserId: json["fromUserId"],
+        toAdminId: json["toAdminId"],
+        message: json["message"],
+        mark: json["mark"],
+        createdAt: DateTime.parse(json["createdAt"]),
+        updatedAt: DateTime.parse(json["updatedAt"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "disputeId": disputeId,
+        "fromUserId": fromUserId,
+        "toAdminId": toAdminId,
+        "message": message,
+        "mark": mark,
+        "createdAt": createdAt.toIso8601String(),
+        "updatedAt": updatedAt.toIso8601String(),
+      };
+}

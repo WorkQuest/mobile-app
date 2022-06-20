@@ -1,23 +1,39 @@
 class Star {
   Star({
-    required this.id,
-    required this.userId,
-    required this.messageId,
-    required this.chatId,
-    required this.createdAt,
+    this.id,
+    this.userId,
+    this.chatId,
+    this.adminId,
+    this.messageId,
+    this.createdAt,
+    this.updatedAt,
   });
 
   String? id;
-  String userId;
-  String? messageId;
+  String? userId;
   String? chatId;
-  DateTime createdAt;
+  String? adminId;
+  String? messageId;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory Star.fromJson(Map<String, dynamic> json) => Star(
         id: json["id"],
         userId: json["userId"],
-        messageId: json["messageId"],
         chatId: json["chatId"],
+        adminId: json["adminId"],
+        messageId: json["messageId"],
         createdAt: DateTime.parse(json["createdAt"]),
+        updatedAt: DateTime.parse(json["updatedAt"]),
       );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "userId": userId,
+        "chatId": chatId,
+        "adminId": adminId,
+        "messageId": messageId,
+        "createdAt": createdAt!.toIso8601String(),
+        "updatedAt": updatedAt!.toIso8601String(),
+      };
 }

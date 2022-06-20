@@ -4,7 +4,7 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/review.dart';
-import 'package:app/model/quests_models/media_model.dart';
+import 'package:app/model/media_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:app/model/web3/TrxEthereumResponse.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
@@ -16,6 +17,7 @@ class WebSocket {
   int closeCode = 4001;
   bool shouldReconnectFlag = true;
   void Function(dynamic)? handlerChats;
+  void Function(dynamic)? handlerMessages;
   void Function(dynamic)? handlerQuests;
   void Function(dynamic)? handlerQuestList;
   IOWebSocketChannel? walletChannel;
@@ -38,7 +40,8 @@ class WebSocket {
 
   void _connectWallet() {
     walletChannel = IOWebSocketChannel.connect(
-        "${AccountRepository().getConfigNetwork().wss}/tendermint-rpc/websocket");
+      "${AccountRepository().getConfigNetwork().wss}/tendermint-rpc/websocket",
+    );
     walletChannel!.sink.add("""
       {
           "jsonrpc": "2.0",
@@ -76,7 +79,8 @@ class WebSocket {
   }
 
   void _connectSender() {
-    _senderChannel = IOWebSocketChannel.connect("wss://app.workquest.co/api");
+    _senderChannel =
+        IOWebSocketChannel.connect("wss://dev-app.workquest.co/api");
     _senderChannel?.sink.add("""{
           "type": "hello",
           "id": 1,
@@ -116,7 +120,7 @@ class WebSocket {
 
   void _onData(message, IOWebSocketChannel channel, String type) {
     try {
-      print("WebSocket message: $type $message");
+      log("WebSocket message: $type $message");
       final json = jsonDecode(message.toString());
       switch (json["type"]) {
         case "pub":
@@ -138,13 +142,9 @@ class WebSocket {
 
   void _handleSubscription(dynamic json) async {
     try {
-      print("notification path: ${json["path"]}");
       if (json["path"] == "/notifications/quest")
         questNotification(json["message"]);
-      // } else if (json["path"] == "/notifications/chat") {
       getMessage(json);
-      // } else
-      //   print("new message");
     } catch (e, trace) {
       print("ERROR: $e \n $trace");
     }
@@ -153,7 +153,7 @@ class WebSocket {
   void getMessage(dynamic json) async {
     try {
       if (handlerChats != null) handlerChats!(json);
-      print("chatMessage: ${json.toString()}");
+      if (handlerMessages != null) handlerMessages!(json);
     } catch (e, trace) {
       print("WebSocket message ERROR: $e \n $trace");
     }
@@ -161,11 +161,8 @@ class WebSocket {
 
   void questNotification(dynamic json) async {
     try {
-      print("quest notification");
-      print(json);
       if (handlerQuests != null) handlerQuests!(json);
       if (handlerQuestList != null) handlerQuestList!(json);
-      print("questMessage: ${json.toString()}");
     } catch (e, trace) {
       print("WebSocket message ERROR: $e \n $trace");
     }
@@ -175,15 +172,16 @@ class WebSocket {
     required String chatId,
     required String text,
     required List<String> medias,
+    required String entity,
   }) async {
     Object payload = {
       "type": "request",
       "id": "$_senderCounter",
       "method": "POST",
-      "path": "/api/v1/chat/$chatId/send-message",
+      "path": "/api/v1/$entity/$chatId/send-message",
       "payload": {
         "text": "$text",
-        "medias": medias,
+        "mediaIds": medias,
       }
     };
     String textPayload = json.encode(payload).toString();
@@ -203,7 +201,7 @@ class WebSocket {
   }
 
   void _onError(error) {
-    print("WebSocket error: $error");
+    log("WebSocket error: $error");
   }
 
   void _onDone(IOWebSocketChannel channel, bool connectNotify) {

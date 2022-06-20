@@ -1,69 +1,74 @@
 import 'package:app/model/chat_model/info_message.dart';
+import 'package:app/model/chat_model/member.dart';
 import 'package:app/model/chat_model/star.dart';
-import 'package:app/model/profile_response/profile_me_response.dart';
-import 'package:app/model/quests_models/media_model.dart';
+import 'package:app/model/media_model.dart';
 
 class MessageModel {
   MessageModel({
     required this.id,
     required this.number,
     required this.chatId,
-    required this.senderUserId,
+    required this.senderMemberId,
     required this.senderStatus,
     required this.type,
     required this.text,
     required this.createdAt,
-    required this.medias,
-    required this.sender,
-    required this.infoMessage,
+    required this.updatedAt,
     required this.star,
+    required this.sender,
+    required this.medias,
+    required this.infoMessage,
   });
 
   String id;
   int number;
   String chatId;
-  String senderUserId;
+  String senderMemberId;
   String senderStatus;
   String type;
   String? text;
   DateTime createdAt;
-  List<Media> medias;
-  ProfileMeResponse? sender;
-  InfoMessage? infoMessage;
+  DateTime updatedAt;
   Star? star;
+  Member? sender;
+  List<Media> medias;
+  InfoMessage? infoMessage;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
         id: json["id"],
-        number: json["number"]??0,
+        number: json["number"],
         chatId: json["chatId"],
-        senderUserId: json["senderUserId"],
+        senderMemberId: json["senderMemberId"],
         senderStatus: json["senderStatus"],
         type: json["type"],
         text: json["text"] == null ? null : json["text"],
         createdAt: DateTime.parse(json["createdAt"]),
-        medias: (json["medias"] as List<dynamic>)
-            .map((e) => Media.fromJson(e as Map<String, dynamic>))
-            .toList(),
-        sender: ProfileMeResponse.fromJson(json["sender"]),
+        updatedAt: DateTime.parse(json["updatedAt"]),
+        star: json["star"] == null ? null : Star.fromJson(json["star"]),
+        sender: json["sender"] == null ? null : Member.fromJson(json["sender"]),
+        medias: json["medias"] == null
+            ? []
+            : (json["medias"] as List<dynamic>)
+                .map((e) => Media.fromJson(e as Map<String, dynamic>))
+                .toList(),
         infoMessage: json["infoMessage"] == null
             ? null
             : InfoMessage.fromJson(json["infoMessage"]),
-        star: json["star"] == null ? null : Star.fromJson(json["star"]),
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "number": number,
         "chatId": chatId,
-        "senderUserId": senderUserId,
+        "senderMemberId": senderMemberId,
         "senderStatus": senderStatus,
         "type": type,
-        "text": text,
-        "createdAt": createdAt,
-        "sender": sender == null ? null : sender!.toJson(),
-        "infoMessage": infoMessage,
+        "text": text == null ? null : text,
+        "createdAt": createdAt.toIso8601String(),
+        "updatedAt": updatedAt.toIso8601String(),
         "star": star,
+        "sender": sender!.toJson(),
+        "medias": List<dynamic>.from(medias.map((x) => x)),
+        "infoMessage": infoMessage == null ? null : infoMessage,
       };
 }
-
-enum MessageStatus { None, Wait, Send, Error }

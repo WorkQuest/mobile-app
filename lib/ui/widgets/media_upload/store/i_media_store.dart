@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../../../http/api_provider.dart';
-import '../../../../model/quests_models/media_model.dart';
+import '../../../../model/media_model.dart';
 import '../../../../utils/file_methods.dart';
 
 part 'i_media_store.g.dart';

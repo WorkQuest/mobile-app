@@ -16,7 +16,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 
-import '../model/quests_models/media_model.dart';
+import '../model/media_model.dart';
 import '../ui/widgets/media_upload/store/i_media_store.dart';
 
 @singleton
@@ -1046,7 +1046,28 @@ extension Disputes on ApiProvider {
     }
   }
 
-  Future<DisputeModel> getDispute({String disputeId = ""}) async {
+  Future<void> sendReviewDispute({
+    required String disputeId,
+    required int mark,
+    required String message,
+  }) async {
+    try {
+      await httpClient.post(
+        query: '/v1/quest/dispute/$disputeId/review/send',
+        data: {
+          "mark": mark,
+          "message": message,
+        },
+      );
+    } on Exception catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+    }
+  }
+
+  Future<DisputeModel> getDispute({
+    required String disputeId,
+  }) async {
     try {
       final responseData = await httpClient.get(
         query: '/v1/quest/dispute/$disputeId',

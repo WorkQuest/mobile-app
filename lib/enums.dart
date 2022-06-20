@@ -33,15 +33,26 @@ enum ErrorCodes {
   KYCAlreadyVerified,
   KYCRequired,
   InvalidEmail,
+
   /// Authorization errors (401)
   TokenExpired,
   TokenInvalid,
   SessionNotFound,
+
   /// Forbidden (403)
   Forbidden,
+
   /// Not found (404)
   NotFound,
+
   /// Conflict (409)
   SumSubError,
+}
 
+enum TypeChat {
+  active,
+  privates,
+  favourites,
+  group,
+  completed,
 }

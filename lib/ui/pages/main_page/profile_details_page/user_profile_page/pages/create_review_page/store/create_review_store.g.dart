@@ -61,6 +61,15 @@ mixin _$CreateReviewStore on _CreateReviewStore, Store {
     return _$addReviewAsyncAction.run(() => super.addReview(questId));
   }
 
+  final _$addReviewDisputeAsyncAction =
+      AsyncAction('_CreateReviewStore.addReviewDispute');
+
+  @override
+  Future<void> addReviewDispute(String disputeId) {
+    return _$addReviewDisputeAsyncAction
+        .run(() => super.addReviewDispute(disputeId));
+  }
+
   final _$_CreateReviewStoreActionController =
       ActionController(name: '_CreateReviewStore');
 

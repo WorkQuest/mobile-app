@@ -35,7 +35,6 @@ class ChooseQuestPage extends StatefulWidget {
 }
 
 class _ChooseQuestPageState extends State<ChooseQuestPage> {
-  //TODO: CREATE NEW STORE
   late ChooseQuestStore store;
 
   @override

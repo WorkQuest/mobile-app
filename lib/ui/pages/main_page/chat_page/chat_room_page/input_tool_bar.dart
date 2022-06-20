@@ -9,9 +9,8 @@ import 'package:easy_localization/easy_localization.dart';
 
 class InputToolbar extends StatefulWidget {
   final ChatRoomStore store;
-  final String userId;
 
-  InputToolbar(this.store, this.userId);
+  InputToolbar(this.store);
 
   @override
   _InputToolbarState createState() => _InputToolbarState();
@@ -91,9 +90,6 @@ class _InputToolbarState extends State<InputToolbar> {
               decoration: InputDecoration(
                 hintText: 'Text',
               ),
-              style: TextStyle(
-                fontSize: 16,
-              ),
             ),
           ),
           Observer(
@@ -104,8 +100,8 @@ class _InputToolbarState extends State<InputToolbar> {
                   ? () {
                       widget.store.sendMessage(
                         _controller.text,
-                        widget.store.chat!.chatModel.id,
-                        widget.userId,
+                        widget.store.chatRoom!.chatData.chatId,
+                        "chat",
                       );
                       _controller.text = "";
                     }
@@ -117,14 +113,12 @@ class _InputToolbarState extends State<InputToolbar> {
                   top: 10,
                   bottom: 10,
                 ),
-                child: Observer(
-                  builder: (_) => SvgPicture.asset(
-                    "assets/send_message_icon.svg",
-                    color: _controller.text.isNotEmpty ||
-                            widget.store.progressImages.isNotEmpty
-                        ? Color(0xFF0083C7)
-                        : Colors.grey,
-                  ),
+                child: SvgPicture.asset(
+                  "assets/send_message_icon.svg",
+                  color: _controller.text.isNotEmpty ||
+                          widget.store.progressImages.isNotEmpty
+                      ? Color(0xFF0083C7)
+                      : Colors.grey,
                 ),
               ),
             ),

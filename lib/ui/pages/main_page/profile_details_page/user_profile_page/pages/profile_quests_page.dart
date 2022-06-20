@@ -29,20 +29,20 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
     if (profileMeStore!.userData!.id != widget.profile.id) {
       widget.profile.role == UserRole.Worker
           ? profileMeStore!.getActiveQuests(
-              userId: widget.profile.id,
+              userId: widget.profile.id!,
               newList: true,
               isProfileYours: false,
             )
           : profileMeStore!.getCompletedQuests(
               userRole: widget.profile.role,
-              userId: widget.profile.id,
+              userId: widget.profile.id!,
               newList: true,
               isProfileYours: false,
             );
     } else {
       profileMeStore!.getCompletedQuests(
         userRole: profileMeStore!.userData!.role,
-        userId: profileMeStore!.userData!.id,
+        userId: profileMeStore!.userData!.id!,
         newList: true,
         isProfileYours: false,
       );
@@ -67,14 +67,14 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
                   if (metrics.atEdge || metrics.maxScrollExtent < metrics.pixels && !profileMeStore!.isLoading) {
                     if (widget.profile.role == UserRole.Worker)
                       profileMeStore!.getActiveQuests(
-                        userId: profileMeStore!.questHolder!.id,
+                        userId: profileMeStore!.questHolder!.id!,
                         newList: true,
                         isProfileYours: profileMeStore!.userData!.id != widget.profile.id ? false : true,
                       );
                     else
                       profileMeStore!.getCompletedQuests(
                         userRole: widget.profile.role,
-                        userId: widget.profile.id,
+                        userId: widget.profile.id!,
                         newList: false,
                         isProfileYours: profileMeStore!.userData!.id != widget.profile.id ? false : true,
                       );

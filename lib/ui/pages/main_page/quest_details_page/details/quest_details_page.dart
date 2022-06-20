@@ -125,8 +125,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(100),
                                     child: Image.network(
-                                      storeQuest.questInfo!.user!.avatar?.url ??
-                                          "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                                      storeQuest.questInfo!.user!.avatar?.url ??Constants.defaultImageNetwork,
                                       width: 30,
                                       height: 30,
                                       fit: BoxFit.cover,

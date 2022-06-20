@@ -1,4 +1,5 @@
 import 'package:app/http/api_provider.dart';
+import 'package:app/model/dispute_model.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/notifications.dart';
 import 'package:injectable/injectable.dart';
@@ -15,41 +16,18 @@ class NotificationStore extends _NotificationStore with _$NotificationStore {
 abstract class _NotificationStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
-  _NotificationStore(this._apiProvider) {
-    // WebSocket().handlerQuests = this.changeQuests;
-  }
+  _NotificationStore(this._apiProvider);
 
   int offset = 0;
 
   BaseQuestResponse? quest;
 
   @observable
-  ObservableList<NotificationElement> listOfNotifications = ObservableList.of([]);
+  ObservableList<NotificationElement> listOfNotifications =
+      ObservableList.of([]);
 
-  // @action
-  // void changeQuests(dynamic json) {
-  //   try {
-  //     final id = DateTime.now().millisecond.toString();
-  //     final recipients = json["recipients"];
-  //     listOfNotifications.insert(
-  //       0,
-  //       NotificationElement(
-  //         id: id,
-  //         userId: recipients[0],
-  //         notification: NotificationNotification(
-  //           data: Data.fromJson(json["data"]),
-  //           action: json["action"],
-  //           recipients: recipients,
-  //         ),
-  //         seen: false,
-  //         createdAt: DateTime.now(),
-  //       ),
-  //     );
-  //   } catch (e, trace) {
-  //     print("ERROR: $e");
-  //     print("ERROR: $trace");
-  //   }
-  // }
+  @observable
+  ObservableMap<String, DisputeModel> disputes = ObservableMap.of({});
 
   Future<void> getQuest(String questId) async {
     try {
@@ -66,7 +44,8 @@ abstract class _NotificationStore extends IStore<bool> with Store {
     try {
       if (newList) offset = 0;
       if (offset == listOfNotifications.length) {
-        final responseData = await _apiProvider.getNotifications(offset: offset);
+        final responseData =
+            await _apiProvider.getNotifications(offset: offset);
         listOfNotifications.addAll(responseData.notifications);
         offset += 10;
         this.onSuccess(true);
@@ -96,8 +75,18 @@ abstract class _NotificationStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.deleteNotification(notificationId: notificationId);
-      listOfNotifications.removeWhere((element) => element.id == notificationId);
+      listOfNotifications
+          .removeWhere((element) => element.id == notificationId);
       this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  @action
+  Future<void> getDispute(String disputeId) async {
+    try {
+      disputes[disputeId] = await _apiProvider.getDispute(disputeId: disputeId);
     } catch (e) {
       this.onError(e.toString());
     }
