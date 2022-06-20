@@ -8,12 +8,14 @@ class DefaultAppBar extends StatelessWidget with PreferredSizeWidget {
   final Function()? onPressed;
   final String? title;
   final bool titleCenter;
+  final List<Widget>? actions;
 
   const DefaultAppBar({
     Key? key,
     this.onPressed,
     this.titleCenter = true,
     this.title,
+    this.actions,
   }) : super(key: key);
 
   @override
@@ -45,6 +47,7 @@ class DefaultAppBar extends StatelessWidget with PreferredSizeWidget {
           color: AppColor.enabledButton,
         ),
       ),
+      actions: actions,
     );
   }
 
