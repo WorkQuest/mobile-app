@@ -1,11 +1,9 @@
-import 'dart:math';
-
-import 'package:app/constants.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/login_button.dart';
+import 'package:app/ui/widgets/timer.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +51,7 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _TimerWidget(
+                TimerWidget(
                   startTimer: () => smsStore.startTimer(),
                   seconds: smsStore.secondsCodeAgain,
                   isActiveTimer:
@@ -76,12 +74,6 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
                 const SizedBox(
                   height: 10,
                 ),
-                // TextButton(
-                //   onPressed: () {
-                //     print((BigInt.parse('4').toDouble() * pow(10, 18)).toStringAsFixed(0));
-                //   },
-                //   child: Text('test'),
-                // ),
                 Spacer(),
                 ObserverListener<SMSVerificationStore>(
                   onFailure: () {
@@ -115,56 +107,5 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
 
   _sendCodeOnPressed() {
     smsStore.submitCode();
-  }
-}
-
-class _TimerWidget extends StatelessWidget {
-  final Function() startTimer;
-  final bool isActiveTimer;
-  final int seconds;
-
-  const _TimerWidget({
-    Key? key,
-    required this.isActiveTimer,
-    required this.startTimer,
-    required this.seconds,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CupertinoButton(
-          padding: EdgeInsets.zero,
-          child: Text(
-            'Send again',
-            style: TextStyle(
-              fontSize: 14,
-              color: isActiveTimer
-                  ? AppColor.disabledText
-                  : AppColor.enabledButton,
-            ),
-          ),
-          onPressed: isActiveTimer ? null : startTimer,
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        if (isActiveTimer)
-          Text(
-            convertSecondToLine(seconds),
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black,
-            ),
-          ),
-      ],
-    );
-  }
-
-  String convertSecondToLine(int seconds) {
-    int min = seconds ~/ 60;
-    int sec = seconds - (min * 60);
-    return '${min < 10 ? '0$min' : '$min'}:${sec < 10 ? '0$sec' : '$sec'}';
   }
 }

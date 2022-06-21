@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/base_store/i_store.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/bearer_token.dart';
@@ -42,6 +44,12 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
 
   @observable
   UserRole userRole = UserRole.Employer;
+
+  @observable
+  Timer? timer;
+
+  @observable
+  int secondsCodeAgain = 60;
 
   void setRole(UserRole role)=> userRole = role;
 
@@ -129,6 +137,45 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
     } catch(e) {
       this.onError(e.toString());
     }
+  }
+
+  Future<void> initTime(String email) async {
+    final time = await Storage.readTimeEmailTimer();
+    if ((time ?? "0") != "0") {
+      stopTimer();
+      startTimer(email);
+    }
+  }
+
+  @action
+  startTimer(String email) async {
+    try {
+      await _apiProvider.resendEmail(email);
+      final timerTime = await Storage.readTimeEmailTimer();
+      if ((timerTime ?? "0") != "0")
+        secondsCodeAgain = int.parse(timerTime!);
+      else
+        await Storage.writeTimerEmailTime(secondsCodeAgain.toString());
+      timer = Timer.periodic(Duration(seconds: 1), (timer) {
+        if (secondsCodeAgain == 0) {
+          timer.cancel();
+          secondsCodeAgain = 60;
+        } else {
+          secondsCodeAgain--;
+          Storage.writeTimerEmailTime(secondsCodeAgain.toString());
+        }
+      });
+    } catch (e) {
+      onError(e.toString());
+    }
+  }
+
+  @action
+  stopTimer() {
+    if (timer != null) {
+      timer!.cancel();
+    }
+    secondsCodeAgain = 60;
   }
 
   @computed
