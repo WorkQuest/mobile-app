@@ -134,6 +134,19 @@ class _ImageViewerWidgetState extends State<ImageViewerWidget> {
                 fit: BoxFit.cover,
                 height: index == 0 ? 200 : 60,
                 width: double.maxFinite,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: SizedBox(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    ),
+                  );
+                },
               )
             : Container(
                 color: Colors.black,
@@ -299,6 +312,20 @@ class _ScrollingImagesState extends State<ScrollingImages> {
                       ? Image.network(
                           media.url,
                           fit: BoxFit.fitWidth,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: SizedBox(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              ),
+                            );
+                          },
                         )
                       : VideoWidget(url: media.url),
                 ),

@@ -101,7 +101,7 @@ abstract class _ChatRoomStore extends IMediaStore<bool> with Store {
 
       mediaPaths.addAll(await Thumbnail().getThumbnail(messages));
 
-      _offset += 10;
+      _offset += 20;
       initPage = false;
       loadMessage = false;
     } catch (e, trace) {

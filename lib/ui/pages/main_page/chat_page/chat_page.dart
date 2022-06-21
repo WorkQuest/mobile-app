@@ -234,13 +234,13 @@ class _ChatPageState extends State<ChatPage>
         if (store.selectedChats.values.toList()[i] == true) return;
       store.setChatSelected(false);
     } else {
-      if (chat.chatData.lastMessage.sender?.userId != store.myId &&
-          chat.chatData.lastMessage.senderStatus == "Unread") {
+      if (chat.chatData.lastMessage?.sender?.userId != store.myId &&
+          chat.chatData.lastMessage?.senderStatus == "Unread") {
         store.setMessageRead(
           chat.id,
           chat.chatData.lastMessageId,
         );
-        chat.chatData.lastMessage.senderStatus = "Read";
+        chat.chatData.lastMessage?.senderStatus = "Read";
       }
       Navigator.of(context, rootNavigator: true).pushNamed(
         ChatRoomPage.routeName,
@@ -350,7 +350,7 @@ class _ListChatsWidgetState extends State<_ListChatsWidget>
                       chat: chat,
                       userId: widget.store.myId,
                       infoActionMessage: "chat.infoMessage."
-                              "${chat.chatData.lastMessage.infoMessage?.messageAction ?? "message"}"
+                              "${chat.chatData.lastMessage?.infoMessage?.messageAction ?? "message"}"
                           .tr(),
                       chatStarred: widget.store.selectedChats[chat]!,
                     );
@@ -516,17 +516,17 @@ class _ChatListTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final differenceTime =
-        DateTime.now().difference(chat.chatData.lastMessage.createdAt).inDays;
+        DateTime.now().difference(chat.chatData.lastMessage!.createdAt).inDays;
     Member? member;
     chat.members?.forEach((element) {
       if (element.type != "Admin" || chat.type != TypeChat.active)
         member = element;
     });
-    final text = chat.chatData.lastMessage.sender?.userId == userId
+    final text = chat.chatData.lastMessage?.sender?.userId == userId
         ? "chat.you".tr() +
-            " ${chat.chatData.lastMessage.text ?? infoActionMessage} "
-        : "${chat.chatData.lastMessage.sender!.user?.firstName ?? member!.user?.firstName ?? member!.admin?.firstName ?? ""}:" +
-            " ${chat.chatData.lastMessage.text ?? infoActionMessage} ";
+            " ${chat.chatData.lastMessage?.text ?? infoActionMessage} "
+        : "${chat.chatData.lastMessage?.sender!.user?.firstName ?? member!.user?.firstName ?? member!.admin?.firstName ?? ""}:" +
+            " ${chat.chatData.lastMessage?.text ?? infoActionMessage} ";
     return GestureDetector(
       onLongPress: onLongPress,
       onTap: onTap,
@@ -625,7 +625,7 @@ class _ChatListTileWidget extends StatelessWidget {
                   const SizedBox(width: 50),
                   Column(
                     children: [
-                      if (chat.chatData.lastMessage.senderStatus == "Unread")
+                      if (chat.chatData.lastMessage?.senderStatus == "Unread")
                         Container(
                           width: 11,
                           height: 11,
@@ -640,7 +640,7 @@ class _ChatListTileWidget extends StatelessWidget {
                       if (chat.star != null)
                         Container(
                           margin:
-                              chat.chatData.lastMessage.senderStatus == "Unread"
+                              chat.chatData.lastMessage?.senderStatus == "Unread"
                                   ? const EdgeInsets.only(top: 3, right: 16)
                                   : const EdgeInsets.only(top: 23, right: 16),
                           child: Icon(

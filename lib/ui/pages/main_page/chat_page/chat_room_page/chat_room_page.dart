@@ -349,7 +349,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   }
                 },
                 itemBuilder: (BuildContext context) {
-                  return {"Leave from chat"}.map((String choice) {
+                  return {
+                    "Leave from chat",
+                  }.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
                       child: Text(choice),
@@ -358,7 +360,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 },
               )
             : const SizedBox(width: 16),
-        _store.dispute?.currentUserDisputeReview == null
+        _store.dispute?.currentUserDisputeReview == null &&
+                _store.chatRoom?.questChat?.quest?.openDispute?.status == 4
             ? PopupMenuButton<String>(
                 elevation: 10,
                 icon: Icon(Icons.more_vert),

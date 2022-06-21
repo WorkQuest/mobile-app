@@ -73,7 +73,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share("https://app.workquest.co/quests/${store.quest.value!.id}");
+          Share.share(
+              "https://dev-app.workquest.co/quests/${store.quest.value!.id}");
         },
       ),
       if (store.quest.value!.userId == profile!.userData!.id &&
@@ -88,7 +89,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            if (store.quest.value!.status == 1 || store.quest.value!.status == 2)
+            if (store.quest.value!.status == 1 ||
+                store.quest.value!.status == 2)
               switch (value) {
                 case "quests.raiseViews":
                   await Navigator.pushNamed(
@@ -132,8 +134,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         title: "quests.deleteQuest".tr(),
                         message: "quests.deleteQuestMessage".tr(),
                         confirmAction: () async {
-                          await store.deleteQuest(questId: widget.arguments.questInfo!.id);
-                          questStore.deleteQuest(widget.arguments.questInfo!.id);
+                          await store.deleteQuest(
+                              questId: widget.arguments.questInfo!.id);
+                          questStore
+                              .deleteQuest(widget.arguments.questInfo!.id);
                           if (profile!.userData!.questsStatistic != null)
                             profile!.userData!.questsStatistic!.opened -= 1;
                           Navigator.pop(context);
@@ -144,7 +148,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   break;
                 default:
               }
-            if ((store.quest.value!.status == 3 || store.quest.value!.status == 4) && value == "chat.report") {
+            if ((store.quest.value!.status == 3 ||
+                    store.quest.value!.status == 4) &&
+                value == "chat.report") {
               await Navigator.pushNamed(
                 context,
                 OpenDisputePage.routeName,
@@ -159,10 +165,18 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           },
           itemBuilder: (BuildContext context) {
             return {
-              if (store.quest.value!.status == 1 || store.quest.value!.status == 2) 'quests.raiseViews',
-              if (store.quest.value!.status == 1 || store.quest.value!.status == 2) 'registration.edit',
-              if (store.quest.value!.status == 1 || store.quest.value!.status == 2) 'settings.delete',
-              if (store.quest.value!.status == 3 || store.quest.value!.status == 4) "chat.report",
+              if (store.quest.value!.status == 1 ||
+                  store.quest.value!.status == 2)
+                'quests.raiseViews',
+              if (store.quest.value!.status == 1 ||
+                  store.quest.value!.status == 2)
+                'registration.edit',
+              if (store.quest.value!.status == 1 ||
+                  store.quest.value!.status == 2)
+                'settings.delete',
+              if (store.quest.value!.status == 3 ||
+                  store.quest.value!.status == 4)
+                "chat.report",
             }.map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,
@@ -176,7 +190,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   @override
   Widget getBody() {
-    return store.quest.value?.userId == (profile?.userData?.id ?? "myId") ? respondedList() : SizedBox();
+    return store.quest.value?.userId == (profile?.userData?.id ?? "myId")
+        ? respondedList()
+        : SizedBox();
   }
 
   @override
@@ -198,7 +214,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     return storeQuest.questInfo!.status == 5 &&
             !profile!.review &&
             (storeQuest.questInfo!.userId == profile!.userData!.id ||
-                storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id)
+                storeQuest.questInfo!.assignedWorker?.id ==
+                    profile!.userData!.id)
         ? Column(
             children: [
               const SizedBox(height: 20),
@@ -212,7 +229,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       null,
                     ),
                   );
-                  store.quest.value!.yourReview != null ? profile!.review = true : profile!.review = false;
+                  store.quest.value!.yourReview != null
+                      ? profile!.review = true
+                      : profile!.review = false;
                 },
                 child: Text(
                   "quests.addReview".tr(),
@@ -225,7 +244,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
                       if (states.contains(MaterialState.pressed))
-                        return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
                       return const Color(0xFF0083C7);
                     },
                   ),
@@ -236,7 +258,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         : storeQuest.questInfo!.status == 5 &&
                 profile!.review &&
                 (storeQuest.questInfo!.userId == profile!.userData!.id ||
-                    storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id)
+                    storeQuest.questInfo!.assignedWorker?.id ==
+                        profile!.userData!.id)
             ? reviewCard()
             : SizedBox();
   }
@@ -272,7 +295,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     color: Color(0xFFE8D20D),
                     size: 20.0,
                   ),
-                for (int i = 0; i < 5 - storeQuest.questInfo!.yourReview!.mark; i++)
+                for (int i = 0;
+                    i < 5 - storeQuest.questInfo!.yourReview!.mark;
+                    i++)
                   Icon(
                     Icons.star,
                     color: Color(0xFFE9EDF2),
@@ -300,7 +325,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            store.quest.value!.status == 5 ? "Finished by" : "quests.inProgressBy".tr(),
+            store.quest.value!.status == 5
+                ? "Finished by"
+                : "quests.inProgressBy".tr(),
             style: TextStyle(
               color: const Color(0xFF7C838D),
               fontSize: 12,
@@ -372,13 +399,17 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
                         if (states.contains(MaterialState.pressed))
-                          return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                          return Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.5);
                         return const Color(0xFF0083C7);
                       },
                     ),
                   ),
                 )
-              : (store.respondedList.isNotEmpty && (store.quest.value!.status == 1))
+              : (store.respondedList.isNotEmpty &&
+                      (store.quest.value!.status == 1))
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -392,7 +423,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           ),
                         ),
                         if (store.respondedList.isNotEmpty)
-                          for (final respond in store.respondedList) selectableMember(respond),
+                          for (final respond in store.respondedList)
+                            selectableMember(respond),
                         const SizedBox(height: 15),
                         TextButton(
                           onPressed: store.selectedResponders == null
@@ -401,38 +433,53 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                   await sendTransaction(
                                     onPress: () async {
                                       store.startQuest(
-                                        userId: store.selectedResponders!.workerId,
+                                        userId:
+                                            store.selectedResponders!.workerId,
                                         questId: store.quest.value!.id,
                                       );
                                       Navigator.pop(context);
                                     },
                                     nextStep: () async {
-                                      store.quest.value!.assignedWorker = AssignedWorker(
-                                        firstName: store.selectedResponders!.worker.firstName,
-                                        lastName: store.selectedResponders!.worker.lastName,
-                                        avatar: store.selectedResponders!.worker.avatar,
+                                      store.quest.value!.assignedWorker =
+                                          AssignedWorker(
+                                        firstName: store.selectedResponders!
+                                            .worker.firstName,
+                                        lastName: store.selectedResponders!
+                                            .worker.lastName,
+                                        avatar: store
+                                            .selectedResponders!.worker.avatar,
                                         id: store.selectedResponders!.id,
                                       );
                                       store.setQuestStatus(2);
-                                      questStore.deleteQuest(store.quest.value!.id);
-                                      questStore.addQuest(store.quest.value!, false);
+                                      questStore
+                                          .deleteQuest(store.quest.value!.id);
+                                      questStore.addQuest(
+                                          store.quest.value!, false);
                                       Navigator.pop(context);
-                                      await AlertDialogUtils.showSuccessDialog(context);
+                                      await AlertDialogUtils.showSuccessDialog(
+                                          context);
                                     },
                                   );
                                 },
                           child: Text(
                             "quests.chooseWorker".tr(),
                             style: TextStyle(
-                              color: store.selectedResponders == null ? Colors.grey : Colors.white,
+                              color: store.selectedResponders == null
+                                  ? Colors.grey
+                                  : Colors.white,
                             ),
                           ),
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
                               (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.disabled)) return const Color(0xFFF7F8FA);
+                                if (states.contains(MaterialState.disabled))
+                                  return const Color(0xFFF7F8FA);
                                 if (states.contains(MaterialState.pressed))
-                                  return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                                  return Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.5);
                                 return const Color(0xFF0083C7);
                               },
                             ),
@@ -525,7 +572,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
@@ -548,10 +598,12 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     try {
       await _checkPossibilityTx();
     } on FormatException catch (e) {
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.message);
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'modals.error'.tr(), content: e.message);
       return;
     } catch (e) {
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.toString());
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'modals.error'.tr(), content: e.toString());
       return;
     }
     await confirmTransaction(
@@ -603,7 +655,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   value: respond,
                   groupValue: store.selectedResponders,
-                  onChanged: (RespondModel? user) => store.selectedResponders = user,
+                  onChanged: (RespondModel? user) =>
+                      store.selectedResponders = user,
                 ),
               ),
             ],
@@ -651,8 +704,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               Radius.circular(25),
             ),
             child: Image.network(
-              respond.worker.avatar?.url ??
-                  "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+              respond.worker.avatar?.url ?? Constants.defaultImageNetwork,
               fit: BoxFit.cover,
               height: 50,
               width: 50,
