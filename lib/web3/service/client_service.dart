@@ -281,18 +281,19 @@ extension CreateContract on ClientService {
     required String deadline,
     required String nonce,
   }) async {
-    print("Create contract");
     final credentials = await getCredentials(AccountRepository().privateKey);
     final contract = await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
     final ethFunction = contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
+    final _cost = double.parse(cost) + double.parse(cost) * 0.01;
+    final _gas = await getGas();
     await handleContract(
       contract: contract,
       function: ethFunction,
       params: [
         stringToBytes32(jobHash),
         //TODO Find out why a transaction with a commission does not pass
-        BigInt.from(double.parse(cost)),
+        BigInt.from((double.parse(cost) - 0.1) * pow(10, 18)),
         BigInt.parse(deadline),
         BigInt.parse(nonce),
       ],
