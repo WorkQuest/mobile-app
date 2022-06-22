@@ -350,7 +350,6 @@ extension ApproveCoin on ClientService {
   Future<bool> approveCoin({
     required String cost,
   }) async {
-    print("Approve coin");
     final credentials = await getCredentials(AccountRepository().privateKey);
     final contract = await getDeployedContract("WQBridgeToken", abiBridgeAddress);
     final ethFunction = contract.function(WQBridgeTokenFunctions.approve.name);

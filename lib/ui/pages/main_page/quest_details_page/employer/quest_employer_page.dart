@@ -80,7 +80,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       if (store.quest.value!.userId == profile!.userData!.id &&
           (store.quest.value!.status == 1 ||
               store.quest.value!.status == 2 ||
-              store.quest.value!.status == 3 ||
               store.quest.value!.status == 4))
         PopupMenuButton<String>(
           elevation: 10,
@@ -148,9 +147,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   break;
                 default:
               }
-            if ((store.quest.value!.status == 3 ||
-                    store.quest.value!.status == 4) &&
-                value == "chat.report") {
+            if (store.quest.value!.status == 4 && value == "chat.report") {
               await Navigator.pushNamed(
                 context,
                 OpenDisputePage.routeName,
@@ -174,9 +171,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               if (store.quest.value!.status == 1 ||
                   store.quest.value!.status == 2)
                 'settings.delete',
-              if (store.quest.value!.status == 3 ||
-                  store.quest.value!.status == 4)
-                "chat.report",
+              if (store.quest.value!.status == 4) "chat.report",
             }.map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,

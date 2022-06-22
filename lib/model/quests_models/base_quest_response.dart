@@ -172,7 +172,7 @@ class BaseQuestResponse with ClusterItem {
         "payPeriod": payPeriod,
         "price": price,
         "createdAt": createdAt!.toIso8601String(),
-        "questChat": questChat,
+        // "questChat": questChat,
       };
 
   @override

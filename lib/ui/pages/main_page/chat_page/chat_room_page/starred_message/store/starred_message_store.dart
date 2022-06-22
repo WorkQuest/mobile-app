@@ -62,7 +62,7 @@ abstract class _StarredMessageStore extends IStore<bool> with Store {
         messages[index].star = null;
       } else {
         await _apiProvider.setMessageStar(
-            chatId: message.chatId, messageId: message.id);
+            chatId: message.chatId!, messageId: message.id);
         messages[index].star = Star();
       }
       this.onSuccess(true);

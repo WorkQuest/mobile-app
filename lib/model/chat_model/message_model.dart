@@ -21,17 +21,17 @@ class MessageModel {
   });
 
   String id;
-  int number;
-  String chatId;
-  String senderMemberId;
-  String senderStatus;
-  String type;
+  int? number;
+  String? chatId;
+  String? senderMemberId;
+  String? senderStatus;
+  String? type;
   String? text;
-  DateTime createdAt;
-  DateTime updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
   Star? star;
   Member? sender;
-  List<Media> medias;
+  List<Media>? medias;
   InfoMessage? infoMessage;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) => MessageModel(
@@ -64,11 +64,11 @@ class MessageModel {
         "senderStatus": senderStatus,
         "type": type,
         "text": text == null ? null : text,
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
+        "createdAt": createdAt!.toIso8601String(),
+        "updatedAt": updatedAt!.toIso8601String(),
         "star": star,
         "sender": sender!.toJson(),
-        "medias": List<dynamic>.from(medias.map((x) => x)),
+        "medias": List<dynamic>.from(medias!.map((x) => x)),
         "infoMessage": infoMessage == null ? null : infoMessage,
       };
 }

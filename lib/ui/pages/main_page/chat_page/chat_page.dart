@@ -515,8 +515,9 @@ class _ChatListTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final differenceTime =
-        DateTime.now().difference(chat.chatData.lastMessage!.createdAt).inDays;
+    final differenceTime = DateTime.now()
+        .difference(chat.chatData.lastMessage!.createdAt ?? DateTime.now())
+        .inDays;
     Member? member;
     chat.members?.forEach((element) {
       if (element.type != "Admin" || chat.type != TypeChat.active)
@@ -639,10 +640,10 @@ class _ChatListTileWidget extends StatelessWidget {
                         ),
                       if (chat.star != null)
                         Container(
-                          margin:
-                              chat.chatData.lastMessage?.senderStatus == "Unread"
-                                  ? const EdgeInsets.only(top: 3, right: 16)
-                                  : const EdgeInsets.only(top: 23, right: 16),
+                          margin: chat.chatData.lastMessage?.senderStatus ==
+                                  "Unread"
+                              ? const EdgeInsets.only(top: 3, right: 16)
+                              : const EdgeInsets.only(top: 23, right: 16),
                           child: Icon(
                             Icons.star,
                             color: Color(0xFFE8D20D),

@@ -64,18 +64,24 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       final store = context.read<CreateQuestStore>();
       store.setConfirmUnderstandAboutEdit(true);
       print("questInfo!.priority: ${widget.questInfo!.priority - 1}");
-      store.priority = QuestConstants.priorityList[widget.questInfo!.priority - 1];
+      store.priority =
+          QuestConstants.priorityList[widget.questInfo!.priority - 1];
       store.contractAddress = widget.questInfo!.contractAddress ?? '';
       store.questTitle = widget.questInfo!.title;
-      store.changedDistantWork(QuestUtils.getEmployment(widget.questInfo!.workplace));
-      store.changedEmployment(QuestUtils.getEmployment(widget.questInfo!.employment));
+      store.changedDistantWork(
+          QuestUtils.getEmployment(widget.questInfo!.workplace));
+      store.changedEmployment(
+          QuestUtils.getEmployment(widget.questInfo!.employment));
       // store.getWorkplace(widget.questInfo!.workplace);
       // store.getEmployment(widget.questInfo!.employment);
       store.description = widget.questInfo!.description;
-      store.price = (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18)).toString();
+      store.price =
+          (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18))
+              .toString();
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
       store.setImages(widget.questInfo!.medias ?? []);
-      _controller = SkillSpecializationController(initialValue: widget.questInfo!.questSpecializations);
+      _controller = SkillSpecializationController(
+          initialValue: widget.questInfo!.questSpecializations);
     } else
       _controller = SkillSpecializationController();
   }
@@ -95,7 +101,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
             slivers: [
               CupertinoSliverNavigationBar(
                 largeTitle: Text(
-                  isEdit ? "registration.edit".tr() : "quests.createAQuest".tr(),
+                  isEdit
+                      ? "registration.edit".tr()
+                      : "quests.createAQuest".tr(),
                 ),
               ),
               SliverPadding(
@@ -136,7 +144,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedPriority(value!);
                                       },
-                                      items: QuestConstants.priorityList.map<DropdownMenuItem<String>>(
+                                      items: QuestConstants.priorityList
+                                          .map<DropdownMenuItem<String>>(
                                         (String value) {
                                           return DropdownMenuItem<String>(
                                             value: value.tr(),
@@ -247,7 +256,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedEmployment(value!);
                                       },
-                                      items: QuestConstants.employmentList.map<DropdownMenuItem<String>>((String value) {
+                                      items: QuestConstants.employmentList
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: new Text(value),
@@ -299,7 +310,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedDistantWork(value!);
                                       },
-                                      items: QuestConstants.distantWorkList.map<DropdownMenuItem<String>>((String value) {
+                                      items: QuestConstants.distantWorkList
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: new Text(value),
@@ -341,7 +354,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                     value: store.payPeriod,
                                     children: QuestConstants.payPeriodList,
                                     onPressed: (value) {
-                                      store.changedPayPeriod(value);
+                                      store.changedPayPeriod(value.tr());
                                     },
                                   )
                                 : DropdownButtonHideUnderline(
@@ -349,9 +362,10 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       isExpanded: true,
                                       value: store.payPeriod,
                                       onChanged: (String? value) {
-                                        store.changedPayPeriod(value!);
+                                        store.changedPayPeriod(value!.tr());
                                       },
-                                      items: QuestConstants.payPeriodList.map<DropdownMenuItem<String>>(
+                                      items: QuestConstants.payPeriodList
+                                          .map<DropdownMenuItem<String>>(
                                         (String value) {
                                           return DropdownMenuItem<String>(
                                             value: value.tr(),
@@ -429,8 +443,10 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   key: confirmUnderstandAboutEdit,
                                   contentPadding: const EdgeInsets.all(0),
                                   value: store.confirmUnderstandAboutEdit,
-                                  onChanged: (value) => store.setConfirmUnderstandAboutEdit(value!),
-                                  controlAffinity: ListTileControlAffinity.leading,
+                                  onChanged: (value) => store
+                                      .setConfirmUnderstandAboutEdit(value!),
+                                  controlAffinity:
+                                      ListTileControlAffinity.leading,
                                   title: Text(
                                     'I understand that editing the title and the description of this quest will be '
                                     'impossible after its creation',
@@ -502,7 +518,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               true,
                             );
                             if (isEdit) {
-                              final updatedQuest = await store.getQuest(widget.questInfo!.id);
+                              final updatedQuest =
+                                  await store.getQuest(widget.questInfo!.id);
                               Navigator.pushReplacementNamed(
                                 context,
                                 QuestDetails.routeName,
@@ -522,10 +539,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               onTap: store.isLoading
                                   ? null
                                   : () async {
-                                      store.skillFilters = _controller!.getSkillAndSpecialization();
+                                      store.skillFilters = _controller!
+                                          .getSkillAndSpecialization();
                                       if (isEdit) {
                                         if (store.canSubmitEditQuest) {
-                                          if (_formKey.currentState?.validate() ?? false) {
+                                          if (_formKey.currentState
+                                                  ?.validate() ??
+                                              false) {
                                             await store.createQuest(
                                               isEdit: true,
                                               questId: widget.questInfo!.id,
@@ -533,22 +553,30 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                           }
                                         }
                                       } else if (store.canCreateQuest) {
-                                        if (_formKey.currentState?.validate() ?? false) {
-                                          if (!store.confirmUnderstandAboutEdit) {
+                                        if (_formKey.currentState?.validate() ??
+                                            false) {
+                                          if (!store
+                                              .confirmUnderstandAboutEdit) {
                                             Scrollable.ensureVisible(
-                                              confirmUnderstandAboutEdit.currentContext!,
+                                              confirmUnderstandAboutEdit
+                                                  .currentContext!,
                                             );
                                             return;
                                           }
                                           try {
-                                            await _checkPossibilityTx(store.price);
+                                            await _checkPossibilityTx(
+                                                store.price);
                                           } on FormatException catch (e) {
-                                            AlertDialogUtils.showInfoAlertDialog(context,
-                                                title: 'modals.error'.tr(), content: e.message);
+                                            AlertDialogUtils
+                                                .showInfoAlertDialog(context,
+                                                    title: 'modals.error'.tr(),
+                                                    content: e.message);
                                             return;
                                           } catch (e) {
-                                            AlertDialogUtils.showInfoAlertDialog(context,
-                                                title: 'modals.error'.tr(), content: e.toString());
+                                            AlertDialogUtils
+                                                .showInfoAlertDialog(context,
+                                                    title: 'modals.error'.tr(),
+                                                    content: e.toString());
                                             return;
                                           }
                                           confirmTransaction(
@@ -562,7 +590,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                               Navigator.pop(context);
                                               if (store.isSuccess) {
                                                 Navigator.pop(context);
-                                                AlertDialogUtils.showSuccessDialog(context);
+                                                AlertDialogUtils
+                                                    .showSuccessDialog(context);
                                               }
                                             },
                                           );
@@ -591,7 +620,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                           priceKey.currentContext!,
                                         );
                                     },
-                              title: isEdit ? "Edit Quest" : 'quests.createAQuest'.tr(),
+                              title: isEdit
+                                  ? "Edit Quest"
+                                  : 'quests.createAQuest'.tr(),
                             ),
                           ),
                         ),
@@ -613,7 +644,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       await transferStore.getFee();
     }
     await Web3Utils.checkPossibilityTx(TYPE_COINS.WUSD, double.parse(price));
-    if (transferStore.addressTo.toLowerCase() == AccountRepository().userAddress.toLowerCase()) {
+    if (transferStore.addressTo.toLowerCase() ==
+        AccountRepository().userAddress.toLowerCase()) {
       throw FormatException('errors.provideYourAddress'.tr());
     }
     if (double.parse(transferStore.amount) == 0.0) {
@@ -633,9 +665,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
             alignment: Alignment.centerLeft,
             child: Text(
               title,
-              style: TextStyle(
-                fontSize: 16,
-              ),
+              style: TextStyle(fontSize: 16),
             ),
           ),
           child,
@@ -651,7 +681,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       child: Row(
         children: [
           Text(
-            value,
+            value.tr(),
             style: TextStyle(color: Colors.black87),
           ),
           Spacer(),
@@ -691,7 +721,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       onSelectedItemChanged: (int index) {
                         changedEmployment = children[index];
                       },
-                      children: children.map((e) => Center(child: Text(e))).toList(),
+                      children: children
+                          .map((e) => Center(child: Text(e.tr())))
+                          .toList(),
                     ),
                   ),
                   CupertinoButton(

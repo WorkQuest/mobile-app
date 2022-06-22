@@ -92,10 +92,10 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
                 ),
               ),
               const SizedBox(height: 5),
-              if (widget.message.medias.isNotEmpty)
+              if (widget.message.medias!.isNotEmpty)
                 Center(
                   child: ImageViewerWidget(
-                    widget.message.medias,
+                    widget.message.medias!,
                     widget.message.sender!.userId != widget.userId
                         ? Color(0xFFFFFFFF)
                         : Color(0xFF1D2127),
@@ -105,8 +105,8 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
               Row(
                 children: [
                   Text(
-                    "${widget.message.createdAt.hour < 10 ? "0${widget.message.createdAt.hour}" : widget.message.createdAt.hour}:" +
-                        "${widget.message.createdAt.minute < 10 ? "0${widget.message.createdAt.minute}" : widget.message.createdAt.minute}",
+                    "${widget.message.createdAt!.hour < 10 ? "0${widget.message.createdAt!.hour}" : widget.message.createdAt!.hour}:" +
+                        "${widget.message.createdAt!.minute < 10 ? "0${widget.message.createdAt!.minute}" : widget.message.createdAt!.minute}",
                     style: TextStyle(
                       color: widget.message.sender!.userId != widget.userId
                           ? Color(0xFFFFFFFF).withOpacity(0.4)
