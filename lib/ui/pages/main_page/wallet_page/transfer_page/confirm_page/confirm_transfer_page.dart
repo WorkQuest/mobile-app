@@ -1,5 +1,4 @@
 import 'package:app/utils/alert_dialog.dart';
-import 'package:app/web3/contractEnums.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ import 'mobx/confirm_transfer_store.dart';
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 class ConfirmTransferPage extends StatefulWidget {
-  final TYPE_COINS typeCoin;
+  final TokenSymbols typeCoin;
   final String addressTo;
   final String amount;
   final String fee;
@@ -103,7 +102,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
 
 class _InformationWidget extends StatelessWidget {
   final String addressTo;
-  final TYPE_COINS typeCoins;
+  final TokenSymbols typeCoins;
   final String amount;
   final String fee;
 

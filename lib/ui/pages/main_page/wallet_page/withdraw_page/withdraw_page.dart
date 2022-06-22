@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:app/web3/repository/account_repository.dart';
@@ -9,7 +10,6 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../../utils/alert_dialog.dart';
 import '../../../../../utils/web3_utils.dart';
-import '../../../../../web3/contractEnums.dart';
 import '../confirm_transaction_dialog.dart';
 
 final _divider = const SizedBox(
@@ -155,7 +155,7 @@ class _WithdrawPageState extends State<WithdrawPage> with SingleTickerProviderSt
                 onPressed: withdrawStore.canSubmit
                     ? () async {
                         final _amount = withdrawStore.getAmount();
-                        final _gas = await AccountRepository().service!.getGas();
+                        final _gas = await AccountRepository().getClient().getGas();
                         try {
                           await _checkPossibilityTx(_amount);
                         } on FormatException catch (e) {
@@ -189,6 +189,6 @@ class _WithdrawPageState extends State<WithdrawPage> with SingleTickerProviderSt
       );
 
   _checkPossibilityTx(String price) async {
-    await Web3Utils.checkPossibilityTx(TYPE_COINS.WQT, 0.0);
+    await Web3Utils.checkPossibilityTx(TokenSymbols.WQT, 0.0);
   }
 }

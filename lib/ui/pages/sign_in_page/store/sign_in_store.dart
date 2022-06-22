@@ -107,7 +107,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
       if (wallet.address != walletAddress)
         throw FormatException("Incorrect mnemonic");
       final signature =
-          await AccountRepository().service!.getSignature(wallet.privateKey!);
+          await AccountRepository().getClient().getSignature(wallet.privateKey!);
       await _apiProvider.walletLogin(signature, wallet.address!);
       await Storage.write(Storage.wallet, jsonEncode(wallet.toJson()));
       await Storage.write(Storage.activeAddress, wallet.address!);

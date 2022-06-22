@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,7 +10,6 @@ import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../../utils/web3_utils.dart';
-import '../../../../../web3/contractEnums.dart';
 import '../../wallet_page/confirm_transaction_dialog.dart';
 import 'store/open_dispute_store.dart';
 
@@ -252,6 +252,6 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
 
   _checkPossibilityTx() async {
     await store.getFee();
-    await Web3Utils.checkPossibilityTx(TYPE_COINS.WQT, 0.0);
+    await Web3Utils.checkPossibilityTx(TokenSymbols.WQT, 0.0);
   }
 }

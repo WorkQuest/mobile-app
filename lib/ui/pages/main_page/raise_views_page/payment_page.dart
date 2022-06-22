@@ -17,7 +17,7 @@ class _CoinItem {
   String iconPath;
   String title;
   bool isEnable;
-  TYPE_COINS typeCoin;
+  TokenSymbols typeCoin;
 
   _CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);
 }
@@ -36,8 +36,8 @@ final _divider = const SizedBox(
 final String coinsPath = "assets/coins";
 
 List<_CoinItem> _coins = [
-  _CoinItem("$coinsPath/wusd.svg", 'WUSD', TYPE_COINS.WUSD, true),
-  _CoinItem("$coinsPath/wqt.svg", 'WQT', TYPE_COINS.WQT, true),
+  _CoinItem("$coinsPath/wusd.svg", 'WUSD', TokenSymbols.WUSD, true),
+  _CoinItem("$coinsPath/wqt.svg", 'WQT', TokenSymbols.WQT, true),
 ];
 
 List<_WalletItem> _wallets = [
@@ -199,7 +199,7 @@ class _WalletViewTabState extends State<_WalletViewTab> {
     super.initState();
     _currentCoin = _coins[0];
     _currentWallet = _wallets[0];
-    widget.store.setTitleSelectedCoin(TYPE_COINS.WUSD);
+    widget.store.setTitleSelectedCoin(TokenSymbols.WUSD);
     widget.store.setTitleSelectedWallet(TYPE_WALLET.Coinpaymebts);
   }
 

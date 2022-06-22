@@ -73,7 +73,7 @@ abstract class _SignUpStore extends IStore<bool> with Store {
       );
       Storage.writeRefreshToken(bearerToken.refresh);
       Storage.writeAccessToken(bearerToken.access);
-      AccountRepository().setNetwork(ConfigNameNetwork.devnet.name);
+      AccountRepository().setNetwork(ConfigNameNetwork.testnet.name);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

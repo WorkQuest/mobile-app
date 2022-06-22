@@ -1,4 +1,4 @@
-import 'package:app/web3/contractEnums.dart';
+import 'package:app/constants.dart';
 
 class TransactionsResponse {
   TransactionsResponse({
@@ -64,7 +64,7 @@ class Tx {
   DateTime? insertedAt;
   Block? block;
   List<TokenTransfer>? tokenTransfers;
-  TYPE_COINS? coin;
+  TokenSymbols? coin;
   bool show = false;
 
   factory Tx.fromJson(Map<String, dynamic> json) => Tx(

@@ -39,7 +39,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
 
   Future<void> getFee() async {
     try {
-      final gas = await AccountRepository().service!.getGas();
+      final gas = await AccountRepository().getClient().getGas();
       fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -97,7 +97,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       // await _apiProvider.acceptOnQuest(questId: quest.value!.id);
-      await AccountRepository().service!.handleEvent(
+      await AccountRepository().getClient().handleEvent(
         function: WQContractFunctions.acceptJob,
         contractAddress: quest.value!.contractAddress!,
         value: null,
@@ -114,7 +114,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       // await _apiProvider.rejectOnQuest(questId: quest.value!.id);
-      AccountRepository().service!.handleEvent(
+      AccountRepository().getClient().handleEvent(
         function: WQContractFunctions.declineJob,
         contractAddress: quest.value!.contractAddress!,
         value: null,
@@ -131,7 +131,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptInvite(responseId: responseId);
-      await AccountRepository().service!.handleEvent(
+      await AccountRepository().getClient().handleEvent(
         function: WQContractFunctions.acceptJob,
         contractAddress: quest.value!.contractAddress!,
         value: null,
@@ -148,7 +148,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.rejectInvite(responseId: responseId);
-      AccountRepository().service!.handleEvent(
+      AccountRepository().getClient().handleEvent(
         function: WQContractFunctions.declineJob,
         contractAddress: quest.value!.contractAddress!,
         value: null,
@@ -165,7 +165,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       // await _apiProvider.completeWork(questId: quest.value!.id);
-      await AccountRepository().service!.handleEvent(
+      await AccountRepository().getClient().handleEvent(
         function: WQContractFunctions.verificationJob,
         contractAddress: quest.value!.contractAddress!,
         value: null,

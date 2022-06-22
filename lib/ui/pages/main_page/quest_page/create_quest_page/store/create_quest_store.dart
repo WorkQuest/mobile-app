@@ -213,7 +213,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       print('questModel: ${questModel.toJson()}');
       //priority show item
       if (isEdit) {
-        await AccountRepository().service!.handleEvent(
+        await AccountRepository().getClient().handleEvent(
           function: WQContractFunctions.editJob,
           contractAddress: contractAddress,
           params: [
@@ -231,9 +231,9 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           questId: questId,
         );
       } else {
-        final balanceWusd = await AccountRepository().service!
+        final balanceWusd = await AccountRepository().getClient()
             .getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
-        final gas = await AccountRepository().service!.getGas();
+        final gas = await AccountRepository().getClient().getGas();
 
         if (balanceWusd < double.parse(price) + (gas.getInEther).toDouble()) {
           throw Exception('Not enough balance.');
@@ -243,10 +243,10 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           quest: questModel,
         );
 
-        final approveCoin = await AccountRepository().service!.approveCoin(cost: price);
+        final approveCoin = await AccountRepository().getClient().approveCoin(cost: price);
 
         if (approveCoin)
-          await AccountRepository().service!.createNewContract(
+          await AccountRepository().getClient().createNewContract(
             jobHash: description,
             cost: price,
             deadline: 0.toString(),

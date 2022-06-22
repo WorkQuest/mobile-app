@@ -12,13 +12,23 @@ import '../wallet.dart';
 class AccountRepository {
   static final AccountRepository _instance = AccountRepository._internal();
   ValueNotifier<ConfigNameNetwork?> notifier =
-      ValueNotifier<ConfigNameNetwork?>(ConfigNameNetwork.devnet);
+      ValueNotifier<ConfigNameNetwork?>(ConfigNameNetwork.testnet);
 
   factory AccountRepository() => _instance;
 
   AccountRepository._internal();
 
-  ClientService? service;
+  ClientService? workNetClient;
+  ClientService? otherClient;
+
+  ClientService getClient({other = false}) {
+    if (other) {
+      return otherClient!;
+    } else {
+      return workNetClient!;
+    }
+  }
+
   ConfigNameNetwork? configName;
 
   Wallet? userWallet;
@@ -32,8 +42,9 @@ class AccountRepository {
   }
 
   connectClient() {
-    final config = Configs.configsNetwork[configName];
-    service = ClientService(config!);
+    final config = Configs.configsNetwork[configName]!;
+    workNetClient = ClientService(Configs.configsNetwork[ConfigNameNetwork.testnet]!);
+    otherClient = ClientService(config);
   }
 
   clearData() {
@@ -48,7 +59,7 @@ class AccountRepository {
     WebSocket().reconnectWalletSocket();
     connectClient();
     GetIt.I.get<TransactionsStore>().getTransactions();
-    GetIt.I.get<WalletStore>().getCoins();
+    GetIt.I.get<WalletStore>().getCoins(isForce: true);
   }
 
   setNetwork(String name) {
@@ -64,21 +75,32 @@ class AccountRepository {
   }
 
   _disconnectWeb3Client() {
-    if (service?.client != null) {
-      service!.client?.dispose();
-      service = null;
+    if (workNetClient?.client != null) {
+      workNetClient!.client?.dispose();
+      workNetClient = null;
+    }
+    if (otherClient?.client != null)  {
+      otherClient!.client?.dispose();
+      otherClient = null;
+
     }
   }
 
+  bool get isConfigTestnet => configName == ConfigNameNetwork.testnet;
+
   ConfigNetwork getConfigNetwork() =>
-      Configs.configsNetwork[configName ?? ConfigNameNetwork.devnet]!;
+      Configs.configsNetwork[configName ?? ConfigNameNetwork.testnet]!;
 
   ConfigNameNetwork _getNetworkNameKey(String name) {
     switch (name) {
-      case 'devnet':
-        return ConfigNameNetwork.devnet;
       case 'testnet':
         return ConfigNameNetwork.testnet;
+      case 'rinkeby':
+        return ConfigNameNetwork.rinkeby;
+      case 'polygon':
+        return ConfigNameNetwork.polygon;
+      case 'binance':
+        return ConfigNameNetwork.binance;
       default:
         throw Exception('Unknown name network');
     }

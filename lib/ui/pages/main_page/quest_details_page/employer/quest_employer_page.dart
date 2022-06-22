@@ -25,7 +25,6 @@ import 'package:share/share.dart';
 
 import '../../../../../constants.dart';
 import '../../../../../utils/web3_utils.dart';
-import '../../../../../web3/contractEnums.dart';
 import '../../../../widgets/quest_header.dart';
 import '../../raise_views_page/raise_views_page.dart';
 
@@ -574,7 +573,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   _checkPossibilityTx() async {
     await store.getFee();
-    await Web3Utils.checkPossibilityTx(TYPE_COINS.WQT, 0.0);
+    await Web3Utils.checkPossibilityTx(TokenSymbols.WQT, 0.0);
   }
 
   Widget selectableMember(RespondModel respond) {

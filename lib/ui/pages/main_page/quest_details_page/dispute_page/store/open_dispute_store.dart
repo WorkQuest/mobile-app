@@ -93,7 +93,7 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
 
   Future<void> getFee() async {
     try {
-      final gas = await AccountRepository().service!.getGas();
+      final gas = await AccountRepository().getClient().getGas();
       fee = (1 + (gas.getInWei.toInt() / pow(10, 18))).toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -109,7 +109,7 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
         problemDescription: description,
       );
       if (result) {
-        await AccountRepository().service!.handleEvent(
+        await AccountRepository().getClient().handleEvent(
           function: WQContractFunctions.arbitration,
           contractAddress: contractAddress,
           value: "1",

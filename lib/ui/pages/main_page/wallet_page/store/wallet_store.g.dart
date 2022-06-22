@@ -12,13 +12,13 @@ mixin _$WalletStore on _WalletStore, Store {
   final _$typeAtom = Atom(name: '_WalletStore.type');
 
   @override
-  TYPE_COINS get type {
+  TokenSymbols get type {
     _$typeAtom.reportRead();
     return super.type;
   }
 
   @override
-  set type(TYPE_COINS value) {
+  set type(TokenSymbols value) {
     _$typeAtom.reportWrite(value, super.type, () {
       super.type = value;
     });
@@ -79,7 +79,7 @@ mixin _$WalletStore on _WalletStore, Store {
   final _$_WalletStoreActionController = ActionController(name: '_WalletStore');
 
   @override
-  dynamic setType(TYPE_COINS value) {
+  dynamic setType(TokenSymbols value) {
     final _$actionInfo = _$_WalletStoreActionController.startAction(
         name: '_WalletStore.setType');
     try {

@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:app/base_store/i_store.dart';
+import 'package:app/constants.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -16,7 +16,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   double? maxAmount;
 
   @observable
-  TYPE_COINS? typeCoin;
+  TokenSymbols? typeCoin;
 
   @observable
   String addressTo = '';
@@ -37,13 +37,16 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   setAmount(String value) => amount = value;
 
   @action
-  setTitleSelectedCoin(TYPE_COINS? value) async {
+  setTitleSelectedCoin(TokenSymbols? value) async {
     maxAmount = null;
     typeCoin = value;
-    if (typeCoin == TYPE_COINS.WQT) {
-      final _balance = await AccountRepository().service!.getBalance(AccountRepository().privateKey);
+    final _client = AccountRepository().getClient(other: true);
+    final _dataCoins = AccountRepository().getConfigNetwork().dataCoins;
+    final _isHaveAddressCoin = _dataCoins.firstWhere((element) => element.symbolToken == typeCoin).addressToken == null;
+    if (_isHaveAddressCoin) {
+      final _balance = await _client.getBalance(AccountRepository().privateKey);
       final _balanceInWei = _balance.getInWei;
-      final _gasInWei = await AccountRepository().service!.getGas();
+      final _gasInWei = await _client.getGas();
       maxAmount = ((_balanceInWei - _gasInWei.getInWei).toDouble() * pow(10, -18)).toDouble();
     } else {
       final _balance = await _getBalanceToken(Web3Utils.getAddressToken(typeCoin!));
@@ -54,11 +57,15 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   @action
   getMaxAmount() async {
     this.onLoading();
+    final _client = AccountRepository().getClient(other: true);
     try {
-      if (typeCoin == TYPE_COINS.WQT) {
-        final _balance = await AccountRepository().service!.getBalance(AccountRepository().privateKey);
+      final _dataCoins = AccountRepository().getConfigNetwork().dataCoins;
+      final _isHaveAddressCoin =
+          _dataCoins.firstWhere((element) => element.symbolToken == typeCoin).addressToken == null;
+      if (_isHaveAddressCoin) {
+        final _balance = await _client.getBalance(AccountRepository().privateKey);
         final _balanceInWei = _balance.getInWei;
-        final _gasInWei = await AccountRepository().service!.getGas();
+        final _gasInWei = await _client.getGas();
         amount = ((_balanceInWei - _gasInWei.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(18);
       } else {
         final _balance = await _getBalanceToken(Web3Utils.getAddressToken(typeCoin!));
@@ -79,7 +86,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   @action
   getFee() async {
     try {
-      final gas = await AccountRepository().service!.getGas();
+      final gas = await AccountRepository().getClient(other: true).getGas();
       fee = (gas.getInWei.toDouble() * pow(10, -18)).toStringAsFixed(18);
       print('fee: $fee');
     } on SocketException catch (_) {
@@ -90,8 +97,10 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   }
 
   Future<double> _getBalanceToken(String addressToken) async {
-    final _balance = await AccountRepository().service!.getBalanceFromContract(addressToken);
+    final _balance = await AccountRepository().getClient(other: true).getBalanceFromContract(
+          addressToken,
+          isUSDT: typeCoin == TokenSymbols.USDT,
+        );
     return _balance;
   }
-
 }

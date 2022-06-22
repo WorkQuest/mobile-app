@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
@@ -16,11 +16,11 @@ class ConfirmTransferStore = ConfirmTransferStoreBase with _$ConfirmTransferStor
 
 abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
   @action
-  sendTransaction(String addressTo, String amount, TYPE_COINS typeCoin) async {
+  sendTransaction(String addressTo, String amount, TokenSymbols typeCoin) async {
     onLoading();
     try {
       await Web3Utils.checkPossibilityTx(typeCoin, double.parse(amount));
-      await AccountRepository().service!.sendTransaction(
+      await AccountRepository().getClient(other: true).sendTransaction(
             privateKey: AccountRepository().privateKey,
             address: addressTo,
             amount: amount,

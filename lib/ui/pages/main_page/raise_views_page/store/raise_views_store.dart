@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
@@ -20,7 +21,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   _RaiseViewStore(this.apiProvider);
 
   @observable
-  TYPE_COINS? typeCoin;
+  TokenSymbols? typeCoin;
 
   @observable
   TYPE_WALLET? typeWallet;
@@ -44,7 +45,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   setQuestId(String value) => questId = value;
 
   @action
-  setTitleSelectedCoin(TYPE_COINS? value) => typeCoin = value;
+  setTitleSelectedCoin(TokenSymbols? value) => typeCoin = value;
 
   @action
   setTitleSelectedWallet(TYPE_WALLET? value) => typeWallet = value;
@@ -100,7 +101,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onLoading();
       final _period = getPeriod();
       print('levelGroupValue: $levelGroupValue | period: ${getPeriod()}');
-      await AccountRepository().service!.promoteUser(
+      await AccountRepository().getClient().promoteUser(
         tariff: levelGroupValue - 1,
         period: _period,
         amount: _getAmount(
@@ -124,7 +125,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onLoading();
       final _quest = await apiProvider.getQuest(id: questId);
       final _period = getPeriod(isQuest: true);
-      await AccountRepository().service!.promoteQuest(
+      await AccountRepository().getClient().promoteQuest(
         tariff: levelGroupValue - 1,
         period: _period,
         amount: _getAmount(

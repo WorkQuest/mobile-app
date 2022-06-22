@@ -93,7 +93,7 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
 
   Future<void> getFee() async {
     try {
-      final gas = await AccountRepository().service!.getGas();
+      final gas = await AccountRepository().getClient().getGas();
       fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -114,7 +114,7 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
         userId: userId,
         message: "quests.inviteToQuest".tr(),
       );
-      await AccountRepository().service!.handleEvent(
+      await AccountRepository().getClient().handleEvent(
         function: WQContractFunctions.assignJob,
         contractAddress: quest.contractAddress!,
         params: [
