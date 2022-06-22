@@ -37,16 +37,8 @@ abstract class ClientServiceI {
 }
 
 class ClientService implements ClientServiceI {
-  // static final apiUrl = "https://dev-node-ams3.workquest.co/";
 
-  // static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
   final int _chainId = 1991;
-  final abiFactoryAddress = '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4';
-
-  ///ADDRESS WUSD_TOKEN
-  final abiBridgeAddress = "0xF95eF11d0af1f40995218Bb2B67Ef909bcf30078";
-  final abiPromotionAddress = "0xB778e471833102dBe266DE2747D72b91489568c2";
-  String addressNewContract = "";
 
   Web3Client? client;
 
@@ -65,17 +57,9 @@ class ClientService implements ClientServiceI {
     }
   }
 
-  // ClientService() {
-  //   client = Web3Client(
-  //     apiUrl,
-  //     Client(),
-  //   );
-  // }
-
   @override
   Future<EthPrivateKey> getCredentials(String privateKey) async {
     return EthPrivateKey.fromHex(privateKey);
-    //return await client!.credentialsFromPrivateKey(privateKey);
   }
 
   @override
@@ -267,7 +251,7 @@ extension CreateContract on ClientService {
   }) async {
     print('createNewContract');
     final credentials = await getCredentials(AccountRepository().privateKey);
-    final contract = await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
+    final contract = await getDeployedContract("WorkQuestFactory", Constants.worknetWQFactory);
     final ethFunction = contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
     await handleContract(
@@ -334,7 +318,10 @@ extension ApproveCoin on ClientService {
   }) async {
     print("Approve coin");
     final credentials = await getCredentials(AccountRepository().privateKey);
-    final contract = await getDeployedContract("WQBridgeToken", abiBridgeAddress);
+    final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
+        .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+        .addressToken;
+    final contract = await getDeployedContract("WQBridgeToken", _addressWUSD!);
     final ethFunction = contract.function(WQBridgeTokenFunctions.approve.name);
     final fromAddress = await credentials.extractAddress();
     print('fromAddress: $fromAddress');
@@ -344,7 +331,7 @@ extension ApproveCoin on ClientService {
       function: ethFunction,
       from: fromAddress,
       params: [
-        EthereumAddress.fromHex(abiFactoryAddress),
+        EthereumAddress.fromHex(Constants.worknetWQFactory),
         price,
       ],
     );
@@ -375,34 +362,13 @@ extension CheckFunction on ClientService {
 extension CheckAddres on ClientService {
   Future<List<dynamic>> checkAdders(String address) async {
     try {
-      final contract = await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
+      final contract = await getDeployedContract("WorkQuestFactory", Constants.worknetWQFactory);
       final ethFunction = contract.function(WQFContractFunctions.getWorkQuests.name);
       final outputs = await client!.call(
         contract: contract,
         function: ethFunction,
         params: [EthereumAddress.fromHex(address)],
       );
-      return outputs;
-    } catch (e, tr) {
-      print("Error: $e \n Trace: $tr");
-      throw Exception("Error handling event");
-    }
-  }
-}
-
-extension CheckStatus on ClientService {
-  Future<List<dynamic>> checkStatus() async {
-    try {
-      final contract = await getDeployedContract("WorkQuest", addressNewContract);
-      final ethFunction = contract.function(WQContractFunctions.status.name);
-      final outputs = await client!.call(
-        contract: contract,
-        function: ethFunction,
-        params: [],
-      );
-
-      print("Contract status: ${outputs.first}");
-
       return outputs;
     } catch (e, tr) {
       print("Error: $e \n Trace: $tr");
@@ -422,7 +388,7 @@ extension Promote on ClientService {
     print('period: $period');
     print('amount: $amount');
     print('questAddress: $questAddress');
-    final contract = await getDeployedContract("WQPromotion", abiPromotionAddress);
+    final contract = await getDeployedContract("WQPromotion", Constants.worknetPromotion);
     final function = contract.function(WQPromotionFunctions.promoteQuest.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
@@ -474,7 +440,7 @@ extension Promote on ClientService {
     print('tariff: $tariff');
     print('period: $period');
     print('amount: $amount');
-    final contract = await getDeployedContract("WQPromotion", abiPromotionAddress);
+    final contract = await getDeployedContract("WQPromotion", Constants.worknetPromotion);
     final function = contract.function(WQPromotionFunctions.promoteUser.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
