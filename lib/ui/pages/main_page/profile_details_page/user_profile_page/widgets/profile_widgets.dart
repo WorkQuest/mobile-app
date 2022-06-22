@@ -159,8 +159,7 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                   onTap: () async {
                     if (profile.assignedWorker != null) {
                       portfolioStore.clearData();
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
                         UserProfile.routeName,
                         arguments: ProfileArguments(
                           role: widget.role,
@@ -178,12 +177,10 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                         userProfileStore.getQuests(
                           userId: widget.myId,
                           newList: true,
-                          isProfileYours:
-                              widget.id == widget.myId ? true : false,
+                          isProfileYours: widget.id == widget.myId ? true : false,
                         );
                       }
-                      portfolioStore.getReviews(
-                          userId: widget.myId, newList: true);
+                      portfolioStore.getReviews(userId: widget.myId, newList: true);
                     }
                     profile.assignedWorker = null;
                   },
@@ -385,8 +382,7 @@ Widget employerRating({
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (userId != profile.userData!.id &&
-                        completedQuests != "0") {
+                    if (userId != profile.userData!.id && completedQuests != "0") {
                       // profile.offset = 0;
                       // profile.setUserId(userId);
                       // await profile.getCompletedQuests();
@@ -403,8 +399,7 @@ Widget employerRating({
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: userId != profile.userData!.id &&
-                              completedQuests != "0"
+                      color: userId != profile.userData!.id && completedQuests != "0"
                           ? Color(0xFF00AA5B)
                           : Color(0xFFF7F8FA),
                       fontSize: 12.0,
@@ -452,11 +447,7 @@ Widget employerRating({
                   ],
                 ),
                 Text(
-                  "settings.education.from".tr() +
-                      " " +
-                      reviews +
-                      " " +
-                      "workers.reviews".tr(),
+                  "settings.education.from".tr() + " " + reviews + " " + "workers.reviews".tr(),
                   style: TextStyle(
                     color: Color(0xFFD8DFE3),
                     fontSize: 12.0,
@@ -509,10 +500,7 @@ Widget workerQuestStats({
             ),
             GestureDetector(
               onTap: () async {
-                if (userId != null &&
-                    context != null &&
-                    userId != profile?.userData?.id &&
-                    thirdLine != "0") {
+                if (userId != null && context != null && userId != profile?.userData?.id && thirdLine != "0") {
                   await Navigator.pushNamed(
                     context,
                     ProfileQuestsPage.routeName,
@@ -523,9 +511,7 @@ Widget workerQuestStats({
               child: Text(
                 thirdLine.tr(),
                 style: TextStyle(
-                  decoration: title == "quests.activeQuests"
-                      ? TextDecoration.underline
-                      : null,
+                  decoration: title == "quests.activeQuests" ? TextDecoration.underline : null,
                   color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
                 ),
@@ -609,11 +595,7 @@ Widget workerRating({
                 ],
               ),
               Text(
-                "settings.education.from".tr() +
-                    " " +
-                    reviews +
-                    " " +
-                    "workers.reviews".tr(),
+                "settings.education.from".tr() + " " + reviews + " " + "workers.reviews".tr(),
                 style: TextStyle(
                   color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
@@ -1019,8 +1001,7 @@ class SkillsWidget extends StatefulWidget {
   _SkillsWidgetState createState() => _SkillsWidgetState();
 }
 
-class _SkillsWidgetState extends State<SkillsWidget>
-    with TickerProviderStateMixin<SkillsWidget> {
+class _SkillsWidgetState extends State<SkillsWidget> with TickerProviderStateMixin<SkillsWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -1031,9 +1012,7 @@ class _SkillsWidgetState extends State<SkillsWidget>
           alignment: Alignment.topCenter,
           child: skills(
             isProfileMy: widget.isProfileMy,
-            skills: widget.isExpanded
-                ? widget.skills
-                : widget.skills!.sublist(0, 5),
+            skills: widget.isExpanded ? widget.skills : widget.skills!.sublist(0, 5),
             context: context,
           ),
         ),
@@ -1137,6 +1116,8 @@ Widget experience({
   String? from,
   String? to,
 }) {
+  from = from!.replaceAll('-', '.');
+  to = to!.replaceAll('-', '.');
   return Wrap(
     children: [
       Text(place!),
@@ -1144,7 +1125,7 @@ Widget experience({
         width: 10,
       ),
       Text(
-        "${from!} - ${to!}",
+        "$from - $to",
         softWrap: true,
       ),
     ],

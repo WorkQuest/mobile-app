@@ -4,6 +4,7 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/store/change_profile_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/knowledge_work_selection/knowledge_work_selection.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -107,12 +108,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
               oldPhone!.fullPhone.isNotEmpty &&
               !pageStore.numberChanged(oldPhone!.fullPhone)) {
             await AlertDialogUtils.showSuccessDialog(context);
-            await profile!.getProfileMe();
             Navigator.pop(context, true);
           } else {
             await AlertDialogUtils.showSuccessDialog(context,
                 text: 'Enter code from SMS in SMS Verification');
-            await profile!.getProfileMe();
             await Navigator.of(context, rootNavigator: true).pushReplacementNamed(
               SMSVerificationPage.routeName,
             );
@@ -134,167 +133,169 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Form(
         key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _ImageProfile(
-                file: pageStore.media,
-                hasMedia: pageStore.media == null,
-                url: profile!.userData!.avatar?.url,
-                onPressed: () async {
-                  final result = await FilePicker.platform.pickFiles(
-                    type: FileType.image,
-                  );
-                  if (result != null) {
-                    List<File> files =
-                        result.paths.map((path) => File(path!)).toList();
-                    pageStore.media = files.first;
-                  }
-                },
-              ),
-              _InputWidget(
-                title: "labels.firstName".tr(),
-                initialValue: pageStore.userData.firstName,
-                onChanged: (text) {
-                  ProfileMeResponse data = pageStore.userData;
-                  data.firstName = text;
-                  pageStore.setUserData(data);
-                },
-                validator: Validators.firstNameValidator,
-                maxLength: 15,
-              ),
-              _InputWidget(
-                title: "labels.lastName".tr(),
-                initialValue: pageStore.userData.lastName,
-                onChanged: (text) {
-                  ProfileMeResponse data = pageStore.userData;
-                  data.lastName = text;
-                  pageStore.setUserData(data);
-                },
-                validator: Validators.lastNameValidator,
-                maxLength: 15,
-              ),
-              Observer(
-                builder: (_) => _AddressProfileWidget(
-                  address: pageStore.address.isEmpty
-                      ? profile!.userData!.additionalInfo?.address.toString() ??
-                          pageStore.address
-                      : pageStore.address,
-                  onTap: () {
-                    pageStore.getPrediction(context);
+        child: DismissKeyboard(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _ImageProfile(
+                  file: pageStore.media,
+                  hasMedia: pageStore.media == null,
+                  url: profile!.userData!.avatar?.url,
+                  onPressed: () async {
+                    final result = await FilePicker.platform.pickFiles(
+                      type: FileType.image,
+                    );
+                    if (result != null) {
+                      List<File> files =
+                          result.paths.map((path) => File(path!)).toList();
+                      pageStore.media = files.first;
+                    }
                   },
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              _PhoneNumberWidget(
-                title: "modals.phoneNumber",
-                initialValue: phone,
-                onChanged: (PhoneNumber phone) {
-                  pageStore.setPhoneNumber(phone);
-                },
-              ),
-              if (profile!.userData!.role == UserRole.Employer)
+                _InputWidget(
+                  title: "labels.firstName".tr(),
+                  initialValue: pageStore.userData.firstName,
+                  onChanged: (text) {
+                    ProfileMeResponse data = pageStore.userData;
+                    data.firstName = text;
+                    pageStore.setUserData(data);
+                  },
+                  validator: Validators.firstNameValidator,
+                  maxLength: 15,
+                ),
+                _InputWidget(
+                  title: "labels.lastName".tr(),
+                  initialValue: pageStore.userData.lastName,
+                  onChanged: (text) {
+                    ProfileMeResponse data = pageStore.userData;
+                    data.lastName = text;
+                    pageStore.setUserData(data);
+                  },
+                  validator: Validators.lastNameValidator,
+                  maxLength: 15,
+                ),
+                Observer(
+                  builder: (_) => _AddressProfileWidget(
+                    address: pageStore.address.isEmpty
+                        ? profile!.userData!.additionalInfo?.address ??
+                            pageStore.address
+                        : pageStore.address,
+                    onTap: () {
+                      pageStore.getPrediction(context);
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 _PhoneNumberWidget(
-                  title: "modals.secondPhoneNumber",
-                  initialValue: secondPhone,
+                  title: "modals.phoneNumber",
+                  initialValue: phone,
                   onChanged: (PhoneNumber phone) {
-                    pageStore.setSecondPhoneNumber(phone);
+                    pageStore.setPhoneNumber(phone);
                   },
                 ),
-              _InputWidget(
-                title: "signUp.email".tr(),
-                readOnly: true,
-                initialValue: pageStore.userData.email ?? "",
-                onChanged: (text) {
-                  ProfileMeResponse data = pageStore.userData;
-                  data.email = text;
-                  pageStore.setUserData(data);
-                },
-                validator: Validators.emailValidator,
-                maxLength: null,
-              ),
-              if (pageStore.userData.role == UserRole.Employer)
-                _FieldForEmployerWorker(
-                  pageStore: pageStore,
-                  profile: profile!,
+                if (profile!.userData!.role == UserRole.Employer)
+                  _PhoneNumberWidget(
+                    title: "modals.secondPhoneNumber",
+                    initialValue: secondPhone,
+                    onChanged: (PhoneNumber phone) {
+                      pageStore.setSecondPhoneNumber(phone);
+                    },
+                  ),
+                _InputWidget(
+                  title: "signUp.email".tr(),
+                  readOnly: true,
+                  initialValue: pageStore.userData.email ?? "",
+                  onChanged: (text) {
+                    ProfileMeResponse data = pageStore.userData;
+                    data.email = text;
+                    pageStore.setUserData(data);
+                  },
+                  validator: Validators.emailValidator,
+                  maxLength: null,
                 ),
-              _InputWidget(
-                title: "modals.title".tr(),
-                initialValue:
-                    pageStore.userData.additionalInfo!.description ?? "",
-                onChanged: (text) {
-                  ProfileMeResponse data = pageStore.userData;
-                  data.additionalInfo!.description = text;
-                  pageStore.setUserData(data);
-                },
-                maxLines: null,
-                validator: Validators.descriptionValidator,
-                maxLength: null,
-              ),
-              if (pageStore.userData.role == UserRole.Worker)
-                _FieldsForWorkerWidget(
-                  controllerKnowledge: _controllerKnowledge!,
-                  controllerWork: _controllerWork!,
-                  controller: _controller!,
-                  pageStore: pageStore,
-                  profile: profile!,
+                if (pageStore.userData.role == UserRole.Employer)
+                  _FieldForEmployerWorker(
+                    pageStore: pageStore,
+                    profile: profile!,
+                  ),
+                _InputWidget(
+                  title: "modals.title".tr(),
+                  initialValue:
+                      pageStore.userData.additionalInfo!.description ?? "",
+                  onChanged: (text) {
+                    ProfileMeResponse data = pageStore.userData;
+                    data.additionalInfo!.description = text;
+                    pageStore.setUserData(data);
+                  },
+                  maxLines: null,
+                  validator: Validators.descriptionValidator,
+                  maxLength: null,
                 ),
-              _InputWidget(
-                title: "settings.twitterUsername".tr(),
-                initialValue:
-                    pageStore.userData.additionalInfo!.socialNetwork?.twitter ??
-                        "",
-                onChanged: (text) {
-                  ProfileMeResponse data = pageStore.userData;
-                  data.additionalInfo!.socialNetwork?.twitter = text;
-                  pageStore.setUserData(data);
-                },
-                validator: Validators.nicknameTwitterValidator,
-                maxLength: 30,
-              ),
-              _InputWidget(
-                title: "settings.facebookUsername".tr(),
-                initialValue: pageStore
-                        .userData.additionalInfo!.socialNetwork?.facebook ??
-                    "",
-                onChanged: (text) {
-                  ProfileMeResponse data = pageStore.userData;
-                  data.additionalInfo!.socialNetwork?.facebook = text;
-                  pageStore.setUserData(data);
-                },
-                validator: Validators.nicknameFacebookValidator,
-                maxLength: 50,
-              ),
-              _InputWidget(
-                title: "settings.linkedInUsername".tr(),
-                initialValue: pageStore
-                        .userData.additionalInfo!.socialNetwork?.linkedin ??
-                    "",
-                onChanged: (text) {
-                  ProfileMeResponse data = pageStore.userData;
-                  data.additionalInfo!.socialNetwork?.linkedin = text;
-                  pageStore.setUserData(data);
-                },
-                validator: Validators.nicknameLinkedInValidator,
-                maxLength: 30,
-              ),
-              _InputWidget(
-                title: "settings.instagramUsername".tr(),
-                initialValue: pageStore
-                        .userData.additionalInfo!.socialNetwork?.instagram ??
-                    "",
-                onChanged: (text) {
-                  ProfileMeResponse data = pageStore.userData;
-                  data.additionalInfo!.socialNetwork?.instagram = text;
-                  pageStore.setUserData(data);
-                },
-                validator: Validators.nicknameLinkedInValidator,
-                maxLength: 30,
-              ),
-              const SizedBox(height: 20),
-            ],
+                if (pageStore.userData.role == UserRole.Worker)
+                  _FieldsForWorkerWidget(
+                    controllerKnowledge: _controllerKnowledge!,
+                    controllerWork: _controllerWork!,
+                    controller: _controller!,
+                    pageStore: pageStore,
+                    profile: profile!,
+                  ),
+                _InputWidget(
+                  title: "settings.twitterUsername".tr(),
+                  initialValue:
+                      pageStore.userData.additionalInfo!.socialNetwork?.twitter ??
+                          "",
+                  onChanged: (text) {
+                    ProfileMeResponse data = pageStore.userData;
+                    data.additionalInfo!.socialNetwork?.twitter = text;
+                    pageStore.setUserData(data);
+                  },
+                  validator: Validators.nicknameTwitterValidator,
+                  maxLength: 30,
+                ),
+                _InputWidget(
+                  title: "settings.facebookUsername".tr(),
+                  initialValue: pageStore
+                          .userData.additionalInfo!.socialNetwork?.facebook ??
+                      "",
+                  onChanged: (text) {
+                    ProfileMeResponse data = pageStore.userData;
+                    data.additionalInfo!.socialNetwork?.facebook = text;
+                    pageStore.setUserData(data);
+                  },
+                  validator: Validators.nicknameFacebookValidator,
+                  maxLength: 50,
+                ),
+                _InputWidget(
+                  title: "settings.linkedInUsername".tr(),
+                  initialValue: pageStore
+                          .userData.additionalInfo!.socialNetwork?.linkedin ??
+                      "",
+                  onChanged: (text) {
+                    ProfileMeResponse data = pageStore.userData;
+                    data.additionalInfo!.socialNetwork?.linkedin = text;
+                    pageStore.setUserData(data);
+                  },
+                  validator: Validators.nicknameLinkedInValidator,
+                  maxLength: 30,
+                ),
+                _InputWidget(
+                  title: "settings.instagramUsername".tr(),
+                  initialValue: pageStore
+                          .userData.additionalInfo!.socialNetwork?.instagram ??
+                      "",
+                  onChanged: (text) {
+                    ProfileMeResponse data = pageStore.userData;
+                    data.additionalInfo!.socialNetwork?.instagram = text;
+                    pageStore.setUserData(data);
+                  },
+                  validator: Validators.nicknameLinkedInValidator,
+                  maxLength: 30,
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
@@ -549,6 +550,7 @@ class _FieldsForWorkerWidgetState extends State<_FieldsForWorkerWidget> {
           initialValue: widget.pageStore.userData.wagePerHour,
           onChanged: (text) => widget.pageStore.userData.wagePerHour = text,
           validator: Validators.emptyValidator,
+          inputType: TextInputType.number,
           maxLength: null,
         ),
         Observer(
@@ -738,11 +740,6 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           child: InternationalPhoneNumberInput(
-            validator: widget.title == "modals.secondPhoneNumber"
-                ? (value) {
-                    return null;
-                  }
-                : Validators.phoneNumberValidator,
             initialValue: widget.initialValue,
             errorMessage: "modals.invalidPhone".tr(),
             autoValidateMode: AutovalidateMode.onUserInteraction,
@@ -802,6 +799,7 @@ class _InputWidget extends StatelessWidget {
   final String initialValue;
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
+  final TextInputType inputType;
   final bool readOnly;
   final int? maxLines;
   final int? maxLength;
@@ -813,6 +811,7 @@ class _InputWidget extends StatelessWidget {
     required this.onChanged,
     required this.validator,
     required this.maxLength,
+    this.inputType = TextInputType.text,
     this.readOnly = false,
     this.maxLines = 1,
   }) : super(key: key);
@@ -831,6 +830,7 @@ class _InputWidget extends StatelessWidget {
           readOnly: readOnly,
           onChanged: onChanged,
           validator: validator,
+          keyboardType: inputType,
           decoration: InputDecoration(
             fillColor: Colors.white,
             focusedBorder: OutlineInputBorder(

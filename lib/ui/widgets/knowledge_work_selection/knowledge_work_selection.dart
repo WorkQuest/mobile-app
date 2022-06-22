@@ -115,11 +115,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                               .controller!.store!.numberOfFiled.last.dateFrom
                           : kng.dateFrom,
                       onChanged: (value) {
-                        kng.dateFrom = value.day.toString() +
-                            "." +
-                            value.month.toString() +
-                            "." +
-                            value.year.toString();
+                        kng.dateFrom = '${value.year}-${value.month}-${value.day}';
                         setState(() {});
                       },
                       from: true,
@@ -140,11 +136,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                           ? widget.controller!.store!.numberOfFiled.last.dateTo
                           : kng.dateTo,
                       onChanged: (value) {
-                        kng.dateTo = value.day.toString() +
-                            "." +
-                            value.month.toString() +
-                            "." +
-                            value.year.toString();
+                        kng.dateTo = '${value.year}-${value.month}-${value.day}';
                         setState(() {});
                       },
                       from: false,
@@ -221,7 +213,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
         _localeCode = element;
     });
     List<String> minTime = [];
-    if (dateFrom != null) minTime.addAll(dateFrom.split("."));
+    if (dateFrom != null) minTime.addAll(dateFrom.split("-"));
     return Container(
       height: 43,
       width: 147,
