@@ -222,7 +222,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
                 description.padRight(32).substring(0, 32),
               ),
             ),
-            BigInt.parse(price)
+            BigInt.from((double.parse(price) * (1 + 0.025)) * pow(10, 18))
           ],
           value: null,
         );

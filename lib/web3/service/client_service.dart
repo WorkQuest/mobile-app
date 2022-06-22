@@ -40,11 +40,11 @@ class ClientService implements ClientServiceI {
   // static final apiUrl = "https://dev-node-ams3.workquest.co/";
 
   // static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
-  final int _chainId = 20220112;
-  final abiFactoryAddress = '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066';
+  final int _chainId = 1991;
+  final abiFactoryAddress = '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4';
 
   ///ADDRESS WUSD_TOKEN
-  final abiBridgeAddress = "0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa";
+  final abiBridgeAddress = "0xF95eF11d0af1f40995218Bb2B67Ef909bcf30078";
   final abiPromotionAddress = "0xB778e471833102dBe266DE2747D72b91489568c2";
   String addressNewContract = "";
 
@@ -143,7 +143,6 @@ class ClientService implements ClientServiceI {
       address = address.toLowerCase();
       final contract = Erc20(address: EthereumAddress.fromHex(address), client: client!);
       final balance = await contract.balanceOf(EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
-      print('getBalanceFromContract | $balance');
       if (otherNetwork || isUSDT) {
         return balance.toDouble() * pow(10, -6);
       }
@@ -266,19 +265,17 @@ extension CreateContract on ClientService {
     required String deadline,
     required String nonce,
   }) async {
+    print('createNewContract');
     final credentials = await getCredentials(AccountRepository().privateKey);
     final contract = await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
     final ethFunction = contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
-    final _cost = double.parse(cost) + double.parse(cost) * 0.01;
-    final _gas = await getGas();
     await handleContract(
       contract: contract,
       function: ethFunction,
       params: [
         stringToBytes32(jobHash),
-        //TODO Find out why a transaction with a commission does not pass
-        BigInt.from((double.parse(cost) - 0.1) * pow(10, 18)),
+        BigInt.from((double.parse(cost) * (1 + 0.025)) * pow(10, 18)),
         BigInt.parse(deadline),
         BigInt.parse(nonce),
       ],
@@ -341,6 +338,8 @@ extension ApproveCoin on ClientService {
     final ethFunction = contract.function(WQBridgeTokenFunctions.approve.name);
     final fromAddress = await credentials.extractAddress();
     final _cost = double.parse(cost) + double.parse(cost) * 0.025;
+    print('fromAddress: $fromAddress');
+    print('chainID: ${await client!.getChainId()}');
     final result = await handleContract(
       contract: contract,
       function: ethFunction,
@@ -350,7 +349,7 @@ extension ApproveCoin on ClientService {
         BigInt.from(_cost * pow(10, 18)),
       ],
     );
-
+    print('result.status: ${result.status}');
     if (result.status ?? false)
       return true;
     else
