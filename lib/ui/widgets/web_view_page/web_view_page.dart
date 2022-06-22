@@ -25,7 +25,7 @@ class _WebViewPageState extends State<WebViewPage> {
   final Completer<WebViewController> _controllerCompleter =
       Completer<WebViewController>();
 
-  final String baseUrl = "https://dev-app.workquest.co/";
+  final String baseUrl = "https://testnet-app.workquest.co/";
   final storage = new FlutterSecureStorage();
   WebViewController? _controller;
   bool loading = false;
@@ -42,13 +42,10 @@ class _WebViewPageState extends State<WebViewPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Flutter WebView example'),
-        // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
         actions: <Widget>[
           NavigationControls(_controllerCompleter.future),
         ],
       ),
-      // We're using a Builder here so we have a context that is below the Scaffold
-      // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {
         return Stack(
           children: [
@@ -77,7 +74,7 @@ class _WebViewPageState extends State<WebViewPage> {
               },
               onPageStarted: (String url) async {
                 print('Page started loading: $url');
-                if (url.contains("dev-app.workquest.co"))
+                if (url.contains("testnet-app.workquest.co"))
                   setState(() {
                     print("url: $url");
                     loading = true;
@@ -94,7 +91,6 @@ class _WebViewPageState extends State<WebViewPage> {
                 String? refreshToken = await Storage.readRefreshToken();
                 _controllerCompleter.future
                     .then((value) => value.runJavascriptReturningResult(
-                        // evaluateJavascript(
                         """localStorage.setItem("accessToken","${accessToken ?? ''}");
                     localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
                 if (url.contains('token?code=') ||
@@ -105,15 +101,15 @@ class _WebViewPageState extends State<WebViewPage> {
               },
               gestureNavigationEnabled: true,
             ),
-            if (loading)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.white,
-                  child: Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  ),
-                ),
-              ),
+            // if (loading)
+            //   Positioned.fill(
+            //     child: Container(
+            //       color: Colors.white,
+            //       child: Center(
+            //         child: CircularProgressIndicator.adaptive(),
+            //       ),
+            //     ),
+            //   ),
           ],
         );
       }),

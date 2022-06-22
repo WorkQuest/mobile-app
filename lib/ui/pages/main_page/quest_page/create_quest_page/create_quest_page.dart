@@ -63,14 +63,11 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       this.isEdit = true;
       final store = context.read<CreateQuestStore>();
       store.setConfirmUnderstandAboutEdit(true);
-      print("questInfo!.priority: ${widget.questInfo!.priority - 1}");
       store.priority = QuestConstants.priorityList[widget.questInfo!.priority - 1];
       store.contractAddress = widget.questInfo!.contractAddress ?? '';
       store.questTitle = widget.questInfo!.title;
       store.changedDistantWork(QuestUtils.getEmployment(widget.questInfo!.workplace));
       store.changedEmployment(QuestUtils.getEmployment(widget.questInfo!.employment));
-      // store.getWorkplace(widget.questInfo!.workplace);
-      // store.getEmployment(widget.questInfo!.employment);
       store.description = widget.questInfo!.description;
       store.price = (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18)).toString();
       store.locationPlaceName = widget.questInfo!.locationPlaceName;

@@ -347,10 +347,6 @@ class _SocialLoginWidget extends StatelessWidget {
             context,
             signInStore,
           ),
-          // _iconButton(
-          //   "assets/instagram.svg",
-          //   "https://www.instagram.com/zuck/?hl=ru",
-          // ),
           _iconButton(
             "assets/twitter_icon.svg",
             "twitter",
