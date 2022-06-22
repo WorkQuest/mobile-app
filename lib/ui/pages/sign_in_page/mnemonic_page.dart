@@ -32,6 +32,7 @@ class MnemonicPage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         Storage.deleteAllFromSecureStorage();
+        signInStore.deletePushToken();
         Navigator.of(context, rootNavigator: true)
             .pushNamedAndRemoveUntil(SignInPage.routeName, (route) => false);
         return true;
@@ -46,7 +47,8 @@ class MnemonicPage extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
+                    await signInStore.deletePushToken();
                     Storage.deleteAllFromSecureStorage();
                     Navigator.of(context, rootNavigator: true)
                         .pushNamedAndRemoveUntil(
@@ -58,9 +60,7 @@ class MnemonicPage extends StatelessWidget {
                 ),
               ),
             ),
-            middle: Text(
-              "signIn.enterMnemonicPhrase".tr(),
-            ),
+            middle: Text("signIn.enterMnemonicPhrase".tr()),
             border: Border.fromBorderSide(BorderSide.none),
           ),
           body: Column(
@@ -137,9 +137,7 @@ class MnemonicPage extends StatelessWidget {
       AlertDialogUtils.showAlertDialog(
         context,
         title: Text("Error"),
-        content: Text(
-          msg,
-        ),
+        content: Text(msg),
         needCancel: false,
         titleCancel: null,
         titleOk: null,

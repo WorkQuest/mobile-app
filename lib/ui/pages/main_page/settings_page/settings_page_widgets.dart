@@ -153,7 +153,7 @@ class SettingsCard extends StatelessWidget {
 }
 
 ///Logout button
-Widget logOutButton(context) {
+Widget logOutButton(context, userStore) {
   return OutlinedButton(
     onPressed: () {
       dialog(
@@ -166,6 +166,7 @@ Widget logOutButton(context) {
             (route) => false,
           );
           final cookieManager = WebviewCookieManager();
+          userStore.deletePushToken();
           cookieManager.clearCookies();
           AccountRepository().clearData();
           Storage.deleteAllFromSecureStorage();

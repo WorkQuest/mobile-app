@@ -22,6 +22,7 @@ class ChooseRolePage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         Storage.deleteAllFromSecureStorage();
+        await store.deletePushToken();
         Navigator.of(context, rootNavigator: true)
             .pushNamedAndRemoveUntil(SignInPage.routeName, (route) => false);
         return true;
@@ -31,8 +32,9 @@ class ChooseRolePage extends StatelessWidget {
           leading: Align(
             alignment: Alignment.centerLeft,
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 Storage.deleteAllFromSecureStorage();
+                await store.deletePushToken();
                 Navigator.of(context, rootNavigator: true)
                     .pushNamedAndRemoveUntil(
                   SignInPage.routeName,

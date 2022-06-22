@@ -9,6 +9,7 @@ enum QuestItemPriorityType {
 enum UserRole {
   Worker,
   Employer,
+  Admin,
 }
 
 enum QuestPriority {

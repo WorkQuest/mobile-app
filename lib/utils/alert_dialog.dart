@@ -50,7 +50,7 @@ class AlertDialogUtils {
           width: 15,
         ),
         Text(
-          message ?? '${'meta'.tr(gender: 'loading')}...',
+          message ?? '${'uploader.loading'.tr()}...',
           style: const TextStyle(
             fontSize: 16,
             color: Colors.black,

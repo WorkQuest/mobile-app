@@ -5,6 +5,7 @@ import 'package:app/model/bearer_token.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/storage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mobx/mobx.dart';
@@ -132,6 +133,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
 
   Future<void> onWillPop() async {
     await Storage.deleteAllFromSecureStorage();
+    await deletePushToken();
   }
 
   @action
@@ -166,6 +168,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
               attempts += 1;
               if (attempts >= 3) {
                 await Storage.deleteAllFromSecureStorage();
+                await deletePushToken();
                 final cookieManager = WebviewCookieManager();
                 cookieManager.clearCookies();
                 this.onSuccess(StatePinCode.ToLogin);
@@ -178,25 +181,26 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
             await Future.delayed(const Duration(seconds: 1));
             break;
           case StatePinCode.ToLogin:
-          // TODO: Handle this case.
+            // TODO: Handle this case.
             break;
           case StatePinCode.Success:
-          // TODO: Handle this case.
+            // TODO: Handle this case.
             break;
           case StatePinCode.NaN:
-          // TODO: Handle this case.
+            // TODO: Handle this case.
             break;
         }
       }
       String? token = await Storage.readRefreshToken();
       if (token == null) {
         await Storage.deleteAllFromSecureStorage();
+        await deletePushToken();
         this.onSuccess(StatePinCode.ToLogin);
         return;
       }
 
       BearerToken bearerToken =
-      await _apiProvider.refreshToken(token, platform);
+          await _apiProvider.refreshToken(token, platform);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
       await getIt.get<ProfileMeStore>().getProfileMe();
@@ -205,13 +209,14 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       await Future.delayed(const Duration(milliseconds: 500));
       Future.delayed(const Duration(seconds: 1)).then((value) {
         startAnimation = false;
-          startSwitch = false;
+        startSwitch = false;
       });
     } catch (e) {
       if (e.toString() == "Token invalid" ||
           e.toString() == "Token expired" ||
           e.toString() == "Session not found") {
         await Storage.deleteAllFromSecureStorage();
+        await deletePushToken();
         this.onSuccess(StatePinCode.ToLogin);
         startAnimation = false;
         return;
@@ -220,6 +225,29 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       pin = "";
       changeState(StatePinCode.Check, errorAnimation: true);
       startAnimation = false;
+      this.onError(e.toString());
+    }
+  }
+
+  Future<void> checkPushToken() async {
+    try {
+      final firebaseToken = await FirebaseMessaging.instance.getToken();
+      final pushToken = await Storage.readPushToken();
+      if (pushToken != firebaseToken) {
+        _apiProvider.registerPushToken(token: firebaseToken ?? "");
+        Storage.writePushToken(firebaseToken ?? "");
+      }
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  Future<void> deletePushToken() async {
+    try {
+      final token = await Storage.readPushToken();
+      if (token != null)
+        _apiProvider.deletePushToken(token: token);
+    } catch (e) {
       this.onError(e.toString());
     }
   }

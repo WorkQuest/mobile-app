@@ -55,13 +55,14 @@ class EnterTotpPage extends StatelessWidget {
                         ? () async {
                             await store.changeRole();
                             if (store.isSuccess) {
+                              Storage.deleteAllFromSecureStorage();
+                              await store.deletePushToken();
                               await AlertDialogUtils.showSuccessDialog(context);
                               Navigator.of(context, rootNavigator: true)
                                   .pushNamedAndRemoveUntil(
                                 SignInPage.routeName,
                                 (route) => false,
                               );
-                              Storage.deleteAllFromSecureStorage();
                             } else
                               await errorAlert(context, "Wrong code");
                           }

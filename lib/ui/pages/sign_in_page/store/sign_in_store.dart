@@ -86,7 +86,8 @@ abstract class _SignInStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       String? token = await Storage.readRefreshToken();
-      BearerToken bearerToken = await _apiProvider.refreshToken(token!, platform);
+      BearerToken bearerToken =
+          await _apiProvider.refreshToken(token!, platform);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
       this.onSuccess(true);
@@ -162,7 +163,17 @@ abstract class _SignInStore extends IStore<bool> with Store {
       print('e: $e\ntrace: $trace');
       error = e.toString();
       this.onError(e.toString());
+    }
+  }
 
+  Future<void> deletePushToken() async {
+    try {
+      this.onLoading();
+      final token = await Storage.readPushToken();
+      if (token != null) await _apiProvider.deletePushToken(token: token);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
     }
   }
 }

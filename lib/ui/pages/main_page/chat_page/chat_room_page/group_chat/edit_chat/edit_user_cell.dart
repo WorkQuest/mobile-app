@@ -4,6 +4,7 @@ import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/member.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/create_private_chat/create_private_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/store/edit_chat_store.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/choose_quest_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -26,11 +27,13 @@ class EditUserCell extends StatefulWidget {
 
 class _EditUserCellState extends State<EditUserCell> {
   late EditChatStore store;
+  late ChatStore chatStore;
   late ProfileMeStore profileStore;
 
   @override
   void initState() {
     store = context.read<EditChatStore>();
+    chatStore = context.read<ChatStore>();
     store.getChatMembers(widget.chat.members!);
     profileStore = context.read<ProfileMeStore>();
     super.initState();
@@ -57,7 +60,7 @@ class _EditUserCellState extends State<EditUserCell> {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        profileStore.userData!.id== widget.user.userId
+        profileStore.userData!.id == widget.user.userId
             ? Text("chat.owner".tr())
             : PopupMenuButton<String>(
                 elevation: 10,
@@ -68,7 +71,9 @@ class _EditUserCellState extends State<EditUserCell> {
                 onSelected: (value) async {
                   if (profileStore.userData!.role == UserRole.Employer &&
                       widget.user.user!.role == UserRole.Worker)
-                    employerMenu(value);
+                    employerMenu(
+                      value,
+                    );
                   else
                     workerMenu(value);
                 },
@@ -124,6 +129,16 @@ class _EditUserCellState extends State<EditUserCell> {
             );
             if (store.isSuccess) {
               widget.chat.members!.remove(widget.user);
+              chatStore.chats.forEach((key, chats) {
+                chats.chat.forEach((chat) {
+                  if (chat.id == widget.chat.id) {
+                    store.setNewMessage(widget.chat, profileStore.userData!);
+                    chat.chatData.lastMessage = store.newMessage;
+                    chatStore.chats[key]!.chat.remove(chat);
+                    chatStore.chats[key]!.chat.insert(0, chat);
+                  }
+                });
+              });
             }
           },
           colorCancel: Colors.blue,
@@ -177,6 +192,16 @@ class _EditUserCellState extends State<EditUserCell> {
             );
             if (store.isSuccess) {
               widget.chat.members!.remove(widget.user);
+              chatStore.chats.forEach((key, chats) {
+                chats.chat.forEach((chat) {
+                  if (chat.id == widget.chat.id) {
+                    store.setNewMessage(widget.chat, profileStore.userData!);
+                    chat.chatData.lastMessage = store.newMessage;
+                    chatStore.chats[key]!.chat.remove(chat);
+                    chatStore.chats[key]!.chat.insert(0, chat);
+                  }
+                });
+              });
             }
           },
           colorCancel: Colors.blue,

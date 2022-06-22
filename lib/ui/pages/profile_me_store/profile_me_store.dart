@@ -4,6 +4,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -351,8 +352,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
             medias: ObservableList.of([media])))[0];
       final isTotpActive = this.userData?.isTotpActive;
       final tempPhone = this.userData?.tempPhone;
-      this.userData =
-          await _apiProvider.changeProfileMe(userData);
+      this.userData = await _apiProvider.changeProfileMe(userData);
       this.userData?.tempPhone = tempPhone;
       this.userData?.isTotpActive = isTotpActive;
       this.onSuccess(true);
@@ -367,6 +367,17 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
       this.onLoading();
       await _apiProvider.submitPhoneNumber(phone);
 
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  Future<void> deletePushToken() async {
+    try {
+      this.onLoading();
+      final token = await Storage.readPushToken();
+      if (token != null) await _apiProvider.deletePushToken(token: token);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

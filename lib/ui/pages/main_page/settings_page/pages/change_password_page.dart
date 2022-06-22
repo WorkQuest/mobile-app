@@ -129,6 +129,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   _changePasswordOnPressed() async {
     await store.changePassword();
     if (store.isSuccess) {
+      await store.deleteToken();
       SuccessDialog();
       Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
         SignInPage.routeName,

@@ -77,7 +77,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
         starred: type == TypeChat.favourites ? true : null,
       );
 
-      listChats.removeWhere((element) => element.meMember?.status == -1);
+      // listChats.removeWhere((element) => element.meMember?.status == -1);
 
       chats[type]!.setChats(listChats);
 
