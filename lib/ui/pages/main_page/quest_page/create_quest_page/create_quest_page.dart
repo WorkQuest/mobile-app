@@ -612,7 +612,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     if (transferStore.fee.isEmpty) {
       await transferStore.getFee();
     }
-    await Web3Utils.checkPossibilityTx(TokenSymbols.WUSD, double.parse(price));
+    await Web3Utils.checkPossibilityTx(TokenSymbols.WUSD, double.parse(price), isMain: true);
     if (transferStore.addressTo.toLowerCase() == AccountRepository().userAddress.toLowerCase()) {
       throw FormatException('errors.provideYourAddress'.tr());
     }

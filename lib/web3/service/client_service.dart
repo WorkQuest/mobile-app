@@ -261,7 +261,7 @@ extension CreateQuestContract on ClientService {
 extension CreateContract on ClientService {
   Future<void> createNewContract({
     required String jobHash,
-    required String cost,
+    required BigInt price,
     required String deadline,
     required String nonce,
   }) async {
@@ -275,7 +275,7 @@ extension CreateContract on ClientService {
       function: ethFunction,
       params: [
         stringToBytes32(jobHash),
-        BigInt.from((double.parse(cost) * (1 + 0.025)) * pow(10, 18)),
+        price,
         BigInt.parse(deadline),
         BigInt.parse(nonce),
       ],
@@ -330,14 +330,13 @@ extension GetContract on ClientService {
 
 extension ApproveCoin on ClientService {
   Future<bool> approveCoin({
-    required String cost,
+    required BigInt price,
   }) async {
     print("Approve coin");
     final credentials = await getCredentials(AccountRepository().privateKey);
     final contract = await getDeployedContract("WQBridgeToken", abiBridgeAddress);
     final ethFunction = contract.function(WQBridgeTokenFunctions.approve.name);
     final fromAddress = await credentials.extractAddress();
-    final _cost = double.parse(cost) + double.parse(cost) * 0.025;
     print('fromAddress: $fromAddress');
     print('chainID: ${await client!.getChainId()}');
     final result = await handleContract(
@@ -346,7 +345,7 @@ extension ApproveCoin on ClientService {
       from: fromAddress,
       params: [
         EthereumAddress.fromHex(abiFactoryAddress),
-        BigInt.from(_cost * pow(10, 18)),
+        price,
       ],
     );
     print('result.status: ${result.status}');

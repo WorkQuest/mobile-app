@@ -199,6 +199,6 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
 
   _checkPossibilityTx() async {
     await store.getFee();
-    await Web3Utils.checkPossibilityTx(TokenSymbols.WQT, 0.0);
+    await Web3Utils.checkPossibilityTx(TokenSymbols.WQT, 0.0, isMain: true);
   }
 }

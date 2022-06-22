@@ -7,7 +7,7 @@ import '../ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
 import '../web3/repository/account_repository.dart';
 
 class Web3Utils {
-  static checkPossibilityTx(TokenSymbols typeCoin, double amount) async {
+  static checkPossibilityTx(TokenSymbols typeCoin, double amount, {bool isMain = false}) async {
     final _client = AccountRepository().getClient();
     final _balanceWQT = await _client.getBalance(AccountRepository().privateKey);
     final _gasTx = await _client.getGas();
@@ -19,7 +19,7 @@ class Web3Utils {
         throw FormatException('Not have enough WQT for the transaction');
       }
     } else if (typeCoin == TokenSymbols.WUSD) {
-      final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin));
+      final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin, isMain: isMain));
       if (amount > _balanceToken) {
         throw FormatException('Not have enough ${getTitleToken(typeCoin)} for the transaction');
       }
@@ -29,10 +29,18 @@ class Web3Utils {
     }
   }
 
-  static String getAddressToken(TokenSymbols typeCoin) {
+  static String getAddressToken(TokenSymbols typeCoin, {bool isMain = false}) {
     try {
-      final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
-      return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
+      if (isMain) {
+        final _dataTokens = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins;
+        return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
+      } else {
+        final _dataTokens = AccountRepository()
+            .getConfigNetwork()
+            .dataCoins;
+        return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
+      }
+
     } catch (e) {
       return '';
     }

@@ -34,7 +34,6 @@ class WebSocket {
     print("[WebSocket]  connecting ...");
     _connectWallet();
     _connectListen();
-
     _connectSender();
   }
 

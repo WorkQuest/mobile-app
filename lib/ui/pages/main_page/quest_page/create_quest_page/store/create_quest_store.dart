@@ -119,19 +119,16 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   void changedPriority(String selectedPriority) => priority = selectedPriority;
 
   @action
-  void changedEmployment(String selectedEmployment) =>
-      employment = selectedEmployment;
+  void changedEmployment(String selectedEmployment) => employment = selectedEmployment;
 
   @action
   void changedPayPeriod(String value) => payPeriod = value;
 
   @action
-  void changedDistantWork(String selectedEmployment) =>
-      workplace = selectedEmployment;
+  void changedDistantWork(String selectedEmployment) => workplace = selectedEmployment;
 
   @computed
-  bool get canCreateQuest =>
-      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
+  bool get canCreateQuest => !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
 
   @computed
   bool get canSubmitEditQuest =>
@@ -146,7 +143,6 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: "Skills are empty");
     }
   }
-
 
   @action
   Future<Null> getPrediction(BuildContext context) async {
@@ -195,6 +191,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       print('workplace: $workplace');
       print('payPeriod: $payPeriod');
       print('priority: $priority');
+      final _price = BigInt.from((double.parse(price)) * pow(10, 18));
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         employment: QuestUtils.getEmploymentValue(employment),
         workplace: QuestUtils.getWorkplaceValue(workplace),
@@ -207,32 +204,31 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         media: medias.map((media) => media.id).toList(),
         title: questTitle,
         description: description,
-        price:
-            (BigInt.parse(price).toDouble() * pow(10, 18)).toStringAsFixed(0),
+        price: (_price.toDouble()).toStringAsFixed(0),
       );
       print('questModel: ${questModel.toJson()}');
       //priority show item
       if (isEdit) {
         await AccountRepository().getClient().handleEvent(
-          function: WQContractFunctions.editJob,
-          contractAddress: contractAddress,
-          params: [
-            Uint8List.fromList(
-              utf8.encode(
-                description.padRight(32).substring(0, 32),
-              ),
-            ),
-            BigInt.from((double.parse(price) * (1 + 0.025)) * pow(10, 18))
-          ],
-          value: null,
-        );
+              function: WQContractFunctions.editJob,
+              contractAddress: contractAddress,
+              params: [
+                Uint8List.fromList(
+                  utf8.encode(
+                    description.padRight(32).substring(0, 32),
+                  ),
+                ),
+                _price,
+              ],
+              value: null,
+            );
         await apiProvider.editQuest(
           quest: questModel,
           questId: questId,
         );
       } else {
-        final balanceWusd = await AccountRepository().getClient()
-            .getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
+        final balanceWusd =
+            await AccountRepository().getClient().getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
         final gas = await AccountRepository().getClient().getGas();
 
         if (balanceWusd < double.parse(price) + (gas.getInEther).toDouble()) {
@@ -243,15 +239,19 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           quest: questModel,
         );
 
-        final approveCoin = await AccountRepository().getClient().approveCoin(cost: price);
+        final approveCoin =
+            await AccountRepository().getClient().approveCoin(price: BigInt.from((_price.toDouble() * 1.1)));
 
-        if (approveCoin)
+        if (approveCoin) {
           await AccountRepository().getClient().createNewContract(
-            jobHash: description,
-            cost: price,
-            deadline: 0.toString(),
-            nonce: nonce,
-          );
+                jobHash: description,
+                price: _price,
+                deadline: 0.toString(),
+                nonce: nonce,
+              );
+        } else {
+          throw FormatException('Failed approve');
+        }
       }
 
       this.onSuccess(true);

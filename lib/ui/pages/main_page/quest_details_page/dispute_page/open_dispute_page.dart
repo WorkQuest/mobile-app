@@ -252,6 +252,6 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
 
   _checkPossibilityTx() async {
     await store.getFee();
-    await Web3Utils.checkPossibilityTx(TokenSymbols.WQT, 0.0);
+    await Web3Utils.checkPossibilityTx(TokenSymbols.WQT, 0.0, isMain: true);
   }
 }
