@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:app/http/api_provider.dart';
 import 'package:app/web3/contractEnums.dart';
@@ -41,8 +40,7 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
 
   String fee = "";
 
-  bool isButtonEnable() =>
-      theme != "dispute.theme" && description.isNotEmpty && !this.isLoading;
+  bool isButtonEnable() => theme != "dispute.theme" && description.isNotEmpty && !this.isLoading;
 
   @action
   void setDescription(String value) => description = value;
@@ -91,10 +89,13 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
     return themeValue;
   }
 
-  Future<void> getFee() async {
+  Future<void> getFee(String contractAddress) async {
     try {
-      final gas = await AccountRepository().getClient().getGas();
-      fee = (1 + (gas.getInWei.toInt() / pow(10, 18))).toStringAsFixed(17);
+      final _client = AccountRepository().getClient();
+      final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
+      final _function = _contract.function(WQContractFunctions.arbitration.name);
+      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: []);
+      fee = _gas.toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
     }
@@ -110,10 +111,10 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
       );
       if (result) {
         await AccountRepository().getClient().handleEvent(
-          function: WQContractFunctions.arbitration,
-          contractAddress: contractAddress,
-          value: "1",
-        );
+              function: WQContractFunctions.arbitration,
+              contractAddress: contractAddress,
+              value: "1",
+            );
         this.onSuccess(true);
       } else
         this.onError("Dispute not created");

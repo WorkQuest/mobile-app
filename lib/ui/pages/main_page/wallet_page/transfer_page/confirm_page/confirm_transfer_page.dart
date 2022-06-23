@@ -28,15 +28,14 @@ class ConfirmTransferPage extends StatefulWidget {
 }
 
 class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
-
   @override
   Widget build(BuildContext context) {
     final store = context.read<ConfirmTransferStore>();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar:AppBar(
+      appBar: AppBar(
         title: Text(
-            'wallet.transfer'.tr(),
+          'wallet.transfer'.tr(),
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
         centerTitle: true,
@@ -83,10 +82,9 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                     Navigator.pop(context, true);
                   },
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       AlertDialogUtils.showLoadingDialog(context);
-                      store.sendTransaction(
-                          widget.addressTo, widget.amount, widget.typeCoin);
+                      store.sendTransaction(widget.addressTo, widget.amount, widget.typeCoin);
                     },
                     child: Text('meta.confirm'.tr()),
                   ),
@@ -119,9 +117,7 @@ class _InformationWidget extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: AppColor.disabledButton),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5.0), color: AppColor.disabledButton),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -580,8 +580,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   }
 
   _checkPossibilityTx() async {
-    await store.getFee();
-    await Web3Utils.checkPossibilityTx(TokenSymbols.WQT, 0.0, isMain: true);
+    await store.getFee(store.selectedResponders!.workerId);
+    await Web3Utils.checkPossibilityTx(
+      typeCoin: TokenSymbols.WQT,
+      gas: double.parse(store.fee),
+      amount: 0.0,
+      isMain: true,
+    );
   }
 
   Widget selectableMember(RespondModel respond) {

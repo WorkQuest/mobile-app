@@ -7,15 +7,18 @@ import '../ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
 import '../web3/repository/account_repository.dart';
 
 class Web3Utils {
-  static checkPossibilityTx(TokenSymbols typeCoin, double amount, {bool isMain = false}) async {
+  static checkPossibilityTx({
+    required TokenSymbols typeCoin,
+    required double gas,
+    required double amount,
+    bool isMain = false,
+  }) async {
     final _client = AccountRepository().getClient();
     final _balanceWQT = await _client.getBalance(AccountRepository().privateKey);
-    final _gasTx = await _client.getGas();
 
     if (typeCoin == TokenSymbols.WQT) {
-      final _gas = (_gasTx.getInWei.toDouble() * pow(10, -16) * 250);
       final _balanceWQTInWei = (_balanceWQT.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
-      if (amount > (_balanceWQTInWei.toDouble() - _gas)) {
+      if (amount + gas > (_balanceWQTInWei.toDouble())) {
         throw FormatException('Not have enough WQT for the transaction');
       }
     } else if (typeCoin == TokenSymbols.WUSD) {
@@ -23,9 +26,17 @@ class Web3Utils {
       if (amount > _balanceToken) {
         throw FormatException('Not have enough ${getTitleToken(typeCoin)} for the transaction');
       }
-      if (_balanceWQT.getInWei < _gasTx.getInWei) {
+      if (_balanceWQT.getInWei < BigInt.from(gas * pow(10, 18))) {
         throw FormatException('Not have enough WQT for the transaction');
       }
+    }
+  }
+
+  static int getDegreeToken(TokenSymbols typeCoin) {
+    if (typeCoin == TokenSymbols.USDT) {
+      return 6;
+    } else {
+      return 18;
     }
   }
 
@@ -35,12 +46,9 @@ class Web3Utils {
         final _dataTokens = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins;
         return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
       } else {
-        final _dataTokens = AccountRepository()
-            .getConfigNetwork()
-            .dataCoins;
+        final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
         return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
       }
-
     } catch (e) {
       return '';
     }

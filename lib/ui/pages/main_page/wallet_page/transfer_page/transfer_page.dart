@@ -59,7 +59,8 @@ class _TransferPageState extends State<TransferPage> {
   void initState() {
     _initCoins();
     store = context.read<TransferStore>();
-    store.getFee();
+    store.setTitleSelectedCoin(_coins.first.typeCoin);
+    _currentCoin = _coins.first;
     _amountController.addListener(() {
       store.setAmount(_amountController.text);
     });
@@ -284,8 +285,6 @@ class _TransferPageState extends State<TransferPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       }
 
-      await store.getFee();
-
       if (store.addressTo.toLowerCase() == AccountRepository().userAddress.toLowerCase()) {
         AlertDialogUtils.showInfoAlertDialog(context,
             title: 'modals.error'.tr(), content: 'errors.provideYourAddress'.tr());
@@ -295,6 +294,7 @@ class _TransferPageState extends State<TransferPage> {
         AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
+      await store.getFee();
       final result = await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (_) => Provider(

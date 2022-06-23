@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
 import 'package:app/model/quests_models/create_quest_request_model.dart';
@@ -34,6 +36,8 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   _CreateQuestStore(this.apiProvider);
 
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
+
+  BigInt oldPrice = BigInt.zero;
 
   @observable
   String employment = "Full time";
@@ -172,6 +176,67 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
     );
   }
 
+  Future<String> getFee({bool isEdit = false}) async {
+    double _resultGas = 0.0;
+    try {
+      final _client = AccountRepository().getClient();
+      if (isEdit) {
+        final _price = BigInt.from((double.parse(price)) * pow(10, 18));
+        if (_price > oldPrice) {
+          final _allowance = await _client.allowanceCoin();
+          print('allowance: $_allowance');
+          final _priceForApprove = BigInt.from((_price.toDouble() * 1.1));
+          print('priceForApprove: $_priceForApprove');
+          final _isNeedApprove = _allowance < _priceForApprove;
+          if (_isNeedApprove) {
+            final _gasForApprove = await _client.getEstimateGasForApprove(_price);
+            _resultGas += _gasForApprove;
+            print("1 _resultGas: $_resultGas");
+          }
+        }
+        final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
+        final _function = _contract.function(WQContractFunctions.editJob.name);
+
+        final _params = [
+          Uint8List.fromList(utf8.encode(description.padRight(32).substring(0, 32))),
+          _price,
+        ];
+        final _gas =
+            await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: _params);
+        _resultGas += _gas;
+        return _resultGas.toStringAsFixed(17);
+      } else {
+        final _price = BigInt.from(double.parse(price) * pow(10, 18));
+        final _allowance = await _client.allowanceCoin();
+        print('allowance: $_allowance');
+        final _priceForApprove = BigInt.from((_price.toDouble() * 1.1));
+        print('priceForApprove: $_priceForApprove');
+        final _isNeedApprove = _allowance < _priceForApprove;
+        if (_isNeedApprove) {
+          final _gasForApprove = await _client.getEstimateGasForApprove(_price);
+          _resultGas += _gasForApprove;
+          print("1 _resultGas: $_resultGas");
+        }
+        final _contract = await _client.getDeployedContract("WorkQuestFactory", Constants.worknetWQFactory);
+        final _function = _contract.function(WQFContractFunctions.newWorkQuest.name);
+        final _params = [
+          _client.stringToBytes32(description),
+          BigInt.zero,
+          BigInt.from(0.0),
+          BigInt.from(0.0),
+        ];
+        final _gas =
+            await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: _params);
+        _resultGas += _gas;
+        print("2 _resultGas: $_resultGas");
+        return _resultGas.toStringAsFixed(17);
+      }
+    } on SocketException catch (_) {
+      onError("Lost connection to server");
+      throw FormatException('Lost connection to server');
+    }
+  }
+
   @action
   Future<void> createQuest({
     bool isEdit = false,
@@ -208,28 +273,26 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       );
       print('questModel: ${questModel.toJson()}');
       //priority show item
+
+      final _client = AccountRepository().getClient();
+
       if (isEdit) {
-        await AccountRepository().getClient().handleEvent(
-              function: WQContractFunctions.editJob,
-              contractAddress: contractAddress,
-              params: [
-                Uint8List.fromList(
-                  utf8.encode(
-                    description.padRight(32).substring(0, 32),
-                  ),
-                ),
-                _price,
-              ],
-              value: null,
-            );
+        await _client.handleEvent(
+          function: WQContractFunctions.editJob,
+          contractAddress: contractAddress,
+          params: [
+            Uint8List.fromList(utf8.encode(description.padRight(32).substring(0, 32))),
+            _price,
+          ],
+          value: null,
+        );
         await apiProvider.editQuest(
           quest: questModel,
           questId: questId,
         );
       } else {
-        final balanceWusd =
-            await AccountRepository().getClient().getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
-        final gas = await AccountRepository().getClient().getGas();
+        final balanceWusd = await _client.getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
+        final gas = await _client.getGas();
 
         if (balanceWusd < double.parse(price) + (gas.getInEther).toDouble()) {
           throw Exception('Not enough balance.');
@@ -239,18 +302,29 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           quest: questModel,
         );
 
-        final approveCoin =
-            await AccountRepository().getClient().approveCoin(price: BigInt.from((_price.toDouble() * 1.1)));
+        final _priceForApprove = BigInt.from((_price.toDouble() * 1.1));
+        final _allowance = await _client.allowanceCoin();
+        final _isNeedApprove = _allowance < _priceForApprove;
+        if (_isNeedApprove) {
+          final approveCoin = await _client.approveCoin(price: _priceForApprove);
 
-        if (approveCoin) {
-          await AccountRepository().getClient().createNewContract(
-                jobHash: description,
-                price: _price,
-                deadline: 0.toString(),
-                nonce: nonce,
-              );
+          if (approveCoin) {
+            await _client.createNewContract(
+              jobHash: description,
+              price: _price,
+              deadline: 0.toString(),
+              nonce: nonce,
+            );
+          } else {
+            throw FormatException('Failed approve');
+          }
         } else {
-          throw FormatException('Failed approve');
+          await _client.createNewContract(
+            jobHash: description,
+            price: _price,
+            deadline: 0.toString(),
+            nonce: nonce,
+          );
         }
       }
 

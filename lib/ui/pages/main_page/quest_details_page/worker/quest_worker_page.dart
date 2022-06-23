@@ -612,7 +612,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   _checkPossibilityTx() async {
     await store.getFee();
-    await Web3Utils.checkPossibilityTx(TokenSymbols.WQT, 0.0, isMain: true);
+    await Web3Utils.checkPossibilityTx(
+      typeCoin: TokenSymbols.WQT,
+      gas: double.parse(store.fee),
+      amount: 0.0,
+      isMain: true,
+    );
   }
 
   bottomComplete() {

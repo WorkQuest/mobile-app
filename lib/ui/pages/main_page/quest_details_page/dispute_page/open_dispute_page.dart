@@ -251,7 +251,12 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
       );
 
   _checkPossibilityTx() async {
-    await store.getFee();
-    await Web3Utils.checkPossibilityTx(TokenSymbols.WQT, 0.0, isMain: true);
+    await store.getFee(widget.quest.contractAddress!);
+    await Web3Utils.checkPossibilityTx(
+      typeCoin: TokenSymbols.WQT,
+      gas: double.parse(store.fee),
+      amount: 0.0,
+      isMain: true,
+    );
   }
 }

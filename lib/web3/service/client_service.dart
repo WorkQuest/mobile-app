@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/services.dart';
 import 'package:hex/hex.dart';
@@ -11,7 +12,6 @@ import 'package:http/http.dart';
 import 'package:web_socket_channel/io.dart';
 import '../../constants.dart';
 import '../contractEnums.dart';
-import 'address_service.dart';
 
 abstract class ClientServiceI {
   Future<num> getBalanceInUnit(EtherUnit unit, String privateKey);
@@ -26,10 +26,16 @@ abstract class ClientServiceI {
 
   Future<EtherAmount> getGas();
 
-  Future<String> getNetwork();
+  Future<BigInt> getEstimateGas(Transaction transaction);
+
+  Future<double> getEstimateGasCallContract({
+    required DeployedContract contract,
+    required ContractFunction function,
+    required List<dynamic> params,
+  });
 
   Future sendTransaction({
-    required String privateKey,
+    required bool isToken,
     required String address,
     required String amount,
     required TokenSymbols coin,
@@ -37,7 +43,6 @@ abstract class ClientServiceI {
 }
 
 class ClientService implements ClientServiceI {
-
   final int _chainId = 1991;
 
   Web3Client? client;
@@ -64,44 +69,38 @@ class ClientService implements ClientServiceI {
 
   @override
   Future sendTransaction({
-    required String privateKey,
+    required bool isToken,
     required String address,
     required String amount,
     required TokenSymbols coin,
   }) async {
-    address = address.toLowerCase();
     String? hash;
-
-    final bigInt = BigInt.from(double.parse(amount) * pow(10, 18));
-    final credentials = await getCredentials(privateKey);
-    final myAddress = await AddressService().getPublicAddress(privateKey);
-
-    if (coin == TokenSymbols.WQT) {
+    final _privateKey = AccountRepository().privateKey;
+    final _credentials = await getCredentials(_privateKey);
+    if (!isToken) {
+      final _value = EtherAmount.fromUnitAndValue(
+        EtherUnit.wei,
+        BigInt.from(double.parse(amount) * pow(10, 18)),
+      );
+      final _to = EthereumAddress.fromHex(address);
+      final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
       hash = await client!.sendTransaction(
-        credentials,
+        _credentials,
         Transaction(
-          to: EthereumAddress.fromHex(address),
-          from: myAddress,
-          value: EtherAmount.fromUnitAndValue(
-            EtherUnit.wei,
-            bigInt,
-          ),
+          to: _to,
+          from: _from,
+          value: _value,
         ),
         chainId: _chainId,
       );
     } else {
-      String addressToken = AccountRepository()
-          .getConfigNetwork()
-          .dataCoins
-          .firstWhere((element) => element.symbolToken == coin)
-          .addressToken!;
-      final degree = coin == TokenSymbols.USDT ? 6 : 18;
-      final contract = Erc20(address: EthereumAddress.fromHex(addressToken), client: client!);
+      String _addressToken = Web3Utils.getAddressToken(coin);
+      final _degree = Web3Utils.getDegreeToken(coin);
+      final contract = Erc20(address: EthereumAddress.fromHex(_addressToken), client: client!);
       hash = await contract.transfer(
-        // myAddress,
         EthereumAddress.fromHex(address),
-        BigInt.from(double.parse(amount) * pow(10, degree)),
-        credentials: credentials,
+        BigInt.from(double.parse(amount) * pow(10, _degree)),
+        credentials: _credentials,
       );
       print('${coin.toString()} hash - $hash');
     }
@@ -166,26 +165,44 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<String> getNetwork() async {
-    try {
-      final index = await client!.getNetworkId();
-      switch (index) {
-        case 1:
-          return "Ethereum Mainnet";
-        case 2:
-          return "Morden Testnet (deprecated)";
-        case 3:
-          return "Ropsten Testnet";
-        case 4:
-          return "Rinkeby Testnet";
-        case 42:
-          return "Kovan Testnet";
-        default:
-          return "Unknown network";
-      }
-    } catch (e) {
-      return "Network could not be identified";
-    }
+  Future<BigInt> getEstimateGas(Transaction transaction) async {
+    return await client!.estimateGas(
+        sender: transaction.from,
+        to: transaction.to,
+        gasPrice: transaction.gasPrice,
+        value: transaction.value,
+        data: transaction.data,
+        amountOfGas: transaction.gasPrice?.getInWei);
+  }
+
+  @override
+  Future<double> getEstimateGasCallContract(
+      {required DeployedContract contract, required ContractFunction function, required List params}) async {
+    final _gas = await getGas();
+    final _estimateGas = await getEstimateGas(Transaction.callContract(
+      contract: contract,
+      function: function,
+      parameters: params,
+      from: EthereumAddress.fromHex(AccountRepository().userAddress),
+    ));
+    return (_estimateGas * _gas.getInWei).toDouble() * pow(10, -18);
+  }
+
+  Future<double> getEstimateGasForApprove(BigInt price) async {
+    final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
+        .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+        .addressToken;
+    print('_addressWUSD: $_addressWUSD');
+    final _contractApprove = await getDeployedContract("WQBridgeToken", _addressWUSD!);
+    final _gasForApprove = await getEstimateGasCallContract(
+      contract: _contractApprove,
+      function: _contractApprove.function(WQBridgeTokenFunctions.approve.name),
+      params: [
+        EthereumAddress.fromHex(Constants.worknetWQFactory),
+        price,
+      ],
+    );
+    return _gasForApprove;
   }
 }
 
@@ -341,6 +358,20 @@ extension ApproveCoin on ClientService {
     else
       return false;
   }
+
+  Future<BigInt> allowanceCoin() async {
+    print("Allowance coin");
+    final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
+        .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+        .addressToken;
+
+    final _contract = Erc20(address: EthereumAddress.fromHex(_addressWUSD!), client: client!);
+    final _result = await _contract.allowance(
+      EthereumAddress.fromHex(AccountRepository().userAddress),
+      EthereumAddress.fromHex(Constants.worknetWQFactory),
+    );
+    return _result;
+  }
 }
 
 extension CheckFunction on ClientService {
@@ -435,20 +466,14 @@ extension Promote on ClientService {
   Future<TransactionReceipt?> promoteUser({
     required int tariff,
     required int period,
-    required String amount,
   }) async {
     print('tariff: $tariff');
     print('period: $period');
-    print('amount: $amount');
     final contract = await getDeployedContract("WQPromotion", Constants.worknetPromotion);
     final function = contract.function(WQPromotionFunctions.promoteUser.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
     final _fromAddress = await _credentials.extractAddress();
-    final _value = EtherAmount.fromUnitAndValue(
-      EtherUnit.wei,
-      BigInt.from(double.parse(amount) * pow(10, 18)),
-    );
     final _transactionHash = await client!.sendTransaction(
       _credentials,
       Transaction.callContract(
@@ -461,7 +486,6 @@ extension Promote on ClientService {
           BigInt.from(period),
         ],
         from: _fromAddress,
-        value: _value,
       ),
       chainId: _chainId,
     );
@@ -483,3 +507,5 @@ extension Promote on ClientService {
     return result;
   }
 }
+
+extension Custom on EtherAmount {}

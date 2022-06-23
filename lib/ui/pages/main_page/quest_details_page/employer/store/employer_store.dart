@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
@@ -89,10 +88,14 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getFee() async {
+  Future<void> getFee(String userId) async {
     try {
-      final gas = await AccountRepository().getClient().getGas();
-      fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
+      final _user = await _apiProvider.getProfileUser(userId: userId);
+      final _client = AccountRepository().getClient();
+      final _contract = await _client.getDeployedContract("WorkQuest", quest.value!.contractAddress!);
+      final _function = _contract.function(WQContractFunctions.assignJob.name);
+      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: [EthereumAddress.fromHex(_user.walletAddress!)]);
+      fee = _gas.toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
     }
