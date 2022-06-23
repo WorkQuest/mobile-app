@@ -1,54 +1,67 @@
 import 'dart:math';
 
+import 'package:app/constants.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
-import '../web3/contractEnums.dart';
 import '../web3/repository/account_repository.dart';
 
 class Web3Utils {
-  static checkPossibilityTx(TYPE_COINS typeCoin, double amount) async {
-    final _client = AccountRepository().service!;
+  static checkPossibilityTx({
+    required TokenSymbols typeCoin,
+    required double gas,
+    required double amount,
+    bool isMain = false,
+  }) async {
+    final _client = AccountRepository().getClient();
     final _balanceWQT = await _client.getBalance(AccountRepository().privateKey);
-    final _gasTx = await _client.getGas();
 
-    if (typeCoin == TYPE_COINS.WQT) {
-      final _gas = (_gasTx.getInWei.toDouble() * pow(10, -16) * 250);
+    if (typeCoin == TokenSymbols.WQT) {
       final _balanceWQTInWei = (_balanceWQT.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
-      if (amount > (_balanceWQTInWei.toDouble() - _gas)) {
+      if (amount + gas > (_balanceWQTInWei.toDouble())) {
         throw FormatException('Not have enough WQT for the transaction');
       }
-    } else if (typeCoin == TYPE_COINS.WUSD) {
-      final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin));
+    } else if (typeCoin == TokenSymbols.WUSD) {
+      final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin, isMain: isMain));
       if (amount > _balanceToken) {
         throw FormatException('Not have enough ${getTitleToken(typeCoin)} for the transaction');
       }
-      if (_balanceWQT.getInWei < _gasTx.getInWei) {
+      if (_balanceWQT.getInWei < BigInt.from(gas * pow(10, 18))) {
         throw FormatException('Not have enough WQT for the transaction');
       }
     }
   }
 
-  static String getAddressToken(TYPE_COINS typeCoin) {
-    if (typeCoin == TYPE_COINS.WUSD) {
-      return AccountRepository().getConfigNetwork().addresses.wUsd;
-    } else if (typeCoin == TYPE_COINS.wETH) {
-      return AccountRepository().getConfigNetwork().addresses.wEth;
-    } else if (typeCoin == TYPE_COINS.wBNB) {
-      return AccountRepository().getConfigNetwork().addresses.wBnb;
+  static int getDegreeToken(TokenSymbols typeCoin) {
+    if (typeCoin == TokenSymbols.USDT) {
+      return 6;
     } else {
-      return AccountRepository().getConfigNetwork().addresses.uSdt;
+      return 18;
     }
   }
 
-  static String getTitleToken(TYPE_COINS typeCoin) {
-    if (typeCoin == TYPE_COINS.WQT) {
+  static String getAddressToken(TokenSymbols typeCoin, {bool isMain = false}) {
+    try {
+      if (isMain) {
+        final _dataTokens = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins;
+        return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
+      } else {
+        final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
+        return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
+      }
+    } catch (e) {
+      return '';
+    }
+  }
+
+  static String getTitleToken(TokenSymbols typeCoin) {
+    if (typeCoin == TokenSymbols.WQT) {
       return 'WQT';
-    } else if (typeCoin == TYPE_COINS.WUSD) {
+    } else if (typeCoin == TokenSymbols.WUSD) {
       return 'WUSD';
-    } else if (typeCoin == TYPE_COINS.wETH) {
+    } else if (typeCoin == TokenSymbols.wETH) {
       return 'wETH';
-    } else if (typeCoin == TYPE_COINS.wBNB) {
+    } else if (typeCoin == TokenSymbols.wBNB) {
       return 'wBNB';
     } else {
       return 'USDT';

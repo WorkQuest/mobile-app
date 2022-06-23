@@ -1,4 +1,5 @@
-import 'package:app/web3/contractEnums.dart';
+import 'dart:math';
+
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -15,10 +16,7 @@ class WalletStore extends _WalletStore with _$WalletStore {
 
 abstract class _WalletStore extends IStore<bool> with Store {
   @observable
-  TYPE_COINS type = TYPE_COINS.WQT;
-
-  @action
-  setType(TYPE_COINS value) => type = value;
+  TokenSymbols type = TokenSymbols.WQT;
 
   @observable
   ObservableList<_CoinEntity> coins = ObservableList.of([]);
@@ -30,29 +28,20 @@ abstract class _WalletStore extends IStore<bool> with Store {
   String errorTest = '';
 
   @action
+  setType(TokenSymbols value) => type = value;
+
+  @action
   getCoins({bool isForce = true}) async {
     if (isForce) {
       onLoading();
     }
     try {
-      final addresses = Configs.configsNetwork[AccountRepository().configName]!.addresses;
-
-      final _balance = await AccountRepository().service!.getBalance(AccountRepository().privateKey);
-      final wqt = _balance.getInEther;
-      final wUsd = await AccountRepository().service!.getBalanceFromContract(addresses.wUsd);
-      final wEth = await AccountRepository().service!.getBalanceFromContract(addresses.wEth);
-      final wBnb = await AccountRepository().service!.getBalanceFromContract(addresses.wBnb);
-      final uSdt = await AccountRepository().service!.getBalanceFromContract(addresses.uSdt);
-
-      List<_CoinEntity> _listCoins = []
-        ..add(_CoinEntity("WQT", wqt.toString()))
-        ..add(_CoinEntity("WUSD", wUsd.toString()))
-        ..add(_CoinEntity("wBNB", wBnb.toString()))
-        ..add(_CoinEntity("wETH", wEth.toString()))
-        ..add(_CoinEntity("USDT", uSdt.toString()));
-
-      _setCoins(_listCoins);
-
+      final _tokens = Configs.configsNetwork[AccountRepository().configName]!.dataCoins;
+      final _listCoinsEntity = await _getCoinEntities(_tokens);
+      if (isForce) {
+        coins.clear();
+      }
+      _setCoins(_listCoinsEntity);
       if (isForce) {
         onSuccess(true);
       }
@@ -63,55 +52,37 @@ abstract class _WalletStore extends IStore<bool> with Store {
 
   _setCoins(List<_CoinEntity> listCoins) {
     if (coins.isNotEmpty) {
-      final _indexWQT = coins.indexWhere((coin) => coin.title == 'WQT');
-      coins[_indexWQT] = listCoins.firstWhere((coin) => coin.title == 'WQT');
-
-      final _indexWUSD = coins.indexWhere((coin) => coin.title == 'WUSD');
-      coins[_indexWUSD] = listCoins.firstWhere((coin) => coin.title == 'WUSD');
-
-      final _indexWBNB = coins.indexWhere((coin) => coin.title == 'wBNB');
-      coins[_indexWBNB] = listCoins.firstWhere((coin) => coin.title == 'wBNB');
-
-      final _indexWETH = coins.indexWhere((coin) => coin.title == 'wETH');
-      coins[_indexWETH] = listCoins.firstWhere((coin) => coin.title == 'wETH');
-
-      final _indexUSDT = coins.indexWhere((coin) => coin.title == 'USDT');
-      coins[_indexUSDT] = listCoins.firstWhere((coin) => coin.title == 'USDT');
+      coins.map((element) {
+        element.amount = listCoins.firstWhere((element) => element.symbol == element.symbol).amount;
+      }).toList();
     } else {
       coins.addAll(listCoins);
     }
   }
 
-// @action
-// getTestCoinsWUSD() async {
-//   errorTest = '';
-//   try {
-//     isLoadingTest = true;
-//     // await Future.delayed(const Duration(seconds: 2));
-//     await _apiProvider.getTestCoinsWUSD();
-//   } catch (e) {
-//     errorTest = e.toString();
-//   }
-//   isLoadingTest = false;
-// }
-//
-// @action
-// getTestCoinsWQT() async {
-//   errorTest = '';
-//   try {
-//     isLoadingTest = true;
-//     // await Future.delayed(const Duration(seconds: 2));
-//     await _apiProvider.getTestCoinsWQT();
-//   } catch (e) {
-//     errorTest = e.toString();
-//   }
-//   isLoadingTest = false;
-// }
+  Future<List<_CoinEntity>> _getCoinEntities(List<DataCoins> coins) async {
+    List<_CoinEntity> _result = [];
+    final _client = AccountRepository().getClient(other: true);
+    await Stream.fromIterable(coins).asyncMap((coin) async {
+      if (coin.addressToken == null) {
+        final _balance = await _client.getBalance(AccountRepository().privateKey);
+        final _amount = (_balance.getInWei.toDouble() * pow(10, -18)).toStringAsFixed(8);
+        _result.add(_CoinEntity(coin.symbolToken, _amount));
+      } else {
+        final _amount =
+            await _client.getBalanceFromContract(coin.addressToken!, isUSDT: coin.symbolToken == TokenSymbols.USDT);
+        _result.add(_CoinEntity(coin.symbolToken, _amount.toString()));
+      }
+    }).toList();
+
+    return _result;
+  }
+
 }
 
 class _CoinEntity {
-  final String title;
-  final String amount;
+  final TokenSymbols symbol;
+  String? amount;
 
-  const _CoinEntity(this.title, this.amount);
+  _CoinEntity(this.symbol, [this.amount]);
 }

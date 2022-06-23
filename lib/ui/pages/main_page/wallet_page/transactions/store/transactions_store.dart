@@ -1,8 +1,8 @@
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/web3_extension.dart';
 import 'package:app/model/web3/transactions_response.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -20,7 +20,6 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   TransactionsStoreBase(this._apiProvider);
 
-
   @observable
   ObservableList<Tx> transactions = ObservableList<Tx>.of([]);
 
@@ -31,13 +30,19 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   bool canMoreLoading = true;
 
   @observable
-  TYPE_COINS type = TYPE_COINS.WQT;
+  TokenSymbols type = TokenSymbols.WQT;
 
   @action
-  setType(TYPE_COINS value) => type = value;
+  setType(TokenSymbols value) => type = value;
 
   @action
   getTransactions({bool isForce = false}) async {
+    final _type = _getTypeNetwork();
+    if (_type != ConfigNameNetwork.testnet) {
+      transactions.clear();
+      onSuccess(true);
+      return;
+    }
     canMoreLoading = true;
     if (isForce) {
       onLoading();
@@ -52,7 +57,8 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       }
       List<Tx>? result;
       final _addressToken = Web3Utils.getAddressToken(type);
-      if (type == TYPE_COINS.WQT) {
+
+      if (type == TokenSymbols.WQT) {
         result = await _apiProvider.getTransactions(
           AccountRepository().userAddress,
           limit: 10,
@@ -83,19 +89,25 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     } on FormatException catch (e, trace) {
       print('$e\n$trace');
       onError(e.message);
-    } catch (e) {
-      print('$e');
+    } catch (e, trace) {
+      print('getTransactions | $e\n$trace');
       onError(e.toString());
     }
   }
 
   @action
   getTransactionsMore() async {
+    final _type = _getTypeNetwork();
+    if (_type != ConfigNameNetwork.testnet) {
+      transactions.clear();
+      onSuccess(true);
+      return;
+    }
     isMoreLoading = true;
     try {
       List<Tx>? result;
       final _addressToken = Web3Utils.getAddressToken(type);
-      if (type == TYPE_COINS.WQT) {
+      if (type == TokenSymbols.WQT) {
         result = await _apiProvider.getTransactions(
           AccountRepository().userAddress,
           limit: 10,
@@ -129,16 +141,18 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   _setTypeCoinInTxs(List<Tx> txs) {
     txs.map((tran) {
-      if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TYPE_COINS.WUSD))
-        tran.coin = TYPE_COINS.WUSD;
-      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TYPE_COINS.wETH))
-        tran.coin = TYPE_COINS.wETH;
-      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TYPE_COINS.wBNB))
-        tran.coin = TYPE_COINS.wBNB;
-      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TYPE_COINS.USDT))
-        tran.coin = TYPE_COINS.USDT;
+      if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.WUSD))
+        tran.coin = TokenSymbols.WUSD;
+      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.wETH))
+        tran.coin = TokenSymbols.wETH;
+      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.wBNB))
+        tran.coin = TokenSymbols.wBNB;
+      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.USDT))
+        tran.coin = TokenSymbols.USDT;
       else
-        tran.coin = TYPE_COINS.WQT;
+        tran.coin = TokenSymbols.WQT;
     }).toList();
   }
+
+  ConfigNameNetwork _getTypeNetwork() => AccountRepository().configName!;
 }

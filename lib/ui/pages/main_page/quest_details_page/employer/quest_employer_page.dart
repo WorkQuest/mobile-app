@@ -25,7 +25,6 @@ import 'package:share/share.dart';
 
 import '../../../../../constants.dart';
 import '../../../../../utils/web3_utils.dart';
-import '../../../../../web3/contractEnums.dart';
 import '../../../../widgets/quest_header.dart';
 import '../../raise_views_page/raise_views_page.dart';
 
@@ -125,25 +124,31 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   }
                   break;
                 case "settings.delete":
-                  _showSecurityTOTPDialog(onTabOk: () async {
-                    await store.validateTotp();
-                    if (store.isValid)
-                      await dialog(
-                        context,
-                        title: "quests.deleteQuest".tr(),
-                        message: "quests.deleteQuestMessage".tr(),
-                        confirmAction: () async {
-                          await store.deleteQuest(
-                              questId: widget.arguments.questInfo!.id);
-                          questStore
-                              .deleteQuest(widget.arguments.questInfo!.id);
-                          if (profile!.userData!.questsStatistic != null)
-                            profile!.userData!.questsStatistic!.opened -= 1;
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },
-                      );
-                  });
+                  if (profile?.userData?.isTotpActive == true) {
+                    _showSecurityTOTPDialog(onTabOk: () async {
+                      await store.validateTotp();
+                      if (store.isValid)
+                        await dialog(
+                          context,
+                          title: "quests.deleteQuest".tr(),
+                          message: "quests.deleteQuestMessage".tr(),
+                          confirmAction: () async {
+                            await store.deleteQuest(questId: widget.arguments.questInfo!.id);
+                            questStore.deleteQuest(widget.arguments.questInfo!.id);
+                            if (profile!.userData!.questsStatistic != null)
+                              profile!.userData!.questsStatistic!.opened -= 1;
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                        );
+                    });
+                  } else {
+                    await AlertDialogUtils.showInfoAlertDialog(
+                      context,
+                      title: 'Error',
+                      content: "You can't delete quest without connected 2FA",
+                    );
+                  }
                   break;
                 default:
               }
@@ -621,8 +626,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   }
 
   _checkPossibilityTx() async {
-    await store.getFee();
-    await Web3Utils.checkPossibilityTx(TYPE_COINS.WQT, 0.0);
+    await store.getFee(store.selectedResponders!.workerId);
+    await Web3Utils.checkPossibilityTx(
+      typeCoin: TokenSymbols.WQT,
+      gas: double.parse(store.fee),
+      amount: 0.0,
+      isMain: true,
+    );
   }
 
   Widget selectableMember(RespondModel respond) {

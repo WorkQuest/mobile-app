@@ -17,6 +17,18 @@ class Storage {
     await _secureStorage.write(key: key.toString(), value: value);
   }
 
+  static Future<void> writeTimerTime(String time) async{
+    _secureStorage.write(key: "timeTimer", value: time);
+  }
+
+  static Future<void> writeTimerEmailTime(String time) async{
+    _secureStorage.write(key: "timeEmailTimer", value: time);
+  }
+
+  static Future<void> writeNotificationToken(String token) async {
+    _secureStorage.write(key: "notificationToken", value: token);
+  }
+
   static Future<void> writeRefreshToken(String token) async {
     _secureStorage.write(key: "refreshToken", value: token);
   }
@@ -27,6 +39,14 @@ class Storage {
 
   static Future<void> writePinCode(String pinCode) async {
     _secureStorage.write(key: "pinCode", value: pinCode);
+  }
+
+  static Future<String?> readTimeTimer() async {
+    return await _secureStorage.read(key: "timeTimer");
+  }
+
+  static Future<String?> readTimeEmailTimer() async {
+    return await _secureStorage.read(key: "timeEmailTimer");
   }
 
   static Future<void> writeConfig(String config) async {

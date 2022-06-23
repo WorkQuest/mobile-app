@@ -33,6 +33,9 @@ class Constants {
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkaD5eDwADoAHLLpHylgAAAABJRU5ErkJggg==';
   static const String defaultImageNetwork =
       'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
+
+  static const worknetWQFactory = '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4';
+  static const worknetPromotion = '0x23918c4cC7001fB4e2BF28c8283b02BcD6975bf0';
 }
 
 abstract class AppColor {
@@ -49,33 +52,6 @@ abstract class AppColor {
   static const star = Color(0xffE8D20D);
 }
 
-enum ConfigNameNetwork { devnet, testnet }
-
-class Configs {
-  static final configsNetwork = {
-    ConfigNameNetwork.devnet: ConfigNetwork(
-      rpc: 'https://dev-node-ams3.workquest.co',
-      wss: 'wss://dev-node-nyc3.workquest.co',
-      addresses: AddressCoins(
-        wUsd: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
-        wEth: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
-        wBnb: '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24',
-        uSdt: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
-      ),
-    ),
-    ConfigNameNetwork.testnet: ConfigNetwork(
-      rpc: 'https://testnet-gate.workquest.co/',
-      wss: 'wss://testnet-gate.workquest.co',
-      addresses: AddressCoins(
-        wUsd: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
-        wEth: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
-        wBnb: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
-        uSdt: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859',
-      ),
-    )
-  };
-}
-
 class RegExpFields {
   static final emailRegExp = RegExp(
     r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
@@ -85,29 +61,113 @@ class RegExpFields {
   static final addressRegExp = RegExp(r'[0-9a-fA-F]');
 }
 
-class AddressCoins {
-  final String wUsd;
-  final String wEth;
-  final String wBnb;
-  final String uSdt;
-
-  AddressCoins({
-    required this.wUsd,
-    required this.wEth,
-    required this.wBnb,
-    required this.uSdt,
-  });
+class Configs {
+  static final configsNetwork = {
+    ConfigNameNetwork.testnet: ConfigNetwork(
+      rpc: 'https://testnet-gate.workquest.co/',
+      wss: 'wss://testnet-gate.workquest.co/tendermint-rpc/websocket',
+      urlExplorer: '',
+      dataCoins: [
+        DataCoins(
+          symbolToken: TokenSymbols.WQT,
+          iconPath: 'assets/coins/wqt.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.WUSD,
+          addressToken: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
+          iconPath: 'assets/coins/wusd.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.wETH,
+          addressToken: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
+          iconPath: 'assets/coins/weth.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.wBNB,
+          addressToken: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
+          iconPath: 'assets/coins/wbnb.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.USDT,
+          addressToken: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859',
+          iconPath: 'assets/coins/usdt.svg',
+        ),
+      ],
+    ),
+    ConfigNameNetwork.rinkeby: ConfigNetwork(
+      rpc: 'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby',
+      wss: 'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby/ws',
+      urlExplorer: 'https://rinkeby.etherscan.io/address/',
+      dataCoins: [
+        DataCoins(
+          symbolToken: TokenSymbols.ETH,
+          iconPath: 'assets/coins/weth.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.USDT,
+          addressToken: '0xD92E713d051C37EbB2561803a3b5FBAbc4962431',
+          iconPath: 'assets/coins/usdt.svg',
+        ),
+      ],
+    ),
+    ConfigNameNetwork.binance: ConfigNetwork(
+      rpc: 'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet',
+      wss: 'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet/ws',
+      urlExplorer: 'https://testnet.bscscan.com/address/',
+      dataCoins: [
+        DataCoins(
+          symbolToken: TokenSymbols.BNB,
+          iconPath: 'assets/coins/wbnb.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.USDT,
+          addressToken: '0xC9bda0FA861Bd3F66c7d0Fd75A9A8344e6Caa94A',
+          iconPath: 'assets/coins/usdt.svg',
+        ),
+      ],
+    ),
+    ConfigNameNetwork.polygon: ConfigNetwork(
+      rpc: 'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai',
+      wss: 'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai/ws',
+      urlExplorer: 'https://mumbai.polygonscan.com/address/',
+      dataCoins: [
+        DataCoins(
+          symbolToken: TokenSymbols.MATIC,
+          iconPath: 'assets/coins/wqt.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.USDT,
+          addressToken: '0x631E327EA88C37D4238B5c559A715332266e7Ec1',
+          iconPath: 'assets/coins/usdt.svg',
+        ),
+      ],
+    ),
+  };
 }
 
 class ConfigNetwork {
   final String rpc;
   final String wss;
-  final AddressCoins addresses;
+  final String urlExplorer;
+  final List<DataCoins> dataCoins;
 
   ConfigNetwork({
     required this.rpc,
     required this.wss,
-    required this.addresses,
+    required this.urlExplorer,
+    required this.dataCoins,
+  });
+}
+
+class DataCoins {
+  final TokenSymbols symbolToken;
+  final String? addressToken;
+  final String iconPath;
+
+  const DataCoins({
+    required this.symbolToken,
+    required this.iconPath,
+    this.addressToken,
   });
 }
 
@@ -117,3 +177,7 @@ class WorkerBadge {
 
   const WorkerBadge(this.title, this.color);
 }
+
+enum ConfigNameNetwork { testnet, rinkeby, binance, polygon }
+
+enum TokenSymbols { WUSD, WQT, wBNB, wETH, USDT, BNB, ETH, MATIC }

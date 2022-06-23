@@ -1,7 +1,12 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
+import 'package:web3dart/web3dart.dart';
 
 import '../../../../../web3/contractEnums.dart';
 import '../../../../../web3/repository/account_repository.dart';
@@ -20,7 +25,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   _RaiseViewStore(this.apiProvider);
 
   @observable
-  TYPE_COINS? typeCoin;
+  TokenSymbols? typeCoin;
 
   @observable
   TYPE_WALLET? typeWallet;
@@ -44,7 +49,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   setQuestId(String value) => questId = value;
 
   @action
-  setTitleSelectedCoin(TYPE_COINS? value) => typeCoin = value;
+  setTitleSelectedCoin(TokenSymbols? value) => typeCoin = value;
 
   @action
   setTitleSelectedWallet(TYPE_WALLET? value) => typeWallet = value;
@@ -94,26 +99,85 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   @computed
   bool get canSubmit => !isLoading && typeCoin != null && typeWallet != null;
 
+  Future<String> getFee({bool isQuestRaise = false}) async {
+    try {
+      final _client = AccountRepository().getClient();
+      final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
+          .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+          .addressToken;
+      final _contractApprove = await _client.getDeployedContract("WQBridgeToken", _addressWUSD!);
+      if (isQuestRaise) {
+        final _amount = getAmount(isQuest: true, tariff: levelGroupValue, period: getPeriod(isQuest: true));
+        final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
+        final _gasForApprove = await _client.getEstimateGasCallContract(
+          contract: _contractApprove,
+          function: _contractApprove.function(WQBridgeTokenFunctions.approve.name),
+          params: [
+            EthereumAddress.fromHex(Constants.worknetWQFactory),
+            _price,
+          ],
+        );
+
+        final _contractPromote = await _client.getDeployedContract("WQPromotion", Constants.worknetPromotion);
+        final _quest = await apiProvider.getQuest(id: questId);
+        final _gasForPromote = await _client.getEstimateGasCallContract(
+          contract: _contractPromote,
+          function: _contractPromote.function(WQPromotionFunctions.promoteQuest.name),
+          params: [
+            EthereumAddress.fromHex(_quest.contractAddress!),
+            BigInt.from(levelGroupValue - 1),
+            BigInt.from(getPeriod(isQuest: true)),
+          ],
+        );
+        return (_gasForApprove + _gasForPromote).toStringAsFixed(17);
+      } else {
+        final _amount = getAmount(isQuest: false, tariff: levelGroupValue, period: getPeriod(isQuest: false));
+        final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
+        final _gasForApprove = await _client.getEstimateGasCallContract(
+          contract: _contractApprove,
+          function: _contractApprove.function(WQBridgeTokenFunctions.approve.name),
+          params: [
+            EthereumAddress.fromHex(Constants.worknetWQFactory),
+            _price,
+          ],
+        );
+
+        final _contractPromote = await _client.getDeployedContract("WQPromotion", Constants.worknetPromotion);
+        final _gasForPromote = await _client.getEstimateGasCallContract(
+          contract: _contractPromote,
+          function: _contractPromote.function(WQPromotionFunctions.promoteUser.name),
+          params: [
+            BigInt.from(levelGroupValue - 1),
+            BigInt.from(getPeriod(isQuest: false)),
+          ],
+        );
+        return (_gasForApprove + _gasForPromote).toStringAsFixed(17);
+      }
+    } on SocketException catch (_) {
+      onError("Lost connection to server");
+      throw FormatException('Lost connection to server');
+    }
+  }
+
   @action
   Future<void> raiseProfile() async {
     try {
       this.onLoading();
       final _period = getPeriod();
       print('levelGroupValue: $levelGroupValue | period: ${getPeriod()}');
-      await AccountRepository().service!.promoteUser(
-        tariff: levelGroupValue - 1,
-        period: _period,
-        amount: _getAmount(
-          isQuest: false,
-          tariff: levelGroupValue,
-          period: _period,
-        ),
-      );
-      // await apiProvider.raiseProfile(
-      //     duration: getPeriod(), type: levelGroupValue - 1);
+      final _amount = getAmount(isQuest: false, tariff: levelGroupValue, period: _period);
+      final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
+      await AccountRepository().getClient().approveCoin(price: _price);
+      await AccountRepository().getClient().promoteUser(
+            tariff: levelGroupValue - 1,
+            period: _period,
+          );
       this.onSuccess(true);
+    } on FormatException catch (e, trace) {
+      print('raiseProfile FormatException | $e\n$trace');
+      this.onError(e.message);
     } catch (e, trace) {
-      print('e: $e\ntrace: $trace');
+      print('raiseProfile | $e\n$trace');
       this.onError(e.toString());
     }
   }
@@ -124,26 +188,27 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onLoading();
       final _quest = await apiProvider.getQuest(id: questId);
       final _period = getPeriod(isQuest: true);
-      await AccountRepository().service!.promoteQuest(
-        tariff: levelGroupValue - 1,
-        period: _period,
-        amount: _getAmount(
-          isQuest: true,
-          tariff: levelGroupValue,
-          period: _period,
-        ),
-        questAddress: _quest.contractAddress!,
-      );
-      // await apiProvider.raiseQuest(
-      //     questId: questId, duration: getPeriod(), type: levelGroupValue - 1);
+      final _amount = getAmount(isQuest: true, tariff: levelGroupValue, period: _period);
+      final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
+      await AccountRepository().getClient().approveCoin(price: _price);
+      await AccountRepository().getClient().promoteQuest(
+            tariff: levelGroupValue - 1,
+            period: _period,
+            amount: _amount,
+            questAddress: _quest.contractAddress!,
+          );
 
       this.onSuccess(true);
-    } catch (e) {
+    } on FormatException catch (e, trace) {
+      print('raiseQuest FormatException | $e\n$trace');
+      this.onError(e.message);
+    } catch (e, trace) {
+      print('raiseQuest | $e\n$trace');
       this.onError(e.toString());
     }
   }
 
-  String _getAmount({
+  String getAmount({
     required bool isQuest,
     required int tariff,
     required int period,

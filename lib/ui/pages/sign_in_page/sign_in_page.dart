@@ -145,18 +145,13 @@ class _SignInPageState extends State<SignInPage> {
               ),
             ),
             SliverToBoxAdapter(
-              child: InkWell(
-                onTap: () {
-                  _showAlertTotp(context, signInStore);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Center(
-                    child: Text(
-                      "signIn.or".tr(),
-                      style: TextStyle(
-                        color: Color(0xFFCBCED2),
-                      ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Center(
+                  child: Text(
+                    "signIn.or".tr(),
+                    style: TextStyle(
+                      color: Color(0xFFCBCED2),
                     ),
                   ),
                 ),
@@ -347,10 +342,6 @@ class _SocialLoginWidget extends StatelessWidget {
             context,
             signInStore,
           ),
-          // _iconButton(
-          //   "assets/instagram.svg",
-          //   "https://www.instagram.com/zuck/?hl=ru",
-          // ),
           _iconButton(
             "assets/twitter_icon.svg",
             "twitter",

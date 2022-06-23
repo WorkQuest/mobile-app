@@ -10,7 +10,6 @@ import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.d
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
 import 'package:app/ui/widgets/shimmer.dart';
 import 'package:app/utils/snack_bar.dart';
-import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -39,7 +38,7 @@ class _WalletPageState extends State<WalletPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.white, body: Platform.isIOS ? _mainLayout() : _mainLayout());
+    return Scaffold(backgroundColor: Colors.white, body: _mainLayout());
   }
 
   Widget _mainLayout() {
@@ -388,7 +387,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           else
                             Text(
                               // '${num.parse(balance.amount).toInt()} ${balance.title}',
-                              '${num.parse(balance.amount).toDouble().toStringAsFixed(8)} ${balance.title}',
+                              '${num.parse(balance.amount!)} ${balance.symbol.name}',
                               style: const TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.w700,
@@ -405,7 +404,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             )
                           else
                             Text(
-                              _getCourseDollar(balance.title, balance.amount),
+                              _getCourseDollar(balance.symbol.name, balance.amount!),
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: AppColor.unselectedBottomIcon,
@@ -425,7 +424,11 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: store.coins.map((balance) {
+                    if (_currencyIndex >= store.coins.length) {
+                      _currencyIndex = 0;
+                    }
                     bool isCurrency = balance == store.coins[_currencyIndex];
+
                     return GestureDetector(
                       onTap: () => _controller.nextPage(),
                       child: Container(
@@ -480,24 +483,24 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
   _onPageChanged(int index, dynamic _) {
     switch (index) {
       case 0:
-        GetIt.I.get<WalletStore>().setType(TYPE_COINS.WQT);
-        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.WQT);
+        GetIt.I.get<WalletStore>().setType(TokenSymbols.WQT);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.WQT);
         break;
       case 1:
-        GetIt.I.get<WalletStore>().setType(TYPE_COINS.WUSD);
-        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.WUSD);
+        GetIt.I.get<WalletStore>().setType(TokenSymbols.WUSD);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.WUSD);
         break;
       case 2:
-        GetIt.I.get<WalletStore>().setType(TYPE_COINS.wBNB);
-        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wBNB);
+        GetIt.I.get<WalletStore>().setType(TokenSymbols.wBNB);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.wBNB);
         break;
       case 3:
-        GetIt.I.get<WalletStore>().setType(TYPE_COINS.wETH);
-        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.wETH);
+        GetIt.I.get<WalletStore>().setType(TokenSymbols.wETH);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.wETH);
         break;
       case 4:
-        GetIt.I.get<WalletStore>().setType(TYPE_COINS.USDT);
-        GetIt.I.get<TransactionsStore>().setType(TYPE_COINS.USDT);
+        GetIt.I.get<WalletStore>().setType(TokenSymbols.USDT);
+        GetIt.I.get<TransactionsStore>().setType(TokenSymbols.USDT);
         break;
     }
     GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);

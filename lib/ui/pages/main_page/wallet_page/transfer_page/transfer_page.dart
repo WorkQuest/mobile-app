@@ -4,7 +4,6 @@ import 'package:app/ui/pages/main_page/wallet_page/transfer_page/confirm_page/mo
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/layout_with_scroll.dart';
 import 'package:app/utils/alert_dialog.dart';
-import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,15 +19,6 @@ import 'confirm_page/confirm_transfer_page.dart';
 import 'mobx/transfer_store.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
-
-final String coinsPath = "assets/coins";
-List<_CoinItem> _coins = [
-  _CoinItem("$coinsPath/wqt.svg", 'WQT', TYPE_COINS.WQT, true),
-  _CoinItem("$coinsPath/wusd.svg", 'WUSD', TYPE_COINS.WUSD, true),
-  _CoinItem("$coinsPath/wbnb.svg", 'wBNB', TYPE_COINS.wBNB, true),
-  _CoinItem("$coinsPath/weth.svg", 'wETH', TYPE_COINS.wETH, true),
-  _CoinItem("$coinsPath/usdt.svg", 'USDT', TYPE_COINS.USDT, true),
-];
 
 class TransferPage extends StatefulWidget {
   const TransferPage({
@@ -46,21 +36,38 @@ class _TransferPageState extends State<TransferPage> {
   GlobalKey<ScaffoldState> _ey = GlobalKey<ScaffoldState>();
   _CoinItem? _currentCoin;
 
+  final String coinsPath = "assets/coins";
+  late List<_CoinItem> _coins = [];
+
   late TransferStore store;
 
   bool get _selectedCoin => _currentCoin != null;
 
+  _initCoins() {
+    final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
+    _coins.addAll(_dataTokens
+        .map((coin) => _CoinItem(
+              coin.iconPath,
+              coin.symbolToken.name,
+              coin.symbolToken,
+              true,
+            ))
+        .toList());
+  }
+
   @override
   void initState() {
-    super.initState();
+    _initCoins();
     store = context.read<TransferStore>();
-    store.getFee();
+    store.setTitleSelectedCoin(_coins.first.typeCoin);
+    _currentCoin = _coins.first;
     _amountController.addListener(() {
       store.setAmount(_amountController.text);
     });
     _addressController.addListener(() {
       store.setAddressTo(_addressController.text);
     });
+    super.initState();
   }
 
   @override
@@ -278,8 +285,6 @@ class _TransferPageState extends State<TransferPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       }
 
-      await store.getFee();
-
       if (store.addressTo.toLowerCase() == AccountRepository().userAddress.toLowerCase()) {
         AlertDialogUtils.showInfoAlertDialog(context,
             title: 'modals.error'.tr(), content: 'errors.provideYourAddress'.tr());
@@ -289,6 +294,7 @@ class _TransferPageState extends State<TransferPage> {
         AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
+      await store.getFee();
       final result = await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (_) => Provider(
@@ -469,7 +475,7 @@ class _CoinItem {
   String iconPath;
   String title;
   bool isEnable;
-  TYPE_COINS typeCoin;
+  TokenSymbols typeCoin;
 
   _CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);
 }

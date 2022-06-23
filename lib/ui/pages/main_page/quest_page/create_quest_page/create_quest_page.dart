@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
@@ -13,7 +13,6 @@ import 'package:app/ui/widgets/skill_specialization_selection/skill_specializati
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/validator.dart';
-import 'package:app/web3/contractEnums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +24,6 @@ import '../../../../../enums.dart';
 import '../../../../../observer_consumer.dart';
 import '../../../../../utils/web3_utils.dart';
 import '../../../../widgets/media_upload/media_upload_widget.dart';
-import '../../../../../web3/repository/account_repository.dart';
 import '../../wallet_page/confirm_transaction_dialog.dart';
 
 class CreateQuestPage extends StatefulWidget {
@@ -42,7 +40,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   final _formKey = GlobalKey<FormState>();
   SkillSpecializationController? _controller;
   late ProfileMeStore? profile;
-  late TransferStore transferStore;
   final _scrollController = ScrollController();
 
   final addressKey = new GlobalKey();
@@ -51,37 +48,28 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   final descriptionKey = new GlobalKey();
   final priceKey = new GlobalKey();
   final confirmUnderstandAboutEdit = new GlobalKey();
-  final contractAddress = AccountRepository().service!.abiFactoryAddress;
+  final contractAddress = Constants.worknetWQFactory;
 
   bool isEdit = false;
 
   void initState() {
     super.initState();
     profile = context.read<ProfileMeStore>();
-    transferStore = context.read<TransferStore>();
     if (widget.questInfo != null) {
       this.isEdit = true;
       final store = context.read<CreateQuestStore>();
+      store.oldPrice = BigInt.parse(widget.questInfo!.price);
       store.setConfirmUnderstandAboutEdit(true);
-      print("questInfo!.priority: ${widget.questInfo!.priority - 1}");
-      store.priority =
-          QuestConstants.priorityList[widget.questInfo!.priority - 1];
+      store.priority = QuestConstants.priorityList[widget.questInfo!.priority - 1];
       store.contractAddress = widget.questInfo!.contractAddress ?? '';
       store.questTitle = widget.questInfo!.title;
-      store.changedDistantWork(
-          QuestUtils.getEmployment(widget.questInfo!.workplace));
-      store.changedEmployment(
-          QuestUtils.getEmployment(widget.questInfo!.employment));
-      // store.getWorkplace(widget.questInfo!.workplace);
-      // store.getEmployment(widget.questInfo!.employment);
+      store.changedDistantWork(QuestUtils.getEmployment(widget.questInfo!.workplace));
+      store.changedEmployment(QuestUtils.getEmployment(widget.questInfo!.employment));
       store.description = widget.questInfo!.description;
-      store.price =
-          (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18))
-              .toString();
+      store.price = (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18)).toString();
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
       store.setImages(widget.questInfo!.medias ?? []);
-      _controller = SkillSpecializationController(
-          initialValue: widget.questInfo!.questSpecializations);
+      _controller = SkillSpecializationController(initialValue: widget.questInfo!.questSpecializations);
     } else
       _controller = SkillSpecializationController();
   }
@@ -539,52 +527,67 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               onTap: store.isLoading
                                   ? null
                                   : () async {
-                                      store.skillFilters = _controller!
-                                          .getSkillAndSpecialization();
+                                      store.skillFilters = _controller!.getSkillAndSpecialization();
+                                      final _gas = await store.getFee(isEdit: isEdit);
                                       if (isEdit) {
                                         if (store.canSubmitEditQuest) {
-                                          if (_formKey.currentState
-                                                  ?.validate() ??
-                                              false) {
-                                            await store.createQuest(
-                                              isEdit: true,
-                                              questId: widget.questInfo!.id,
+                                          if (_formKey.currentState?.validate() ?? false) {
+                                            try {
+                                              await _checkPossibilityTx(store.price, _gas);
+                                            } on FormatException catch (e) {
+                                              AlertDialogUtils.showInfoAlertDialog(context,
+                                                  title: 'modals.error'.tr(), content: e.message);
+                                              return;
+                                            } catch (e) {
+                                              AlertDialogUtils.showInfoAlertDialog(context,
+                                                  title: 'modals.error'.tr(), content: e.toString());
+                                              return;
+                                            }
+                                            confirmTransaction(
+                                              context,
+                                              fee: _gas,
+                                              transaction: "Transaction info",
+                                              address: contractAddress,
+                                              amount: store.price,
+                                              onPress: () async {
+                                                store.createQuest(
+                                                  isEdit: true,
+                                                  questId: widget.questInfo!.id,
+                                                );
+                                                Navigator.pop(context);
+                                                if (store.isSuccess) {
+                                                  Navigator.pop(context);
+                                                  AlertDialogUtils.showSuccessDialog(context);
+                                                }
+                                              },
                                             );
                                           }
                                         }
                                       } else if (store.canCreateQuest) {
-                                        if (_formKey.currentState?.validate() ??
-                                            false) {
-                                          if (!store
-                                              .confirmUnderstandAboutEdit) {
+                                        if (_formKey.currentState?.validate() ?? false) {
+                                          if (!store.confirmUnderstandAboutEdit) {
                                             Scrollable.ensureVisible(
-                                              confirmUnderstandAboutEdit
-                                                  .currentContext!,
+                                              confirmUnderstandAboutEdit.currentContext!,
                                             );
                                             return;
                                           }
                                           try {
-                                            await _checkPossibilityTx(
-                                                store.price);
+                                            await _checkPossibilityTx(store.price, _gas);
                                           } on FormatException catch (e) {
-                                            AlertDialogUtils
-                                                .showInfoAlertDialog(context,
-                                                    title: 'modals.error'.tr(),
-                                                    content: e.message);
+                                            AlertDialogUtils.showInfoAlertDialog(context,
+                                                title: 'modals.error'.tr(), content: e.message);
                                             return;
                                           } catch (e) {
-                                            AlertDialogUtils
-                                                .showInfoAlertDialog(context,
-                                                    title: 'modals.error'.tr(),
-                                                    content: e.toString());
+                                            AlertDialogUtils.showInfoAlertDialog(context,
+                                                title: 'modals.error'.tr(), content: e.toString());
                                             return;
                                           }
                                           confirmTransaction(
                                             context,
-                                            fee: transferStore.fee,
+                                            fee: _gas,
                                             transaction: "Transaction info",
                                             address: contractAddress,
-                                            amount: transferStore.amount,
+                                            amount: store.price,
                                             onPress: () async {
                                               store.createQuest();
                                               Navigator.pop(context);
@@ -638,19 +641,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     );
   }
 
-  Future<void> _checkPossibilityTx(String price) async {
-    transferStore.setAmount(price);
-    if (transferStore.fee.isEmpty) {
-      await transferStore.getFee();
-    }
-    await Web3Utils.checkPossibilityTx(TYPE_COINS.WUSD, double.parse(price));
-    if (transferStore.addressTo.toLowerCase() ==
-        AccountRepository().userAddress.toLowerCase()) {
-      throw FormatException('errors.provideYourAddress'.tr());
-    }
-    if (double.parse(transferStore.amount) == 0.0) {
-      throw FormatException('errors.invalidAmount'.tr());
-    }
+  Future<void> _checkPossibilityTx(String price, String gas) async {
+    await Web3Utils.checkPossibilityTx(
+      typeCoin: TokenSymbols.WUSD,
+      gas: double.parse(gas),
+      amount: double.parse(price),
+      isMain: true,
+    );
   }
 
   Widget titledField(

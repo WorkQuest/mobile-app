@@ -72,6 +72,8 @@ dependencies:
   webview_cookie_manager: ^2.0.6
   page_indicator: ^0.4.1
   flutter_datetime_picker: ^1.5.1
+  flutter_native_splash: ^2.1.6
+  flutter_launcher_icons: ^0.9.3
 
   # Web3
   web3dart: ^2.3.3
@@ -119,6 +121,20 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
+
+# flutter_native_splash-development.yaml
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/logo_splash.png
+
+  web: false
+
+flutter_icons:
+  ios: true
+  android: true
+  image_path_android: "assets/logo_icon.png"
+  image_path_ios: "assets/logo_icon.png"
+
 flutter:
 
   # The following line ensures that the Material Icons font is

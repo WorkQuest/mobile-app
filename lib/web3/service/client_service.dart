@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/services.dart';
 import 'package:hex/hex.dart';
@@ -11,7 +12,6 @@ import 'package:http/http.dart';
 import 'package:web_socket_channel/io.dart';
 import '../../constants.dart';
 import '../contractEnums.dart';
-import 'address_service.dart';
 
 abstract class ClientServiceI {
   Future<num> getBalanceInUnit(EtherUnit unit, String privateKey);
@@ -26,27 +26,24 @@ abstract class ClientServiceI {
 
   Future<EtherAmount> getGas();
 
-  Future<String> getNetwork();
+  Future<BigInt> getEstimateGas(Transaction transaction);
+
+  Future<double> getEstimateGasCallContract({
+    required DeployedContract contract,
+    required ContractFunction function,
+    required List<dynamic> params,
+  });
 
   Future sendTransaction({
-    required String privateKey,
+    required bool isToken,
     required String address,
     required String amount,
-    required TYPE_COINS coin,
+    required TokenSymbols coin,
   });
 }
 
 class ClientService implements ClientServiceI {
-  // static final apiUrl = "https://dev-node-ams3.workquest.co/";
-
-  // static final wsUrl = "wss://wss-dev-node-nyc3.workquest.co/json-rpc ";
-  final int _chainId = 20220112;
-  final abiFactoryAddress = '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066';
-
-  ///ADDRESS WUSD_TOKEN
-  final abiBridgeAddress = "0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa";
-  final abiPromotionAddress = "0xB778e471833102dBe266DE2747D72b91489568c2";
-  String addressNewContract = "";
+  final int _chainId = 1991;
 
   Web3Client? client;
 
@@ -65,71 +62,45 @@ class ClientService implements ClientServiceI {
     }
   }
 
-  // ClientService() {
-  //   client = Web3Client(
-  //     apiUrl,
-  //     Client(),
-  //   );
-  // }
-
   @override
   Future<EthPrivateKey> getCredentials(String privateKey) async {
     return EthPrivateKey.fromHex(privateKey);
-    //return await client!.credentialsFromPrivateKey(privateKey);
   }
 
   @override
   Future sendTransaction({
-    required String privateKey,
+    required bool isToken,
     required String address,
     required String amount,
-    required TYPE_COINS coin,
+    required TokenSymbols coin,
   }) async {
-    address = address.toLowerCase();
     String? hash;
-
-    final bigInt = BigInt.from(double.parse(amount) * pow(10, 18));
-    final credentials = await getCredentials(privateKey);
-    final myAddress = await AddressService().getPublicAddress(privateKey);
-
-    if (coin == TYPE_COINS.WQT) {
+    final _privateKey = AccountRepository().privateKey;
+    final _credentials = await getCredentials(_privateKey);
+    if (!isToken) {
+      final _value = EtherAmount.fromUnitAndValue(
+        EtherUnit.wei,
+        BigInt.from(double.parse(amount) * pow(10, 18)),
+      );
+      final _to = EthereumAddress.fromHex(address);
+      final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
       hash = await client!.sendTransaction(
-        credentials,
+        _credentials,
         Transaction(
-          to: EthereumAddress.fromHex(address),
-          from: myAddress,
-          value: EtherAmount.fromUnitAndValue(
-            EtherUnit.wei,
-            bigInt,
-          ),
+          to: _to,
+          from: _from,
+          value: _value,
         ),
         chainId: _chainId,
       );
     } else {
-      String addressToken = '';
-      switch (coin) {
-        case TYPE_COINS.WQT:
-          break;
-        case TYPE_COINS.WUSD:
-          addressToken = AccountRepository().getConfigNetwork().addresses.wUsd;
-          break;
-        case TYPE_COINS.wBNB:
-          addressToken = AccountRepository().getConfigNetwork().addresses.wBnb;
-          break;
-        case TYPE_COINS.wETH:
-          addressToken = AccountRepository().getConfigNetwork().addresses.wEth;
-          break;
-        case TYPE_COINS.USDT:
-          addressToken = AccountRepository().getConfigNetwork().addresses.uSdt;
-          break;
-      }
-      final degree = coin == TYPE_COINS.USDT ? 6 : 18;
-      final contract = Erc20(address: EthereumAddress.fromHex(addressToken), client: client!);
+      String _addressToken = Web3Utils.getAddressToken(coin);
+      final _degree = Web3Utils.getDegreeToken(coin);
+      final contract = Erc20(address: EthereumAddress.fromHex(_addressToken), client: client!);
       hash = await contract.transfer(
-        // myAddress,
         EthereumAddress.fromHex(address),
-        BigInt.from(double.parse(amount) * pow(10, degree)),
-        credentials: credentials,
+        BigInt.from(double.parse(amount) * pow(10, _degree)),
+        credentials: _credentials,
       );
       print('${coin.toString()} hash - $hash');
     }
@@ -150,20 +121,16 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<double> getBalanceFromContract(String address, {bool otherNetwork = false}) async {
+  Future<double> getBalanceFromContract(String address, {bool otherNetwork = false, bool isUSDT = false}) async {
     try {
       address = address.toLowerCase();
       final contract = Erc20(address: EthereumAddress.fromHex(address), client: client!);
       final balance = await contract.balanceOf(EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
-      final addresses = AccountRepository().getConfigNetwork().addresses;
-      if (otherNetwork) {
+      if (otherNetwork || isUSDT) {
         return balance.toDouble() * pow(10, -6);
       }
-      if (address == addresses.uSdt) {
-        return balance.toDouble() * pow(10, -6);
-      } else {
-        return balance.toDouble() * pow(10, -18);
-      }
+
+      return balance.toDouble() * pow(10, -18);
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
       throw FormatException("Error connection to network");
@@ -198,26 +165,44 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<String> getNetwork() async {
-    try {
-      final index = await client!.getNetworkId();
-      switch (index) {
-        case 1:
-          return "Ethereum Mainnet";
-        case 2:
-          return "Morden Testnet (deprecated)";
-        case 3:
-          return "Ropsten Testnet";
-        case 4:
-          return "Rinkeby Testnet";
-        case 42:
-          return "Kovan Testnet";
-        default:
-          return "Unknown network";
-      }
-    } catch (e) {
-      return "Network could not be identified";
-    }
+  Future<BigInt> getEstimateGas(Transaction transaction) async {
+    return await client!.estimateGas(
+        sender: transaction.from,
+        to: transaction.to,
+        gasPrice: transaction.gasPrice,
+        value: transaction.value,
+        data: transaction.data,
+        amountOfGas: transaction.gasPrice?.getInWei);
+  }
+
+  @override
+  Future<double> getEstimateGasCallContract(
+      {required DeployedContract contract, required ContractFunction function, required List params}) async {
+    final _gas = await getGas();
+    final _estimateGas = await getEstimateGas(Transaction.callContract(
+      contract: contract,
+      function: function,
+      parameters: params,
+      from: EthereumAddress.fromHex(AccountRepository().userAddress),
+    ));
+    return (_estimateGas * _gas.getInWei).toDouble() * pow(10, -18);
+  }
+
+  Future<double> getEstimateGasForApprove(BigInt price) async {
+    final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
+        .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+        .addressToken;
+    print('_addressWUSD: $_addressWUSD');
+    final _contractApprove = await getDeployedContract("WQBridgeToken", _addressWUSD!);
+    final _gasForApprove = await getEstimateGasCallContract(
+      contract: _contractApprove,
+      function: _contractApprove.function(WQBridgeTokenFunctions.approve.name),
+      params: [
+        EthereumAddress.fromHex(Constants.worknetWQFactory),
+        price,
+      ],
+    );
+    return _gasForApprove;
   }
 }
 
@@ -277,23 +262,21 @@ extension CreateQuestContract on ClientService {
 extension CreateContract on ClientService {
   Future<void> createNewContract({
     required String jobHash,
-    required String cost,
+    required BigInt price,
     required String deadline,
     required String nonce,
   }) async {
+    print('createNewContract');
     final credentials = await getCredentials(AccountRepository().privateKey);
-    final contract = await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
+    final contract = await getDeployedContract("WorkQuestFactory", Constants.worknetWQFactory);
     final ethFunction = contract.function(WQFContractFunctions.newWorkQuest.name);
     final fromAddress = await credentials.extractAddress();
-    final _cost = double.parse(cost) + double.parse(cost) * 0.01;
-    final _gas = await getGas();
     await handleContract(
       contract: contract,
       function: ethFunction,
       params: [
         stringToBytes32(jobHash),
-        //TODO Find out why a transaction with a commission does not pass
-        BigInt.from((double.parse(cost) - 0.1) * pow(10, 18)),
+        price,
         BigInt.parse(deadline),
         BigInt.parse(nonce),
       ],
@@ -348,27 +331,45 @@ extension GetContract on ClientService {
 
 extension ApproveCoin on ClientService {
   Future<bool> approveCoin({
-    required String cost,
+    required BigInt price,
   }) async {
     final credentials = await getCredentials(AccountRepository().privateKey);
-    final contract = await getDeployedContract("WQBridgeToken", abiBridgeAddress);
+    final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
+        .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+        .addressToken;
+    final contract = await getDeployedContract("WQBridgeToken", _addressWUSD!);
     final ethFunction = contract.function(WQBridgeTokenFunctions.approve.name);
     final fromAddress = await credentials.extractAddress();
-    final _cost = double.parse(cost) + double.parse(cost) * 0.025;
+    print('fromAddress: $fromAddress');
+    print('chainID: ${await client!.getChainId()}');
     final result = await handleContract(
       contract: contract,
       function: ethFunction,
       from: fromAddress,
       params: [
-        EthereumAddress.fromHex(abiFactoryAddress),
-        BigInt.from(_cost * pow(10, 18)),
+        EthereumAddress.fromHex(Constants.worknetWQFactory),
+        price,
       ],
     );
-
+    print('result.status: ${result.status}');
     if (result.status ?? false)
       return true;
     else
       return false;
+  }
+
+  Future<BigInt> allowanceCoin() async {
+    print("Allowance coin");
+    final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
+        .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+        .addressToken;
+
+    final _contract = Erc20(address: EthereumAddress.fromHex(_addressWUSD!), client: client!);
+    final _result = await _contract.allowance(
+      EthereumAddress.fromHex(AccountRepository().userAddress),
+      EthereumAddress.fromHex(Constants.worknetWQFactory),
+    );
+    return _result;
   }
 }
 
@@ -391,34 +392,13 @@ extension CheckFunction on ClientService {
 extension CheckAddres on ClientService {
   Future<List<dynamic>> checkAdders(String address) async {
     try {
-      final contract = await getDeployedContract("WorkQuestFactory", abiFactoryAddress);
+      final contract = await getDeployedContract("WorkQuestFactory", Constants.worknetWQFactory);
       final ethFunction = contract.function(WQFContractFunctions.getWorkQuests.name);
       final outputs = await client!.call(
         contract: contract,
         function: ethFunction,
         params: [EthereumAddress.fromHex(address)],
       );
-      return outputs;
-    } catch (e, tr) {
-      print("Error: $e \n Trace: $tr");
-      throw Exception("Error handling event");
-    }
-  }
-}
-
-extension CheckStatus on ClientService {
-  Future<List<dynamic>> checkStatus() async {
-    try {
-      final contract = await getDeployedContract("WorkQuest", addressNewContract);
-      final ethFunction = contract.function(WQContractFunctions.status.name);
-      final outputs = await client!.call(
-        contract: contract,
-        function: ethFunction,
-        params: [],
-      );
-
-      print("Contract status: ${outputs.first}");
-
       return outputs;
     } catch (e, tr) {
       print("Error: $e \n Trace: $tr");
@@ -438,7 +418,7 @@ extension Promote on ClientService {
     print('period: $period');
     print('amount: $amount');
     print('questAddress: $questAddress');
-    final contract = await getDeployedContract("WQPromotion", abiPromotionAddress);
+    final contract = await getDeployedContract("WQPromotion", Constants.worknetPromotion);
     final function = contract.function(WQPromotionFunctions.promoteQuest.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
@@ -485,20 +465,14 @@ extension Promote on ClientService {
   Future<TransactionReceipt?> promoteUser({
     required int tariff,
     required int period,
-    required String amount,
   }) async {
     print('tariff: $tariff');
     print('period: $period');
-    print('amount: $amount');
-    final contract = await getDeployedContract("WQPromotion", abiPromotionAddress);
+    final contract = await getDeployedContract("WQPromotion", Constants.worknetPromotion);
     final function = contract.function(WQPromotionFunctions.promoteUser.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
     final _fromAddress = await _credentials.extractAddress();
-    final _value = EtherAmount.fromUnitAndValue(
-      EtherUnit.wei,
-      BigInt.from(double.parse(amount) * pow(10, 18)),
-    );
     final _transactionHash = await client!.sendTransaction(
       _credentials,
       Transaction.callContract(
@@ -511,7 +485,6 @@ extension Promote on ClientService {
           BigInt.from(period),
         ],
         from: _fromAddress,
-        value: _value,
       ),
       chainId: _chainId,
     );
@@ -533,3 +506,5 @@ extension Promote on ClientService {
     return result;
   }
 }
+
+extension Custom on EtherAmount {}

@@ -129,6 +129,5 @@ enum WQBridgeTokenFunctions {
   transferFrom,
   unpause,
 }
-enum TYPE_COINS { WUSD, WQT, wBNB, wETH, USDT }
 
 enum TYPE_WALLET { Coinpaymebts }

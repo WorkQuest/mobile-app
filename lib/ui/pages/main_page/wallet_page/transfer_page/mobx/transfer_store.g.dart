@@ -20,13 +20,13 @@ mixin _$TransferStore on TransferStoreBase, Store {
   final _$typeCoinAtom = Atom(name: 'TransferStoreBase.typeCoin');
 
   @override
-  TYPE_COINS? get typeCoin {
+  TokenSymbols? get typeCoin {
     _$typeCoinAtom.reportRead();
     return super.typeCoin;
   }
 
   @override
-  set typeCoin(TYPE_COINS? value) {
+  set typeCoin(TokenSymbols? value) {
     _$typeCoinAtom.reportWrite(value, super.typeCoin, () {
       super.typeCoin = value;
     });
@@ -81,7 +81,7 @@ mixin _$TransferStore on TransferStoreBase, Store {
       AsyncAction('TransferStoreBase.setTitleSelectedCoin');
 
   @override
-  Future setTitleSelectedCoin(TYPE_COINS? value) {
+  Future setTitleSelectedCoin(TokenSymbols? value) {
     return _$setTitleSelectedCoinAsyncAction
         .run(() => super.setTitleSelectedCoin(value));
   }

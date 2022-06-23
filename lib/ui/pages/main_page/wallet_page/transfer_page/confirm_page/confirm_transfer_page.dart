@@ -1,5 +1,4 @@
 import 'package:app/utils/alert_dialog.dart';
-import 'package:app/web3/contractEnums.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ import 'mobx/confirm_transfer_store.dart';
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
 class ConfirmTransferPage extends StatefulWidget {
-  final TYPE_COINS typeCoin;
+  final TokenSymbols typeCoin;
   final String addressTo;
   final String amount;
   final String fee;
@@ -29,15 +28,14 @@ class ConfirmTransferPage extends StatefulWidget {
 }
 
 class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
-
   @override
   Widget build(BuildContext context) {
     final store = context.read<ConfirmTransferStore>();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar:AppBar(
+      appBar: AppBar(
         title: Text(
-            'wallet.transfer'.tr(),
+          'wallet.transfer'.tr(),
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
         centerTitle: true,
@@ -84,10 +82,9 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                     Navigator.pop(context, true);
                   },
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       AlertDialogUtils.showLoadingDialog(context);
-                      store.sendTransaction(
-                          widget.addressTo, widget.amount, widget.typeCoin);
+                      store.sendTransaction(widget.addressTo, widget.amount, widget.typeCoin);
                     },
                     child: Text('meta.confirm'.tr()),
                   ),
@@ -103,7 +100,7 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
 
 class _InformationWidget extends StatelessWidget {
   final String addressTo;
-  final TYPE_COINS typeCoins;
+  final TokenSymbols typeCoins;
   final String amount;
   final String fee;
 
@@ -120,9 +117,7 @@ class _InformationWidget extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: AppColor.disabledButton),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5.0), color: AppColor.disabledButton),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

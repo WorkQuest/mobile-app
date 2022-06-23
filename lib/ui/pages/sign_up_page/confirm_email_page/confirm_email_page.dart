@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../../observer_consumer.dart';
+import '../../../widgets/timer.dart';
 
 const TextStyle _style = TextStyle(
   color: Color(0xFF1D2127),
@@ -76,6 +77,14 @@ class ConfirmEmail extends StatelessWidget {
                     Text(
                       "registration.emailConfirmTitle".tr(),
                       style: _style,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    TimerWidget(
+                      startTimer: () => store.startTimer(email),
+                      seconds: store.secondsCodeAgain,
+                      isActiveTimer: store.timer != null && store.timer!.isActive,
                     ),
                     SizedBox(
                       height: 40.0,

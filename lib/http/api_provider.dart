@@ -100,6 +100,18 @@ extension LoginService on ApiProvider {
     return bearerToken;
   }
 
+  Future<bool> resendEmail(
+      String email,
+      ) async {
+    await httpClient.post(
+      query: '/v1/auth/main/resend-email',
+      data: {
+        "email": email,
+      }
+    );
+    return true;
+  }
+
   Future<void> loginSocialMedia(
     String link,
   ) async {

@@ -130,7 +130,7 @@ class _QuestListState extends State<QuestList> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      // AccountRepository().service!.checkFunction();
+                      // AccountRepository().getClient().checkFunction();
                     },
                     child: Text(
                       role == UserRole.Worker

@@ -29,7 +29,8 @@ class SettingsPage extends StatelessWidget {
     final userStore = context.read<ProfileMeStore>();
     final chooseRoleStore = context.read<ChooseRoleStore>();
     chooseRoleStore.setPlatform(Platform.isIOS ? "iOS" : "Android");
-    bool isHavePhone = userStore.userData?.phone?.phone.isNotEmpty ?? false;
+    bool isHavePhone = (userStore.userData?.phone?.phone.isNotEmpty ?? false) ||
+        (userStore.userData?.tempPhone?.phone.isNotEmpty ?? false);
     return Scaffold(
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(),

@@ -20,13 +20,13 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
   final _$typeCoinAtom = Atom(name: '_RaiseViewStore.typeCoin');
 
   @override
-  TYPE_COINS? get typeCoin {
+  TokenSymbols? get typeCoin {
     _$typeCoinAtom.reportRead();
     return super.typeCoin;
   }
 
   @override
-  set typeCoin(TYPE_COINS? value) {
+  set typeCoin(TokenSymbols? value) {
     _$typeCoinAtom.reportWrite(value, super.typeCoin, () {
       super.typeCoin = value;
     });
@@ -95,7 +95,7 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
       ActionController(name: '_RaiseViewStore');
 
   @override
-  dynamic setTitleSelectedCoin(TYPE_COINS? value) {
+  dynamic setTitleSelectedCoin(TokenSymbols? value) {
     final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
         name: '_RaiseViewStore.setTitleSelectedCoin');
     try {

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
@@ -49,13 +48,13 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
 
   @action
   Future<void> getUser({
-  required String userId,
-})async{
-    try{
+    required String userId,
+  }) async {
+    try {
       this.onLoading();
       user = await _apiProvider.getProfileUser(userId: userId);
       this.onSuccess(true);
-    }catch (e){
+    } catch (e) {
       this.onError(e.toString());
     }
   }
@@ -78,11 +77,8 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
           offset: offset,
         ));
 
-        quests.toList().sort((key1, key2) =>
-            key1.createdAt!.millisecondsSinceEpoch <
-                    key2.createdAt!.millisecondsSinceEpoch
-                ? 1
-                : 0);
+        quests.toList().sort(
+            (key1, key2) => key1.createdAt!.millisecondsSinceEpoch < key2.createdAt!.millisecondsSinceEpoch ? 1 : 0);
         offset += 10;
         this.onSuccess(true);
       }
@@ -91,10 +87,10 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getFee() async {
+  Future<void> getFee(String userId) async {
     try {
-      final gas = await AccountRepository().service!.getGas();
-      fee = (gas.getInWei.toInt() / pow(10, 18)).toStringAsFixed(17);
+      final _gas = await getEstimateGas(userId);
+      fee = _gas.toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
     }
@@ -114,18 +110,32 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
         userId: userId,
         message: "quests.inviteToQuest".tr(),
       );
-      await AccountRepository().service!.handleEvent(
-        function: WQContractFunctions.assignJob,
-        contractAddress: quest.contractAddress!,
-        params: [
-          EthereumAddress.fromHex(user.walletAddress!),
-        ],
-        value: null,
-      );
+      await AccountRepository().getClient().handleEvent(
+            function: WQContractFunctions.assignJob,
+            contractAddress: quest.contractAddress!,
+            params: [
+              EthereumAddress.fromHex(user.walletAddress!),
+            ],
+            value: null,
+          );
       this.onSuccess(true);
     } catch (e) {
       print("getQuests error: $e");
       this.onError(e.toString());
     }
+  }
+
+  Future<double> getEstimateGas(String userId) async {
+    final _client = AccountRepository().getClient();
+    final _user = await _apiProvider.getProfileUser(userId: userId);
+    final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
+    final _function = _contract.function(WQContractFunctions.assignJob.name);
+    final _params = [EthereumAddress.fromHex(_user.walletAddress!)];
+    final _estimateGas = _client.getEstimateGasCallContract(
+      contract: _contract,
+      function: _function,
+      params: _params,
+    );
+    return _estimateGas;
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:app/constants.dart';
 import 'package:app/model/quests_models/Responded.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -23,7 +24,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:share/share.dart';
 
 import '../../../../../utils/web3_utils.dart';
-import '../../../../../web3/contractEnums.dart';
 import '../../../report_page/report_page.dart';
 
 class QuestWorker extends QuestDetails {
@@ -646,7 +646,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   _checkPossibilityTx() async {
     await store.getFee();
-    await Web3Utils.checkPossibilityTx(TYPE_COINS.WQT, 0.0);
+    await Web3Utils.checkPossibilityTx(
+      typeCoin: TokenSymbols.WQT,
+      gas: double.parse(store.fee),
+      amount: 0.0,
+      isMain: true,
+    );
   }
 
   bottomComplete() {

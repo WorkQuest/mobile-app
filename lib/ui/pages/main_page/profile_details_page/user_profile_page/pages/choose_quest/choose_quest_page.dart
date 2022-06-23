@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../../utils/web3_utils.dart';
-import '../../../../../../../web3/contractEnums.dart';
 
 class ChooseQuestArguments {
   final String workerId;
@@ -198,7 +198,12 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
       );
 
   _checkPossibilityTx() async {
-    await store.getFee();
-    await Web3Utils.checkPossibilityTx(TYPE_COINS.WQT, 0.0);
+    await store.getFee(widget.arguments.workerId);
+    await Web3Utils.checkPossibilityTx(
+      typeCoin: TokenSymbols.WQT,
+      gas: double.parse(store.fee),
+      amount: 0.0,
+      isMain: true,
+    );
   }
 }

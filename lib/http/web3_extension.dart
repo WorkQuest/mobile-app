@@ -1,8 +1,6 @@
 import 'dart:math';
 
-import 'package:app/constants.dart';
 import 'package:app/model/web3/transactions_response.dart';
-import 'package:app/web3/repository/account_repository.dart';
 
 import '../model/web3/course_token_response.dart';
 import 'api_provider.dart';
@@ -12,19 +10,11 @@ extension Web3Requests on ApiProvider {
     required String address,
     required String addressToken,
   }) {
-    if (AccountRepository().configName == ConfigNameNetwork.testnet) {
-      return "https://testnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
-    } else {
-      return "https://dev-explorer.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
-    }
+    return "https://testnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
   }
 
   String _transactions(String address) {
-    if (AccountRepository().configName == ConfigNameNetwork.testnet) {
-      return "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
-    } else {
-      return "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
-    }
+    return "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
   }
 
   Future<void> registerWallet(String publicKey, String address) async {
