@@ -49,6 +49,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   String? chatName;
   UserRole? role1;
   UserRole? role2;
+  bool meMember = false;
 
   @override
   void initState() {
@@ -59,6 +60,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     _store.idChat = widget.arguments.chatId;
     _store.getMessages(chatId: _store.idChat!).then((value) {
       chatType = _store.chatRoom?.type;
+      List<Member> members = _store.chatRoom!.members!;
+      members.forEach((element) {
+        if (element.userId == profile!.userData!.id) meMember = true;
+      });
 
       if (chatType == TypeChat.group) {
         _store.getOwnerId();
@@ -68,19 +73,19 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           _store.getQuest(_store.chatRoom!.questChat!.quest!.id);
           _store.getDispute(_store.chatRoom!.questChat!.quest!.openDispute!.id);
         }
-        List<Member> members = _store.chatRoom!.members!;
-        members.removeWhere((element) => element.type == "Admin");
+        if (members.length > 2)
+          members.removeWhere((element) => element.type == "Admin");
         id1 = members[0].userId;
         firstName1 = members[0].user!.firstName;
         lastName1 = members[0].user!.lastName;
         url1 = members[0].user!.avatar?.url ?? Constants.defaultImageNetwork;
         id2 = members[1].userId;
-        firstName2 = members[1].user!.firstName;
-        lastName2 = members[1].user!.lastName;
-        url2 = members[1].user!.avatar?.url ?? Constants.defaultImageNetwork;
+        firstName2 = members[1].user?.firstName ?? members[1].admin!.firstName;
+        lastName2 = members[1].user?.lastName ?? members[1].admin!.lastName;
+        url2 = members[1].user?.avatar?.url ?? Constants.defaultImageNetwork;
         if (_store.chatRoom?.questChat != null)
           role1 = _store.chatRoom!.members![0].user!.role;
-        role2 = _store.chatRoom!.members![1].user!.role;
+        role2 = _store.chatRoom!.members![1].user?.role ?? UserRole.Admin;
       }
     });
   }
@@ -142,9 +147,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                             ),
                           ),
                         ),
-                        _store.chatRoom!.questChat?.status != -1
+                        _store.chatRoom!.questChat?.status != -1 &&
+                                (_store.chatRoom!.meMember?.status == 0 ||
+                                    meMember)
                             ? InputToolbar(_store)
-                            : profile!.userData!.role == UserRole.Employer
+                            : profile!.userData!.role == UserRole.Employer &&
+                                    _store.chatRoom!.questChat != null
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 16,
@@ -349,7 +357,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   }
                 },
                 itemBuilder: (BuildContext context) {
-                  return {"Leave from chat"}.map((String choice) {
+                  return {
+                    "Leave from chat",
+                  }.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
                       child: Text(choice),
@@ -358,7 +368,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 },
               )
             : const SizedBox(width: 16),
-        _store.dispute?.currentUserDisputeReview == null
+        _store.dispute?.currentUserDisputeReview == null &&
+                _store.chatRoom?.questChat?.quest?.openDispute?.status == 4
             ? PopupMenuButton<String>(
                 elevation: 10,
                 icon: Icon(Icons.more_vert),

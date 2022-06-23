@@ -1,5 +1,6 @@
 import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/utils/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
@@ -87,6 +88,17 @@ abstract class _SettingsPageStore extends IStore<bool> with Store {
       this.onLoading();
       this.onError("modals.mismatchPassword".tr());
       return;
+    }
+  }
+
+  Future<void> deleteToken() async {
+    try {
+      this.onLoading();
+      final token = await Storage.readPushToken();
+      if (token != null) apiProvider.deletePushToken(token: token);
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
     }
   }
 }

@@ -20,7 +20,7 @@ class ApproveRolePage extends StatelessWidget {
 
   static const String routeName = '/approveRolePage';
 
-  final String _baseUrl = "https://app.workquest.co/";
+  final String _baseUrl = "https://dev-app.workquest.co/";
 
   @override
   Widget build(BuildContext ctx) {

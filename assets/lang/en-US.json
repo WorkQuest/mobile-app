@@ -1298,6 +1298,7 @@
       "GroupChatAddMember": "User added",
       "GroupChatDeleteUser": "User deleted",
       "GroupChatDeleteMember": "User deleted",
+      "GroupChatMemberRestored": "User restored",
       "GroupChatLeaveUser": "User left chat",
       "GroupChatLeaveMember": "User left chat",
       "GroupChatAddAdmin": "Added admin",

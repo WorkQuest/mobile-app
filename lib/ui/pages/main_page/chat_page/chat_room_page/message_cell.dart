@@ -23,11 +23,11 @@ class MessageCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final store = context.read<ChatRoomStore>();
-    final date = mess.createdAt.year == DateTime.now().year &&
-            mess.createdAt.month == DateTime.now().month &&
-            mess.createdAt.day == DateTime.now().day
-        ? DateFormat('kk:mm').format(mess.createdAt)
-        : DateFormat('dd MMM, kk:mm').format(mess.createdAt);
+    final date = mess.createdAt!.year == DateTime.now().year &&
+            mess.createdAt!.month == DateTime.now().month &&
+            mess.createdAt!.day == DateTime.now().day
+        ? DateFormat('kk:mm').format(mess.createdAt!)
+        : DateFormat('dd MMM, kk:mm').format(mess.createdAt!);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -83,10 +83,10 @@ class MessageCell extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 5),
-                            if (mess.medias.isNotEmpty)
+                            if (mess.medias!.isNotEmpty)
                               Center(
                                 child: ImageViewerWidget(
-                                  mess.medias,
+                                  mess.medias!,
                                   mess.sender!.userId != userId
                                       ? Color(0xFFFFFFFF)
                                       : Color(0xFF1D2127),

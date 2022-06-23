@@ -126,15 +126,27 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   }
 
   @action
-  Future refreshToken() async{
-    try{
+  Future refreshToken() async {
+    try {
       this.onLoading();
       String? token = await Storage.readRefreshToken();
-      BearerToken bearerToken = await _apiProvider.refreshToken(token!, platform);
+      BearerToken bearerToken =
+          await _apiProvider.refreshToken(token!, platform);
       await Storage.writeRefreshToken(bearerToken.refresh);
       await Storage.writeAccessToken(bearerToken.access);
       this.onSuccess(true);
-    } catch(e) {
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  Future<void> deletePushToken() async {
+    try {
+      this.onLoading();
+      final token = await Storage.readPushToken();
+      if (token != null) await _apiProvider.deletePushToken(token: token);
+      this.onSuccess(true);
+    } catch (e) {
       this.onError(e.toString());
     }
   }

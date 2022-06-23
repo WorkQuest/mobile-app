@@ -1,7 +1,10 @@
 import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/chat_extension.dart';
+import 'package:app/model/chat_model/chat_model.dart';
+import 'package:app/model/chat_model/info_message.dart';
 import 'package:app/model/chat_model/member.dart';
+import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -28,6 +31,8 @@ abstract class _EditChatStore extends IStore<bool> with Store {
   String userName = "";
 
   List<String> userIds = [];
+
+  MessageModel? newMessage;
 
   @computed
   bool get isSelectedUsers {
@@ -95,5 +100,42 @@ abstract class _EditChatStore extends IStore<bool> with Store {
           element.lastName.toLowerCase().contains(text.toLowerCase()))
         foundUsers.add(element);
     });
+  }
+
+  void setNewMessage(ChatModel chat, ProfileMeResponse userData) {
+    newMessage = MessageModel(
+      id: "",
+      number: 0,
+      chatId: chat.id,
+      senderMemberId: userData.id,
+      senderStatus: "Unread",
+      type: "Info",
+      text: null,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      star: null,
+      sender: Member(
+        id: "",
+        chatId: chat.id,
+        userId: userData.id,
+        adminId: null,
+        type: "User",
+        status: 0,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        chatMemberDeletionData: null,
+        user: userData,
+        admin: null,
+        chatMemberData: null,
+      ),
+      medias: [],
+      infoMessage: InfoMessage(
+        id: "",
+        messageId: "",
+        userId: "",
+        messageAction: "GroupChatDeleteMember",
+        user: null,
+      ),
+    );
   }
 }

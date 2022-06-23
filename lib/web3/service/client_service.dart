@@ -333,7 +333,6 @@ extension ApproveCoin on ClientService {
   Future<bool> approveCoin({
     required BigInt price,
   }) async {
-    print("Approve coin");
     final credentials = await getCredentials(AccountRepository().privateKey);
     final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
         .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)

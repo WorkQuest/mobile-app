@@ -76,7 +76,6 @@ class PushNotificationService {
   /// add function to an onpressed function
 
   Future<void> _getRemoteNotification() async {
-
     try {
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         print('Notif error');
@@ -114,6 +113,7 @@ class PushNotificationService {
     String? body,
     String? title,
   ) async {
+    print("Notification!!!!!!: $body");
     flutterLocalNotificationsPlugin.show(
       hashcode,
       title,
@@ -127,6 +127,11 @@ class PushNotificationService {
           color: Colors.blue,
           playSound: true,
           icon: '@mipmap/ic_launcher',
+        ),
+        iOS: IOSNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
         ),
       ),
     );

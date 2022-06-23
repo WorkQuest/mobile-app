@@ -15,7 +15,7 @@ class ChatData {
   String lastMessageId;
   DateTime createdAt;
   DateTime updatedAt;
-  MessageModel lastMessage;
+  MessageModel? lastMessage;
 
   factory ChatData.fromJson(Map<String, dynamic> json) => ChatData(
         id: json["id"],
@@ -23,7 +23,9 @@ class ChatData {
         lastMessageId: json["lastMessageId"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
-        lastMessage: MessageModel.fromJson(json["lastMessage"]),
+        lastMessage: json["lastMessage"] == null
+            ? null
+            : MessageModel.fromJson(json["lastMessage"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -32,6 +34,6 @@ class ChatData {
         "lastMessageId": lastMessageId,
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
-        "lastMessage": lastMessage.toJson(),
+        "lastMessage": lastMessage!.toJson(),
       };
 }

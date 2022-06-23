@@ -69,19 +69,26 @@ class ProfileMeResponse with ClusterItem {
           phone: object.phone,
           tempPhone: object.tempPhone,
           email: object.email,
-          additionalInfo: object.additionalInfo != null ? AdditionalInfo.clone(object.additionalInfo!) : null,
+          additionalInfo: object.additionalInfo != null
+              ? AdditionalInfo.clone(object.additionalInfo!)
+              : null,
           role: object.role,
           avatar: object.avatar,
           userSpecializations: object.userSpecializations,
-          ratingStatistic: object.ratingStatistic != null ? RatingStatistic.clone(object.ratingStatistic!) : null,
-          locationCode: object.locationCode != null ? LocationCode.clone(object.locationCode!) : null,
+          ratingStatistic: object.ratingStatistic != null
+              ? RatingStatistic.clone(object.ratingStatistic!)
+              : null,
+          locationCode: object.locationCode != null
+              ? LocationCode.clone(object.locationCode!)
+              : null,
           locationPlaceName: object.locationPlaceName,
           wagePerHour: object.wagePerHour,
           workplace: object.workplace,
           priority: object.priority,
           questsStatistic: object.questsStatistic,
           walletAddress: object.walletAddress,
-    workerOrEmployerProfileVisibilitySetting: object.workerOrEmployerProfileVisibilitySetting,
+          workerOrEmployerProfileVisibilitySetting:
+              object.workerOrEmployerProfileVisibilitySetting,
           isTotpActive: object.isTotpActive,
           payPeriod: object.payPeriod,
         );
@@ -92,7 +99,7 @@ class ProfileMeResponse with ClusterItem {
 
   factory ProfileMeResponse.fromJson(Map<String, dynamic> json) {
     return ProfileMeResponse(
-      id: json["id"],
+      id: json["id"] ?? "",
       avatarId: json["avatarId"] ?? "",
       firstName: json["firstName"] ?? "",
       lastName: json["lastName"] ?? "",
@@ -115,7 +122,9 @@ class ProfileMeResponse with ClusterItem {
             },
       ),
       email: json["email"],
-      additionalInfo: json["additionalInfo"] == null ? null : AdditionalInfo.fromJson(json["additionalInfo"]),
+      additionalInfo: json["additionalInfo"] == null
+          ? null
+          : AdditionalInfo.fromJson(json["additionalInfo"]),
       role: json["role"] == "employer" ? UserRole.Employer : UserRole.Worker,
       avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
       userSpecializations: json["userSpecializations"] == null
@@ -127,31 +136,34 @@ class ProfileMeResponse with ClusterItem {
               }
               return skillsString;
             }([...json["userSpecializations"]]),
-      ratingStatistic: RatingStatistic.fromJson(json["ratingStatistic"] ??
-          {
-            "id": "",
-            "userId": json["id"],
-            "reviewCount": 0,
-            "averageMark": 0,
-            "status": 3,
-            // createdAt: createdAt,
-            // updatedAt: updatedAt,
-          }),
-      locationCode: json["location"] == null ? null : LocationCode.fromJson(json["location"]),
+      ratingStatistic: json["ratingStatistic"] == null
+          ? null
+          : RatingStatistic.fromJson(json["ratingStatistic"]),
+      locationCode: json["location"] == null
+          ? null
+          : LocationCode.fromJson(json["location"]),
       locationPlaceName: json["locationPlaceName"] ?? "",
       wagePerHour: json["wagePerHour"] ?? "0",
       workplace: json["workplace"] ?? "",
       priority: json["priority"] ?? 0,
-      questsStatistic: json["questsStatistic"] == null ? null : QuestsStatistic.fromJson(json["questsStatistic"]),
-      raiseView: json["raiseView"] == null ? null : RaiseView.fromJson(json["raiseView"]),
+      questsStatistic: json["questsStatistic"] == null
+          ? null
+          : QuestsStatistic.fromJson(json["questsStatistic"]),
+      raiseView: json["raiseView"] == null
+          ? null
+          : RaiseView.fromJson(json["raiseView"]),
       walletAddress: json["wallet"]?["address"] ?? '',
       isTotpActive: json["totpIsActive"] == null ? false : json["totpIsActive"],
       payPeriod: json["payPeriod"] ?? "",
-      workerOrEmployerProfileVisibilitySetting:
-          json[json["role"] == "employer" ? 'employerProfileVisibilitySetting' : 'workerProfileVisibilitySetting'] ==
-                  null
-              ? null
-              : WorkerProfileVisibilitySettingClass.fromJson(json[json["role"] == "employer" ? 'employerProfileVisibilitySetting' : 'workerProfileVisibilitySetting']),
+      workerOrEmployerProfileVisibilitySetting: json[json["role"] == "employer"
+                  ? 'employerProfileVisibilitySetting'
+                  : 'workerProfileVisibilitySetting'] ==
+              null
+          ? null
+          : WorkerProfileVisibilitySettingClass.fromJson(json[
+              json["role"] == "employer"
+                  ? 'employerProfileVisibilitySetting'
+                  : 'workerProfileVisibilitySetting']),
       // createdAt: DateTime.parse(json["createdAt"]),
       // updatedAt: DateTime.parse(json["updatedAt"]),
     );
@@ -169,7 +181,8 @@ class ProfileMeResponse with ClusterItem {
         "role": role.toString().split(".").last,
         "avatar": avatar!.toJson(),
         // "skillFilter": skillFilters.map((item) => item.toJson()),
-        "ratingStatistic": ratingStatistic == null ? null : ratingStatistic!.toJson(),
+        "ratingStatistic":
+            ratingStatistic == null ? null : ratingStatistic!.toJson(),
         "location": locationCode == null ? null : locationCode!.toJson(),
         "locationPlaceName": locationPlaceName,
         "wagePerHour": wagePerHour,
@@ -177,7 +190,8 @@ class ProfileMeResponse with ClusterItem {
         "priority": priority,
         "questsStatistic": questsStatistic,
         "payPeriod": payPeriod,
-        "workerOrEmployerProfileVisibilitySetting": workerOrEmployerProfileVisibilitySetting,
+        "workerOrEmployerProfileVisibilitySetting":
+            workerOrEmployerProfileVisibilitySetting,
 
         // "createdAt": createdAt.toIso8601String(),
         // "updatedAt": updatedAt.toIso8601String(),
@@ -185,17 +199,24 @@ class ProfileMeResponse with ClusterItem {
 
   @override
   // TODO: implement location
-  LatLng get location => LatLng(locationCode!.latitude, locationCode!.longitude);
+  LatLng get location =>
+      LatLng(locationCode!.latitude, locationCode!.longitude);
 
   List<int> getMySearchVisibilityList() {
-    return workerOrEmployerProfileVisibilitySetting?.arrayRatingStatusInMySearch ?? [];
+    return workerOrEmployerProfileVisibilitySetting
+            ?.arrayRatingStatusInMySearch ??
+        [];
   }
 
   List<int> getCanInviteOrRespondMeOnQuest() {
     if (role == UserRole.Worker) {
-      return workerOrEmployerProfileVisibilitySetting?.arrayRatingStatusCanInviteMeOnQuest ?? [];
+      return workerOrEmployerProfileVisibilitySetting
+              ?.arrayRatingStatusCanInviteMeOnQuest ??
+          [];
     } else {
-      return workerOrEmployerProfileVisibilitySetting?.arrayRatingStatusCanRespondToQuest ?? [];
+      return workerOrEmployerProfileVisibilitySetting
+              ?.arrayRatingStatusCanRespondToQuest ??
+          [];
     }
   }
 }
@@ -215,7 +236,8 @@ class QuestsStatistic {
           opened: object.opened,
         );
 
-  factory QuestsStatistic.fromJson(Map<String, dynamic> json) => QuestsStatistic(
+  factory QuestsStatistic.fromJson(Map<String, dynamic> json) =>
+      QuestsStatistic(
         completed: json["completed"],
         opened: json["opened"],
       );
@@ -289,7 +311,8 @@ class RatingStatistic {
       id: json["id"],
       userId: json["userId"],
       reviewCount: json["reviewCount"],
-      averageMark: json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
+      averageMark:
+          json["averageMark"] == null ? 0.0 : json["averageMark"].toDouble(),
       status: status ?? 3,
       // createdAt: json["createdAt"],
       // updatedAt: json["updatedAt"],
@@ -367,9 +390,14 @@ class RaiseView {
         status: json["status"] == null ? null : json["status"],
         duration: json["duration"] == null ? null : json["duration"],
         type: json["type"] == null ? null : json["type"],
-        endedAt: json["endedAt"] == null ? null : DateTime.parse(json["endedAt"]),
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+        endedAt:
+            json["endedAt"] == null ? null : DateTime.parse(json["endedAt"]),
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -407,23 +435,36 @@ class WorkerProfileVisibilitySettingClass {
   DateTime? createdAt;
   DateTime? updatedAt;
 
-  factory WorkerProfileVisibilitySettingClass.fromJson(Map<String, dynamic> json) =>
+  factory WorkerProfileVisibilitySettingClass.fromJson(
+          Map<String, dynamic> json) =>
       WorkerProfileVisibilitySettingClass(
-        arrayRatingStatusCanInviteMeOnQuest: json["arrayRatingStatusCanInviteMeOnQuest"] == null
-            ? null
-            : List<int>.from(json["arrayRatingStatusCanInviteMeOnQuest"].map((x) => x)),
-        arrayRatingStatusCanRespondToQuest: json["arrayRatingStatusCanRespondToQuest"] == null
-            ? null
-            : List<int>.from(json["arrayRatingStatusCanRespondToQuest"].map((x) => x)),
+        arrayRatingStatusCanInviteMeOnQuest:
+            json["arrayRatingStatusCanInviteMeOnQuest"] == null
+                ? null
+                : List<int>.from(
+                    json["arrayRatingStatusCanInviteMeOnQuest"].map((x) => x)),
+        arrayRatingStatusCanRespondToQuest:
+            json["arrayRatingStatusCanRespondToQuest"] == null
+                ? null
+                : List<int>.from(
+                    json["arrayRatingStatusCanRespondToQuest"].map((x) => x)),
         arrayRatingStatusInMySearch: json["arrayRatingStatusInMySearch"] == null
             ? null
             : List<int>.from(json["arrayRatingStatusInMySearch"].map((x) => x)),
         id: json["id"] == null ? null : json["id"],
         userId: json["userId"] == null ? null : json["userId"],
         ratingStatusCanInviteMeOnQuest:
-            json["ratingStatusCanInviteMeOnQuest"] == null ? null : json["ratingStatusCanInviteMeOnQuest"],
-        ratingStatusInMySearch: json["ratingStatusInMySearch"] == null ? null : json["ratingStatusInMySearch"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
+            json["ratingStatusCanInviteMeOnQuest"] == null
+                ? null
+                : json["ratingStatusCanInviteMeOnQuest"],
+        ratingStatusInMySearch: json["ratingStatusInMySearch"] == null
+            ? null
+            : json["ratingStatusInMySearch"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null
+            ? null
+            : DateTime.parse(json["updatedAt"]),
       );
 }

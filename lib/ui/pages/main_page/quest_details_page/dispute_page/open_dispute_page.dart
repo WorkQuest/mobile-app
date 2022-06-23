@@ -38,9 +38,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
     return Scaffold(
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
-        middle: Text(
-          "modals.openADispute".tr(),
-        ),
+        middle: Text("modals.openADispute".tr()),
       ),
       persistentFooterButtons: [
         Observer(
@@ -50,10 +48,18 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                     try {
                       await _checkPossibilityTx();
                     } on FormatException catch (e) {
-                      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.message);
+                      AlertDialogUtils.showInfoAlertDialog(
+                        context,
+                        title: 'modals.error'.tr(),
+                        content: e.message,
+                      );
                       return;
                     } catch (e) {
-                      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.toString());
+                      AlertDialogUtils.showInfoAlertDialog(
+                        context,
+                        title: 'modals.error'.tr(),
+                        content: e.toString(),
+                      );
                       return;
                     }
                     await confirmTransaction(
@@ -63,6 +69,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                       address: widget.quest.contractAddress!,
                       amount: null,
                       onPress: () async {
+                        print("widget.quest.contractAddress!: ${widget.quest.contractAddress!}");
                         store.openDispute(
                           widget.quest.id,
                           widget.quest.contractAddress!,

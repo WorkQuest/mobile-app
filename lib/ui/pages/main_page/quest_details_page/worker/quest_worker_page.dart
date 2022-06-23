@@ -59,7 +59,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       store.quest.value = widget.arguments.questInfo;
     else
       store.getQuest(widget.arguments.id ?? "").then(
-            (value) => isMyQuest = store.quest.value!.userId == profile!.userData!.id,
+            (value) =>
+                isMyQuest = store.quest.value!.userId == profile!.userData!.id,
           );
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
@@ -81,7 +82,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         builder: (_) => IconButton(
           icon: Icon(
             store.quest.value?.star ?? false ? Icons.star : Icons.star_border,
-            color: store.quest.value?.star ?? false ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
+            color: store.quest.value?.star ?? false
+                ? Color(0xFFE8D20D)
+                : Color(0xFFD8DFE3),
           ),
           onPressed: () {
             store.onStar();
@@ -115,11 +118,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         IconButton(
           icon: Icon(Icons.share_outlined),
           onPressed: () {
-            Share.share("https://app.workquest.co/quests/${store.quest.value!.id}");
+            Share.share(
+                "https://dev-app.workquest.co/quests/${store.quest.value!.id}");
           },
         ),
       if (store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
-          (store.quest.value?.status == 3 || store.quest.value?.status == 4))
+          store.quest.value?.status == 4)
         PopupMenuButton<String>(
           elevation: 10,
           icon: Icon(Icons.more_vert),
@@ -138,7 +142,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           },
           itemBuilder: (BuildContext context) {
             return {
-              if (store.quest.value!.status == 3 || store.quest.value!.status == 4) "chat.report",
+              if (store.quest.value!.status == 4) "chat.report",
             }.map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,
@@ -180,7 +184,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     CreateReviewPage.routeName,
                     arguments: ReviewArguments(storeQuest.questInfo, null),
                   );
-                  store.quest.value!.yourReview != null ? profile!.review = true : profile!.review = false;
+                  store.quest.value!.yourReview != null
+                      ? profile!.review = true
+                      : profile!.review = false;
                 },
                 child: Text(
                   "quests.addReview".tr(),
@@ -193,7 +199,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
                       if (states.contains(MaterialState.pressed))
-                        return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
                       return const Color(0xFF0083C7);
                     },
                   ),
@@ -204,7 +213,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         : store.quest.value!.status == 5 &&
                 profile!.review &&
                 (store.quest.value!.userId == profile!.userData!.id ||
-                    store.quest.value!.assignedWorker?.id == profile!.userData!.id)
+                    store.quest.value!.assignedWorker?.id ==
+                        profile!.userData!.id)
             ? Text(store.quest.value!.yourReview!.message)
             : SizedBox();
   }
@@ -234,7 +244,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           ),
           const SizedBox(height: 20),
           Observer(
-            builder: (_) => !store.response && store.quest.value!.status == 1 && store.quest.value!.invited == null
+            builder: (_) => !store.response &&
+                    store.quest.value!.status == 1 &&
+                    store.quest.value!.invited == null
                 ? store.isLoading
                     ? Center(
                         child: CircularProgressIndicator.adaptive(),
@@ -253,10 +265,14 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                           fixedSize: MaterialStateProperty.all(
                             Size(double.maxFinite, 43),
                           ),
-                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
                             (Set<MaterialState> states) {
                               if (states.contains(MaterialState.pressed))
-                                return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                                return Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.5);
                               return const Color(0xFF0083C7);
                             },
                           ),
@@ -264,8 +280,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       )
                 : SizedBox(),
           ),
-          if (store.quest.value!.status == 2 && store.quest.value!.assignedWorker?.id == profile!.userData!.id ||
-              (store.quest.value!.invited != null && store.quest.value!.invited?.status == 1))
+          if (store.quest.value!.status == 2 &&
+                  store.quest.value!.assignedWorker?.id ==
+                      profile!.userData!.id ||
+              (store.quest.value!.invited != null &&
+                  store.quest.value!.invited?.status == 1))
             store.isLoading
                 ? Center(
                     child: CircularProgressIndicator.adaptive(),
@@ -287,13 +306,17 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
                     ),
                   ),
-          if (store.quest.value!.status == 3 && store.quest.value!.assignedWorker?.id == profile!.userData!.id)
+          if (store.quest.value!.status == 3 &&
+              store.quest.value!.assignedWorker?.id == profile!.userData!.id)
             store.isLoading
                 ? Center(
                     child: CircularProgressIndicator.adaptive(),
@@ -315,7 +338,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                            return Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
@@ -424,7 +450,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           builder: (_) => LoginButton(
             withColumn: true,
             enabled: isLoading,
-            onTap: store.opinion.isNotEmpty || store.mediaFile.isNotEmpty || store.mediaIds.isNotEmpty
+            onTap: store.opinion.isNotEmpty ||
+                    store.mediaFile.isNotEmpty ||
+                    store.mediaIds.isNotEmpty
                 ? () async {
                     if (!isLoading) {
                       _updateLoading();
@@ -441,7 +469,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                           updatedAt: DateTime.now(),
                         );
                         for (int i = 0; i < questStore.questsList.length; i++)
-                          if (questStore.questsList[i].id == store.quest.value!.id)
+                          if (questStore.questsList[i].id ==
+                              store.quest.value!.id)
                             questStore.questsList[i].responded = Responded(
                               id: "",
                               workerId: profile!.userData!.id,
@@ -542,7 +571,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   store.setQuestStatus(1);
                   store.quest.value!.assignedWorker = null;
                   myQuestStore.deleteQuest(store.quest.value!.id);
-                  myQuestStore.addQuest(store.quest.value!, store.quest.value!.star);
+                  myQuestStore.addQuest(
+                      store.quest.value!, store.quest.value!.star);
                 },
               );
             } else {
@@ -576,10 +606,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     try {
       await _checkPossibilityTx();
     } on FormatException catch (e) {
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.message);
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'modals.error'.tr(), content: e.message);
       return;
     } catch (e) {
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.toString());
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'modals.error'.tr(), content: e.toString());
       return;
     }
     await confirmTransaction(

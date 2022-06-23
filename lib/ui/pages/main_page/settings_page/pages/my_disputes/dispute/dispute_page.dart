@@ -130,7 +130,7 @@ class _DisputePageState extends State<DisputePage> {
                 (element) => MessageCell(
                   UniqueKey(),
                   element,
-                  element.senderMemberId,
+                  element.senderMemberId!,
                   store.mediaPaths,
                 ),
               )

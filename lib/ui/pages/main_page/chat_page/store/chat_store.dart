@@ -77,7 +77,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
         starred: type == TypeChat.favourites ? true : null,
       );
 
-      listChats.removeWhere((element) => element.meMember?.status == -1);
+      // listChats.removeWhere((element) => element.meMember?.status == -1);
 
       chats[type]!.setChats(listChats);
 
@@ -166,6 +166,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
   void addedMessage(dynamic json) {
     try {
       MessageModel? message;
+      if (json["message"]["action"] == "QuestStatusUpdated") return;
       if (json["type"] == "request") {
         message = MessageModel.fromJson(json["payload"]["result"]);
       } else if (json["message"]["action"] == "groupChatCreate") {
@@ -187,7 +188,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
         });
       });
 
-      if (!isChatExist) getChat(message!.chatId);
+      if (!isChatExist) getChat(message!.chatId!);
       checkMessage();
     } catch (e, trace) {
       this.onError(e.toString());
@@ -214,8 +215,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
     bool check = false;
     chats.forEach((key, value) {
       value.chat.forEach((element) {
-        if (element.chatData.lastMessage.senderStatus == "Unread" &&
-            element.chatData.lastMessage.sender?.userId != myId) {
+        if (element.chatData.lastMessage!.senderStatus == "Unread" &&
+            element.chatData.lastMessage!.sender?.userId != myId) {
           check = true;
           return;
         }

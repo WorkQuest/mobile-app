@@ -38,20 +38,17 @@ class SettingsPage extends StatelessWidget {
           CupertinoSliverNavigationBar(
             largeTitle: Row(
               children: [
-                Expanded(
-                  child: Text("ui.profile.myProfile".tr()),
-                ),
+                Expanded(child: Text("ui.profile.myProfile".tr())),
                 if (isHavePhone)
                   InkWell(
                     onTap: () async {
                       await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(ProfileSettings.routeName, arguments: userStore.userData);
+                          .pushNamed(ProfileSettings.routeName,
+                              arguments: userStore.userData);
                       await Future.delayed(const Duration(seconds: 1));
                       userStore.getProfileMe();
                     },
-                    child: const Icon(
-                      Icons.settings_outlined,
-                    ),
+                    child: const Icon(Icons.settings_outlined),
                   ),
                 const SizedBox(width: 20.0)
               ],
@@ -81,7 +78,8 @@ class SettingsPage extends StatelessWidget {
                               ),
                               title: "settings.changePass".tr(),
                               onTap: () {
-                                Navigator.of(context, rootNavigator: true).pushNamed(
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushNamed(
                                   ChangePasswordPage.routeName,
                                 );
                               },
@@ -93,11 +91,13 @@ class SettingsPage extends StatelessWidget {
                               icon: CupertinoSwitch(
                                 activeColor: const Color(0xFF0083C7),
                                 onChanged: (_) {},
-                                value: userStore.userData?.isTotpActive ?? false,
+                                value:
+                                    userStore.userData?.isTotpActive ?? false,
                               ),
                               title: "settings.2FA".tr(),
                               onTap: () {
-                                Navigator.of(context, rootNavigator: true).pushNamed(TwoFAPage.routeName);
+                                Navigator.of(context, rootNavigator: true)
+                                    .pushNamed(TwoFAPage.routeName);
                               },
                             ),
                           ],
@@ -117,7 +117,9 @@ class SettingsPage extends StatelessWidget {
                                   20.0,
                                 ),
                                 title: "settings.smsVerification2".tr(),
-                                onTap: () => Navigator.of(context, rootNavigator: true).pushNamed(
+                                onTap: () =>
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pushNamed(
                                   SMSVerificationPage.routeName,
                                 ),
                               ),
@@ -157,7 +159,8 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title: "btn.myDisputes".tr(),
                                 onTap: () {
-                                  Navigator.of(context, rootNavigator: true).pushNamed(MyDisputesPage.routeName);
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed(MyDisputesPage.routeName);
                                 },
                               ),
                               _spacer,
@@ -170,12 +173,18 @@ class SettingsPage extends StatelessWidget {
                                   ),
                                   20.0,
                                 ),
-                                title: "Language \n${Constants.languageList.keys.firstWhere(
-                                  (k) => Constants.languageList[k] == context.locale,
+                                title:
+                                    "Language \n${Constants.languageList.keys.firstWhere(
+                                  (k) =>
+                                      Constants.languageList[k] ==
+                                      context.locale,
                                 )}",
                                 onTap: () {
-                                  AlertDialogUtils.showInfoAlertDialog(context,
-                                      title: 'Warning'.tr(), content: 'Service temporarily unavailable');
+                                  AlertDialogUtils.showInfoAlertDialog(
+                                    context,
+                                    title: 'Warning'.tr(),
+                                    content: 'Service temporarily unavailable',
+                                  );
 
                                   // Navigator.of(context, rootNavigator: true)
                                   //     .pushNamed(ChangeLanguagePage.routeName);
@@ -189,10 +198,8 @@ class SettingsPage extends StatelessWidget {
                   ),
 
                   ///Logout button
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  logOutButton(context),
+                  const SizedBox(height: 10.0),
+                  logOutButton(context, userStore),
                 ],
               ),
             ),
