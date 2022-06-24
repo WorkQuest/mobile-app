@@ -25,7 +25,7 @@ class _WebViewPageState extends State<WebViewPage> {
   final Completer<WebViewController> _controllerCompleter =
       Completer<WebViewController>();
 
-  final String baseUrl = "https://testnet-app.workquest.co/";
+  final String baseUrl = "https://dev-app.workquest.co/";
   final storage = new FlutterSecureStorage();
   WebViewController? _controller;
   bool loading = false;
@@ -74,7 +74,7 @@ class _WebViewPageState extends State<WebViewPage> {
               },
               onPageStarted: (String url) async {
                 print('Page started loading: $url');
-                if (url.contains("testnet-app.workquest.co"))
+                if (url.contains("dev-app.workquest.co"))
                   setState(() {
                     print("url: $url");
                     loading = true;
