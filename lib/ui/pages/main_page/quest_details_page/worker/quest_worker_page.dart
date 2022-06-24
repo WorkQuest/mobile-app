@@ -119,7 +119,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           icon: Icon(Icons.share_outlined),
           onPressed: () {
             Share.share(
-                "https://dev-app.workquest.co/quests/${store.quest.value!.id}");
+                "https://testnet-app.workquest.co/quests/${store.quest.value!.id}");
           },
         ),
       if (store.quest.value?.assignedWorker?.id == profile!.userData!.id &&

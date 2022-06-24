@@ -17,6 +17,8 @@ class PortfolioDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final portfolioStore = context.read<PortfolioStore>();
+    print('index: ${arguments.index}');
+    print('len list: ${portfolioStore.portfolioList}');
     portfolioStore.pageNumber = 0;
     return Scaffold(
       resizeToAvoidBottomInset: false,

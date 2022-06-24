@@ -1284,7 +1284,7 @@ extension Portfolio on ApiProvider {
       data: {
         "title": title,
         "description": description,
-        "medias": media,
+        "mediaIds": media,
       },
     );
   }

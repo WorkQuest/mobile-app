@@ -148,7 +148,7 @@ class _ReviewPageState extends State<ReviewPage> {
                                         .portfolioList[index]
                                         .medias
                                         .isEmpty
-                                        ? "https://dev-app.workquest.co/_nuxt/img/logo.1baae1e.svg"
+                                        ? "https://testnet-app.workquest.co/_nuxt/img/logo.1baae1e.svg"
                                         : widget
                                         .arguments
                                         .store
