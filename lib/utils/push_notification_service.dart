@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:app/main.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -12,6 +15,7 @@ class PushNotificationService {
   ) {
     _initialise();
     _getRemoteNotification();
+    _onMessageOpenApp();
   }
 
   final FirebaseMessaging _fcm;
@@ -78,11 +82,13 @@ class PushNotificationService {
   Future<void> _getRemoteNotification() async {
     try {
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print('Notif error');
+        print("notification.body: ${message.toMap()}");
         RemoteNotification? notification = message.notification;
         AndroidNotification? androidNotification =
             message.notification?.android;
-        if (notification != null && androidNotification != null) {
+        AppleNotification? appleNotification = message.notification?.apple;
+        if (notification != null &&
+            (androidNotification != null || appleNotification != null)) {
           showNotification(
             notification.hashCode,
             notification.body,
@@ -97,12 +103,20 @@ class PushNotificationService {
 
   ///OpenApp with message Clicked
   ///
-  Future<void> onMessageOpenApp() async {
+  Future<void> _onMessageOpenApp() async {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification!.android;
-      if (notification != null && android != null) {
-        ///navigate to notification page
+      if (notification != null) {
+        print("notification.body: ${notification.body}");
+        if (notification.body == "New message")
+          Navigator.pushNamed(
+            navigatorKey.currentState!.context,
+            ChatPage.routeName,
+          );
+        else
+          Navigator.of(navigatorKey.currentState!.context).pushNamed(
+            NotificationPage.routeName,
+          );
       }
     });
   }
@@ -113,7 +127,6 @@ class PushNotificationService {
     String? body,
     String? title,
   ) async {
-    print("Notification!!!!!!: $body");
     flutterLocalNotificationsPlugin.show(
       hashcode,
       title,

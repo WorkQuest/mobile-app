@@ -516,7 +516,7 @@ class _ChatListTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final differenceTime = DateTime.now()
-        .difference(chat.chatData.lastMessage!.createdAt ?? DateTime.now())
+        .difference(chat.chatData.lastMessage?.createdAt ?? DateTime.now())
         .inDays;
     Member? member;
     chat.members?.forEach((element) {

@@ -166,10 +166,13 @@ abstract class _ChatStore extends IStore<bool> with Store {
   void addedMessage(dynamic json) {
     try {
       MessageModel? message;
-      if (json["message"]["action"] == "QuestStatusUpdated") return;
       if (json["type"] == "request") {
         message = MessageModel.fromJson(json["payload"]["result"]);
-      } else if (json["message"]["action"] == "groupChatCreate") {
+      } else if (json["message"]["action"] == "QuestStatusUpdated")
+        return;
+      else if (json["message"]["action"] == "workerRespondedToQuest")
+        return;
+      else if (json["message"]["action"] == "groupChatCreate") {
         message = MessageModel.fromJson(json["message"]["data"]);
       } else if (json["type"] == "pub" ||
           json["message"]["action"] == "messageReadByRecipient") {

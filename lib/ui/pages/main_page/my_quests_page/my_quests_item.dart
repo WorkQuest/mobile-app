@@ -54,9 +54,7 @@ class MyQuestsItem extends StatelessWidget {
           ),
           color: Colors.white,
         ),
-        margin: const EdgeInsets.only(
-          top: 10,
-        ),
+        margin: const EdgeInsets.only(top: 10),
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,9 +76,7 @@ class MyQuestsItem extends StatelessWidget {
                       height: 30,
                       url: questInfo.user!.avatar?.url,
                     )),
-                const SizedBox(
-                  width: 5,
-                ),
+                const SizedBox(width: 5),
                 Expanded(
                   child: Text(
                     questInfo.user!.firstName + " " + questInfo.user!.lastName,
@@ -89,17 +85,18 @@ class MyQuestsItem extends StatelessWidget {
                   ),
                 ),
                 if (questInfo.responded != null)
-                  if (questInfo.responded!.workerId == context.read<ProfileMeStore>().userData!.id &&
-                          (questInfo.status == 1 || questInfo.status == 2) ||
-                      questInfo.invited != null && questInfo.invited?.status == 1)
+                  if ((questInfo.responded!.workerId ==
+                                  context.read<ProfileMeStore>().userData!.id &&
+                              (questInfo.status == 1 ||
+                                  questInfo.status == 2) ||
+                          questInfo.invited != null &&
+                              questInfo.invited?.status == 1) &&
+                      context.read<ProfileMeStore>().userData!.role ==
+                          UserRole.Worker)
                     Row(
                       children: [
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          "quests.youResponded".tr(),
-                        ),
+                        const SizedBox(width: 5),
+                        Text("quests.youResponded".tr()),
                       ],
                     ),
                 if (showStar)
@@ -120,20 +117,15 @@ class MyQuestsItem extends StatelessWidget {
                 if (questInfo.invited != null && questInfo.invited?.status == 0)
                   Row(
                     children: [
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        "quests.youInvited".tr(),
-                      ),
+                      const SizedBox(width: 5),
+                      Text("quests.youInvited".tr()),
                     ],
                   ),
               ],
             ),
-            const SizedBox(
-              height: 17.5,
-            ),
-            if (questInfo.userId != context.read<ProfileMeStore>().userData!.id &&
+            const SizedBox(height: 17.5),
+            if (questInfo.userId !=
+                    context.read<ProfileMeStore>().userData!.id &&
                 questInfo.status != 5 &&
                 questInfo.status != 6)
               Column(
@@ -158,9 +150,7 @@ class MyQuestsItem extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 16,
-                  ),
+                  const SizedBox(height: 16),
                 ],
               ),
             Row(
@@ -192,9 +182,7 @@ class MyQuestsItem extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Text(
               questInfo.description,
               overflow: TextOverflow.ellipsis,
@@ -202,9 +190,7 @@ class MyQuestsItem extends StatelessWidget {
                 color: Color(0xFF4C5767),
               ),
             ),
-            SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -212,7 +198,7 @@ class MyQuestsItem extends StatelessWidget {
                   questInfo.priority != 0 ? questInfo.priority - 1 : 0,
                   true,
                 ),
-                SizedBox(width: 50),
+                const SizedBox(width: 50),
                 Flexible(
                   child: Text(
                     _getPrice(questInfo.price) + "  WUSD",
@@ -227,7 +213,7 @@ class MyQuestsItem extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
           ],
         ),
       ),
@@ -272,16 +258,12 @@ class ShimmerMyQuestItem extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.0),
       ),
-      margin: const EdgeInsets.only(
-        top: 10,
-      ),
+      margin: const EdgeInsets.only(top: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 12,
-          ),
+          const SizedBox(height: 12),
           Row(
             children: [
               ClipRRect(
@@ -291,26 +273,20 @@ class ShimmerMyQuestItem extends StatelessWidget {
                   height: 30,
                 ),
               ),
-              const SizedBox(
-                width: 5,
-              ),
+              const SizedBox(width: 5),
               const _ShimmerItem(
                 width: 140,
                 height: 20,
               ),
               Row(
                 children: [
-                  const SizedBox(
-                    width: 5,
-                  ),
+                  const SizedBox(width: 5),
                   const _ShimmerItem(width: 40, height: 20),
                 ],
               ),
             ],
           ),
-          const SizedBox(
-            height: 17.5,
-          ),
+          const SizedBox(height: 17.5),
           Column(
             children: [
               Row(
@@ -319,25 +295,17 @@ class ShimmerMyQuestItem extends StatelessWidget {
                     Icons.location_on_rounded,
                     color: Color(0xFF7C838D),
                   ),
-                  SizedBox(
-                    width: 9,
-                  ),
+                  const SizedBox(width: 9),
                   const _ShimmerItem(width: 60, height: 20),
                 ],
               ),
-              SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
             ],
           ),
           const _ShimmerItem(width: 50, height: 20),
-          SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           const _ShimmerItem(width: 250, height: 40),
-          SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -346,18 +314,10 @@ class ShimmerMyQuestItem extends StatelessWidget {
               const _ShimmerItem(width: 70, height: 20),
             ],
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
         ],
       ),
     );
-  }
-
-  String _getPrice(String value) {
-    try {
-      return (BigInt.parse(value).toDouble() * pow(10, -18)).toStringAsFixed(2);
-    } catch (e) {
-      return '0.00';
-    }
   }
 }
 

@@ -64,8 +64,8 @@ class RegExpFields {
 class Configs {
   static final configsNetwork = {
     ConfigNameNetwork.testnet: ConfigNetwork(
-      rpc: 'https://testnet-gate.workquest.co/',
-      wss: 'wss://testnet-gate.workquest.co/tendermint-rpc/websocket',
+      rpc: 'https://dev-node-ams3.workquest.co',
+      wss: 'wss://wss-dev-node-ams3.workquest.co',
       urlExplorer: '',
       dataCoins: [
         DataCoins(
@@ -74,29 +74,31 @@ class Configs {
         ),
         DataCoins(
           symbolToken: TokenSymbols.WUSD,
-          addressToken: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
+          addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
           iconPath: 'assets/coins/wusd.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.wETH,
-          addressToken: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
+          addressToken: '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24',
           iconPath: 'assets/coins/weth.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.wBNB,
-          addressToken: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
+          addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
           iconPath: 'assets/coins/wbnb.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
-          addressToken: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859',
+          addressToken: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
           iconPath: 'assets/coins/usdt.svg',
         ),
       ],
     ),
     ConfigNameNetwork.rinkeby: ConfigNetwork(
-      rpc: 'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby',
-      wss: 'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby/ws',
+      rpc:
+          'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby',
+      wss:
+          'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby/ws',
       urlExplorer: 'https://rinkeby.etherscan.io/address/',
       dataCoins: [
         DataCoins(
@@ -111,8 +113,10 @@ class Configs {
       ],
     ),
     ConfigNameNetwork.binance: ConfigNetwork(
-      rpc: 'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet',
-      wss: 'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet/ws',
+      rpc:
+          'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet',
+      wss:
+          'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet/ws',
       urlExplorer: 'https://testnet.bscscan.com/address/',
       dataCoins: [
         DataCoins(
@@ -127,8 +131,10 @@ class Configs {
       ],
     ),
     ConfigNameNetwork.polygon: ConfigNetwork(
-      rpc: 'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai',
-      wss: 'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai/ws',
+      rpc:
+          'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai',
+      wss:
+          'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai/ws',
       urlExplorer: 'https://mumbai.polygonscan.com/address/',
       dataCoins: [
         DataCoins(

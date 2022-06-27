@@ -158,6 +158,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 OpenDisputePage.routeName,
                 arguments: store.quest.value!,
               );
+              await store.getQuest(store.quest.value!.id);
               // AlertDialogUtils.showInfoAlertDialog(
               //   context,
               //   title: 'Warning'.tr(),

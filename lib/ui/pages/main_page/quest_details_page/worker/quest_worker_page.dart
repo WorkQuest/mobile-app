@@ -136,6 +136,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               OpenDisputePage.routeName,
               arguments: storeQuest.questInfo,
             );
+
+            await store.getQuest(store.quest.value!.id);
             // AlertDialogUtils.showInfoAlertDialog(context,
             //     title: 'Warning'.tr(),
             //     content: 'Service temporarily unavailable');
