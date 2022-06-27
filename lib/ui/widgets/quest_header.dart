@@ -58,12 +58,15 @@ class QuestHeader extends StatelessWidget {
             height: 16,
           );
         case 2:
-          return header(
-            color: Color(0xFFE8D20D),
-            title: role == UserRole.Worker
-                ? "quests.headers.invited"
-                : "quests.headers.responded",
-          );
+          if (role == UserRole.Worker)
+            return header(
+              color: Color(0xFFE8D20D),
+              title: "quests.headers.invited",
+            );
+          else
+            return SizedBox(
+              height: 16,
+            );
         case 3:
           return header(
             color: AppColor.green,

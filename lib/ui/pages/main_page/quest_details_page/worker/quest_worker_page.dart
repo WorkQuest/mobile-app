@@ -89,14 +89,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           ),
           onPressed: () {
             store.onStar();
-            // myQuestStore.deleteQuest(store.quest.value!.id);
-            // myQuestStore.addQuest(
-            //   store.quest.value!,
-            //   store.quest.value!.star ? true : false,
-            // );
-            // store.quest.value!.star
-            //     ? myQuestStore.setStar(store.quest.value!, false)
-            //     : myQuestStore.setStar(store.quest.value!, true);
+            store.quest.value!.star
+                ? myQuestStore.setStar(store.quest.value!, false)
+                : myQuestStore.setStar(store.quest.value!, true);
           },
         ),
       ),
@@ -441,7 +436,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                             ? questStore.getQuests(true)
                             : questStore.setSearchWord(questStore.searchWord);
 
-                        myQuestStore.refreshLists(UserRole.Worker);
+                        myQuestStore.updateQuests(store.quest.value!);
                         _updateLoading();
                         chatStore!.loadChats(starred: false);
                         await Future.delayed(const Duration(milliseconds: 250));
@@ -486,7 +481,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 },
                 nextStep: () async {
                   await questStore.getQuests(true);
-                  myQuestStore.refreshLists(UserRole.Worker);
+                  myQuestStore.updateQuests(store.quest.value!);
                 },
               );
             } else {
@@ -497,7 +492,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 },
                 nextStep: () async {
                   await questStore.getQuests(true);
-                  myQuestStore.refreshLists(UserRole.Worker);
+                  myQuestStore.updateQuests(store.quest.value!);
                 },
               );
             }
@@ -524,7 +519,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   store.setQuestStatus(1);
                   store.quest.value!.assignedWorker = null;
 
-                  myQuestStore.refreshLists(UserRole.Worker);
+                  myQuestStore.updateQuests(store.quest.value!);
                 },
               );
             } else {
@@ -536,6 +531,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 nextStep: () async {
                   await questStore.getQuests(true);
                   store.setQuestStatus(1);
+                  myQuestStore.updateQuests(store.quest.value!);
                   store.quest.value!.invited = null;
                 },
               );
@@ -633,7 +629,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     },
                     nextStep: () async {
                       store.setQuestStatus(4);
-                      myQuestStore.refreshLists(UserRole.Worker);
+                      myQuestStore.updateQuests(store.quest.value!);
                     },
                   );
                   _updateLoading();

@@ -445,10 +445,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                         id: store.selectedResponders!.id,
                                       );
                                       store.setQuestStatus(2);
-                                      // questStore
-                                      //     .deleteQuest(store.quest.value!.id);
-                                      // questStore.addQuest(
-                                      //     store.quest.value!, false);
+                                      questStore
+                                          .updateQuests(store.quest.value!);
                                       Navigator.pop(context);
                                       await AlertDialogUtils.showSuccessDialog(
                                           context);
@@ -547,8 +545,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         },
                         nextStep: () async {
                           store.setQuestStatus(5);
-                          // questStore.deleteQuest(store.quest.value!.id);
-                          // questStore.addQuest(store.quest.value!, false);
+                          questStore
+                              .updateQuests(store.quest.value!);
                           chatStore.loadChats(starred: false);
                           Navigator.pop(context);
                           await AlertDialogUtils.showSuccessDialog(context);

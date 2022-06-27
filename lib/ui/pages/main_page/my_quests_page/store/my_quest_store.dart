@@ -91,15 +91,26 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
     });
   }
 
-  void refreshLists(UserRole role) {
-    getQuests(QuestsType.All, role, true);
-    getQuests(QuestsType.Favorites, role, true);
-    if (role == UserRole.Worker) getQuests(QuestsType.Responded, role, true);
-    if (role == UserRole.Worker) getQuests(QuestsType.Invited, role, true);
-    if (role == UserRole.Employer) getQuests(QuestsType.Created, role, true);
-    getQuests(QuestsType.Active, role, true);
-    if (role == UserRole.Employer) getQuests(QuestsType.Completed, role, true);
-    if (role == UserRole.Worker) getQuests(QuestsType.Performed, role, true);
+  @action
+  void updateQuests(BaseQuestResponse quest) {
+    quests.forEach((key, value) {
+      for (int i = 0; i < value.length; i++)
+        if (value[i].id == quest.id) {
+          quests[key]!.remove(value[i]);
+          quests[key]!.add(quest);
+        }
+    });
+    sortQuests();
+  }
+
+  @action
+  void sortQuests() {
+    quests.forEach((key, value) {
+      quests[key]!.sort((key2, key1) {
+        return key1.createdAt!.millisecondsSinceEpoch
+            .compareTo(key2.createdAt!.millisecondsSinceEpoch);
+      });
+    });
   }
 
   @action

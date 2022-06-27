@@ -108,6 +108,31 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
         .run(() => super.getQuests(questType, role, createNewList));
   }
 
+  final _$_MyQuestStoreActionController =
+      ActionController(name: '_MyQuestStore');
+
+  @override
+  void updateQuests(BaseQuestResponse quest) {
+    final _$actionInfo = _$_MyQuestStoreActionController.startAction(
+        name: '_MyQuestStore.updateQuests');
+    try {
+      return super.updateQuests(quest);
+    } finally {
+      _$_MyQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void sortQuests() {
+    final _$actionInfo = _$_MyQuestStoreActionController.startAction(
+        name: '_MyQuestStore.sortQuests');
+    try {
+      return super.sortQuests();
+    } finally {
+      _$_MyQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
