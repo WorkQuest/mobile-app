@@ -484,14 +484,16 @@ class _Confirm2FAPagesState extends State<Confirm2FAPages> {
       if (!(await launch(
           "otpauth://totp/${widget.mail}?secret=${widget.store.googleAuthenticatorSecretCode}&issuer=WorkQuest"))) {
         Platform.isIOS
-            ? launch("https://apps.apple.com/ru/app/google-authenticator/id388497605")
+            ? launch(
+                "https://apps.apple.com/ru/app/google-authenticator/id388497605")
             : launch("https://play.google.com/store/apps/details?id=" +
                 "com.google.android.apps.authenticator2");
       }
     } catch (e) {
       print(e);
       Platform.isIOS
-          ? launch("https://apps.apple.com/ru/app/google-authenticator/id388497605")
+          ? launch(
+              "https://apps.apple.com/ru/app/google-authenticator/id388497605")
           : launch("https://play.google.com/store/apps/details?id=" +
               "com.google.android.apps.authenticator2");
     }

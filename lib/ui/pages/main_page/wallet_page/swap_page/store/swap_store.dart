@@ -65,8 +65,9 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   setAmount(double value) => amount = value;
 
   @action
-  getMaxBalance() async =>
-      maxAmount = await service!.getBalanceFromContract(Web3Utils.getTokenUSDT(network!), otherNetwork: true);
+  getMaxBalance() async => maxAmount = await service!.getBalanceFromContract(
+      Web3Utils.getTokenUSDT(network!),
+      otherNetwork: true);
 
   @action
   setNetwork(SwapNetworks value) async {
@@ -112,7 +113,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       Web3Client _client = service!.client!;
       final _address = AccountRepository().userWallet!.address!;
       final _privateKey = AccountRepository().userWallet!.privateKey!;
-      final _nonce = await _client.getTransactionCount(EthereumAddress.fromHex(_address));
+      final _nonce =
+          await _client.getTransactionCount(EthereumAddress.fromHex(_address));
       final _cred = await service!.getCredentials(_privateKey);
       final _gas = await service!.getGas();
       final _chainId = await service!.client!.getChainId();
@@ -169,9 +171,11 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   }
 
   Future<DeployedContract> _getContract() async {
-    final _abiJson = await rootBundle.loadString("assets/contracts/WQBridge.json");
+    final _abiJson =
+        await rootBundle.loadString("assets/contracts/WQBridge.json");
     final _contractAbi = ContractAbi.fromJson(_abiJson, 'WQBridge');
-    final _contractAddress = EthereumAddress.fromHex(Web3Utils.getAddressContractBridge(network!));
+    final _contractAddress =
+        EthereumAddress.fromHex(Web3Utils.getAddressContractBridge(network!));
     return DeployedContract(_contractAbi, _contractAddress);
   }
 
@@ -194,8 +198,10 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       address: EthereumAddress.fromHex(Web3Utils.getTokenUSDT(network!)),
       client: service!.client!,
     );
-    final _cred = await service!.getCredentials(AccountRepository().userWallet!.privateKey!);
-    final _spender = EthereumAddress.fromHex(Web3Utils.getAddressContractBridge(network!));
+    final _cred = await service!
+        .getCredentials(AccountRepository().userWallet!.privateKey!);
+    final _spender =
+        EthereumAddress.fromHex(Web3Utils.getAddressContractBridge(network!));
     final _gas = await service!.getGas();
     await contract.approve(
       _spender,

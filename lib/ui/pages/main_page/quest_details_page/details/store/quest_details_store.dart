@@ -1,5 +1,4 @@
 import 'package:app/base_store/i_store.dart';
-import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -24,42 +23,11 @@ abstract class _QuestDetailsStore extends IStore<bool> with Store {
   @observable
   String? questId;
 
-  @observable
-  QuestItemPriorityType questType = QuestItemPriorityType.Active;
-
   @action
   initQuest(BaseQuestResponse quest) => questInfo = quest;
 
   @action
   initQuestId(String value) => questId = value;
-
-  @action
-  QuestItemPriorityType getQuestType(BaseQuestResponse? quest, UserRole role) {
-    switch (quest?.status) {
-      case -3:
-        return questType = QuestItemPriorityType.Performed;
-      case -2:
-        return questType = QuestItemPriorityType.Active;
-      case -1:
-        return questType = QuestItemPriorityType.Active;
-      case 0:
-        return questType = QuestItemPriorityType.Active;
-      case 1:
-        return questType = QuestItemPriorityType.Active;
-      case 2:
-        if (role == UserRole.Worker)
-          return questType = QuestItemPriorityType.Invited;
-        else
-          return questType = QuestItemPriorityType.Requested;
-      case 3:
-        return questType = QuestItemPriorityType.Active;
-      case 4:
-        return questType = QuestItemPriorityType.Active;
-      case 5:
-        return questType = QuestItemPriorityType.Performed;
-    }
-    return questType = QuestItemPriorityType.Active;
-  }
 
   @action
   updateQuest() async {

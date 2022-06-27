@@ -18,8 +18,8 @@ class BearerToken {
   }
 
   Map<String, dynamic> toJson() => {
-    "userStatus": status,
-    "access": access,
-    "refresh": refresh,
-  };
+        "userStatus": status,
+        "access": access,
+        "refresh": refresh,
+      };
 }

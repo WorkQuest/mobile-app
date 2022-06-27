@@ -1,7 +1,9 @@
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionUtil {
-  static Future<PermissionStatus> getStatusPermission(Permission permission) async => await permission.status;
+  static Future<PermissionStatus> getStatusPermission(
+          Permission permission) async =>
+      await permission.status;
 
   static Future<bool> requestForIos(Permission permission) async {
     final status = await getStatusPermission(permission);
@@ -20,7 +22,6 @@ class PermissionUtil {
   }
 
   static Future<bool> requestForAndroid(Permission permission) async {
-
     final status = await getStatusPermission(permission);
     if (status.isGranted) {
       return true;
@@ -33,7 +34,8 @@ class PermissionUtil {
     return false;
   }
 
-  static Future<bool> listPermissionIsGranted(List<Permission> permissions) async {
+  static Future<bool> listPermissionIsGranted(
+      List<Permission> permissions) async {
     bool result = true;
 
     await Stream.fromIterable(permissions).asyncMap((perm) async {

@@ -13,7 +13,7 @@ GetIt getIt = GetIt.instance;
   preferRelativeImports: true,
   asExtension: true,
 )
-
-void injectDependencies({required String env, EnvironmentFilter? environmentFilter}) {
+void injectDependencies(
+    {required String env, EnvironmentFilter? environmentFilter}) {
   getIt.init(environment: env, environmentFilter: environmentFilter);
 }

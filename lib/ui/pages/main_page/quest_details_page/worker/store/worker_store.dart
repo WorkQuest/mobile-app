@@ -39,9 +39,11 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   Future<void> getFee() async {
     try {
       final _client = AccountRepository().getClient();
-      final _contract = await _client.getDeployedContract("WorkQuest", quest.value!.contractAddress!);
+      final _contract = await _client.getDeployedContract(
+          "WorkQuest", quest.value!.contractAddress!);
       final _function = _contract.function(WQContractFunctions.acceptJob.name);
-      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: []);
+      final _gas = await _client.getEstimateGasCallContract(
+          contract: _contract, function: _function, params: []);
       fee = _gas.toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -100,10 +102,10 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       this.onLoading();
       // await _apiProvider.acceptOnQuest(questId: quest.value!.id);
       await AccountRepository().getClient().handleEvent(
-        function: WQContractFunctions.acceptJob,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
+            function: WQContractFunctions.acceptJob,
+            contractAddress: quest.value!.contractAddress!,
+            value: null,
+          );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -117,10 +119,10 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       this.onLoading();
       // await _apiProvider.rejectOnQuest(questId: quest.value!.id);
       AccountRepository().getClient().handleEvent(
-        function: WQContractFunctions.declineJob,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
+            function: WQContractFunctions.declineJob,
+            contractAddress: quest.value!.contractAddress!,
+            value: null,
+          );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -133,11 +135,11 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptInvite(responseId: responseId);
-      await AccountRepository().getClient().handleEvent(
-        function: WQContractFunctions.acceptJob,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
+      // await AccountRepository().getClient().handleEvent(
+      //       function: WQContractFunctions.acceptJob,
+      //       contractAddress: quest.value!.contractAddress!,
+      //       value: null,
+      //     );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -151,10 +153,10 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       this.onLoading();
       await _apiProvider.rejectInvite(responseId: responseId);
       AccountRepository().getClient().handleEvent(
-        function: WQContractFunctions.declineJob,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
+            function: WQContractFunctions.declineJob,
+            contractAddress: quest.value!.contractAddress!,
+            value: null,
+          );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -168,10 +170,10 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       this.onLoading();
       // await _apiProvider.completeWork(questId: quest.value!.id);
       await AccountRepository().getClient().handleEvent(
-        function: WQContractFunctions.verificationJob,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
+            function: WQContractFunctions.verificationJob,
+            contractAddress: quest.value!.contractAddress!,
+            value: null,
+          );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {

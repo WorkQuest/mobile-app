@@ -189,7 +189,7 @@ abstract class _PortfolioStore extends IStore<bool> with Store {
   }) async {
     await Future.delayed(const Duration(milliseconds: 250));
     try {
-      if (newList){
+      if (newList) {
         reviewsList.clear();
         offsetReview = 0;
       }

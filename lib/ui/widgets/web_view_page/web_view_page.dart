@@ -89,8 +89,8 @@ class _WebViewPageState extends State<WebViewPage> {
                 // _getTokenThroughSocialMedia(url);
                 String? accessToken = await Storage.readAccessToken();
                 String? refreshToken = await Storage.readRefreshToken();
-                _controllerCompleter.future
-                    .then((value) => value.runJavascriptReturningResult(
+                _controllerCompleter.future.then((value) => value
+                    .runJavascriptReturningResult(
                         """localStorage.setItem("accessToken","${accessToken ?? ''}");
                     localStorage.setItem("refreshToken","${refreshToken ?? ''}");"""));
                 if (url.contains('token?code=') ||

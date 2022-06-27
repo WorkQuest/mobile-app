@@ -72,12 +72,12 @@ class _StartPageState extends State<StartPage> {
                                 secondImage: "assets/start_page_2.png",
                                 context: context,
                                 firstHead:
-                                "The World's Decentralized Job Market",
+                                    "The World's Decentralized Job Market",
                                 firstTitle:
-                                "Completely secure and easy to use, WorkQuest offers you a search for an employee or employer in just a few clicks.",
+                                    "Completely secure and easy to use, WorkQuest offers you a search for an employee or employer in just a few clicks.",
                                 secondHead: "Innovative Labor Market",
                                 secondTitle:
-                                "Absolute data security and a unique rating system guarantee the success of a transaction between an employee and an employer using a smart contract based on the WorkNet Blockchain.",
+                                    "Absolute data security and a unique rating system guarantee the success of a transaction between an employee and an employer using a smart contract based on the WorkNet Blockchain.",
                               )
                             else
                               page(
@@ -86,10 +86,10 @@ class _StartPageState extends State<StartPage> {
                                 context: context,
                                 firstHead: "Innovative Labor Market",
                                 firstTitle:
-                                "Absolute data security and a unique rating system guarantee the success of a transaction between an employee and an employer using a smart contract based on the WorkNet Blockchain.",
+                                    "Absolute data security and a unique rating system guarantee the success of a transaction between an employee and an employer using a smart contract based on the WorkNet Blockchain.",
                                 secondHead: "Integration DeFi with Recruitment",
                                 secondTitle:
-                                "Fast and cheap transactions are available to everyone, anywhere in the world. WorkQuest is a diverse world of decentralized finance in your pocket.",
+                                    "Fast and cheap transactions are available to everyone, anywhere in the world. WorkQuest is a diverse world of decentralized finance in your pocket.",
                               ),
                             PageView(
                               controller: _pageController,

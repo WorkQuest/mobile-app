@@ -39,7 +39,8 @@ extension Web3Requests on ApiProvider {
     return double.parse(_course) * pow(10, -18);
   }
 
-  Future<List<Tx>?> getTransactions(String address, {int limit = 10, int offset = 0}) async {
+  Future<List<Tx>?> getTransactions(String address,
+      {int limit = 10, int offset = 0}) async {
     final response = await httpClient.get(
       query: '${_transactions(address)}?limit=$limit&offset=$offset',
       useBaseUrl: false,

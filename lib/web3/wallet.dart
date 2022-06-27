@@ -47,9 +47,9 @@ class Wallet extends Equatable {
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-    'hex_address': address,
-    'public_key': publicKey,
-    'private_key': privateKey,
-    'title': title,
-  };
+        'hex_address': address,
+        'public_key': publicKey,
+        'private_key': privateKey,
+        'title': title,
+      };
 }

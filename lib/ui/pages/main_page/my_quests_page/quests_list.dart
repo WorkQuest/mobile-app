@@ -12,9 +12,9 @@ import 'my_quests_item.dart';
 enum FromQuestList { questSearch, myQuest }
 
 class QuestsList extends StatelessWidget {
-  final QuestItemPriorityType questItemPriorityType;
+  final QuestsType questItemPriorityType;
 
-  List<BaseQuestResponse> questsList = ObservableList.of([]);
+  ObservableList<BaseQuestResponse> questsList = ObservableList.of([]);
 
   final Future<dynamic>? update;
 
@@ -53,7 +53,7 @@ class QuestsList extends StatelessWidget {
     return ListView.builder(
       physics: physics,
       shrinkWrap: true,
-      key: new PageStorageKey<QuestItemPriorityType>(questItemPriorityType),
+      key: new PageStorageKey<QuestsType>(questItemPriorityType),
       itemCount: questsList.length,
       padding: EdgeInsets.zero,
       itemBuilder: (BuildContext context, index) {
@@ -66,9 +66,10 @@ class QuestsList extends StatelessWidget {
               ),
             ),
             MyQuestsItem(
-              questsList[index],
+              questInfo: questsList[index],
+              myRole: UserRole.Worker,
               itemType: questItemPriorityType,
-              showStar: from == FromQuestList.myQuest && questItemPriorityType == QuestItemPriorityType.Starred,
+              showStar: from == FromQuestList.myQuest,
             ),
             if (short && index == 2)
               Column(
@@ -79,9 +80,7 @@ class QuestsList extends StatelessWidget {
                       color: Color(0xFFF7F8FA),
                     ),
                   ),
-                  const SizedBox(
-                    height: 50,
-                  ),
+                  const SizedBox(height: 50),
                 ],
               ),
           ],
@@ -98,14 +97,12 @@ class QuestsList extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SvgPicture.asset(
-            "assets/empty_quest_icon.svg",
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
+          SvgPicture.asset("assets/empty_quest_icon.svg"),
+          const SizedBox(height: 10.0),
           Text(
-            "quests.youDontHaveAny".tr() + " ${questItemPriorityType.name} " + "quests.questYet".tr(),
+            "quests.youDontHaveAny".tr() +
+                " ${questItemPriorityType.name} " +
+                "quests.questYet".tr(),
             style: TextStyle(
               color: Color(0xFFD8DFE3),
             ),

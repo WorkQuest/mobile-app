@@ -43,7 +43,8 @@ class AccountRepository {
 
   connectClient() {
     final config = Configs.configsNetwork[configName]!;
-    workNetClient = ClientService(Configs.configsNetwork[ConfigNameNetwork.testnet]!);
+    workNetClient =
+        ClientService(Configs.configsNetwork[ConfigNameNetwork.testnet]!);
     otherClient = ClientService(config);
   }
 
@@ -79,10 +80,9 @@ class AccountRepository {
       workNetClient!.client?.dispose();
       workNetClient = null;
     }
-    if (otherClient?.client != null)  {
+    if (otherClient?.client != null) {
       otherClient!.client?.dispose();
       otherClient = null;
-
     }
   }
 

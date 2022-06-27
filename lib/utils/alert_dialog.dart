@@ -6,7 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AlertDialogUtils {
-  static Future<void> showSuccessDialog(BuildContext context, {String text = 'Success'}) async {
+  static Future<void> showSuccessDialog(BuildContext context,
+      {String text = 'Success'}) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -40,7 +41,8 @@ class AlertDialogUtils {
     );
   }
 
-  static Future<void> showLoadingDialog(BuildContext context, {String? message}) async {
+  static Future<void> showLoadingDialog(BuildContext context,
+      {String? message}) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [

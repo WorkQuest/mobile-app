@@ -4,6 +4,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:mobx/mobx.dart';
 
 import '../../../../../../enums.dart';
 
@@ -21,12 +22,14 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
         SizedBox(
           height: 20,
         ),
-        myQuests?.performed != null || (viewOtherUser?.quests.isNotEmpty ?? false)
+        myQuests?.quests[QuestsType.Performed] != null ||
+                (viewOtherUser?.quests.isNotEmpty ?? false)
             ? QuestsList(
-                QuestItemPriorityType.Performed,
+                QuestsType.Performed,
                 viewOtherUser?.userData == null
-                    ? myQuests!.performed.take(2).toList()
-                    : viewOtherUser!.quests.take(2).toList(),
+                    ? ObservableList.of(
+                        myQuests!.quests[QuestsType.Performed]!.take(2))
+                    : ObservableList.of(viewOtherUser!.quests.take(2)),
                 physics: NeverScrollableScrollPhysics(),
                 isLoading: myQuests!.isLoading,
                 short: true,
@@ -39,7 +42,8 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                       : "errors.emptyData.worker.myQuests.noQuest".tr(),
                 ),
               ),
-        if (myQuests!.performed.isNotEmpty || (viewOtherUser?.quests.isNotEmpty ?? false))
+        if (myQuests!.quests[QuestsType.Performed]!.isNotEmpty ||
+            (viewOtherUser?.quests.isNotEmpty ?? false))
           Padding(
             padding: EdgeInsets.only(
               left: 16.0,
@@ -50,12 +54,21 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                 await Navigator.pushNamed(
                   context,
                   ProfileQuestsPage.routeName,
-                  arguments: viewOtherUser?.userData == null ? userStore!.userData! : viewOtherUser!.userData!,
+                  arguments: viewOtherUser?.userData == null
+                      ? userStore!.userData!
+                      : viewOtherUser!.userData!,
                 );
                 if (viewOtherUser?.userData == null)
-                  myQuests!.getQuests(userStore!.userData!.id, role, true);
+                  myQuests!.getQuests(
+                    QuestsType.Performed,
+                    userStore!.userData!.role,
+                    true,
+                  );
                 else
-                  portfolioStore!.getReviews(userId: viewOtherUser!.userData!.id, newList: true);
+                  portfolioStore!.getReviews(
+                    userId: viewOtherUser!.userData!.id,
+                    newList: true,
+                  );
               },
               child: Text(
                 "meta.showAllQuests".tr(),
@@ -69,8 +82,10 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
 //_____________About______________/
         Text(
           viewOtherUser?.userData == null
-              ? userStore!.userData?.additionalInfo?.description ?? "modals.noDescription".tr()
-              : viewOtherUser!.userData!.additionalInfo?.description ?? "modals.noDescription".tr(),
+              ? userStore!.userData?.additionalInfo?.description ??
+                  "modals.noDescription".tr()
+              : viewOtherUser!.userData!.additionalInfo?.description ??
+                  "modals.noDescription".tr(),
         ),
       ];
 
@@ -81,15 +96,19 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                   ? userStore!.userData!.questsStatistic!.completed.toString()
                   : '0'
               : viewOtherUser!.userData!.questsStatistic != null
-                  ? viewOtherUser!.userData!.questsStatistic!.completed.toString()
+                  ? viewOtherUser!.userData!.questsStatistic!.completed
+                      .toString()
                   : '0',
           averageRating: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.averageMark
               : viewOtherUser!.userData!.ratingStatistic!.averageMark,
           reviews: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
-              : viewOtherUser!.userData!.ratingStatistic!.reviewCount.toString(),
-          userId: viewOtherUser?.userData == null ? userStore!.userData!.id : viewOtherUser!.userData!.id,
+              : viewOtherUser!.userData!.ratingStatistic!.reviewCount
+                  .toString(),
+          userId: viewOtherUser?.userData == null
+              ? userStore!.userData!.id
+              : viewOtherUser!.userData!.id,
           context: context,
         ),
       ];

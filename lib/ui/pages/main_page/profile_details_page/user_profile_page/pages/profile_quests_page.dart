@@ -64,37 +64,46 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
             ? NotificationListener<ScrollEndNotification>(
                 onNotification: (scrollEnd) {
                   final metrics = scrollEnd.metrics;
-                  if (metrics.atEdge || metrics.maxScrollExtent < metrics.pixels && !profileMeStore!.isLoading) {
+                  if (metrics.atEdge ||
+                      metrics.maxScrollExtent < metrics.pixels &&
+                          !profileMeStore!.isLoading) {
                     if (widget.profile.role == UserRole.Worker)
                       profileMeStore!.getActiveQuests(
                         userId: profileMeStore!.questHolder!.id,
                         newList: true,
-                        isProfileYours: profileMeStore!.userData!.id != widget.profile.id ? false : true,
+                        isProfileYours:
+                            profileMeStore!.userData!.id != widget.profile.id
+                                ? false
+                                : true,
                       );
                     else
                       profileMeStore!.getCompletedQuests(
                         userRole: widget.profile.role,
                         userId: widget.profile.id,
                         newList: false,
-                        isProfileYours: profileMeStore!.userData!.id != widget.profile.id ? false : true,
+                        isProfileYours:
+                            profileMeStore!.userData!.id != widget.profile.id
+                                ? false
+                                : true,
                       );
                   }
                   return true;
                 },
                 child: Observer(
-                  builder: (_) =>
-                      profileMeStore!.questHolder == null && profileMeStore!.isLoading && profileMeStore!.quests.isEmpty
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : QuestsList(
-                              widget.profile.role == UserRole.Worker
-                                  ? QuestItemPriorityType.Active
-                                  : QuestItemPriorityType.Performed,
-                              profileMeStore!.quests,
-                              isLoading: profileMeStore!.isLoading,
-                              from: FromQuestList.questSearch,
-                            ),
+                  builder: (_) => profileMeStore!.questHolder == null &&
+                          profileMeStore!.isLoading &&
+                          profileMeStore!.quests.isEmpty
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : QuestsList(
+                          widget.profile.role == UserRole.Worker
+                              ? QuestsType.Active
+                              : QuestsType.Performed,
+                          profileMeStore!.quests,
+                          isLoading: profileMeStore!.isLoading,
+                          from: FromQuestList.questSearch,
+                        ),
                 ),
               )
             : Center(child: CircularProgressIndicator()),

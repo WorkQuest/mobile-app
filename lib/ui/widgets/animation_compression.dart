@@ -30,8 +30,10 @@ class _AnimationCompressionState extends State<AnimationCompression>
   @override
   void initState() {
     super.initState();
-    _firstController = AnimationController(vsync: this, duration: _durationScale);
-    _secondController = AnimationController(vsync: this, duration: _durationSize);
+    _firstController =
+        AnimationController(vsync: this, duration: _durationScale);
+    _secondController =
+        AnimationController(vsync: this, duration: _durationSize);
 
     _firstAnimation = Tween(begin: 0.0, end: 1).animate(
       CurvedAnimation(parent: _firstController, curve: Curves.decelerate),
@@ -72,7 +74,8 @@ class _AnimationCompressionState extends State<AnimationCompression>
           builder: (context, child) {
             return Container(
               alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width - MediaQuery.of(context).size.width * _firstAnimation.value,
+              width: MediaQuery.of(context).size.width -
+                  MediaQuery.of(context).size.width * _firstAnimation.value,
               child: child,
             );
           },

@@ -144,6 +144,7 @@ class _ChatPageState extends State<ChatPage>
                   ),
                 ),
                 TabBar(
+                  isScrollable: true,
                   controller: _tabController,
                   tabs: [
                     tab(text: 'chat.tabs.active'),
@@ -274,15 +275,11 @@ class _ListChatsWidget extends StatefulWidget {
 
 class _ListChatsWidgetState extends State<_ListChatsWidget>
     with AutomaticKeepAliveClientMixin {
-  // late ChatStore store;
   ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    // store = ChatStore(GetIt.I.get<ApiProvider>());
-    // store.initialSetup(widget.myId);
     Future.delayed(Duration.zero, () {
-      // widget.onSetTypeChat(widget.typeChat);
       widget.store.loadChats(
         starred: widget.store.starred,
         type: widget.typeChat,
@@ -587,16 +584,31 @@ class _ChatListTileWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(
-                          chat.type != TypeChat.group
-                              ? "${member!.user?.firstName ?? member!.admin?.firstName ?? "--"} "
-                                  "${member!.user?.lastName ?? member!.admin?.firstName ?? "--"}"
-                              : "${chat.groupChat!.name}",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                        Row(
+                          children: [
+                            Text(
+                              chat.type == TypeChat.group
+                                  ? "${chat.groupChat!.name}"
+                                  : "${member!.user?.firstName ?? member!.admin?.firstName ?? "--"} "
+                                      "${member!.user?.lastName ?? member!.admin?.lastName ?? "--"}",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(width: 5),
+                            if (chat.type == TypeChat.active ||
+                                chat.type == TypeChat.completed)
+                              Text(
+                                "Quest: ${chat.questChat?.quest?.title}",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: AppColor.enabledButton,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                          ],
                         ),
                         const SizedBox(height: 5),
                         Text(

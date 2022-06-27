@@ -4,11 +4,9 @@ import 'package:bip39/bip39.dart' as bip39;
 import 'package:hex/hex.dart';
 import 'package:web3dart/credentials.dart';
 
-
 const _baseDerivationPath = "m/44'/60'/0'/0/0";
 
 class AddressService {
-
   static final AddressService _instance = AddressService._internal();
 
   factory AddressService() => _instance;

@@ -66,13 +66,12 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
         offset = 0;
       }
       if (offset == quests.length) {
-          quests.addAll(await _apiProvider.getEmployerQuests(
-            userId:userId,
-            offset: offset,
-            invited: false,
-            sort: "sort[createdAt]=desc",
-            me: isProfileYours ? true : false,
-          ));
+        quests.addAll(await _apiProvider.getEmployerQuests(
+          userId: userId,
+          offset: offset,
+          sort: "sort[createdAt]=desc",
+          me: isProfileYours ? true : false,
+        ));
 
         quests.toList().sort((key1, key2) =>
             key1.createdAt!.millisecondsSinceEpoch <

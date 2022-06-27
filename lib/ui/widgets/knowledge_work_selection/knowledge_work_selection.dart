@@ -115,7 +115,8 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                               .controller!.store!.numberOfFiled.last.dateFrom
                           : kng.dateFrom,
                       onChanged: (value) {
-                        kng.dateFrom = '${value.year}-${value.month}-${value.day}';
+                        kng.dateFrom =
+                            '${value.year}-${value.month}-${value.day}';
                         setState(() {});
                       },
                       from: true,
@@ -136,7 +137,8 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                           ? widget.controller!.store!.numberOfFiled.last.dateTo
                           : kng.dateTo,
                       onChanged: (value) {
-                        kng.dateTo = '${value.year}-${value.month}-${value.day}';
+                        kng.dateTo =
+                            '${value.year}-${value.month}-${value.day}';
                         setState(() {});
                       },
                       from: false,

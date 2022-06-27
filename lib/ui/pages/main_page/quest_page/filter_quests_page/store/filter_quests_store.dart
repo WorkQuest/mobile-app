@@ -330,7 +330,6 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     }
   }
 
-
   @action
   void setSelectedPayPeriod(bool? value, int index) {
     switch (index) {

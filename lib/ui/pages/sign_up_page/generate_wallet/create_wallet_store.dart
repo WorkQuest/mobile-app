@@ -58,7 +58,8 @@ abstract class _CreateWalletStore extends IStore<bool> with Store {
   setIsSaved(bool value) => isSaved = value;
 
   @computed
-  bool get statusGenerateButton => selectedFirstWord == firstWord && selectedSecondWord == secondWord;
+  bool get statusGenerateButton =>
+      selectedFirstWord == firstWord && selectedSecondWord == secondWord;
 
   @action
   selectFirstWord(String? value) => selectedFirstWord = value;

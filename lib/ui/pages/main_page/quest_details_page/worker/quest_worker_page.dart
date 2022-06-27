@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:app/constants.dart';
-import 'package:app/model/quests_models/Responded.dart';
+import 'package:app/enums.dart';
+import 'package:app/model/quests_models/responded.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
@@ -88,14 +89,14 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           ),
           onPressed: () {
             store.onStar();
-            myQuestStore.deleteQuest(store.quest.value!.id);
-            myQuestStore.addQuest(
-              store.quest.value!,
-              store.quest.value!.star ? true : false,
-            );
-            store.quest.value!.star
-                ? myQuestStore.setStar(store.quest.value!, false)
-                : myQuestStore.setStar(store.quest.value!, true);
+            // myQuestStore.deleteQuest(store.quest.value!.id);
+            // myQuestStore.addQuest(
+            //   store.quest.value!,
+            //   store.quest.value!.star ? true : false,
+            // );
+            // store.quest.value!.star
+            //     ? myQuestStore.setStar(store.quest.value!, false)
+            //     : myQuestStore.setStar(store.quest.value!, true);
           },
         ),
       ),
@@ -136,11 +137,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               OpenDisputePage.routeName,
               arguments: storeQuest.questInfo,
             );
-
             await store.getQuest(store.quest.value!.id);
-            // AlertDialogUtils.showInfoAlertDialog(context,
-            //     title: 'Warning'.tr(),
-            //     content: 'Service temporarily unavailable');
           },
           itemBuilder: (BuildContext context) {
             return {
@@ -159,14 +156,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   @override
   Widget questHeader() {
     return QuestHeader(
-      itemType: storeQuest.getQuestType(
-        store.quest.value,
-        profile!.userData!.role,
-      ),
+      itemType: QuestsType.All,
       questStatus: store.quest.value!.status,
       rounded: false,
-      responded: store.response,
-      forMe: store.quest.value!.status == 2 ? true : false,
+      role: UserRole.Worker,
+      responded: store.quest.value!.responded,
+      invited: store.quest.value!.invited,
     );
   }
 
@@ -250,14 +245,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     store.quest.value!.status == 1 &&
                     store.quest.value!.invited == null
                 ? store.isLoading
-                    ? Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      )
+                    ? Center(child: CircularProgressIndicator.adaptive())
                     : TextButton(
                         onPressed: () {
-                          bottomForm(
-                            child: bottomRespond(),
-                          );
+                          bottomForm(child: bottomRespond());
                         },
                         child: Text(
                           "modals.sendARequest".tr(),
@@ -288,14 +279,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               (store.quest.value!.invited != null &&
                   store.quest.value!.invited?.status == 1))
             store.isLoading
-                ? Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  )
+                ? Center(child: CircularProgressIndicator.adaptive())
                 : TextButton(
                     onPressed: () {
-                      bottomForm(
-                        child: bottomAcceptReject(),
-                      );
+                      bottomForm(child: bottomAcceptReject());
                     },
                     child: Text(
                       "quests.answerOnQuest.title".tr(),
@@ -320,14 +307,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           if (store.quest.value!.status == 3 &&
               store.quest.value!.assignedWorker?.id == profile!.userData!.id)
             store.isLoading
-                ? Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  )
+                ? Center(child: CircularProgressIndicator.adaptive())
                 : TextButton(
                     onPressed: () {
-                      bottomForm(
-                        child: bottomComplete(),
-                      );
+                      bottomForm(child: bottomComplete());
                     },
                     child: Text(
                       "quests.completeTheQuest".tr(),
@@ -430,18 +413,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           onChanged: store.setOpinion,
           keyboardType: TextInputType.multiline,
           maxLines: 6,
-          decoration: InputDecoration(
-            hintText: "modals.hello".tr(),
-          ),
-          style: TextStyle(
-            fontSize: 16,
-          ),
+          decoration: InputDecoration(hintText: "modals.hello".tr()),
+          style: TextStyle(fontSize: 16),
         ),
         const SizedBox(height: 15),
         Padding(
-          padding: const EdgeInsets.only(
-            top: 20.0,
-          ),
+          padding: const EdgeInsets.only(top: 20.0),
           child: MediaUpload(
             store.mediaIds,
             mediaFile: store.mediaFile,
@@ -460,34 +437,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       _updateLoading();
                       await store.sendRespondOnQuest(store.opinion);
                       if (store.isSuccess) {
-                        store.quest.value!.responded = Responded(
-                          id: "",
-                          workerId: profile!.userData!.id,
-                          questId: store.quest.value!.id,
-                          status: 0,
-                          type: 0,
-                          message: store.opinion,
-                          createdAt: DateTime.now(),
-                          updatedAt: DateTime.now(),
-                        );
-                        for (int i = 0; i < questStore.questsList.length; i++)
-                          if (questStore.questsList[i].id ==
-                              store.quest.value!.id)
-                            questStore.questsList[i].responded = Responded(
-                              id: "",
-                              workerId: profile!.userData!.id,
-                              questId: store.quest.value!.id,
-                              status: 0,
-                              type: 0,
-                              message: store.opinion,
-                              createdAt: DateTime.now(),
-                              updatedAt: DateTime.now(),
-                            );
                         questStore.searchWord.isEmpty
                             ? questStore.getQuests(true)
                             : questStore.setSearchWord(questStore.searchWord);
-                        myQuestStore.deleteQuest(store.quest.value!.id);
-                        myQuestStore.addQuest(store.quest.value!, true);
+
+                        myQuestStore.refreshLists(UserRole.Worker);
                         _updateLoading();
                         chatStore!.loadChats(starred: false);
                         await Future.delayed(const Duration(milliseconds: 250));
@@ -530,13 +484,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   store.sendAcceptOnQuest();
                   Navigator.pop(context);
                 },
-                nextStep: () {
-                  store.setQuestStatus(3);
-                  myQuestStore.deleteQuest(store.quest.value!.id);
-                  myQuestStore.addQuest(
-                    store.quest.value!,
-                    store.quest.value!.star,
-                  );
+                nextStep: () async {
+                  await questStore.getQuests(true);
+                  myQuestStore.refreshLists(UserRole.Worker);
                 },
               );
             } else {
@@ -547,6 +497,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 },
                 nextStep: () async {
                   await questStore.getQuests(true);
+                  myQuestStore.refreshLists(UserRole.Worker);
                 },
               );
             }
@@ -572,9 +523,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   }
                   store.setQuestStatus(1);
                   store.quest.value!.assignedWorker = null;
-                  myQuestStore.deleteQuest(store.quest.value!.id);
-                  myQuestStore.addQuest(
-                      store.quest.value!, store.quest.value!.star);
+
+                  myQuestStore.refreshLists(UserRole.Worker);
                 },
               );
             } else {
@@ -611,7 +561,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       AlertDialogUtils.showInfoAlertDialog(context,
           title: 'modals.error'.tr(), content: e.message);
       return;
-    } catch (e) {
+    } catch (e, trace) {
+      print('_checkPossibilityTx | $e\n$trace');
       AlertDialogUtils.showInfoAlertDialog(context,
           title: 'modals.error'.tr(), content: e.toString());
       return;
@@ -682,8 +633,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     },
                     nextStep: () async {
                       store.setQuestStatus(4);
-                      await myQuestStore.deleteQuest(store.quest.value!.id);
-                      await myQuestStore.addQuest(store.quest.value!, true);
+                      myQuestStore.refreshLists(UserRole.Worker);
                     },
                   );
                   _updateLoading();

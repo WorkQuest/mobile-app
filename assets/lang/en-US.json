@@ -284,6 +284,30 @@
       "waitConfirm": "Wait confirm",
       "done": "Done"
     },
+    "tabs": {
+      "all": "All Quests",
+      "favorites": "Favorites",
+      "responded": "Responded",
+      "invited": "Invited",
+      "created": "Created",
+      "active": "Active",
+      "completed": "Completed",
+      "performed": "Performed"
+    },
+    "headers": {
+      "responded": "Responded",
+      "invited": "Invited",
+      "rejected": "Rejected",
+      "pending": "Pending",
+      "dispute": "Dispute Review",
+      "pendingConsideration": "Pending consideration",
+      "active": "Active",
+      "blocked": "Blocked",
+      "performed": "Performed",
+      "created": "Created",
+      "completed": "Completed",
+      "closed": "Closed"
+    },
     "inviteToQuest": "Hello! I invite you to the quest",
     "addToQuest": "Add to quest",
     "notification": {
@@ -398,7 +422,7 @@
     "addNew": "Add new",
     "reviewSent": "Review sent",
     "rateEmployer": "Rate this employer",
-    "MyQuests": "My Quest",
+    "MyQuests": "My Quests",
     "activeQuest": "Active quests",
     "proposal": "Proposal",
     "category": "Select a category",

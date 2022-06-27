@@ -133,8 +133,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                           title: "quests.deleteQuest".tr(),
                           message: "quests.deleteQuestMessage".tr(),
                           confirmAction: () async {
-                            await store.deleteQuest(questId: widget.arguments.questInfo!.id);
-                            questStore.deleteQuest(widget.arguments.questInfo!.id);
+                            await store.deleteQuest(
+                                questId: widget.arguments.questInfo!.id);
+                            // questStore.deleteQuest(widget.arguments.questInfo!.id);
                             if (profile!.userData!.questsStatistic != null)
                               profile!.userData!.questsStatistic!.opened -= 1;
                             Navigator.pop(context);
@@ -199,14 +200,12 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   @override
   Widget questHeader() {
     return QuestHeader(
-      itemType: storeQuest.getQuestType(
-        store.quest.value!,
-        profile!.userData!.role,
-      ),
+      itemType: QuestsType.All,
       questStatus: store.quest.value!.status,
       rounded: false,
-      responded: false,
-      forMe: true,
+      responded: store.quest.value!.responded,
+      invited: store.quest.value!.invited,
+      role: UserRole.Employer,
     );
   }
 
@@ -281,13 +280,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               "Your review",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Text(storeQuest.questInfo!.yourReview!.message),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Row(
               children: [
                 for (int i = 0; i < storeQuest.questInfo!.yourReview!.mark; i++)
@@ -381,9 +376,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   Widget respondedList() {
     return Observer(
       builder: (_) => (store.respondedList.isEmpty && store.isLoading)
-          ? Center(
-              child: CircularProgressIndicator.adaptive(),
-            )
+          ? Center(child: CircularProgressIndicator.adaptive())
           : store.quest.value!.status == 4
               ? TextButton(
                   onPressed: () {
@@ -452,10 +445,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                         id: store.selectedResponders!.id,
                                       );
                                       store.setQuestStatus(2);
-                                      questStore
-                                          .deleteQuest(store.quest.value!.id);
-                                      questStore.addQuest(
-                                          store.quest.value!, false);
+                                      // questStore
+                                      //     .deleteQuest(store.quest.value!.id);
+                                      // questStore.addQuest(
+                                      //     store.quest.value!, false);
                                       Navigator.pop(context);
                                       await AlertDialogUtils.showSuccessDialog(
                                           context);
@@ -554,8 +547,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         },
                         nextStep: () async {
                           store.setQuestStatus(5);
-                          questStore.deleteQuest(store.quest.value!.id);
-                          questStore.addQuest(store.quest.value!, false);
+                          // questStore.deleteQuest(store.quest.value!.id);
+                          // questStore.addQuest(store.quest.value!, false);
                           chatStore.loadChats(starred: false);
                           Navigator.pop(context);
                           await AlertDialogUtils.showSuccessDialog(context);
@@ -650,9 +643,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                child: respondedUser(respond),
-              ),
+              Expanded(child: respondedUser(respond)),
               // Spacer(),
               Transform.scale(
                 scale: 1.5,
@@ -772,9 +763,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               Text(
                 "Enter the 6-digit code from the Google Authentication app",
               ),
@@ -821,9 +810,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       softWrap: true,
                       textAlign: TextAlign.start,
                     ),
-                    const SizedBox(
-                      height: 50,
-                    ),
+                    const SizedBox(height: 50),
                   ],
                 ),
               ),

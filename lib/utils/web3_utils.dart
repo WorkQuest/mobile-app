@@ -14,17 +14,23 @@ class Web3Utils {
     bool isMain = false,
   }) async {
     final _client = AccountRepository().getClient();
-    final _balanceWQT = await _client.getBalance(AccountRepository().privateKey);
+    final _balanceWQT =
+        await _client.getBalance(AccountRepository().privateKey);
 
     if (typeCoin == TokenSymbols.WQT) {
-      final _balanceWQTInWei = (_balanceWQT.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
+      final _balanceWQTInWei =
+          (_balanceWQT.getValueInUnitBI(EtherUnit.wei).toDouble() *
+                  pow(10, -18))
+              .toDouble();
       if (amount + gas > (_balanceWQTInWei.toDouble())) {
         throw FormatException('Not have enough WQT for the transaction');
       }
     } else if (typeCoin == TokenSymbols.WUSD) {
-      final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin, isMain: isMain));
+      final _balanceToken = await _client
+          .getBalanceFromContract(getAddressToken(typeCoin, isMain: isMain));
       if (amount > _balanceToken) {
-        throw FormatException('Not have enough ${getTitleToken(typeCoin)} for the transaction');
+        throw FormatException(
+            'Not have enough ${getTitleToken(typeCoin)} for the transaction');
       }
       if (_balanceWQT.getInWei < BigInt.from(gas * pow(10, 18))) {
         throw FormatException('Not have enough WQT for the transaction');
@@ -43,11 +49,16 @@ class Web3Utils {
   static String getAddressToken(TokenSymbols typeCoin, {bool isMain = false}) {
     try {
       if (isMain) {
-        final _dataTokens = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins;
-        return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
+        final _dataTokens =
+            Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins;
+        return _dataTokens
+            .firstWhere((element) => element.symbolToken == typeCoin)
+            .addressToken!;
       } else {
         final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
-        return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
+        return _dataTokens
+            .firstWhere((element) => element.symbolToken == typeCoin)
+            .addressToken!;
       }
     } catch (e) {
       return '';

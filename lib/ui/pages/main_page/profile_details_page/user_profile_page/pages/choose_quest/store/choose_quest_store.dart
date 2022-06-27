@@ -77,8 +77,11 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
           offset: offset,
         ));
 
-        quests.toList().sort(
-            (key1, key2) => key1.createdAt!.millisecondsSinceEpoch < key2.createdAt!.millisecondsSinceEpoch ? 1 : 0);
+        quests.toList().sort((key1, key2) =>
+            key1.createdAt!.millisecondsSinceEpoch <
+                    key2.createdAt!.millisecondsSinceEpoch
+                ? 1
+                : 0);
         offset += 10;
         this.onSuccess(true);
       }
@@ -128,7 +131,8 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
   Future<double> getEstimateGas(String userId) async {
     final _client = AccountRepository().getClient();
     final _user = await _apiProvider.getProfileUser(userId: userId);
-    final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
+    final _contract =
+        await _client.getDeployedContract("WorkQuest", contractAddress);
     final _function = _contract.function(WQContractFunctions.assignJob.name);
     final _params = [EthereumAddress.fromHex(_user.walletAddress!)];
     final _estimateGas = _client.getEstimateGasCallContract(

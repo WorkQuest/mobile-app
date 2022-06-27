@@ -101,14 +101,11 @@ extension LoginService on ApiProvider {
   }
 
   Future<bool> resendEmail(
-      String email,
-      ) async {
-    await httpClient.post(
-      query: '/v1/auth/main/resend-email',
-      data: {
-        "email": email,
-      }
-    );
+    String email,
+  ) async {
+    await httpClient.post(query: '/v1/auth/main/resend-email', data: {
+      "email": email,
+    });
     return true;
   }
 
@@ -186,14 +183,14 @@ extension QuestService on ApiProvider {
     int limit = 10,
     int offset = 0,
     String sort = "",
-    bool invited = false,
+    bool starred = false,
     List<int> statuses = const [],
     required bool me,
   }) async {
     try {
       String status = "";
-      String invite = "";
-      if (invited) invite = "invited=$invited&";
+      String star = "";
+      if (starred) star = "starred=$starred&";
       statuses.forEach((text) {
         status += "statuses[]=$text&";
       });
@@ -201,7 +198,7 @@ extension QuestService on ApiProvider {
       if (me)
         responseData = await httpClient.post(
           query: "/v1/me/employer/get-quests?offset=$offset&limit=$limit"
-              "&$invite$status$sort",
+              "&$star$status$sort",
           data: {
             "specializations": [],
           },
@@ -209,7 +206,7 @@ extension QuestService on ApiProvider {
       else
         responseData = await httpClient.post(
           query: "/v1/employer/$userId/get-quests?offset=$offset&limit=$limit"
-              "&$invite$status$sort",
+              "&$star$status$sort",
           data: {
             "specializations": [],
           },
@@ -246,6 +243,7 @@ extension QuestService on ApiProvider {
     int limit = 10,
     int offset = 0,
     String sort = "",
+    bool responded = false,
     bool invited = false,
     bool starred = false,
     List<int> statuses = const [],
@@ -253,6 +251,10 @@ extension QuestService on ApiProvider {
   }) async {
     String invite = "";
     if (invited) invite = "invited=$invited&";
+    String response = "";
+    if (responded) response = "responded=$responded&";
+    String star = "";
+    if (starred) star = "starred=$starred&";
     String status = "";
     statuses.forEach((text) {
       status += "statuses[]=$text&";
@@ -261,7 +263,7 @@ extension QuestService on ApiProvider {
     if (me)
       responseData = await httpClient.post(
         query: '/v1/me/worker/get-quests?limit=$limit&offset=$offset&$status'
-            '$invite$sort',
+            '$invite$response$star$sort',
         data: {
           "specializations": [],
         },
@@ -270,7 +272,7 @@ extension QuestService on ApiProvider {
       responseData = await httpClient.post(
         query:
             '/v1/worker/$userId/get-quests?limit=$limit&offset=$offset&$status'
-            '$invite$sort',
+            '$invite$response$star$sort',
         data: {
           "specializations": [],
         },
@@ -295,6 +297,8 @@ extension QuestService on ApiProvider {
     int limit = 10,
     int offset = 0,
     String sort = "",
+    bool responded = false,
+    bool invited = false,
     bool starred = false,
     String searchWord = "",
     List<String>? specializations,
@@ -334,7 +338,8 @@ extension QuestService on ApiProvider {
     final responseData = await httpClient.post(
       query:
           '/v1/get-quests?offset=$offset&limit=$limit&$workplaces$employments'
-          '$priorities$payPeriods$price&starred=$starred&$status$search$sort',
+          '$priorities$payPeriods$price&responded=$responded&invited=$invited'
+          '&starred=$starred&$status$search$sort',
       data: {
         if (specializations != null) "specializations": specializations,
       },

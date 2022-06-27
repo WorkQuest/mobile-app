@@ -81,7 +81,11 @@ class UserProfileState<T extends UserProfile> extends State<T>
         newList: true,
       );
       portfolioStore!.setOtherUserData(userStore!.userData);
-      myQuests!.getQuests(userStore!.userData!.id, role, true);
+      myQuests!.getQuests(
+        role == UserRole.Worker ? QuestsType.Active : QuestsType.Performed,
+        role,
+        true,
+      );
 
       isVerify = userStore!.userData?.phone != null;
     } else {

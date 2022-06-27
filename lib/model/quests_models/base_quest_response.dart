@@ -1,5 +1,5 @@
 import 'package:app/model/profile_response/profile_me_response.dart';
-import 'package:app/model/quests_models/Responded.dart';
+import 'package:app/model/quests_models/responded.dart';
 import 'package:app/model/media_model.dart';
 import 'package:app/model/quests_models/your_review.dart';
 import 'package:google_maps_cluster_manager/google_maps_cluster_manager.dart';

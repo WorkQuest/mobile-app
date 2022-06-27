@@ -27,13 +27,15 @@ class DefaultButton extends StatelessWidget {
       disabledColor: colorDisabled ?? AppColor.disabledButton,
       pressedOpacity: 0.2,
       padding: EdgeInsets.zero,
-      child: child ?? Text(
-        title,
-        style: TextStyle(
-          fontSize: 16,
-          color: onPressed != null ? _enabledTextColor : AppColor.disabledText,
-        ),
-      ),
+      child: child ??
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              color:
+                  onPressed != null ? _enabledTextColor : AppColor.disabledText,
+            ),
+          ),
       onPressed: onPressed,
     );
   }

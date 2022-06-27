@@ -107,7 +107,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           enabled: store.isLoading,
                           onTap: store.canSubmit
                               ? () async {
-                                  if (_formKey.currentState?.validate() ?? false) {
+                                  if (_formKey.currentState?.validate() ??
+                                      false) {
                                     _changePasswordOnPressed();
                                   }
                                 }

@@ -117,9 +117,12 @@ class _TransferPageState extends State<TransferPage> {
                   child: Container(
                     height: 46,
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.5),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15.0, vertical: 12.5),
                     decoration: BoxDecoration(
-                      color: _selectedCoin ? Colors.white : AppColor.disabledButton,
+                      color: _selectedCoin
+                          ? Colors.white
+                          : AppColor.disabledButton,
                       borderRadius: BorderRadius.circular(6.0),
                       border: Border.all(
                         color: AppColor.disabledButton,
@@ -149,10 +152,14 @@ class _TransferPageState extends State<TransferPage> {
                             ),
                           ),
                         Text(
-                          _selectedCoin ? _currentCoin!.title : 'wallet.enterCoin'.tr(),
+                          _selectedCoin
+                              ? _currentCoin!.title
+                              : 'wallet.enterCoin'.tr(),
                           style: TextStyle(
                             fontSize: 16,
-                            color: _selectedCoin ? Colors.black : AppColor.disabledText,
+                            color: _selectedCoin
+                                ? Colors.black
+                                : AppColor.disabledText,
                           ),
                         ),
                         const Spacer(),
@@ -228,9 +235,11 @@ class _TransferPageState extends State<TransferPage> {
                     ),
                   ),
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'^\d+\.?\d{0,18}')),
                   ],
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value == null) {
@@ -265,7 +274,9 @@ class _TransferPageState extends State<TransferPage> {
                     child: Observer(
                       builder: (_) => ElevatedButton(
                         child: Text('wallet.transfer'.tr()),
-                        onPressed: store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+                        onPressed: store.statusButtonTransfer
+                            ? _pushConfirmTransferPage
+                            : null,
                       ),
                     ),
                   ),
@@ -285,13 +296,16 @@ class _TransferPageState extends State<TransferPage> {
         FocusManager.instance.primaryFocus?.unfocus();
       }
 
-      if (store.addressTo.toLowerCase() == AccountRepository().userAddress.toLowerCase()) {
+      if (store.addressTo.toLowerCase() ==
+          AccountRepository().userAddress.toLowerCase()) {
         AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'modals.error'.tr(), content: 'errors.provideYourAddress'.tr());
+            title: 'modals.error'.tr(),
+            content: 'errors.provideYourAddress'.tr());
         return;
       }
       if (double.parse(store.amount) == 0.0) {
-        AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: 'errors.invalidAmount'.tr());
+        AlertDialogUtils.showInfoAlertDialog(context,
+            title: 'modals.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
       await store.getFee();
@@ -338,7 +352,8 @@ class _TransferPageState extends State<TransferPage> {
             color: Colors.white,
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Column(
               children: [
                 Container(
@@ -399,16 +414,23 @@ class _TransferPageState extends State<TransferPage> {
                                                   width: double.infinity,
                                                   color: Colors.transparent,
                                                   child: Row(
-                                                    mainAxisSize: MainAxisSize.max,
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
                                                     children: [
                                                       Container(
-                                                        decoration: const BoxDecoration(
-                                                          shape: BoxShape.circle,
-                                                          gradient: LinearGradient(
-                                                            begin: Alignment.topCenter,
-                                                            end: Alignment.bottomCenter,
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          gradient:
+                                                              LinearGradient(
+                                                            begin: Alignment
+                                                                .topCenter,
+                                                            end: Alignment
+                                                                .bottomCenter,
                                                             colors: [
-                                                              AppColor.enabledButton,
+                                                              AppColor
+                                                                  .enabledButton,
                                                               AppColor.blue,
                                                             ],
                                                           ),
@@ -416,7 +438,8 @@ class _TransferPageState extends State<TransferPage> {
                                                         child: SizedBox(
                                                           width: 32,
                                                           height: 32,
-                                                          child: SvgPicture.asset(
+                                                          child:
+                                                              SvgPicture.asset(
                                                             coin.iconPath,
                                                           ),
                                                         ),
@@ -428,7 +451,10 @@ class _TransferPageState extends State<TransferPage> {
                                                         coin.title,
                                                         style: TextStyle(
                                                           fontSize: 16,
-                                                          color: coin.isEnable ? Colors.black : AppColor.disabledText,
+                                                          color: coin.isEnable
+                                                              ? Colors.black
+                                                              : AppColor
+                                                                  .disabledText,
                                                         ),
                                                       ),
                                                     ],

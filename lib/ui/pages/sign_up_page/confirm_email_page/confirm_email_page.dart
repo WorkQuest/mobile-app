@@ -84,7 +84,8 @@ class ConfirmEmail extends StatelessWidget {
                     TimerWidget(
                       startTimer: () => store.startTimer(email),
                       seconds: store.secondsCodeAgain,
-                      isActiveTimer: store.timer != null && store.timer!.isActive,
+                      isActiveTimer:
+                          store.timer != null && store.timer!.isActive,
                     ),
                     SizedBox(
                       height: 40.0,

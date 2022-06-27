@@ -1,4 +1,3 @@
-import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/verify_wallet.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -105,7 +104,8 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       child: Text('Next'),
-                      onPressed: store.isSaved ? () => _pushVerifyWallet(store) : null,
+                      onPressed:
+                          store.isSaved ? () => _pushVerifyWallet(store) : null,
                     ),
                   ),
                 ),

@@ -45,7 +45,8 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
       newList: true,
       isProfileYours: false,
     );
-    if (widget.arguments.workerAddress == null) store.getUser(userId: widget.arguments.workerId);
+    if (widget.arguments.workerAddress == null)
+      store.getUser(userId: widget.arguments.workerId);
     super.initState();
   }
 
@@ -81,7 +82,9 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
             : NotificationListener<ScrollEndNotification>(
                 onNotification: (scrollEnd) {
                   final metrics = scrollEnd.metrics;
-                  if ((metrics.atEdge || metrics.maxScrollExtent < metrics.pixels) && !store.isLoading) {
+                  if ((metrics.atEdge ||
+                          metrics.maxScrollExtent < metrics.pixels) &&
+                      !store.isLoading) {
                     store.getQuests(
                       userId: widget.arguments.workerId,
                       newList: true,
@@ -156,19 +159,24 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                             return;
                           } catch (e) {
                             AlertDialogUtils.showInfoAlertDialog(context,
-                                title: 'modals.error'.tr(), content: e.toString());
+                                title: 'modals.error'.tr(),
+                                content: e.toString());
                             return;
                           }
                           await confirmTransaction(
                             context,
                             fee: store.fee,
                             transaction: "Transaction info",
-                            address: store.quests.firstWhere((element) => element.id == store.questId).contractAddress!,
+                            address: store.quests
+                                .firstWhere(
+                                    (element) => element.id == store.questId)
+                                .contractAddress!,
                             amount: null,
                             onPress: () {
                               store.startQuest(
                                 userId: widget.arguments.workerId,
-                                userAddress: widget.arguments.workerAddress ?? store.user!.walletAddress!,
+                                userAddress: widget.arguments.workerAddress ??
+                                    store.user!.walletAddress!,
                               );
                               Navigator.pop(context);
                             },

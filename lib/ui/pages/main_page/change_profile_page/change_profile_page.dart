@@ -112,7 +112,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
           } else {
             await AlertDialogUtils.showSuccessDialog(context,
                 text: 'Enter code from SMS in SMS Verification');
-            await Navigator.of(context, rootNavigator: true).pushReplacementNamed(
+            await Navigator.of(context, rootNavigator: true)
+                .pushReplacementNamed(
               SMSVerificationPage.routeName,
             );
           }
@@ -243,9 +244,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                   ),
                 _InputWidget(
                   title: "settings.twitterUsername".tr(),
-                  initialValue:
-                      pageStore.userData.additionalInfo!.socialNetwork?.twitter ??
-                          "",
+                  initialValue: pageStore
+                          .userData.additionalInfo!.socialNetwork?.twitter ??
+                      "",
                   onChanged: (text) {
                     ProfileMeResponse data = pageStore.userData;
                     data.additionalInfo!.socialNetwork?.twitter = text;

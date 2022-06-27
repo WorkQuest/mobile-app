@@ -44,7 +44,8 @@ class _WalletPageState extends State<WalletPage> {
   Widget _mainLayout() {
     return NotificationListener<ScrollEndNotification>(
       onNotification: (scrollEnd) {
-        if (scrollEnd.metrics.atEdge) if (scrollEnd.metrics.pixels == scrollEnd.metrics.maxScrollExtent) {
+        if (scrollEnd.metrics.atEdge) if (scrollEnd.metrics.pixels ==
+            scrollEnd.metrics.maxScrollExtent) {
           if (!GetIt.I.get<TransactionsStore>().isMoreLoading) {
             GetIt.I.get<TransactionsStore>().getTransactionsMore();
           }
@@ -82,7 +83,8 @@ class _WalletPageState extends State<WalletPage> {
                 onSelected: (value) async {
                   switch (value) {
                     case "Change network":
-                      await Navigator.of(context, rootNavigator: true).pushNamed(NetworkPage.routeName);
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(NetworkPage.routeName);
                       break;
                   }
                 },
@@ -139,8 +141,9 @@ class _WalletPageState extends State<WalletPage> {
                         height: 34,
                         width: 34,
                         padding: const EdgeInsets.all(7.0),
-                        decoration:
-                            BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: AppColor.disabledButton),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6.0),
+                            color: AppColor.disabledButton),
                         child: SvgPicture.asset(
                           "assets/copy_icon.svg",
                           color: AppColor.enabledButton,
@@ -173,14 +176,18 @@ class _WalletPageState extends State<WalletPage> {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: outlinedButton(route: WithdrawPage.routeName, title: "wallet.withdraw".tr()),
+                      child: outlinedButton(
+                          route: WithdrawPage.routeName,
+                          title: "wallet.withdraw".tr()),
                     ),
                     const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       flex: 1,
-                      child: outlinedButton(route: DepositPage.routeName, title: "wallet.deposit".tr()),
+                      child: outlinedButton(
+                          route: DepositPage.routeName,
+                          title: "wallet.deposit".tr()),
                     ),
                     const SizedBox(
                       width: 10,
@@ -190,7 +197,8 @@ class _WalletPageState extends State<WalletPage> {
                       child: ElevatedButton(
                         child: Text('wallet'.tr(gender: 'transfer')),
                         onPressed: () async {
-                          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+                          Navigator.of(context, rootNavigator: true)
+                              .push(MaterialPageRoute(
                             builder: (_) => Provider(
                               create: (context) => getIt.get<TransferStore>(),
                               child: TransferPage(),
@@ -404,7 +412,8 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             )
                           else
                             Text(
-                              _getCourseDollar(balance.symbol.name, balance.amount!),
+                              _getCourseDollar(
+                                  balance.symbol.name, balance.amount!),
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: AppColor.unselectedBottomIcon,
@@ -437,8 +446,14 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: isCurrency ? null : Border.all(color: AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
+                          border: isCurrency
+                              ? null
+                              : Border.all(
+                                  color:
+                                      AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency
+                              ? AppColor.enabledButton
+                              : Colors.transparent,
                         ),
                       ),
                     );

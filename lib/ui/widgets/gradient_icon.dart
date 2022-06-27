@@ -25,7 +25,7 @@ class GradientIcon extends StatelessWidget {
       shaderCallback: (Rect bounds) {
         final Rect rect = Rect.fromLTRB(0, 0, size, size);
         return LinearGradient(
-          colors:colors,
+          colors: colors,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ).createShader(rect);

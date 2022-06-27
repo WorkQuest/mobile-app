@@ -38,7 +38,8 @@ class WebSocket {
   }
 
   void _connectWallet() {
-    walletChannel = IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
+    walletChannel =
+        IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
     walletChannel!.sink.add("""
       {
           "jsonrpc": "2.0",
@@ -76,7 +77,8 @@ class WebSocket {
   }
 
   void _connectSender() {
-    _senderChannel = IOWebSocketChannel.connect("wss://dev-app.workquest.co/api");
+    _senderChannel =
+        IOWebSocketChannel.connect("wss://dev-app.workquest.co/api");
     _senderChannel?.sink.add("""{
           "type": "hello",
           "id": 1,
@@ -94,7 +96,8 @@ class WebSocket {
   }
 
   void _connectListen() {
-    _notificationChannel = IOWebSocketChannel.connect("wss://notifications.workquest.co/api/v1/notifications");
+    _notificationChannel = IOWebSocketChannel.connect(
+        "wss://notifications.workquest.co/api/v1/notifications");
 
     _notificationChannel?.sink.add("""{
           "type": "hello",
@@ -137,7 +140,8 @@ class WebSocket {
 
   void _handleSubscription(dynamic json) async {
     try {
-      if (json["path"] == "/notifications/quest") questNotification(json["message"]);
+      if (json["path"] == "/notifications/quest")
+        questNotification(json["message"]);
       getMessage(json);
     } catch (e, trace) {
       print("ERROR: $e \n $trace");
@@ -200,7 +204,8 @@ class WebSocket {
 
   void _onDone(IOWebSocketChannel channel, bool connectNotify) {
     print("WebSocket onDone ${channel.closeReason}");
-    if (shouldReconnectFlag) connectNotify ? _connectSender() : _connectListen();
+    if (shouldReconnectFlag)
+      connectNotify ? _connectSender() : _connectListen();
   }
 
   String get myAddress => AccountRepository().userAddress;
@@ -210,14 +215,18 @@ class WebSocket {
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
       if (transaction.result?.events != null) {
-        if (transaction.result!.events!['ethereum_tx.recipient']!.first.toString().toLowerCase() ==
+        if (transaction.result!.events!['ethereum_tx.recipient']!.first
+                .toString()
+                .toLowerCase() ==
             myAddress.toLowerCase()) {
           await Future.delayed(const Duration(seconds: 8));
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
         } else {
-          final decode = json.decode(transaction.result!.events!['tx_log.txLog']!.first);
-          if ((decode['topics'] as List<dynamic>).last.substring(26) == myAddress.substring(2)) {
+          final decode =
+              json.decode(transaction.result!.events!['tx_log.txLog']!.first);
+          if ((decode['topics'] as List<dynamic>).last.substring(26) ==
+              myAddress.substring(2)) {
             await Future.delayed(const Duration(seconds: 8));
             GetIt.I.get<WalletStore>().getCoins(isForce: false);
             GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);

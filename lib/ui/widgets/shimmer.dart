@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -35,22 +34,22 @@ class Shimmer extends StatefulWidget {
     this.loop = 0,
     this.enabled = true,
   })  : gradient = LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.centerRight,
-      colors: <Color>[
-        baseColor,
-        baseColor,
-        highlightColor,
-        baseColor,
-        baseColor
-      ],
-      stops: const <double>[
-        0.0,
-        0.35,
-        0.5,
-        0.65,
-        1.0
-      ]),
+            begin: Alignment.topLeft,
+            end: Alignment.centerRight,
+            colors: <Color>[
+              baseColor,
+              baseColor,
+              highlightColor,
+              baseColor,
+              baseColor
+            ],
+            stops: const <double>[
+              0.0,
+              0.35,
+              0.5,
+              0.65,
+              1.0
+            ]),
         super(key: key);
 
   Shimmer.stand({
@@ -63,22 +62,22 @@ class Shimmer extends StatefulWidget {
     this.loop = 0,
     this.enabled = true,
   })  : gradient = LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.centerRight,
-      colors: <Color>[
-        baseColor,
-        baseColor,
-        highlightColor,
-        baseColor,
-        baseColor
-      ],
-      stops: const <double>[
-        0.0,
-        0.35,
-        0.5,
-        0.65,
-        1.0
-      ]),
+            begin: Alignment.topLeft,
+            end: Alignment.centerRight,
+            colors: <Color>[
+              baseColor,
+              baseColor,
+              highlightColor,
+              baseColor,
+              baseColor
+            ],
+            stops: const <double>[
+              0.0,
+              0.35,
+              0.5,
+              0.65,
+              1.0
+            ]),
         super(key: key);
 
   @override

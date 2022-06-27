@@ -25,7 +25,9 @@ class TimerWidget extends StatelessWidget {
             'Send again',
             style: TextStyle(
               fontSize: 14,
-              color: isActiveTimer ? AppColor.disabledText : AppColor.enabledButton,
+              color: isActiveTimer
+                  ? AppColor.disabledText
+                  : AppColor.enabledButton,
             ),
           ),
           onPressed: isActiveTimer ? null : startTimer,

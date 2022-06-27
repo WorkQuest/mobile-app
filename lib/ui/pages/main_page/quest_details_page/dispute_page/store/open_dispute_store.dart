@@ -40,7 +40,8 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
 
   String fee = "";
 
-  bool isButtonEnable() => theme != "dispute.theme" && description.isNotEmpty && !this.isLoading;
+  bool isButtonEnable() =>
+      theme != "dispute.theme" && description.isNotEmpty && !this.isLoading;
 
   @action
   void setDescription(String value) => description = value;
@@ -92,9 +93,12 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
   Future<void> getFee(String contractAddress) async {
     try {
       final _client = AccountRepository().getClient();
-      final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
-      final _function = _contract.function(WQContractFunctions.arbitration.name);
-      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: []);
+      final _contract =
+          await _client.getDeployedContract("WorkQuest", contractAddress);
+      final _function =
+          _contract.function(WQContractFunctions.arbitration.name);
+      final _gas = await _client.getEstimateGasCallContract(
+          contract: _contract, function: _function, params: []);
       fee = _gas.toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");

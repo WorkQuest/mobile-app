@@ -13,7 +13,6 @@ final spacer = const SizedBox(
 );
 
 class SendEmail extends StatelessWidget {
-
   static const String routeName = "/sendEmail";
   const SendEmail();
 

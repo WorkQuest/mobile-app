@@ -22,7 +22,8 @@ class WithdrawPage extends StatefulWidget {
   _WithdrawPageState createState() => _WithdrawPageState();
 }
 
-class _WithdrawPageState extends State<WithdrawPage> with SingleTickerProviderStateMixin {
+class _WithdrawPageState extends State<WithdrawPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   void initState() {
@@ -153,15 +154,18 @@ class _WithdrawPageState extends State<WithdrawPage> with SingleTickerProviderSt
                 onPressed: withdrawStore.canSubmit
                     ? () async {
                         final _amount = withdrawStore.getAmount();
-                        final _gas = await AccountRepository().getClient().getGas();
+                        final _gas =
+                            await AccountRepository().getClient().getGas();
                         try {
                           await _checkPossibilityTx(_amount);
                         } on FormatException catch (e) {
-                          AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.message);
+                          AlertDialogUtils.showInfoAlertDialog(context,
+                              title: 'modals.error'.tr(), content: e.message);
                           return;
                         } catch (e) {
                           AlertDialogUtils.showInfoAlertDialog(context,
-                              title: 'modals.error'.tr(), content: e.toString());
+                              title: 'modals.error'.tr(),
+                              content: e.toString());
                           return;
                         }
                         confirmTransaction(

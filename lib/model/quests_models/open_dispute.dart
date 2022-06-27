@@ -14,18 +14,18 @@ class OpenDispute {
   int status;
 
   factory OpenDispute.fromJson(Map<String, dynamic> json) => OpenDispute(
-    id: json["id"],
-    openDisputeUserId: json["openDisputeUserId"],
-    opponentUserId: json["opponentUserId"],
-    assignedAdminId: json["assignedAdminId"],
-    status: json["status"],
-  );
+        id: json["id"],
+        openDisputeUserId: json["openDisputeUserId"],
+        opponentUserId: json["opponentUserId"],
+        assignedAdminId: json["assignedAdminId"],
+        status: json["status"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "openDisputeUserId": openDisputeUserId,
-    "opponentUserId": opponentUserId,
-    "assignedAdminId": assignedAdminId,
-    "status": status,
-  };
+        "id": id,
+        "openDisputeUserId": openDisputeUserId,
+        "opponentUserId": opponentUserId,
+        "assignedAdminId": assignedAdminId,
+        "status": status,
+      };
 }

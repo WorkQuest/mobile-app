@@ -9,13 +9,13 @@ class Media {
       id: json?['id'] ?? "",
       url: json?['url'] ?? "",
       type: (json?['contentType'] ?? "") == "video/mp4" ||
-          (json?['contentType'] ?? "") == "video/mov"
+              (json?['contentType'] ?? "") == "video/mov"
           ? TypeMedia.Video
           : (json?['contentType'] ?? "") == "application/pdf"
-          ? TypeMedia.Pdf
-          : (json?['contentType'] ?? "") == "application/msword"
-          ? TypeMedia.Doc
-          : TypeMedia.Image);
+              ? TypeMedia.Pdf
+              : (json?['contentType'] ?? "") == "application/msword"
+                  ? TypeMedia.Doc
+                  : TypeMedia.Image);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> locationData = new Map<String, dynamic>();

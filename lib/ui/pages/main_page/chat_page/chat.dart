@@ -13,6 +13,5 @@ class Chats {
 
   int? getQuestChatStatus() => chat.first.questChat?.status;
 
-  void setLastMessage(int chatIndex, MessageModel message) {
-  }
+  void setLastMessage(int chatIndex, MessageModel message) {}
 }

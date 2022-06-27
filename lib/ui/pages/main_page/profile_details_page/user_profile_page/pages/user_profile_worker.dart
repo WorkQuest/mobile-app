@@ -135,7 +135,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                 );
                 await portfolioStore!.getPortfolio(
                   userId: viewOtherUser?.userData == null
-                      ? userStore!.userData!.id: viewOtherUser!.userData!.id,
+                      ? userStore!.userData!.id
+                      : viewOtherUser!.userData!.id,
                   newList: true,
                 );
               },
@@ -407,7 +408,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               : viewOtherUser!.userData!.ratingStatistic!.reviewCount
                   .toString(),
           userId: viewOtherUser?.userData == null
-              ? userStore!.userData!.id: viewOtherUser!.userData!.id,
+              ? userStore!.userData!.id
+              : viewOtherUser!.userData!.id,
           context: context,
         ),
       ];

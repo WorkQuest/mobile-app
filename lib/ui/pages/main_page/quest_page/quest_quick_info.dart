@@ -1,3 +1,4 @@
+import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
@@ -35,7 +36,9 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
             itemBuilder: (_, index) {
               if (mapStore.isWorker ?? true)
                 return MyQuestsItem(
-                  mapStore.currentQuestCluster[index],
+                  questInfo: mapStore.currentQuestCluster[index],
+                  myRole: UserRole.Worker,
+                  itemType: QuestsType.All,
                   isExpanded: true,
                 );
               return WorkersItem(

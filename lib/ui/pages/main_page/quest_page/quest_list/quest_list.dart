@@ -42,8 +42,7 @@ class _QuestListState extends State<QuestList> {
 
   FilterQuestsStore? filterQuestsStore;
 
-  final QuestItemPriorityType questItemPriorityType =
-      QuestItemPriorityType.Starred;
+  final QuestsType questItemPriorityType = QuestsType.Favorites;
   final scrollKey = new GlobalKey();
   bool _initialURILinkHandled = false;
   StreamSubscription? _streamSubscription;
@@ -79,26 +78,31 @@ class _QuestListState extends State<QuestList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: getBody(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(left: 25),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            FloatingActionButton(
-              heroTag: "QuestListLeftActionButton",
-              onPressed: () {
-                widget.changePage();
-                FocusScope.of(context).unfocus();
-              },
-              child: Icon(
-                Icons.map_outlined,
-                color: Colors.white,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: getBody(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(left: 25),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FloatingActionButton(
+                heroTag: "QuestListLeftActionButton",
+                onPressed: () {
+                  widget.changePage();
+                  FocusScope.of(context).unfocus();
+                },
+                child: Icon(
+                  Icons.map_outlined,
+                  color: Colors.white,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -128,15 +132,10 @@ class _QuestListState extends State<QuestList> {
             largeTitle: Row(
               children: [
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      // AccountRepository().getClient().checkFunction();
-                    },
-                    child: Text(
-                      role == UserRole.Worker
-                          ? "quests.quests".tr()
-                          : "workers.workers".tr(),
-                    ),
+                  child: Text(
+                    role == UserRole.Worker
+                        ? "quests.quests".tr()
+                        : "workers.workers".tr(),
                   ),
                 ),
                 InkWell(
@@ -234,15 +233,11 @@ class _QuestListState extends State<QuestList> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const SizedBox(
-                            height: 15,
-                          ),
+                          const SizedBox(height: 15),
                           SvgPicture.asset(
                             "assets/empty_quest_icon.svg",
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+                          const SizedBox(height: 10),
                           Text(
                             profileMeStore!.userData!.role == UserRole.Worker
                                 ? "quests.noQuest".tr()
@@ -274,7 +269,8 @@ class _QuestListState extends State<QuestList> {
                             final item = questsStore!.questsList[index];
                             _markItem(item);
                             return MyQuestsItem(
-                              item,
+                              questInfo:item,
+                              myRole: role,
                               itemType: this.questItemPriorityType,
                             );
                           }

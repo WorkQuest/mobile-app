@@ -16,21 +16,26 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../../../widgets/shimmer.dart';
 
-class MyQuestsItem extends StatelessWidget {
+class MyQuestsItem extends StatefulWidget {
   final BaseQuestResponse questInfo;
   final bool isExpanded;
-  final QuestItemPriorityType itemType;
+  final QuestsType itemType;
   final bool showStar;
-  final String defaultImage =
-      'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
+  final UserRole? myRole;
 
-  const MyQuestsItem(
-    this.questInfo, {
-    this.itemType = QuestItemPriorityType.Active,
+  const MyQuestsItem({
+    required this.questInfo,
+    required this.itemType,
+    this.myRole,
     this.isExpanded = false,
-    this.showStar = false,
+    this.showStar = true,
   });
 
+  @override
+  State<MyQuestsItem> createState() => _MyQuestsItemState();
+}
+
+class _MyQuestsItemState extends State<MyQuestsItem> {
   @override
   Widget build(BuildContext context) {
     final myQuestStore = GetIt.I.get<MyQuestStore>();
@@ -38,17 +43,17 @@ class MyQuestsItem extends StatelessWidget {
       onTap: () async {
         await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
-          arguments: QuestArguments(questInfo: questInfo, id: null),
+          arguments: QuestArguments(questInfo: widget.questInfo, id: null),
         );
       },
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
-            color: questInfo.raiseView != null
+            color: widget.questInfo.raiseView != null
                 ? _getColorBorder(
-                    questInfo.raiseView!.status,
-                    questInfo.raiseView!.type,
+                    widget.questInfo.raiseView!.status,
+                    widget.questInfo.raiseView!.type,
                   )
                 : Colors.transparent,
           ),
@@ -59,38 +64,42 @@ class MyQuestsItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (!isExpanded)
+            if (!widget.isExpanded)
               QuestHeader(
-                itemType: itemType,
-                questStatus: questInfo.status,
+                itemType: widget.itemType,
+                questStatus: widget.questInfo.status,
                 rounded: true,
-                responded: false,
-                forMe: true,
+                responded: widget.questInfo.responded,
+                invited: widget.questInfo.invited,
+                role: widget.myRole,
               ),
             Row(
               children: [
                 ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: UserAvatar(
-                      width: 30,
-                      height: 30,
-                      url: questInfo.user!.avatar?.url,
-                    )),
+                  borderRadius: BorderRadius.circular(100),
+                  child: UserAvatar(
+                    width: 30,
+                    height: 30,
+                    url: widget.questInfo.user!.avatar?.url,
+                  ),
+                ),
                 const SizedBox(width: 5),
                 Expanded(
                   child: Text(
-                    questInfo.user!.firstName + " " + questInfo.user!.lastName,
+                    widget.questInfo.user!.firstName +
+                        " " +
+                        widget.questInfo.user!.lastName,
                     style: TextStyle(fontSize: 16),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (questInfo.responded != null)
-                  if ((questInfo.responded!.workerId ==
+                if (widget.questInfo.responded != null)
+                  if ((widget.questInfo.responded!.workerId ==
                                   context.read<ProfileMeStore>().userData!.id &&
-                              (questInfo.status == 1 ||
-                                  questInfo.status == 2) ||
-                          questInfo.invited != null &&
-                              questInfo.invited?.status == 1) &&
+                              (widget.questInfo.status == 1 ||
+                                  widget.questInfo.status == 2) ||
+                          widget.questInfo.invited != null &&
+                              widget.questInfo.invited?.status == 1) &&
                       context.read<ProfileMeStore>().userData!.role ==
                           UserRole.Worker)
                     Row(
@@ -99,35 +108,37 @@ class MyQuestsItem extends StatelessWidget {
                         Text("quests.youResponded".tr()),
                       ],
                     ),
-                if (showStar)
-                  IconButton(
-                    icon: Icon(
-                      Icons.star,
-                      color: Color(0xFFE8D20D),
-                    ),
-                    onPressed: () {
-                      myQuestStore.deleteQuest(questInfo.id);
-                      myQuestStore.addQuest(
-                        questInfo,
-                        questInfo.star ? true : false,
-                      );
-                      myQuestStore.setStar(questInfo, false);
-                    },
-                  ),
-                if (questInfo.invited != null && questInfo.invited?.status == 0)
+                if (widget.questInfo.invited != null &&
+                    widget.questInfo.invited?.status == 0)
                   Row(
                     children: [
                       const SizedBox(width: 5),
                       Text("quests.youInvited".tr()),
                     ],
                   ),
+                if (widget.showStar)
+                  IconButton(
+                    icon: Icon(
+                      Icons.star,
+                      color: widget.questInfo.star
+                          ? Color(0xFFE8D20D)
+                          : Color(0xFFE9EDF2),
+                    ),
+                    onPressed: () async {
+                      await myQuestStore.setStar(
+                        widget.questInfo,
+                        !widget.questInfo.star,
+                      );
+                      setState(() {});
+                    },
+                  ),
               ],
             ),
             const SizedBox(height: 17.5),
-            if (questInfo.userId !=
+            if (widget.questInfo.userId !=
                     context.read<ProfileMeStore>().userData!.id &&
-                questInfo.status != 5 &&
-                questInfo.status != 6)
+                widget.questInfo.status != 5 &&
+                widget.questInfo.status != 6)
               Column(
                 children: [
                   Row(
@@ -141,7 +152,7 @@ class MyQuestsItem extends StatelessWidget {
                       ),
                       Flexible(
                         child: Text(
-                          questInfo.locationPlaceName,
+                          widget.questInfo.locationPlaceName,
                           overflow: TextOverflow.fade,
                           style: TextStyle(
                             color: Color(0xFF7C838D),
@@ -155,9 +166,9 @@ class MyQuestsItem extends StatelessWidget {
               ),
             Row(
               children: [
-                if (questInfo.raiseView != null &&
-                    questInfo.raiseView!.status != null &&
-                    questInfo.raiseView!.status == 0)
+                if (widget.questInfo.raiseView != null &&
+                    widget.questInfo.raiseView!.status != null &&
+                    widget.questInfo.raiseView!.status == 0)
                   Row(
                     children: [
                       SvgPicture.asset(
@@ -172,7 +183,7 @@ class MyQuestsItem extends StatelessWidget {
                   ),
                 Expanded(
                   child: Text(
-                    questInfo.title,
+                    widget.questInfo.title,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Color(0xFF1D2127),
@@ -184,7 +195,7 @@ class MyQuestsItem extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              questInfo.description,
+              widget.questInfo.description,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: Color(0xFF4C5767),
@@ -195,13 +206,15 @@ class MyQuestsItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 PriorityView(
-                  questInfo.priority != 0 ? questInfo.priority - 1 : 0,
+                  widget.questInfo.priority != 0
+                      ? widget.questInfo.priority - 1
+                      : 0,
                   true,
                 ),
                 const SizedBox(width: 50),
                 Flexible(
                   child: Text(
-                    _getPrice(questInfo.price) + "  WUSD",
+                    _getPrice(widget.questInfo.price) + "  WUSD",
                     textAlign: TextAlign.end,
                     style: TextStyle(
                       color: Color(0xFF00AA5B),

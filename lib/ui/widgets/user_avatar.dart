@@ -22,8 +22,7 @@ class UserAvatar extends StatelessWidget {
       width: width,
       height: height,
       loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null)
-          return child;
+        if (loadingProgress == null) return child;
         return Center(
           child: SizedBox(
             width: width,
@@ -37,7 +36,6 @@ class UserAvatar extends StatelessWidget {
           ),
         );
       },
-
     );
   }
 }

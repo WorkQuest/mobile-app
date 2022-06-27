@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ModalBottomSheet {
-  static Future<void> openModalBottomSheet(
-      BuildContext context, Widget content, {double height = 200}) async {
+  static Future<void> openModalBottomSheet(BuildContext context, Widget content,
+      {double height = 200}) async {
     await showModalBottomSheet(
       context: context,
       useRootNavigator: true,

@@ -13,7 +13,8 @@ class SMSVerificationStore extends _SMSVerificationStore
   SMSVerificationStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus> with Store {
+abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus>
+    with Store {
   final ApiProvider apiProvider;
 
   _SMSVerificationStore(this.apiProvider);
@@ -72,6 +73,4 @@ abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus> with 
   }
 }
 
-enum SMSVerificationStatus {
-  send_code, resending_code
-}
+enum SMSVerificationStatus { send_code, resending_code }

@@ -27,7 +27,7 @@ abstract class _TwoFAStore extends IStore<bool> with Store {
   String codeFromAuthenticator = '';
 
   @computed
-  String get errorText=>"";
+  String get errorText => "";
 
   @action
   void setCodeFromAuthenticator(String value) {

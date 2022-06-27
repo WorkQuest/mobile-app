@@ -1,4 +1,3 @@
-import 'package:app/constants.dart';
 import 'package:flutter/material.dart';
 
 class AnimationShowMore extends StatelessWidget {
@@ -27,7 +26,9 @@ class AnimationShowMore extends StatelessWidget {
             overflow: enabled ? TextOverflow.clip : TextOverflow.ellipsis,
             textAlign: TextAlign.start,
           ),
-          SizedBox(height: 5,),
+          SizedBox(
+            height: 5,
+          ),
           InkWell(
             onTap: () {
               onShowMore.call(!enabled);

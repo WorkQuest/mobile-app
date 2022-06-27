@@ -21,7 +21,6 @@ class MediaUpload extends StatefulWidget {
 }
 
 class _MediaUploadState extends State<MediaUpload> {
-
   @override
   void initState() {
     super.initState();
@@ -65,7 +64,7 @@ class _MediaUploadState extends State<MediaUpload> {
                             type: FileType.image,
                           );
                           List<File> files =
-                          result!.paths.map((path) => File(path!)).toList();
+                              result!.paths.map((path) => File(path!)).toList();
                           widget.mediaFile.addAll(files);
                         },
                         icon: Icon(
@@ -86,8 +85,7 @@ class _MediaUploadState extends State<MediaUpload> {
             allowMultiple: true,
             type: FileType.image,
           );
-          List<File> files =
-          result!.paths.map((path) => File(path!)).toList();
+          List<File> files = result!.paths.map((path) => File(path!)).toList();
           widget.mediaFile.addAll(files);
         },
         child: SizedBox(

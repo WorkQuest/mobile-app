@@ -17,11 +17,11 @@ class Storage {
     await _secureStorage.write(key: key.toString(), value: value);
   }
 
-  static Future<void> writeTimerTime(String time) async{
+  static Future<void> writeTimerTime(String time) async {
     _secureStorage.write(key: "timeTimer", value: time);
   }
 
-  static Future<void> writeTimerEmailTime(String time) async{
+  static Future<void> writeTimerEmailTime(String time) async {
     _secureStorage.write(key: "timeEmailTimer", value: time);
   }
 

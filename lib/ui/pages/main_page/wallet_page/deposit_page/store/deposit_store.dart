@@ -7,7 +7,6 @@ part 'deposit_store.g.dart';
 
 @injectable
 class DepositStore extends _DepositStore with _$DepositStore {
-
   DepositStore(ApiProvider apiProvider) : super(apiProvider);
 }
 

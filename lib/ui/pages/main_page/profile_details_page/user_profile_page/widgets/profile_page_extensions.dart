@@ -13,7 +13,8 @@ import 'package:flutter_svg/svg.dart';
 import '../../../../report_page/report_page.dart';
 
 extension CustomAppBar on UserProfileState {
-  Widget sliverAppBar(ProfileMeResponse info, StreamController<AppBarParams> streamController, Function() updateState) {
+  Widget sliverAppBar(ProfileMeResponse info,
+      StreamController<AppBarParams> streamController, Function() updateState) {
     final String defaultImage =
         'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
     final mark = info.ratingStatistic!.averageMark;
@@ -40,7 +41,8 @@ extension CustomAppBar on UserProfileState {
                 color: Colors.white,
               ),
               onPressed: () async {
-                final result = await Navigator.of(context, rootNavigator: true).pushNamed(
+                final result =
+                    await Navigator.of(context, rootNavigator: true).pushNamed(
                   ChangeProfilePage.routeName,
                 );
                 if (result != null && result as bool) {
@@ -80,7 +82,9 @@ extension CustomAppBar on UserProfileState {
             fit: StackFit.expand,
             children: [
               Image.network(
-                info.avatar != null ? info.avatar!.url ?? defaultImage : defaultImage,
+                info.avatar != null
+                    ? info.avatar!.url ?? defaultImage
+                    : defaultImage,
                 fit: BoxFit.cover,
               ),
               Positioned(
@@ -100,7 +104,11 @@ extension CustomAppBar on UserProfileState {
                         shaderCallback: (Rect rect) {
                           return LinearGradient(
                             stops: [0, markMod, markMod],
-                            colors: [Color(0xFFE8D20D), Color(0xFFE8D20D), Color(0xFFE8D20D).withOpacity(0)],
+                            colors: [
+                              Color(0xFFE8D20D),
+                              Color(0xFFE8D20D),
+                              Color(0xFFE8D20D).withOpacity(0)
+                            ],
                           ).createShader(rect);
                         },
                         child: SizedBox(
@@ -144,27 +152,40 @@ extension ReviewsTab on UserProfileState {
               ? Column(
                   children: [
                     for (int index = 0;
-                        index < (portfolioStore!.reviewsList.length < 3 ? portfolioStore!.reviewsList.length : 3);
+                        index <
+                            (portfolioStore!.reviewsList.length < 3
+                                ? portfolioStore!.reviewsList.length
+                                : 3);
                         index++)
                       ReviewsWidget(
-                        avatar: portfolioStore!.reviewsList[index].fromUser.avatar?.url ??
+                        avatar: portfolioStore!
+                                .reviewsList[index].fromUser.avatar?.url ??
                             "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                        name: portfolioStore!.reviewsList[index].fromUser.firstName +
+                        name: portfolioStore!
+                                .reviewsList[index].fromUser.firstName +
                             " " +
-                            portfolioStore!.reviewsList[index].fromUser.lastName,
+                            portfolioStore!
+                                .reviewsList[index].fromUser.lastName,
                         mark: portfolioStore!.reviewsList[index].mark,
-                        userRole: portfolioStore!.reviewsList[index].fromUserId ==
+                        userRole: portfolioStore!
+                                    .reviewsList[index].fromUserId ==
                                 portfolioStore!.reviewsList[index].quest.userId
                             ? "role.employer"
                             : "role.worker",
-                        questTitle: portfolioStore!.reviewsList[index].quest.title,
+                        questTitle:
+                            portfolioStore!.reviewsList[index].quest.title,
                         cutMessage: portfolioStore!.messages[index],
                         message: portfolioStore!.reviewsList[index].message,
                         id: portfolioStore!.reviewsList[index].fromUserId,
-                        myId: viewOtherUser?.userData == null ? userStore!.userData!.id : viewOtherUser!.userData!.id,
-                        role:
-                            viewOtherUser?.userData == null ? userStore!.userData!.role : viewOtherUser!.userData!.role,
-                        last: index == portfolioStore!.reviewsList.length - 1 ? true : false,
+                        myId: viewOtherUser?.userData == null
+                            ? userStore!.userData!.id
+                            : viewOtherUser!.userData!.id,
+                        role: viewOtherUser?.userData == null
+                            ? userStore!.userData!.role
+                            : viewOtherUser!.userData!.role,
+                        last: index == portfolioStore!.reviewsList.length - 1
+                            ? true
+                            : false,
                       ),
                     Padding(
                       padding: EdgeInsets.only(
@@ -178,16 +199,19 @@ extension ReviewsTab on UserProfileState {
                             context,
                             ReviewPage.routeName,
                             arguments: ReviewPageArguments(
-                              userId:
-                                  widget.arguments?.userId == null ? userStore!.userData!.id : widget.arguments!.userId,
-                              role:
-                                  widget.arguments?.userId == null ? userStore!.userData!.role : widget.arguments!.role,
+                              userId: widget.arguments?.userId == null
+                                  ? userStore!.userData!.id
+                                  : widget.arguments!.userId,
+                              role: widget.arguments?.userId == null
+                                  ? userStore!.userData!.role
+                                  : widget.arguments!.role,
                               store: portfolioStore!,
                             ),
                           );
                           await portfolioStore!.getReviews(
-                            userId:
-                                viewOtherUser?.userData == null ? userStore!.userData!.id : viewOtherUser!.userData!.id,
+                            userId: viewOtherUser?.userData == null
+                                ? userStore!.userData!.id
+                                : viewOtherUser!.userData!.id,
                             newList: true,
                           );
                         },
@@ -211,7 +235,9 @@ extension ReviewsTab on UserProfileState {
                         height: 10.0,
                       ),
                       Text(
-                        viewOtherUser?.userData == null ? "quests.noReview".tr() : "quests.noReviewForOtherUser".tr(),
+                        viewOtherUser?.userData == null
+                            ? "quests.noReview".tr()
+                            : "quests.noReviewForOtherUser".tr(),
                         style: TextStyle(
                           color: Color(0xFFD8DFE3),
                         ),

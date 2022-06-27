@@ -65,24 +65,17 @@ class MainPage extends StatelessWidget {
                   key: key,
                   initialData: false,
                   stream:
-                  context
-                      .read<ChatStore>()
-                      .streamChatNotification!
-                      .stream,
+                      context.read<ChatStore>().streamChatNotification!.stream,
                   builder: (context, snapshot) {
                     if (controller.index == 2 && snapshot.data!) {
                       return SvgPicture.asset(
                         'assets/message_mark.svg',
-                        color: CupertinoTheme
-                            .of(context)
-                            .primaryColor,
+                        color: CupertinoTheme.of(context).primaryColor,
                       );
                     } else if (controller.index == 2 && !snapshot.data!) {
                       return SvgPicture.asset(
                         'assets/message.svg',
-                        color: CupertinoTheme
-                            .of(context)
-                            .primaryColor,
+                        color: CupertinoTheme.of(context).primaryColor,
                       );
                     }
                     if (snapshot.data!)
@@ -160,13 +153,11 @@ class NavBarItem extends BottomNavigationBarItem {
     required String title,
     required BuildContext context,
   }) : super(
-    icon: SvgPicture.asset(svgPath),
-    activeIcon: SvgPicture.asset(
-      svgPath,
-      color: CupertinoTheme
-          .of(context)
-          .primaryColor,
-    ),
-    label: title.tr(),
-  );
+          icon: SvgPicture.asset(svgPath),
+          activeIcon: SvgPicture.asset(
+            svgPath,
+            color: CupertinoTheme.of(context).primaryColor,
+          ),
+          label: title.tr(),
+        );
 }

@@ -31,7 +31,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   String fee = '';
 
   @computed
-  bool get statusButtonTransfer => typeCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
+  bool get statusButtonTransfer =>
+      typeCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
 
   @action
   setAddressTo(String value) => addressTo = value;
@@ -45,14 +46,20 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     typeCoin = value;
     final _client = AccountRepository().getClient(other: true);
     final _dataCoins = AccountRepository().getConfigNetwork().dataCoins;
-    final _isHaveAddressCoin = _dataCoins.firstWhere((element) => element.symbolToken == typeCoin).addressToken == null;
+    final _isHaveAddressCoin = _dataCoins
+            .firstWhere((element) => element.symbolToken == typeCoin)
+            .addressToken ==
+        null;
     if (_isHaveAddressCoin) {
       final _balance = await _client.getBalance(AccountRepository().privateKey);
       final _balanceInWei = _balance.getInWei;
       final _gasInWei = await _client.getGas();
-      maxAmount = ((_balanceInWei - _gasInWei.getInWei).toDouble() * pow(10, -18)).toDouble();
+      maxAmount =
+          ((_balanceInWei - _gasInWei.getInWei).toDouble() * pow(10, -18))
+              .toDouble();
     } else {
-      final _balance = await _getBalanceToken(Web3Utils.getAddressToken(typeCoin!));
+      final _balance =
+          await _getBalanceToken(Web3Utils.getAddressToken(typeCoin!));
       maxAmount = _balance.toDouble();
     }
   }
@@ -63,16 +70,21 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     final _client = AccountRepository().getClient(other: true);
     try {
       final _dataCoins = AccountRepository().getConfigNetwork().dataCoins;
-      final _isHaveAddressCoin =
-          _dataCoins.firstWhere((element) => element.symbolToken == typeCoin).addressToken == null;
+      final _isHaveAddressCoin = _dataCoins
+              .firstWhere((element) => element.symbolToken == typeCoin)
+              .addressToken ==
+          null;
       if (_isHaveAddressCoin) {
-        final _balance = await _client.getBalance(AccountRepository().privateKey);
+        final _balance =
+            await _client.getBalance(AccountRepository().privateKey);
         final _balanceInWei = _balance.getInWei;
         await getFee();
         final _gas = BigInt.from(double.parse(fee) * pow(10, 18));
-        amount = ((_balanceInWei - _gas).toDouble() * pow(10, -18)).toStringAsFixed(18);
+        amount = ((_balanceInWei - _gas).toDouble() * pow(10, -18))
+            .toStringAsFixed(18);
       } else {
-        final _balance = await _getBalanceToken(Web3Utils.getAddressToken(typeCoin!));
+        final _balance =
+            await _getBalanceToken(Web3Utils.getAddressToken(typeCoin!));
         amount = _balance.toStringAsFixed(18);
       }
       this.onSuccess(true);
@@ -91,7 +103,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   getFee() async {
     try {
       final _client = AccountRepository().getClient(other: true);
-      final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
+      final _currentListTokens =
+          AccountRepository().getConfigNetwork().dataCoins;
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
       if (_isToken) {
@@ -113,7 +126,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
           ),
         );
         final _gas = await _client.getGas();
-        fee = ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(17);
+        fee = ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18))
+            .toStringAsFixed(17);
       } else {
         final _value = EtherAmount.fromUnitAndValue(
           EtherUnit.wei,
@@ -128,7 +142,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
           ),
         );
         final _gas = await _client.getGas();
-        fee = ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(17);
+        fee = ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18))
+            .toStringAsFixed(17);
       }
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -139,10 +154,11 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   }
 
   Future<double> _getBalanceToken(String addressToken) async {
-    final _balance = await AccountRepository().getClient(other: true).getBalanceFromContract(
-          addressToken,
-          isUSDT: typeCoin == TokenSymbols.USDT,
-        );
+    final _balance =
+        await AccountRepository().getClient(other: true).getBalanceFromContract(
+              addressToken,
+              isUSDT: typeCoin == TokenSymbols.USDT,
+            );
     return _balance;
   }
 }

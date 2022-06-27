@@ -1,9 +1,12 @@
-enum QuestItemPriorityType {
-  Active,
+enum QuestsType {
+  All,
+  Favorites,
+  Responded,
   Invited,
-  Requested,
+  Created,
+  Active,
+  Completed,
   Performed,
-  Starred,
 }
 
 enum UserRole {

@@ -79,7 +79,8 @@ class MediaUploadState extends State<MediaUploadWithProgress> {
                       if (Platform.isIOS) {
                         await PermissionUtil.requestForIos(Permission.photos);
                       } else if (Platform.isAndroid) {
-                        await PermissionUtil.requestForAndroid(Permission.storage);
+                        await PermissionUtil.requestForAndroid(
+                            Permission.storage);
                       }
                       FilePickerResult? result;
                       if (widget.type == MediaType.images) {

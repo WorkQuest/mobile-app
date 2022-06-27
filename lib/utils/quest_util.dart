@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 
 class QuestConstants {
-
   static final List<String> priorityList = [
     "quests.priority.low".tr(),
     "quests.priority.normal".tr(),
@@ -38,7 +37,6 @@ class QuestConstants {
 }
 
 class QuestUtils {
-
   static String getEmployment(String employment) {
     switch (employment) {
       case "fullTime":
@@ -84,7 +82,7 @@ class QuestUtils {
         throw FormatException('Unknown Pay Period');
     }
   }
-  
+
   static String getWorkplace(String workplaceValue) {
     switch (workplaceValue) {
       case "Remote":
@@ -97,7 +95,7 @@ class QuestUtils {
         throw FormatException('Unknown Workplace');
     }
   }
-  
+
   static String getWorkplaceValue(String workplace) {
     switch (workplace) {
       case "Distant work":
@@ -110,7 +108,7 @@ class QuestUtils {
         throw FormatException('Unknown Workplace Value');
     }
   }
-  
+
   static int getPriority(String priority) {
     switch (priority) {
       case "Fixed delivery":

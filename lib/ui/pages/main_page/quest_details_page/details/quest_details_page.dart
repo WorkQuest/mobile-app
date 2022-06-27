@@ -71,9 +71,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
       builder: (_) => Scaffold(
         appBar: storeQuest.questInfo == null
             ? null
-            : AppBar(
-                actions: actionAppBar(),
-              ),
+            : AppBar(actions: actionAppBar()),
         body: storeQuest.questInfo == null
             ? Center(
                 child: Transform.scale(
@@ -105,9 +103,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       storeQuest.questInfo!.userId == profile!.userData!.id
-                          ? Text(
-                              "quests.yourQuest".tr(),
-                            )
+                          ? Text("quests.yourQuest".tr())
                           : GestureDetector(
                               onTap: () async {
                                 Navigator.of(context, rootNavigator: true)
@@ -125,7 +121,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(100),
                                     child: Image.network(
-                                      storeQuest.questInfo!.user!.avatar?.url ??Constants.defaultImageNetwork,
+                                      storeQuest.questInfo!.user!.avatar?.url ??
+                                          Constants.defaultImageNetwork,
                                       width: 30,
                                       height: 30,
                                       fit: BoxFit.cover,
@@ -186,13 +183,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 15,
-                      ),
+                      const SizedBox(height: 15),
                       Text(storeQuest.questInfo!.description),
-                      const SizedBox(
-                        height: 15,
-                      ),
+                      const SizedBox(height: 15),
                       if (storeQuest.questInfo!.medias?.isNotEmpty ??
                           false) ...[
                         Text(
@@ -232,7 +225,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                             children: [
                               Stack(
                                 children: [
-                                  Positioned.fill(child: Container(color:Colors.black)),
+                                  Positioned.fill(
+                                    child: Container(color: Colors.black),
+                                  ),
                                   GoogleMap(
                                     mapType: MapType.normal,
                                     tiltGesturesEnabled: false,

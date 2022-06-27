@@ -25,7 +25,7 @@ class KnowledgeWork {
   String dateFrom = '';
   String dateTo = '';
   String place = '';
-  KnowledgeWork({this.dateFrom = "", this.dateTo ="",this.place = ""});
+  KnowledgeWork({this.dateFrom = "", this.dateTo = "", this.place = ""});
 
   bool get fieldIsNotEmpty =>
       dateFrom.isNotEmpty && dateTo.isNotEmpty && place.isNotEmpty;

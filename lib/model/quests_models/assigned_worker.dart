@@ -16,9 +16,7 @@ class AssignedWorker {
   factory AssignedWorker.fromJson(Map<String, dynamic> json) => AssignedWorker(
         firstName: json["firstName"],
         lastName: json["lastName"] ?? "",
-        avatar: json["avatar"] == null
-            ? null
-            : Avatar.fromJson(json["avatar"]),
+        avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
         id: json["id"],
       );
 }

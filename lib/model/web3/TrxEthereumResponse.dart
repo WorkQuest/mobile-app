@@ -21,7 +21,8 @@ class TrxEthereumResponse {
   int? id;
   TrxEthereumResponseResult? result;
 
-  factory TrxEthereumResponse.fromJson(Map<String, dynamic> json) => TrxEthereumResponse(
+  factory TrxEthereumResponse.fromJson(Map<String, dynamic> json) =>
+      TrxEthereumResponse(
         jsonrpc: json["jsonrpc"],
         id: json["id"],
         result: json["result"] == null
@@ -54,7 +55,8 @@ class TrxEthereumResponseResult {
       events: json["events"] == null
           ? null
           : Map.from(json["events"]).map((k, v) =>
-              MapEntry<String, List<dynamic>>(k, List<dynamic>.from(v.map((x) => x)))),
+              MapEntry<String, List<dynamic>>(
+                  k, List<dynamic>.from(v.map((x) => x)))),
     );
   }
 
@@ -63,8 +65,8 @@ class TrxEthereumResponseResult {
         "data": data == null ? null : data!.toJson(),
         "events": events == null
             ? null
-            : Map.from(events!).map((k, v) =>
-                MapEntry<String, dynamic>(k, List<dynamic>.from(v.map((x) => x)))),
+            : Map.from(events!).map((k, v) => MapEntry<String, dynamic>(
+                k, List<dynamic>.from(v.map((x) => x)))),
       };
 }
 
@@ -96,7 +98,9 @@ class Value {
   TxResult? txResult;
 
   factory Value.fromJson(Map<String, dynamic> json) => Value(
-        txResult: json["TxResult"] == null ? null : TxResult.fromJson(json["TxResult"]),
+        txResult: json["TxResult"] == null
+            ? null
+            : TxResult.fromJson(json["TxResult"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -118,7 +122,9 @@ class TxResult {
   factory TxResult.fromJson(Map<String, dynamic> json) => TxResult(
         height: json["height"],
         tx: json["tx"],
-        result: json["result"] == null ? null : TxResultResult.fromJson(json["result"]),
+        result: json["result"] == null
+            ? null
+            : TxResultResult.fromJson(json["result"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -183,9 +189,10 @@ class Event {
         type: json["type"],
         attributes: json["attributes"] == null
             ? null
-            : List<Attribute>.from(json["attributes"].map((x) => Attribute.fromJson(x))),
+            : List<Attribute>.from(
+                json["attributes"].map((x) => Attribute.fromJson(x))),
       );
-    } catch (e,trace) {
+    } catch (e, trace) {
       print('Event e - $e\ntrace - $trace');
       return Event();
     }
@@ -278,7 +285,8 @@ class Logs {
     coinReceivedAmount = json['coin_received.amount'].cast<String>();
     messageSender = json['message.sender'].cast<String>();
     coinbaseAmount = json['coinbase.amount'].cast<String>();
-    ethereumTxEthereumTxHash = json['ethereum_tx.ethereumTxHash'].cast<String>();
+    ethereumTxEthereumTxHash =
+        json['ethereum_tx.ethereumTxHash'].cast<String>();
     ethereumTxTxHash = json['ethereum_tx.txHash'].cast<String>();
     txHash = json['tx.hash'].cast<String>();
     coinSpentSpender = json['coin_spent.spender'].cast<String>();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class LayoutWithScroll extends StatelessWidget {
   final Widget child;
 
@@ -9,17 +10,17 @@ class LayoutWithScroll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  LayoutBuilder(
-        builder: (context, constraint) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraint.maxHeight),
-              child: IntrinsicHeight(
-                child: child,
-              ),
+    return LayoutBuilder(
+      builder: (context, constraint) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraint.maxHeight),
+            child: IntrinsicHeight(
+              child: child,
             ),
-          );
-        },
-      );
+          ),
+        );
+      },
+    );
   }
 }

@@ -36,7 +36,8 @@ abstract class _WalletStore extends IStore<bool> with Store {
       onLoading();
     }
     try {
-      final _tokens = Configs.configsNetwork[AccountRepository().configName]!.dataCoins;
+      final _tokens =
+          Configs.configsNetwork[AccountRepository().configName]!.dataCoins;
       final _listCoinsEntity = await _getCoinEntities(_tokens);
       if (isForce) {
         coins.clear();
@@ -53,7 +54,9 @@ abstract class _WalletStore extends IStore<bool> with Store {
   _setCoins(List<_CoinEntity> listCoins) {
     if (coins.isNotEmpty) {
       coins.map((element) {
-        element.amount = listCoins.firstWhere((element) => element.symbol == element.symbol).amount;
+        element.amount = listCoins
+            .firstWhere((element) => element.symbol == element.symbol)
+            .amount;
       }).toList();
     } else {
       coins.addAll(listCoins);
@@ -65,19 +68,20 @@ abstract class _WalletStore extends IStore<bool> with Store {
     final _client = AccountRepository().getClient(other: true);
     await Stream.fromIterable(coins).asyncMap((coin) async {
       if (coin.addressToken == null) {
-        final _balance = await _client.getBalance(AccountRepository().privateKey);
-        final _amount = (_balance.getInWei.toDouble() * pow(10, -18)).toStringAsFixed(8);
+        final _balance =
+            await _client.getBalance(AccountRepository().privateKey);
+        final _amount =
+            (_balance.getInWei.toDouble() * pow(10, -18)).toStringAsFixed(8);
         _result.add(_CoinEntity(coin.symbolToken, _amount));
       } else {
-        final _amount =
-            await _client.getBalanceFromContract(coin.addressToken!, isUSDT: coin.symbolToken == TokenSymbols.USDT);
+        final _amount = await _client.getBalanceFromContract(coin.addressToken!,
+            isUSDT: coin.symbolToken == TokenSymbols.USDT);
         _result.add(_CoinEntity(coin.symbolToken, _amount.toString()));
       }
     }).toList();
 
     return _result;
   }
-
 }
 
 class _CoinEntity {

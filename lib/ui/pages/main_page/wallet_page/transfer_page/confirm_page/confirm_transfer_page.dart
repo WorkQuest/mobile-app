@@ -84,7 +84,8 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                   child: ElevatedButton(
                     onPressed: () async {
                       AlertDialogUtils.showLoadingDialog(context);
-                      store.sendTransaction(widget.addressTo, widget.amount, widget.typeCoin);
+                      store.sendTransaction(
+                          widget.addressTo, widget.amount, widget.typeCoin);
                     },
                     child: Text('meta.confirm'.tr()),
                   ),
@@ -117,7 +118,9 @@ class _InformationWidget extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5.0), color: AppColor.disabledButton),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          color: AppColor.disabledButton),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -40,7 +40,8 @@ List<_CoinItem> _coins = [
 ];
 
 List<_WalletItem> _wallets = [
-  _WalletItem("assets/coinpaymebts.svg", "Сoinpaymebts", TYPE_WALLET.Coinpaymebts),
+  _WalletItem(
+      "assets/coinpaymebts.svg", "Сoinpaymebts", TYPE_WALLET.Coinpaymebts),
 ];
 
 class PaymentPage extends StatefulWidget {
@@ -54,7 +55,8 @@ class PaymentPage extends StatefulWidget {
   _PaymentPageState createState() => _PaymentPageState();
 }
 
-class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStateMixin {
+class _PaymentPageState extends State<PaymentPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -251,10 +253,14 @@ class _WalletViewTabState extends State<_WalletViewTab> {
                         ),
                       ),
                     Text(
-                      _selectedCoin ? _currentCoin!.title : 'wallet.enterCoin'.tr(),
+                      _selectedCoin
+                          ? _currentCoin!.title
+                          : 'wallet.enterCoin'.tr(),
                       style: TextStyle(
                         fontSize: 16,
-                        color: _selectedCoin ? Colors.black : AppColor.disabledText,
+                        color: _selectedCoin
+                            ? Colors.black
+                            : AppColor.disabledText,
                       ),
                     ),
                     const Spacer(),
@@ -283,7 +289,8 @@ class _WalletViewTabState extends State<_WalletViewTab> {
                   vertical: 12.5,
                 ),
                 decoration: BoxDecoration(
-                  color: _selectedWallet ? Colors.white : AppColor.disabledButton,
+                  color:
+                      _selectedWallet ? Colors.white : AppColor.disabledButton,
                   borderRadius: BorderRadius.circular(6.0),
                   border: Border.all(
                     color: AppColor.disabledButton,
@@ -313,10 +320,14 @@ class _WalletViewTabState extends State<_WalletViewTab> {
                         ),
                       ),
                     Text(
-                      _selectedWallet ? _currentWallet!.title : 'wallet.enterCoin'.tr(),
+                      _selectedWallet
+                          ? _currentWallet!.title
+                          : 'wallet.enterCoin'.tr(),
                       style: TextStyle(
                         fontSize: 16,
-                        color: _selectedWallet ? Colors.black : AppColor.disabledText,
+                        color: _selectedWallet
+                            ? Colors.black
+                            : AppColor.disabledText,
                       ),
                     ),
                     const Spacer(),
@@ -349,7 +360,8 @@ class _WalletViewTabState extends State<_WalletViewTab> {
                         print('ObserverListener onSuccess');
                         Navigator.of(context, rootNavigator: true).pop();
                         await AlertDialogUtils.showInfoAlertDialog(context,
-                            title: 'Error', content: widget.store.errorMessage!);
+                            title: 'Error',
+                            content: widget.store.errorMessage!);
                       }
                     }
                   : null,

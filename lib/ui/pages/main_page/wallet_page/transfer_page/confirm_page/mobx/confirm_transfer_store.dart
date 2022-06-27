@@ -11,14 +11,17 @@ import 'package:app/base_store/i_store.dart';
 part 'confirm_transfer_store.g.dart';
 
 @injectable
-class ConfirmTransferStore = ConfirmTransferStoreBase with _$ConfirmTransferStore;
+class ConfirmTransferStore = ConfirmTransferStoreBase
+    with _$ConfirmTransferStore;
 
 abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
   @action
-  sendTransaction(String addressTo, String amount, TokenSymbols typeCoin) async {
+  sendTransaction(
+      String addressTo, String amount, TokenSymbols typeCoin) async {
     onLoading();
     try {
-      final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
+      final _currentListTokens =
+          AccountRepository().getConfigNetwork().dataCoins;
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
       await AccountRepository().getClient(other: true).sendTransaction(
             isToken: _isToken,

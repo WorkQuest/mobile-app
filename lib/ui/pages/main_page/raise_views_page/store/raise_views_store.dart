@@ -102,27 +102,35 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   Future<String> getFee({bool isQuestRaise = false}) async {
     try {
       final _client = AccountRepository().getClient();
-      final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
+      final _addressWUSD = Configs
+          .configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
           .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
           .addressToken;
-      final _contractApprove = await _client.getDeployedContract("WQBridgeToken", _addressWUSD!);
+      final _contractApprove =
+          await _client.getDeployedContract("WQBridgeToken", _addressWUSD!);
       if (isQuestRaise) {
-        final _amount = getAmount(isQuest: true, tariff: levelGroupValue, period: getPeriod(isQuest: true));
+        final _amount = getAmount(
+            isQuest: true,
+            tariff: levelGroupValue,
+            period: getPeriod(isQuest: true));
         final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
         final _gasForApprove = await _client.getEstimateGasCallContract(
           contract: _contractApprove,
-          function: _contractApprove.function(WQBridgeTokenFunctions.approve.name),
+          function:
+              _contractApprove.function(WQBridgeTokenFunctions.approve.name),
           params: [
             EthereumAddress.fromHex(Constants.worknetWQFactory),
             _price,
           ],
         );
 
-        final _contractPromote = await _client.getDeployedContract("WQPromotion", Constants.worknetPromotion);
+        final _contractPromote = await _client.getDeployedContract(
+            "WQPromotion", Constants.worknetPromotion);
         final _quest = await apiProvider.getQuest(id: questId);
         final _gasForPromote = await _client.getEstimateGasCallContract(
           contract: _contractPromote,
-          function: _contractPromote.function(WQPromotionFunctions.promoteQuest.name),
+          function:
+              _contractPromote.function(WQPromotionFunctions.promoteQuest.name),
           params: [
             EthereumAddress.fromHex(_quest.contractAddress!),
             BigInt.from(levelGroupValue - 1),
@@ -131,21 +139,27 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
         );
         return (_gasForApprove + _gasForPromote).toStringAsFixed(17);
       } else {
-        final _amount = getAmount(isQuest: false, tariff: levelGroupValue, period: getPeriod(isQuest: false));
+        final _amount = getAmount(
+            isQuest: false,
+            tariff: levelGroupValue,
+            period: getPeriod(isQuest: false));
         final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
         final _gasForApprove = await _client.getEstimateGasCallContract(
           contract: _contractApprove,
-          function: _contractApprove.function(WQBridgeTokenFunctions.approve.name),
+          function:
+              _contractApprove.function(WQBridgeTokenFunctions.approve.name),
           params: [
             EthereumAddress.fromHex(Constants.worknetWQFactory),
             _price,
           ],
         );
 
-        final _contractPromote = await _client.getDeployedContract("WQPromotion", Constants.worknetPromotion);
+        final _contractPromote = await _client.getDeployedContract(
+            "WQPromotion", Constants.worknetPromotion);
         final _gasForPromote = await _client.getEstimateGasCallContract(
           contract: _contractPromote,
-          function: _contractPromote.function(WQPromotionFunctions.promoteUser.name),
+          function:
+              _contractPromote.function(WQPromotionFunctions.promoteUser.name),
           params: [
             BigInt.from(levelGroupValue - 1),
             BigInt.from(getPeriod(isQuest: false)),
@@ -165,7 +179,8 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onLoading();
       final _period = getPeriod();
       print('levelGroupValue: $levelGroupValue | period: ${getPeriod()}');
-      final _amount = getAmount(isQuest: false, tariff: levelGroupValue, period: _period);
+      final _amount =
+          getAmount(isQuest: false, tariff: levelGroupValue, period: _period);
       final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
       await AccountRepository().getClient().approveCoin(price: _price);
       await AccountRepository().getClient().promoteUser(
@@ -188,7 +203,8 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onLoading();
       final _quest = await apiProvider.getQuest(id: questId);
       final _period = getPeriod(isQuest: true);
-      final _amount = getAmount(isQuest: true, tariff: levelGroupValue, period: _period);
+      final _amount =
+          getAmount(isQuest: true, tariff: levelGroupValue, period: _period);
       final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
       await AccountRepository().getClient().approveCoin(price: _price);
       await AccountRepository().getClient().promoteQuest(

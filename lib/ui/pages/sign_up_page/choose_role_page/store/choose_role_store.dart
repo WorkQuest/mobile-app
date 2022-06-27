@@ -51,7 +51,7 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
   @observable
   int secondsCodeAgain = 60;
 
-  void setRole(UserRole role)=> userRole = role;
+  void setRole(UserRole role) => userRole = role;
 
   void setPlatform(String value) => platform = value;
 

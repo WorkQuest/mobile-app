@@ -1,7 +1,6 @@
 import '../model/media_model.dart';
 
 class FileUtils {
-
   static TypeFile getTypeFile(String filePath) {
     final _formatFile = filePath.split('.').last.toLowerCase();
     if (_formatFile == 'jpeg' ||
@@ -31,7 +30,6 @@ class FileUtils {
         return TypeFile.documents;
     }
   }
-
 }
 
 enum TypeFile { image, video, documents, unknown }

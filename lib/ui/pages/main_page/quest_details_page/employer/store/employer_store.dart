@@ -92,9 +92,13 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       final _user = await _apiProvider.getProfileUser(userId: userId);
       final _client = AccountRepository().getClient();
-      final _contract = await _client.getDeployedContract("WorkQuest", quest.value!.contractAddress!);
+      final _contract = await _client.getDeployedContract(
+          "WorkQuest", quest.value!.contractAddress!);
       final _function = _contract.function(WQContractFunctions.assignJob.name);
-      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: [EthereumAddress.fromHex(_user.walletAddress!)]);
+      final _gas = await _client.getEstimateGasCallContract(
+          contract: _contract,
+          function: _function,
+          params: [EthereumAddress.fromHex(_user.walletAddress!)]);
       fee = _gas.toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -111,6 +115,8 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       final user = await _apiProvider.getProfileUser(userId: userId);
       // Remove request
       // await _apiProvider.startQuest(questId: questId, userId: userId);
+      print("TAG: ${quest.value!.contractAddress}");
+      print("TAG: ${EthereumAddress.fromHex(user.walletAddress!)}");
 
       await AccountRepository().getClient().handleEvent(
             function: WQContractFunctions.assignJob,

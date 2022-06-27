@@ -24,7 +24,6 @@ class ReviewPage extends StatefulWidget {
 
   const ReviewPage(this.arguments);
 
-
   @override
   _ReviewPageState createState() => _ReviewPageState();
 }
@@ -35,9 +34,11 @@ class _ReviewPageState extends State<ReviewPage> {
   @override
   void initState() {
     if (widget.arguments.store.titleName == "Reviews")
-      widget.arguments.store.getReviews(userId: widget.arguments.userId, newList: true);
+      widget.arguments.store
+          .getReviews(userId: widget.arguments.userId, newList: true);
     if (widget.arguments.store.titleName == "Portfolio")
-      widget.arguments.store.getPortfolio(userId: widget.arguments.userId, newList: true);
+      widget.arguments.store
+          .getPortfolio(userId: widget.arguments.userId, newList: true);
     super.initState();
   }
 
@@ -62,114 +63,114 @@ class _ReviewPageState extends State<ReviewPage> {
                   .getReviews(userId: widget.arguments.userId, newList: false);
 
             if (widget.arguments.store.titleName == "Portfolio")
-              widget.arguments.store
-                  .getPortfolio(userId: widget.arguments.userId, newList: false);
+              widget.arguments.store.getPortfolio(
+                  userId: widget.arguments.userId, newList: false);
           }
           setState(() {});
           return false;
         },
         child: Observer(
           builder: (_) => widget.arguments.store.isLoading &&
-              widget.arguments.store.reviewsList.isEmpty
+                  widget.arguments.store.reviewsList.isEmpty
               ? Center(
-            child: CircularProgressIndicator(),
-          )
+                  child: CircularProgressIndicator(),
+                )
               : CustomScrollView(
-            slivers: [
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    if (widget.arguments.store.titleName == "Reviews")
-                      for (int index = 0;
-                      index <
-                          widget.arguments.store.reviewsList.length;
-                      index++)
-                        ReviewsWidget(
-                          avatar: widget
-                              .arguments
-                              .store
-                              .reviewsList[index]
-                              .fromUser
-                              .avatar
-                              ?.url ??
-                              "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
-                          name: widget.arguments.store.reviewsList[index]
-                              .fromUser.firstName +
-                              " " +
-                              widget.arguments.store.reviewsList[index]
-                                  .fromUser.lastName,
-                          mark: widget
-                              .arguments.store.reviewsList[index].mark,
-                          userRole: widget.arguments.store
-                              .reviewsList[index].fromUserId ==
-                              widget.arguments.store
-                                  .reviewsList[index].quest.userId
-                              ? "role.employer"
-                              : "role.worker",
-                          questTitle: widget.arguments.store
-                              .reviewsList[index].quest.title,
-                          cutMessage:
-                          widget.arguments.store.messages[index],
-                          message: widget
-                              .arguments.store.reviewsList[index].message,
-                          id: widget.arguments.store.reviewsList[index]
-                              .fromUserId,
-                          myId: widget.arguments.userId,
-                          role: widget.arguments.role,
-                          last: index ==
-                              widget.arguments.store.reviewsList
-                                  .length -
-                                  1
-                              ? true
-                              : false,
-                        ),
-                    if (widget.arguments.store.titleName == "Portfolio")
-                      Column(
-                        children: [
-                          Observer(
-                            builder: (_) => widget.arguments
-                                .store.portfolioList.isEmpty &&
-                                !widget.arguments.store.isLoading
-                                ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                                : Column(
-                              children: [
-                                for (int index = 0;
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          if (widget.arguments.store.titleName == "Reviews")
+                            for (int index = 0;
                                 index <
-                                    widget.arguments.store
-                                        .portfolioList.length;
+                                    widget.arguments.store.reviewsList.length;
                                 index++)
-                                  PortfolioWidget(
-                                    index: index,
-                                    imageUrl: widget
+                              ReviewsWidget(
+                                avatar: widget
                                         .arguments
                                         .store
-                                        .portfolioList[index]
-                                        .medias
-                                        .isEmpty
-                                        ? "https://dev-app.workquest.co/_nuxt/img/logo.1baae1e.svg"
-                                        : widget
-                                        .arguments
-                                        .store
-                                        .portfolioList[index]
-                                        .medias
-                                        .first
-                                        .url,
-                                    title: widget.arguments.store
-                                        .portfolioList[index].title,
-                                    isProfileYour: false,
-                                  ),
+                                        .reviewsList[index]
+                                        .fromUser
+                                        .avatar
+                                        ?.url ??
+                                    "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                                name: widget.arguments.store.reviewsList[index]
+                                        .fromUser.firstName +
+                                    " " +
+                                    widget.arguments.store.reviewsList[index]
+                                        .fromUser.lastName,
+                                mark: widget
+                                    .arguments.store.reviewsList[index].mark,
+                                userRole: widget.arguments.store
+                                            .reviewsList[index].fromUserId ==
+                                        widget.arguments.store
+                                            .reviewsList[index].quest.userId
+                                    ? "role.employer"
+                                    : "role.worker",
+                                questTitle: widget.arguments.store
+                                    .reviewsList[index].quest.title,
+                                cutMessage:
+                                    widget.arguments.store.messages[index],
+                                message: widget
+                                    .arguments.store.reviewsList[index].message,
+                                id: widget.arguments.store.reviewsList[index]
+                                    .fromUserId,
+                                myId: widget.arguments.userId,
+                                role: widget.arguments.role,
+                                last: index ==
+                                        widget.arguments.store.reviewsList
+                                                .length -
+                                            1
+                                    ? true
+                                    : false,
+                              ),
+                          if (widget.arguments.store.titleName == "Portfolio")
+                            Column(
+                              children: [
+                                Observer(
+                                  builder: (_) => widget.arguments.store
+                                              .portfolioList.isEmpty &&
+                                          !widget.arguments.store.isLoading
+                                      ? Center(
+                                          child: CircularProgressIndicator(),
+                                        )
+                                      : Column(
+                                          children: [
+                                            for (int index = 0;
+                                                index <
+                                                    widget.arguments.store
+                                                        .portfolioList.length;
+                                                index++)
+                                              PortfolioWidget(
+                                                index: index,
+                                                imageUrl: widget
+                                                        .arguments
+                                                        .store
+                                                        .portfolioList[index]
+                                                        .medias
+                                                        .isEmpty
+                                                    ? "https://dev-app.workquest.co/_nuxt/img/logo.1baae1e.svg"
+                                                    : widget
+                                                        .arguments
+                                                        .store
+                                                        .portfolioList[index]
+                                                        .medias
+                                                        .first
+                                                        .url,
+                                                title: widget.arguments.store
+                                                    .portfolioList[index].title,
+                                                isProfileYour: false,
+                                              ),
+                                          ],
+                                        ),
+                                ),
                               ],
                             ),
-                          ),
                         ],
                       ),
+                    )
                   ],
                 ),
-              )
-            ],
-          ),
         ),
       ),
     );

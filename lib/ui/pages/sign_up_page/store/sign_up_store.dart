@@ -82,8 +82,6 @@ abstract class _SignUpStore extends IStore<bool> with Store {
 
   @action
   String? signUpConfirmPasswordValidator(String? text) {
-    return text! == _password
-        ? null
-        : "Does not match password";
+    return text! == _password ? null : "Does not match password";
   }
 }

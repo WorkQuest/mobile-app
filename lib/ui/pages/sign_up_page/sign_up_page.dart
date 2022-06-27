@@ -47,7 +47,10 @@ class SignUpPage extends StatelessWidget {
       body: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
         child: SizedBox(
-          height: mq.size.height - kToolbarHeight - mq.padding.top - mq.padding.bottom,
+          height: mq.size.height -
+              kToolbarHeight -
+              mq.padding.top -
+              mq.padding.bottom,
           child: AutofillGroup(
             child: Form(
               key: _signUpPageFormKey,
@@ -168,12 +171,13 @@ class SignUpPage extends StatelessWidget {
                             enabled: store.isLoading,
                             onTap: store.canSignUp
                                 ? () async {
-                                    if (_signUpPageFormKey.currentState!.validate()) {
+                                    if (_signUpPageFormKey.currentState!
+                                        .validate()) {
                                       await store.register();
                                     }
                                   }
                                 : null,
-                          title: "signUp.create".tr(),
+                            title: "signUp.create".tr(),
                           );
                         },
                       ),

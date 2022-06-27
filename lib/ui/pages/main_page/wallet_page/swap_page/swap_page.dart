@@ -26,9 +26,11 @@ const _divider = SizedBox(
 const _spaceDivider = SizedBox(
   height: 15,
 );
-const _minimumError = 'To avoid unnecessary fees and network slippage, the minimum amount for this pair is \$5 '
+const _minimumError =
+    'To avoid unnecessary fees and network slippage, the minimum amount for this pair is \$5 '
     'USDT/USDC';
-const _maximumError = 'To avoid unnecessary fees and network slippage, the maximum amount for this pair is \$100 '
+const _maximumError =
+    'To avoid unnecessary fees and network slippage, the maximum amount for this pair is \$100 '
     'USDT/USDC.';
 
 class SwapPage extends StatefulWidget {
@@ -93,7 +95,8 @@ class _SwapPageState extends State<SwapPage> {
               return Future.delayed(const Duration(seconds: 1));
             },
             child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
               child: Padding(
                 padding: _padding,
                 child: Form(
@@ -115,10 +118,12 @@ class _SwapPageState extends State<SwapPage> {
                                 padding: EdgeInsets.zero,
                                 child: const Text(
                                   'Retry',
-                                  style: TextStyle(color: AppColor.enabledButton),
+                                  style:
+                                      TextStyle(color: AppColor.enabledButton),
                                 ),
                                 onPressed: () {
-                                  _showLoading(message: 'Connecting to network...');
+                                  _showLoading(
+                                      message: 'Connecting to network...');
                                   store.setNetwork(store.network!);
                                 },
                               ),
@@ -149,7 +154,8 @@ class _SwapPageState extends State<SwapPage> {
                         children: [
                           Text(
                             'Amount (Balance: ${store.maxAmount ?? 0.0})',
-                            style: const TextStyle(fontSize: 16, color: Colors.black),
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black),
                           ),
                           const SizedBox(
                             width: 4,
@@ -201,9 +207,11 @@ class _SwapPageState extends State<SwapPage> {
                           }
                           return null;
                         },
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d+\.?\d{0,18}')),
                         ],
                         suffixIcon: CupertinoButton(
                           padding: const EdgeInsets.only(right: 12.5),
@@ -220,7 +228,8 @@ class _SwapPageState extends State<SwapPage> {
                               return;
                             }
                             _amountController.text = store.maxAmount.toString();
-                            _addressToController.text = AccountRepository().userWallet!.address!;
+                            _addressToController.text =
+                                AccountRepository().userWallet!.address!;
                           },
                         ),
                       ),
@@ -263,7 +272,8 @@ class _SwapPageState extends State<SwapPage> {
                               width: 10,
                               child: CircularProgressIndicator.adaptive(),
                             ),
-                          if (store.isSuccessCourse) Text(store.convertWQT.toString()),
+                          if (store.isSuccessCourse)
+                            Text(store.convertWQT.toString()),
                         ],
                       ),
                       const SizedBox(
@@ -278,7 +288,9 @@ class _SwapPageState extends State<SwapPage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0 + MediaQuery.of(context).padding.bottom),
+        padding: EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 10.0 + MediaQuery.of(context).padding.bottom),
         child: DefaultButton(
           title: 'Send',
           onPressed: _onPressedSend,
@@ -290,7 +302,8 @@ class _SwapPageState extends State<SwapPage> {
   _showLoading({bool start = false, String? message}) {
     if (start) {
       Future.delayed(const Duration(milliseconds: 150)).then(
-            (value) => AlertDialogUtils.showLoadingDialog(context, message: message),
+        (value) =>
+            AlertDialogUtils.showLoadingDialog(context, message: message),
       );
     } else {
       AlertDialogUtils.showLoadingDialog(context, message: message);
@@ -314,9 +327,14 @@ class _SwapPageState extends State<SwapPage> {
         },
         title: 'Choose network',
         items: [
-          _ModelItem(iconPath: 'assets/weth_coin_icon.svg', item: SwapNetworks.ethereum),
-          _ModelItem(iconPath: 'assets/wbnb_coin_icon.svg', item: SwapNetworks.binance),
-          _ModelItem(iconPath: 'assets/wqt_coin_icon.svg', item: SwapNetworks.matic),
+          _ModelItem(
+              iconPath: 'assets/weth_coin_icon.svg',
+              item: SwapNetworks.ethereum),
+          _ModelItem(
+              iconPath: 'assets/wbnb_coin_icon.svg',
+              item: SwapNetworks.binance),
+          _ModelItem(
+              iconPath: 'assets/wqt_coin_icon.svg', item: SwapNetworks.matic),
         ],
       ),
     );
@@ -329,7 +347,8 @@ class _SwapPageState extends State<SwapPage> {
         onTap: (value) => store.setToken(value),
         title: 'Choose token',
         items: [
-          _ModelItem(item: SwapToken.tusdt, iconPath: 'assets/usdt_coin_icon.svg'),
+          _ModelItem(
+              item: SwapToken.tusdt, iconPath: 'assets/usdt_coin_icon.svg'),
         ],
       ),
     );
@@ -429,73 +448,73 @@ class _ListBottomWidget extends StatelessWidget {
                       ...items
                           .map(
                             (item) => Column(
-                          children: [
-                            Material(
-                              color: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                              child: InkWell(
-                                splashColor: Colors.transparent,
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  onTap.call(item.item);
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 6.5,
-                                  ),
+                              children: [
+                                Material(
+                                  color: Colors.transparent,
+                                  shadowColor: Colors.transparent,
                                   child: InkWell(
-                                    child: Container(
-                                      height: 32,
-                                      width: double.infinity,
-                                      color: Colors.transparent,
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Container(
-                                            decoration: const BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              gradient: LinearGradient(
-                                                begin: Alignment.topCenter,
-                                                end: Alignment.bottomCenter,
-                                                colors: [
-                                                  AppColor.enabledButton,
-                                                  AppColor.blue,
-                                                ],
+                                    splashColor: Colors.transparent,
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      onTap.call(item.item);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 6.5,
+                                      ),
+                                      child: InkWell(
+                                        child: Container(
+                                          height: 32,
+                                          width: double.infinity,
+                                          color: Colors.transparent,
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Container(
+                                                decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  gradient: LinearGradient(
+                                                    begin: Alignment.topCenter,
+                                                    end: Alignment.bottomCenter,
+                                                    colors: [
+                                                      AppColor.enabledButton,
+                                                      AppColor.blue,
+                                                    ],
+                                                  ),
+                                                ),
+                                                child: SizedBox(
+                                                  width: 32,
+                                                  height: 32,
+                                                  child: SvgPicture.asset(
+                                                    item.iconPath,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                            child: SizedBox(
-                                              width: 32,
-                                              height: 32,
-                                              child: SvgPicture.asset(
-                                                item.iconPath,
+                                              const SizedBox(
+                                                width: 10,
                                               ),
-                                            ),
+                                              Text(
+                                                _getName(item.item),
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            _getName(item.item),
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
+                                Container(
+                                  width: double.infinity,
+                                  height: 1,
+                                  color: AppColor.disabledButton,
+                                ),
+                              ],
                             ),
-                            Container(
-                              width: double.infinity,
-                              height: 1,
-                              color: AppColor.disabledButton,
-                            ),
-                          ],
-                        ),
-                      )
+                          )
                           .toList(),
                     ],
                   ),

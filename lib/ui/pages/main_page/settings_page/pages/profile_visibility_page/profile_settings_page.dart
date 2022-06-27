@@ -47,7 +47,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
         return false;
       },
       child: Observer(builder: (_) {
-        final _statusRespondOrInvite = _getStatusAllFromTypes(_store.canRespondOrInviteToQuest);
+        final _statusRespondOrInvite =
+            _getStatusAllFromTypes(_store.canRespondOrInviteToQuest);
         final _statusMySearch = _getStatusAllFromTypes(_store.mySearch);
         return Scaffold(
           appBar: DefaultAppBar(
@@ -63,10 +64,11 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     _store.editProfileVisibility(widget.profile);
                   },
                 ),
-              if (_store.isLoading) Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: CircularProgressIndicator.adaptive(),
-              ),
+              if (_store.isLoading)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator.adaptive(),
+                ),
             ],
           ),
           body: Padding(
@@ -124,11 +126,13 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         height: 4,
                       ),
                       _RadioTileWidget(
-                        status: _getStatusAllFromTypes(_store.canRespondOrInviteToQuest),
+                        status: _getStatusAllFromTypes(
+                            _store.canRespondOrInviteToQuest),
                         type: null,
                         onPressed: () {
                           VisibilityTypes.values.map((type) {
-                            _store.setCanRespondOrInviteToQuest(type, !_statusRespondOrInvite);
+                            _store.setCanRespondOrInviteToQuest(
+                                type, !_statusRespondOrInvite);
                           }).toList();
                         },
                       ),
@@ -137,7 +141,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                         return _RadioTileWidget(
                           type: type,
                           status: _status,
-                          onPressed: () => _store.setCanRespondOrInviteToQuest(type, !_status),
+                          onPressed: () => _store.setCanRespondOrInviteToQuest(
+                              type, !_status),
                         );
                       }).toList(),
                     ],

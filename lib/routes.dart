@@ -102,7 +102,9 @@ import 'di/injector.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    return context.locale.toString() == "ar_SA" ? TextDirection.rtl : TextDirection.ltr;
+    return context.locale.toString() == "ar_SA"
+        ? TextDirection.rtl
+        : TextDirection.ltr;
   }
 
   // static RouteSettings parseDeepLinks(RouteSettings settings) {
@@ -346,7 +348,8 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: FilterQuestsPage(settings.arguments as Map<int, List<int>>),
+              child:
+                  FilterQuestsPage(settings.arguments as Map<int, List<int>>),
             ),
           ),
         );
@@ -904,9 +907,7 @@ class Routes {
             create: (context) => getIt.get<ProfileVisibilityStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ProfileSettings(
-                settings.arguments as ProfileMeResponse
-              ),
+              child: ProfileSettings(settings.arguments as ProfileMeResponse),
             ),
           ),
         );

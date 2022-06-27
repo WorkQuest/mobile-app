@@ -34,7 +34,11 @@ class UserRating extends StatelessWidget {
     }
   }
 
-  Widget tag({required String text, required Color color,}) => Container(
+  Widget tag({
+    required String text,
+    required Color color,
+  }) =>
+      Container(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
         decoration: BoxDecoration(
           color: color,

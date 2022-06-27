@@ -52,7 +52,7 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
           showCupertinoDialog(
             context: context,
             barrierDismissible: true,
-            builder: (BuildContext contextDialog ) {
+            builder: (BuildContext contextDialog) {
               return Platform.isIOS
                   ? CupertinoAlertDialog(
                       title: Text('Error'),

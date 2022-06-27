@@ -1,13 +1,9 @@
-import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
+import 'package:app/constants.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/quests_tab.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
-import 'package:app/ui/widgets/quest_tab_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
 import "package:provider/provider.dart";
 import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -21,147 +17,134 @@ class MyQuestsPage extends StatefulWidget {
   _MyQuestsPageState createState() => _MyQuestsPageState();
 }
 
-class _MyQuestsPageState extends State<MyQuestsPage> {
+class _MyQuestsPageState extends State<MyQuestsPage>
+    with SingleTickerProviderStateMixin {
   MyQuestStore? myQuests;
   late UserRole role;
   late String userID;
+  late TabController _tabController;
 
   @override
   void initState() {
     myQuests = context.read<MyQuestStore>();
     ProfileMeStore profileMeStore = context.read<ProfileMeStore>();
     role = profileMeStore.userData?.role ?? UserRole.Employer;
+    _tabController = TabController(
+      vsync: this,
+      length: role == UserRole.Worker ? 6 : 5,
+    );
     profileMeStore.getProfileMe().then((value) {
       setState(() => role = profileMeStore.userData!.role);
       userID = profileMeStore.userData!.id;
       myQuests!.setId(userID);
-      myQuests!.getQuests(userID, role, true);
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: role == UserRole.Worker ? 4 : 3,
-      child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              CupertinoSliverNavigationBar(
-                largeTitle: Text(
-                  "quests.MyQuests".tr(),
-                ),
-                border: const Border.fromBorderSide(BorderSide.none),
-              ),
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: PersistentTabBar(role == UserRole.Worker
-                    ? [
-                        "quests.active".tr(),
-                        "quests.invited".tr(),
-                        "quests.performed".tr(),
-                        "quests.starred".tr(),
-                      ]
-                    : [
-                        "quests.active".tr(),
-                        "quests.requested".tr(),
-                        "quests.performed".tr(),
-                      ]),
-              ),
-            ];
-          },
-          physics: const ClampingScrollPhysics(),
-          body: ColoredBox(
-            color: Color(0xFFF7F8FA),
-            child: TabBarView(
-              children: [
-                Observer(
-                  builder: (_) => tabWrapper(
-                    QuestItemPriorityType.Active,
-                    myQuests!.active,
-                  ),
-                ),
-                Observer(
-                  builder: (_) => tabWrapper(
-                    role == UserRole.Employer
-                        ? QuestItemPriorityType.Requested
-                        : QuestItemPriorityType.Invited,
-                    // role == UserRole.Employer
-                    // ? myQuests!.requested
-                    myQuests!.invited,
-                  ),
-                ),
-                Observer(
-                  builder: (_) => tabWrapper(
-                    QuestItemPriorityType.Performed,
-                    myQuests!.performed,
-                  ),
-                ),
-                if (role == UserRole.Worker)
-                  Observer(
-                    builder: (_) => tabWrapper(
-                      QuestItemPriorityType.Starred,
-                      myQuests!.starred,
-                    ),
-                  ),
-              ],
+    return Scaffold(
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            CupertinoSliverNavigationBar(
+              largeTitle: Text("quests.MyQuests".tr()),
+              border: const Border.fromBorderSide(BorderSide.none),
             ),
+          ];
+        },
+        physics: const ClampingScrollPhysics(),
+        body: DefaultTabController(
+          length: role == UserRole.Worker ? 6 : 5,
+          child: Column(
+            children: [
+              TabBar(
+                isScrollable: true,
+                controller: _tabController,
+                tabs: [
+                  tab(text: 'quests.tabs.all'),
+                  tab(text: 'quests.tabs.favorites'),
+                  if (role == UserRole.Worker)
+                    tab(text: 'quests.tabs.responded'),
+                  if (role == UserRole.Worker) tab(text: 'quests.tabs.invited'),
+                  if (role == UserRole.Employer)
+                    tab(text: 'quests.tabs.created'),
+                  tab(text: 'quests.tabs.active'),
+                  if (role == UserRole.Employer)
+                    tab(text: 'quests.tabs.completed'),
+                  if (role == UserRole.Worker)
+                    tab(text: 'quests.tabs.performed'),
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    QuestsTab(
+                      store: myQuests!,
+                      type: QuestsType.All,
+                      role: role,
+                    ),
+                    QuestsTab(
+                      store: myQuests!,
+                      type: QuestsType.Favorites,
+                      role: role,
+                    ),
+                    if (role == UserRole.Worker)
+                      QuestsTab(
+                        store: myQuests!,
+                        type: QuestsType.Responded,
+                        role: role,
+                      ),
+                    if (role == UserRole.Worker)
+                      QuestsTab(
+                        store: myQuests!,
+                        type: QuestsType.Invited,
+                        role: role,
+                      ),
+                    if (role == UserRole.Employer)
+                      QuestsTab(
+                        store: myQuests!,
+                        type: QuestsType.Created,
+                        role: role,
+                      ),
+                    QuestsTab(
+                      store: myQuests!,
+                      type: QuestsType.Active,
+                      role: role,
+                    ),
+                    if (role == UserRole.Employer)
+                      QuestsTab(
+                        store: myQuests!,
+                        type: QuestsType.Completed,
+                        role: role,
+                      ),
+                    if (role == UserRole.Worker)
+                      QuestsTab(
+                        store: myQuests!,
+                        type: QuestsType.Performed,
+                        role: role,
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget tabWrapper(
-    QuestItemPriorityType type,
-    ObservableList<BaseQuestResponse> list,
-  ) =>
-      RefreshIndicator(
-        onRefresh: () {
-          return myQuests!.getQuests(userID, role, true);
-        },
-        child: NotificationListener<ScrollEndNotification>(
-          onNotification: (scrollEnd) {
-            final metrics = scrollEnd.metrics;
-            if ((metrics.atEdge || metrics.maxScrollExtent < metrics.pixels) &&
-                !myQuests!.isLoading) {
-              myQuests!.getQuests(userID, role, false);
-            }
-            return true;
-          },
-          child: Column(
-            children: [
-              if (role == UserRole.Employer &&
-                  type == QuestItemPriorityType.Active)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 12.0,
-                    right: 12.0,
-                    top: 5.0,
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed<bool>(CreateQuestPage.routeName)
-                          .then(
-                            (value) => myQuests!.getQuests(userID, role, true),
-                          );
-                    },
-                    child: Text(
-                      "quests.addNewQuest".tr(),
-                    ),
-                  ),
-                ),
-              Expanded(
-                child: QuestsList(
-                  type,
-                  list,
-                  isLoading: myQuests!.isLoading,
-                  from: FromQuestList.myQuest,
-                ),
-              ),
-            ],
+  Widget tab({
+    required String text,
+  }) =>
+      Tab(
+        child: Text(
+          text.tr(),
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: AppColor.enabledButton,
+            fontSize: 13.0,
           ),
         ),
       );

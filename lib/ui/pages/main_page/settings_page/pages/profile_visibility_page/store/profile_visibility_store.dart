@@ -8,7 +8,8 @@ import '../../../../../../../model/profile_response/profile_me_response.dart';
 part 'profile_visibility_store.g.dart';
 
 @injectable
-class ProfileVisibilityStore extends _ProfileVisibilityStore with _$ProfileVisibilityStore {
+class ProfileVisibilityStore extends _ProfileVisibilityStore
+    with _$ProfileVisibilityStore {
   ProfileVisibilityStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
@@ -19,7 +20,8 @@ abstract class _ProfileVisibilityStore extends IStore<bool> with Store {
 
   init(ProfileMeResponse profile) {
     List<int> _mySearchVisibility = profile.getMySearchVisibilityList();
-    List<int> _canRespondOrInviteToQuestVisibility = profile.getCanInviteOrRespondMeOnQuest();
+    List<int> _canRespondOrInviteToQuestVisibility =
+        profile.getCanInviteOrRespondMeOnQuest();
 
     _mySearchVisibility.map((value) {
       final _type = _getVisibilityType(value);
@@ -41,7 +43,8 @@ abstract class _ProfileVisibilityStore extends IStore<bool> with Store {
   });
 
   @observable
-  ObservableMap<VisibilityTypes, bool> canRespondOrInviteToQuest = ObservableMap.of({
+  ObservableMap<VisibilityTypes, bool> canRespondOrInviteToQuest =
+      ObservableMap.of({
     VisibilityTypes.topRanked: false,
     VisibilityTypes.reliable: false,
     VisibilityTypes.verified: false,
@@ -62,9 +65,12 @@ abstract class _ProfileVisibilityStore extends IStore<bool> with Store {
   editProfileVisibility(ProfileMeResponse profile) async {
     try {
       onLoading();
-      profile.workerOrEmployerProfileVisibilitySetting = WorkerProfileVisibilitySettingClass(
-        arrayRatingStatusCanInviteMeOnQuest: _getVisibilityListValueType(canRespondOrInviteToQuest),
-        arrayRatingStatusCanRespondToQuest: _getVisibilityListValueType(canRespondOrInviteToQuest),
+      profile.workerOrEmployerProfileVisibilitySetting =
+          WorkerProfileVisibilitySettingClass(
+        arrayRatingStatusCanInviteMeOnQuest:
+            _getVisibilityListValueType(canRespondOrInviteToQuest),
+        arrayRatingStatusCanRespondToQuest:
+            _getVisibilityListValueType(canRespondOrInviteToQuest),
         arrayRatingStatusInMySearch: _getVisibilityListValueType(mySearch),
       );
       await apiProvider.changeProfileMe(profile);
@@ -112,8 +118,7 @@ abstract class _ProfileVisibilityStore extends IStore<bool> with Store {
     } else {
       throw FormatException('Unknown Visibility Type');
     }
-
   }
 }
 
-enum VisibilityTypes {  topRanked, reliable, verified, notRated }
+enum VisibilityTypes { topRanked, reliable, verified, notRated }

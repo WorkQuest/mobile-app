@@ -20,9 +20,9 @@ class RatingStatistic {
       );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "userId": userId,
-    "reviewCount": reviewCount,
-    "averageMark": averageMark,
-  };
+        "id": id,
+        "userId": userId,
+        "reviewCount": reviewCount,
+        "averageMark": averageMark,
+      };
 }

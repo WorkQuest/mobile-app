@@ -22,7 +22,8 @@ class BottomSheetUtils {
             color: Colors.white,
           ),
           child: Padding(
-            padding: padding ?? const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding: padding ??
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: child,
           ),
         );

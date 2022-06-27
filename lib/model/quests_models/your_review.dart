@@ -20,24 +20,24 @@ class YourReview {
   DateTime updatedAt;
 
   factory YourReview.fromJson(Map<String, dynamic> json) => YourReview(
-    id: json["id"],
-    questId: json["questId"],
-    fromUserId: json["fromUserId"],
-    toUserId: json["toUserId"],
-    message: json["message"],
-    mark: json["mark"],
-    createdAt: DateTime.parse(json["createdAt"]),
-    updatedAt: DateTime.parse(json["updatedAt"]),
-  );
+        id: json["id"],
+        questId: json["questId"],
+        fromUserId: json["fromUserId"],
+        toUserId: json["toUserId"],
+        message: json["message"],
+        mark: json["mark"],
+        createdAt: DateTime.parse(json["createdAt"]),
+        updatedAt: DateTime.parse(json["updatedAt"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "questId": questId,
-    "fromUserId": fromUserId,
-    "toUserId": toUserId,
-    "message": message,
-    "mark": mark,
-    "createdAt": createdAt.toIso8601String(),
-    "updatedAt": updatedAt.toIso8601String(),
-  };
+        "id": id,
+        "questId": questId,
+        "fromUserId": fromUserId,
+        "toUserId": toUserId,
+        "message": message,
+        "mark": mark,
+        "createdAt": createdAt.toIso8601String(),
+        "updatedAt": updatedAt.toIso8601String(),
+      };
 }

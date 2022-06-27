@@ -60,16 +60,22 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       final store = context.read<CreateQuestStore>();
       store.oldPrice = BigInt.parse(widget.questInfo!.price);
       store.setConfirmUnderstandAboutEdit(true);
-      store.priority = QuestConstants.priorityList[widget.questInfo!.priority - 1];
+      store.priority =
+          QuestConstants.priorityList[widget.questInfo!.priority - 1];
       store.contractAddress = widget.questInfo!.contractAddress ?? '';
       store.questTitle = widget.questInfo!.title;
-      store.changedDistantWork(QuestUtils.getEmployment(widget.questInfo!.workplace));
-      store.changedEmployment(QuestUtils.getEmployment(widget.questInfo!.employment));
+      store.changedDistantWork(
+          QuestUtils.getEmployment(widget.questInfo!.workplace));
+      store.changedEmployment(
+          QuestUtils.getEmployment(widget.questInfo!.employment));
       store.description = widget.questInfo!.description;
-      store.price = (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18)).toString();
+      store.price =
+          (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18))
+              .toString();
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
       store.setImages(widget.questInfo!.medias ?? []);
-      _controller = SkillSpecializationController(initialValue: widget.questInfo!.questSpecializations);
+      _controller = SkillSpecializationController(
+          initialValue: widget.questInfo!.questSpecializations);
     } else
       _controller = SkillSpecializationController();
   }
@@ -501,13 +507,14 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           onSuccess: () async {
                             ///review
                             await questStore.getQuests(
-                              profile!.userData!.id,
+                              QuestsType.Created,
                               UserRole.Employer,
                               true,
                             );
                             if (isEdit) {
-                              final updatedQuest =
-                                  await store.getQuest(widget.questInfo!.id);
+                              final updatedQuest = await store.getQuest(
+                                widget.questInfo!.id,
+                              );
                               Navigator.pushReplacementNamed(
                                 context,
                                 QuestDetails.routeName,
@@ -527,20 +534,36 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               onTap: store.isLoading
                                   ? null
                                   : () async {
-                                      store.skillFilters = _controller!.getSkillAndSpecialization();
-                                      final _gas = await store.getFee(isEdit: isEdit);
+                                      store.skillFilters = _controller!
+                                          .getSkillAndSpecialization();
+                                      final _gas = await store.getFee(
+                                        isEdit: isEdit,
+                                      );
                                       if (isEdit) {
                                         if (store.canSubmitEditQuest) {
-                                          if (_formKey.currentState?.validate() ?? false) {
+                                          if (_formKey.currentState
+                                                  ?.validate() ??
+                                              false) {
                                             try {
-                                              await _checkPossibilityTx(store.price, _gas);
+                                              await _checkPossibilityTx(
+                                                store.price,
+                                                _gas,
+                                              );
                                             } on FormatException catch (e) {
-                                              AlertDialogUtils.showInfoAlertDialog(context,
-                                                  title: 'modals.error'.tr(), content: e.message);
+                                              AlertDialogUtils
+                                                  .showInfoAlertDialog(
+                                                context,
+                                                title: 'modals.error'.tr(),
+                                                content: e.message,
+                                              );
                                               return;
                                             } catch (e) {
-                                              AlertDialogUtils.showInfoAlertDialog(context,
-                                                  title: 'modals.error'.tr(), content: e.toString());
+                                              AlertDialogUtils
+                                                  .showInfoAlertDialog(
+                                                context,
+                                                title: 'modals.error'.tr(),
+                                                content: e.toString(),
+                                              );
                                               return;
                                             }
                                             confirmTransaction(
@@ -557,29 +580,44 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                                 Navigator.pop(context);
                                                 if (store.isSuccess) {
                                                   Navigator.pop(context);
-                                                  AlertDialogUtils.showSuccessDialog(context);
+                                                  AlertDialogUtils
+                                                      .showSuccessDialog(
+                                                    context,
+                                                  );
                                                 }
                                               },
                                             );
                                           }
                                         }
                                       } else if (store.canCreateQuest) {
-                                        if (_formKey.currentState?.validate() ?? false) {
-                                          if (!store.confirmUnderstandAboutEdit) {
+                                        if (_formKey.currentState?.validate() ??
+                                            false) {
+                                          if (!store
+                                              .confirmUnderstandAboutEdit) {
                                             Scrollable.ensureVisible(
-                                              confirmUnderstandAboutEdit.currentContext!,
+                                              confirmUnderstandAboutEdit
+                                                  .currentContext!,
                                             );
                                             return;
                                           }
                                           try {
-                                            await _checkPossibilityTx(store.price, _gas);
+                                            await _checkPossibilityTx(
+                                                store.price, _gas);
                                           } on FormatException catch (e) {
-                                            AlertDialogUtils.showInfoAlertDialog(context,
-                                                title: 'modals.error'.tr(), content: e.message);
+                                            AlertDialogUtils
+                                                .showInfoAlertDialog(
+                                              context,
+                                              title: 'modals.error'.tr(),
+                                              content: e.message,
+                                            );
                                             return;
                                           } catch (e) {
-                                            AlertDialogUtils.showInfoAlertDialog(context,
-                                                title: 'modals.error'.tr(), content: e.toString());
+                                            AlertDialogUtils
+                                                .showInfoAlertDialog(
+                                              context,
+                                              title: 'modals.error'.tr(),
+                                              content: e.toString(),
+                                            );
                                             return;
                                           }
                                           confirmTransaction(
@@ -594,7 +632,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                               if (store.isSuccess) {
                                                 Navigator.pop(context);
                                                 AlertDialogUtils
-                                                    .showSuccessDialog(context);
+                                                    .showSuccessDialog(
+                                                  context,
+                                                );
                                               }
                                             },
                                           );

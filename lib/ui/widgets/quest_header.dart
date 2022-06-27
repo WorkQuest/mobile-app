@@ -1,4 +1,6 @@
 import 'package:app/constants.dart';
+import 'package:app/model/quests_models/invited.dart';
+import 'package:app/model/quests_models/responded.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -10,104 +12,153 @@ class QuestHeader extends StatelessWidget {
     required this.questStatus,
     required this.rounded,
     required this.responded,
-    required this.forMe,
+    required this.invited,
+    required this.role,
   });
 
-  final QuestItemPriorityType itemType;
+  final QuestsType itemType;
   final int questStatus;
   final bool rounded;
-  final bool responded;
-  final bool forMe;
+  final Responded? responded;
+  final Invited? invited;
+  final UserRole? role;
 
   @override
   Widget build(BuildContext context) {
-    switch (itemType) {
-      case QuestItemPriorityType.Active:
-        if (questStatus == -2) {
+    if (itemType == QuestsType.All || itemType == QuestsType.Favorites)
+      switch (questStatus) {
+        case -3:
+          return header(
+            color: Colors.red,
+            title: "quests.headers.closed",
+          );
+        case -2:
           return header(
             color: Colors.red,
             title: "quests.disputeQuest",
           );
-        } else if (questStatus == 4) {
-          return header(
-            color: Colors.green,
-            title: "quests.employerConfirmationPending",
-          );
-        } else if (responded && questStatus == 1) {
-          return header(
-            color: Color(0xFF0083C7),
-            title: "quests.statuses.responded",
-          );
-        } else if (responded && !forMe) {
+        case -1:
           return header(
             color: Colors.red,
-            title: "quests.statuses.responded",
+            title: "quests.headers.blocked",
           );
-        } else if (questStatus == 1) {
+        case 1:
+          if (responded != null && role == UserRole.Worker)
+            return header(
+              color: Color(0xFFE9EFF5),
+              title: "quests.headers.responded",
+              textColor: Color(0xFF4C5767),
+            );
+          else if (invited != null && role == UserRole.Worker)
+            return header(
+              color: Color(0xFFE8D20D),
+              title: "quests.headers.pending",
+            );
           return SizedBox(
             height: 16,
           );
-        } else if (questStatus == 0) {
+        case 2:
           return header(
-              color: Colors.white,
-              title: "quests.pending",
-              textColor: Colors.black);
-        } else {
+            color: Color(0xFFE8D20D),
+            title: role == UserRole.Worker
+                ? "quests.headers.invited"
+                : "quests.headers.responded",
+          );
+        case 3:
           return header(
             color: AppColor.green,
-            title: "quests.active",
+            title: "quests.headers.active",
           );
-        }
-      case QuestItemPriorityType.Invited:
-        if (forMe)
+        case 4:
           return header(
-            color: Color(0xFFE8D20D),
-            title: "quests.youInvited",
+            color: Colors.green,
+            title: "quests.headers.pendingConsideration",
           );
-        else if (responded)
-          return header(
-            color: Colors.red,
-            title: "quests.statuses.responded",
-          );
-        else
-          return header(
-            color: Color(0xFFE8D20D),
-            title: "quests.employeeAwaited",
-          );
-
-      case QuestItemPriorityType.Requested:
-        return header(
-            color: Color(0xFFF7F8FA),
-            title: "quests.requested",
-            textColor: Color(0xFFAAB0B9));
-      case QuestItemPriorityType.Performed:
-        if (!forMe && responded)
-          return header(
-            color: Colors.red,
-            title: "quests.statuses.responded",
-          );
-        else if (questStatus == 5) {
+        case 5:
           return header(
             color: Color(0xFF0083C7),
             title: "quests.performed",
           );
-        } else {
+        default:
+          return SizedBox(
+            height: 16,
+          );
+      }
+    else
+      switch (itemType) {
+        case QuestsType.Responded:
+          if (questStatus == 1 && role == UserRole.Worker)
+            return header(
+              color: Color(0xFFE9EFF5),
+              title: "quests.headers.responded",
+              textColor: Color(0xFF4C5767),
+            );
+          else if (questStatus == 2 && role == UserRole.Worker)
+            return header(
+              color: Color(0xFFE8D20D),
+              title: "quests.headers.invited",
+            );
+          else if (role == UserRole.Worker)
+            return header(
+              color: Colors.red,
+              title: "quests.headers.rejected",
+            );
+          return SizedBox(
+            height: 16,
+          );
+        case QuestsType.Invited:
+          return header(
+            color: Color(0xFFE8D20D),
+            title: "quests.headers.pending",
+          );
+        case QuestsType.Active:
+          if (questStatus == -2)
+            return header(
+              color: Colors.red,
+              title: "quests.headers.dispute",
+            );
+          else if (questStatus == 4)
+            return header(
+              color: Colors.green,
+              title: "quests.headers.pendingConsideration",
+            );
+          else if (questStatus == 3)
+            return header(
+              color: AppColor.green,
+              title: "quests.headers.active",
+            );
+          else
+            return header(
+              color: Color(0xFFE9EFF5),
+              title: "quests.headers.blocked",
+              textColor: Color(0xFF4C5767),
+            );
+        case QuestsType.Performed:
           return header(
             color: Color(0xFF0083C7),
-            title: questStatus == 5
-                ? "quests.employerConfirmationPending"
-                : "quests.performed",
+            title: "quests.headers.performed",
           );
-        }
-      default:
-        return SizedBox(
-          height: 16,
-        );
-      // case QuestItemPriorityType.Starred:
-      //   return SizedBox(
-      //     height: 16,
-      //   );
-    }
+        case QuestsType.Created:
+          if (questStatus == -3)
+            return header(
+              color: Color(0xFFE9EFF5),
+              title: "quests.headers.blocked",
+              textColor: Color(0xFF4C5767),
+            );
+          else
+            return SizedBox(
+              height: 16,
+            );
+        case QuestsType.Completed:
+          return header(
+            color: Color(0xFF0083C7),
+            title: "quests.headers.completed",
+          );
+        default:
+          return SizedBox(
+            height: 16,
+          );
+      }
   }
 
   Widget header({

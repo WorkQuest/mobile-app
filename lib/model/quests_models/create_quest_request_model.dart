@@ -1,4 +1,3 @@
-
 import 'location_full.dart';
 
 class CreateQuestRequestModel {

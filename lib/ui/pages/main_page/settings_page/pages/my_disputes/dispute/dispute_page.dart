@@ -100,8 +100,9 @@ class _DisputePageState extends State<DisputePage> {
     return Column(
       children: [
         MyQuestsItem(
-          store.dispute!.quest,
-          itemType: QuestItemPriorityType.Active,
+          questInfo: store.dispute!.quest,
+          myRole: null,
+          itemType: QuestsType.All,
         ),
         const SizedBox(height: 20),
         Container(
