@@ -103,6 +103,7 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
                           profileMeStore!.quests,
                           isLoading: profileMeStore!.isLoading,
                           from: FromQuestList.questSearch,
+                          role: widget.profile.role,
                         ),
                 ),
               )

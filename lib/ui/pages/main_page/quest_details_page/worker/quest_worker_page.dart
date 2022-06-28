@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/responded.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
@@ -18,13 +17,13 @@ import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/quest_header.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/web3/contractEnums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 import 'package:share/share.dart';
 
-import '../../../../../utils/web3_utils.dart';
 import '../../../report_page/report_page.dart';
 
 class QuestWorker extends QuestDetails {
@@ -207,8 +206,51 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 (store.quest.value!.userId == profile!.userData!.id ||
                     store.quest.value!.assignedWorker?.id ==
                         profile!.userData!.id)
-            ? Text(store.quest.value!.yourReview!.message)
+            ? reviewCard()
             : SizedBox();
+  }
+
+  Widget reviewCard() {
+    return Container(
+      width: double.maxFinite,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Color(0xFFF7F8FA),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Your review",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text(storeQuest.questInfo!.yourReview!.message),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                for (int i = 0; i < storeQuest.questInfo!.yourReview!.mark; i++)
+                  Icon(
+                    Icons.star,
+                    color: Color(0xFFE8D20D),
+                    size: 20.0,
+                  ),
+                for (int i = 0;
+                    i < 5 - storeQuest.questInfo!.yourReview!.mark;
+                    i++)
+                  Icon(
+                    Icons.star,
+                    color: Color(0xFFE9EDF2),
+                    size: 20.0,
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -268,11 +310,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       )
                 : SizedBox(),
           ),
-          if (store.quest.value!.status == 2 &&
+          if ((store.quest.value!.status == 2 &&
                   store.quest.value!.assignedWorker?.id ==
-                      profile!.userData!.id ||
+                      profile!.userData!.id) ||
               (store.quest.value!.invited != null &&
-                  store.quest.value!.invited?.status == 1))
+                  store.quest.value!.status == 1 &&
+                  store.quest.value!.invited?.status == 0))
             store.isLoading
                 ? Center(child: CircularProgressIndicator.adaptive())
                 : TextButton(
@@ -468,79 +511,70 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           ),
         ),
         const SizedBox(height: 15),
-        LoginButton(
-          withColumn: true,
-          enabled: isLoading,
-          onTap: () async {
-            _updateLoading();
-            if (store.quest.value!.invited == null) {
-              await sendTransaction(
-                onPress: () async {
-                  store.sendAcceptOnQuest();
+        Observer(
+          builder: (_) => LoginButton(
+            withColumn: true,
+            enabled: isLoading,
+            onTap: () async {
+              _updateLoading();
+              if (store.quest.value!.invited == null) {
+                await sendTransaction(
+                  onPress: () async {
+                    Navigator.pop(context);
+                    await store.sendAcceptOnQuest();
+                  },
+                  nextStep: () async {
+                    await questStore.getQuests(true);
+                    myQuestStore.updateQuests(store.quest.value!);
+                  },
+                  functionName: WQContractFunctions.acceptJob.name,
+                );
+              } else {
+                await store.acceptInvite(store.quest.value!.invited!.id);
+                if (store.isSuccess) {
                   Navigator.pop(context);
-                },
-                nextStep: () async {
-                  await questStore.getQuests(true);
-                  myQuestStore.updateQuests(store.quest.value!);
-                },
-              );
-            } else {
-              await sendTransaction(
-                onPress: () async {
-                  store.acceptInvite(store.quest.value!.invited!.id);
-                  Navigator.pop(context);
-                },
-                nextStep: () async {
-                  await questStore.getQuests(true);
-                  myQuestStore.updateQuests(store.quest.value!);
-                },
-              );
-            }
-            _updateLoading();
-          },
-          title: "quests.answerOnQuest.accept".tr(),
+                  AlertDialogUtils.showSuccessDialog(context);
+                }
+              }
+              _updateLoading();
+            },
+            title: "quests.answerOnQuest.accept".tr(),
+          ),
         ),
         const SizedBox(height: 15),
-        LoginButton(
-          withColumn: true,
-          enabled: isLoading,
-          onTap: () async {
-            _updateLoading();
-            if (store.quest.value!.invited == null) {
-              await sendTransaction(
-                onPress: () async {
-                  store.sendRejectOnQuest();
-                  Navigator.pop(context);
-                },
-                nextStep: () {
-                  if (store.quest.value!.responded != null) {
-                    store.quest.value!.responded?.status = -1;
-                  }
-                  store.setQuestStatus(1);
-                  store.quest.value!.assignedWorker = null;
+        Observer(
+          builder: (_) => LoginButton(
+            withColumn: true,
+            enabled: isLoading,
+            onTap: () async {
+              _updateLoading();
+              if (store.quest.value!.invited == null) {
+                await sendTransaction(
+                  onPress: () async {
+                    Navigator.pop(context);
+                    await store.sendRejectOnQuest();
+                  },
+                  nextStep: () {
+                    if (store.quest.value!.responded != null) {
+                      store.quest.value!.responded?.status = -1;
+                    }
+                    store.setQuestStatus(1);
+                    store.quest.value!.assignedWorker = null;
 
-                  myQuestStore.updateQuests(store.quest.value!);
-                },
-              );
-            } else {
-              await sendTransaction(
-                onPress: () async {
-                  store.rejectInvite(store.quest.value!.invited!.id);
-                  // Navigator.pop(context);
-                },
-                nextStep: () async {
-                  await questStore.getQuests(true);
-                  store.setQuestStatus(1);
-                  myQuestStore.updateQuests(store.quest.value!);
-                  store.quest.value!.invited = null;
-                },
-              );
-            }
-            chatStore!.loadChats(starred: false);
-            _updateLoading();
-            await Future.delayed(const Duration(milliseconds: 250));
-          },
-          title: "quests.answerOnQuest.reject".tr(),
+                    myQuestStore.updateQuests(store.quest.value!);
+                  },
+                  //TODO: FIND NAME
+                  functionName: "",
+                );
+              } else {
+                store.rejectInvite(store.quest.value!.invited!.id);
+              }
+              chatStore!.loadChats(starred: false);
+              _updateLoading();
+              await Future.delayed(const Duration(milliseconds: 250));
+            },
+            title: "quests.answerOnQuest.reject".tr(),
+          ),
         ),
         const SizedBox(height: 15),
       ],
@@ -550,9 +584,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   Future<void> sendTransaction({
     required void Function()? onPress,
     required void Function() nextStep,
+    required String functionName,
   }) async {
     try {
-      await _checkPossibilityTx();
+      await store.checkPossibilityTx(functionName);
     } on FormatException catch (e) {
       AlertDialogUtils.showInfoAlertDialog(context,
           title: 'modals.error'.tr(), content: e.message);
@@ -569,36 +604,29 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       transaction: "Transaction info",
       address: store.quest.value!.contractAddress!,
       amount: null,
-      onPress: onPress,
+      onPressConfirm: onPress,
     );
     AlertDialogUtils.showLoadingDialog(context);
-    Timer.periodic(Duration(seconds: 5), (timer) async {
-      if (!store.isLoading) {
-        timer.cancel();
-        Navigator.pop(context);
-        if (store.isSuccess) nextStep();
-        Navigator.pop(context);
-        await Future.delayed(const Duration(milliseconds: 250));
-        Navigator.pop(context);
-        await AlertDialogUtils.showSuccessDialog(context);
-      }
-    });
+
+    if (store.isLoading)
+      Timer.periodic(Duration(seconds: 5), (timer) async {
+        if (!store.isLoading) {
+          timer.cancel();
+          Navigator.pop(context);
+          if (store.isSuccess) nextStep();
+          await Future.delayed(const Duration(milliseconds: 250));
+          Navigator.pop(context);
+          await AlertDialogUtils.showSuccessDialog(context);
+        }
+      });
+    else
+      Navigator.pop(context);
   }
 
   _updateLoading() {
     setState(() {
       isLoading = !isLoading;
     });
-  }
-
-  _checkPossibilityTx() async {
-    await store.getFee();
-    await Web3Utils.checkPossibilityTx(
-      typeCoin: TokenSymbols.WQT,
-      gas: double.parse(store.fee),
-      amount: 0.0,
-      isMain: true,
-    );
   }
 
   bottomComplete() {
@@ -614,29 +642,30 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           ),
         ),
         const SizedBox(height: 15),
-        LoginButton(
-          withColumn: true,
-          enabled: store.isLoading,
-          title: "quests.completeTheQuest".tr(),
-          onTap: store.isLoading
-              ? null
-              : () async {
-                  _updateLoading();
-                  await sendTransaction(
-                    onPress: () async {
-                      store.sendCompleteWork();
-                      Navigator.pop(context);
-                    },
-                    nextStep: () async {
-                      store.setQuestStatus(4);
-                      myQuestStore.updateQuests(store.quest.value!);
-                    },
-                  );
-                  _updateLoading();
-                  // await Future.delayed(const Duration(milliseconds: 250));
-                  // Navigator.pop(context);
-                  // await AlertDialogUtils.showSuccessDialog(context);
+        Observer(
+          builder: (_) => LoginButton(
+            withColumn: true,
+            enabled: store.isLoading,
+            title: "quests.completeTheQuest".tr(),
+            onTap: () async {
+              _updateLoading();
+              await sendTransaction(
+                onPress: () async {
+                  store.sendCompleteWork();
+                  Navigator.pop(context);
                 },
+                nextStep: () async {
+                  store.setQuestStatus(4);
+                  myQuestStore.updateQuests(store.quest.value!);
+                },
+                functionName: WQContractFunctions.verificationJob.name,
+              );
+              _updateLoading();
+              // await Future.delayed(const Duration(milliseconds: 250));
+              // Navigator.pop(context);
+              // await AlertDialogUtils.showSuccessDialog(context);
+            },
+          ),
         ),
         const SizedBox(height: 15),
       ],

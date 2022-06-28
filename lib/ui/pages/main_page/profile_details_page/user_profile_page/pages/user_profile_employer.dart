@@ -34,6 +34,9 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                 isLoading: myQuests!.isLoading,
                 short: true,
                 from: FromQuestList.questSearch,
+                role: viewOtherUser?.userData == null
+                    ? userStore!.userData!.role
+                    : viewOtherUser!.userData!.role,
               )
             : Center(
                 child: Text(
@@ -42,7 +45,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                       : "errors.emptyData.worker.myQuests.noQuest".tr(),
                 ),
               ),
-        if (myQuests!.quests[QuestsType.Performed]!.isNotEmpty ||
+        if ((myQuests!.quests[QuestsType.Performed]?.isNotEmpty ?? false) ||
             (viewOtherUser?.quests.isNotEmpty ?? false))
           Padding(
             padding: EdgeInsets.only(

@@ -43,7 +43,7 @@ abstract class ClientServiceI {
 }
 
 class ClientService implements ClientServiceI {
-  final int _chainId = 1991;
+  final int _chainId = 20220112;
 
   Web3Client? client;
 
@@ -122,8 +122,11 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<double> getBalanceFromContract(String address,
-      {bool otherNetwork = false, bool isUSDT = false}) async {
+  Future<double> getBalanceFromContract(
+    String address, {
+    bool otherNetwork = false,
+    bool isUSDT = false,
+  }) async {
     try {
       address = address.toLowerCase();
       final contract =
@@ -180,10 +183,11 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<double> getEstimateGasCallContract(
-      {required DeployedContract contract,
-      required ContractFunction function,
-      required List params}) async {
+  Future<double> getEstimateGasCallContract({
+    required DeployedContract contract,
+    required ContractFunction function,
+    required List params,
+  }) async {
     final _gas = await getGas();
     final _estimateGas = await getEstimateGas(Transaction.callContract(
       contract: contract,
@@ -299,7 +303,7 @@ extension HandleEvent on ClientService {
   Future<void> handleEvent({
     required WQContractFunctions function,
     required String contractAddress,
-    required String? value,
+    String? value,
     List<dynamic> params = const [],
   }) async {
     final contract = await getDeployedContract("WorkQuest", contractAddress);

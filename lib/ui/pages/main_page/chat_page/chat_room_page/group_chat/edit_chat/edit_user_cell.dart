@@ -154,10 +154,7 @@ class _EditUserCellState extends State<EditUserCell> {
       case "Give a quest":
         await Navigator.of(context, rootNavigator: true).pushNamed(
           ChooseQuestPage.routeName,
-          arguments: ChooseQuestArguments(
-            workerId: widget.user.userId!,
-            workerAddress: null,
-          ),
+          arguments: widget.user.userId!,
         );
         break;
       case "Private chat":

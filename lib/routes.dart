@@ -295,6 +295,9 @@ class Routes {
                   Provider(
                     create: (context) => getIt.get<ChatStore>(),
                   ),
+                  Provider(
+                    create: (context) => getIt.get<QuestsStore>(),
+                  ),
                 ],
                 child: Directionality(
                   textDirection: checkDirection(context),
@@ -415,7 +418,7 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChooseQuestPage(
-                arguments: settings.arguments as ChooseQuestArguments,
+                workerId: settings.arguments as String,
               ),
             ),
           ),

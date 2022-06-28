@@ -76,6 +76,15 @@ mixin _$WorkerStore on _WorkerStore, Store {
     return _$getQuestAsyncAction.run(() => super.getQuest(questId));
   }
 
+  final _$checkPossibilityTxAsyncAction =
+      AsyncAction('_WorkerStore.checkPossibilityTx');
+
+  @override
+  Future<void> checkPossibilityTx(String functionName) {
+    return _$checkPossibilityTxAsyncAction
+        .run(() => super.checkPossibilityTx(functionName));
+  }
+
   final _$_WorkerStoreActionController = ActionController(name: '_WorkerStore');
 
   @override

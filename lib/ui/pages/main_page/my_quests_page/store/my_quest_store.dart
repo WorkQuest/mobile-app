@@ -66,6 +66,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             updatedAt: DateTime.now(),
           );
       });
+      updateQuests(quest);
     } catch (e) {
       print("ERROR: $e");
     }
@@ -97,7 +98,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       for (int i = 0; i < value.length; i++)
         if (value[i].id == quest.id) {
           quests[key]!.remove(value[i]);
-          quests[key]!.add(quest);
+          quests[key]!.insert(i, quest);
         }
     });
     sortQuests();
@@ -168,10 +169,17 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
         return [-2, 3, 4];
       case QuestsType.Performed:
         return [5];
+      case QuestsType.Completed:
+        return [5];
       case QuestsType.Created:
         return [-1, 1, 2];
       default:
         return [];
     }
+  }
+
+  void addNewQuest(BaseQuestResponse newQuest) {
+    quests[QuestsType.All]?.insert(0, newQuest);
+    quests[QuestsType.Created]?.insert(0, newQuest);
   }
 }

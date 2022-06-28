@@ -136,7 +136,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
 
   @computed
   bool get canCreateQuest =>
-      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
+      locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
 
   @computed
   bool get canSubmitEditQuest =>
@@ -188,6 +188,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   Future<String> getFee({bool isEdit = false}) async {
     double _resultGas = 0.0;
     try {
+      this.onLoading();
       final _client = AccountRepository().getClient();
       if (isEdit) {
         final _price = BigInt.from((double.parse(price)) * pow(10, 18));
@@ -266,10 +267,6 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         ),
       );
       await sendImages(apiProvider);
-      print('employment: $employment');
-      print('workplace: $workplace');
-      print('payPeriod: $payPeriod');
-      print('priority: $priority');
       final _price = BigInt.from((double.parse(price)) * pow(10, 18));
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         employment: QuestUtils.getEmploymentValue(employment),
@@ -285,7 +282,6 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         description: description,
         price: (_price.toDouble()).toStringAsFixed(0),
       );
-      print('questModel: ${questModel.toJson()}');
       //priority show item
 
       final _client = AccountRepository().getClient();

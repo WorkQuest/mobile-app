@@ -1,34 +1,18 @@
-import 'dart:async';
-
-import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../../../utils/web3_utils.dart';
-
-class ChooseQuestArguments {
-  final String workerId;
-  final String? workerAddress;
-
-  ChooseQuestArguments({
-    required this.workerId,
-    required this.workerAddress,
-  });
-}
-
 class ChooseQuestPage extends StatefulWidget {
   static const String routeName = '/chooseQuestPage';
 
   const ChooseQuestPage({
-    required this.arguments,
+    required this.workerId,
   });
 
-  final ChooseQuestArguments arguments;
+  final String workerId;
 
   @override
   State<ChooseQuestPage> createState() => _ChooseQuestPageState();
@@ -41,21 +25,17 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
   void initState() {
     store = context.read<ChooseQuestStore>();
     store.getQuests(
-      userId: widget.arguments.workerId,
+      userId: widget.workerId,
       newList: true,
       isProfileYours: false,
     );
-    if (widget.arguments.workerAddress == null)
-      store.getUser(userId: widget.arguments.workerId);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      persistentFooterButtons: [
-        buttonRow(context, store),
-      ],
+      persistentFooterButtons: [buttonRow(context, store)],
       appBar: AppBar(
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -76,9 +56,7 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
       ),
       body: Observer(
         builder: (_) => store.quests.isEmpty && store.isLoading
-            ? Center(
-                child: CircularProgressIndicator.adaptive(),
-              )
+            ? Center(child: CircularProgressIndicator.adaptive())
             : NotificationListener<ScrollEndNotification>(
                 onNotification: (scrollEnd) {
                   final metrics = scrollEnd.metrics;
@@ -86,7 +64,7 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                           metrics.maxScrollExtent < metrics.pixels) &&
                       !store.isLoading) {
                     store.getQuests(
-                      userId: widget.arguments.workerId,
+                      userId: widget.workerId,
                       newList: true,
                       isProfileYours: false,
                     );
@@ -104,7 +82,6 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                       onChanged: (value) {
                         store.setQuest(
                           store.quests[index].id,
-                          store.quests[index].contractAddress!,
                         );
                       },
                     ),
@@ -131,9 +108,7 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text(
-                    "meta.cancel".tr(),
-                  ),
+                  child: Text("meta.cancel".tr()),
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(
                       width: 1.0,
@@ -143,75 +118,24 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                 ),
               ),
             ),
-            const SizedBox(
-              width: 20.0,
-            ),
+            const SizedBox(width: 20.0),
             Expanded(
               child: Observer(
                 builder: (_) => ElevatedButton(
                   onPressed: store.questId.isNotEmpty
                       ? () async {
-                          try {
-                            await _checkPossibilityTx();
-                          } on FormatException catch (e) {
-                            AlertDialogUtils.showInfoAlertDialog(context,
-                                title: 'modals.error'.tr(), content: e.message);
-                            return;
-                          } catch (e) {
-                            AlertDialogUtils.showInfoAlertDialog(context,
-                                title: 'modals.error'.tr(),
-                                content: e.toString());
-                            return;
+                          await store.startQuest(userId: widget.workerId);
+                          if (store.isSuccess) {
+                            Navigator.pop(context);
+                            AlertDialogUtils.showSuccessDialog(context);
                           }
-                          await confirmTransaction(
-                            context,
-                            fee: store.fee,
-                            transaction: "Transaction info",
-                            address: store.quests
-                                .firstWhere(
-                                    (element) => element.id == store.questId)
-                                .contractAddress!,
-                            amount: null,
-                            onPress: () {
-                              store.startQuest(
-                                userId: widget.arguments.workerId,
-                                userAddress: widget.arguments.workerAddress ??
-                                    store.user!.walletAddress!,
-                              );
-                              Navigator.pop(context);
-                            },
-                          );
-                          AlertDialogUtils.showLoadingDialog(context);
-                          Timer.periodic(Duration(seconds: 1), (timer) async {
-                            if (!store.isLoading) {
-                              timer.cancel();
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              if (store.isSuccess)
-                                await AlertDialogUtils.showSuccessDialog(
-                                  context,
-                                );
-                            }
-                          });
                         }
                       : null,
-                  child: Text(
-                    "quests.addToQuest".tr(),
-                  ),
+                  child: Text("quests.addToQuest".tr()),
                 ),
               ),
             ),
           ],
         ),
       );
-
-  _checkPossibilityTx() async {
-    await store.getFee(widget.arguments.workerId);
-    await Web3Utils.checkPossibilityTx(
-      typeCoin: TokenSymbols.WQT,
-      gas: double.parse(store.fee),
-      amount: 0.0,
-      isMain: true,
-    );
-  }
 }

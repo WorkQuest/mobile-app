@@ -86,6 +86,15 @@ mixin _$EmployerStore on _EmployerStore, Store {
     return _$getQuestAsyncAction.run(() => super.getQuest(questId));
   }
 
+  final _$checkPossibilityTxAsyncAction =
+      AsyncAction('_EmployerStore.checkPossibilityTx');
+
+  @override
+  Future<void> checkPossibilityTx(String userId, String functionName) {
+    return _$checkPossibilityTxAsyncAction
+        .run(() => super.checkPossibilityTx(userId, functionName));
+  }
+
   final _$startQuestAsyncAction = AsyncAction('_EmployerStore.startQuest');
 
   @override

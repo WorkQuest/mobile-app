@@ -12,19 +12,14 @@ import 'my_quests_item.dart';
 enum FromQuestList { questSearch, myQuest }
 
 class QuestsList extends StatelessWidget {
-  final QuestsType questItemPriorityType;
-
   ObservableList<BaseQuestResponse> questsList = ObservableList.of([]);
-
+  final QuestsType questItemPriorityType;
   final Future<dynamic>? update;
-
   final ScrollPhysics physics;
-
   final FromQuestList from;
-
   final bool isLoading;
-
   final bool short;
+  final UserRole role;
 
   QuestsList(
     this.questItemPriorityType,
@@ -36,6 +31,7 @@ class QuestsList extends StatelessWidget {
     required this.isLoading,
     required this.from,
     this.short = false,
+    required this.role,
   });
 
   @override
@@ -67,7 +63,7 @@ class QuestsList extends StatelessWidget {
             ),
             MyQuestsItem(
               questInfo: questsList[index],
-              myRole: UserRole.Worker,
+              myRole: role,
               itemType: questItemPriorityType,
               showStar: from == FromQuestList.myQuest,
             ),

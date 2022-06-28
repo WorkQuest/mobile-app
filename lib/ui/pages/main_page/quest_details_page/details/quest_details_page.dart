@@ -285,7 +285,6 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         ),
                       ),
                       getBody(),
-                      const SizedBox(height: 20),
                       review(),
                       const SizedBox(height: 20),
                     ],

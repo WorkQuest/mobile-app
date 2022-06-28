@@ -350,10 +350,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                   viewOtherUser!.workerId = viewOtherUser!.userData!.id;
                   await Navigator.of(context, rootNavigator: true).pushNamed(
                     ChooseQuestPage.routeName,
-                    arguments: ChooseQuestArguments(
-                      workerId: viewOtherUser!.userData!.id,
-                      workerAddress: viewOtherUser!.userData!.walletAddress!,
-                    ),
+                    arguments: viewOtherUser!.userData!.id,
                   );
                   viewOtherUser!.quests.clear();
                   viewOtherUser!.offset = 0;

@@ -174,7 +174,7 @@ class _WithdrawPageState extends State<WithdrawPage>
                           address: withdrawStore.getAddress(),
                           amount: _amount,
                           fee: _gas.getInEther.toString(),
-                          onPress: () {},
+                          onPressConfirm: () {},
                         );
                       }
                     : null,

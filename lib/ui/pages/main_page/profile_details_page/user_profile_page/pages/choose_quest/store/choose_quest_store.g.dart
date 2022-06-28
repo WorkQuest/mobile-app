@@ -39,28 +39,6 @@ mixin _$ChooseQuestStore on _ChooseQuestStore, Store {
     });
   }
 
-  final _$contractAddressAtom = Atom(name: '_ChooseQuestStore.contractAddress');
-
-  @override
-  String get contractAddress {
-    _$contractAddressAtom.reportRead();
-    return super.contractAddress;
-  }
-
-  @override
-  set contractAddress(String value) {
-    _$contractAddressAtom.reportWrite(value, super.contractAddress, () {
-      super.contractAddress = value;
-    });
-  }
-
-  final _$getUserAsyncAction = AsyncAction('_ChooseQuestStore.getUser');
-
-  @override
-  Future<void> getUser({required String userId}) {
-    return _$getUserAsyncAction.run(() => super.getUser(userId: userId));
-  }
-
   final _$getQuestsAsyncAction = AsyncAction('_ChooseQuestStore.getQuests');
 
   @override
@@ -75,21 +53,19 @@ mixin _$ChooseQuestStore on _ChooseQuestStore, Store {
   final _$startQuestAsyncAction = AsyncAction('_ChooseQuestStore.startQuest');
 
   @override
-  Future<void> startQuest(
-      {required String userId, required String userAddress}) {
-    return _$startQuestAsyncAction
-        .run(() => super.startQuest(userId: userId, userAddress: userAddress));
+  Future<void> startQuest({required String userId}) {
+    return _$startQuestAsyncAction.run(() => super.startQuest(userId: userId));
   }
 
   final _$_ChooseQuestStoreActionController =
       ActionController(name: '_ChooseQuestStore');
 
   @override
-  void setQuest(String id, String contractAddress) {
+  void setQuest(String id) {
     final _$actionInfo = _$_ChooseQuestStoreActionController.startAction(
         name: '_ChooseQuestStore.setQuest');
     try {
-      return super.setQuest(id, contractAddress);
+      return super.setQuest(id);
     } finally {
       _$_ChooseQuestStoreActionController.endAction(_$actionInfo);
     }
@@ -99,8 +75,7 @@ mixin _$ChooseQuestStore on _ChooseQuestStore, Store {
   String toString() {
     return '''
 quests: ${quests},
-questId: ${questId},
-contractAddress: ${contractAddress}
+questId: ${questId}
     ''';
   }
 }

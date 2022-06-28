@@ -68,7 +68,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                       transaction: "Transaction info",
                       address: widget.quest.contractAddress!,
                       amount: null,
-                      onPress: () async {
+                      onPressConfirm: () async {
                         print(
                             "widget.quest.contractAddress!: ${widget.quest.contractAddress!}");
                         store.openDispute(

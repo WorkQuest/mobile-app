@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:app/base_store/i_store.dart';
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:injectable/injectable.dart';
@@ -88,20 +90,45 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getFee(String userId) async {
+  @action
+  Future<void> checkPossibilityTx(String userId, String functionName) async {
     try {
+      this.onLoading();
+      await getFee(userId, functionName);
+      await Web3Utils.checkPossibilityTx(
+        typeCoin: TokenSymbols.WQT,
+        gas: double.parse(fee),
+        amount: 0.0,
+        isMain: true,
+      );
+      this.onSuccess(true);
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      this.onError(e.toString());
+    }
+  }
+
+  Future<void> getFee(String userId, String functionName) async {
+    try {
+      this.onLoading();
       final _user = await _apiProvider.getProfileUser(userId: userId);
       final _client = AccountRepository().getClient();
       final _contract = await _client.getDeployedContract(
           "WorkQuest", quest.value!.contractAddress!);
-      final _function = _contract.function(WQContractFunctions.assignJob.name);
+      final _function = _contract.function(functionName);
+      final params = functionName != WQContractFunctions.acceptJobResult.name
+          ? [EthereumAddress.fromHex(_user.walletAddress!)]
+          : [];
       final _gas = await _client.getEstimateGasCallContract(
-          contract: _contract,
-          function: _function,
-          params: [EthereumAddress.fromHex(_user.walletAddress!)]);
+        contract: _contract,
+        function: _function,
+        params: params,
+      );
       fee = _gas.toStringAsFixed(17);
+      this.onSuccess(true);
     } on SocketException catch (_) {
-      onError("Lost connection to server");
+      this.onError("Lost connection to server");
     }
   }
 
@@ -113,11 +140,6 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       final user = await _apiProvider.getProfileUser(userId: userId);
-      // Remove request
-      // await _apiProvider.startQuest(questId: questId, userId: userId);
-      print("TAG: ${quest.value!.contractAddress}");
-      print("TAG: ${EthereumAddress.fromHex(user.walletAddress!)}");
-
       await AccountRepository().getClient().handleEvent(
             function: WQContractFunctions.assignJob,
             contractAddress: quest.value!.contractAddress!,
@@ -140,7 +162,6 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      // await _apiProvider.acceptCompletedWork(questId: questId);
       await AccountRepository().getClient().handleEvent(
             function: WQContractFunctions.acceptJobResult,
             contractAddress: quest.value!.contractAddress!,

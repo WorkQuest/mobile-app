@@ -197,7 +197,7 @@ class RaiseViews extends StatelessWidget {
       transaction: "Transaction info",
       address: Constants.worknetPromotion,
       amount: _amount,
-      onPress: () async {
+      onPressConfirm: () async {
         if (questId.isEmpty) {
           store.raiseProfile();
         } else {

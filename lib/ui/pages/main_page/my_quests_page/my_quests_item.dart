@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
@@ -80,7 +81,8 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                   child: UserAvatar(
                     width: 30,
                     height: 30,
-                    url: widget.questInfo.user!.avatar?.url,
+                    url: widget.questInfo.user?.avatar?.url ??
+                        Constants.defaultImageNetwork,
                   ),
                 ),
                 const SizedBox(width: 5),

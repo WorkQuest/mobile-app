@@ -600,13 +600,15 @@ class _ChatListTileWidget extends StatelessWidget {
                             const SizedBox(width: 5),
                             if (chat.type == TypeChat.active ||
                                 chat.type == TypeChat.completed)
-                              Text(
-                                "Quest: ${chat.questChat?.quest?.title}",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: AppColor.enabledButton,
+                              Expanded(
+                                child: Text(
+                                  "Quest: ${chat.questChat?.quest?.title}",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: AppColor.enabledButton,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
                           ],
                         ),

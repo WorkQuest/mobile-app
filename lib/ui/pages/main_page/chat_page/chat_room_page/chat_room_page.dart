@@ -165,13 +165,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                           rootNavigator: true,
                                         ).pushNamed(
                                           ChooseQuestPage.routeName,
-                                          arguments: ChooseQuestArguments(
-                                            workerId:
-                                                profile!.userData!.id != id1
-                                                    ? id1!
-                                                    : id2!,
-                                            workerAddress: null,
-                                          ),
+                                          arguments:
+                                              profile!.userData!.id != id1
+                                                  ? id1!
+                                                  : id2!,
                                         );
                                       },
                                     ),

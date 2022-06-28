@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -505,9 +506,19 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             return false;
                           },
                           onSuccess: () async {
+                            Navigator.pop(context);
+                            AlertDialogUtils.showSuccessDialog(
+                              context,
+                            );
+
                             ///review
                             await questStore.getQuests(
                               QuestsType.Created,
+                              UserRole.Employer,
+                              true,
+                            );
+                            await questStore.getQuests(
+                              QuestsType.All,
                               UserRole.Employer,
                               true,
                             );
@@ -566,25 +577,34 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                               );
                                               return;
                                             }
-                                            confirmTransaction(
+                                            await confirmTransaction(
                                               context,
                                               fee: _gas,
                                               transaction: "Transaction info",
                                               address: contractAddress,
                                               amount: store.price,
-                                              onPress: () async {
+                                              onPressConfirm: () async {
+                                                Navigator.pop(context);
                                                 store.createQuest(
                                                   isEdit: true,
                                                   questId: widget.questInfo!.id,
                                                 );
+                                                AlertDialogUtils
+                                                    .showLoadingDialog(
+                                                  context,
+                                                );
+                                                Timer.periodic(
+                                                    Duration(seconds: 1),
+                                                    (timer) {
+                                                  if (!store.isLoading) {
+                                                    timer.cancel();
+                                                    Navigator.pop(context);
+                                                  }
+                                                });
+                                              },
+                                              onPressCancel: () {
+                                                store.onError("Cancel");
                                                 Navigator.pop(context);
-                                                if (store.isSuccess) {
-                                                  Navigator.pop(context);
-                                                  AlertDialogUtils
-                                                      .showSuccessDialog(
-                                                    context,
-                                                  );
-                                                }
                                               },
                                             );
                                           }
@@ -602,7 +622,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                           }
                                           try {
                                             await _checkPossibilityTx(
-                                                store.price, _gas);
+                                              store.price,
+                                              _gas,
+                                            );
                                           } on FormatException catch (e) {
                                             AlertDialogUtils
                                                 .showInfoAlertDialog(
@@ -620,22 +642,31 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                             );
                                             return;
                                           }
-                                          confirmTransaction(
+                                          await confirmTransaction(
                                             context,
                                             fee: _gas,
                                             transaction: "Transaction info",
                                             address: contractAddress,
                                             amount: store.price,
-                                            onPress: () async {
-                                              store.createQuest();
+                                            onPressConfirm: () async {
                                               Navigator.pop(context);
-                                              if (store.isSuccess) {
-                                                Navigator.pop(context);
-                                                AlertDialogUtils
-                                                    .showSuccessDialog(
-                                                  context,
-                                                );
-                                              }
+                                              store.createQuest();
+                                              AlertDialogUtils
+                                                  .showLoadingDialog(
+                                                context,
+                                              );
+                                              Timer.periodic(
+                                                  Duration(seconds: 1),
+                                                  (timer) {
+                                                if (!store.isLoading) {
+                                                  timer.cancel();
+                                                  Navigator.pop(context);
+                                                }
+                                              });
+                                            },
+                                            onPressCancel: () {
+                                              store.onError("Cancel");
+                                              Navigator.pop(context);
                                             },
                                           );
                                         }

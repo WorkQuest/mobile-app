@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:app/base_store/i_store.dart';
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/media_model.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/utils/web_socket.dart';
@@ -36,12 +38,12 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   @observable
   ObservableList<Media> mediaIds = ObservableList();
 
-  Future<void> getFee() async {
+  Future<void> getFee(String functionName) async {
     try {
       final _client = AccountRepository().getClient();
       final _contract = await _client.getDeployedContract(
           "WorkQuest", quest.value!.contractAddress!);
-      final _function = _contract.function(WQContractFunctions.acceptJob.name);
+      final _function = _contract.function(functionName);
       final _gas = await _client.getEstimateGasCallContract(
           contract: _contract, function: _function, params: []);
       fee = _gas.toStringAsFixed(17);
@@ -97,6 +99,23 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     await _getQuest();
   }
 
+  @action
+  Future<void> checkPossibilityTx(String functionName) async {
+    try {
+      this.onLoading();
+      await getFee(functionName);
+      await Web3Utils.checkPossibilityTx(
+        typeCoin: TokenSymbols.WQT,
+        gas: double.parse(fee),
+        amount: 0.0,
+        isMain: true,
+      );
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
   sendAcceptOnQuest() async {
     try {
       this.onLoading();
@@ -104,7 +123,6 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       await AccountRepository().getClient().handleEvent(
             function: WQContractFunctions.acceptJob,
             contractAddress: quest.value!.contractAddress!,
-            value: null,
           );
       await _getQuest();
       this.onSuccess(true);
@@ -121,7 +139,6 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       AccountRepository().getClient().handleEvent(
             function: WQContractFunctions.declineJob,
             contractAddress: quest.value!.contractAddress!,
-            value: null,
           );
       await _getQuest();
       this.onSuccess(true);
@@ -135,11 +152,6 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptInvite(responseId: responseId);
-      // await AccountRepository().getClient().handleEvent(
-      //       function: WQContractFunctions.acceptJob,
-      //       contractAddress: quest.value!.contractAddress!,
-      //       value: null,
-      //     );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -152,11 +164,6 @@ abstract class _WorkerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.rejectInvite(responseId: responseId);
-      AccountRepository().getClient().handleEvent(
-            function: WQContractFunctions.declineJob,
-            contractAddress: quest.value!.contractAddress!,
-            value: null,
-          );
       await _getQuest();
       this.onSuccess(true);
     } catch (e, trace) {
@@ -168,11 +175,9 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   sendCompleteWork() async {
     try {
       this.onLoading();
-      // await _apiProvider.completeWork(questId: quest.value!.id);
       await AccountRepository().getClient().handleEvent(
             function: WQContractFunctions.verificationJob,
             contractAddress: quest.value!.contractAddress!,
-            value: null,
           );
       await _getQuest();
       this.onSuccess(true);

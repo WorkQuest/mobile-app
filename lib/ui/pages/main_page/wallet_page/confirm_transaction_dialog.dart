@@ -17,7 +17,8 @@ Future confirmTransaction(
   required String address,
   required String? amount,
   required String fee,
-  required void Function()? onPress,
+  required void Function()? onPressConfirm,
+  void Function()? onPressCancel,
 }) =>
     Platform.isIOS
         ? showCupertinoDialog(
@@ -35,11 +36,13 @@ Future confirmTransaction(
               ),
               actions: [
                 CupertinoDialogAction(
-                  onPressed: onPress,
+                  onPressed: onPressConfirm,
                   child: Text('meta.confirm'.tr()),
                 ),
                 CupertinoDialogAction(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: onPressCancel != null
+                      ? () => onPressCancel()
+                      : () => Navigator.pop(context),
                   child: Text('meta.cancel'.tr()),
                 ),
               ],
@@ -61,7 +64,7 @@ Future confirmTransaction(
               ),
               actions: [
                 TextButton(
-                  onPressed: onPress,
+                  onPressed: onPressConfirm,
                   child: Text('meta.confirm'.tr()),
                 ),
                 TextButton(
