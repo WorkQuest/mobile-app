@@ -24,6 +24,20 @@ mixin _$MyDisputesStore on _MyDisputesStore, Store {
     });
   }
 
+  final _$getDisputesAsyncAction = AsyncAction('_MyDisputesStore.getDisputes');
+
+  @override
+  Future<void> getDisputes() {
+    return _$getDisputesAsyncAction.run(() => super.getDisputes());
+  }
+
+  final _$getDisputeAsyncAction = AsyncAction('_MyDisputesStore.getDispute');
+
+  @override
+  Future<void> getDispute(String disputeId) {
+    return _$getDisputeAsyncAction.run(() => super.getDispute(disputeId));
+  }
+
   @override
   String toString() {
     return '''

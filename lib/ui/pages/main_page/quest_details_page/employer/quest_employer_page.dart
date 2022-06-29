@@ -78,7 +78,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               "https://dev-app.workquest.co/quests/${store.quest.value!.id}");
         },
       ),
-      if (store.quest.value!.userId == profile!.userData!.id &&
+      if (store.quest.value != null &&
+          store.quest.value!.userId == profile!.userData!.id &&
           (store.quest.value!.status == 1 ||
               store.quest.value!.status == 2 ||
               store.quest.value!.status == 4))

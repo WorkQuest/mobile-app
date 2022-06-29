@@ -331,6 +331,7 @@
       "QuestEdited": "Quest edited",
       "WorkerRespondedToQuest": "Worker responded to quest",
       "DisputeDecision": "Dispute decision",
+      "disputeDecision": "Dispute decision",
       "questEdited": "Quest edited",
       "questEditedOnContract": "Quest edited on contract",
       "questStatusUpdated": "Quest status updated",

@@ -1,7 +1,7 @@
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/dispute_model.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/model/quests_models/notifications.dart';
+import 'package:app/model/notification_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
@@ -50,21 +50,6 @@ abstract class _NotificationStore extends IStore<bool> with Store {
         offset += 10;
         this.onSuccess(true);
       }
-    } catch (e) {
-      this.onError(e.toString());
-    }
-  }
-
-  @action
-  updateNotification() async {
-    try {
-      this.onLoading();
-      offset = 0;
-      listOfNotifications.clear();
-      final responseData = await _apiProvider.getNotifications(offset: 0);
-      listOfNotifications.addAll(responseData.notifications);
-      offset += 10;
-      this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
     }

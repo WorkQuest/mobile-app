@@ -9,7 +9,7 @@ import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/profile_response/review.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/model/quests_models/notifications.dart';
+import 'package:app/model/notification_model.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';

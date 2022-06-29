@@ -1,16 +1,22 @@
 import 'dart:math';
 
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_store.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-class MyDisputesItem extends StatelessWidget {
+class MyDisputesItem extends StatefulWidget {
   const MyDisputesItem(this.store, this.index);
 
   final MyDisputesStore store;
   final int index;
 
+  @override
+  State<MyDisputesItem> createState() => _MyDisputesItemState();
+}
+
+class _MyDisputesItemState extends State<MyDisputesItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -18,7 +24,7 @@ class MyDisputesItem extends StatelessWidget {
         await Navigator.pushNamed(
           context,
           DisputePage.routeName,
-          arguments: store.disputes[index].id,
+          arguments: widget.store.disputes[widget.index].id,
         );
       },
       child: Container(
@@ -34,38 +40,148 @@ class MyDisputesItem extends StatelessWidget {
             children: [
               row(
                 title: "modals.numberDispute",
-                disputeInfo: store.disputes[index].number.toString(),
+                disputeInfo:
+                    widget.store.disputes[widget.index].number.toString(),
               ),
               space(),
               row(
                 title: "dispute.quest",
-                disputeInfo: store.disputes[index].quest.title,
+                disputeInfo: widget.store.disputes[widget.index].quest.title,
               ),
               space(),
               row(
                 title: "dispute.employer",
-                disputeInfo: store.disputes[index].quest.user!.firstName +
+                disputeInfo: widget
+                        .store.disputes[widget.index].quest.user!.firstName +
                     " " +
-                    store.disputes[index].quest.user!.lastName,
+                    widget.store.disputes[widget.index].quest.user!.lastName,
               ),
               space(),
               row(
                 title: "dispute.questSalary",
-                disputeInfo: (double.parse(store.disputes[index].quest.price) *
+                disputeInfo: (double.parse(
+                            widget.store.disputes[widget.index].quest.price) *
                         pow(10, -18))
                     .toString(),
               ),
               space(),
               row(
                 title: "dispute.status",
-                disputeInfo: store.getStatus(store.disputes[index].status).tr(),
-                color: getColor(store.disputes[index].status),
+                disputeInfo: widget.store
+                    .getStatus(widget.store.disputes[widget.index].status)
+                    .tr(),
+                color: getColor(widget.store.disputes[widget.index].status),
               ),
-              if (store.disputes[index].decisionDescription != null &&
-                  store.disputes[index].decisionDescription != "")
+              if (widget.store.disputes[widget.index].decisionDescription !=
+                      null &&
+                  widget.store.disputes[widget.index].decisionDescription != "")
                 decision(),
+              review(),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget review() {
+    return widget.store.disputes[widget.index].currentUserDisputeReview ==
+                null &&
+            widget.store.disputes[widget.index].status == 4
+        ? Column(
+            children: [
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () async {
+                  await Navigator.pushNamed(
+                    context,
+                    CreateReviewPage.routeName,
+                    arguments: ReviewArguments(
+                      null,
+                      widget.store.disputes[widget.index].id,
+                    ),
+                  );
+                  await widget.store.getDispute(
+                    widget.store.disputes[widget.index].id,
+                  );
+                },
+                child: Text(
+                  "quests.addReview".tr(),
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(
+                    Size(double.maxFinite, 43),
+                  ),
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed))
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
+                      return const Color(0xFF0083C7);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          )
+        : widget.store.disputes[widget.index].currentUserDisputeReview !=
+                    null &&
+                widget.store.disputes[widget.index].status == 4
+            ? reviewCard()
+            : SizedBox();
+  }
+
+  Widget reviewCard() {
+    return Container(
+      width: double.maxFinite,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Color(0xFFF7F8FA),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Your review",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              widget.store.disputes[widget.index].currentUserDisputeReview!
+                  .message,
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                for (int i = 0;
+                    i <
+                        widget.store.disputes[widget.index]
+                            .currentUserDisputeReview!.mark;
+                    i++)
+                  Icon(
+                    Icons.star,
+                    color: Color(0xFFE8D20D),
+                    size: 20.0,
+                  ),
+                for (int i = 0;
+                    i <
+                        5 -
+                            widget.store.disputes[widget.index]
+                                .currentUserDisputeReview!.mark;
+                    i++)
+                  Icon(
+                    Icons.star,
+                    color: Color(0xFFE9EDF2),
+                    size: 20.0,
+                  ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -89,7 +205,7 @@ class MyDisputesItem extends StatelessWidget {
         Container(
           alignment: Alignment.centerLeft,
           child: Text(
-            store.disputes[index].decisionDescription!,
+            widget.store.disputes[widget.index].decisionDescription!,
             style: TextStyle(
               color: Color(0xFF7C838D),
             ),

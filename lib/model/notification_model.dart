@@ -117,7 +117,7 @@ class Data {
           : json["quest"]["id"],
       title: title,
       questId: json["questId"] ?? "",
-      disputeId: json["decision"] == null ? null : json["id"],
+      disputeId: json["opponentUserId"] == null ? null : json["id"],
       user: json["fromUser"] == null
           ? json["user"] == null
               ? User.fromJson(json["quest"]["user"])

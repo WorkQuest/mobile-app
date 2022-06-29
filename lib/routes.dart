@@ -18,6 +18,8 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
+import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
+import 'package:app/ui/pages/main_page/notification_page/store/notification_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
@@ -44,8 +46,6 @@ import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
-import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
-import 'package:app/ui/pages/main_page/quest_page/notification_page/store/notification_store.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/payment_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';

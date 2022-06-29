@@ -49,15 +49,6 @@ mixin _$NotificationStore on _NotificationStore, Store {
         .run(() => super.getNotification(newList));
   }
 
-  final _$updateNotificationAsyncAction =
-      AsyncAction('_NotificationStore.updateNotification');
-
-  @override
-  Future updateNotification() {
-    return _$updateNotificationAsyncAction
-        .run(() => super.updateNotification());
-  }
-
   final _$deleteNotificationAsyncAction =
       AsyncAction('_NotificationStore.deleteNotification');
 

@@ -23,6 +23,8 @@ import '../ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dar
     as _i7;
 import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i38;
 import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i40;
+import '../ui/pages/main_page/notification_page/store/notification_store.dart'
+    as _i21;
 import '../ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart'
     as _i23;
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart'
@@ -43,8 +45,6 @@ import '../ui/pages/main_page/quest_page/create_quest_page/store/create_quest_st
     as _i12;
 import '../ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart'
     as _i39;
-import '../ui/pages/main_page/quest_page/notification_page/store/notification_store.dart'
-    as _i21;
 import '../ui/pages/main_page/quest_page/quest_list/store/quests_store.dart'
     as _i44;
 import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
@@ -87,8 +87,8 @@ import '../ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart'
 import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i31;
 
 const String _test = 'test';
-const String _dev = 'dev';
 const String _prod = 'prod';
+const String _dev = 'dev';
 
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: lines_longer_than_80_chars
@@ -101,10 +101,10 @@ extension GetItInjectableX on _i1.GetIt {
     gh.factory<_i3.ConfirmTransferStore>(() => _i3.ConfirmTransferStore());
     gh.factory<_i4.IHttpClient>(() => _i5.TestHttpClient(),
         registerFor: {_test});
-    gh.factory<_i6.LogService>(() => _i6.LogServiceDev(),
-        registerFor: {_dev, _test});
     gh.factory<_i6.LogService>(() => _i6.LogServiceProd(),
         registerFor: {_prod});
+    gh.factory<_i6.LogService>(() => _i6.LogServiceDev(),
+        registerFor: {_dev, _test});
     gh.factory<_i7.ChatRoomStore>(
         () => _i7.ChatRoomStore(get<_i8.ApiProvider>()));
     gh.factory<_i9.ChooseQuestStore>(

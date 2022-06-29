@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:app/main.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_page.dart';
-import 'package:app/ui/pages/main_page/quest_page/notification_page/notification_page.dart';
+import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';

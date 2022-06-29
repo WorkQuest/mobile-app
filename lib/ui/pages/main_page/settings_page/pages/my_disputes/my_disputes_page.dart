@@ -121,21 +121,23 @@ class _MyDisputesPageState extends State<MyDisputesPage> {
           }
           return true;
         },
-        child: ListView.builder(
-          physics: BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
+        child: Observer(
+          builder: (_) => ListView.builder(
+            physics: BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            shrinkWrap: true,
+            itemCount: store.disputes.length,
+            padding: EdgeInsets.zero,
+            itemBuilder: (BuildContext context, index) {
+              return Column(
+                children: [
+                  const SizedBox(height: 16),
+                  MyDisputesItem(store, index),
+                ],
+              );
+            },
           ),
-          shrinkWrap: true,
-          itemCount: store.disputes.length,
-          padding: EdgeInsets.zero,
-          itemBuilder: (BuildContext context, index) {
-            return Column(
-              children: [
-                const SizedBox(height: 16),
-                MyDisputesItem(store, index),
-              ],
-            );
-          },
         ),
       ),
     );
