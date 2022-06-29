@@ -49,7 +49,7 @@ class _QuestMapState extends State<QuestMap> {
                   mapType: MapType.normal,
                   rotateGesturesEnabled: false,
                   initialCameraPosition: mapStore!.initialCameraPosition!,
-                  minMaxZoomPreference: MinMaxZoomPreference(4, 17),
+                  minMaxZoomPreference: MinMaxZoomPreference(4, 20),
                 ),
                 child: Stack(
                   alignment: Alignment.bottomCenter,
@@ -190,9 +190,10 @@ class _QuestMapState extends State<QuestMap> {
     setState(() {});
 
     if (!hasPermission) {
+      print('!hasPermission');
       mapStore!.initialCameraPosition = CameraPosition(
         bearing: 0,
-        target: LatLng(37.4, -122.0),
+        target: LatLng(59.42571345925132, 24.73492567301246),
         zoom: 19,
       );
       return;
