@@ -43,11 +43,12 @@ class QuestHeader extends StatelessWidget {
             title: "quests.headers.blocked",
           );
         case 1:
-          if (responded?.status == 0 && role == UserRole.Worker)
+          if (invited != null &&
+              invited!.status != -1 &&
+              role == UserRole.Worker)
             return header(
-              color: Color(0xFFE9EFF5),
-              title: "quests.headers.responded",
-              textColor: Color(0xFF4C5767),
+              color: Color(0xFFE8D20D),
+              title: "quests.headers.pending",
             );
           else if ((responded?.status == -1 || invited?.status == -1) &&
               role == UserRole.Worker)
@@ -55,14 +56,16 @@ class QuestHeader extends StatelessWidget {
               color: Colors.red,
               title: "quests.headers.rejected",
             );
-          else if (invited?.status == 1 && role == UserRole.Worker)
+          else if (responded?.status == 0 && role == UserRole.Worker)
             return header(
-              color: Color(0xFFE8D20D),
-              title: "quests.headers.pending",
+              color: Color(0xFFE9EFF5),
+              title: "quests.headers.responded",
+              textColor: Color(0xFF4C5767),
             );
-          return SizedBox(
-            height: 16,
-          );
+          else
+            return SizedBox(
+              height: 16,
+            );
         case 2:
           if ((responded?.status == -1 || invited?.status == -1) &&
               role == UserRole.Worker)

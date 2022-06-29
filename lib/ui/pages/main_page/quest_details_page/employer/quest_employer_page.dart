@@ -441,9 +441,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                         Navigator.pop(context);
 
                                         await questStore.getQuests(true);
-                                        myQuestStore.updateQuests(
+                                        await myQuestStore.updateListQuest(
                                           store.quest.value!,
                                         );
+                                        myQuestStore.sortQuests();
                                         await AlertDialogUtils
                                             .showSuccessDialog(
                                           context,
@@ -552,7 +553,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                 nextStep: () async {
                                   store.setQuestStatus(5);
                                   Navigator.pop(context);
-                                  myQuestStore.updateQuests(store.quest.value!);
+                                  await myQuestStore.updateListQuest(
+                                    store.quest.value!,
+                                  );
+                                  myQuestStore.sortQuests();
                                   chatStore.loadChats(starred: false);
                                   await AlertDialogUtils.showSuccessDialog(
                                       context);

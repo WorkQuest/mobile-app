@@ -43,6 +43,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   UserRole role = UserRole.Worker;
 
+  List<QuestsType> questsType = [];
+
   void setId(String value) => myId = value;
 
   void setRole(UserRole value) => role = value;
@@ -66,7 +68,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             updatedAt: DateTime.now(),
           );
       });
-      updateQuests(quest);
+      await updateListQuest(quest);
+      sortQuests();
     } catch (e) {
       print("ERROR: $e");
     }
@@ -93,15 +96,15 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   }
 
   @action
-  void updateQuests(BaseQuestResponse quest) {
-    quests.forEach((key, value) {
-      for (int i = 0; i < value.length; i++)
-        if (value[i].id == quest.id) {
-          quests[key]!.remove(value[i]);
-          quests[key]!.insert(i, quest);
-        }
-    });
-    sortQuests();
+  Future<void> updateListQuest(BaseQuestResponse quest) async {
+    getQuests(QuestsType.All, role, true);
+    getQuests(QuestsType.Favorites, role, true);
+    getQuests(QuestsType.Active, role, true);
+    if (role == UserRole.Worker) getQuests(QuestsType.Responded, role, true);
+    if (role == UserRole.Worker) getQuests(QuestsType.Invited, role, true);
+    if (role == UserRole.Worker) getQuests(QuestsType.Performed, role, true);
+    if (role == UserRole.Employer) getQuests(QuestsType.Created, role, true);
+    if (role == UserRole.Employer) getQuests(QuestsType.Completed, role, true);
   }
 
   @action
@@ -181,5 +184,55 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   void addNewQuest(BaseQuestResponse newQuest) {
     quests[QuestsType.All]?.insert(0, newQuest);
     quests[QuestsType.Created]?.insert(0, newQuest);
+  }
+
+  void getQuestType(BaseQuestResponse quest) {
+    questsType.clear();
+    questsType.add(QuestsType.All);
+
+    if (quest.star) questsType.add(QuestsType.Favorites);
+
+    if (quest.status == -2)
+      questsType.add(QuestsType.Active);
+    else if (quest.status == -1) {
+      questsType.add(QuestsType.Active);
+
+      if (role == UserRole.Employer) questsType.add(QuestsType.Created);
+    } else if (quest.status == 1) {
+      if (quest.responded?.status == 0 && role == UserRole.Worker)
+        questsType.add(QuestsType.Responded);
+      else if ((quest.responded?.status == -1 || quest.invited?.status == -1) &&
+          role == UserRole.Worker)
+        questsType.add(QuestsType.Responded);
+      else if (quest.invited?.status == 1 && role == UserRole.Worker)
+        questsType.add(QuestsType.Invited);
+      else if (role == UserRole.Employer) questsType.add(QuestsType.Created);
+    } else if (quest.status == 2) {
+      if ((quest.responded?.status == -1 || quest.invited?.status == -1) &&
+          role == UserRole.Worker)
+        questsType.add(QuestsType.Responded);
+      else if (role == UserRole.Worker)
+        questsType.add(QuestsType.Responded);
+      else if (role == UserRole.Employer) questsType.add(QuestsType.Created);
+    } else if (quest.status == 3) {
+      if ((quest.responded?.status == -1 || quest.invited?.status == -1) &&
+          role == UserRole.Worker)
+        questsType.add(QuestsType.Responded);
+      else
+        questsType.add(QuestsType.Active);
+    } else if (quest.status == 4) {
+      if ((quest.responded?.status == -1 || quest.invited?.status == -1) &&
+          role == UserRole.Worker)
+        questsType.add(QuestsType.Responded);
+      else
+        questsType.add(QuestsType.Active);
+    } else if (quest.status == 5) {
+      if ((quest.responded?.status == -1 || quest.invited?.status == -1) &&
+          role == UserRole.Worker)
+        questsType.add(QuestsType.Responded);
+      else if (role == UserRole.Worker)
+        questsType.add(QuestsType.Performed);
+      else if (role == UserRole.Employer) questsType.add(QuestsType.Completed);
+    }
   }
 }

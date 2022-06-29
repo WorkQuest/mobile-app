@@ -66,7 +66,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     controller!.duration = Duration(seconds: 1);
     respondedList.add(store.quest.value?.responded);
     respondedList.forEach((element) {
-      if (element != null) if (element.workerId == profile!.userData!.id) {
+      if (element != null) if (element.workerId == profile!.userData!.id &&
+          element.status != -1) {
         store.response = true;
         return;
       }
@@ -281,7 +282,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           Observer(
             builder: (_) => !store.response &&
                     store.quest.value!.status == 1 &&
-                    store.quest.value!.invited == null
+                    store.quest.value!.invited == null &&
+                    store.quest.value!.responded?.status != -1
                 ? store.isLoading
                     ? Center(child: CircularProgressIndicator.adaptive())
                     : TextButton(
@@ -480,7 +482,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                             ? questStore.getQuests(true)
                             : questStore.setSearchWord(questStore.searchWord);
 
-                        myQuestStore.updateQuests(store.quest.value!);
+                        await myQuestStore.updateListQuest(store.quest.value!);
+                        myQuestStore.sortQuests();
                         _updateLoading();
                         chatStore!.loadChats(starred: false);
                         await Future.delayed(const Duration(milliseconds: 250));
@@ -526,7 +529,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   },
                   nextStep: () async {
                     await questStore.getQuests(true);
-                    myQuestStore.updateQuests(store.quest.value!);
+                    await myQuestStore.updateListQuest(store.quest.value!);
+                    myQuestStore.sortQuests();
                   },
                   functionName: WQContractFunctions.acceptJob.name,
                 );
@@ -552,10 +556,13 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   enabled: isLoading,
                   onTap: () async {
                     _updateLoading();
-                    store.rejectInvite(store.quest.value!.invited!.id);
+                    await store.rejectInvite(store.quest.value!.invited!.id);
+                    await store.getQuest(store.quest.value!.id);
+                    Navigator.pop(context);
                     chatStore!.loadChats(starred: false);
                     _updateLoading();
                     await Future.delayed(const Duration(milliseconds: 250));
+                    AlertDialogUtils.showSuccessDialog(context);
                   },
                   title: "quests.answerOnQuest.reject".tr(),
                 ),
@@ -642,7 +649,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 },
                 nextStep: () async {
                   store.setQuestStatus(4);
-                  myQuestStore.updateQuests(store.quest.value!);
+                  await myQuestStore.updateListQuest(store.quest.value!);
+                  myQuestStore.sortQuests();
                 },
                 functionName: WQContractFunctions.verificationJob.name,
               );

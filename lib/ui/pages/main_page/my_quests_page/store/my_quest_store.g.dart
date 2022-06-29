@@ -99,6 +99,14 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
     return _$setStarAsyncAction.run(() => super.setStar(quest, set));
   }
 
+  final _$updateListQuestAsyncAction =
+      AsyncAction('_MyQuestStore.updateListQuest');
+
+  @override
+  Future<void> updateListQuest(BaseQuestResponse quest) {
+    return _$updateListQuestAsyncAction.run(() => super.updateListQuest(quest));
+  }
+
   final _$getQuestsAsyncAction = AsyncAction('_MyQuestStore.getQuests');
 
   @override
@@ -110,17 +118,6 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
 
   final _$_MyQuestStoreActionController =
       ActionController(name: '_MyQuestStore');
-
-  @override
-  void updateQuests(BaseQuestResponse quest) {
-    final _$actionInfo = _$_MyQuestStoreActionController.startAction(
-        name: '_MyQuestStore.updateQuests');
-    try {
-      return super.updateQuests(quest);
-    } finally {
-      _$_MyQuestStoreActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   void sortQuests() {
