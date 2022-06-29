@@ -1,4 +1,5 @@
 import 'package:app/model/chat_model/quest.dart';
+import 'package:app/model/quests_models/responded.dart';
 
 class QuestChat {
   QuestChat({
@@ -8,6 +9,7 @@ class QuestChat {
     required this.disputeAdminId,
     required this.questId,
     required this.responseId,
+    required this.response,
     required this.chatId,
     required this.status,
     required this.createdAt,
@@ -21,6 +23,7 @@ class QuestChat {
   String? disputeAdminId;
   String? questId;
   String? responseId;
+  Responded? response;
   String? chatId;
   int? status;
   DateTime? createdAt;
@@ -34,6 +37,9 @@ class QuestChat {
         disputeAdminId: json["disputeAdminId"],
         questId: json["questId"],
         responseId: json["responseId"],
+        response: json["response"] == null
+            ? null
+            : Responded.fromJson(json["response"]),
         chatId: json["chatId"],
         status: json["status"],
         createdAt: json["createdAt"] == null
@@ -52,6 +58,7 @@ class QuestChat {
         "disputeAdminId": disputeAdminId,
         "questId": questId,
         "responseId": responseId,
+        "response": response!.toJson(),
         "chatId": chatId,
         "status": status,
         "createdAt": createdAt!.toIso8601String(),

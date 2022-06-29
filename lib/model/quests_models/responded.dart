@@ -15,9 +15,9 @@ class Responded {
   String questId;
   int type;
   int status;
-  String message;
-  DateTime createdAt;
-  DateTime updatedAt;
+  String? message;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory Responded.fromJson(Map<String, dynamic> json) {
     return Responded(
@@ -27,8 +27,10 @@ class Responded {
       type: json["type"],
       status: json["status"],
       message: json["message"],
-      createdAt: DateTime.parse(json["createdAt"]),
-      updatedAt: DateTime.parse(json["updatedAt"]),
+      createdAt:
+          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+      updatedAt:
+          json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
     );
   }
 
@@ -39,7 +41,7 @@ class Responded {
         "type": type,
         "status": status,
         "message": message,
-        "createdAt": createdAt.toIso8601String(),
-        "updatedAt": updatedAt.toIso8601String(),
+        "createdAt": createdAt!.toIso8601String(),
+        "updatedAt": updatedAt!.toIso8601String(),
       };
 }

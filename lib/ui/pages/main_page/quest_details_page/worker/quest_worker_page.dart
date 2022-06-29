@@ -154,7 +154,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       questStatus: store.quest.value!.status,
       rounded: false,
       role: UserRole.Worker,
-      responded: store.quest.value!.responded,
+      responded: store.quest.value!.responded ??
+          store.quest.value!.questChat?.response,
       invited: store.quest.value!.invited,
     );
   }
@@ -542,41 +543,26 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           ),
         ),
         const SizedBox(height: 15),
-        Observer(
-          builder: (_) => LoginButton(
-            withColumn: true,
-            enabled: isLoading,
-            onTap: () async {
-              _updateLoading();
-              if (store.quest.value!.invited == null) {
-                await sendTransaction(
-                  onPress: () async {
-                    Navigator.pop(context);
-                    await store.sendRejectOnQuest();
+        if (store.quest.value!.invited != null)
+          Column(
+            children: [
+              Observer(
+                builder: (_) => LoginButton(
+                  withColumn: true,
+                  enabled: isLoading,
+                  onTap: () async {
+                    _updateLoading();
+                    store.rejectInvite(store.quest.value!.invited!.id);
+                    chatStore!.loadChats(starred: false);
+                    _updateLoading();
+                    await Future.delayed(const Duration(milliseconds: 250));
                   },
-                  nextStep: () {
-                    if (store.quest.value!.responded != null) {
-                      store.quest.value!.responded?.status = -1;
-                    }
-                    store.setQuestStatus(1);
-                    store.quest.value!.assignedWorker = null;
-
-                    myQuestStore.updateQuests(store.quest.value!);
-                  },
-                  //TODO: FIND NAME
-                  functionName: "",
-                );
-              } else {
-                store.rejectInvite(store.quest.value!.invited!.id);
-              }
-              chatStore!.loadChats(starred: false);
-              _updateLoading();
-              await Future.delayed(const Duration(milliseconds: 250));
-            },
-            title: "quests.answerOnQuest.reject".tr(),
+                  title: "quests.answerOnQuest.reject".tr(),
+                ),
+              ),
+              const SizedBox(height: 15),
+            ],
           ),
-        ),
-        const SizedBox(height: 15),
       ],
     );
   }
