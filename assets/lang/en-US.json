@@ -4,7 +4,21 @@
     "workQuest": "WorkQuest",
     "title": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dictum est suspendisse orci nunc fringilla a morbi. Fusce pellentesque eu, amet a.",
     "skip": "Skip",
-    "next": "Next"
+    "next": "Next",
+    "pages": {
+      "first": {
+        "head": "The World's Decentralized Job Market",
+        "title": "Completely secure and easy to use, WorkQuest offers you a search for an employee or employer in just a few clicks."
+      },
+      "second": {
+        "head": "Innovative Labor Market",
+        "title": "Absolute data security and a unique rating system guarantee the success of a transaction between an employee and an employer using a smart contract based on the WorkNet Blockchain."
+      },
+      "third": {
+        "head": "Integration DeFi with Recruitment",
+        "title": "Fast and cheap transactions are available to everyone, anywhere in the world. WorkQuest is a diverse world of decentralized finance in your pocket."
+      }
+    }
   },
   "invite": {
     "title": "Guest"
@@ -41,7 +55,13 @@
     "uploadText": "Upload images or videos",
     "uploadImage": "Upload images",
     "upload": "Upload",
-    "files": "Files"
+    "files": "Files",
+    "errorLoad": "Error load video.",
+    "states": {
+      "compression": "Compression...",
+      "loading": "Loading...",
+      "success": "Success"
+    }
   },
   "messages": {
     "alpha": "{_field_} field can only contain alphabetic characters",
@@ -130,6 +150,8 @@
     "quests": "Quests",
     "reviews": "Reviews",
     "portfolio": "Portfolio",
+    "editPortfolio": "Edit Portfolio",
+    "addPortfolio": "Add Portfolio",
     "dontHavePortfolio": "You do not have any  Portfolio",
     "dontHavePortfolioOtherUser": "You do not have any  Portfolio",
     "sidebar": {
@@ -147,13 +169,18 @@
     "save": "Save",
     "close": "Close",
     "reset": "Reset",
+    "retry": "Retry",
+    "title": "Title",
+    "enterTitle": "Enter title",
     "accept": "Accept",
     "fromYou": "close to your location",
     "details": "Ver detalles",
     "cancel": "Cancel",
     "confirm": "Confirm",
     "buyWUSD": "Buy WUSD",
+    "language": "Language",
     "submit": "Submit",
+    "areYouSure": "Are you sure?",
     "showAllReviews": "Show all reviews",
     "showAllPortfolio": "Show all portfolios",
     "showAllQuests": "Show all quests",
@@ -210,7 +237,8 @@
     "title": "Security check",
     "confCode": "Google confirmation code",
     "placeholder": "Placeholder",
-    "confCodeDesc": "Enter the generated key in the Google Authenticator app"
+    "confCodeDesc": "Enter the generated key in the Google Authenticator app",
+    "enterDiginCodeGoogle": "Enter the 6-digit code from the Google Authentication app"
   },
   "signUp": {
     "title": "Register",
@@ -222,7 +250,12 @@
     "password": "Password",
     "confirmPassword": "Repeat password",
     "create": "Create account",
-    "back": "back"
+    "back": "back",
+    "didntCode": "Didn't get code?",
+    "changeEmail": "Change Email",
+    "chooseWords": "Choose the {firstIndex}th and {secondIndex}th words of your mnemonic",
+    "thWord": "{index}th word",
+    "chosenWrongWords": "You’ve chosen wrong words. Try again"
   },
   "forgot": {
     "title": "Forgot password?",
@@ -321,6 +354,7 @@
       "userLeftReviewAboutQuest": "User left review about quest",
       "openDispute": "Open dispute"
     },
+    "finishedBy": "Finished by",
     "youResponded": "You responded",
     "title": "Quest Title",
     "quests": "Quests",
@@ -329,6 +363,9 @@
     "typeOfJob": "Job type",
     "noQuest": "Quest not found",
     "yourQuest": "Your quest",
+    "editQuest": "Edit Quest",
+    "hintWorker": "Employer / Title / Description",
+    "hintEmployer": "Employee / City",
     "distantWork": {
       "title": "Distant work",
       "allWorkplaces": "All workplaces",
@@ -937,7 +974,9 @@
   },
   "modals": {
     "enter2FaCode": "Enter 2FA",
+    "invalid2FA": "Invalid 2FA",
     "exit": "Exit",
+    "return": "Return",
     "modals": {
       "title": "Create group chat",
       "edit": "Edit group chat",
@@ -948,6 +987,11 @@
     },
     "errorEducation": "Complete all fields in Education",
     "errorWork": "Complete all fields in Work Experience",
+    "errorEditQuest2FA": "You can't edit quest without connected 2FA",
+    "errorDeleteQuest2FA": "You can't delete quest without connected 2FA",
+    "errorCreateChat": "You can't create a chat before\nworking on a quest",
+    "serviceUnavailable": "Service temporarily unavailable",
+    "quesDeleteNotif": "Do you really want \nto delete this notification?",
     "code": "Code",
     "attention": "Attention",
     "goBack": "If you go back, you won't be able to continue.",
@@ -1019,6 +1063,7 @@
     "confirmNewPassword": "Confirm new password ",
     "wrongPassword": "The current password was entered incorrectly",
     "lengthPassword": "Password must be at least 8 characters long",
+    "mustMatchNewPassword": "Password must match the new password",
     "mismatchPassword": "Password mismatch",
     "change": "Change",
     "title": "Title",
@@ -1032,9 +1077,11 @@
     "uploadAImages": "Upload images or videos",
     "uploadADocuments": "Upload documents",
     "description": "Description",
+    "enterDescription": "Enter description",
     "noDescription": "No description",
     "addCase": "Add case",
     "openADispute": "Begin Dispute",
+    "disputeNotCreated": "Dispute not created",
     "disputeTheme": "Dispute Theme",
     "noDisputes": "You haven’t disputes",
     "numberDispute": "Dispute №:",
@@ -1148,6 +1195,9 @@
     "jobQuestors": "Job seekers",
     "workers": "Workers",
     "wallet": "Wallet",
+    "txInfo": "Transaction info",
+    "cryptoAddress": "Crypto address",
+    "chooseCurrency": "Choose currency",
     "myQuests": "My quests",
     "quests": "Quests",
     "profile": {
@@ -1233,11 +1283,27 @@
     "chooseCoin": "Choose coin",
     "enterCoin": "Enter coin",
     "WUSD": "WUSD Wallet",
+    "buyWQT": "Buy WQT",
+    "buyTitleWQT": "Buy first WQT!",
+    "importWallet": "Import Wallet",
+    "createWallet": "Create Wallet",
+    "openWallet": "Open wallet",
+    "yourPhrase": "Your phrase",
+    "copyPhrase": "Copy phrase",
+    "chooseWay": "Choose a way to add a wallet",
+    "savePhrase": "Save this phrase to be able to login in next time",
+    "savedPhrase": "I’ve saved mnemonic phrase",
+    "buyDescriptionWQT": "The easiest way to buy WQT is using USDT.\nNetworks available for purchase: Ethereum, Binance Smart Chain and Polygon. After the purchase, WQT will automatically deposit to your WorkNet network wallet, minus the transaction fee.",
+    "changeNetwork": "Change network",
     "cryptoWallet": "Wallet address",
     "bankCard": "Bank card",
     "send": "Send",
+    "pay": "Pay",
     "receive": "Receive",
+    "network": "Network",
     "toThisAddress": "to this address",
+    "goExplorer": "Go to explorer",
+    "hashTx": "Hash tx",
     "wallet": "Wallet",
     "balance": "Balance",
     "deposit": "Deposit",
@@ -1275,7 +1341,16 @@
     "favorite": "Add to favorites",
     "messages": "Messages",
     "message": "Message",
+    "removeFromChat": "Remove from the chat",
+    "quesRemoveFromChat": "Remove from the chat?",
+    "typeMessage": "Type your message",
+    "privateChat": "Private chat",
+    "privateMessage": "Send a private message",
+    "createPrivateChat": "Create private chat",
     "noMessages": "No messages",
+    "giveQuest": "Give a quest",
+    "leaveFromChat": "Leave from chat",
+    "addReviewArbiter": "Add review to the arbiter",
     "chat": "Chat",
     "copy": "Copied",
     "addMembers": "Add members",
@@ -1325,6 +1400,7 @@
   },
   "settings": {
     "enterSMS": "Please enter the code from SMS to SMS Verification",
+    "numberConfirmed": "Number Confirmed",
     "success": "Success",
     "profileChanged": "Profile changed successfully",
     "changeProfile": "Change profile",
@@ -1334,12 +1410,18 @@
     "priority": "Priority",
     "distantWork": "Distant work",
     "costPerHour": "Cost per hour",
+    "disabled2FA": "2FA disabled",
     "description": "And you are beautiful",
     "imgLoaded": "Image loaded correctly",
     "workExp": "Work experience",
+    "haveActiveQuest": "There are active quests",
     "add": "Add",
     "delete": "Delete",
     "educations": "Education",
+    "whoAppearsListEmployers": "Who appears in my list of employers?",
+    "whoAppearsListEmployees": "Who appears in my list of employees?",
+    "whoCanInviteMe": "Who can invite me to a quest?",
+    "whoCanRespond": "Who can respond to my quests?",
     "vacancy": "Vacancy",
     "term": "Term",
     "getVerification": "Complete the verification",
@@ -1348,6 +1430,13 @@
     "employmentInfo": "Employment information",
     "addSpec": "Add specialization",
     "removeSpec": "Remove specialization",
+    "typesVisibly": {
+      "notRated": "Not rated",
+      "topRanked": "Top ranked",
+      "reliable": "Reliable",
+      "verified": "Verified",
+      "allUsers": "All registered users"
+    },
     "education": {
       "from": "From",
       "to": "To",
@@ -1376,6 +1465,7 @@
     "linkedInUsername": "LinkedIn",
     "facebookUsername": "Facebook",
     "save": "Save",
+    "showMore": "Show more",
     "skills": "Skills:",
     "whoCanSee": "Who can see my profile?",
     "allUsers": "All registered users",
@@ -1414,9 +1504,39 @@
     "raisingViews": "Raising views",
     "choosePeriod": "Choose period",
     "forOneDay": "For 1 day",
+    "forFiveDay": "For 5 days",
     "forOneWeek": "For 1 week",
     "forOneMonth": "For 1 month",
-    "chooseLevel": "Choose level"
+    "chooseLevel": "Choose level",
+    "levels": {
+      "goldPlus": {
+        "title": "GOLD PLUS",
+        "description": "Notifications for employees who were looking for quests, via an offer to review the quest that has been promoted by the employer. The employee will be invited to complete the quest in based on the most recent search categories of the employee. Plus the ability to choose any category and any location to promote the quest."
+      },
+      "gold": {
+        "title": "GOLD",
+        "description": "Notifications for employees who were looking for quests with a direct offer to review the promoted quest based on the most recent search categories of the employee. Plus the ability to choose three categories and three locations to promote the quest."
+      },
+      "silver": {
+        "title": "SILVER",
+        "description": "Pin quest on the main page for three hours, with the ability to choose two categories and two locations for promotion the quest."
+      },
+      "bronze": {
+        "title": "BRONZE",
+        "description": "Pin the quest on the main page for one hour, with the ability to choose one category and one location to promote the quest."
+      }
+    }
+  },
+  "swap": {
+    "minimum": "To avoid unnecessary fees and network slippage, the minimum amount for this pair is \\$5 USDT/USDC",
+    "maximum": "To avoid unnecessary fees and network slippage, the maximum amount for this pair is \\$100 USDT/USDC.",
+    "connecting": "Connecting to {object}...",
+    "buying": "Buying WQT",
+    "choose": "Choose {object}",
+    "amountBalance": "Amount (Balance: {maxAmount})",
+    "addressWalletTo": "Address wallet to",
+    "addressTo": "Address to",
+    "amountOfWQT": "Amount of WQT ≈"
   },
   "dispute": {
     "statuses": {
@@ -1686,6 +1806,7 @@
     "marketSize": "Market size",
     "deposit": "Deposit",
     "percent": "Percent",
+    "sendReport": "Send report",
     "dollarsCount": "{count}$",
     "percentsCount": "{count} %",
     "wantToTakeALoan": "Do you want to borrow?",
@@ -1838,6 +1959,14 @@
   },
   "errors": {
     "incorrectPass": "Oops, there was a problem. Check the data and try again.",
+    "serverTimedOut": "Server response timed out",
+    "failedToGetBalance": "Failed to get balance",
+    "swipeUpdate": "Swipe to update",
+    "higherMax": "Higher max amount",
+    "smallLength": "Small length",
+    "wrongCode": "Wrong code",
+    "notHaveEnoughTx": "Not have enough WQT for the transaction",
+    "notHaveEnoughTxToken": "Not have enough {token} for the transaction",
     "emptyData": {
       "employer": {
         "myQuests": {
@@ -1862,12 +1991,15 @@
       }
     },
     "fieldEmpty": "Field is empty",
+    "numberContainDashesOrSpaces": "The number must not contain dashes or spaces",
     "incorrectFormat": "Incorrect format",
     "passwordsNotMatch": "Passwords don't match",
     "smallNumberWords": "A small number of words",
     "incorrectMnemonicFormat": "Incorrect mnemonic format",
+    "fieldLeastCharacters": "Field must be at least 50 characters",
     "notInternet": "No internet access",
     "provideYourAddress": "You have provided your address.",
+    "youSureWallet": "If you leave the page, you will not link the wallet to your profile.\nAre you sure?",
     "invalidAmount": "Invalid value amount."
   },
   "sharing": {

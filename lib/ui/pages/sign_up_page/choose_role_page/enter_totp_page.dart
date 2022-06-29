@@ -64,7 +64,7 @@ class EnterTotpPage extends StatelessWidget {
                                 (route) => false,
                               );
                             } else
-                              await errorAlert(context, "Wrong code");
+                              await errorAlert(context, "errors.wrongCode".tr());
                           }
                         : null,
                     child: store.isLoading

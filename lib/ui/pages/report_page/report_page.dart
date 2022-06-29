@@ -5,6 +5,7 @@ import 'package:app/ui/widgets/default_textfield.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -61,7 +62,7 @@ class _ReportPageState extends State<ReportPage> {
     return ObserverListener<ReportStore>(
       onSuccess: () async {
         Navigator.pop(context);
-        await AlertDialogUtils.showSuccessDialog(context, text: 'Success send report');
+        await AlertDialogUtils.showSuccessDialog(context, text: 'settings.success'.tr());
         Navigator.pop(context);
       },
       onFailure: () {
@@ -70,7 +71,7 @@ class _ReportPageState extends State<ReportPage> {
       },
       child: Scaffold(
         appBar: DefaultAppBar(
-          title: 'Report Page',
+          title: 'chat.report'.tr(),
         ),
         body: SingleChildScrollView(
           child: DismissKeyboard(
@@ -81,16 +82,16 @@ class _ReportPageState extends State<ReportPage> {
                 child: Column(
                   children: [
                     _TextFieldWithTitle(
-                      title: 'Title',
+                      title: 'meta.title'.tr(),
                       child: DefaultTextField(
                         controller: _titleController,
-                        hint: 'Enter title',
+                        hint: 'meta.enterTitle'.tr(),
                         validator: (value) {
                           if (value == null) {
                             return null;
                           }
                           if (value.isEmpty) {
-                            return 'Field is empty';
+                            return 'errors.fieldEmpty'.tr();
                           }
                           return null;
                         },
@@ -98,12 +99,12 @@ class _ReportPageState extends State<ReportPage> {
                       ),
                     ),
                     _TextFieldWithTitle(
-                      title: 'Description',
+                      title: 'modals.description'.tr(),
                       child: SizedBox(
                         height: 200,
                         child: DefaultTextField(
                           controller: _descriptionController,
-                          hint: 'Enter description',
+                          hint: 'modals.enterDescription'.tr(),
                           expands: true,
                           textAlign: TextAlign.start,
                           maxLength: 200,
@@ -113,10 +114,10 @@ class _ReportPageState extends State<ReportPage> {
                               return null;
                             }
                             if (value.isEmpty) {
-                              return 'Field is empty';
+                              return 'errors.fieldEmpty'.tr();
                             }
                             if (value.length < 50) {
-                              return 'Field must be at least 50 characters';
+                              return 'errors.fieldLeastCharacters'.tr();
                             }
                             return null;
                           },
@@ -143,7 +144,7 @@ class _ReportPageState extends State<ReportPage> {
           child: Observer(
             builder: (_) => LoginButton(
               enabled: _store.isLoading,
-              title: 'Send report',
+              title: 'crediting.sendReport'.tr(),
               onTap: _onPressedSendReport,
             ),
           ),

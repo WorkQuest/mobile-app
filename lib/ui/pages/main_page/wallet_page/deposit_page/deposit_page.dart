@@ -87,7 +87,7 @@ class _DepositPageState extends State<DepositPage>
                 walletTab(),
 
                 Center(
-                  child: Text("This feature is currently unavailable"),
+                  child: Text("modals.serviceUnavailable".tr()),
                 ),
 
                 ///Card Transfer

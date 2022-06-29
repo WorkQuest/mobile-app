@@ -1,6 +1,7 @@
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -56,7 +57,7 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
         middle: Text(
-          "Quests",
+          "workers.quests".tr(),
         ),
       ),
       body: Observer(

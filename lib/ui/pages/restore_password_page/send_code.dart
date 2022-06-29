@@ -45,7 +45,7 @@ class SendEmail extends StatelessWidget {
                     builder: (_) => TextFormField(
                       onChanged: _store.setEmail,
                       decoration: InputDecoration(
-                        hintText: 'Email address',
+                        hintText: 'placeholders.email'.tr(),
                       ),
                     ),
                   ),

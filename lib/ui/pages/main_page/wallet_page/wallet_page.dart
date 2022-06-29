@@ -72,7 +72,7 @@ class _WalletPageState extends State<WalletPage> {
           largeTitle: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Wallet"),
+              Text("wallet.wallet".tr()),
               PopupMenuButton<String>(
                 elevation: 10,
                 icon: Icon(Icons.more_vert),
@@ -81,19 +81,19 @@ class _WalletPageState extends State<WalletPage> {
                 ),
                 onSelected: (value) async {
                   switch (value) {
-                    case "Change network":
+                    case "wallet.changeNetwork":
                       await Navigator.of(context, rootNavigator: true).pushNamed(NetworkPage.routeName);
                       break;
                   }
                 },
                 itemBuilder: (BuildContext context) {
                   return {
-                    "Change network",
+                    "wallet.changeNetwork",
                   }.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
                       child: Text(
-                        choice,
+                        choice.tr(),
                       ),
                     );
                   }).toList();
@@ -154,7 +154,7 @@ class _WalletPageState extends State<WalletPage> {
                 ),
                 _BannerBuyingWQT(
                   button: outlinedButton(
-                    title: 'Buy WQT',
+                    title: 'wallet.buyWQT'.tr(),
                     route: SwapPage.routeName,
                     color: Colors.white,
                   ),
@@ -301,7 +301,7 @@ class _BannerBuyingWQT extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Buy first WQT!',
+            'wallet.buyTitleWQT'.tr(),
             style: TextStyle(
               fontSize: 20,
               color: Colors.white,
@@ -312,9 +312,7 @@ class _BannerBuyingWQT extends StatelessWidget {
             height: 5,
           ),
           Text(
-            'Donec rutrum congue leo eget malesuada. Donec sollicitudin molestie malesuada. Quisque velit nisi, '
-            'pretium ut lacinia in, elementum id enim. Curabitur arcu erat, accumsan id imperdiet et, porttitor at '
-            'sem.',
+            'wallet.buyDescriptionWQT'.tr(),
             style: TextStyle(
               color: Colors.white,
             ),
@@ -454,16 +452,16 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
-                    'Failed to get balance',
+                    'errors.failedToGetBalance'.tr(),
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Text(
-                    'Swipe to update',
+                    'errors.swipeUpdate'.tr(),
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ],

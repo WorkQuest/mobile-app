@@ -79,7 +79,7 @@ class ListTransactions extends StatelessWidget {
             return SliverFillRemaining(
               child: Center(
                 child: LoginButton(
-                  title: 'Go to explorer',
+                  title: 'wallet.goExplorer'.tr(),
                   onTap: _onPressedGoToExplorer,
                 ),
               ),
@@ -335,7 +335,7 @@ class _ExpandedTransactionWidget extends StatelessWidget {
         children: [
           _ItemInfoFromTransaction(
             info: hashTransaction,
-            title: "Hash tx",
+            title: "wallet.hashTx".tr(),
             isSelectable: true,
           ),
           const SizedBox(
@@ -343,7 +343,7 @@ class _ExpandedTransactionWidget extends StatelessWidget {
           ),
           _ItemInfoFromTransaction(
             info: address,
-            title: increase ? "From" : "To",
+            title: increase ? "settings.education.from".tr() : "settings.education.to".tr(),
             isSelectable: true,
           ),
         ],

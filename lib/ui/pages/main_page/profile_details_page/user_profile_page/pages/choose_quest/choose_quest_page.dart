@@ -162,7 +162,7 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                           await confirmTransaction(
                             context,
                             fee: store.fee,
-                            transaction: "Transaction info",
+                            transaction: "ui.txInfo".tr(),
                             address: store.quests.firstWhere((element) => element.id == store.questId).contractAddress!,
                             amount: null,
                             onPress: () {

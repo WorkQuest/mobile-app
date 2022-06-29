@@ -174,7 +174,7 @@ class SettingsPage extends StatelessWidget {
                                   20.0,
                                 ),
                                 title:
-                                    "Language \n${Constants.languageList.keys.firstWhere(
+                                    "${'meta.language'.tr()} \n${Constants.languageList.keys.firstWhere(
                                   (k) =>
                                       Constants.languageList[k] ==
                                       context.locale,
@@ -182,12 +182,9 @@ class SettingsPage extends StatelessWidget {
                                 onTap: () {
                                   AlertDialogUtils.showInfoAlertDialog(
                                     context,
-                                    title: 'Warning'.tr(),
-                                    content: 'Service temporarily unavailable',
+                                    title: 'modals.warning'.tr(),
+                                    content: 'modals.serviceUnavailable'.tr(),
                                   );
-
-                                  // Navigator.of(context, rootNavigator: true)
-                                  //     .pushNamed(ChangeLanguagePage.routeName);
                                 },
                               ),
                             ],
@@ -290,7 +287,7 @@ class SettingsPage extends StatelessWidget {
   }) async {
     if (userStore.userData?.isTotpActive == true) {
       if (userStore.userData!.questsStatistic!.opened != 0) {
-        _showAlertInfo(context, title: "There are active quests");
+        _showAlertInfo(context, title: "settings.haveActiveQuest".tr());
       } else {
         chooseRoleStore.setRole(userStore.userData!.role);
         chooseRoleStore.isChange = true;
@@ -300,7 +297,7 @@ class SettingsPage extends StatelessWidget {
         );
       }
     } else {
-      _showAlertInfo(context, title: "2FA disabled");
+      _showAlertInfo(context, title: "settings.disabled2FA");
     }
   }
 
@@ -310,7 +307,7 @@ class SettingsPage extends StatelessWidget {
   }) {
     AlertDialogUtils.showAlertDialog(
       context,
-      title: Text("Warning"),
+      title: Text("modals.warning".tr()),
       content: Padding(
         padding: const EdgeInsets.only(left: 25.0, top: 16.0),
         child: Text(title),

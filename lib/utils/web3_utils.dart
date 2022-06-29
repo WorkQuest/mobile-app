@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:app/constants.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
@@ -19,15 +20,15 @@ class Web3Utils {
     if (typeCoin == TokenSymbols.WQT) {
       final _balanceWQTInWei = (_balanceWQT.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
       if (amount + gas > (_balanceWQTInWei.toDouble())) {
-        throw FormatException('Not have enough WQT for the transaction');
+        throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     } else if (typeCoin == TokenSymbols.WUSD) {
       final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin, isMain: isMain));
       if (amount > _balanceToken) {
-        throw FormatException('Not have enough ${getTitleToken(typeCoin)} for the transaction');
+        throw FormatException('errors.notHaveEnoughTxToken'.tr(namedArgs: {'token': getTitleToken(typeCoin)}));
       }
       if (_balanceWQT.getInWei < BigInt.from(gas * pow(10, 18))) {
-        throw FormatException('Not have enough WQT for the transaction');
+        throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     }
   }

@@ -1,5 +1,4 @@
 import 'package:app/constants.dart';
-import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -27,7 +26,7 @@ class _ChangeLanguagePageState extends State<ChangeLanguagePage> {
     return Scaffold(
       appBar: CupertinoNavigationBar(
         middle: Text(
-          "Language",
+          "meta.language".tr(),
         ),
       ),
       body: CustomScrollView(

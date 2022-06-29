@@ -128,7 +128,7 @@ class ConfirmEmail extends StatelessWidget {
                       child: Row(
                         children: [
                           Text(
-                            "Didn't get code?",
+                            "signUp.didntCode".tr(),
                             style: _style,
                           ),
                           SizedBox(
@@ -139,7 +139,7 @@ class ConfirmEmail extends StatelessWidget {
                               Navigator.pop(context);
                             },
                             child: Text(
-                              "Change Email",
+                              "signUp.changeEmail".tr(),
                               style: _style.copyWith(color: Colors.blue),
                             ),
                           ),

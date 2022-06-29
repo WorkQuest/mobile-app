@@ -56,7 +56,7 @@ class _ProfileSettingsState extends State<ProfileSettings> {
               if (!_store.isLoading)
                 CupertinoButton(
                   child: Text(
-                    'Save',
+                    'meta.save'.tr(),
                     style: TextStyle(color: AppColor.enabledButton),
                   ),
                   onPressed: () {
@@ -79,8 +79,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     children: [
                       Text(
                         widget.profile.role == UserRole.Worker
-                            ? 'Who appears in my list of employers?'
-                            : 'Who appears in my list of employees?',
+                            ? 'settings.whoAppearsListEmployers'.tr()
+                            : 'settings.whoAppearsListEmployees'.tr(),
                         style: TextStyle(
                           fontSize: 16.0,
                         ),
@@ -114,8 +114,8 @@ class _ProfileSettingsState extends State<ProfileSettings> {
                     children: [
                       Text(
                         widget.profile.role == UserRole.Worker
-                            ? 'Who can invite me to a quest?'
-                            : 'Who can respond to my quests?',
+                            ? 'settings.whoCanInviteMe'.tr()
+                            : 'settings.whoCanRespond'.tr(),
                         style: TextStyle(
                           fontSize: 16.0,
                         ),
@@ -233,15 +233,15 @@ class _RadioTileWidget extends StatelessWidget {
 
   _getTitleType(VisibilityTypes? type) {
     if (type == VisibilityTypes.notRated) {
-      return 'Not rated';
+      return 'settings.typesVisibly.notRated'.tr();
     } else if (type == VisibilityTypes.topRanked) {
-      return 'Top ranked';
+      return 'settings.typesVisibly.topRanked'.tr();
     } else if (type == VisibilityTypes.reliable) {
-      return 'Reliable';
+      return 'settings.typesVisibly.reliable'.tr();
     } else if (type == VisibilityTypes.verified) {
-      return 'Verified';
+      return 'settings.typesVisibly.verified'.tr();
     } else {
-      return 'All registered users';
+      return 'settings.typesVisibly.allUsers'.tr();
     }
   }
 }

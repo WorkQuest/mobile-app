@@ -199,7 +199,7 @@ class _NotificationViewState extends State<_NotificationView> {
                                 ),
                               );
                             },
-                            child: Text("Add review to the arbiter"),
+                            child: Text("chat.addReviewArbiter".tr()),
                           )
                         : const SizedBox(),
                   ),
@@ -207,18 +207,18 @@ class _NotificationViewState extends State<_NotificationView> {
                     onPressed: () {
                       AlertDialogUtils.showAlertDialog(
                         context,
-                        title: Text("Are you sure?"),
+                        title: Text("meta.areYouSure".tr()),
                         content: Padding(
                           padding: const EdgeInsets.only(
                             left: 25.0,
                             top: 16,
                           ),
                           child: Text(
-                            "Do you really want \nto delete this notification?",
+                            "modals.quesDeleteNotif".tr(),
                           ),
                         ),
                         needCancel: true,
-                        titleCancel: "Cancel",
+                        titleCancel: "meta.cancel".tr(),
                         titleOk: "Ok",
                         onTabCancel: null,
                         onTabOk: widget.onTabOk,

@@ -85,10 +85,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     onChanged: store.setConfirmNewPassword,
                     validator: (value) {
                       if (value == null || value.isEmpty || value.length < 8) {
-                        return "Password must be at least 8 characters long";
+                        return "modals.lengthPassword".tr();
                       }
                       if (value != _newPasswordController.text) {
-                        return "Password must match the new password";
+                        return "modals.mustMatchNewPassword".tr();
                       }
                       return null;
                     },

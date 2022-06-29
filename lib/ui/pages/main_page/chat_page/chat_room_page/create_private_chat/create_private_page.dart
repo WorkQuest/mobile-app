@@ -2,6 +2,7 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.d
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/create_private_chat/store/create_private_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/media_upload/media_upload_widget.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,7 @@ class _CreatePrivatePageState extends State<CreatePrivatePage> {
           ),
           centerTitle: true,
           title: Text(
-            "Send a private message",
+            "chat.privateMessage".tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -52,7 +53,7 @@ class _CreatePrivatePageState extends State<CreatePrivatePage> {
           child: ListView(
             children: [
               const SizedBox(height: 23),
-              Text("Message"),
+              Text("chat.message".tr()),
               const SizedBox(height: 10),
               Container(
                 child: ConstrainedBox(
@@ -61,7 +62,7 @@ class _CreatePrivatePageState extends State<CreatePrivatePage> {
                     onChanged: store.setMessage,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    decoration: InputDecoration(hintText: "Type your message"),
+                    decoration: InputDecoration(hintText: "chat.typeMessage".tr()),
                   ),
                 ),
               ),
@@ -83,7 +84,7 @@ class _CreatePrivatePageState extends State<CreatePrivatePage> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text("Cancel"),
+                        child: Text("meta.cancel".tr()),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
                             width: 1.0,
@@ -111,7 +112,7 @@ class _CreatePrivatePageState extends State<CreatePrivatePage> {
                             ? Center(
                                 child: CircularProgressIndicator.adaptive(),
                               )
-                            : Text("Send"),
+                            : Text("meta.send".tr()),
                       ),
                     ),
                   ),

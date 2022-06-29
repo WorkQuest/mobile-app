@@ -232,22 +232,6 @@ class _TransferPageState extends State<TransferPage> {
                   ],
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value == null) {
-                      return null;
-                    }
-                    if (store.maxAmount != null) {
-                      try {
-                        final amount = double.parse(value);
-                        if (amount > store.maxAmount!) {
-                          return 'The amount field must be ${store.maxAmount} or less';
-                        }
-                      } catch (e) {
-                        return 'Invalid format';
-                      }
-                    }
-                    return null;
-                  },
                 ),
                 const SizedBox(
                   height: 20,

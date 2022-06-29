@@ -111,7 +111,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
             Navigator.pop(context, true);
           } else {
             await AlertDialogUtils.showSuccessDialog(context,
-                text: 'Enter code from SMS in SMS Verification');
+                text: 'settings.enterSMS'.tr());
             await Navigator.of(context, rootNavigator: true).pushReplacementNamed(
               SMSVerificationPage.routeName,
             );
@@ -320,8 +320,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         (pageStore.userData.tempPhone?.fullPhone ?? "").contains(" ")) {
       AlertDialogUtils.showInfoAlertDialog(
         context,
-        title: "Warning",
-        content: "The number must not contain dashes or spaces",
+        title: "modals.warning".tr(),
+        content: "errors.numberContainDashesOrSpaces".tr(),
       );
       return;
     }
@@ -377,7 +377,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         await AlertDialogUtils.showSuccessDialog(context);
       } else {
         await AlertDialogUtils.showSuccessDialog(context,
-            text: 'Enter code from SMS in SMS Verification');
+            text: 'settings.enterSMS'.tr());
       }
     }
   }

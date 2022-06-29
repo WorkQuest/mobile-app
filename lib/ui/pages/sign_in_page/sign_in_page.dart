@@ -222,7 +222,7 @@ class _SignInPageState extends State<SignInPage> {
   _showAlertTotp(BuildContext context, SignInStore signInStore) {
     AlertDialogUtils.showAlertDialog(
       context,
-      title: Text('Security check'),
+      title: Text('modals.securityCheck'.tr()),
       content: Builder(
         builder: (context) {
           var width = MediaQuery.of(context).size.width;
@@ -236,7 +236,7 @@ class _SignInPageState extends State<SignInPage> {
         },
       ),
       needCancel: true,
-      titleCancel: 'Cancel',
+      titleCancel: 'meta.cancel'.tr(),
       titleOk: 'OK',
       onTabCancel: null,
       onTabOk: () {
@@ -250,7 +250,7 @@ class _SignInPageState extends State<SignInPage> {
 
   _errorMessage(BuildContext context, String msg) =>
       AlertDialogUtils.showInfoAlertDialog(context,
-          title: "Error", content: msg);
+          title: "modals.error".tr(), content: msg);
 }
 
 class _HintsAccountWidget extends StatelessWidget {
@@ -509,7 +509,7 @@ class _AlertTotpWidgetState extends State<_AlertTotpWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Google confirmation code'),
+              Text('securityCheck.confCode'.tr()),
               const SizedBox(
                 height: 6,
               ),
@@ -527,7 +527,7 @@ class _AlertTotpWidgetState extends State<_AlertTotpWidget> {
                 suffixIcon: null,
                 validator: (_) {
                   if (_controller.text.length < 6) {
-                    return 'Small length';
+                    return 'errors.smallLength'.tr();
                   }
                   return null;
                 },
@@ -536,7 +536,7 @@ class _AlertTotpWidgetState extends State<_AlertTotpWidget> {
                 height: 6,
               ),
               Text(
-                'Enter the 6-digit code from the Google Authentication app',
+                'securityCheck.enterDiginCodeGoogle'.tr(),
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],

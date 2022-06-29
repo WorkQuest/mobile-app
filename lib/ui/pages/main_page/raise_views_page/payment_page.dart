@@ -111,7 +111,7 @@ class _PaymentPageState extends State<PaymentPage> with SingleTickerProviderStat
                   tabs: <Widget>[
                     Tab(
                       child: Text(
-                        "Crypto address",
+                        "ui.cryptoAddress".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
@@ -209,7 +209,7 @@ class _WalletViewTabState extends State<_WalletViewTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Choose currency"),
+            Text("ui.chooseCurrency".tr()),
             _divider,
             GestureDetector(
               onTap: _chooseCoin,
@@ -353,7 +353,7 @@ class _WalletViewTabState extends State<_WalletViewTab> {
                       }
                     }
                   : null,
-              child: Text("Pay"),
+              child: Text("wallet.pay".tr()),
             ),
             const SizedBox(
               height: 20.0,

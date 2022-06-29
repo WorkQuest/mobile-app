@@ -107,8 +107,8 @@ class ApproveRolePage extends StatelessWidget {
                                     builder: (context) {
                                       return AlertDialog(
                                         scrollable: true,
-                                        title: Text("Wallet"),
-                                        content: Text("Choose a way to add a wallet"),
+                                        title: Text("ui.wallet".tr()),
+                                        content: Text("wallet.chooseWay".tr()),
                                         actions: [
                                           TextButton(
                                             onPressed: () {
@@ -125,7 +125,7 @@ class ApproveRolePage extends StatelessWidget {
                                               );
                                             },
                                             child: Text(
-                                              "Import Wallet",
+                                              "wallet.importWallet".tr(),
                                               style: TextStyle(
                                                   color: AppColor.enabledButton),
                                             ),
@@ -145,7 +145,7 @@ class ApproveRolePage extends StatelessWidget {
                                               );
                                             },
                                             child: Text(
-                                              "Create Wallet",
+                                              "wallet.createWallet".tr(),
                                               style: TextStyle(
                                                   color: AppColor.enabledButton),
                                             ),

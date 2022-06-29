@@ -1,8 +1,8 @@
-import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/verify_wallet.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/snack_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,12 +37,11 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
           Future<bool> close = Future.value(false);
           AlertDialogUtils.showAlertDialog(
             context,
-            title: const Text('Warning!'),
-            content: const Text(
-                'If you leave the page, you will not link the wallet to your profile.\nAre you sure?'),
+            title: Text('modals.warning'.tr()),
+            content: Text('errors.youSureWallet'.tr()),
             needCancel: true,
-            titleCancel: "Cancel",
-            titleOk: "Return",
+            titleCancel: "meta.cancel".tr(),
+            titleOk: "modals.return".tr(),
             onTabCancel: null,
             onTabOk: () => Navigator.pop(context),
             colorCancel: AppColor.enabledButton,
@@ -62,9 +61,9 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
                 const SizedBox(
                   height: 15,
                 ),
-                const Text(
-                  'Save this phrase to be able to login in next time',
-                  style: TextStyle(
+                Text(
+                  'wallet.savePhrase'.tr(),
+                  style: const TextStyle(
                     fontSize: 24,
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
@@ -79,9 +78,9 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
                 ),
                 Row(
                   children: [
-                    const Text(
-                      'I’ve saved mnemonic phrase',
-                      style: TextStyle(
+                    Text(
+                      'wallet.savedPhrase'.tr(),
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black,
                       ),
@@ -99,12 +98,11 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
                 ),
                 const Spacer(),
                 Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom + 10.0),
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 10.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      child: Text('Next'),
+                      child: Text('startPage.next'.tr()),
                       onPressed: store.isSaved ? () => _pushVerifyWallet(store) : null,
                     ),
                   ),
@@ -142,9 +140,9 @@ class _YourPhrase extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Your phrase',
-          style: TextStyle(
+        Text(
+          'wallet.yourPhrase'.tr(),
+          style: const TextStyle(
             fontSize: 16,
             color: Colors.black,
           ),
@@ -178,11 +176,11 @@ class _YourPhrase extends StatelessWidget {
               Clipboard.setData(ClipboardData(text: phrase));
               SnackBarUtils.success(
                 context,
-                title: 'Copied!',
+                title: 'chat.copy'.tr(),
                 duration: const Duration(milliseconds: 250),
               );
             },
-            child: Text('Copy phrase'),
+            child: Text('wallet.copyPhrase'.tr()),
           ),
         ),
       ],

@@ -65,7 +65,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                     await confirmTransaction(
                       context,
                       fee: store.fee,
-                      transaction: "Transaction info",
+                      transaction: "ui.txInfo".tr(),
                       address: widget.quest.contractAddress!,
                       amount: null,
                       onPress: () async {
@@ -91,8 +91,8 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                         if (!store.isSuccess)
                           await AlertDialogUtils.showInfoAlertDialog(
                             context,
-                            title: "Warning",
-                            content: "Dispute not created",
+                            title: "modals.warning".tr(),
+                            content: "modals.disputeNotCreated".tr(),
                           );
                       }
                     });

@@ -467,11 +467,11 @@ class _ImageWidgetState extends State<_ImageWidget> {
         widget.stateLoading != StateLoading.nothing) {
       switch (value.state) {
         case StateImage.compression:
-          return "Compression...";
+          return 'uploader.states.compression'.tr();
         case StateImage.loading:
-          return "Loading...  ${value.processLoading * 100}";
+          return 'uploader.states.loading'.tr();
         case StateImage.success:
-          return "Success";
+          return 'uploader.states.success'.tr();
       }
     } else {
       return '';
@@ -521,7 +521,7 @@ class _GetVideoThumbnailState extends State<GetVideoThumbnail> {
                 height: 300,
                 child: Center(
                   child: Text(
-                    "Error load video.",
+                    "uploader.errorLoad".tr(),
                     style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
                 ),

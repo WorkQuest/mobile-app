@@ -619,7 +619,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     await confirmTransaction(
       context,
       fee: store.fee,
-      transaction: "Transaction info",
+      transaction: "ui.txInfo".tr(),
       address: store.quest.value!.contractAddress!,
       amount: null,
       onPress: onPress,

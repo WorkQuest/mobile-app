@@ -546,7 +546,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                             confirmTransaction(
                                               context,
                                               fee: _gas,
-                                              transaction: "Transaction info",
+                                              transaction: "ui.txInfo".tr(),
                                               address: contractAddress,
                                               amount: store.price,
                                               onPress: () async {
@@ -585,7 +585,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                           confirmTransaction(
                                             context,
                                             fee: _gas,
-                                            transaction: "Transaction info",
+                                            transaction: "ui.txInfo".tr(),
                                             address: contractAddress,
                                             amount: store.price,
                                             onPress: () async {
@@ -624,7 +624,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                         );
                                     },
                               title: isEdit
-                                  ? "Edit Quest"
+                                  ? "quests.editQuest".tr()
                                   : 'quests.createAQuest'.tr(),
                             ),
                           ),

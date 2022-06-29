@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../constants.dart';
@@ -31,8 +32,8 @@ class _NetworkPageState extends State<NetworkPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const DefaultAppBar(
-        title: 'Network',
+      appBar: DefaultAppBar(
+        title: 'wallet.network'.tr(),
       ),
       body: LayoutWithScroll(
         child: Padding(
