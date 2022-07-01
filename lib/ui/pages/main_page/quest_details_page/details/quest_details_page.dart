@@ -44,9 +44,13 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   @override
   void initState() {
     storeQuest = context.read<QuestDetailsStore>();
-    if (widget.arguments.questInfo != null)
+    if (widget.arguments.questInfo != null) {
       storeQuest.initQuest(widget.arguments.questInfo!);
-    else {
+
+      storeQuest.questInfo!.yourReview != null
+          ? profile!.review = true
+          : profile!.review = false;
+    } else {
       storeQuest.initQuestId(widget.arguments.id!);
       storeQuest.updateQuest().then((value) {
         storeQuest.initQuest(storeQuest.questInfo!);
