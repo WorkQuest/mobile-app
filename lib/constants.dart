@@ -34,8 +34,6 @@ class Constants {
   static const String defaultImageNetwork =
       'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 
-  static const worknetWQFactory = '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4';
-  static const worknetPromotion = '0x23918c4cC7001fB4e2BF28c8283b02BcD6975bf0';
 }
 
 abstract class AppColor {

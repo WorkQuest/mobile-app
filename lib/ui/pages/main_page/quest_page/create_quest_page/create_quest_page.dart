@@ -48,7 +48,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   final descriptionKey = new GlobalKey();
   final priceKey = new GlobalKey();
   final confirmUnderstandAboutEdit = new GlobalKey();
-  final contractAddress = Constants.worknetWQFactory;
+  final contractAddress = Web3Utils.getAddressWorknetWQFactory();
 
   bool isEdit = false;
 

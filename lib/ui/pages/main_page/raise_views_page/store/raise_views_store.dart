@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
@@ -116,12 +117,12 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
           contract: _contractApprove,
           function: _contractApprove.function(WQBridgeTokenFunctions.approve.name),
           params: [
-            EthereumAddress.fromHex(Constants.worknetWQFactory),
+            EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
             _price,
           ],
         );
 
-        final _contractPromote = await _client.getDeployedContract("WQPromotion", Constants.worknetPromotion);
+        final _contractPromote = await _client.getDeployedContract("WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
         final _quest = await apiProvider.getQuest(id: questId);
         final _gasForPromote = await _client.getEstimateGasCallContract(
           contract: _contractPromote,
@@ -140,12 +141,13 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
           contract: _contractApprove,
           function: _contractApprove.function(WQBridgeTokenFunctions.approve.name),
           params: [
-            EthereumAddress.fromHex(Constants.worknetWQFactory),
+            EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
             _price,
           ],
         );
 
-        final _contractPromote = await _client.getDeployedContract("WQPromotion", Constants.worknetPromotion);
+        final _contractPromote =
+            await _client.getDeployedContract("WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
         final _gasForPromote = await _client.getEstimateGasCallContract(
           contract: _contractPromote,
           function: _contractPromote.function(WQPromotionFunctions.promoteUser.name),

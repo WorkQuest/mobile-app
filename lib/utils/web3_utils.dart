@@ -201,6 +201,24 @@ class Web3Utils {
     }
   }
 
+  static String getAddressWorknetWQFactory() {
+    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    if (_isMainnet) {
+      return '0x3d9782B4Ba9C10d09973dd1f7C16410c931f5468';
+    } else {
+      return '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4';
+    }
+  }
+
+  static String getAddressWorknetWQPromotion() {
+    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    if (_isMainnet) {
+      throw FormatException('Not have address');
+    } else {
+      return '0x23918c4cC7001fB4e2BF28c8283b02BcD6975bf0';
+    }
+  }
+
   static String getRpcNetworkForSwap(SwapNetworks network) {
     final _networkType = AccountRepository().notifierNetwork.value;
     switch (network) {

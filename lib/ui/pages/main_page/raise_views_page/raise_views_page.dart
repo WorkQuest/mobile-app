@@ -172,7 +172,7 @@ class RaiseViews extends StatelessWidget {
       context,
       fee: _gas,
       transaction: "ui.txInfo".tr(),
-      address: Constants.worknetPromotion,
+      address: Web3Utils.getAddressWorknetWQPromotion(),
       amount: _amount,
       onPress: () async {
         if (questId.isEmpty) {
