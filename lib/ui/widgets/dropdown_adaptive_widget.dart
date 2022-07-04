@@ -180,13 +180,13 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
 
   String _getPathIcons(String value) {
     if (value == 'WORKNET') {
-      return 'assets/svg/wq_logo.svg';
+      return 'assets/wq_logo.svg';
     } else if (value == 'ETH') {
-      return 'assets/svg/eth_logo.svg';
+      return 'assets/eth_logo.svg';
     } else if (value == 'BSC') {
-      return 'assets/svg/bsc_logo.svg';
+      return 'assets/bsc_logo.svg';
     } else {
-      return 'assets/svg/polygon_logo.svg';
+      return 'assets/polygon_logo.svg';
     }
   }
 
