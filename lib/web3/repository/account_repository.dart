@@ -52,7 +52,6 @@ class AccountRepository {
     GetIt.I.get<TransactionsStore>().getTransactions();
     GetIt.I.get<WalletStore>().getCoins();
     GetIt.I.get<TransferStore>().setCoin(null);
-    final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(networkName);
   }
 
   setWallet(Wallet wallet) {
@@ -62,7 +61,6 @@ class AccountRepository {
   clearData() {
     userWallet = null;
     networkName.value = null;
-    notifierNetwork.value = Network.mainnet;
     _disconnectWeb3Client();
     GetIt.I.get<TransactionsStore>().clearData();
     GetIt.I.get<WalletStore>().clearData();
