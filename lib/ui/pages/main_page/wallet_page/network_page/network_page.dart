@@ -115,15 +115,14 @@ class _NetworkPageState extends State<NetworkPage> {
 
   _onPressedChange(Network newNetwork) {
     if (_store.network != newNetwork) {
-      AlertDialogUtils.showLoadingDialog(context);
-      _store.changeNetwork(newNetwork);
+      _showAlertConfirmChangeNetwork(newNetwork);
     }
   }
 
   _showAlertConfirmChangeNetwork(Network network) {
     AlertDialogUtils.showAlertDialog(
       context,
-      title: Text('meta.warning'.tr()),
+      title: Text('modals.warning'.tr()),
       content: Text('wallet.changeNetworkInfo'.tr()),
       needCancel: true,
       titleCancel: null,
@@ -136,15 +135,16 @@ class _NetworkPageState extends State<NetworkPage> {
   }
 
   _pushToLogin(Network network) async {
+
+    WebSocket().closeWebSocket();
+    final _networkName = Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
+    AccountRepository().clearData();
+    AccountRepository().notifierNetwork.value = network;
+    AccountRepository().networkName.value = _networkName;
+    Storage.write(StorageKeys.networkName.name, _networkName.name);
     await Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
       SignInPage.routeName,
           (route) => false,
     );
-    WebSocket().closeWebSocket();
-    final _networkName =
-    Web3Utils.getNetworkNameSwap(AccountRepository().networkName.value!);
-    AccountRepository().clearData();
-    AccountRepository().notifierNetwork.value = network;
-    Storage.write(StorageKeys.networkName.name, _networkName.name);
   }
 }

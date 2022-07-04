@@ -170,6 +170,7 @@
     "close": "Close",
     "reset": "Reset",
     "retry": "Retry",
+    "update": "Update",
     "title": "Title",
     "enterTitle": "Enter title",
     "accept": "Accept",
@@ -1295,6 +1296,7 @@
     "savedPhrase": "I’ve saved mnemonic phrase",
     "buyDescriptionWQT": "The easiest way to buy WQT is using USDT.\nNetworks available for purchase: Ethereum, Binance Smart Chain and Polygon. After the purchase, WQT will automatically deposit to your WorkNet network wallet, minus the transaction fee.",
     "changeNetwork": "Change network",
+    "changeNetworkInfo": "Do you really want to change the network?\nIf there is a change to this network, the current session will be over. You will need to re-enter the platform.",
     "cryptoWallet": "Wallet address",
     "bankCard": "Bank card",
     "send": "Send",
@@ -1536,7 +1538,7 @@
     "amountBalance": "Amount (Balance: {maxAmount})",
     "addressWalletTo": "Address wallet to",
     "addressTo": "Address to",
-    "amountOfWQT": "Amount of WQT ≈"
+    "amountOfWQT": "Amount of WQT"
   },
   "dispute": {
     "statuses": {
