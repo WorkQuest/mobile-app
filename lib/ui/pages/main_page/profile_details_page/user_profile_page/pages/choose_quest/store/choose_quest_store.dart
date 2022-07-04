@@ -110,7 +110,7 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
         userId: userId,
         message: "quests.inviteToQuest".tr(),
       );
-      await AccountRepository().getClient().handleEvent(
+      await AccountRepository().getClientWorkNet().handleEvent(
             function: WQContractFunctions.assignJob,
             contractAddress: quest.contractAddress!,
             params: [
@@ -126,7 +126,7 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
   }
 
   Future<double> getEstimateGas(String userId) async {
-    final _client = AccountRepository().getClient();
+    final _client = AccountRepository().getClientWorkNet();
     final _user = await _apiProvider.getProfileUser(userId: userId);
     final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
     final _function = _contract.function(WQContractFunctions.assignJob.name);

@@ -8,9 +8,12 @@ import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import 'package:app/ui/widgets/default_textfield.dart';
+import 'package:app/ui/widgets/dropdown_adaptive_widget.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/storage.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:app/utils/validator.dart';
@@ -470,6 +473,24 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
             ),
             hint: "signIn.enterMnemonicPhrase".tr(),
             inputFormatters: [],
+          ),
+        ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: DropDownAdaptiveWidget<Network>(
+            colorText: Colors.black,
+            items: Network.values,
+            value: AccountRepository().notifierNetwork.value,
+            onChanged: (value) {
+              setState(() {
+                final _networkName =
+                (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+                AccountRepository().setNetwork(_networkName);
+                Storage.write(StorageKeys.network.toString(), (value).name);
+                Storage.write(StorageKeys.networkName.toString(), _networkName.name);
+              });
+              return value;
+            },
           ),
         ),
       ],

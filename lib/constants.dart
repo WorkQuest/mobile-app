@@ -59,92 +59,181 @@ class RegExpFields {
   static final firstNameRegExp = RegExp(r'^[a-zA-Z]+$');
   static final passwordRegExp = RegExp(r'^[а-яА-Я]');
   static final addressRegExp = RegExp(r'[0-9a-fA-F]');
+  static final addressBech32RegExp = RegExp(r'[0-9a-zA-Z]');
 }
 
 class Configs {
   static final configsNetwork = {
-    ConfigNameNetwork.testnet: ConfigNetwork(
-      rpc: 'https://dev-node-ams3.workquest.co',
-      wss: 'wss://wss-dev-node-ams3.workquest.co',
+    NetworkName.workNetMainnet: ConfigNetwork(
+      rpc: 'https://mainnet-gate.workquest.co/',
+      wss: 'wss://mainnet-gate-01.workquest.co/tendermint-rpc/websocket',
       urlExplorer: '',
-      dataCoins: [
+      dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.WQT,
-          iconPath: 'assets/coins/wqt.svg',
+          iconPath: 'assets/svg/wqt_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.WUSD,
-          addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
-          iconPath: 'assets/coins/wusd.svg',
+          addressToken: '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa',
+          iconPath: 'assets/svg/wusd_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.wETH,
-          addressToken: '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24',
-          iconPath: 'assets/coins/weth.svg',
+          addressToken: '0x8E52341384F5286f4c76cE1072Aba887Be8E4EB9',
+          iconPath: 'assets/svg/weth_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.wBNB,
-          addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
-          iconPath: 'assets/coins/wbnb.svg',
+          addressToken: '0xD7ca5F803807b03D49606D4f8e66551170b1d689',
+          iconPath: 'assets/svg/wbnb_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
-          addressToken: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
-          iconPath: 'assets/coins/usdt.svg',
+          addressToken: '0xD93d2cF0e0179112469188F61ceb948F2Dbe4824',
+          iconPath: 'assets/svg/usdt_coin_icon.svg',
         ),
       ],
     ),
-    ConfigNameNetwork.rinkeby: ConfigNetwork(
-      rpc:
-          'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby',
+    NetworkName.workNetTestnet: ConfigNetwork(
+      rpc: 'https://testnet-gate.workquest.co/',
+      wss: 'wss://testnet-gate.workquest.co/tendermint-rpc/websocket',
+      urlExplorer: '',
+      dataCoins: const [
+        DataCoins(
+          symbolToken: TokenSymbols.WQT,
+          iconPath: 'assets/svg/wqt_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.WUSD,
+          addressToken: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
+          iconPath: 'assets/svg/wusd_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.wETH,
+          addressToken: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
+          iconPath: 'assets/svg/weth_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.wBNB,
+          addressToken: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
+          iconPath: 'assets/svg/wbnb_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.USDT,
+          addressToken: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859',
+          iconPath: 'assets/svg/usdt_coin_icon.svg',
+        ),
+      ],
+    ),
+    NetworkName.ethereumMainnet: ConfigNetwork(
+      rpc: 'https://eth-mainnet.public.blastapi.io/',
       wss:
-          'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby/ws',
-      urlExplorer: 'https://rinkeby.etherscan.io/address/',
-      dataCoins: [
+      'wss://speedy-nodes-nyc.moralis.io/74820919f33fda869d12e3ec/eth/mainnet/ws',
+      urlExplorer: 'https://etherscan.io/address/',
+      dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.ETH,
-          iconPath: 'assets/coins/weth.svg',
+          iconPath: 'assets/svg/weth_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
-          addressToken: '0xD92E713d051C37EbB2561803a3b5FBAbc4962431',
-          iconPath: 'assets/coins/usdt.svg',
+          addressToken:
+          '0xdAC17F958D2ee523a2206206994597C13D831ec7', // decimals 6
+          iconPath: 'assets/svg/usdt_coin_icon.svg',
         ),
       ],
     ),
-    ConfigNameNetwork.binance: ConfigNetwork(
+    NetworkName.ethereumTestnet: ConfigNetwork(
       rpc:
-          'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet',
+      'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby',
       wss:
-          'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet/ws',
-      urlExplorer: 'https://testnet.bscscan.com/address/',
-      dataCoins: [
+      'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby/ws',
+      urlExplorer: 'https://rinkeby.etherscan.io/address/',
+      dataCoins: const [
+        DataCoins(
+          symbolToken: TokenSymbols.ETH,
+          iconPath: 'assets/svg/weth_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.USDT,
+          addressToken:
+          '0xD92E713d051C37EbB2561803a3b5FBAbc4962431', // decimals 6
+          iconPath: 'assets/svg/usdt_coin_icon.svg',
+        ),
+      ],
+    ),
+    NetworkName.bscMainnet: ConfigNetwork(
+      rpc: 'https://bscrpc.com/',
+      wss:
+      'wss://speedy-nodes-nyc.moralis.io/74820919f33fda869d12e3ec/bsc/mainnet/ws',
+      urlExplorer: 'https://bscscan.com/address/',
+      dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.BNB,
-          iconPath: 'assets/coins/wbnb.svg',
+          iconPath: 'assets/svg/wbnb_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
-          addressToken: '0xC9bda0FA861Bd3F66c7d0Fd75A9A8344e6Caa94A',
-          iconPath: 'assets/coins/usdt.svg',
+          addressToken:
+          '0x55d398326f99059ff775485246999027b3197955', // decimals 18
+          iconPath: 'assets/svg/usdt_coin_icon.svg',
         ),
       ],
     ),
-    ConfigNameNetwork.polygon: ConfigNetwork(
+    NetworkName.bscTestnet: ConfigNetwork(
       rpc:
-          'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai',
+      'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet',
       wss:
-          'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai/ws',
-      urlExplorer: 'https://mumbai.polygonscan.com/address/',
-      dataCoins: [
+      'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet/ws',
+      urlExplorer: 'https://testnet.bscscan.com/address/',
+      dataCoins: const [
         DataCoins(
-          symbolToken: TokenSymbols.MATIC,
-          iconPath: 'assets/coins/wqt.svg',
+          symbolToken: TokenSymbols.BNB,
+          iconPath: 'assets/svg/wbnb_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
-          addressToken: '0x631E327EA88C37D4238B5c559A715332266e7Ec1',
-          iconPath: 'assets/coins/usdt.svg',
+          addressToken:
+          '0xC9bda0FA861Bd3F66c7d0Fd75A9A8344e6Caa94A', // decimals 18
+          iconPath: 'assets/svg/usdt_coin_icon.svg',
+        ),
+      ],
+    ),
+    NetworkName.polygonMainnet: ConfigNetwork(
+      rpc: 'https://polygon-mainnet.public.blastapi.io/',
+      wss:
+      'wss://speedy-nodes-nyc.moralis.io/74820919f33fda869d12e3ec/polygon/mainnet/ws',
+      urlExplorer: 'https://polygonscan.com/address/',
+      dataCoins: const [
+        DataCoins(
+          symbolToken: TokenSymbols.MATIC,
+          iconPath: 'assets/svg/wqt_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.USDT,
+          addressToken:
+          '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', // decimals 6
+          iconPath: 'assets/svg/usdt_coin_icon.svg',
+        ),
+      ],
+    ),
+    NetworkName.polygonTestnet: ConfigNetwork(
+      rpc:
+      'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai',
+      wss:
+      'wss://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai/ws',
+      urlExplorer: 'https://mumbai.polygonscan.com/address/',
+      dataCoins: const [
+        DataCoins(
+          symbolToken: TokenSymbols.MATIC,
+          iconPath: 'assets/svg/wqt_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.USDT,
+          addressToken:
+          '0x631E327EA88C37D4238B5c559A715332266e7Ec1', // decimals 6
+          iconPath: 'assets/svg/usdt_coin_icon.svg',
         ),
       ],
     ),
@@ -184,6 +273,19 @@ class WorkerBadge {
   const WorkerBadge(this.title, this.color);
 }
 
-enum ConfigNameNetwork { testnet, rinkeby, binance, polygon }
+enum NetworkName {
+  workNetMainnet,
+  workNetTestnet,
+  ethereumMainnet,
+  ethereumTestnet,
+  bscMainnet,
+  bscTestnet,
+  polygonMainnet,
+  polygonTestnet
+}
+
+enum Network { testnet, mainnet }
+
+enum SwitchNetworkNames { WORKNET, ETH, BSC, POLYGON }
 
 enum TokenSymbols { WUSD, WQT, wBNB, wETH, USDT, BNB, ETH, MATIC }

@@ -65,6 +65,12 @@ abstract class _SignUpStore extends IStore<bool> with Store {
   Future register() async {
     try {
       this.onLoading();
+      if (AccountRepository().networkName.value == null) {
+        final _networkName = AccountRepository().notifierNetwork.value == Network.mainnet
+            ? NetworkName.workNetMainnet
+            : NetworkName.workNetTestnet;
+        AccountRepository().setNetwork(_networkName);
+      }
       BearerToken bearerToken = await _apiProvider.register(
         email: _email,
         firstName: _firstName,
@@ -73,7 +79,6 @@ abstract class _SignUpStore extends IStore<bool> with Store {
       );
       Storage.writeRefreshToken(bearerToken.refresh);
       Storage.writeAccessToken(bearerToken.access);
-      AccountRepository().setNetwork(ConfigNameNetwork.testnet.name);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

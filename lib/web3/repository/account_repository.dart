@@ -1,4 +1,6 @@
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/service/client_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
@@ -11,98 +13,90 @@ import '../wallet.dart';
 
 class AccountRepository {
   static final AccountRepository _instance = AccountRepository._internal();
-  ValueNotifier<ConfigNameNetwork?> notifier =
-      ValueNotifier<ConfigNameNetwork?>(ConfigNameNetwork.testnet);
 
   factory AccountRepository() => _instance;
 
   AccountRepository._internal();
 
-  ClientService? workNetClient;
-  ClientService? otherClient;
-
-  ClientService getClient({other = false}) {
-    if (other) {
-      return otherClient!;
-    } else {
-      return workNetClient!;
-    }
-  }
-
-  ConfigNameNetwork? configName;
-
   Wallet? userWallet;
+  ClientService? client;
+
+  ValueNotifier<NetworkName?> networkName = ValueNotifier<NetworkName?>(null);
+
+  ValueNotifier<Network> notifierNetwork = ValueNotifier<Network>(Network.mainnet);
 
   String get userAddress => userWallet!.address!;
 
   String get privateKey => userWallet!.privateKey!;
 
-  setWallet(Wallet wallet) {
-    userWallet = wallet;
+  ClientService getClient() {
+    return client!;
   }
 
   connectClient() {
-    final config = Configs.configsNetwork[configName]!;
-    workNetClient = ClientService(Configs.configsNetwork[ConfigNameNetwork.testnet]!);
-    otherClient = ClientService(config);
+    final config = Configs.configsNetwork[networkName.value!];
+    client = ClientService(config!);
   }
 
-  clearData() {
-    userWallet = null;
-    Storage.deleteAllFromSecureStorage();
-    _disconnectWeb3Client();
+  setNetwork(NetworkName networkName) {
+    this.networkName.value = networkName;
+    final _network = Web3Utils.getNetwork(networkName);
+    notifierNetwork.value = _network;
   }
 
-  changeNetwork(ConfigNameNetwork configName) {
-    _saveNetwork(configName);
+  changeNetwork(NetworkName networkName) {
+    _saveNetwork(networkName);
     _disconnectWeb3Client();
     WebSocket().reconnectWalletSocket();
     connectClient();
     GetIt.I.get<TransactionsStore>().getTransactions();
-    GetIt.I.get<WalletStore>().getCoins(isForce: true);
+    GetIt.I.get<WalletStore>().getCoins();
+    GetIt.I.get<TransferStore>().setCoin(null);
+    final _swapNetwork = Web3Utils.getSwapNetworksFromNetworkName(networkName);
   }
 
-  setNetwork(String name) {
-    final configName = _getNetworkNameKey(name);
-    this.configName = configName;
-    notifier.value = configName;
+  setWallet(Wallet wallet) {
+    userWallet = wallet;
   }
 
-  _saveNetwork(ConfigNameNetwork configName) {
-    this.configName = configName;
-    notifier.value = configName;
-    Storage.writeConfig(configName.name);
+  clearData() {
+    userWallet = null;
+    networkName.value = null;
+    notifierNetwork.value = Network.mainnet;
+    _disconnectWeb3Client();
+    GetIt.I.get<TransactionsStore>().clearData();
+    GetIt.I.get<WalletStore>().clearData();
+    GetIt.I.get<TransferStore>().clearData();
+    Storage.deleteAllFromSecureStorage();
+  }
+
+  ConfigNetwork getConfigNetwork() {
+    return Configs.configsNetwork[networkName.value!]!;
+  }
+
+  _saveNetwork(NetworkName networkName) {
+    this.networkName.value = networkName;
+    Storage.write(StorageKeys.networkName.toString(), networkName.name);
   }
 
   _disconnectWeb3Client() {
-    if (workNetClient?.client != null) {
-      workNetClient!.client?.dispose();
-      workNetClient = null;
-    }
-    if (otherClient?.client != null)  {
-      otherClient!.client?.dispose();
-      otherClient = null;
-
+    if (client?.client != null) {
+      client!.client!.dispose();
+      client!.client = null;
     }
   }
 
-  bool get isConfigTestnet => configName == ConfigNameNetwork.testnet;
-
-  ConfigNetwork getConfigNetwork() =>
-      Configs.configsNetwork[configName ?? ConfigNameNetwork.testnet]!;
-
-  ConfigNameNetwork _getNetworkNameKey(String name) {
-    switch (name) {
-      case 'testnet':
-        return ConfigNameNetwork.testnet;
-      case 'rinkeby':
-        return ConfigNameNetwork.rinkeby;
-      case 'polygon':
-        return ConfigNameNetwork.polygon;
-      case 'binance':
-        return ConfigNameNetwork.binance;
-      default:
-        throw Exception('Unknown name network');
+  ClientService getClientWorkNet(){
+    if (notifierNetwork.value == Network.mainnet) {
+      return ClientService(Configs.configsNetwork[NetworkName.workNetMainnet]!);
+    } else if (notifierNetwork.value == Network.testnet) {
+      return ClientService(Configs.configsNetwork[NetworkName.workNetTestnet]!);
+    } else {
+      throw FormatException('Error getting client WorkNet');
     }
   }
+
+  bool get isOtherNetwork =>
+      networkName.value != NetworkName.workNetTestnet &&
+          networkName.value != NetworkName.workNetMainnet;
 }

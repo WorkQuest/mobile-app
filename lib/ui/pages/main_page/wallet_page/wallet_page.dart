@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
-import 'package:app/ui/pages/main_page/wallet_page/network_page.dart';
+import 'package:app/ui/pages/main_page/wallet_page/network_page/network_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/swap_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';

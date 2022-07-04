@@ -35,10 +35,19 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   @action
   setType(TokenSymbols value) => type = value;
 
+  NetworkName get _typeNetwork => AccountRepository().networkName.value!;
+
+  bool get _isOtherNetwork {
+    if (_typeNetwork != NetworkName.workNetTestnet &&
+        _typeNetwork != NetworkName.workNetMainnet) {
+      return true;
+    }
+    return false;
+  }
+
   @action
   getTransactions({bool isForce = false}) async {
-    final _type = _getTypeNetwork();
-    if (_type != ConfigNameNetwork.testnet) {
+    if (_isOtherNetwork) {
       transactions.clear();
       onSuccess(true);
       return;
@@ -97,8 +106,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
 
   @action
   getTransactionsMore() async {
-    final _type = _getTypeNetwork();
-    if (_type != ConfigNameNetwork.testnet) {
+    if (_isOtherNetwork) {
       transactions.clear();
       onSuccess(true);
       return;
@@ -154,5 +162,12 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     }).toList();
   }
 
-  ConfigNameNetwork _getTypeNetwork() => AccountRepository().configName!;
+  @action
+  clearData() {
+    transactions.clear();
+    isMoreLoading = false;
+    canMoreLoading = true;
+    type = TokenSymbols.WQT;
+  }
+
 }

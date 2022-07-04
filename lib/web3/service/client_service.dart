@@ -189,11 +189,9 @@ class ClientService implements ClientServiceI {
   }
 
   Future<double> getEstimateGasForApprove(BigInt price) async {
-    final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
-        .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
-        .addressToken;
+    final _addressWUSD = Web3Utils.getAddressWUSD();
     print('_addressWUSD: $_addressWUSD');
-    final _contractApprove = await getDeployedContract("WQBridgeToken", _addressWUSD!);
+    final _contractApprove = await getDeployedContract("WQBridgeToken", _addressWUSD);
     final _gasForApprove = await getEstimateGasCallContract(
       contract: _contractApprove,
       function: _contractApprove.function(WQBridgeTokenFunctions.approve.name),
@@ -334,10 +332,8 @@ extension ApproveCoin on ClientService {
     required BigInt price,
   }) async {
     final credentials = await getCredentials(AccountRepository().privateKey);
-    final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
-        .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
-        .addressToken;
-    final contract = await getDeployedContract("WQBridgeToken", _addressWUSD!);
+    final _addressWUSD = Web3Utils.getAddressWUSD();
+    final contract = await getDeployedContract("WQBridgeToken", _addressWUSD);
     final ethFunction = contract.function(WQBridgeTokenFunctions.approve.name);
     final fromAddress = await credentials.extractAddress();
     print('fromAddress: $fromAddress');
@@ -360,11 +356,9 @@ extension ApproveCoin on ClientService {
 
   Future<BigInt> allowanceCoin() async {
     print("Allowance coin");
-    final _addressWUSD = Configs.configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
-        .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
-        .addressToken;
+    final _addressWUSD = Web3Utils.getAddressWUSD();
 
-    final _contract = Erc20(address: EthereumAddress.fromHex(_addressWUSD!), client: client!);
+    final _contract = Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
     final _result = await _contract.allowance(
       EthereumAddress.fromHex(AccountRepository().userAddress),
       EthereumAddress.fromHex(Constants.worknetWQFactory),

@@ -5,8 +5,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Storage {
-  static const activeAddress = "address";
-  static const wallet = "wallet";
 
   static FlutterSecureStorage get _secureStorage => FlutterSecureStorage();
 
@@ -103,11 +101,22 @@ class Storage {
   }
 
   static Future<Wallet?> readWallet() async {
-    String? wallet = await _secureStorage.read(key: "wallet");
+    String? wallet = await _secureStorage.read(key: StorageKeys.wallet.name);
     if (wallet == null) {
       return null;
     }
 
     return Wallet.fromJson(jsonDecode(wallet));
   }
+}
+
+enum StorageKeys {
+  refreshToken,
+  accessToken,
+  wallet,
+  pinCode,
+  email,
+  timeTimer,
+  networkName,
+  network
 }

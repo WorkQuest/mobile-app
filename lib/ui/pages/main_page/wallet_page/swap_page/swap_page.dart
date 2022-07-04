@@ -45,7 +45,7 @@ class _SwapPageState extends State<SwapPage> {
   @override
   void initState() {
     store = context.read<SwapStore>();
-    store.setNetwork(SwapNetworks.ethereum);
+    store.setNetwork(SwapNetworks.ETH);
     _showLoading(
       start: true,
       message: 'swap.connecting'.tr(
@@ -321,9 +321,9 @@ class _SwapPageState extends State<SwapPage> {
         },
         title: 'Choose network',
         items: [
-          _ModelItem(iconPath: 'assets/weth_coin_icon.svg', item: SwapNetworks.ethereum),
-          _ModelItem(iconPath: 'assets/wbnb_coin_icon.svg', item: SwapNetworks.binance),
-          _ModelItem(iconPath: 'assets/wqt_coin_icon.svg', item: SwapNetworks.matic),
+          _ModelItem(iconPath: 'assets/eth_logo.svg', item: SwapNetworks.ETH),
+          _ModelItem(iconPath: 'assets/bsc_logo.svg', item: SwapNetworks.BSC),
+          _ModelItem(iconPath: 'assets/polygon_logo.svg', item: SwapNetworks.POLYGON),
         ],
       ),
     );
@@ -342,14 +342,16 @@ class _SwapPageState extends State<SwapPage> {
     );
   }
 
-  _getTitleNetwork(SwapNetworks network) {
+  _getTitleNetwork(SwapNetworks? network) {
     switch (network) {
-      case SwapNetworks.ethereum:
-        return 'Ethereum Main Network';
-      case SwapNetworks.binance:
+      case SwapNetworks.ETH:
+        return 'Ethereum';
+      case SwapNetworks.BSC:
         return 'Binance Smart Chain';
-      case SwapNetworks.matic:
-        return 'Matic Network';
+      case SwapNetworks.POLYGON:
+        return 'POLYGON';
+      default:
+        return 'swap.choose'.tr(namedArgs: {'object': 'network'});
     }
   }
 
@@ -362,14 +364,16 @@ class _SwapPageState extends State<SwapPage> {
     }
   }
 
-  _getIconPathNetwork(SwapNetworks network) {
+  _getIconPathNetwork(SwapNetworks? network) {
     switch (network) {
-      case SwapNetworks.ethereum:
-        return 'assets/weth_coin_icon.svg';
-      case SwapNetworks.binance:
-        return 'assets/wbnb_coin_icon.svg';
-      case SwapNetworks.matic:
-        return 'assets/wqt_coin_icon.svg';
+      case SwapNetworks.ETH:
+        return 'assets/svg/eth_logo.svg';
+      case SwapNetworks.BSC:
+        return 'assets/svg/bsc_logo.svg';
+      case SwapNetworks.POLYGON:
+        return 'assets/svg/polygon_logo.svg';
+      default:
+        return '';
     }
   }
 }
@@ -520,12 +524,12 @@ class _ListBottomWidget extends StatelessWidget {
       return value.name.toUpperCase();
     } else if (value is SwapNetworks) {
       switch (value) {
-        case SwapNetworks.ethereum:
-          return 'Ethereum Main Network';
-        case SwapNetworks.binance:
+        case SwapNetworks.ETH:
+          return 'Ethereum';
+        case SwapNetworks.BSC:
           return 'Binance Smart Chain';
-        case SwapNetworks.matic:
-          return 'Matic Network';
+        case SwapNetworks.POLYGON:
+          return 'Polygon';
       }
     }
     return '';

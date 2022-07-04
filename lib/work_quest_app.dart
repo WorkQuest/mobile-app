@@ -18,11 +18,11 @@ class WorkQuestApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ConfigNameNetwork?>(
-        valueListenable: AccountRepository().notifier,
+    return ValueListenableBuilder<Network>(
+        valueListenable: AccountRepository().notifierNetwork,
         builder: (_, value, child) {
-          final name = value?.name ?? ConfigNameNetwork.testnet.name;
-          final visible = name != ConfigNameNetwork.testnet.name;
+          final name = value.name;
+          final visible = name != Network.mainnet.name;
           return CustomBanner(
             text: '${name.substring(0, 1).toUpperCase()}${name.substring(1)}',
             visible: false,

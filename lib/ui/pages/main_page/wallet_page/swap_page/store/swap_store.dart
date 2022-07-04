@@ -16,7 +16,7 @@ import 'package:app/base_store/i_store.dart';
 
 part 'swap_store.g.dart';
 
-enum SwapNetworks { ethereum, binance, matic }
+enum SwapNetworks { ETH, BSC, POLYGON }
 
 enum SwapToken { tusdt, usdc }
 
@@ -66,7 +66,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
 
   @action
   getMaxBalance() async =>
-      maxAmount = await service!.getBalanceFromContract(Web3Utils.getTokenUSDT(network!), otherNetwork: true);
+      maxAmount = await service!.getBalanceFromContract(Web3Utils.getTokenUSDTForSwap(network!), otherNetwork: true);
 
   @action
   setNetwork(SwapNetworks value) async {
@@ -171,7 +171,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   Future<DeployedContract> _getContract() async {
     final _abiJson = await rootBundle.loadString("assets/contracts/WQBridge.json");
     final _contractAbi = ContractAbi.fromJson(_abiJson, 'WQBridge');
-    final _contractAddress = EthereumAddress.fromHex(Web3Utils.getAddressContractBridge(network!));
+    final _contractAddress = EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
     return DeployedContract(_contractAbi, _contractAddress);
   }
 
@@ -182,8 +182,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       service = null;
     }
     service = ClientService(
-      Configs.configsNetwork[ConfigNameNetwork.testnet]!,
-      customRpc: Web3Utils.getRpcNetwork(network!),
+      Configs.configsNetwork[NetworkName.workNetMainnet]!,
+      customRpc: Web3Utils.getRpcNetworkForSwap(network!),
     );
     await Future.delayed(const Duration(seconds: 2));
     await getMaxBalance();
@@ -191,11 +191,11 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
 
   _approve() async {
     final contract = Erc20(
-      address: EthereumAddress.fromHex(Web3Utils.getTokenUSDT(network!)),
+      address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
       client: service!.client!,
     );
     final _cred = await service!.getCredentials(AccountRepository().userWallet!.privateKey!);
-    final _spender = EthereumAddress.fromHex(Web3Utils.getAddressContractBridge(network!));
+    final _spender = EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
     final _gas = await service!.getGas();
     await contract.approve(
       _spender,
@@ -207,5 +207,21 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         value: EtherAmount.zero(),
       ),
     );
+  }
+
+  @action
+  clearData() {
+    if (service != null) {
+      service?.client?.dispose();
+    }
+    service = null;
+    courseWQT = null;
+    network = null;
+    amount = 0.0;
+    maxAmount = null;
+    isConnect = false;
+    convertWQT = null;
+    isLoadingCourse = false;
+    isSuccessCourse = false;
   }
 }

@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:app/constants.dart';
 import 'package:app/exceptions.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/log_service.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -28,7 +30,17 @@ class TestHttpClient extends _HttpClient {
 
 class _HttpClient implements IHttpClient {
   final Dio _dio;
-  final String _baseUrl = "https://dev-app.workquest.co/api";
+
+  Network get _network => AccountRepository().notifierNetwork.value;
+
+  String get _baseUrl {
+    if (_network == Network.testnet) {
+      return 'https://dev-app.workquest.co/api/v1';
+    } else if (_network == Network.mainnet) {
+      return 'https://app.workquest.co/api/v1';
+    }
+    return 'https://app.workquest.co/api/v1';
+  }
 
   @override
   String? accessToken;

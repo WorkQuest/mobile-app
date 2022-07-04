@@ -179,7 +179,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   Future<String> getFee({bool isEdit = false}) async {
     double _resultGas = 0.0;
     try {
-      final _client = AccountRepository().getClient();
+      final _client = AccountRepository().getClientWorkNet();
       if (isEdit) {
         final _price = BigInt.from((double.parse(price)) * pow(10, 18));
         if (_price > oldPrice) {
@@ -274,7 +274,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       print('questModel: ${questModel.toJson()}');
       //priority show item
 
-      final _client = AccountRepository().getClient();
+      final _client = AccountRepository().getClientWorkNet();
 
       if (isEdit) {
         await _client.handleEvent(

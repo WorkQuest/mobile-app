@@ -20,7 +20,7 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
     try {
       final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
-      await AccountRepository().getClient(other: true).sendTransaction(
+      await AccountRepository().getClient().sendTransaction(
             isToken: _isToken,
             address: addressTo,
             amount: amount,

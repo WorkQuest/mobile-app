@@ -39,8 +39,8 @@ class ListTransactions extends StatelessWidget {
           );
         }
         if (store.isSuccess) {
-          final _isTestnet = AccountRepository().isConfigTestnet;
-          if (_isTestnet) {
+          final _isOtherNetwork = AccountRepository().isOtherNetwork;
+          if (!_isOtherNetwork) {
             if (store.transactions.isEmpty) {
               return SliverFillRemaining(
                 child: Center(
