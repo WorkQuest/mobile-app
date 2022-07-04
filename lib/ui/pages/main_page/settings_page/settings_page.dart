@@ -6,6 +6,7 @@ import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/profile_settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
+import 'package:app/ui/pages/main_page/wallet_page/network_page/network_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
@@ -187,6 +188,31 @@ class SettingsPage extends StatelessWidget {
                                   );
                                 },
                               ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              SettingsCard(
+                                icon: GradientIcon(
+                                  SvgPicture.asset(
+                                    "assets/settings_network_icon.svg",
+                                  ),
+                                  20.0,
+                                ),
+                                title: "wallet.network".tr(),
+                                onTap: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed(
+                                    NetworkPage.routeName,
+                                  );
+                                },
+                              ),
+                              _spacer,
+                              Spacer(),
                             ],
                           ),
                         ),

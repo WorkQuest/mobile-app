@@ -1,15 +1,16 @@
 import 'dart:io';
 import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
-import 'package:app/ui/pages/main_page/wallet_page/network_page/network_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/swap_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
+import 'package:app/ui/widgets/dropdown_adaptive_widget.dart';
 import 'package:app/ui/widgets/shimmer.dart';
 import 'package:app/utils/snack_bar.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -73,32 +74,25 @@ class _WalletPageState extends State<WalletPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("wallet.wallet".tr()),
-              PopupMenuButton<String>(
-                elevation: 10,
-                icon: Icon(Icons.more_vert),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                ),
-                onSelected: (value) async {
-                  switch (value) {
-                    case "wallet.changeNetwork":
-                      await Navigator.of(context, rootNavigator: true).pushNamed(NetworkPage.routeName);
-                      break;
-                  }
+              ValueListenableBuilder<NetworkName?>(
+                valueListenable: AccountRepository().networkName,
+                builder: (_, value, child) {
+                  final _networkName = Web3Utils.getNetworkNameForSwitch(value!);
+                  return DropDownAdaptiveWidget<SwitchNetworkNames>(
+                    value: _networkName,
+                    onChanged: (value) {
+                      final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
+                          value as SwitchNetworkNames, AccountRepository().notifierNetwork.value);
+                      AccountRepository().changeNetwork(_newNetwork);
+
+                      return value;
+                    },
+                    items: SwitchNetworkNames.values,
+                    colorText: Colors.black,
+                    haveIcon: true,
+                  );
                 },
-                itemBuilder: (BuildContext context) {
-                  return {
-                    "wallet.changeNetwork",
-                  }.map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(
-                        choice.tr(),
-                      ),
-                    );
-                  }).toList();
-                },
-              ),
+              )
             ],
           ),
         ),
@@ -152,13 +146,14 @@ class _WalletPageState extends State<WalletPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                _BannerBuyingWQT(
-                  button: outlinedButton(
-                    title: 'wallet.buyWQT'.tr(),
-                    route: SwapPage.routeName,
-                    color: Colors.white,
+                if (_isShowBanner)
+                  _BannerBuyingWQT(
+                    button: outlinedButton(
+                      title: 'wallet.buyWQT'.tr(),
+                      route: SwapPage.routeName,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -276,6 +271,25 @@ class _WalletPageState extends State<WalletPage> {
   Future _onRefresh() async {
     GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
     return GetIt.I.get<WalletStore>().getCoins();
+  }
+
+  bool get _isShowBanner {
+    final _networkName = AccountRepository().networkName.value!;
+    if (_networkName == NetworkName.workNetTestnet || _networkName == NetworkName.workNetMainnet) {
+      if (GetIt.I.get<WalletStore>().coins.isEmpty) {
+        return false;
+      }
+      return true;
+      try {
+        final _wqt = GetIt.I.get<WalletStore>().coins.firstWhere((element) => element.symbol == TokenSymbols.WQT);
+        if (double.parse(_wqt.amount!) == 0.0) {
+          return true;
+        }
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
   }
 }
 
