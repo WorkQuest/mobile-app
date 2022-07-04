@@ -34,6 +34,14 @@ class Constants {
   static const String defaultImageNetwork =
       'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 
+  static const String worknetMainnetWQFactory = '0x3d9782B4Ba9C10d09973dd1f7C16410c931f5468';
+  static const String worknetTestnetWQFactory = '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4';
+
+  static const String worknetMainnetWQPromotion = '';
+  static const String worknetTestnetWQPromotion = '0x23918c4cC7001fB4e2BF28c8283b02BcD6975bf0';
+
+  static const String worknetMainnetWUSD = '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa';
+  static const String worknetTestnetWUSD = '0xf95ef11d0af1f40995218bb2b67ef909bcf30078';
 }
 
 abstract class AppColor {
@@ -282,7 +290,7 @@ enum NetworkName {
   polygonTestnet
 }
 
-enum Network { testnet, mainnet }
+enum Network { testnet, mainnet, }
 
 enum SwitchNetworkNames { WORKNET, ETH, BSC, POLYGON }
 

@@ -195,27 +195,27 @@ class Web3Utils {
   static String getAddressWUSD() {
     final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
     if (_isMainnet) {
-      return '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa';
+      return Constants.worknetMainnetWUSD;
     } else {
-      return '0xf95ef11d0af1f40995218bb2b67ef909bcf30078';
+      return Constants.worknetTestnetWUSD;
     }
   }
 
   static String getAddressWorknetWQFactory() {
     final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
     if (_isMainnet) {
-      return '0x3d9782B4Ba9C10d09973dd1f7C16410c931f5468';
+      return Constants.worknetMainnetWQFactory;
     } else {
-      return '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4';
+      return Constants.worknetTestnetWQFactory;
     }
   }
 
   static String getAddressWorknetWQPromotion() {
     final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
     if (_isMainnet) {
-      throw FormatException('Not have address');
+      return Constants.worknetMainnetWQPromotion;
     } else {
-      return '0x23918c4cC7001fB4e2BF28c8283b02BcD6975bf0';
+      return Constants.worknetTestnetWQPromotion;
     }
   }
 
