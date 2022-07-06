@@ -53,6 +53,8 @@ app.*.map.json
 **/android/gradlew.bat
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
+**/android/app/google-services.json
+**/android/app/src/main/AndroidManifest.xml
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
@@ -79,6 +81,7 @@ app.*.map.json
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
 **/ios/Runner/keys.swift
+**/ios/Runner/GoogleService-Info.plist
 /ios/GoogleService-Info.plist
 
 # Exceptions to above rules.
