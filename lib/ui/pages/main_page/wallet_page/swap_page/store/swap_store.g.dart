@@ -184,6 +184,17 @@ mixin _$SwapStore on SwapStoreBase, Store {
   }
 
   @override
+  dynamic clearData() {
+    final _$actionInfo = _$SwapStoreBaseActionController.startAction(
+        name: 'SwapStoreBase.clearData');
+    try {
+      return super.clearData();
+    } finally {
+      _$SwapStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 network: ${network},

@@ -11,7 +11,7 @@ import 'package:mobx/mobx.dart';
 
 part 'portfolio_store.g.dart';
 
-@injectable
+@singleton
 class PortfolioStore extends _PortfolioStore with _$PortfolioStore {
   PortfolioStore(ApiProvider apiProvider) : super(apiProvider);
 }

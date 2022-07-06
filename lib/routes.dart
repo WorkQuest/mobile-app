@@ -67,7 +67,8 @@ import 'package:app/ui/pages/main_page/settings_page/settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/store/settings_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/network_page.dart';
+import 'package:app/ui/pages/main_page/wallet_page/network_page/network_page.dart';
+import 'package:app/ui/pages/main_page/wallet_page/network_page/store/network_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/swap_page.dart';
@@ -591,7 +592,7 @@ class Routes {
       case NetworkPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
-            create: (context) => {},
+            create: (context) => getIt.get<NetworkStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: NetworkPage(),

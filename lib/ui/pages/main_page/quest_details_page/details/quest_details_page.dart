@@ -367,19 +367,19 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
     String employment = "";
     switch (storeQuest.questInfo!.employment) {
       case "FullTime":
-        employment = "Full time";
+        employment = "quests.employment.fullTime".tr();
         break;
       case "PartTime":
-        employment = "Part time";
+        employment = "quests.employment.partTime".tr();
         break;
       case "FixedTerm":
-        employment = "Fixed term";
+        employment = "quests.employment.fixedTerm".tr();
         break;
       case "RemoteWork":
-        employment = "Remote work";
+        employment = "quests.employment.RemoteWork".tr();
         break;
       case "EmploymentContract":
-        employment = "Employment contract";
+        employment = "quests.employment.EmploymentContract".tr();
         break;
     }
 

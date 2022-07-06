@@ -351,7 +351,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 ),
                 onSelected: (value) async {
                   switch (value) {
-                    case "Leave from chat":
+                    case "chat.leaveFromChat":
                       await _store.leaveFromChat();
                       if (_store.isSuccess) {
                         await _chatStore!.loadChats(starred: false);
@@ -363,11 +363,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 },
                 itemBuilder: (BuildContext context) {
                   return {
-                    "Leave from chat",
+                    "chat.leaveFromChat",
                   }.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
-                      child: Text(choice),
+                      child: Text(choice.tr()),
                     );
                   }).toList();
                 },
@@ -383,7 +383,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 ),
                 onSelected: (value) async {
                   switch (value) {
-                    case "Add review to the arbiter":
+                    case "chat.addReviewArbiter":
                       await Navigator.pushNamed(
                         context,
                         CreateReviewPage.routeName,
@@ -400,11 +400,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 },
                 itemBuilder: (BuildContext context) {
                   return {
-                    "Add review to the arbiter",
+                    "chat.addReviewArbiter",
                   }.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
-                      child: Text(choice),
+                      child: Text(choice.tr()),
                     );
                   }).toList();
                 },

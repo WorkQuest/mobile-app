@@ -49,7 +49,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   final descriptionKey = new GlobalKey();
   final priceKey = new GlobalKey();
   final confirmUnderstandAboutEdit = new GlobalKey();
-  final contractAddress = Constants.worknetWQFactory;
+  final contractAddress = Web3Utils.getAddressWorknetWQFactory();
 
   bool isEdit = false;
 
@@ -580,7 +580,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                             await confirmTransaction(
                                               context,
                                               fee: _gas,
-                                              transaction: "Transaction info",
+                                              transaction: "ui.txInfo".tr(),
                                               address: contractAddress,
                                               amount: store.price,
                                               onPressConfirm: () async {
@@ -645,7 +645,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                           await confirmTransaction(
                                             context,
                                             fee: _gas,
-                                            transaction: "Transaction info",
+                                            transaction: "ui.txInfo".tr(),
                                             address: contractAddress,
                                             amount: store.price,
                                             onPressConfirm: () async {
@@ -695,7 +695,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                         );
                                     },
                               title: isEdit
-                                  ? "Edit Quest"
+                                  ? "quests.editQuest".tr()
                                   : 'quests.createAQuest'.tr(),
                             ),
                           ),

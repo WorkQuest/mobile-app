@@ -12,13 +12,13 @@ import '../../../../constants.dart';
 import '../../../../web3/contractEnums.dart';
 import '../../../widgets/dismiss_keyboard.dart';
 
-class _CoinItem {
+class CoinItem {
   String iconPath;
   String title;
   bool isEnable;
   TokenSymbols typeCoin;
 
-  _CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);
+  CoinItem(this.iconPath, this.title, this.typeCoin, this.isEnable);
 }
 
 class _WalletItem {
@@ -34,9 +34,9 @@ final _divider = const SizedBox(
 );
 final String coinsPath = "assets/coins";
 
-List<_CoinItem> _coins = [
-  _CoinItem("$coinsPath/wusd.svg", 'WUSD', TokenSymbols.WUSD, true),
-  _CoinItem("$coinsPath/wqt.svg", 'WQT', TokenSymbols.WQT, true),
+List<CoinItem> _coins = [
+  CoinItem("$coinsPath/wusd.svg", 'WUSD', TokenSymbols.WUSD, true),
+  CoinItem("$coinsPath/wqt.svg", 'WQT', TokenSymbols.WQT, true),
 ];
 
 List<_WalletItem> _wallets = [
@@ -113,7 +113,7 @@ class _PaymentPageState extends State<PaymentPage>
                   tabs: <Widget>[
                     Tab(
                       child: Text(
-                        "Crypto address",
+                        "ui.cryptoAddress".tr(),
                         style: TextStyle(fontSize: 14.0),
                       ),
                     ),
@@ -185,7 +185,7 @@ class _WalletViewTab extends StatefulWidget {
 }
 
 class _WalletViewTabState extends State<_WalletViewTab> {
-  _CoinItem? _currentCoin;
+  CoinItem? _currentCoin;
 
   _WalletItem? _currentWallet;
 
@@ -211,7 +211,7 @@ class _WalletViewTabState extends State<_WalletViewTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Choose currency"),
+            Text("ui.chooseCurrency".tr()),
             _divider,
             GestureDetector(
               onTap: _chooseCoin,
@@ -365,7 +365,7 @@ class _WalletViewTabState extends State<_WalletViewTab> {
                       }
                     }
                   : null,
-              child: Text("Pay"),
+              child: Text("wallet.pay".tr()),
             ),
             const SizedBox(
               height: 20.0,
@@ -428,7 +428,7 @@ class _WalletViewTabState extends State<_WalletViewTab> {
     );
   }
 
-  void _selectCoin(_CoinItem coin) {
+  void _selectCoin(CoinItem coin) {
     setState(() {
       _currentCoin = coin;
     });

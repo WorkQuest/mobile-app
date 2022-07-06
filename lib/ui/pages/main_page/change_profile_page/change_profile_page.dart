@@ -111,9 +111,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
             Navigator.pop(context, true);
           } else {
             await AlertDialogUtils.showSuccessDialog(context,
-                text: 'Enter code from SMS in SMS Verification');
-            await Navigator.of(context, rootNavigator: true)
-                .pushReplacementNamed(
+                text: 'settings.enterSMS'.tr());
+            await Navigator.of(context, rootNavigator: true).pushReplacementNamed(
               SMSVerificationPage.routeName,
             );
           }
@@ -244,9 +243,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                   ),
                 _InputWidget(
                   title: "settings.twitterUsername".tr(),
-                  initialValue: pageStore
-                          .userData.additionalInfo!.socialNetwork?.twitter ??
-                      "",
+                  initialValue:
+                      pageStore.userData.additionalInfo!.socialNetwork?.twitter ??
+                          "",
                   onChanged: (text) {
                     ProfileMeResponse data = pageStore.userData;
                     data.additionalInfo!.socialNetwork?.twitter = text;
@@ -321,8 +320,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         (pageStore.userData.tempPhone?.fullPhone ?? "").contains(" ")) {
       AlertDialogUtils.showInfoAlertDialog(
         context,
-        title: "Warning",
-        content: "The number must not contain dashes or spaces",
+        title: "modals.warning".tr(),
+        content: "errors.numberContainDashesOrSpaces".tr(),
       );
       return;
     }
@@ -378,7 +377,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         await AlertDialogUtils.showSuccessDialog(context);
       } else {
         await AlertDialogUtils.showSuccessDialog(context,
-            text: 'Enter code from SMS in SMS Verification');
+            text: 'settings.enterSMS'.tr());
       }
     }
   }
@@ -743,11 +742,7 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
           child: InternationalPhoneNumberInput(
             initialValue: widget.initialValue,
             errorMessage: "modals.invalidPhone".tr(),
-            validator: widget.title == "modals.phoneNumber"
-                ? Validators.phoneNumberValidator
-                : (value) {
-                    return null;
-                  },
+            autoValidateMode: AutovalidateMode.onUserInteraction,
             onInputChanged: widget.onChanged,
             selectorConfig: SelectorConfig(
               leadingPadding: 16,

@@ -80,9 +80,9 @@ class _EditUserCellState extends State<EditUserCell> {
                 itemBuilder: (BuildContext context) {
                   return {
                     if (profileStore.userData!.role == UserRole.Employer)
-                      "Give a quest",
-                    "Private chat",
-                    "Remove from the chat",
+                      "chat.giveQuest",
+                    "chat.privateChat",
+                    "chat.removeFromChat",
                   }.map((String choice) {
                     return PopupMenuItem<String>(
                       value: choice,
@@ -97,16 +97,16 @@ class _EditUserCellState extends State<EditUserCell> {
 
   Future<void> workerMenu(String value) async {
     switch (value) {
-      case "Private chat":
+      case "chat.privateChat":
         await Navigator.of(context, rootNavigator: true).pushNamed(
           CreatePrivatePage.routeName,
           arguments: widget.user.userId,
         );
         break;
-      case "Remove from the chat":
+      case "chat.removeFromChat":
         await AlertDialogUtils.showAlertDialog(
           context,
-          title: Text("Warning"),
+          title: Text("modals.warning".tr()),
           content: Padding(
             padding: const EdgeInsets.only(
               left: 25.0,
@@ -114,12 +114,12 @@ class _EditUserCellState extends State<EditUserCell> {
               right: 25.0,
             ),
             child: Text(
-              "Remove from the chat?",
+              "chat.quesRemoveFromChat".tr(),
               overflow: TextOverflow.ellipsis,
             ),
           ),
           needCancel: true,
-          titleCancel: "Cancel",
+          titleCancel: "meta.cancel".tr(),
           titleOk: "Ok",
           onTabCancel: null,
           onTabOk: () async {
@@ -151,22 +151,22 @@ class _EditUserCellState extends State<EditUserCell> {
 
   Future<void> employerMenu(String value) async {
     switch (value) {
-      case "Give a quest":
+      case "chat.giveQuest":
         await Navigator.of(context, rootNavigator: true).pushNamed(
           ChooseQuestPage.routeName,
           arguments: widget.user.userId!,
         );
         break;
-      case "Private chat":
+      case "chat.privateChat":
         await Navigator.of(context, rootNavigator: true).pushNamed(
           CreatePrivatePage.routeName,
           arguments: widget.user.userId,
         );
         break;
-      case "Remove from the chat":
+      case "chat.removeFromChat":
         await AlertDialogUtils.showAlertDialog(
           context,
-          title: Text("Warning"),
+          title: Text("modals.warning".tr()),
           content: Padding(
             padding: const EdgeInsets.only(
               left: 25.0,
@@ -174,12 +174,12 @@ class _EditUserCellState extends State<EditUserCell> {
               right: 25.0,
             ),
             child: Text(
-              "Remove from the chat?",
+              "chat.quesRemoveFromChat".tr(),
               overflow: TextOverflow.ellipsis,
             ),
           ),
           needCancel: true,
-          titleCancel: "Cancel",
+          titleCancel: "meta.cancel".tr(),
           titleOk: "Ok",
           onTabCancel: null,
           onTabOk: () async {

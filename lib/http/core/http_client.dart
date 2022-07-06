@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'package:app/constants.dart';
 import 'package:app/exceptions.dart';
 import 'package:app/http/core/i_http_client.dart';
 import 'package:app/log_service.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/utils/storage.dart';
 
@@ -27,7 +30,17 @@ class TestHttpClient extends _HttpClient {
 
 class _HttpClient implements IHttpClient {
   final Dio _dio;
-  final String _baseUrl = "https://dev-app.workquest.co/api";
+
+  Network get _network => AccountRepository().notifierNetwork.value;
+
+  String get _baseUrl {
+    if (_network == Network.testnet) {
+      return 'https://dev-app.workquest.co/api';
+    } else if (_network == Network.mainnet) {
+      return 'https://app.workquest.co/api';
+    }
+    return 'https://app.workquest.co/api';
+  }
 
   @override
   String? accessToken;
@@ -97,7 +110,7 @@ class _HttpClient implements IHttpClient {
     final Response response = await request.catchError((error) {
       if (error is DioError) {
         if (error.response == null) {
-          throw FormatException('Server response timed out');
+          throw FormatException('errors.serverTimedOut'.tr());
         } else {
           final response = RequestErrorModel.fromJson(error.response!.data);
           throw CustomException(response.message);

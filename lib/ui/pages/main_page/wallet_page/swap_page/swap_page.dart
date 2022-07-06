@@ -1,11 +1,12 @@
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
+import 'package:app/web3/service/address_service.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:majascan/majascan.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../constants.dart';
@@ -26,11 +27,9 @@ const _divider = SizedBox(
 const _spaceDivider = SizedBox(
   height: 15,
 );
-const _minimumError =
-    'To avoid unnecessary fees and network slippage, the minimum amount for this pair is \$5 '
+const _minimumError = 'To avoid unnecessary fees and network slippage, the minimum amount for this pair is \$5 '
     'USDT/USDC';
-const _maximumError =
-    'To avoid unnecessary fees and network slippage, the maximum amount for this pair is \$100 '
+const _maximumError = 'To avoid unnecessary fees and network slippage, the maximum amount for this pair is \$100 '
     'USDT/USDC.';
 
 class SwapPage extends StatefulWidget {
@@ -51,8 +50,6 @@ class _SwapPageState extends State<SwapPage> {
   @override
   void initState() {
     store = context.read<SwapStore>();
-    store.setNetwork(SwapNetworks.ethereum);
-    _showLoading(start: true, message: 'Connecting to server...');
     _amountController = TextEditingController();
     _amountController.addListener(() {
       store.setAmount(double.tryParse(_amountController.text) ?? 0.0);
@@ -69,217 +66,283 @@ class _SwapPageState extends State<SwapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: const DefaultAppBar(
-        title: 'Buying WQT',
+        title: 'Swap',
       ),
       body: ObserverListener<SwapStore>(
         onSuccess: () {
-          Navigator.of(context, rootNavigator: true).pop();
-          if (store.successData!) {
+          Navigator.of(context, rootNavigator: true).pop('dialog');
+          if (store.isSuccessCourse) {
+            final _network = AccountRepository().notifierNetwork.value;
+            if (_network == Network.mainnet) {
+              AccountRepository().changeNetwork(NetworkName.workNetMainnet);
+            } else if (_network == Network.testnet) {
+              AccountRepository().changeNetwork(NetworkName.workNetTestnet);
+            }
             AlertDialogUtils.showSuccessDialog(context);
           }
         },
         onFailure: () {
-          Navigator.of(context, rootNavigator: true).pop();
+          Navigator.of(context, rootNavigator: true).pop('dialog');
           return false;
         },
         child: Observer(
-          builder: (_) => RefreshIndicator(
-            onRefresh: () {
-              if (store.isConnect) {
-                store.getCourseWQT(isForce: true);
-                store.getMaxBalance();
-              } else {
-                store.setNetwork(store.network!);
-              }
-              return Future.delayed(const Duration(seconds: 1));
-            },
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
-              child: Padding(
-                padding: _padding,
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            'Choose network',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                          ),
-                          const Spacer(),
-                          if (!store.isConnect && store.errorMessage != null)
-                            SizedBox(
-                              height: 18,
-                              child: CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                child: const Text(
-                                  'Retry',
-                                  style:
-                                      TextStyle(color: AppColor.enabledButton),
+          builder: (_) => DismissKeyboard(
+            child: RefreshIndicator(
+              onRefresh: () {
+                if (store.isConnect) {
+                  store.getCourseWQT(isForce: true);
+                  store.getMaxBalance();
+                } else {
+                  store.setNetwork(store.network!);
+                }
+                return Future.delayed(const Duration(seconds: 1));
+              },
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                child: Padding(
+                  padding: _padding,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'swap.choose'.tr(namedArgs: {'object': 'network'}),
+                              style: const TextStyle(fontSize: 16, color: Colors.black),
+                            ),
+                            const Spacer(),
+                            if (!store.isConnect && store.errorMessage != null)
+                              SizedBox(
+                                height: 18,
+                                child: CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  child: Text(
+                                    'meta.retry'.tr(),
+                                    style: const TextStyle(color: AppColor.enabledButton),
+                                  ),
+                                  onPressed: () {
+                                    _showLoading(
+                                      message: 'swap.connecting'.tr(
+                                        namedArgs: {'object': 'network'},
+                                      ),
+                                    );
+                                    store.setNetwork(store.network!);
+                                  },
                                 ),
-                                onPressed: () {
-                                  _showLoading(
-                                      message: 'Connecting to network...');
-                                  store.setNetwork(store.network!);
-                                },
+                              ),
+                          ],
+                        ),
+                        _divider,
+                        SelectedItem(
+                          title: _getTitleNetwork(store.network),
+                          iconPath: _getIconPathNetwork(store.network),
+                          isSelected: store.network != null,
+                          onTap: _onPressedSelectNetwork,
+                          isCoin: false,
+                        ),
+                        _spaceDivider,
+                        Text(
+                          'swap.choose'.tr(namedArgs: {'object': 'token'}),
+                          style: const TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                        _divider,
+                        SelectedItem(
+                          title: _getTitleToken(store.token),
+                          iconPath: 'assets/usdt_coin_icon.svg',
+                          isSelected: true,
+                          onTap: _onPressedSelectToken,
+                        ),
+                        _spaceDivider,
+                        Row(
+                          children: [
+                            Text(
+                              'swap.amountBalance'.tr(namedArgs: {'maxAmount': '${store.maxAmount ?? 0.0}'}),
+                              style: const TextStyle(fontSize: 16, color: Colors.black),
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            if (store.isConnect)
+                              SizedBox(
+                                height: 18,
+                                child: CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  child: Text(
+                                    'meta.update'.tr(),
+                                    style: const TextStyle(
+                                      color: AppColor.enabledButton,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    store.getMaxBalance();
+                                  },
+                                ),
+                              )
+                          ],
+                        ),
+                        _divider,
+                        DefaultTextField(
+                          enableDispose: false,
+                          controller: _amountController,
+                          hint: 'wallet.amount'.tr(),
+                          enabled: store.isConnect,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) {
+                            if (value == null) {
+                              return "errors.fieldEmpty".tr();
+                            }
+                            try {
+                              final val = double.parse(value);
+                              if (val < 5.0) {
+                                return 'swap.minimum'.tr();
+                              }
+                              if (val > 100.0) {
+                                return 'swap.maximum'.tr();
+                              }
+                              if (store.maxAmount != null) {
+                                if (store.maxAmount! < val) {
+                                  return 'errors.higherMaxAmount'.tr();
+                                }
+                              }
+                            } catch (e) {
+                              return "errors.incorrectFormat".tr();
+                            }
+                            return null;
+                          },
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                          ],
+                          suffixIcon: CupertinoButton(
+                            padding: const EdgeInsets.only(right: 12.5),
+                            child: Text(
+                              'wallet.max'.tr(),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: AppColor.enabledButton,
                               ),
                             ),
-                        ],
-                      ),
-                      _divider,
-                      SelectedItem(
-                        title: _getTitleNetwork(store.network!),
-                        iconPath: _getIconPathNetwork(store.network!),
-                        isSelected: true,
-                        onTap: _onPressedSelectNetwork,
-                      ),
-                      _spaceDivider,
-                      const Text(
-                        'Choose token',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                      _divider,
-                      SelectedItem(
-                        title: _getTitleToken(store.token),
-                        iconPath: 'assets/usdt_coin_icon.svg',
-                        isSelected: true,
-                        onTap: _onPressedSelectToken,
-                      ),
-                      _spaceDivider,
-                      Row(
-                        children: [
-                          Text(
-                            'Amount (Balance: ${store.maxAmount ?? 0.0})',
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.black),
-                          ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          if (store.isConnect)
-                            SizedBox(
-                              height: 18,
-                              child: CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                child: const Text(
-                                  'Update',
-                                  style: TextStyle(
-                                    color: AppColor.enabledButton,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  store.getMaxBalance();
-                                },
-                              ),
-                            )
-                        ],
-                      ),
-                      _divider,
-                      DefaultTextField(
-                        enableDispose: false,
-                        controller: _amountController,
-                        hint: 'Amount',
-                        enabled: store.isConnect,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value == null) {
-                            return "errors.fieldEmpty".tr();
-                          }
-                          try {
-                            final val = double.parse(value);
-                            if (val < 5.0) {
-                              return _minimumError;
-                            }
-                            if (val > 100.0) {
-                              return _maximumError;
-                            }
-                            if (store.maxAmount != null) {
-                              if (store.maxAmount! < val) {
-                                return 'Higher max amount';
+                            onPressed: () {
+                              if (!store.isConnect) {
+                                return;
                               }
-                            }
-                          } catch (e) {
-                            return "errors.incorrectFormat".tr();
-                          }
-                          return null;
-                        },
-                        keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d+\.?\d{0,18}')),
-                        ],
-                        suffixIcon: CupertinoButton(
-                          padding: const EdgeInsets.only(right: 12.5),
-                          child: Text(
-                            'wallet.max'.tr(),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                              _amountController.text = store.maxAmount.toString();
+                              _addressToController.text =
+                                  AddressService.hexToBech32(AccountRepository().userWallet!.address!);
+                            },
+                          ),
+                        ),
+                        _spaceDivider,
+                        Text(
+                          'swap.addressWalletTo'.tr(),
+                          style: const TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                        _divider,
+                        DefaultTextField(
+                          enableDispose: false,
+                          controller: _addressToController,
+                          hint: 'swap.addressTo'.tr(),
+                          enabled: store.isConnect,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          suffixIcon: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () async {
+                              String? qrResult = await MajaScan.startScan(
+                                  title: "QRcode scanner",
+                                  barColor: Colors.black,
+                                  titleColor: Colors.white,
+                                  qRCornerColor: Colors.blue,
+                                  qRScannerColor: Colors.white,
+                                  flashlightEnable: true,
+                                  scanAreaScale: 0.7
+
+                                  /// value 0.0 to 1.0
+                                  );
+                              if (qrResult != null) {
+                                _addressToController.text = qrResult;
+                              }
+                            },
+                            child: SvgPicture.asset(
+                              'assets/svg/scan_qr.svg',
                               color: AppColor.enabledButton,
                             ),
                           ),
-                          onPressed: () {
-                            if (!store.isConnect) {
-                              return;
+                          validator: (value) {
+                            if (value != null) {
+                              final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
+                              if (_isBech) {
+                                if (value.length != 41) {
+                                  return "errors.incorrectFormat".tr();
+                                }
+                                if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
+                                  return "errors.incorrectFormat".tr();
+                                }
+                              } else {
+                                if (value.length != 42) {
+                                  return "errors.incorrectFormat".tr();
+                                }
+                                if (!RegExpFields.addressRegExp.hasMatch(value)) {
+                                  return "errors.incorrectFormat".tr();
+                                }
+                              }
                             }
-                            _amountController.text = store.maxAmount.toString();
-                            _addressToController.text =
-                                AccountRepository().userWallet!.address!;
+                            return null;
                           },
+                          inputFormatters: [],
                         ),
-                      ),
-                      _spaceDivider,
-                      const Text(
-                        'Address wallet to',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                      _divider,
-                      DefaultTextField(
-                        enableDispose: false,
-                        controller: _addressToController,
-                        hint: 'Address to',
-                        enabled: store.isConnect,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        inputFormatters: [
-                          MaskTextInputFormatter(
-                            mask: '0x########################################',
-                            filter: {"#": RegExpFields.addressRegExp},
-                            initialText: _addressToController.text,
-                          )
-                        ],
-                        validator: (value) {
-                          if (_addressToController.text.length != 42) {
-                            return "errors.incorrectFormat".tr();
-                          }
-                          return null;
-                        },
-                      ),
-                      _spaceDivider,
-                      Row(
-                        children: [
-                          const Text('Amount of WQT ≈ '),
-                          const SizedBox(
-                            width: 2,
-                          ),
-                          if (store.isLoadingCourse)
+                        _spaceDivider,
+                        Row(
+                          children: [
+                            Text('swap.amountOfWQT'.tr()),
                             const SizedBox(
-                              height: 10,
-                              width: 10,
-                              child: CircularProgressIndicator.adaptive(),
+                              width: 2,
                             ),
-                          if (store.isSuccessCourse)
-                            Text(store.convertWQT.toString()),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 250,
-                      ),
-                    ],
+                            Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    AppColor.enabledButton,
+                                    AppColor.blue,
+                                  ],
+                                ),
+                              ),
+                              child: SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: SvgPicture.asset(
+                                  'assets/svg/wqt_coin_icon.svg',
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 2,
+                            ),
+                            const Text('≈'),
+                            const SizedBox(
+                              width: 2,
+                            ),
+                            if (store.isLoadingCourse)
+                              const SizedBox(
+                                height: 10,
+                                width: 10,
+                                child: CircularProgressIndicator.adaptive(),
+                              ),
+                            if (store.isSuccessCourse) Text(store.convertWQT.toString()),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 250,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -288,11 +351,9 @@ class _SwapPageState extends State<SwapPage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: 10.0 + MediaQuery.of(context).padding.bottom),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30.0),
         child: DefaultButton(
-          title: 'Send',
+          title: 'meta.send'.tr(),
           onPressed: _onPressedSend,
         ),
       ),
@@ -302,8 +363,7 @@ class _SwapPageState extends State<SwapPage> {
   _showLoading({bool start = false, String? message}) {
     if (start) {
       Future.delayed(const Duration(milliseconds: 150)).then(
-        (value) =>
-            AlertDialogUtils.showLoadingDialog(context, message: message),
+        (value) => AlertDialogUtils.showLoadingDialog(context, message: message),
       );
     } else {
       AlertDialogUtils.showLoadingDialog(context, message: message);
@@ -312,8 +372,9 @@ class _SwapPageState extends State<SwapPage> {
 
   _onPressedSend() {
     if (_formKey.currentState!.validate()) {
-      _showLoading(message: 'Buying WQT');
-      store.createSwap(_addressToController.text);
+      _showLoading(message: 'swap.buying'.tr());
+      final _isBech = _addressToController.text.substring(0, 2).toLowerCase() == 'wq';
+      store.createSwap(_isBech ? AddressService.bech32ToHex(_addressToController.text) : _addressToController.text);
     }
   }
 
@@ -323,18 +384,17 @@ class _SwapPageState extends State<SwapPage> {
       child: _ListBottomWidget(
         onTap: (value) {
           store.setNetwork(value);
-          _showLoading(message: 'Connecting to server...');
+          _showLoading(
+            message: 'swap.connecting'.tr(
+              namedArgs: {'object': 'server'},
+            ),
+          );
         },
-        title: 'Choose network',
+        title: 'swap.choose'.tr(namedArgs: {'object': 'network'}),
         items: [
-          _ModelItem(
-              iconPath: 'assets/weth_coin_icon.svg',
-              item: SwapNetworks.ethereum),
-          _ModelItem(
-              iconPath: 'assets/wbnb_coin_icon.svg',
-              item: SwapNetworks.binance),
-          _ModelItem(
-              iconPath: 'assets/wqt_coin_icon.svg', item: SwapNetworks.matic),
+          _ModelItem(iconPath: 'assets/eth_logo.svg', item: SwapNetworks.ETH),
+          _ModelItem(iconPath: 'assets/bsc_logo.svg', item: SwapNetworks.BSC),
+          _ModelItem(iconPath: 'assets/polygon_logo.svg', item: SwapNetworks.POLYGON),
         ],
       ),
     );
@@ -345,7 +405,7 @@ class _SwapPageState extends State<SwapPage> {
       context,
       child: _ListBottomWidget(
         onTap: (value) => store.setToken(value),
-        title: 'Choose token',
+        title: 'swap.choose'.tr(namedArgs: {'object': 'token'}),
         items: [
           _ModelItem(
               item: SwapToken.tusdt, iconPath: 'assets/usdt_coin_icon.svg'),
@@ -354,14 +414,16 @@ class _SwapPageState extends State<SwapPage> {
     );
   }
 
-  _getTitleNetwork(SwapNetworks network) {
+  _getTitleNetwork(SwapNetworks? network) {
     switch (network) {
-      case SwapNetworks.ethereum:
-        return 'Ethereum Main Network';
-      case SwapNetworks.binance:
+      case SwapNetworks.ETH:
+        return 'Ethereum';
+      case SwapNetworks.BSC:
         return 'Binance Smart Chain';
-      case SwapNetworks.matic:
-        return 'Matic Network';
+      case SwapNetworks.POLYGON:
+        return 'POLYGON';
+      default:
+        return 'swap.choose'.tr(namedArgs: {'object': 'network'});
     }
   }
 
@@ -374,14 +436,16 @@ class _SwapPageState extends State<SwapPage> {
     }
   }
 
-  _getIconPathNetwork(SwapNetworks network) {
+  _getIconPathNetwork(SwapNetworks? network) {
     switch (network) {
-      case SwapNetworks.ethereum:
-        return 'assets/weth_coin_icon.svg';
-      case SwapNetworks.binance:
-        return 'assets/wbnb_coin_icon.svg';
-      case SwapNetworks.matic:
-        return 'assets/wqt_coin_icon.svg';
+      case SwapNetworks.ETH:
+        return 'assets/eth_logo.svg';
+      case SwapNetworks.BSC:
+        return 'assets/bsc_logo.svg';
+      case SwapNetworks.POLYGON:
+        return 'assets/polygon_logo.svg';
+      default:
+        return '';
     }
   }
 }
@@ -532,12 +596,12 @@ class _ListBottomWidget extends StatelessWidget {
       return value.name.toUpperCase();
     } else if (value is SwapNetworks) {
       switch (value) {
-        case SwapNetworks.ethereum:
-          return 'Ethereum Main Network';
-        case SwapNetworks.binance:
+        case SwapNetworks.ETH:
+          return 'Ethereum';
+        case SwapNetworks.BSC:
           return 'Binance Smart Chain';
-        case SwapNetworks.matic:
-          return 'Matic Network';
+        case SwapNetworks.POLYGON:
+          return 'Polygon';
       }
     }
     return '';

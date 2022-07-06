@@ -42,7 +42,7 @@ class RaiseViews extends StatelessWidget {
             ElevatedButton(
               onPressed: () => _onPressedPay(context, raiseViewStore),
               child: Text(
-                "Pay",
+                "wallet.pay".tr(),
               ),
             ),
           ],
@@ -54,7 +54,7 @@ class RaiseViews extends StatelessWidget {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text("Skip"),
+                        child: Text("startPage.skip".tr()),
                       )
                     : SizedBox(),
                 largeTitle: Text(
@@ -79,21 +79,21 @@ class RaiseViews extends StatelessWidget {
                       ),
                       _divider,
                       _PeriodCard(
-                        period: "For 1 day",
+                        period: "raising-views.forOneDay".tr(),
                         groupValue: raiseViewStore.periodGroupValue,
                         value: 1,
                         onChanged: raiseViewStore.changePeriod,
                       ),
                       _divider,
                       _PeriodCard(
-                        period: questId.isEmpty ? "For 7 days" : "For 5 days",
+                        period: questId.isEmpty ? "raising-views.forOneWeek".tr() : "raising-views.forFiveDay",
                         groupValue: raiseViewStore.periodGroupValue,
                         value: 2,
                         onChanged: raiseViewStore.changePeriod,
                       ),
                       _divider,
                       _PeriodCard(
-                        period: questId.isEmpty ? "For 30 days" : "For 7 days",
+                        period: questId.isEmpty ? "raising-views.forOneMonth".tr() : "raising-views.forOneWeek".tr(),
                         groupValue: raiseViewStore.periodGroupValue,
                         value: 3,
                         onChanged: raiseViewStore.changePeriod,
@@ -110,36 +110,23 @@ class RaiseViews extends StatelessWidget {
                       ),
                       _divider,
                       _LevelCard(
-                          value: 1,
-                          onChanged: raiseViewStore.changeLevel,
-                          groupValue: raiseViewStore.levelGroupValue,
-                          color: Color(0xFFF6CF00),
-                          level: "GOLD PLUS",
-                          price: raiseViewStore
-                              .price[raiseViewStore.periodGroupValue]![0],
-                          description:
-                              "Notifications for employees who were looking for quests, "
-                              "via an offer to review the quest that has "
-                              "been promoted by the employer. "
-                              "The employee will be invited to complete the quest in based on "
-                              "the most recent search categories of the employee. "
-                              "Plus the ability to choose any category and any "
-                              "location to promote the quest."),
+                        value: 1,
+                        onChanged: raiseViewStore.changeLevel,
+                        groupValue: raiseViewStore.levelGroupValue,
+                        color: Color(0xFFF6CF00),
+                        level: "raising-views.goldPlus.title".tr(),
+                        price: raiseViewStore.price[raiseViewStore.periodGroupValue]![0],
+                        description: "raising-views.goldPlus.description".tr(),
+                      ),
                       _divider,
                       _LevelCard(
                         value: 2,
                         groupValue: raiseViewStore.levelGroupValue,
                         onChanged: raiseViewStore.changeLevel,
                         color: Color(0xFFF6CF00),
-                        level: "GOLD",
-                        price: raiseViewStore
-                            .price[raiseViewStore.periodGroupValue]![1],
-                        description:
-                            "Notifications for employees who were looking for quests"
-                            " with a direct offer to review the promoted quest "
-                            "based on the most recent search categories of the "
-                            "employee. Plus the ability to choose three categories"
-                            " and three locations to promote the quest.",
+                        level: "raising-views.gold.title".tr(),
+                        price: raiseViewStore.price[raiseViewStore.periodGroupValue]![1],
+                        description: "raising-views.gold.description".tr(),
                       ),
                       _divider,
                       _LevelCard(
@@ -147,13 +134,9 @@ class RaiseViews extends StatelessWidget {
                         onChanged: raiseViewStore.changeLevel,
                         groupValue: raiseViewStore.levelGroupValue,
                         color: Color(0xFFBBC0C7),
-                        level: "SILVER",
-                        price: raiseViewStore
-                            .price[raiseViewStore.periodGroupValue]![2],
-                        description:
-                            "Pin quest on the main page for three hours, with the "
-                            "ability to choose two categories and two locations "
-                            "for promotion the quest.",
+                        level: "raising-views.silver.title".tr(),
+                        price: raiseViewStore.price[raiseViewStore.periodGroupValue]![2],
+                        description: "raising-views.silver.description".tr(),
                       ),
                       _divider,
                       _LevelCard(
@@ -161,13 +144,9 @@ class RaiseViews extends StatelessWidget {
                         groupValue: raiseViewStore.levelGroupValue,
                         onChanged: raiseViewStore.changeLevel,
                         color: Color(0xFFB79768),
-                        level: "BRONZE",
-                        price: raiseViewStore
-                            .price[raiseViewStore.periodGroupValue]![3],
-                        description:
-                            "Pin the quest on the main page for one hour, with the "
-                            "ability to choose one category and one location "
-                            "to promote the quest.",
+                        level: "raising-views.bronze.title".tr(),
+                        price: raiseViewStore.price[raiseViewStore.periodGroupValue]![3],
+                        description: "raising-views.bronze.description".tr(),
                       ),
                     ],
                   ),
@@ -188,14 +167,12 @@ class RaiseViews extends StatelessWidget {
       period: store.getPeriod(isQuest: questId.isNotEmpty),
     );
     await Web3Utils.checkPossibilityTx(
-        typeCoin: TokenSymbols.WUSD,
-        gas: double.parse(_gas),
-        amount: double.parse(_amount));
+        typeCoin: TokenSymbols.WUSD, gas: double.parse(_gas), amount: double.parse(_amount));
     confirmTransaction(
       context,
       fee: _gas,
-      transaction: "Transaction info",
-      address: Constants.worknetPromotion,
+      transaction: "ui.txInfo".tr(),
+      address: Web3Utils.getAddressWorknetWQPromotion(),
       amount: _amount,
       onPressConfirm: () async {
         if (questId.isEmpty) {

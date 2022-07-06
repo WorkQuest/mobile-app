@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'dart:math' as math;
 
-import '../../constants.dart';
 
 const double _kOffset =
     40.0; // distance to bottom of banner, at a 45 degree angle inwards
@@ -14,7 +13,7 @@ const Rect _kRect =
 
 const Color _kColor = Color(0xA0B71C1C);
 const TextStyle _kTextStyle = TextStyle(
-  color: AppColor.blue,
+  color: Colors.grey,
   fontSize: _kHeight * 0.85,
   fontWeight: FontWeight.w900,
   height: 1.0,

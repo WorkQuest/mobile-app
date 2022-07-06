@@ -8,9 +8,12 @@ import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
 import "package:app/ui/pages/sign_up_page/sign_up_page.dart";
 import 'package:app/ui/widgets/default_textfield.dart';
+import 'package:app/ui/widgets/dropdown_adaptive_widget.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/storage.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/services.dart';
 import 'package:app/utils/validator.dart';
@@ -222,7 +225,7 @@ class _SignInPageState extends State<SignInPage> {
   _showAlertTotp(BuildContext context, SignInStore signInStore) {
     AlertDialogUtils.showAlertDialog(
       context,
-      title: Text('Security check'),
+      title: Text('modals.securityCheck'.tr()),
       content: Builder(
         builder: (context) {
           var width = MediaQuery.of(context).size.width;
@@ -236,7 +239,7 @@ class _SignInPageState extends State<SignInPage> {
         },
       ),
       needCancel: true,
-      titleCancel: 'Cancel',
+      titleCancel: 'meta.cancel'.tr(),
       titleOk: 'OK',
       onTabCancel: null,
       onTabOk: () {
@@ -250,7 +253,7 @@ class _SignInPageState extends State<SignInPage> {
 
   _errorMessage(BuildContext context, String msg) =>
       AlertDialogUtils.showInfoAlertDialog(context,
-          title: "Error", content: msg);
+          title: "modals.error".tr(), content: msg);
 }
 
 class _HintsAccountWidget extends StatelessWidget {
@@ -472,6 +475,24 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
             inputFormatters: [],
           ),
         ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: DropDownAdaptiveWidget<Network>(
+            colorText: Colors.black,
+            items: Network.values,
+            value: AccountRepository().notifierNetwork.value,
+            onChanged: (value) {
+              setState(() {
+                final _networkName =
+                (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+                AccountRepository().setNetwork(_networkName);
+                Storage.write(StorageKeys.network.toString(), (value).name);
+                Storage.write(StorageKeys.networkName.toString(), _networkName.name);
+              });
+              return value;
+            },
+          ),
+        ),
       ],
     );
   }
@@ -509,7 +530,7 @@ class _AlertTotpWidgetState extends State<_AlertTotpWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Google confirmation code'),
+              Text('securityCheck.confCode'.tr()),
               const SizedBox(
                 height: 6,
               ),
@@ -527,7 +548,7 @@ class _AlertTotpWidgetState extends State<_AlertTotpWidget> {
                 suffixIcon: null,
                 validator: (_) {
                   if (_controller.text.length < 6) {
-                    return 'Small length';
+                    return 'errors.smallLength'.tr();
                   }
                   return null;
                 },
@@ -536,7 +557,7 @@ class _AlertTotpWidgetState extends State<_AlertTotpWidget> {
                 height: 6,
               ),
               Text(
-                'Enter the 6-digit code from the Google Authentication app',
+                'securityCheck.enterDiginCodeGoogle'.tr(),
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],

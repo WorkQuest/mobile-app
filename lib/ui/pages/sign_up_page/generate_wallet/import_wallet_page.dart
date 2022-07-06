@@ -38,7 +38,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Import Wallet",
+            "wallet.importWallet".tr(),
             style: TextStyle(fontSize: 16, color: Colors.black),
           ),
           centerTitle: true,
@@ -63,7 +63,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Mnemonic",
+                  "signIn.mnemonic".tr(),
                 ),
                 const SizedBox(
                   height: 10.0,
@@ -103,7 +103,7 @@ class _ImportWalletPageState extends State<ImportWalletPage> {
                         store.openWallet();
                       }
                     },
-                    title: "Import",
+                    title: "wallet.importWallet".tr(),
                   ),
                 ),
               ],

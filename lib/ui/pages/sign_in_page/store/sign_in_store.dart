@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:app/base_store/i_store.dart';
+import 'package:app/constants.dart';
 import 'package:app/di/injector.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/http/web3_extension.dart';
@@ -103,16 +104,22 @@ abstract class _SignInStore extends IStore<bool> with Store {
     if (walletAddress == null) this.onError("Profile not found");
     try {
       Wallet? wallet = await Wallet.derive(mnemonic);
-      AccountRepository().connectClient();
+      if (AccountRepository().networkName.value == null) {
+        final _networkName =
+        AccountRepository().notifierNetwork.value == Network.mainnet
+            ? NetworkName.workNetMainnet
+            : NetworkName.workNetTestnet;
+        AccountRepository().setNetwork(_networkName);
+      }
       AccountRepository().setWallet(wallet);
+      AccountRepository().connectClient();
       if (wallet.address != walletAddress)
         throw FormatException("Incorrect mnemonic");
       final signature = await AccountRepository()
           .getClient()
           .getSignature(wallet.privateKey!);
       await _apiProvider.walletLogin(signature, wallet.address!);
-      await Storage.write(Storage.wallet, jsonEncode(wallet.toJson()));
-      await Storage.write(Storage.activeAddress, wallet.address!);
+      await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
       this.onSuccess(true);
     } on FormatException catch (e) {
       this.onError(e.message);

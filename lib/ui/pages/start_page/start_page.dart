@@ -71,25 +71,20 @@ class _StartPageState extends State<StartPage> {
                                 firstImage: "assets/start_page_1.png",
                                 secondImage: "assets/start_page_2.png",
                                 context: context,
-                                firstHead:
-                                    "The World's Decentralized Job Market",
-                                firstTitle:
-                                    "Completely secure and easy to use, WorkQuest offers you a search for an employee or employer in just a few clicks.",
-                                secondHead: "Innovative Labor Market",
-                                secondTitle:
-                                    "Absolute data security and a unique rating system guarantee the success of a transaction between an employee and an employer using a smart contract based on the WorkNet Blockchain.",
+                                firstHead: "startPage.pages.first.head".tr(),
+                                firstTitle: "startPage.pages.first.title".tr(),
+                                secondHead: "startPage.pages.second.head".tr(),
+                                secondTitle: "startPage.pages.second.title".tr(),
                               )
                             else
                               page(
                                 firstImage: "assets/start_page_2.png",
                                 secondImage: "assets/start_page_3.png",
                                 context: context,
-                                firstHead: "Innovative Labor Market",
-                                firstTitle:
-                                    "Absolute data security and a unique rating system guarantee the success of a transaction between an employee and an employer using a smart contract based on the WorkNet Blockchain.",
-                                secondHead: "Integration DeFi with Recruitment",
-                                secondTitle:
-                                    "Fast and cheap transactions are available to everyone, anywhere in the world. WorkQuest is a diverse world of decentralized finance in your pocket.",
+                                firstHead: "startPage.pages.second.head".tr(),
+                                firstTitle: "startPage.pages.second.title".tr(),
+                                secondHead: "startPage.pages.third.head".tr(),
+                                secondTitle: "startPage.pages.third.title".tr(),
                               ),
                             PageView(
                               controller: _pageController,
@@ -103,8 +98,7 @@ class _StartPageState extends State<StartPage> {
                         onPressedNext: () {
                           if (_pageController.page! < 2.0) {
                             _pageController.nextPage(
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeInOut);
+                                duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
                           } else {
                             Navigator.pushNamed(context, SignInPage.routeName);
                           }

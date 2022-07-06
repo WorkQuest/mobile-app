@@ -1,15 +1,16 @@
 import 'dart:io';
 import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
-import 'package:app/ui/pages/main_page/wallet_page/network_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/swap_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
+import 'package:app/ui/widgets/dropdown_adaptive_widget.dart';
 import 'package:app/ui/widgets/shimmer.dart';
 import 'package:app/utils/snack_bar.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -44,8 +45,7 @@ class _WalletPageState extends State<WalletPage> {
   Widget _mainLayout() {
     return NotificationListener<ScrollEndNotification>(
       onNotification: (scrollEnd) {
-        if (scrollEnd.metrics.atEdge) if (scrollEnd.metrics.pixels ==
-            scrollEnd.metrics.maxScrollExtent) {
+        if (scrollEnd.metrics.atEdge) if (scrollEnd.metrics.pixels == scrollEnd.metrics.maxScrollExtent) {
           if (!GetIt.I.get<TransactionsStore>().isMoreLoading) {
             GetIt.I.get<TransactionsStore>().getTransactionsMore();
           }
@@ -73,32 +73,24 @@ class _WalletPageState extends State<WalletPage> {
           largeTitle: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Wallet"),
-              PopupMenuButton<String>(
-                elevation: 10,
-                icon: Icon(Icons.more_vert),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                ),
-                onSelected: (value) async {
-                  switch (value) {
-                    case "Change network":
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(NetworkPage.routeName);
-                      break;
-                  }
-                },
-                itemBuilder: (BuildContext context) {
-                  return {
-                    "Change network",
-                  }.map((String choice) {
-                    return PopupMenuItem<String>(
-                      value: choice,
-                      child: Text(
-                        choice,
-                      ),
-                    );
-                  }).toList();
+              Text("wallet.wallet".tr()),
+              ValueListenableBuilder<NetworkName?>(
+                valueListenable: AccountRepository().networkName,
+                builder: (_, value, child) {
+                  final _networkName = Web3Utils.getNetworkNameForSwitch(value!);
+                  return DropDownAdaptiveWidget<SwitchNetworkNames>(
+                    value: _networkName,
+                    onChanged: (value) {
+                      final _newNetwork = Web3Utils.getNetworkNameFromSwitchNetworkName(
+                          value as SwitchNetworkNames, AccountRepository().notifierNetwork.value);
+                      AccountRepository().changeNetwork(_newNetwork);
+
+                      return value;
+                    },
+                    items: SwitchNetworkNames.values,
+                    colorText: Colors.black,
+                    haveIcon: true,
+                  );
                 },
               ),
             ],
@@ -141,9 +133,8 @@ class _WalletPageState extends State<WalletPage> {
                         height: 34,
                         width: 34,
                         padding: const EdgeInsets.all(7.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6.0),
-                            color: AppColor.disabledButton),
+                        decoration:
+                            BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: AppColor.disabledButton),
                         child: SvgPicture.asset(
                           "assets/copy_icon.svg",
                           color: AppColor.enabledButton,
@@ -155,13 +146,14 @@ class _WalletPageState extends State<WalletPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                _BannerBuyingWQT(
-                  button: outlinedButton(
-                    title: 'Buy WQT',
-                    route: SwapPage.routeName,
-                    color: Colors.white,
+                if (_isShowBanner)
+                  _BannerBuyingWQT(
+                    button: outlinedButton(
+                      title: 'wallet.buyWQT'.tr(),
+                      route: SwapPage.routeName,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -285,6 +277,25 @@ class _WalletPageState extends State<WalletPage> {
     GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
     return GetIt.I.get<WalletStore>().getCoins();
   }
+
+  bool get _isShowBanner {
+    final _networkName = AccountRepository().networkName.value!;
+    if (_networkName == NetworkName.workNetTestnet || _networkName == NetworkName.workNetMainnet) {
+      if (GetIt.I.get<WalletStore>().coins.isEmpty) {
+        return false;
+      }
+      return true;
+      try {
+        final _wqt = GetIt.I.get<WalletStore>().coins.firstWhere((element) => element.symbol == TokenSymbols.WQT);
+        if (double.parse(_wqt.amount!) == 0.0) {
+          return true;
+        }
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
+  }
 }
 
 class _BannerBuyingWQT extends StatelessWidget {
@@ -309,7 +320,7 @@ class _BannerBuyingWQT extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Buy first WQT!',
+            'wallet.buyTitleWQT'.tr(),
             style: TextStyle(
               fontSize: 20,
               color: Colors.white,
@@ -320,9 +331,7 @@ class _BannerBuyingWQT extends StatelessWidget {
             height: 5,
           ),
           Text(
-            'Donec rutrum congue leo eget malesuada. Donec sollicitudin molestie malesuada. Quisque velit nisi, '
-            'pretium ut lacinia in, elementum id enim. Curabitur arcu erat, accumsan id imperdiet et, porttitor at '
-            'sem.',
+            'wallet.buyDescriptionWQT'.tr(),
             style: TextStyle(
               color: Colors.white,
             ),
@@ -412,8 +421,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             )
                           else
                             Text(
-                              _getCourseDollar(
-                                  balance.symbol.name, balance.amount!),
+                              _getCourseDollar(balance.symbol.name, balance.amount!),
                               style: const TextStyle(
                                 fontSize: 14,
                                 color: AppColor.unselectedBottomIcon,
@@ -446,14 +454,8 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: isCurrency
-                              ? null
-                              : Border.all(
-                                  color:
-                                      AppColor.enabledButton.withOpacity(0.1)),
-                          color: isCurrency
-                              ? AppColor.enabledButton
-                              : Colors.transparent,
+                          border: isCurrency ? null : Border.all(color: AppColor.enabledButton.withOpacity(0.1)),
+                          color: isCurrency ? AppColor.enabledButton : Colors.transparent,
                         ),
                       ),
                     );
@@ -469,16 +471,16 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
-                    'Failed to get balance',
+                    'errors.failedToGetBalance'.tr(),
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Text(
-                    'Swipe to update',
+                    'errors.swipeUpdate'.tr(),
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ],

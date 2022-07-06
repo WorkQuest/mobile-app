@@ -6,6 +6,7 @@ import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/profile_settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
+import 'package:app/ui/pages/main_page/wallet_page/network_page/network_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/approve_role_page.dart';
 import 'package:app/ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart';
@@ -174,7 +175,7 @@ class SettingsPage extends StatelessWidget {
                                   20.0,
                                 ),
                                 title:
-                                    "Language \n${Constants.languageList.keys.firstWhere(
+                                    "${'meta.language'.tr()} \n${Constants.languageList.keys.firstWhere(
                                   (k) =>
                                       Constants.languageList[k] ==
                                       context.locale,
@@ -182,14 +183,36 @@ class SettingsPage extends StatelessWidget {
                                 onTap: () {
                                   AlertDialogUtils.showInfoAlertDialog(
                                     context,
-                                    title: 'Warning'.tr(),
-                                    content: 'Service temporarily unavailable',
+                                    title: 'modals.warning'.tr(),
+                                    content: 'modals.serviceUnavailable'.tr(),
                                   );
-
-                                  // Navigator.of(context, rootNavigator: true)
-                                  //     .pushNamed(ChangeLanguagePage.routeName);
                                 },
                               ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              SettingsCard(
+                                icon: GradientIcon(
+                                  SvgPicture.asset(
+                                    "assets/settings_network_icon.svg",
+                                  ),
+                                  20.0,
+                                ),
+                                title: "wallet.network".tr(),
+                                onTap: () {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed(
+                                    NetworkPage.routeName,
+                                  );
+                                },
+                              ),
+                              _spacer,
+                              Spacer(),
                             ],
                           ),
                         ),
@@ -290,7 +313,7 @@ class SettingsPage extends StatelessWidget {
   }) async {
     if (userStore.userData?.isTotpActive == true) {
       if (userStore.userData!.questsStatistic!.opened != 0) {
-        _showAlertInfo(context, title: "There are active quests");
+        _showAlertInfo(context, title: "settings.haveActiveQuest".tr());
       } else {
         chooseRoleStore.setRole(userStore.userData!.role);
         chooseRoleStore.isChange = true;
@@ -300,7 +323,7 @@ class SettingsPage extends StatelessWidget {
         );
       }
     } else {
-      _showAlertInfo(context, title: "2FA disabled");
+      _showAlertInfo(context, title: "settings.disabled2FA");
     }
   }
 
@@ -310,7 +333,7 @@ class SettingsPage extends StatelessWidget {
   }) {
     AlertDialogUtils.showAlertDialog(
       context,
-      title: Text("Warning"),
+      title: Text("modals.warning".tr()),
       content: Padding(
         padding: const EdgeInsets.only(left: 25.0, top: 16.0),
         child: Text(title),

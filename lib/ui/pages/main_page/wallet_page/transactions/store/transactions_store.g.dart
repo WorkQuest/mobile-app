@@ -103,6 +103,17 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
   }
 
   @override
+  dynamic clearData() {
+    final _$actionInfo = _$TransactionsStoreBaseActionController.startAction(
+        name: 'TransactionsStoreBase.clearData');
+    try {
+      return super.clearData();
+    } finally {
+      _$TransactionsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 transactions: ${transactions},

@@ -17,18 +17,18 @@ mixin _$TransferStore on TransferStoreBase, Store {
               name: 'TransferStoreBase.statusButtonTransfer'))
       .value;
 
-  final _$typeCoinAtom = Atom(name: 'TransferStoreBase.typeCoin');
+  final _$currentCoinAtom = Atom(name: 'TransferStoreBase.currentCoin');
 
   @override
-  TokenSymbols? get typeCoin {
-    _$typeCoinAtom.reportRead();
-    return super.typeCoin;
+  CoinItem? get currentCoin {
+    _$currentCoinAtom.reportRead();
+    return super.currentCoin;
   }
 
   @override
-  set typeCoin(TokenSymbols? value) {
-    _$typeCoinAtom.reportWrite(value, super.typeCoin, () {
-      super.typeCoin = value;
+  set currentCoin(CoinItem? value) {
+    _$currentCoinAtom.reportWrite(value, super.currentCoin, () {
+      super.currentCoin = value;
     });
   }
 
@@ -77,15 +77,6 @@ mixin _$TransferStore on TransferStoreBase, Store {
     });
   }
 
-  final _$setTitleSelectedCoinAsyncAction =
-      AsyncAction('TransferStoreBase.setTitleSelectedCoin');
-
-  @override
-  Future setTitleSelectedCoin(TokenSymbols? value) {
-    return _$setTitleSelectedCoinAsyncAction
-        .run(() => super.setTitleSelectedCoin(value));
-  }
-
   final _$getMaxAmountAsyncAction =
       AsyncAction('TransferStoreBase.getMaxAmount');
 
@@ -127,9 +118,31 @@ mixin _$TransferStore on TransferStoreBase, Store {
   }
 
   @override
+  dynamic setCoin(CoinItem? value) {
+    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
+        name: 'TransferStoreBase.setCoin');
+    try {
+      return super.setCoin(value);
+    } finally {
+      _$TransferStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic clearData() {
+    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
+        name: 'TransferStoreBase.clearData');
+    try {
+      return super.clearData();
+    } finally {
+      _$TransferStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
-typeCoin: ${typeCoin},
+currentCoin: ${currentCoin},
 addressTo: ${addressTo},
 amount: ${amount},
 fee: ${fee},

@@ -36,7 +36,7 @@ class CreatePortfolioPage extends StatelessWidget {
     return Scaffold(
       appBar: CupertinoNavigationBar(
         middle: Text(
-          allowEdit ? "Edit Portfolio" : "Add Portfolio",
+          allowEdit ? "profiler.editPortfolio".tr() : "profiler.addPortfolio".tr(),
         ),
       ),
       body: Observer(
@@ -79,8 +79,8 @@ class CreatePortfolioPage extends StatelessWidget {
                         onChanged: store.setDescription,
                         keyboardType: TextInputType.multiline,
                         maxLines: 12,
-                        decoration: const InputDecoration(
-                          hintText: 'Quest text',
+                        decoration: InputDecoration(
+                          hintText: 'quests.questText'.tr(),
                         ),
                         style: const TextStyle(
                           fontSize: 16,

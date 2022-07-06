@@ -90,6 +90,17 @@ mixin _$WalletStore on _WalletStore, Store {
   }
 
   @override
+  dynamic clearData() {
+    final _$actionInfo = _$_WalletStoreActionController.startAction(
+        name: '_WalletStore.clearData');
+    try {
+      return super.clearData();
+    } finally {
+      _$_WalletStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 type: ${type},

@@ -112,16 +112,16 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       } else {
                         await AlertDialogUtils.showInfoAlertDialog(
                           context,
-                          title: 'Error',
-                          content: "Invalid TOTP",
+                          title: 'modals.error'.tr(),
+                          content: "modals.invalid2FA".tr(),
                         );
                       }
                     });
                   } else {
                     await AlertDialogUtils.showInfoAlertDialog(
                       context,
-                      title: 'Error',
-                      content: "You can't edit quest without connected 2FA",
+                      title: 'modals.error'.tr(),
+                      content: "modals.errorEditQuest2FA".tr(),
                     );
                   }
                   break;
@@ -148,8 +148,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   } else {
                     await AlertDialogUtils.showInfoAlertDialog(
                       context,
-                      title: 'Error',
-                      content: "You can't delete quest without connected 2FA",
+                      title: 'modals.error'.tr(),
+                      content: "modals.errorDeleteQuest2FA".tr(),
                     );
                   }
                   break;
@@ -268,7 +268,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Your review",
+              "quests.yourReview".tr(),
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
@@ -312,9 +312,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            store.quest.value!.status == 5
-                ? "Finished by"
-                : "quests.inProgressBy".tr(),
+            store.quest.value!.status == 5 ? "quests.finishedBy".tr() : "quests.inProgressBy".tr(),
             style: TextStyle(
               color: const Color(0xFF7C838D),
               fontSize: 12,
@@ -687,7 +685,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     await confirmTransaction(
       context,
       fee: store.fee,
-      transaction: "Transaction info",
+      transaction: "ui.txInfo".tr(),
       address: store.quest.value!.contractAddress!,
       amount: null,
       onPressConfirm: onPress,
@@ -822,7 +820,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   }) {
     AlertDialogUtils.showAlertDialog(
       context,
-      title: const Text("Security check"),
+      title: Text("meta.securityCheck.title".tr()),
       content: Builder(builder: (context) {
         var width = MediaQuery.of(context).size.width;
         return Container(
@@ -831,7 +829,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Google confirmation code"),
+              Text("meta.securityCheck.confCode".tr()),
               const SizedBox(
                 height: 15,
               ),
@@ -849,15 +847,15 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               ),
               const SizedBox(height: 15),
               Text(
-                "Enter the 6-digit code from the Google Authentication app",
+                "meta.securityCheck.enterDiginCodeGoogle",
               ),
             ],
           ),
         );
       }),
       needCancel: true,
-      titleCancel: "Cancel",
-      titleOk: "Send",
+      titleCancel: "meta.cancel".tr(),
+      titleOk: "meta.send".tr(),
       onTabCancel: null,
       onTabOk: onTabOk,
       colorCancel: Colors.red,

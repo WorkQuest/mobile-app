@@ -2,6 +2,7 @@ import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/modal_bottom_sheet.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -43,7 +44,9 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                 height: 15,
               ),
               Text(
-                'Choose the ${store.indexFirstWord}th and ${store.indexSecondWord}th words of your mnemonic',
+                'signUp.chooseWords'.tr(
+                  namedArgs: {'firstIndex': '${store.indexFirstWord}', 'secondIndex': '${store.indexSecondWord}'},
+                ),
                 style: const TextStyle(
                   fontSize: 24,
                   color: Colors.black,
@@ -54,7 +57,11 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                 height: 30,
               ),
               Text(
-                '${store.indexFirstWord}th word',
+                'signUp.thWord'.tr(
+                  namedArgs: {
+                    'index': '${store.indexFirstWord}',
+                  },
+                ),
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.black,
@@ -73,7 +80,11 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                 height: 30,
               ),
               Text(
-                '${store.indexSecondWord}th word',
+                'signUp.thWord'.tr(
+                  namedArgs: {
+                    'index': '${store.indexSecondWord}',
+                  },
+                ),
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.black,
@@ -111,7 +122,7 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
                     );
                   },
                   child: ElevatedButton(
-                    child: Text('Open wallet'),
+                    child: Text('wallet.openWallet'.tr()),
                     onPressed: store.statusGenerateButton
                         ? () {
                             AlertDialogUtils.showLoadingDialog(context);
@@ -158,20 +169,20 @@ class _VerifyWalletPageState extends State<VerifyWalletPage> {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
-                'Error',
+                'modals.error'.tr(),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 11,
               ),
               Text(
-                'You’ve chosen wrong words. Try again ',
+                'signUp.chosenWrongWords'.tr(),
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.black,

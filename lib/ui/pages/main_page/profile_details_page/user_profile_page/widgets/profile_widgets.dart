@@ -251,7 +251,7 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: "Quest    ",
+                          text: "${'quests.questBig'.tr()}    ",
                           style: TextStyle(
                             color: Colors.black,
                           ),
@@ -814,7 +814,7 @@ Widget contactDetails({
                   child: Padding(
                     padding: const EdgeInsets.only(left: 30.0),
                     child: Text(
-                      "Number Confirmed",
+                      "settings.numberConfirmed".tr(),
                       style: TextStyle(
                         color: Color(0xFF0083C7),
                         fontSize: 8,
@@ -1035,7 +1035,7 @@ class _SkillsWidgetState extends State<SkillsWidget>
         ),
         if (!widget.isExpanded)
           TextButton(
-            child: const Text('Show more'),
+            child: Text('settings.showMore'.tr()),
             onPressed: () {
               widget.onPressed.call(!widget.isExpanded);
             },

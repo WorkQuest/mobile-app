@@ -22,13 +22,13 @@ class Wallet extends Equatable {
 
   static Future<Wallet> derive(String mnemonic) async {
     mnemonic = mnemonic.trim();
-    if (!AddressService().validateMnemonic(mnemonic)) {
+    if (!AddressService.validateMnemonic(mnemonic)) {
       throw Exception("Invalid mnemonic");
     }
 
-    final privateKey = AddressService().getPrivateKey(mnemonic);
-    final publicKey = AddressService().getPublicKey(privateKey);
-    final address = await AddressService().getPublicAddress(privateKey);
+    final privateKey = AddressService.getPrivateKey(mnemonic);
+    final publicKey = AddressService.getPublicKey(privateKey);
+    final address = await AddressService.getPublicAddress(privateKey);
 
     return Wallet(
       address: address.hex,

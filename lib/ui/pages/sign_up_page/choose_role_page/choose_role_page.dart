@@ -45,7 +45,7 @@ class ChooseRolePage extends StatelessWidget {
                 children: [
                   SvgPicture.asset("assets/arrow_back.svg"),
                   Text(
-                    "Back",
+                    "mining.back".tr(),
                     style: TextStyle(color: Colors.blue),
                   ),
                 ],

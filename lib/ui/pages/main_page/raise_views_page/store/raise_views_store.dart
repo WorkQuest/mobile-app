@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
@@ -101,13 +102,14 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
 
   Future<String> getFee({bool isQuestRaise = false}) async {
     try {
-      final _client = AccountRepository().getClient();
-      final _addressWUSD = Configs
-          .configsNetwork[ConfigNameNetwork.testnet]!.dataCoins
-          .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
-          .addressToken;
-      final _contractApprove =
-          await _client.getDeployedContract("WQBridgeToken", _addressWUSD!);
+      final _client = AccountRepository().getClientWorkNet();
+      String _addressWUSD = '';
+      if (AccountRepository().notifierNetwork.value == Network.mainnet) {
+        _addressWUSD = '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa';
+      } else {
+        _addressWUSD = '0xf95ef11d0af1f40995218bb2b67ef909bcf30078';
+      }
+      final _contractApprove = await _client.getDeployedContract("WQBridgeToken", _addressWUSD);
       if (isQuestRaise) {
         final _amount = getAmount(
             isQuest: true,
@@ -119,13 +121,12 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
           function:
               _contractApprove.function(WQBridgeTokenFunctions.approve.name),
           params: [
-            EthereumAddress.fromHex(Constants.worknetWQFactory),
+            EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
             _price,
           ],
         );
 
-        final _contractPromote = await _client.getDeployedContract(
-            "WQPromotion", Constants.worknetPromotion);
+        final _contractPromote = await _client.getDeployedContract("WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
         final _quest = await apiProvider.getQuest(id: questId);
         final _gasForPromote = await _client.getEstimateGasCallContract(
           contract: _contractPromote,
@@ -149,13 +150,13 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
           function:
               _contractApprove.function(WQBridgeTokenFunctions.approve.name),
           params: [
-            EthereumAddress.fromHex(Constants.worknetWQFactory),
+            EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
             _price,
           ],
         );
 
-        final _contractPromote = await _client.getDeployedContract(
-            "WQPromotion", Constants.worknetPromotion);
+        final _contractPromote =
+            await _client.getDeployedContract("WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
         final _gasForPromote = await _client.getEstimateGasCallContract(
           contract: _contractPromote,
           function:
@@ -182,8 +183,8 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       final _amount =
           getAmount(isQuest: false, tariff: levelGroupValue, period: _period);
       final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
-      await AccountRepository().getClient().approveCoin(price: _price);
-      await AccountRepository().getClient().promoteUser(
+      await AccountRepository().getClientWorkNet().approveCoin(price: _price);
+      await AccountRepository().getClientWorkNet().promoteUser(
             tariff: levelGroupValue - 1,
             period: _period,
           );
@@ -206,8 +207,8 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       final _amount =
           getAmount(isQuest: true, tariff: levelGroupValue, period: _period);
       final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
-      await AccountRepository().getClient().approveCoin(price: _price);
-      await AccountRepository().getClient().promoteQuest(
+      await AccountRepository().getClientWorkNet().approveCoin(price: _price);
+      await AccountRepository().getClientWorkNet().promoteQuest(
             tariff: levelGroupValue - 1,
             period: _period,
             amount: _amount,

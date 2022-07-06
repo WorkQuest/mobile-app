@@ -136,7 +136,7 @@ class MnemonicPage extends StatelessWidget {
   Future<void> _errorMessage(BuildContext context, String msg) =>
       AlertDialogUtils.showAlertDialog(
         context,
-        title: Text("Error"),
+        title: Text("modals.error".tr()),
         content: Text(msg),
         needCancel: false,
         titleCancel: null,

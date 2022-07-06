@@ -113,6 +113,10 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       final _user = await _apiProvider.getProfileUser(userId: userId);
+      final _client = AccountRepository().getClientWorkNet();
+      final _contract = await _client.getDeployedContract("WorkQuest", quest.value!.contractAddress!);
+      final _function = _contract.function(WQContractFunctions.assignJob.name);
+      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: [EthereumAddress.fromHex(_user.walletAddress!)]);
       final _client = AccountRepository().getClient();
       final _contract = await _client.getDeployedContract(
           "WorkQuest", quest.value!.contractAddress!);
@@ -165,7 +169,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      await AccountRepository().getClient().handleEvent(
+      await AccountRepository().getClientWorkNet().handleEvent(
             function: WQContractFunctions.acceptJobResult,
             contractAddress: quest.value!.contractAddress!,
             value: null,
@@ -186,7 +190,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       this.onLoading();
       await _getQuest();
       // await _apiProvider.deleteQuest(questId: questId);
-      await AccountRepository().getClient().handleEvent(
+      await AccountRepository().getClientWorkNet().handleEvent(
             function: WQContractFunctions.cancelJob,
             contractAddress: quest.value!.contractAddress!,
             value: null,

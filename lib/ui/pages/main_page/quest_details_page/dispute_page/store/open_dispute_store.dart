@@ -92,7 +92,7 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
 
   Future<void> getFee(String contractAddress) async {
     try {
-      final _client = AccountRepository().getClient();
+      final _client = AccountRepository().getClientWorkNet();
       final _contract =
           await _client.getDeployedContract("WorkQuest", contractAddress);
       final _function =
@@ -118,7 +118,7 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
         problemDescription: description,
       );
       if (result) {
-        await AccountRepository().getClient().handleEvent(
+        await AccountRepository().getClientWorkNet().handleEvent(
               function: WQContractFunctions.arbitration,
               contractAddress: contractAddress,
               value: "1",

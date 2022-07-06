@@ -164,8 +164,8 @@ class _QuestListState extends State<QuestList> {
               decoration: InputDecoration(
                 fillColor: Color(0xFFF7F8FA),
                 hintText: profileMeStore!.userData!.role == UserRole.Worker
-                    ? "Employer / Title / Description"
-                    : "Employee / City",
+                    ? "quests.hintWorker".tr()
+                    : "quests.hintEmployer".tr(),
                 prefixIcon: Icon(
                   Icons.search,
                   size: 25.0,

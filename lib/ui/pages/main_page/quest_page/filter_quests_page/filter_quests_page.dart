@@ -115,7 +115,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                   : Colors.white,
                           expandedAlignment: Alignment.topLeft,
                           title: Text(
-                            "Price",
+                            "quests.price".tr(),
                           ),
                           childrenPadding: const EdgeInsets.symmetric(
                             vertical: 6.0,
@@ -128,7 +128,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'From',
+                                      'settings.education.from'.tr(),
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.black,
@@ -169,7 +169,7 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'To',
+                                      'settings.education.to'.tr(),
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.black,

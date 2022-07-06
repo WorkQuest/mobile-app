@@ -54,14 +54,14 @@ class RestorePasswordPage extends StatelessWidget {
               ),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  Text("Code from Email"),
+                  Text("modals.codeFromEmail".tr()),
                   const SizedBox(
                     height: 5.0,
                   ),
                   TextFormField(
                     onChanged: _store.setCode,
                     decoration: InputDecoration(
-                      hintText: 'code',
+                      hintText: 'modals.code'.tr(),
                     ),
                   ),
                   spacer,

@@ -115,7 +115,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           icon: Icon(Icons.share_outlined),
           onPressed: () {
             Share.share(
-                "https://dev-app.workquest.co/quests/${store.quest.value!.id}");
+                "https://testnet-app.workquest.co/quests/${store.quest.value!.id}");
           },
         ),
     ];
@@ -635,7 +635,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     await confirmTransaction(
       context,
       fee: store.fee,
-      transaction: "Transaction info",
+      transaction: "ui.txInfo".tr(),
       address: store.quest.value!.contractAddress!,
       amount: null,
       onPressConfirm: onPress,

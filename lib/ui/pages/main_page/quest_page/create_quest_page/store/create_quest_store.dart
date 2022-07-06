@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
 import 'package:app/model/quests_models/create_quest_request_model.dart';
@@ -12,6 +11,7 @@ import 'package:app/model/quests_models/location_full.dart';
 import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/quest_util.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/client_service.dart';
@@ -189,7 +189,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
     double _resultGas = 0.0;
     try {
       this.onLoading();
-      final _client = AccountRepository().getClient();
+      final _client = AccountRepository().getClientWorkNet();
       if (isEdit) {
         final _price = BigInt.from((double.parse(price)) * pow(10, 18));
         if (_price > oldPrice) {
@@ -230,10 +230,8 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           _resultGas += _gasForApprove;
           print("1 _resultGas: $_resultGas");
         }
-        final _contract = await _client.getDeployedContract(
-            "WorkQuestFactory", Constants.worknetWQFactory);
-        final _function =
-            _contract.function(WQFContractFunctions.newWorkQuest.name);
+        final _contract = await _client.getDeployedContract("WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
+        final _function = _contract.function(WQFContractFunctions.newWorkQuest.name);
         final _params = [
           _client.stringToBytes32(description),
           BigInt.zero,
@@ -284,7 +282,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       );
       //priority show item
 
-      final _client = AccountRepository().getClient();
+      final _client = AccountRepository().getClientWorkNet();
 
       if (isEdit) {
         await _client.handleEvent(

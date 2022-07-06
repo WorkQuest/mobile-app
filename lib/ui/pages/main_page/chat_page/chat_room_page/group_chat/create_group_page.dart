@@ -49,7 +49,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           title: Text(
             widget.isGroupChat
                 ? "modals.modals.title".tr()
-                : "Create private chat",
+                : "chat.createPrivateChat".tr(),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -257,20 +257,19 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                           if (store.users.isEmpty)
                             AlertDialogUtils.showAlertDialog(
                               context,
-                              title: Text("Error"),
+                              title: Text("modals.error".tr()),
                               content: Padding(
                                 padding: const EdgeInsets.only(
                                   left: 25.0,
                                   top: 16,
                                 ),
                                 child: Text(
-                                  "You can't create a chat before"
-                                  "\nworking on a quest",
+                                  "modals.errorCreateChat".tr(),
                                 ),
                               ),
                               needCancel: false,
                               titleCancel: null,
-                              titleOk: "Return",
+                              titleOk: "modals.return".tr(),
                               onTabCancel: null,
                               onTabOk: () => Navigator.pop(context),
                               colorCancel: null,

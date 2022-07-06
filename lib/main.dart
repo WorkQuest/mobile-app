@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:app/constants.dart';
 import 'package:app/utils/push_notification_service.dart';
 import 'package:app/utils/storage.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/work_quest_app.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,8 +25,7 @@ const AndroidNotificationChannel _channel = AndroidNotificationChannel(
   playSound: true,
 );
 
-final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 ///BackGround Message Handler
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -39,8 +40,7 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -58,17 +58,21 @@ void main() async {
   );
 
   await EasyLocalization.ensureInitialized();
-
-  //Init Wallet
   try {
-    String? configName = await Storage.readConfig();
-    AccountRepository().setNetwork(configName ?? "testnet");
     final wallet = await Storage.readWallet();
     if (wallet != null) {
       AccountRepository().setWallet(wallet);
     }
-  } catch (e, trace) {
-    print('main | $e\n$trace');
+    final _networkNameStorage = await Storage.read(StorageKeys.networkName.toString());
+    if (_networkNameStorage == null) {
+      AccountRepository().setNetwork(NetworkName.workNetMainnet);
+      await Storage.write(StorageKeys.networkName.toString(), NetworkName.workNetMainnet.name);
+    } else {
+      final _networkName = Web3Utils.getNetworkName(_networkNameStorage);
+      AccountRepository().setNetwork(_networkName);
+      await Storage.write(StorageKeys.networkName.toString(), _networkName.name);
+    }
+  } catch (e) {
     AccountRepository().clearData();
   }
 
@@ -101,8 +105,6 @@ void _initialisePushNotification() {
     _flutterLocalNotificationsPlugin,
   );
   _firebaseMessaging.subscribeToTopic('all');
-  _firebaseMessaging
-      .getToken()
-      .then((token) => print(" firebase token $token"));
+  _firebaseMessaging.getToken().then((token) => print(" firebase token $token"));
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 }
