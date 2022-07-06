@@ -13,7 +13,6 @@ class MessageModel {
     required this.type,
     required this.text,
     required this.createdAt,
-    required this.updatedAt,
     required this.star,
     required this.sender,
     required this.medias,
@@ -28,7 +27,6 @@ class MessageModel {
   String? type;
   String? text;
   DateTime? createdAt;
-  DateTime? updatedAt;
   Star? star;
   Member? sender;
   List<Media>? medias;
@@ -43,7 +41,6 @@ class MessageModel {
         type: json["type"],
         text: json["text"] == null ? null : json["text"],
         createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
         star: json["star"] == null ? null : Star.fromJson(json["star"]),
         sender: json["sender"] == null ? null : Member.fromJson(json["sender"]),
         medias: json["medias"] == null
@@ -65,7 +62,6 @@ class MessageModel {
         "type": type,
         "text": text == null ? null : text,
         "createdAt": createdAt!.toIso8601String(),
-        "updatedAt": updatedAt!.toIso8601String(),
         "star": star,
         "sender": sender!.toJson(),
         "medias": List<dynamic>.from(medias!.map((x) => x)),

@@ -605,6 +605,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                               onPressCancel: () {
                                                 store.onError("Cancel");
                                                 Navigator.pop(context);
+                                                Navigator.pop(context);
                                               },
                                             );
                                           }
@@ -666,6 +667,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                             },
                                             onPressCancel: () {
                                               store.onError("Cancel");
+                                              Navigator.pop(context);
                                               Navigator.pop(context);
                                             },
                                           );

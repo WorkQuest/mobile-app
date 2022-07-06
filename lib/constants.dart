@@ -107,7 +107,7 @@ class Configs {
     /// Dev-net
     NetworkName.workNetTestnet: ConfigNetwork(
         rpc: 'https://dev-node-ams3.workquest.co/',
-        wss: 'wss://wss-dev-node-ams3.workquest.co/tendermint-rpc/websocket',
+        wss: 'wss://dev-node-nyc3.workquest.co/tendermint-rpc/websocket',
         urlExplorer: '',
         dataCoins: const [
           DataCoins(

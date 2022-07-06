@@ -10,11 +10,12 @@ extension Web3Requests on ApiProvider {
     required String address,
     required String addressToken,
   }) {
-    return "https://testnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
+    return "https://dev-explorer.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
   }
 
   String _transactions(String address) {
-    return "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
+    return "https://dev-explorer.workquest.co/api/v1/account/$address/transactions";
+
   }
 
   Future<void> registerWallet(String publicKey, String address) async {

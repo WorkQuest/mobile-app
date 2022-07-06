@@ -341,14 +341,15 @@ class _ListChatsWidgetState extends State<_ListChatsWidget>
               child: Observer(builder: (_) {
                 return Column(
                   children: chats!.map((chat) {
+                    final infoMessage = "chat.infoMessage."
+                            "${chat.chatData.lastMessage?.infoMessage?.messageAction ?? chat.meMember?.deletionData?.message.infoMessage?.messageAction ?? "message"}"
+                        .tr();
                     final chatListWidget = _ChatListTileWidget(
                       onLongPress: () => widget.onLongPress(chat),
                       onTap: () => widget.onPress(chat),
                       chat: chat,
                       userId: widget.store.myId,
-                      infoActionMessage: "chat.infoMessage."
-                              "${chat.chatData.lastMessage?.infoMessage?.messageAction ?? "message"}"
-                          .tr(),
+                      infoActionMessage: infoMessage,
                       chatStarred: widget.store.selectedChats[chat]!,
                     );
                     if (widget.store.isLoading && chat == chats.last) {
@@ -523,7 +524,7 @@ class _ChatListTileWidget extends StatelessWidget {
     final text = chat.chatData.lastMessage?.sender?.userId == userId
         ? "chat.you".tr() +
             " ${chat.chatData.lastMessage?.text ?? infoActionMessage} "
-        : "${chat.chatData.lastMessage?.sender!.user?.firstName ?? member!.user?.firstName ?? member!.admin?.firstName ?? ""}:" +
+        : "${chat.chatData.lastMessage?.sender!.user?.firstName ?? chat.meMember?.deletionData?.message.sender?.user?.firstName ?? member!.user?.firstName ?? member!.admin?.firstName ?? ""}:" +
             " ${chat.chatData.lastMessage?.text ?? infoActionMessage} ";
     return GestureDetector(
       onLongPress: onLongPress,
@@ -586,18 +587,19 @@ class _ChatListTileWidget extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Text(
-                              chat.type == TypeChat.group
-                                  ? "${chat.groupChat!.name}"
-                                  : "${member!.user?.firstName ?? member!.admin?.firstName ?? "--"} "
-                                      "${member!.user?.lastName ?? member!.admin?.lastName ?? "--"}",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                            Expanded(
+                              child: Text(
+                                chat.type == TypeChat.group
+                                    ? "${chat.groupChat!.name}"
+                                    : "${member!.user?.firstName ?? member!.admin?.firstName ?? "--"} "
+                                        "${member!.user?.lastName ?? member!.admin?.lastName ?? "--"}",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(width: 5),
                             if (chat.type == TypeChat.active ||
                                 chat.type == TypeChat.completed)
                               Expanded(

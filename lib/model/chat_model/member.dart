@@ -1,4 +1,5 @@
 import 'package:app/model/chat_model/chat_member_data.dart';
+import 'package:app/model/chat_model/deletion_data.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 
 class Member {
@@ -9,12 +10,12 @@ class Member {
     required this.adminId,
     required this.type,
     required this.status,
-    required this.createdAt,
     required this.updatedAt,
     required this.chatMemberDeletionData,
     required this.user,
     required this.admin,
     required this.chatMemberData,
+    required this.deletionData,
   });
 
   String id;
@@ -23,12 +24,12 @@ class Member {
   String? adminId;
   String type;
   int status;
-  DateTime createdAt;
   DateTime? updatedAt;
   dynamic chatMemberDeletionData;
   ProfileMeResponse? user;
   ProfileMeResponse? admin;
   ChatMemberData? chatMemberData;
+  DeletionData? deletionData;
 
   factory Member.fromJson(Map<String, dynamic> json) => Member(
         id: json["id"],
@@ -37,7 +38,6 @@ class Member {
         adminId: json["adminId"],
         type: json["type"],
         status: json["status"],
-        createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: json["updatedAt"] == null
             ? null
             : DateTime.parse(json["updatedAt"]),
@@ -51,6 +51,9 @@ class Member {
         chatMemberData: json["chatMemberData"] == null
             ? null
             : ChatMemberData.fromJson(json["chatMemberData"]),
+        deletionData: json["deletionData"] == null
+            ? null
+            : DeletionData.fromJson(json["deletionData"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -60,8 +63,8 @@ class Member {
         "adminId": adminId,
         "type": type,
         "status": status,
-        "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt!.toIso8601String(),
         "chatMemberDeletionData": chatMemberDeletionData,
+        "deletionData": deletionData,
       };
 }

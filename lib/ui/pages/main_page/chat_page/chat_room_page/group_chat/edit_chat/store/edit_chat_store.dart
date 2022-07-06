@@ -112,7 +112,6 @@ abstract class _EditChatStore extends IStore<bool> with Store {
       type: "Info",
       text: null,
       createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
       star: null,
       sender: Member(
         id: "",
@@ -121,12 +120,12 @@ abstract class _EditChatStore extends IStore<bool> with Store {
         adminId: null,
         type: "User",
         status: 0,
-        createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         chatMemberDeletionData: null,
         user: userData,
         admin: null,
         chatMemberData: null,
+        deletionData: null,
       ),
       medias: [],
       infoMessage: InfoMessage(

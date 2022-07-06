@@ -220,7 +220,6 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                     PayPeriodView(widget.questInfo.payPeriod),
                   ],
                 ),
-                const SizedBox(width: 50),
                 Flexible(
                   child: Text(
                     _getPrice(widget.questInfo.price) + "  WUSD",
