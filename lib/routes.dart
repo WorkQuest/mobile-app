@@ -259,6 +259,9 @@ class Routes {
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
               Provider(
+                create: (context) => getIt.get<UserProfileStore>(),
+              ),
+              Provider(
                 create: (context) => getIt.get<WalletStore>(),
               ),
               Provider(
@@ -374,7 +377,9 @@ class Routes {
             create: (context) => getIt.get<ProfileMeStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
-              child: ProfileQuestsPage(settings.arguments as ProfileMeResponse),
+              child: ProfileQuestsPage(
+                settings.arguments as ProfileQuestsArguments,
+              ),
             ),
           ),
         );
@@ -436,7 +441,7 @@ class Routes {
         );
 
       case UserProfile.routeName:
-        final role = getIt.get<ProfileMeStore>().userData?.role;
+        final role = getIt.get<UserProfileStore>().role;
         final arguments = settings.arguments as ProfileArguments?;
         final isViewProfile;
         if (settings.arguments == null)

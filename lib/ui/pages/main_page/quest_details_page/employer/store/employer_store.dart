@@ -117,14 +117,17 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       final _contract = await _client.getDeployedContract(
           "WorkQuest", quest.value!.contractAddress!);
       final _function = _contract.function(functionName);
-      final params = functionName != WQContractFunctions.acceptJobResult.name
+      final params = functionName != WQContractFunctions.acceptJobResult.name &&
+              functionName != WQContractFunctions.arbitration.name
           ? [EthereumAddress.fromHex(_user.walletAddress!)]
           : [];
       final _gas = await _client.getEstimateGasCallContract(
-        contract: _contract,
-        function: _function,
-        params: params,
-      );
+          contract: _contract,
+          function: _function,
+          params: params,
+          value: functionName == WQContractFunctions.arbitration.name
+              ? "1"
+              : null);
       fee = _gas.toStringAsFixed(17);
       this.onSuccess(true);
     } on SocketException catch (_) {

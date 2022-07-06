@@ -187,6 +187,7 @@ class ClientService implements ClientServiceI {
     required DeployedContract contract,
     required ContractFunction function,
     required List params,
+    String? value,
   }) async {
     final _gas = await getGas();
     final _estimateGas = await getEstimateGas(Transaction.callContract(
@@ -194,6 +195,12 @@ class ClientService implements ClientServiceI {
       function: function,
       parameters: params,
       from: EthereumAddress.fromHex(AccountRepository().userAddress),
+      value: value != null
+          ? EtherAmount.fromUnitAndValue(
+              EtherUnit.wei,
+              BigInt.from(double.parse(value) * pow(10, 18)),
+            )
+          : null,
     ));
     return (_estimateGas * _gas.getInWei).toDouble() * pow(10, -18);
   }

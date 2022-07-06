@@ -2,6 +2,7 @@ import 'package:app/constants.dart';
 import 'package:app/model/notification_model.dart';
 import 'package:app/ui/pages/main_page/notification_page/store/notification_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
@@ -9,6 +10,7 @@ import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 class NotificationCell extends StatefulWidget {
   final NotificationStore store;
@@ -118,6 +120,9 @@ class _NotificationCellState extends State<NotificationCell> {
               ),
               GestureDetector(
                 onTap: () async {
+                  context.read<UserProfileStore>().initRole(
+                        widget.body.notification.data.user.role,
+                      );
                   await Navigator.of(context, rootNavigator: true).pushNamed(
                     UserProfile.routeName,
                     arguments:

@@ -103,8 +103,8 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
       AsyncAction('_MyQuestStore.updateListQuest');
 
   @override
-  Future<void> updateListQuest(BaseQuestResponse quest) {
-    return _$updateListQuestAsyncAction.run(() => super.updateListQuest(quest));
+  Future<void> updateListQuest() {
+    return _$updateListQuestAsyncAction.run(() => super.updateListQuest());
   }
 
   final _$getQuestsAsyncAction = AsyncAction('_MyQuestStore.getQuests');

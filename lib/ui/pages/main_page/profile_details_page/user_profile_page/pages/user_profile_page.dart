@@ -93,24 +93,28 @@ class UserProfileState<T extends UserProfile> extends State<T>
       viewOtherUser!.offset = 0;
       viewOtherUser!.quests.clear();
 
-      viewOtherUser!.getProfile(userId: widget.arguments!.userId).then((value) {
-        portfolioStore!.setOtherUserData(viewOtherUser!.userData);
-        role = viewOtherUser!.userData!.role;
+      Future.delayed(Duration.zero, () {
+        viewOtherUser!
+            .getProfile(userId: widget.arguments!.userId)
+            .then((value) {
+          portfolioStore!.setOtherUserData(viewOtherUser!.userData);
+          role = viewOtherUser!.userData!.role;
 
-        if (viewOtherUser!.quests.isEmpty && role == UserRole.Employer)
-          viewOtherUser!.getQuests(
-            userId: viewOtherUser!.userData!.id,
-            newList: true,
-            isProfileYours: false,
-          );
+          if (viewOtherUser!.quests.isEmpty && role == UserRole.Employer)
+            viewOtherUser!.getQuests(
+              userId: viewOtherUser!.userData!.id,
+              newList: true,
+              isProfileYours: false,
+            );
 
-        if (role == UserRole.Worker)
+          if (role == UserRole.Worker)
+            portfolioStore!.getPortfolio(
+                userId: viewOtherUser!.userData!.id, newList: true);
           portfolioStore!
-              .getPortfolio(userId: viewOtherUser!.userData!.id, newList: true);
-        portfolioStore!
-            .getReviews(userId: viewOtherUser!.userData!.id, newList: true);
+              .getReviews(userId: viewOtherUser!.userData!.id, newList: true);
 
-        isVerify = viewOtherUser!.userData!.phone != null;
+          isVerify = viewOtherUser!.userData!.phone != null;
+        });
       });
     }
   }

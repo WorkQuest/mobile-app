@@ -5,6 +5,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/pay_period_view.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/quest_header.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
@@ -208,11 +209,16 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                PriorityView(
-                  widget.questInfo.priority != 0
-                      ? widget.questInfo.priority - 1
-                      : 0,
-                  true,
+                Row(
+                  children: [
+                    PriorityView(
+                      widget.questInfo.priority != 0
+                          ? widget.questInfo.priority - 1
+                          : 0,
+                    ),
+                    const SizedBox(width: 5),
+                    PayPeriodView(widget.questInfo.payPeriod),
+                  ],
                 ),
                 const SizedBox(width: 50),
                 Flexible(

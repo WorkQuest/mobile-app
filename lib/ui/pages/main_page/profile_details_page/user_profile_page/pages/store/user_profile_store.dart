@@ -1,3 +1,4 @@
+import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:injectable/injectable.dart';
@@ -29,11 +30,15 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
 
   String workerId = "";
 
+  UserRole? role;
+
   @observable
   String questId = "";
 
   @observable
   String contractAddress = "";
+
+  void initRole(UserRole value) => role = value;
 
   @action
   void setQuest(String id, String contractAddress) {

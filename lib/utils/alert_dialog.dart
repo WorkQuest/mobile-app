@@ -102,7 +102,10 @@ class AlertDialogUtils {
         return Platform.isIOS
             ? CupertinoAlertDialog(
                 title: Text(title),
-                content: Text(content),
+                content: Text(
+                  content,
+                  overflow: TextOverflow.fade,
+                ),
                 actions: [
                   CupertinoDialogAction(
                     child: const Text("OK"),

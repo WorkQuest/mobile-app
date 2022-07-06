@@ -157,34 +157,33 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
               Flexible(
                 child: GestureDetector(
                   onTap: () async {
-                    if (profile.assignedWorker != null) {
-                      portfolioStore.clearData();
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(
-                        UserProfile.routeName,
-                        arguments: ProfileArguments(
-                          role: widget.role,
-                          userId: widget.id,
-                        ),
+                    portfolioStore.clearData();
+                    print("ROLEROLE: ${widget.role}");
+                    print("ROLEROLE: ${widget.userRole.tr()}");
+                    context.read<UserProfileStore>().initRole(widget.role);
+                    await Navigator.of(context, rootNavigator: true).pushNamed(
+                      UserProfile.routeName,
+                      arguments: ProfileArguments(
+                        role: widget.role,
+                        userId: widget.id,
+                      ),
+                    );
+                    portfolioStore.clearData();
+                    if (widget.role == UserRole.Worker)
+                      portfolioStore.getPortfolio(
+                        userId: widget.myId,
+                        newList: true,
                       );
-                      portfolioStore.clearData();
-                      if (widget.role == UserRole.Worker)
-                        portfolioStore.getPortfolio(
-                          userId: widget.myId,
-                          newList: true,
-                        );
-                      else {
-                        userProfileStore.quests.clear();
-                        userProfileStore.getQuests(
-                          userId: widget.myId,
-                          newList: true,
-                          isProfileYours:
-                              widget.id == widget.myId ? true : false,
-                        );
-                      }
-                      portfolioStore.getReviews(
-                          userId: widget.myId, newList: true);
+                    else {
+                      userProfileStore.quests.clear();
+                      userProfileStore.getQuests(
+                        userId: widget.myId,
+                        newList: true,
+                        isProfileYours: widget.id == widget.myId ? true : false,
+                      );
                     }
+                    portfolioStore.getReviews(
+                        userId: widget.myId, newList: true);
                     profile.assignedWorker = null;
                   },
                   child: ListTile(
@@ -385,26 +384,22 @@ Widget employerRating({
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (userId != profile.userData!.id &&
-                        completedQuests != "0") {
-                      // profile.offset = 0;
-                      // profile.setUserId(userId);
-                      // await profile.getCompletedQuests();
+                    if (completedQuests != "0") {
                       await Navigator.pushNamed(
                         context,
                         ProfileQuestsPage.routeName,
-                        arguments: profile,
+                        arguments: ProfileQuestsArguments(
+                          profile: profile.userData!,
+                          active: false,
+                        ),
                       );
-                      // profile.quests.clear();
-                      // profile.offset = 0;
                     }
                   },
                   child: Text(
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: userId != profile.userData!.id &&
-                              completedQuests != "0"
+                      color: completedQuests != "0"
                           ? Color(0xFF00AA5B)
                           : Color(0xFFF7F8FA),
                       fontSize: 12.0,
@@ -474,11 +469,11 @@ Widget employerRating({
 Widget workerQuestStats({
   required String title,
   required String rate,
-  required String thirdLine,
-  String? userId,
-  ProfileMeStore? profile,
+  required String userId,
+  required ProfileMeStore profile,
+  required BuildContext context,
+  required bool active,
   Color textColor = const Color(0xFF00AA5B),
-  BuildContext? context,
 }) =>
     Flexible(
       child: Container(
@@ -509,23 +504,21 @@ Widget workerQuestStats({
             ),
             GestureDetector(
               onTap: () async {
-                if (userId != null &&
-                    context != null &&
-                    userId != profile?.userData?.id &&
-                    thirdLine != "0") {
+                if (userId != profile.userData?.id) {
                   await Navigator.pushNamed(
                     context,
                     ProfileQuestsPage.routeName,
-                    arguments: profile,
+                    arguments: ProfileQuestsArguments(
+                      profile: profile.userData!,
+                      active: active,
+                    ),
                   );
                 }
               },
               child: Text(
-                thirdLine.tr(),
+                "workers.showAll".tr(),
                 style: TextStyle(
-                  decoration: title == "quests.activeQuests"
-                      ? TextDecoration.underline
-                      : null,
+                  decoration: TextDecoration.underline,
                   color: Color(0xFFD8DFE3),
                   fontSize: 12.0,
                 ),
@@ -558,16 +551,19 @@ Widget workerRating({
             workerQuestStats(
               title: "quests.activeQuests",
               rate: activeQuests,
-              thirdLine: "workers.showAll",
               userId: userId,
               context: context,
               profile: profile,
+              active: true,
             ),
             workerQuestStats(
               title: 'quests.completedQuests',
               rate: completedQuests,
-              thirdLine: 'workers.oneTime',
               textColor: Color(0xFF0083C7),
+              context: context,
+              profile: profile,
+              userId: userId,
+              active: false,
             ),
           ],
         ),

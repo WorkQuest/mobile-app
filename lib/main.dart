@@ -51,7 +51,7 @@ void main() async {
   //init get_it
   injectDependencies(env: Environment.test);
   await Firebase.initializeApp(
-    name: "WorkQuest",
+    // name: "WorkQuest",
     options: DefaultFirebaseOptions.currentPlatform,
   ).then(
     (value) => _initialisePushNotification(),

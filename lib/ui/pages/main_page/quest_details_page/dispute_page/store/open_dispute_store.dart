@@ -98,7 +98,11 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
       final _function =
           _contract.function(WQContractFunctions.arbitration.name);
       final _gas = await _client.getEstimateGasCallContract(
-          contract: _contract, function: _function, params: []);
+        contract: _contract,
+        function: _function,
+        params: [],
+        value: "1",
+      );
       fee = _gas.toStringAsFixed(17);
     } on SocketException catch (_) {
       onError("Lost connection to server");

@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -93,7 +94,7 @@ class _ReviewPageState extends State<ReviewPage> {
                                         .fromUser
                                         .avatar
                                         ?.url ??
-                                    "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                                    Constants.defaultImageNetwork,
                                 name: widget.arguments.store.reviewsList[index]
                                         .fromUser.firstName +
                                     " " +
@@ -102,9 +103,8 @@ class _ReviewPageState extends State<ReviewPage> {
                                 mark: widget
                                     .arguments.store.reviewsList[index].mark,
                                 userRole: widget.arguments.store
-                                            .reviewsList[index].fromUserId ==
-                                        widget.arguments.store
-                                            .reviewsList[index].quest.userId
+                                            .reviewsList[index].fromUser.role ==
+                                        UserRole.Employer
                                     ? "role.employer"
                                     : "role.worker",
                                 questTitle: widget.arguments.store

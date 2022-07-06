@@ -625,19 +625,11 @@ extension Notification on ApiProvider {
   }) async {
     try {
       final responseData = await httpClient.get(
-        query: 'https://notifications.workquest.co/api/notifications?',
-        // 'exclude[]=dao&exclude[]=bridge&exclude[]=proposal&'
-        // 'exclude[]=referral&exclude[]=pensionFund&exclude[]=dailyLiquidity',
+        query: 'https://notifications.workquest.co/api/notifications?'
+            'exclude=dao&exclude=report&exclude=bridge&exclude=proposal&'
+            'exclude=referral&exclude=pension_fund&exclude=daily_liquidity',
         queryParameters: {
           "offset": offset,
-          // "exclude": [
-          //   "dao",
-          //   "bridge",
-          //   "proposal",
-          //   "referral",
-          //   "pensionFund",
-          //   "dailyLiquidity"
-          // ],
         },
         useBaseUrl: false,
       );
@@ -648,18 +640,10 @@ extension Notification on ApiProvider {
 
       final responseData = await httpClient.get(
         query: 'https://notifications.workquest.co/api/notifications?'
-            'exclude[]=dao&exclude[]=bridge&exclude[]=proposal&'
-            'exclude[]=referral&exclude[]=pensionFund&exclude[]=dailyLiquidity',
+            'exclude=dao&exclude=report&exclude=bridge&exclude=proposal&'
+            'exclude=referral&exclude=pension_fund&exclude=daily_liquidity',
         queryParameters: {
           "offset": offset,
-          // "exclude": [
-          //   "dao",
-          //   "bridge",
-          //   "proposal",
-          //   "referral",
-          //   "pensionFund",
-          //   "dailyLiquidity",
-          // ],
         },
       );
       return Notifications.fromJson(responseData);

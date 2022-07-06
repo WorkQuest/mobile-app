@@ -1,10 +1,13 @@
+import 'dart:math';
+
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
-import 'package:app/ui/widgets/workplace_view.dart';
+import 'package:app/ui/widgets/pay_period_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -110,6 +113,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                           ? Text("quests.yourQuest".tr())
                           : GestureDetector(
                               onTap: () async {
+                                context.read<UserProfileStore>().initRole(
+                                      UserRole.Employer,
+                                    );
                                 Navigator.of(context, rootNavigator: true)
                                     .pushNamed(
                                   UserProfile.routeName,
@@ -270,23 +276,34 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         ),
                       ),
                       const SizedBox(height: 20),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            WorkplaceView(storeQuest.questInfo!.workplace),
-                            const SizedBox(width: 5),
-                            tagEmployment(),
-                            const SizedBox(width: 5),
-                            PriorityView(
-                              storeQuest.questInfo!.priority != 0
-                                  ? storeQuest.questInfo!.priority - 1
-                                  : 0,
-                              true,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              PriorityView(
+                                storeQuest.questInfo!.priority != 0
+                                    ? storeQuest.questInfo!.priority - 1
+                                    : 0,
+                              ),
+                              const SizedBox(width: 5),
+                              PayPeriodView(storeQuest.questInfo!.payPeriod),
+                            ],
+                          ),
+                          const SizedBox(width: 50),
+                          Flexible(
+                            child: Text(
+                              _getPrice(storeQuest.questInfo!.price) + "  WUSD",
+                              textAlign: TextAlign.end,
+                              style: TextStyle(
+                                color: Color(0xFF00AA5B),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.fade,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       getBody(),
                       review(),
@@ -300,6 +317,14 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
         ),
       ),
     );
+  }
+
+  _getPrice(String value) {
+    try {
+      return (BigInt.parse(value).toDouble() * pow(10, -18)).toStringAsFixed(2);
+    } catch (e) {
+      return '0.00';
+    }
   }
 
   Widget inProgressBy() {

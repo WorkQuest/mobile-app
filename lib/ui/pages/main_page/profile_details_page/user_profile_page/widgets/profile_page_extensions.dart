@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:app/constants.dart';
+import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
@@ -160,18 +162,18 @@ extension ReviewsTab on UserProfileState {
                       ReviewsWidget(
                         avatar: portfolioStore!
                                 .reviewsList[index].fromUser.avatar?.url ??
-                            "https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs",
+                            Constants.defaultImageNetwork,
                         name: portfolioStore!
                                 .reviewsList[index].fromUser.firstName +
                             " " +
                             portfolioStore!
                                 .reviewsList[index].fromUser.lastName,
                         mark: portfolioStore!.reviewsList[index].mark,
-                        userRole: portfolioStore!
-                                    .reviewsList[index].fromUserId ==
-                                portfolioStore!.reviewsList[index].quest.userId
-                            ? "role.employer"
-                            : "role.worker",
+                        userRole:
+                            portfolioStore!.reviewsList[index].fromUser.role ==
+                                    UserRole.Employer
+                                ? "role.employer"
+                                : "role.worker",
                         questTitle:
                             portfolioStore!.reviewsList[index].quest.title,
                         cutMessage: portfolioStore!.messages[index],
@@ -180,9 +182,7 @@ extension ReviewsTab on UserProfileState {
                         myId: viewOtherUser?.userData == null
                             ? userStore!.userData!.id
                             : viewOtherUser!.userData!.id,
-                        role: viewOtherUser?.userData == null
-                            ? userStore!.userData!.role
-                            : viewOtherUser!.userData!.role,
+                        role: portfolioStore!.reviewsList[index].fromUser.role,
                         last: index == portfolioStore!.reviewsList.length - 1
                             ? true
                             : false,

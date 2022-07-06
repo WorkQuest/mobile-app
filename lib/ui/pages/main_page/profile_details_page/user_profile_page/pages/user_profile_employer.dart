@@ -28,7 +28,8 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                 QuestsType.Performed,
                 viewOtherUser?.userData == null
                     ? ObservableList.of(
-                        myQuests!.quests[QuestsType.Performed]!.take(2))
+                        myQuests!.quests[QuestsType.Performed]!.take(2),
+                      )
                     : ObservableList.of(viewOtherUser!.quests.take(2)),
                 physics: NeverScrollableScrollPhysics(),
                 isLoading: myQuests!.isLoading,
@@ -57,9 +58,12 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                 await Navigator.pushNamed(
                   context,
                   ProfileQuestsPage.routeName,
-                  arguments: viewOtherUser?.userData == null
-                      ? userStore!.userData!
-                      : viewOtherUser!.userData!,
+                  arguments: ProfileQuestsArguments(
+                    profile: viewOtherUser?.userData == null
+                        ? userStore!.userData!
+                        : viewOtherUser!.userData!,
+                    active: false,
+                  ),
                 );
                 if (viewOtherUser?.userData == null)
                   myQuests!.getQuests(

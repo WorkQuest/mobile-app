@@ -66,7 +66,9 @@ class _QuestsTabState extends State<QuestsTab>
                     child: ElevatedButton(
                       onPressed: () async {
                         await Navigator.of(context, rootNavigator: true)
-                            .pushNamed<bool>(CreateQuestPage.routeName);
+                            .pushNamed<bool>(
+                          CreateQuestPage.routeName,
+                        );
                       },
                       child: Text("quests.addNewQuest".tr()),
                     ),

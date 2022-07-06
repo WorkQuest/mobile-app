@@ -6,6 +6,7 @@ import 'package:app/model/respond_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
@@ -80,9 +81,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       ),
       if (store.quest.value != null &&
           store.quest.value!.userId == profile!.userData!.id &&
-          (store.quest.value!.status == 1 ||
-              store.quest.value!.status == 2 ||
-              store.quest.value!.status == 4))
+          (store.quest.value!.status == 1 || store.quest.value!.status == 2))
         PopupMenuButton<String>(
           elevation: 10,
           icon: Icon(Icons.more_vert),
@@ -324,6 +323,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           const SizedBox(height: 10),
           GestureDetector(
             onTap: () async {
+              context.read<UserProfileStore>().initRole(UserRole.Worker);
               await Navigator.of(context, rootNavigator: true).pushNamed(
                 UserProfile.routeName,
                 arguments: ProfileArguments(
@@ -439,12 +439,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                           id: store.selectedResponders!.id,
                                         );
                                         store.setQuestStatus(2);
-                                        Navigator.pop(context);
 
                                         await questStore.getQuests(true);
-                                        await myQuestStore.updateListQuest(
-                                          store.quest.value!,
-                                        );
+                                        await myQuestStore.updateListQuest();
                                         myQuestStore.sortQuests();
                                         await AlertDialogUtils
                                             .showSuccessDialog(
@@ -492,6 +489,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   }
 
   bottomForm() {
+    final differentTime = DateTime.now().millisecondsSinceEpoch -
+        (store.quest.value!.startedAt?.millisecondsSinceEpoch ?? 0);
     return showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -547,16 +546,16 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                               await sendTransaction(
                                 onPress: () async {
                                   Navigator.pop(context);
+                                  Navigator.pop(context);
                                   await store.acceptCompletedWork(
                                     questId: store.quest.value!.id,
                                   );
                                 },
                                 nextStep: () async {
                                   store.setQuestStatus(5);
+                                  setState(() {});
                                   Navigator.pop(context);
-                                  await myQuestStore.updateListQuest(
-                                    store.quest.value!,
-                                  );
+                                  await myQuestStore.updateListQuest();
                                   myQuestStore.sortQuests();
                                   chatStore.loadChats(starred: false);
                                   await AlertDialogUtils.showSuccessDialog(
@@ -594,14 +593,48 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     builder: (_) => TextButton(
                       onPressed: store.isLoading
                           ? null
-                          : () async {
-                              await Navigator.pushNamed(
-                                context,
-                                OpenDisputePage.routeName,
-                                arguments: store.quest.value!,
-                              ).then((value) async =>
-                                  await store.getQuest(store.quest.value!.id));
-                            },
+                          : differentTime < 60000
+                              ? () {
+                                  AlertDialogUtils.showInfoAlertDialog(
+                                    context,
+                                    title: "Error",
+                                    content:
+                                        "You cannot create a dispute until 24"
+                                        " hours have passed from the start of "
+                                        "this quest",
+                                  );
+                                }
+                              : () async {
+                        await store.getFee(
+                          store.quest.value!.assignedWorkerId!,
+                          WQContractFunctions.arbitration.name,
+                        );
+                        await AlertDialogUtils.showAlertDialog(
+                          context,
+                          title: Text("Dispute payment"),
+                          content: Text(
+                            "You need to pay\n"
+                                "${double.parse(store.fee) + 1.0} WUSD\n"
+                                "to open a dispute",
+                          ),
+                          needCancel: true,
+                          titleCancel: "Cancel",
+                          titleOk: "Ok",
+                          onTabCancel: () => Navigator.pop(context),
+                          onTabOk: () async =>
+                          await Navigator.pushNamed(
+                            context,
+                            OpenDisputePage.routeName,
+                            arguments: store.quest.value!,
+                          ).then(
+                                (value) async => await store.getQuest(
+                              store.quest.value!.id,
+                            ),
+                          ),
+                          colorCancel: Colors.blue,
+                          colorOk: Colors.red,
+                        );
+                                },
                       child: Text(
                         "btn.dispute".tr(),
                         style: TextStyle(color: Colors.white),
@@ -665,11 +698,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     );
     AlertDialogUtils.showLoadingDialog(context);
     if (store.isLoading)
-      Timer.periodic(Duration(seconds: 1), (timer) {
+      Timer.periodic(Duration(seconds: 1), (timer) async {
         if (!store.isLoading) {
           timer.cancel();
           Navigator.pop(context);
           if (!store.isSuccess) nextStep();
+          await Future.delayed(const Duration(milliseconds: 250));
+          await AlertDialogUtils.showSuccessDialog(context);
         }
       });
     else
@@ -733,6 +768,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   Widget respondedUser(RespondModel respond) {
     return GestureDetector(
       onTap: () async {
+        context.read<UserProfileStore>().initRole(UserRole.Worker);
         await Navigator.of(context, rootNavigator: true).pushNamed(
           UserProfile.routeName,
           arguments: ProfileArguments(

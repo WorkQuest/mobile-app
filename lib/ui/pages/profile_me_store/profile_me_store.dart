@@ -310,7 +310,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
             offset: offset,
             sort: sort,
             userId: userId,
-            statuses: [3, 4],
+            statuses: [-2, 3, 4],
             me: isProfileYours,
           ),
         );

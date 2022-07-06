@@ -118,33 +118,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 "https://dev-app.workquest.co/quests/${store.quest.value!.id}");
           },
         ),
-      if (store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
-          store.quest.value?.status == 4)
-        PopupMenuButton<String>(
-          elevation: 10,
-          icon: Icon(Icons.more_vert),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6.0),
-          ),
-          onSelected: (value) async {
-            await Navigator.pushNamed(
-              context,
-              OpenDisputePage.routeName,
-              arguments: storeQuest.questInfo,
-            );
-            await store.getQuest(store.quest.value!.id);
-          },
-          itemBuilder: (BuildContext context) {
-            return {
-              if (store.quest.value!.status == 4) "chat.report",
-            }.map((String choice) {
-              return PopupMenuItem<String>(
-                value: choice,
-                child: Text(choice.tr()),
-              );
-            }).toList();
-          },
-        ),
     ];
   }
 
@@ -258,6 +231,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   @override
   Widget getBody() {
     if (isMyQuest) return const SizedBox();
+    final differentTime = DateTime.now().millisecondsSinceEpoch -
+        (store.quest.value!.startedAt?.millisecondsSinceEpoch ?? 0);
     return Observer(
       builder: (_) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -373,6 +348,72 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       ),
                     ),
                   ),
+          if (store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
+              store.quest.value?.status == 4)
+            store.isLoading
+                ? Center(child: CircularProgressIndicator.adaptive())
+                : Observer(
+                    builder: (_) => TextButton(
+                      onPressed: store.isLoading
+                          ? null
+                          : differentTime < 60000
+                              ? () {
+                                  AlertDialogUtils.showInfoAlertDialog(
+                                    context,
+                                    title: "Error",
+                                    content:
+                                        "You cannot create a dispute until 24"
+                                        " hours have passed from the start of "
+                                        "this quest",
+                                  );
+                                }
+                              : () async {
+                                  await AlertDialogUtils.showAlertDialog(
+                                    context,
+                                    title: Text("Dispute payment"),
+                                    content: Text(
+                                      "You need to pay to open a dispute",
+                                    ),
+                                    needCancel: true,
+                                    titleCancel: "Cancel",
+                                    titleOk: "Ok",
+                                    onTabCancel: () => Navigator.pop(context),
+                                    onTabOk: () async =>
+                                        await Navigator.pushNamed(
+                                      context,
+                                      OpenDisputePage.routeName,
+                                      arguments: store.quest.value!,
+                                    ).then(
+                                      (value) async => await store.getQuest(
+                                        store.quest.value!.id,
+                                      ),
+                                    ),
+                                    colorCancel: Colors.blue,
+                                    colorOk: Colors.red,
+                                  );
+                                },
+                      child: Text(
+                        "btn.dispute".tr(),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ButtonStyle(
+                        fixedSize: MaterialStateProperty.all(
+                          Size(double.maxFinite, 43),
+                        ),
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed))
+                              return Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.5);
+                            return const Color(0xFF0083C7);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
         ],
       ),
     );
@@ -482,7 +523,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                             ? questStore.getQuests(true)
                             : questStore.setSearchWord(questStore.searchWord);
 
-                        await myQuestStore.updateListQuest(store.quest.value!);
+                        await myQuestStore.updateListQuest();
                         myQuestStore.sortQuests();
                         _updateLoading();
                         chatStore!.loadChats(starred: false);
@@ -529,7 +570,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   },
                   nextStep: () async {
                     await questStore.getQuests(true);
-                    await myQuestStore.updateListQuest(store.quest.value!);
+                    await myQuestStore.updateListQuest();
                     myQuestStore.sortQuests();
                   },
                   functionName: WQContractFunctions.acceptJob.name,
@@ -598,11 +639,15 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       address: store.quest.value!.contractAddress!,
       amount: null,
       onPressConfirm: onPress,
+      onPressCancel: () {
+        store.onError("Cancel");
+        Navigator.pop(context);
+      },
     );
     AlertDialogUtils.showLoadingDialog(context);
 
     if (store.isLoading)
-      Timer.periodic(Duration(seconds: 5), (timer) async {
+      Timer.periodic(Duration(seconds: 1), (timer) async {
         if (!store.isLoading) {
           timer.cancel();
           Navigator.pop(context);
@@ -644,12 +689,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               _updateLoading();
               await sendTransaction(
                 onPress: () async {
-                  store.sendCompleteWork();
                   Navigator.pop(context);
+                  await store.sendCompleteWork();
                 },
                 nextStep: () async {
                   store.setQuestStatus(4);
-                  await myQuestStore.updateListQuest(store.quest.value!);
+                  await myQuestStore.updateListQuest();
                   myQuestStore.sortQuests();
                 },
                 functionName: WQContractFunctions.verificationJob.name,

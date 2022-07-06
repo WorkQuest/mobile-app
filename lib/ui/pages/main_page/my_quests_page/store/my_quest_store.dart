@@ -68,7 +68,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             updatedAt: DateTime.now(),
           );
       });
-      await updateListQuest(quest);
+      await updateListQuest();
       sortQuests();
     } catch (e) {
       print("ERROR: $e");
@@ -77,26 +77,34 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
 
   @action
   Future<void> setStar(BaseQuestResponse quest, bool set) async {
-    if (set)
-      await _apiProvider.setStar(id: quest.id);
-    else
-      await _apiProvider.removeStar(id: quest.id);
-    quest.star = set;
-    quests.forEach((key, value) async {
-      for (int i = 0; i < value.length; i++)
-        if (value[i].id == quest.id) {
-          quests[key]![i].star = set;
-          if (set) {
-            quests[QuestsType.Favorites]?.add(quest);
-            quests[QuestsType.Favorites]!.sort();
-          } else
-            quests[QuestsType.Favorites]?.remove(quest);
-        }
-    });
+    try {
+      this.onLoading();
+      if (set)
+        await _apiProvider.setStar(id: quest.id);
+      else
+        await _apiProvider.removeStar(id: quest.id);
+      quest.star = set;
+      quests.forEach((key, value) async {
+        for (int i = 0; i < value.length; i++)
+          if (value[i].id == quest.id) {
+            quests[key]![i].star = set;
+            if (set) {
+              quests[QuestsType.Favorites]?.add(quest);
+              value.length -= 1;
+            } else
+              quests[QuestsType.Favorites]
+                  ?.removeWhere((element) => element.id == quest.id);
+          }
+      });
+      sortQuests();
+      this.onSuccess(true);
+    } catch (e) {
+      this.onError(e.toString());
+    }
   }
 
   @action
-  Future<void> updateListQuest(BaseQuestResponse quest) async {
+  Future<void> updateListQuest() async {
     getQuests(QuestsType.All, role, true);
     getQuests(QuestsType.Favorites, role, true);
     getQuests(QuestsType.Active, role, true);

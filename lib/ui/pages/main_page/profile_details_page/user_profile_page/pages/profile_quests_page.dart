@@ -10,9 +10,9 @@ import 'package:provider/provider.dart';
 class ProfileQuestsPage extends StatefulWidget {
   static const String routeName = "/questsPage";
 
-  ProfileQuestsPage(this.profile);
+  ProfileQuestsPage(this.arguments);
 
-  final ProfileMeResponse profile;
+  final ProfileQuestsArguments arguments;
 
   @override
   _ProfileQuestsPageState createState() => _ProfileQuestsPageState();
@@ -20,33 +20,28 @@ class ProfileQuestsPage extends StatefulWidget {
 
 class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
   ProfileMeStore? profileMeStore;
+  late ProfileMeResponse profile;
 
   @override
   void initState() {
     profileMeStore = context.read<ProfileMeStore>();
     profileMeStore!.offset = 0;
     profileMeStore!.quests.clear();
-    if (profileMeStore!.userData!.id != widget.profile.id) {
-      widget.profile.role == UserRole.Worker
+    profile = widget.arguments.profile;
+    Future.delayed(Duration.zero, () {
+      widget.arguments.active
           ? profileMeStore!.getActiveQuests(
-              userId: widget.profile.id,
+              userId: profile.id,
               newList: true,
-              isProfileYours: false,
+              isProfileYours: profile.id == profileMeStore!.userData!.id,
             )
           : profileMeStore!.getCompletedQuests(
-              userRole: widget.profile.role,
-              userId: widget.profile.id,
+              userRole: profile.role,
+              userId: profile.id,
               newList: true,
-              isProfileYours: false,
+              isProfileYours: profile.id == profileMeStore!.userData!.id,
             );
-    } else {
-      profileMeStore!.getCompletedQuests(
-        userRole: profileMeStore!.userData!.role,
-        userId: profileMeStore!.userData!.id,
-        newList: true,
-        isProfileYours: false,
-      );
-    }
+    });
     super.initState();
   }
 
@@ -55,9 +50,7 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
     return Scaffold(
       appBar: CupertinoNavigationBar(
         automaticallyImplyLeading: true,
-        middle: Text(
-          "Quests",
-        ),
+        middle: Text("Quests"),
       ),
       body: Observer(
         builder: (_) => !profileMeStore!.isLoading
@@ -67,24 +60,20 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
                   if (metrics.atEdge ||
                       metrics.maxScrollExtent < metrics.pixels &&
                           !profileMeStore!.isLoading) {
-                    if (widget.profile.role == UserRole.Worker)
+                    if (widget.arguments.active)
                       profileMeStore!.getActiveQuests(
                         userId: profileMeStore!.questHolder!.id,
                         newList: true,
                         isProfileYours:
-                            profileMeStore!.userData!.id != widget.profile.id
-                                ? false
-                                : true,
+                            profile.id == profileMeStore!.userData!.id,
                       );
                     else
                       profileMeStore!.getCompletedQuests(
-                        userRole: widget.profile.role,
-                        userId: widget.profile.id,
+                        userRole: profile.role,
+                        userId: profile.id,
                         newList: false,
                         isProfileYours:
-                            profileMeStore!.userData!.id != widget.profile.id
-                                ? false
-                                : true,
+                            profile.id == profileMeStore!.userData!.id,
                       );
                   }
                   return true;
@@ -93,22 +82,27 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
                   builder: (_) => profileMeStore!.questHolder == null &&
                           profileMeStore!.isLoading &&
                           profileMeStore!.quests.isEmpty
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
+                      ? Center(child: CircularProgressIndicator.adaptive())
                       : QuestsList(
-                          widget.profile.role == UserRole.Worker
+                          widget.arguments.active
                               ? QuestsType.Active
                               : QuestsType.Performed,
                           profileMeStore!.quests,
                           isLoading: profileMeStore!.isLoading,
                           from: FromQuestList.questSearch,
-                          role: widget.profile.role,
+                          role: profile.role,
                         ),
                 ),
               )
-            : Center(child: CircularProgressIndicator()),
+            : Center(child: CircularProgressIndicator.adaptive()),
       ),
     );
   }
+}
+
+class ProfileQuestsArguments {
+  ProfileQuestsArguments({required this.profile, required this.active});
+
+  final ProfileMeResponse profile;
+  final bool active;
 }

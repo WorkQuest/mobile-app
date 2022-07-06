@@ -743,7 +743,11 @@ class _PhoneNumberWidgetState extends State<_PhoneNumberWidget> {
           child: InternationalPhoneNumberInput(
             initialValue: widget.initialValue,
             errorMessage: "modals.invalidPhone".tr(),
-            autoValidateMode: AutovalidateMode.onUserInteraction,
+            validator: widget.title == "modals.phoneNumber"
+                ? Validators.phoneNumberValidator
+                : (value) {
+                    return null;
+                  },
             onInputChanged: widget.onChanged,
             selectorConfig: SelectorConfig(
               leadingPadding: 16,
