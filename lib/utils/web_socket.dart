@@ -68,9 +68,9 @@ class WebSocket {
   void closeWebSocket() {
     print('closeWebSocket');
     shouldReconnectFlag = false;
-    walletChannel!.sink.close(closeCode, "closeCode");
-    _senderChannel!.sink.close(closeCode, "closeCode");
-    _notificationChannel!.sink.close(closeCode, "closeCode");
+    walletChannel?.sink.close(closeCode, "closeCode");
+    _senderChannel?.sink.close(closeCode, "closeCode");
+    _notificationChannel?.sink.close(closeCode, "closeCode");
   }
 
 
