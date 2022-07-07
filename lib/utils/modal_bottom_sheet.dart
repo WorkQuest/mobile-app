@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 class ModalBottomSheet {
   static Future<void> openModalBottomSheet(
-      BuildContext context, Widget content, {double height = 200}) async {
+    BuildContext context,
+    Widget content, {
+    double height = 200,
+    EdgeInsetsGeometry? padding,
+  }) async {
     await showModalBottomSheet(
       context: context,
       useRootNavigator: true,
@@ -18,8 +22,7 @@ class ModalBottomSheet {
             color: Colors.white,
           ),
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding: padding ?? const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Column(
               children: [
                 Container(

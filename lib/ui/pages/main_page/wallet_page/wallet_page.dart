@@ -1,27 +1,22 @@
 import 'dart:io';
-import 'package:app/di/injector.dart';
 import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/swap_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
+import 'package:app/ui/widgets/copy_address_wallet_widget.dart';
 import 'package:app/ui/widgets/dropdown_adaptive_widget.dart';
 import 'package:app/ui/widgets/shimmer.dart';
-import 'package:app/utils/snack_bar.dart';
+import 'package:app/ui/widgets/switch_format_address_widget.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import '../../../../constants.dart';
-import "package:provider/provider.dart";
 import 'transactions/list_transactions.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
@@ -64,7 +59,6 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Widget layout() {
-    final address = AccountRepository().userAddress;
     return CustomScrollView(
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
@@ -105,55 +99,22 @@ class _WalletPageState extends State<WalletPage> {
             padding: _padding,
             child: Column(
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      '${address.substring(0, 9)}...'
-                      '${address.substring(address.length - 3, address.length)}',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: AppColor.subtitleText,
-                      ),
-                    ),
-                    const Spacer(),
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.2,
-                      onPressed: () {
-                        Clipboard.setData(ClipboardData(text: address));
-                        SnackBarUtils.success(
-                          context,
-                          title: 'wallet'.tr(gender: 'copy'),
-                          duration: const Duration(milliseconds: 500),
-                        );
-                      },
-                      child: Container(
-                        height: 34,
-                        width: 34,
-                        padding: const EdgeInsets.all(7.0),
-                        decoration:
-                            BoxDecoration(borderRadius: BorderRadius.circular(6.0), color: AppColor.disabledButton),
-                        child: SvgPicture.asset(
-                          "assets/copy_icon.svg",
-                          color: AppColor.enabledButton,
-                        ),
-                      ),
-                    ),
-                  ],
+                CopyAddressWalletWidget(
+                  format: AccountRepository().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32,
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                if (_isShowBanner)
-                  _BannerBuyingWQT(
+                Observer(
+                  builder: (_) => _BannerBuyingWQT(
+                    isEnabled: _isShowBanner,
                     button: outlinedButton(
                       title: 'wallet.buyWQT'.tr(),
                       route: SwapPage.routeName,
                       color: Colors.white,
                     ),
                   ),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -183,14 +144,9 @@ class _WalletPageState extends State<WalletPage> {
                     Expanded(
                       flex: 1,
                       child: ElevatedButton(
-                        child: Text('wallet'.tr(gender: 'transfer')),
+                        child: Text('wallet'.tr(gender: 'swap')),
                         onPressed: () async {
-                          Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
-                            builder: (_) => Provider(
-                              create: (context) => getIt.get<TransferStore>(),
-                              child: TransferPage(),
-                            ),
-                          ));
+                          Navigator.of(context, rootNavigator: true).pushNamed(SwapPage.routeName);
                         },
                       ),
                     )
@@ -279,7 +235,6 @@ class _WalletPageState extends State<WalletPage> {
       if (GetIt.I.get<WalletStore>().coins.isEmpty) {
         return false;
       }
-      return true;
       try {
         final _wqt = GetIt.I.get<WalletStore>().coins.firstWhere((element) => element.symbol == TokenSymbols.WQT);
         if (double.parse(_wqt.amount!) == 0.0) {
@@ -295,51 +250,57 @@ class _WalletPageState extends State<WalletPage> {
 
 class _BannerBuyingWQT extends StatelessWidget {
   final Widget button;
+  final bool isEnabled;
 
   const _BannerBuyingWQT({
     Key? key,
     required this.button,
+    required this.isEnabled,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // height: 160,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColor.enabledButton,
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      padding: EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'wallet.buyTitleWQT'.tr(),
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(
-            'wallet.buyDescriptionWQT'.tr(),
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: button,
-          ),
-        ],
-      ),
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 200),
+      child: isEnabled
+          ? Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: AppColor.enabledButton,
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              padding: EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'wallet.buyTitleWQT'.tr(),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    'wallet.buyDescriptionWQT'.tr(),
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: button,
+                  ),
+                ],
+              ),
+            )
+          : SizedBox(width: double.infinity,),
     );
   }
 }
