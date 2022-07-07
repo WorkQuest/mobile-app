@@ -486,8 +486,7 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
                 final _networkName =
                 (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
                 AccountRepository().setNetwork(_networkName);
-                Storage.write(StorageKeys.network.toString(), (value).name);
-                Storage.write(StorageKeys.networkName.toString(), _networkName.name);
+                Storage.write(StorageKeys.networkName.name, _networkName.name);
               });
               return value;
             },

@@ -63,14 +63,14 @@ void main() async {
     if (wallet != null) {
       AccountRepository().setWallet(wallet);
     }
-    final _networkNameStorage = await Storage.read(StorageKeys.networkName.toString());
+    final _networkNameStorage = await Storage.read(StorageKeys.networkName.name);
     if (_networkNameStorage == null) {
       AccountRepository().setNetwork(NetworkName.workNetMainnet);
-      await Storage.write(StorageKeys.networkName.toString(), NetworkName.workNetMainnet.name);
+      await Storage.write(StorageKeys.networkName.name, NetworkName.workNetMainnet.name);
     } else {
       final _networkName = Web3Utils.getNetworkName(_networkNameStorage);
       AccountRepository().setNetwork(_networkName);
-      await Storage.write(StorageKeys.networkName.toString(), _networkName.name);
+      await Storage.write(StorageKeys.networkName.name, _networkName.name);
     }
   } catch (e) {
     AccountRepository().clearData();

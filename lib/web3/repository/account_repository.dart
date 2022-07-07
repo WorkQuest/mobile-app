@@ -22,20 +22,31 @@ class AccountRepository {
   ClientService? client;
 
   ValueNotifier<NetworkName?> networkName = ValueNotifier<NetworkName?>(null);
-
   ValueNotifier<Network> notifierNetwork = ValueNotifier<Network>(Network.mainnet);
 
   String get userAddress => userWallet!.address!;
-
   String get privateKey => userWallet!.privateKey!;
+
+
+  bool get isOtherNetwork =>
+      networkName.value != NetworkName.workNetTestnet &&
+          networkName.value != NetworkName.workNetMainnet;
 
   ClientService getClient() {
     return client!;
   }
 
+  ConfigNetwork getConfigNetwork() {
+    return Configs.configsNetwork[networkName.value!]!;
+  }
+
   connectClient() {
     final config = Configs.configsNetwork[networkName.value!];
     client = ClientService(config!);
+  }
+
+  setWallet(Wallet wallet) {
+    userWallet = wallet;
   }
 
   setNetwork(NetworkName networkName) {
@@ -54,10 +65,6 @@ class AccountRepository {
     GetIt.I.get<TransferStore>().setCoin(null);
   }
 
-  setWallet(Wallet wallet) {
-    userWallet = wallet;
-  }
-
   clearData() {
     userWallet = null;
     networkName.value = null;
@@ -68,13 +75,9 @@ class AccountRepository {
     Storage.deleteAllFromSecureStorage();
   }
 
-  ConfigNetwork getConfigNetwork() {
-    return Configs.configsNetwork[networkName.value!]!;
-  }
-
   _saveNetwork(NetworkName networkName) {
     this.networkName.value = networkName;
-    Storage.write(StorageKeys.networkName.toString(), networkName.name);
+    Storage.write(StorageKeys.networkName.name, networkName.name);
   }
 
   _disconnectWeb3Client() {
@@ -93,8 +96,4 @@ class AccountRepository {
       throw FormatException('Error getting client WorkNet');
     }
   }
-
-  bool get isOtherNetwork =>
-      networkName.value != NetworkName.workNetTestnet &&
-          networkName.value != NetworkName.workNetMainnet;
 }
