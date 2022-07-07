@@ -264,7 +264,7 @@ class _SwapPageState extends State<SwapPage> {
                               }
                             },
                             child: SvgPicture.asset(
-                              'assets/svg/scan_qr.svg',
+                              'assets/scan_qr.svg',
                               color: AppColor.enabledButton,
                             ),
                           ),
@@ -314,7 +314,7 @@ class _SwapPageState extends State<SwapPage> {
                                 width: 18,
                                 height: 18,
                                 child: SvgPicture.asset(
-                                  'assets/svg/wqt_coin_icon.svg',
+                                  'assets/wqt_coin_icon.svg',
                                 ),
                               ),
                             ),

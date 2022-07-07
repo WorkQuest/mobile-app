@@ -133,7 +133,7 @@ class _TransferPageState extends State<TransferPage> {
                         }
                       },
                       child: SvgPicture.asset(
-                        'assets/svg/scan_qr.svg',
+                        'assets/scan_qr.svg',
                         color: AppColor.enabledButton,
                       ),
                     ),
@@ -175,7 +175,7 @@ class _TransferPageState extends State<TransferPage> {
                   controller: _amountController,
                   hint: 'wallet.enterAmount'.tr(),
                   // keyboardType: TextInputType.number,
-                  suffixIcon: ObserverListener(
+                  suffixIcon: ObserverListener<TransferStore>(
                     onFailure: () {
                       return false;
                     },

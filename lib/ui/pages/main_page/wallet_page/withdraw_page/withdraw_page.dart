@@ -1,3 +1,5 @@
+import 'package:app/ui/pages/main_page/wallet_page/bank_card_widget.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:app/web3/repository/account_repository.dart';
@@ -80,21 +82,22 @@ class _WithdrawPageState extends State<WithdrawPage> with SingleTickerProviderSt
             child: TabBarView(
               controller: this._tabController,
               children: [
-                Center(
-                  child: Text("modals.serviceUnavailable".tr()),
-                ),
+                TransferPage(),
+                // Center(
+                //   child: Text("modals.serviceUnavailable".tr()),
+                // ),
 
                 ///Wallet Transfer
                 // walletTab(withdrawStore),
 
-                Center(
-                  child: Text("modals.serviceUnavailable".tr()),
-                ),
+                // Center(
+                //   child: Text("modals.serviceUnavailable".tr()),
+                // ),
 
                 ///Card Transfer
-                // BankCardTransaction(
-                //   transaction: " " + "modals.withdraw".tr(),
-                // ),
+                BankCardTransaction(
+                  transaction: " " + "modals.withdraw".tr(),
+                ),
               ],
             ),
           ),
