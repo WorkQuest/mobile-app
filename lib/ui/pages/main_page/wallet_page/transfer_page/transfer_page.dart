@@ -74,9 +74,6 @@ class _TransferPageState extends State<TransferPage> {
     _initCoins();
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: DefaultAppBar(
-      //   title: 'wallet.withdraw'.tr(),
-      // ),
       body: LayoutWithScroll(
         child: Observer(
           builder: (_) => Padding(
@@ -193,12 +190,14 @@ class _TransferPageState extends State<TransferPage> {
                         ),
                       ),
                       onPressed: () async {
-                        if (store.currentCoin != null) {
-                          store.getMaxAmount();
-                        } else {
-                          final title = 'meta.error'.tr();
-                          final content = 'crediting.chooseCoin'.tr();
-                          AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
+                        if (_key.currentState!.validate()) {
+                          if (store.currentCoin != null) {
+                            store.getMaxAmount();
+                          } else {
+                            final title = 'meta.error'.tr();
+                            final content = 'crediting.chooseCoin'.tr();
+                            AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
+                          }
                         }
                       },
                     ),
@@ -222,7 +221,7 @@ class _TransferPageState extends State<TransferPage> {
           width: double.infinity,
           child: Observer(
             builder: (_) => DefaultButton(
-              title: 'wallet.transfer'.tr(),
+              title: 'wallet.withdraw'.tr(),
               onPressed: store.statusButtonTransfer ? _pushConfirmTransferPage : null,
             ),
           ),
