@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:app/constants.dart';
+import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
@@ -25,7 +27,7 @@ class Web3Utils {
       }
     } else if (typeCoin == TokenSymbols.WUSD) {
       final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin, isMain: isMain));
-      if (amount > _balanceToken) {
+      if (amount > _balanceToken.toDouble()) {
         throw FormatException('errors.notHaveEnoughTxToken'.tr(namedArgs: {'token': getTitleToken(typeCoin)}));
       }
       if (_balanceWQT.getInWei < BigInt.from(gas * pow(10, 18))) {
@@ -34,15 +36,9 @@ class Web3Utils {
     }
   }
 
-  static int getDegreeToken(TokenSymbols typeCoin) {
-    if (typeCoin == TokenSymbols.USDT) {
-      final _value = AccountRepository().networkName.value;
-      final _isBSC =
-          _value == NetworkName.bscTestnet || _value == NetworkName.bscMainnet;
-      return _isBSC ? 18 : 6;
-    } else {
-      return 18;
-    }
+  static Future<int> getDegreeToken(Erc20 contract) async {
+    final _decimals = await contract.decimals();
+    return _decimals.toInt();
   }
 
   static String getAddressToken(TokenSymbols typeCoin, {bool isMain = false}) {
@@ -64,6 +60,22 @@ class Web3Utils {
     } catch (e) {
       return '';
     }
+  }
+
+  static Decimal getGas({
+    required BigInt estimateGas,
+    required BigInt gas,
+    required int degree,
+  }) {
+    return ((Decimal.parse(estimateGas.toString()) * Decimal.parse(gas.toString())) / Decimal.fromInt(10).pow(18))
+        .toDecimal();
+  }
+
+  static BigInt getAmountBigInt({
+    required String amount,
+    required int degree,
+  }) {
+    return (Decimal.tryParse(amount) ?? Decimal.zero * Decimal.fromInt(10).pow(degree)).toBigInt();
   }
 
   static Network getNetwork(NetworkName networkName) {

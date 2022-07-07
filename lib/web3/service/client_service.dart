@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/services.dart';
 import 'package:hex/hex.dart';
 import 'package:web3dart/contracts/erc20.dart';
@@ -18,7 +19,7 @@ abstract class ClientServiceI {
 
   Future<EthPrivateKey> getCredentials(String privateKey);
 
-  Future<double> getBalanceFromContract(String address);
+  Future<Decimal> getBalanceFromContract(String address);
 
   Future<EtherAmount> getBalance(String privateKey);
 
@@ -95,8 +96,8 @@ class ClientService implements ClientServiceI {
       );
     } else {
       String _addressToken = Web3Utils.getAddressToken(coin);
-      final _degree = Web3Utils.getDegreeToken(coin);
       final contract = Erc20(address: EthereumAddress.fromHex(_addressToken), client: client!);
+      final _degree = await Web3Utils.getDegreeToken(contract);
       hash = await contract.transfer(
         EthereumAddress.fromHex(address),
         BigInt.from(double.parse(amount) * pow(10, _degree)),
@@ -121,16 +122,15 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<double> getBalanceFromContract(String address, {bool otherNetwork = false, bool isUSDT = false}) async {
+  Future<Decimal> getBalanceFromContract(String address, {bool otherNetwork = false, bool isUSDT = false}) async {
     try {
       address = address.toLowerCase();
       final contract = Erc20(address: EthereumAddress.fromHex(address), client: client!);
       final balance = await contract.balanceOf(EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
-      if (otherNetwork || isUSDT) {
-        return balance.toDouble() * pow(10, -6);
-      }
-
-      return balance.toDouble() * pow(10, -18);
+      final _degree = await Web3Utils.getDegreeToken(contract);
+      return (Decimal.parse(balance.toString()) /
+          Decimal.fromInt(10).pow(_degree))
+          .toDecimal();
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
       throw FormatException("Error connection to network");
