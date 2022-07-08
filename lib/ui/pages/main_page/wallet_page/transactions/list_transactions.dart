@@ -4,11 +4,12 @@ import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactio
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:expandable/expandable.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../constants.dart';
 import '../../../../../model/web3/transactions_response.dart';
@@ -132,7 +133,7 @@ class ListTransactions extends StatelessWidget {
   _onPressedGoToExplorer() {
     final _urlExplorer = AccountRepository().getConfigNetwork().urlExplorer + AccountRepository().userAddress;
     print('url: $_urlExplorer');
-    launch(_urlExplorer);
+    launchUrl(Uri.parse(_urlExplorer));
   }
 }
 
@@ -336,7 +337,7 @@ class _ExpandedTransactionWidget extends StatelessWidget {
           _ItemInfoFromTransaction(
             info: hashTransaction,
             title: "wallet.hashTx".tr(),
-            isSelectable: true,
+            isEnabled: true,
           ),
           const SizedBox(
             height: 6,
@@ -344,7 +345,6 @@ class _ExpandedTransactionWidget extends StatelessWidget {
           _ItemInfoFromTransaction(
             info: address,
             title: increase ? "settings.education.from".tr() : "settings.education.to".tr(),
-            isSelectable: true,
           ),
         ],
       ),
@@ -353,40 +353,46 @@ class _ExpandedTransactionWidget extends StatelessWidget {
 }
 
 class _ItemInfoFromTransaction extends StatelessWidget {
-  final bool isSelectable;
   final String title;
   final String info;
+  final bool isEnabled;
 
   const _ItemInfoFromTransaction({
     Key? key,
     required this.info,
     required this.title,
-    this.isSelectable = false,
+    this.isEnabled = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (isSelectable) {
-      return SelectableText.rich(
-        TextSpan(
-          text: "$title: ",
-          style: const TextStyle(fontSize: 14, color: AppColor.unselectedBottomIcon),
-          children: [
-            TextSpan(text: info, style: const TextStyle(color: Colors.black)),
-          ],
-        ),
-        style: TextStyle(overflow: TextOverflow.ellipsis),
-      );
+    return SelectableText.rich(
+      TextSpan(
+        text: "$title: ",
+        style:
+        const TextStyle(fontSize: 14, color: AppColor.unselectedBottomIcon),
+        children: [
+          TextSpan(
+            text: info,
+            style: TextStyle(
+              color: isEnabled ? AppColor.enabledButton : Colors.black,
+              decoration: isEnabled ? TextDecoration.underline : null,
+            ),
+            recognizer: TapGestureRecognizer()..onTap = _onTapTxHash,
+          ),
+        ],
+      ),
+      style: const TextStyle(overflow: TextOverflow.ellipsis),
+    );
+  }
+
+  _onTapTxHash() {
+    final _isMainnet =
+        AccountRepository().notifierNetwork.value == Network.mainnet;
+    if (_isMainnet) {
+      launchUrl(Uri.parse('https://explorer.workquest.co/tx/$info'));
     } else {
-      return RichText(
-        text: TextSpan(
-          text: "$title: ",
-          style: const TextStyle(fontSize: 14, color: AppColor.unselectedBottomIcon),
-          children: [
-            TextSpan(text: info, style: const TextStyle(fontSize: 14, color: Colors.black)),
-          ],
-        ),
-      );
+      launchUrl(Uri.parse('https://testnet-explorer.workquest.co/tx/$info'));
     }
   }
 }
