@@ -1,4 +1,5 @@
 import 'package:app/constants.dart';
+import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_bank_card.dart';
 import 'package:app/ui/widgets/default_button.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
 import 'package:app/ui/widgets/switch_format_address_widget.dart';
@@ -90,10 +91,7 @@ class _DepositPageState extends State<DepositPage>
               children: [
                 ///Wallet Transfer
                 const _WalletAddress(),
-
-                Center(
-                  child: Text("modals.serviceUnavailable".tr()),
-                ),
+                const DepositBankCard(),
 
                 ///Card Transfer
                 // BankCardTransaction(
