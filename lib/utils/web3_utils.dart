@@ -66,8 +66,12 @@ class Web3Utils {
     required BigInt estimateGas,
     required BigInt gas,
     required int degree,
+    bool isETH = false,
   }) {
-    return ((Decimal.parse(estimateGas.toString()) * Decimal.parse(gas.toString())) / Decimal.fromInt(10).pow(18))
+    return ((Decimal.parse(estimateGas.toString()) *
+                Decimal.parse(gas.toString()) *
+                Decimal.parse(isETH ? '1.1' : '1.0')) /
+            Decimal.fromInt(10).pow(18))
         .toDecimal();
   }
 

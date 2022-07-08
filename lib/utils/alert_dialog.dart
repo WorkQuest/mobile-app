@@ -164,10 +164,10 @@ class AlertDialogUtils {
                   ),
                 CupertinoButton(
                   onPressed: () async {
+                    Navigator.pop(context);
                     if (onTabOk != null) {
                       await onTabOk.call();
                     }
-                    Navigator.pop(context);
                   },
                   child: Text(
                     titleOk ?? 'Ok',
@@ -198,10 +198,10 @@ class AlertDialogUtils {
               ),
             TextButton(
               onPressed: () async {
+                Navigator.pop(context);
                 if (onTabOk != null) {
                   await onTabOk.call();
                 }
-                Navigator.pop(context);
               },
               child: Text(
                 titleOk ?? 'Ok',

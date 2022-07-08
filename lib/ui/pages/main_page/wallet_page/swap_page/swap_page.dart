@@ -259,7 +259,7 @@ class _SwapPageState extends State<SwapPage> {
                                 width: 18,
                                 height: 18,
                                 child: SvgPicture.asset(
-                                  'assets/svg/wqt_coin_icon.svg',
+                                  'assets/wqt_coin_icon.svg',
                                 ),
                               ),
                             ),

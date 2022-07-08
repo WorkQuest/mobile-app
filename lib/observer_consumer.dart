@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:app/base_store/i_store.dart';
+import 'package:app/constants.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ObserverListener<T extends IStore> extends StatefulWidget {
   final Function() onSuccess;
@@ -49,6 +52,7 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
       (String? errorMessage) {
         if (errorMessage != null) {
           if (widget.onFailure != null) if (widget.onFailure!()) return;
+          final _words = errorMessage.split(' ');
           showCupertinoDialog(
             context: context,
             barrierDismissible: true,
@@ -56,7 +60,27 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
               return Platform.isIOS
                   ? CupertinoAlertDialog(
                       title: Text('Error'),
-                      content: Text(errorMessage),
+                      content: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            text: '',
+                            style: DefaultTextStyle.of(context).style,
+                            children: _words.map((word) {
+                              return TextSpan(
+                                  text: '$word ',
+                                  style: TextStyle(
+                                    color: isLink(word) ? AppColor.enabledButton : Colors.black,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = isLink(word)
+                                        ? () async {
+                                      if (await canLaunchUrl(Uri.parse(word))) {
+                                        launchUrl(Uri.parse(word));
+                                      }
+                                    }
+                                        : null);
+                            }).toList()),
+                      ),
                       actions: [
                         CupertinoDialogAction(
                           child: Text("OK"),
@@ -66,7 +90,27 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                     )
                   : AlertDialog(
                       title: Text('Error'),
-                      content: Text(errorMessage),
+                      content: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            text: '',
+                            style: DefaultTextStyle.of(context).style,
+                            children: _words.map((word) {
+                              return TextSpan(
+                                  text: '$word ',
+                                  style: TextStyle(
+                                    color: isLink(word) ? AppColor.enabledButton : Colors.black,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = isLink(word)
+                                        ? () async {
+                                      if (await canLaunchUrl(Uri.parse(word))) {
+                                        launchUrl(Uri.parse(word));
+                                      }
+                                    }
+                                        : null);
+                            }).toList()),
+                      ),
                       actions: [
                         CupertinoDialogAction(
                           child: Text("OK"),
@@ -91,6 +135,8 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
     _disposers.forEach((d) => d());
     super.dispose();
   }
+
+  bool isLink(String value) => value.contains('https');
 }
 
 class ObserverConsumer<T extends IStore> extends StatefulWidget {
