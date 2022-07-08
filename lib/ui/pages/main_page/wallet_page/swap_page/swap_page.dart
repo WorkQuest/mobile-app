@@ -1,12 +1,11 @@
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
-import 'package:app/web3/service/address_service.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:majascan/majascan.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../constants.dart';
@@ -68,19 +67,23 @@ class _SwapPageState extends State<SwapPage> {
       ),
       body: ObserverListener<SwapStore>(
         onSuccess: () {
-          Navigator.of(context, rootNavigator: true).pop('dialog');
-          if (store.isSuccessCourse) {
+          if (store.isConnect && store.successData!) {
+            Navigator.of(context, rootNavigator: true).pop();
             final _network = AccountRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
               AccountRepository().changeNetwork(NetworkName.workNetMainnet);
             } else if (_network == Network.testnet) {
               AccountRepository().changeNetwork(NetworkName.workNetTestnet);
             }
+            store.setNetwork(null);
+            _amountController.clear();
             AlertDialogUtils.showSuccessDialog(context);
           }
         },
         onFailure: () {
-          Navigator.of(context, rootNavigator: true).pop('dialog');
+          if (store.isConnect) {
+            Navigator.of(context, rootNavigator: true).pop('dialog');
+          }
           return false;
         },
         child: Observer(
@@ -96,7 +99,9 @@ class _SwapPageState extends State<SwapPage> {
                 return Future.delayed(const Duration(seconds: 1));
               },
               child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
                 child: Padding(
                   padding: _padding,
                   child: Form(
@@ -111,6 +116,7 @@ class _SwapPageState extends State<SwapPage> {
                               style: const TextStyle(fontSize: 16, color: Colors.black),
                             ),
                             const Spacer(),
+                            if (store.isLoading) const CircularProgressIndicator.adaptive(),
                             if (!store.isConnect && store.errorMessage != null)
                               SizedBox(
                                 height: 18,
@@ -121,11 +127,6 @@ class _SwapPageState extends State<SwapPage> {
                                     style: const TextStyle(color: AppColor.enabledButton),
                                   ),
                                   onPressed: () {
-                                    _showLoading(
-                                      message: 'swap.connecting'.tr(
-                                        namedArgs: {'object': 'network'},
-                                      ),
-                                    );
                                     store.setNetwork(store.network!);
                                   },
                                 ),
@@ -155,9 +156,13 @@ class _SwapPageState extends State<SwapPage> {
                         _spaceDivider,
                         Row(
                           children: [
-                            Text(
-                              'swap.amountBalance'.tr(namedArgs: {'maxAmount': '${store.maxAmount ?? 0.0}'}),
-                              style: const TextStyle(fontSize: 16, color: Colors.black),
+                            Row(
+                              children: [
+                                Text(
+                                  'swap.amountBalance'.tr(namedArgs: {'maxAmount': '${store.maxAmount ?? ''}'}),
+                                  style: const TextStyle(fontSize: 16, color: Colors.black),
+                                ),
+                              ],
                             ),
                             const SizedBox(
                               width: 4,
@@ -205,7 +210,7 @@ class _SwapPageState extends State<SwapPage> {
                                 }
                               }
                             } catch (e) {
-                              return "errors.incorrectFormat".tr();
+                              return "errors.fieldEmpty".tr();
                             }
                             return null;
                           },
@@ -227,69 +232,9 @@ class _SwapPageState extends State<SwapPage> {
                               if (!store.isConnect) {
                                 return;
                               }
-                              _amountController.text = store.maxAmount.toString();
-                              _addressToController.text =
-                                  AddressService.hexToBech32(AccountRepository().userWallet!.address!);
+                              _amountController.text = (store.maxAmount ?? 0.0).toString();
                             },
                           ),
-                        ),
-                        _spaceDivider,
-                        Text(
-                          'swap.addressWalletTo'.tr(),
-                          style: const TextStyle(fontSize: 16, color: Colors.black),
-                        ),
-                        _divider,
-                        DefaultTextField(
-                          enableDispose: false,
-                          controller: _addressToController,
-                          hint: 'swap.addressTo'.tr(),
-                          enabled: store.isConnect,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          suffixIcon: CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () async {
-                              String? qrResult = await MajaScan.startScan(
-                                  title: "QRcode scanner",
-                                  barColor: Colors.black,
-                                  titleColor: Colors.white,
-                                  qRCornerColor: Colors.blue,
-                                  qRScannerColor: Colors.white,
-                                  flashlightEnable: true,
-                                  scanAreaScale: 0.7
-
-                                  /// value 0.0 to 1.0
-                                  );
-                              if (qrResult != null) {
-                                _addressToController.text = qrResult;
-                              }
-                            },
-                            child: SvgPicture.asset(
-                              'assets/scan_qr.svg',
-                              color: AppColor.enabledButton,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value != null) {
-                              final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
-                              if (_isBech) {
-                                if (value.length != 41) {
-                                  return "errors.incorrectFormat".tr();
-                                }
-                                if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
-                                  return "errors.incorrectFormat".tr();
-                                }
-                              } else {
-                                if (value.length != 42) {
-                                  return "errors.incorrectFormat".tr();
-                                }
-                                if (!RegExpFields.addressRegExp.hasMatch(value)) {
-                                  return "errors.incorrectFormat".tr();
-                                }
-                              }
-                            }
-                            return null;
-                          },
-                          inputFormatters: [],
                         ),
                         _spaceDivider,
                         Row(
@@ -314,7 +259,7 @@ class _SwapPageState extends State<SwapPage> {
                                 width: 18,
                                 height: 18,
                                 child: SvgPicture.asset(
-                                  'assets/wqt_coin_icon.svg',
+                                  'assets/svg/wqt_coin_icon.svg',
                                 ),
                               ),
                             ),
@@ -331,8 +276,14 @@ class _SwapPageState extends State<SwapPage> {
                                 width: 10,
                                 child: CircularProgressIndicator.adaptive(),
                               ),
-                            if (store.isSuccessCourse) Text(store.convertWQT.toString()),
+                            if (store.isSuccessCourse) Text(store.convertWQT!.toStringAsFixed(6)),
                           ],
+                        ),
+                        Text(
+                          'swap.includesWorkNetNetwork'.tr(),
+                          style: const TextStyle(
+                            fontSize: 12,
+                          ),
                         ),
                         const SizedBox(
                           height: 250,
@@ -348,9 +299,11 @@ class _SwapPageState extends State<SwapPage> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30.0),
-        child: DefaultButton(
-          title: 'meta.send'.tr(),
-          onPressed: _onPressedSend,
+        child: Observer(
+          builder: (_) => DefaultButton(
+            title: 'Swap',
+            onPressed: store.statusSend ? _onPressedSend : null,
+          ),
         ),
       ),
     );
@@ -366,11 +319,79 @@ class _SwapPageState extends State<SwapPage> {
     }
   }
 
-  _onPressedSend() {
+  _onPressedSend() async {
     if (_formKey.currentState!.validate()) {
-      _showLoading(message: 'swap.buying'.tr());
-      final _isBech = _addressToController.text.substring(0, 2).toLowerCase() == 'wq';
-      store.createSwap(_isBech ? AddressService.bech32ToHex(_addressToController.text) : _addressToController.text);
+      try {
+        _showLoading();
+        final _addressTo = Web3Utils.getAddressContractForSwap(store.network!);
+        final _needApprove = await store.needApprove();
+        if (_needApprove) {
+          final _gasApprove = await store.getEstimateGasApprove();
+          Navigator.of(context, rootNavigator: true).pop();
+          AlertDialogUtils.showAlertTxConfirm(
+            context,
+            fee: _gasApprove,
+            amount: _amountController.text,
+            typeTx: 'Approve',
+            tokenSymbolFee: _getTitleCoinFee(),
+            addressTo: _addressTo,
+            tokenSymbol: 'USDT',
+            onTabOk: () async {
+              print('onTabOk');
+              try {
+                _showLoading(message: 'Approving...');
+                await store.approve();
+                Navigator.of(context, rootNavigator: true).pop();
+                _onPressedSend();
+              } on FormatException catch (e) {
+                Navigator.of(context, rootNavigator: true).pop();
+                AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: e.message);
+              } catch (e) {
+                Navigator.of(context, rootNavigator: true).pop();
+                AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: e.toString());
+              }
+            },
+          );
+          return;
+        }
+        final _gasSwap = await store.getEstimateGasSwap();
+        Navigator.of(context, rootNavigator: true).pop();
+        AlertDialogUtils.showAlertTxConfirm(
+          context,
+          fee: _gasSwap,
+          amount: _amountController.text.isEmpty ? '0.0' : _amountController.text,
+          typeTx: 'Swap',
+          tokenSymbolFee: _getTitleCoinFee(),
+          addressTo: _addressTo,
+          tokenSymbol: 'USDT',
+          onTabOk: () {
+            _showLoading(message: 'Swaping...');
+            store.createSwap();
+          },
+        );
+      } on FormatException catch (e) {
+        print('_onPressedSend | $e');
+        Navigator.of(context, rootNavigator: true).pop();
+        AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.warning'.tr(), content: e.message);
+      } catch (e, trace) {
+        print('_onPressedSend | $e\n$trace');
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+    }
+  }
+
+  String _getTitleCoinFee() {
+    final _network =
+    Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
+    switch (_network) {
+      case SwapNetworks.ETH:
+        return 'ETH';
+      case SwapNetworks.BSC:
+        return 'BNB';
+      case SwapNetworks.POLYGON:
+        return 'MATIC';
+      default:
+        return 'WQT';
     }
   }
 
@@ -380,11 +401,6 @@ class _SwapPageState extends State<SwapPage> {
       child: _ListBottomWidget(
         onTap: (value) {
           store.setNetwork(value);
-          _showLoading(
-            message: 'swap.connecting'.tr(
-              namedArgs: {'object': 'server'},
-            ),
-          );
         },
         title: 'swap.choose'.tr(namedArgs: {'object': 'network'}),
         items: [
@@ -425,7 +441,7 @@ class _SwapPageState extends State<SwapPage> {
   _getTitleToken(SwapToken token) {
     switch (token) {
       case SwapToken.tusdt:
-        return 'TUSDT';
+        return 'USDT';
       case SwapToken.usdc:
         return 'USDC';
     }

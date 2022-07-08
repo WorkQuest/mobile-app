@@ -1534,8 +1534,8 @@
     }
   },
   "swap": {
-    "minimum": "To avoid unnecessary fees and network slippage, the minimum amount for this pair is \\$5 USDT/USDC",
-    "maximum": "To avoid unnecessary fees and network slippage, the maximum amount for this pair is \\$100 USDT/USDC.",
+    "minimum": "To avoid unnecessary fees and network slippage, the minimum amount for this pair is $5 USDT/USDC",
+    "maximum": "To avoid unnecessary fees and network slippage, the maximum amount for this pair is $100 USDT/USDC.",
     "connecting": "Connecting to {object}...",
     "buying": "Buying WQT",
     "choose": "Choose {object}",
@@ -1973,6 +1973,7 @@
     "wrongCode": "Wrong code",
     "notHaveEnoughTx": "Not have enough WQT for the transaction",
     "notHaveEnoughTxToken": "Not have enough {token} for the transaction",
+    "higherMaxAmount": "Not enough USDT to complete this transaction",
     "emptyData": {
       "employer": {
         "myQuests": {

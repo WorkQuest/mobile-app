@@ -16,21 +16,23 @@ class Web3Utils {
     required double amount,
     bool isMain = false,
   }) async {
-
     final _client = isMain ? AccountRepository().getClientWorkNet() : AccountRepository().getClient();
-    final _balanceWQT = await _client.getBalance(AccountRepository().privateKey);
+    final _balanceNative = await _client.getBalance(AccountRepository().privateKey);
 
-    if (typeCoin == TokenSymbols.WQT) {
-      final _balanceWQTInWei = (_balanceWQT.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
+    if (typeCoin == TokenSymbols.WQT ||
+        typeCoin == TokenSymbols.ETH ||
+        typeCoin == TokenSymbols.BNB ||
+        typeCoin == TokenSymbols.MATIC) {
+      final _balanceWQTInWei = (_balanceNative.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
       if (amount + gas > (_balanceWQTInWei.toDouble())) {
         throw FormatException('errors.notHaveEnoughTx'.tr());
       }
-    } else if (typeCoin == TokenSymbols.WUSD) {
+    } else {
       final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin, isMain: isMain));
       if (amount > _balanceToken.toDouble()) {
         throw FormatException('errors.notHaveEnoughTxToken'.tr(namedArgs: {'token': getTitleToken(typeCoin)}));
       }
-      if (_balanceWQT.getInWei < BigInt.from(gas * pow(10, 18))) {
+      if (_balanceNative.getInWei < BigInt.from(gas * pow(10, 18))) {
         throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     }
@@ -54,9 +56,7 @@ class Web3Utils {
         }
       }
       final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
-      return _dataTokens
-          .firstWhere((element) => element.symbolToken == typeCoin)
-          .addressToken!;
+      return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
     } catch (e) {
       return '';
     }
@@ -161,25 +161,40 @@ class Web3Utils {
     }
   }
 
-  static NetworkName getNetworkNameFromSwitchNetworkName(
-      SwitchNetworkNames name, Network network) {
+  static NetworkName getNetworkNameFromSwitchNetworkName(SwitchNetworkNames name, Network network) {
     switch (name) {
       case SwitchNetworkNames.WORKNET:
-        return network == Network.mainnet
-            ? NetworkName.workNetMainnet
-            : NetworkName.workNetTestnet;
+        return network == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
       case SwitchNetworkNames.ETH:
-        return network == Network.mainnet
-            ? NetworkName.ethereumMainnet
-            : NetworkName.ethereumTestnet;
+        return network == Network.mainnet ? NetworkName.ethereumMainnet : NetworkName.ethereumTestnet;
       case SwitchNetworkNames.BSC:
-        return network == Network.mainnet
-            ? NetworkName.bscMainnet
-            : NetworkName.bscTestnet;
+        return network == Network.mainnet ? NetworkName.bscMainnet : NetworkName.bscTestnet;
       case SwitchNetworkNames.POLYGON:
-        return network == Network.mainnet
-            ? NetworkName.polygonMainnet
-            : NetworkName.polygonTestnet;
+        return network == Network.mainnet ? NetworkName.polygonMainnet : NetworkName.polygonTestnet;
+    }
+  }
+
+  static NetworkName getNetworkNameFromSwapNetworks(SwapNetworks name) {
+    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    switch (name) {
+      case SwapNetworks.ETH:
+        return _isMainnet ? NetworkName.ethereumMainnet : NetworkName.ethereumTestnet;
+      case SwapNetworks.BSC:
+        return _isMainnet ? NetworkName.bscMainnet : NetworkName.bscTestnet;
+      case SwapNetworks.POLYGON:
+        return _isMainnet ? NetworkName.polygonMainnet : NetworkName.polygonTestnet;
+    }
+  }
+
+  static String getLinkToExplorer(SwapNetworks name, String tx) {
+    final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
+    switch (name) {
+      case SwapNetworks.ETH:
+        return _isMainnet ? 'https://etherscan.io/tx/$tx' : 'https://rinkeby.etherscan.io/tx/$tx';
+      case SwapNetworks.BSC:
+        return _isMainnet ? 'https://bscscan.com/tx/$tx' : 'https://testnet.bscscan.com/tx/$tx';
+      case SwapNetworks.POLYGON:
+        return _isMainnet ? 'https://polygonscan.com/tx/$tx' : 'https://mumbai.polygonscan.com/tx/$tx';
     }
   }
 

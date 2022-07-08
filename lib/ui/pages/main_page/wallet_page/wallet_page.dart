@@ -359,8 +359,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                             )
                           else
                             Text(
-                              // '${num.parse(balance.amount).toInt()} ${balance.title}',
-                              '${num.parse(balance.amount!)} ${balance.symbol.name}',
+                              '${num.parse(balance.amount!).toStringAsFixed(6)} ${balance.symbol.name}',
                               style: const TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.w700,
