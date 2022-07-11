@@ -185,7 +185,7 @@ class _RaiseViewsState extends State<RaiseViews> {
       context,
       fee: raiseViewStore.gas,
       transaction: "Raise view Approve",
-      address: raiseViewStore.addressWUSD,
+      address: Web3Utils.getAddressWorknetWQPromotion(),
       amount: raiseViewStore.amount,
       onPressConfirm: () async {
         AlertDialogUtils.showLoadingDialog(context);
@@ -204,7 +204,7 @@ class _RaiseViewsState extends State<RaiseViews> {
       await raiseViewStore.getFeePromotion(widget.questId.isNotEmpty);
       await Web3Utils.checkPossibilityTx(
         typeCoin: TokenSymbols.WUSD,
-          fee: Decimal.parse(_gas),
+        fee: Decimal.parse(raiseViewStore.gas),
         amount: double.parse(raiseViewStore.amount),
       );
 

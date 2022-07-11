@@ -6,6 +6,7 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/media_model.dart';
 import 'package:app/utils/web3_utils.dart';
+import 'package:decimal/decimal.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/utils/web_socket.dart';
@@ -106,7 +107,7 @@ abstract class _WorkerStore extends IStore<bool> with Store {
       await getFee(functionName);
       await Web3Utils.checkPossibilityTx(
         typeCoin: TokenSymbols.WQT,
-        gas: double.parse(fee),
+        fee: Decimal.parse(fee),
         amount: 0.0,
         isMain: true,
       );

@@ -103,23 +103,22 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
   }
 
   @override
-  dynamic clearData() {
-    final _$actionInfo = _$TransactionsStoreBaseActionController.startAction(
-        name: 'TransactionsStoreBase.clearData');
-    try {
-      return super.clearData();
-    } finally {
-      _$TransactionsStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-
-  @override
   dynamic addTransaction(Tx transaction) {
     final _$actionInfo = _$TransactionsStoreBaseActionController.startAction(
         name: 'TransactionsStoreBase.addTransaction');
     try {
       return super.addTransaction(transaction);
+    } finally {
+      _$TransactionsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic clearData() {
+    final _$actionInfo = _$TransactionsStoreBaseActionController.startAction(
+        name: 'TransactionsStoreBase.clearData');
+    try {
+      return super.clearData();
     } finally {
       _$TransactionsStoreBaseActionController.endAction(_$actionInfo);
     }

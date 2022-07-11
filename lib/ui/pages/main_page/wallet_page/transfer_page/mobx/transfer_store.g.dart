@@ -17,6 +17,21 @@ mixin _$TransferStore on TransferStoreBase, Store {
               name: 'TransferStoreBase.statusButtonTransfer'))
       .value;
 
+  final _$maxAmountAtom = Atom(name: 'TransferStoreBase.maxAmount');
+
+  @override
+  double? get maxAmount {
+    _$maxAmountAtom.reportRead();
+    return super.maxAmount;
+  }
+
+  @override
+  set maxAmount(double? value) {
+    _$maxAmountAtom.reportWrite(value, super.maxAmount, () {
+      super.maxAmount = value;
+    });
+  }
+
   final _$currentCoinAtom = Atom(name: 'TransferStoreBase.currentCoin');
 
   @override
@@ -77,6 +92,13 @@ mixin _$TransferStore on TransferStoreBase, Store {
     });
   }
 
+  final _$setCoinAsyncAction = AsyncAction('TransferStoreBase.setCoin');
+
+  @override
+  Future setCoin(CoinItem? value) {
+    return _$setCoinAsyncAction.run(() => super.setCoin(value));
+  }
+
   final _$getMaxAmountAsyncAction =
       AsyncAction('TransferStoreBase.getMaxAmount');
 
@@ -118,17 +140,6 @@ mixin _$TransferStore on TransferStoreBase, Store {
   }
 
   @override
-  dynamic setCoin(CoinItem? value) {
-    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
-        name: 'TransferStoreBase.setCoin');
-    try {
-      return super.setCoin(value);
-    } finally {
-      _$TransferStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   dynamic clearData() {
     final _$actionInfo = _$TransferStoreBaseActionController.startAction(
         name: 'TransferStoreBase.clearData');
@@ -142,6 +153,7 @@ mixin _$TransferStore on TransferStoreBase, Store {
   @override
   String toString() {
     return '''
+maxAmount: ${maxAmount},
 currentCoin: ${currentCoin},
 addressTo: ${addressTo},
 amount: ${amount},

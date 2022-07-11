@@ -8,6 +8,7 @@ import 'package:app/model/respond_model.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:decimal/decimal.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/credentials.dart';
@@ -97,7 +98,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       await getFee(userId, functionName);
       await Web3Utils.checkPossibilityTx(
         typeCoin: TokenSymbols.WQT,
-        gas: double.parse(fee),
+        fee: Decimal.parse(fee),
         amount: 0.0,
         isMain: true,
       );

@@ -44,7 +44,6 @@ abstract class ClientServiceI {
 }
 
 class ClientService implements ClientServiceI {
-  final int _chainId = 1991;
 
   Web3Client? client;
 
@@ -85,6 +84,7 @@ class ClientService implements ClientServiceI {
       );
       final _to = EthereumAddress.fromHex(addressTo);
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
+      final _chainId = await client!.getChainId();
       hash = await client!.sendTransaction(
         _credentials,
         Transaction(
@@ -92,7 +92,7 @@ class ClientService implements ClientServiceI {
           from: _from,
           value: _value,
         ),
-        chainId: _chainId,
+        chainId: _chainId.toInt(),
       );
     } else {
       String _addressToken = Web3Utils.getAddressToken(coin);
@@ -195,7 +195,9 @@ class ClientService implements ClientServiceI {
             )
           : null,
     ));
-    return (_estimateGas * _gas.getInWei).toDouble() * pow(10, -18);
+    print('_gas: $_gas');
+    print('_estimateGas: $_estimateGas');
+    return (Decimal.fromBigInt(_estimateGas) * Decimal.fromBigInt(_gas.getInWei) / Decimal.fromInt(10).pow(18)).toDouble();
   }
 
   Future<double> getEstimateGasForApprove(BigInt price) async {
@@ -233,6 +235,7 @@ extension CreateQuestContract on ClientService {
     try {
       final credentials = await getCredentials(AccountRepository().privateKey);
       final _gasPrice = await client!.getGasPrice();
+      final _chainId = await client!.getChainId();
       final transactionHash = await client!.sendTransaction(
         credentials,
         Transaction.callContract(
@@ -244,7 +247,7 @@ extension CreateQuestContract on ClientService {
           from: from,
           value: value,
         ),
-        chainId: _chainId,
+        chainId: _chainId.toInt(),
       );
 
       print("transactionHash: $transactionHash");
@@ -432,6 +435,7 @@ extension Promote on ClientService {
       EtherUnit.wei,
       BigInt.from(double.parse(amount) * pow(10, 18)),
     );
+    final _chainId = await client!.getChainId();
     final _transactionHash = await client!.sendTransaction(
       _credentials,
       Transaction.callContract(
@@ -447,7 +451,7 @@ extension Promote on ClientService {
         from: _fromAddress,
         value: _value,
       ),
-      chainId: _chainId,
+      chainId: _chainId.toInt(),
     );
     int attempts = 0;
     TransactionReceipt? result;
@@ -478,6 +482,7 @@ extension Promote on ClientService {
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
     final _fromAddress = await _credentials.extractAddress();
+    final _chainId = await client!.getChainId();
     final _transactionHash = await client!.sendTransaction(
       _credentials,
       Transaction.callContract(
@@ -491,7 +496,7 @@ extension Promote on ClientService {
         ],
         from: _fromAddress,
       ),
-      chainId: _chainId,
+      chainId: _chainId.toInt(),
     );
     int attempts = 0;
     TransactionReceipt? result;

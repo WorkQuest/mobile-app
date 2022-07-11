@@ -2,11 +2,14 @@ import 'dart:io';
 import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:decimal/decimal.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
+import 'package:web3dart/json_rpc.dart';
 
 part 'confirm_transfer_store.g.dart';
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/responded.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
@@ -17,6 +18,8 @@ import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/quest_header.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/web3_utils.dart';
+import 'package:app/web3/contractEnums.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -621,7 +624,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     required String functionName,
   }) async {
     try {
-      await store.checkPossibilityTx(functionName);
+      await _checkPossibilityTx(functionName);
     } on FormatException catch (e) {
       AlertDialogUtils.showInfoAlertDialog(context,
           title: 'modals.error'.tr(), content: e.message);
@@ -661,20 +664,20 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       Navigator.pop(context);
   }
 
-  _updateLoading() {
-    setState(() {
-      isLoading = !isLoading;
-    });
-  }
-
-  _checkPossibilityTx() async {
-    await store.getFee();
+  _checkPossibilityTx(String functionName) async {
+    await store.getFee(functionName);
     await Web3Utils.checkPossibilityTx(
       typeCoin: TokenSymbols.WQT,
       fee: Decimal.parse(store.fee),
       amount: 0.0,
       isMain: true,
     );
+  }
+
+  _updateLoading() {
+    setState(() {
+      isLoading = !isLoading;
+    });
   }
 
   bottomComplete() {

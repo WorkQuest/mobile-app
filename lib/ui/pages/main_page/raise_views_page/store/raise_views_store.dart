@@ -5,6 +5,7 @@ import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/utils/web3_utils.dart';
+import 'package:decimal/decimal.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
@@ -52,9 +53,9 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   BaseQuestResponse? _quest;
 
   String addressWUSD =
-      AccountRepository().notifierNetwork.value == Network.mainnet
-          ? '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa'
-          : '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa';
+  AccountRepository().notifierNetwork.value == Network.mainnet
+      ? '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa'
+      : '0xf95ef11d0af1f40995218bb2b67ef909bcf30078';
 
   Map<int, List<String>> price = {};
 
@@ -122,20 +123,38 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       final _contract = Erc20(
           address: EthereumAddress.fromHex(addressWUSD),
           client: _client.client!);
+      final _gas = await _client.getGas();
       getAmount(
           isQuest: isQuestRaise,
           tariff: levelGroupValue,
           period: getPeriod(isQuest: isQuestRaise));
       if (isQuestRaise) {
         final _price = BigInt.from(double.parse(amount) * pow(10, 18));
-        final _gasForApprove = await _client.getEstimateGasForApprove(_price);
-        gas = _gasForApprove.toStringAsFixed(17);
+        final _gasForApprove = await _client.getEstimateGas(
+          Transaction.callContract(
+            contract: _contract.self,
+            function:
+            _contract.self.abi.functions[1],
+            parameters: [
+              EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
+              _price,
+            ],
+            from: EthereumAddress.fromHex(AccountRepository().userAddress),
+            value: EtherAmount.zero(),
+          ),
+        );
+        print('_gasForApprove: $_gasForApprove');
+        gas = (Decimal.fromBigInt(_gasForApprove) *
+            Decimal.fromBigInt(_gas.getInWei) / Decimal.fromInt(10).pow(18))
+            .toDouble()
+            .toStringAsFixed(17);
       } else {
         final _price = BigInt.from(double.parse(amount) * pow(10, 18));
+
         final _gasForApprove = await _client.getEstimateGasCallContract(
           contract: _contract.self,
           function:
-              _contract.self.function(WQBridgeTokenFunctions.approve.name),
+          _contract.self.function(WQBridgeTokenFunctions.approve.name),
           params: [
             EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
             _price,
@@ -143,7 +162,6 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
         );
         gas = _gasForApprove.toStringAsFixed(17);
       }
-      print("GAS: $gas");
     } on SocketException catch (_) {
       this.onError("Lost connection to server");
       throw FormatException('Lost connection to server');
@@ -161,7 +179,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
         _gasForPromote = await _client.getEstimateGasCallContract(
           contract: _contractPromote,
           function:
-              _contractPromote.function(WQPromotionFunctions.promoteQuest.name),
+          _contractPromote.function(WQPromotionFunctions.promoteQuest.name),
           params: [
             EthereumAddress.fromHex(_quest!.contractAddress!),
             BigInt.from(levelGroupValue - 1),
@@ -172,14 +190,13 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
         _gasForPromote = await _client.getEstimateGasCallContract(
           contract: _contractPromote,
           function:
-              _contractPromote.function(WQPromotionFunctions.promoteUser.name),
+          _contractPromote.function(WQPromotionFunctions.promoteUser.name),
           params: [
             BigInt.from(levelGroupValue - 1),
             BigInt.from(getPeriod(isQuest: false)),
           ],
         );
       gas = _gasForPromote.toStringAsFixed(17);
-      print("GAS: $gas");
     } catch (e) {
       this.onError(e.toString());
     }
@@ -207,9 +224,9 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onLoading();
       final _period = getPeriod();
       await AccountRepository().getClientWorkNet().promoteUser(
-            tariff: levelGroupValue - 1,
-            period: _period,
-          );
+        tariff: levelGroupValue - 1,
+        period: _period,
+      );
       this.onSuccess(true);
     } on FormatException catch (e, trace) {
       print('raiseProfile FormatException | $e\n$trace');
@@ -229,11 +246,11 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       final _price = BigInt.from(double.parse(amount) * pow(10, 18));
       await AccountRepository().getClientWorkNet().approveCoin(price: _price);
       await AccountRepository().getClientWorkNet().promoteQuest(
-            tariff: levelGroupValue - 1,
-            period: _period,
-            amount: amount,
-            questAddress: _quest!.contractAddress!,
-          );
+        tariff: levelGroupValue - 1,
+        period: _period,
+        amount: amount,
+        questAddress: _quest!.contractAddress!,
+      );
 
       this.onSuccess(true);
     } on FormatException catch (e, trace) {
