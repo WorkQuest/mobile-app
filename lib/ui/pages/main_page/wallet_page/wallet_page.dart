@@ -40,7 +40,9 @@ class _WalletPageState extends State<WalletPage> {
   Widget _mainLayout() {
     return NotificationListener<ScrollEndNotification>(
       onNotification: (scrollEnd) {
-        if (scrollEnd.metrics.atEdge) if (scrollEnd.metrics.pixels == scrollEnd.metrics.maxScrollExtent) {
+        print('scrollEnd.metrics.pixels: ${scrollEnd.metrics.pixels}');
+        print('scrollEnd.metrics.maxScrollExtent: ${scrollEnd.metrics.maxScrollExtent}');
+        if (scrollEnd.metrics.pixels >= scrollEnd.metrics.maxScrollExtent) {
           if (!GetIt.I.get<TransactionsStore>().isMoreLoading) {
             GetIt.I.get<TransactionsStore>().getTransactionsMore();
           }
@@ -300,7 +302,9 @@ class _BannerBuyingWQT extends StatelessWidget {
                 ],
               ),
             )
-          : SizedBox(width: double.infinity,),
+          : SizedBox(
+              width: double.infinity,
+            ),
     );
   }
 }

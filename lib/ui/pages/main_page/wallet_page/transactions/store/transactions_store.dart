@@ -132,13 +132,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       if (result!.isEmpty) {
         canMoreLoading = false;
       }
-      result.map((tran) {
-        final index = transactions.indexWhere((element) => element.hash == tran.hash);
-        if (index == -1) {
-          transactions.add(tran);
-        }
-      }).toList();
-      await Future.delayed(const Duration(milliseconds: 500));
+      transactions.addAll(result);
       isMoreLoading = false;
       onSuccess(true);
     } catch (e, trace) {

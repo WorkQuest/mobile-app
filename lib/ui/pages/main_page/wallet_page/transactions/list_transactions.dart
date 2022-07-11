@@ -378,7 +378,7 @@ class _ItemInfoFromTransaction extends StatelessWidget {
               color: isEnabled ? AppColor.enabledButton : Colors.black,
               decoration: isEnabled ? TextDecoration.underline : null,
             ),
-            recognizer: TapGestureRecognizer()..onTap = _onTapTxHash,
+            recognizer: TapGestureRecognizer()..onTap = isEnabled ? _onTapTxHash : null,
           ),
         ],
       ),
