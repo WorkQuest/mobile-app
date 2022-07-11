@@ -76,6 +76,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                         Navigator.pop(context);
                         Navigator.pop(context);
                       },
+                      onPressCancel: () => Navigator.pop(context),
                     );
                     AlertDialogUtils.showLoadingDialog(context);
                     Timer.periodic(Duration(seconds: 1), (timer) async {

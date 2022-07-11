@@ -175,6 +175,7 @@ class _WithdrawPageState extends State<WithdrawPage>
                           amount: _amount,
                           fee: _gas.getInEther.toString(),
                           onPressConfirm: () {},
+                          onPressCancel: () => Navigator.pop(context),
                         );
                       }
                     : null,

@@ -89,77 +89,76 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            if (store.quest.value!.status == 1 ||
-                store.quest.value!.status == 2)
-              switch (value) {
-                case "quests.raiseViews":
-                  await Navigator.pushNamed(
+            switch (value) {
+              case "quests.raiseViews":
+                await Navigator.pushNamed(
+                  context,
+                  RaiseViews.routeName,
+                  arguments: store.quest.value!.id,
+                );
+                break;
+              case "registration.edit":
+                if (profile?.userData?.isTotpActive == true) {
+                  _showSecurityTOTPDialog(onTabOk: () async {
+                    await store.validateTotp();
+                    if (store.isValid) {
+                      await Navigator.pushNamed(
+                        context,
+                        CreateQuestPage.routeName,
+                        arguments: widget.arguments.questInfo,
+                      );
+                    } else {
+                      await AlertDialogUtils.showInfoAlertDialog(
+                        context,
+                        title: 'modals.error'.tr(),
+                        content: "modals.invalid2FA".tr(),
+                      );
+                    }
+                  });
+                } else {
+                  await AlertDialogUtils.showInfoAlertDialog(
                     context,
-                    RaiseViews.routeName,
-                    arguments: store.quest.value!.id,
+                    title: 'modals.error'.tr(),
+                    content: "modals.errorEditQuest2FA".tr(),
                   );
-                  break;
-                case "registration.edit":
-                  if (profile?.userData?.isTotpActive == true) {
-                    _showSecurityTOTPDialog(onTabOk: () async {
-                      await store.validateTotp();
-                      if (store.isValid) {
-                        await Navigator.pushNamed(
-                          context,
-                          CreateQuestPage.routeName,
-                          arguments: widget.arguments.questInfo,
-                        );
-                      } else {
-                        await AlertDialogUtils.showInfoAlertDialog(
-                          context,
-                          title: 'modals.error'.tr(),
-                          content: "modals.invalid2FA".tr(),
-                        );
-                      }
-                    });
-                  } else {
-                    await AlertDialogUtils.showInfoAlertDialog(
-                      context,
-                      title: 'modals.error'.tr(),
-                      content: "modals.errorEditQuest2FA".tr(),
-                    );
-                  }
-                  break;
-                case "settings.delete":
-                  if (profile?.userData?.isTotpActive == true) {
-                    _showSecurityTOTPDialog(onTabOk: () async {
-                      await store.validateTotp();
-                      if (store.isValid)
-                        await dialog(
-                          context,
-                          title: "quests.deleteQuest".tr(),
-                          message: "quests.deleteQuestMessage".tr(),
-                          confirmAction: () async {
-                            await store.deleteQuest(
-                              questId: widget.arguments.questInfo!.id,
-                            );
-                            if (profile!.userData!.questsStatistic != null)
-                              profile!.userData!.questsStatistic!.opened -= 1;
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                          },
-                        );
-                    });
-                  } else {
-                    await AlertDialogUtils.showInfoAlertDialog(
-                      context,
-                      title: 'modals.error'.tr(),
-                      content: "modals.errorDeleteQuest2FA".tr(),
-                    );
-                  }
-                  break;
-                default:
-              }
+                }
+                break;
+              case "settings.delete":
+                if (profile?.userData?.isTotpActive == true) {
+                  _showSecurityTOTPDialog(onTabOk: () async {
+                    await store.validateTotp();
+                    if (store.isValid)
+                      await dialog(
+                        context,
+                        title: "quests.deleteQuest".tr(),
+                        message: "quests.deleteQuestMessage".tr(),
+                        confirmAction: () async {
+                          await store.deleteQuest(
+                            questId: widget.arguments.questInfo!.id,
+                          );
+                          if (profile!.userData!.questsStatistic != null)
+                            profile!.userData!.questsStatistic!.opened -= 1;
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                      );
+                  });
+                } else {
+                  await AlertDialogUtils.showInfoAlertDialog(
+                    context,
+                    title: 'modals.error'.tr(),
+                    content: "modals.errorDeleteQuest2FA".tr(),
+                  );
+                }
+                break;
+              default:
+            }
           },
           itemBuilder: (BuildContext context) {
             return {
-              if (store.quest.value!.status == 1 ||
-                  store.quest.value!.status == 2)
+              if ((store.quest.value!.status == 1 ||
+                      store.quest.value!.status == 2) &&
+                  store.quest.value!.raiseView?.type == null)
                 'quests.raiseViews',
               if (store.quest.value!.status == 1 ||
                   store.quest.value!.status == 2)
@@ -312,7 +311,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            store.quest.value!.status == 5 ? "quests.finishedBy".tr() : "quests.inProgressBy".tr(),
+            store.quest.value!.status == 5
+                ? "quests.finishedBy".tr()
+                : "quests.inProgressBy".tr(),
             style: TextStyle(
               color: const Color(0xFF7C838D),
               fontSize: 12,
@@ -603,35 +604,35 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                   );
                                 }
                               : () async {
-                        await store.getFee(
-                          store.quest.value!.assignedWorkerId!,
-                          WQContractFunctions.arbitration.name,
-                        );
-                        await AlertDialogUtils.showAlertDialog(
-                          context,
-                          title: Text("Dispute payment"),
-                          content: Text(
-                            "You need to pay\n"
-                                "${double.parse(store.fee) + 1.0} WUSD\n"
-                                "to open a dispute",
-                          ),
-                          needCancel: true,
-                          titleCancel: "Cancel",
-                          titleOk: "Ok",
-                          onTabCancel: () => Navigator.pop(context),
-                          onTabOk: () async =>
-                          await Navigator.pushNamed(
-                            context,
-                            OpenDisputePage.routeName,
-                            arguments: store.quest.value!,
-                          ).then(
-                                (value) async => await store.getQuest(
-                              store.quest.value!.id,
-                            ),
-                          ),
-                          colorCancel: Colors.blue,
-                          colorOk: Colors.red,
-                        );
+                                  await store.getFee(
+                                    store.quest.value!.assignedWorkerId!,
+                                    WQContractFunctions.arbitration.name,
+                                  );
+                                  await AlertDialogUtils.showAlertDialog(
+                                    context,
+                                    title: Text("Dispute payment"),
+                                    content: Text(
+                                      "You need to pay\n"
+                                      "${double.parse(store.fee) + 1.0} WUSD\n"
+                                      "to open a dispute",
+                                    ),
+                                    needCancel: true,
+                                    titleCancel: "Cancel",
+                                    titleOk: "Ok",
+                                    onTabCancel: () => Navigator.pop(context),
+                                    onTabOk: () async =>
+                                        await Navigator.pushNamed(
+                                      context,
+                                      OpenDisputePage.routeName,
+                                      arguments: store.quest.value!,
+                                    ).then(
+                                      (value) async => await store.getQuest(
+                                        store.quest.value!.id,
+                                      ),
+                                    ),
+                                    colorCancel: Colors.blue,
+                                    colorOk: Colors.red,
+                                  );
                                 },
                       child: Text(
                         "btn.dispute".tr(),

@@ -52,12 +52,10 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
-            color: widget.questInfo.raiseView != null
-                ? _getColorBorder(
-                    widget.questInfo.raiseView!.status,
-                    widget.questInfo.raiseView!.type,
-                  )
-                : Colors.transparent,
+            color: _getColorBorder(
+              widget.questInfo.raiseView?.status,
+              widget.questInfo.raiseView?.type,
+            ),
           ),
           color: Colors.white,
         ),
@@ -242,7 +240,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
   }
 
   Color _getColorBorder(int? status, int? type) {
-    if (status != null && status == 0) {
+    if (status != null && status != 0) {
       switch (type) {
         case 0:
           return Color(0xFFF6CF00);

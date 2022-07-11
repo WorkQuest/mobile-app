@@ -62,12 +62,6 @@
         "internalType": "uint256",
         "name": "promotedAt",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
       }
     ],
     "name": "PromotedQuest",
@@ -98,12 +92,6 @@
         "indexed": false,
         "internalType": "uint256",
         "name": "promotedAt",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
         "type": "uint256"
       }
     ],

@@ -3,10 +3,12 @@ import 'dart:math';
 
 import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
+import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/base_store/i_store.dart';
 import 'package:mobx/mobx.dart';
+import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../../../../../web3/contractEnums.dart';
@@ -41,6 +43,19 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
 
   String questId = "";
 
+  String gas = "";
+
+  String amount = "";
+
+  bool approved = false;
+
+  BaseQuestResponse? _quest;
+
+  String addressWUSD =
+      AccountRepository().notifierNetwork.value == Network.mainnet
+          ? '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa'
+          : '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa';
+
   Map<int, List<String>> price = {};
 
   List<String> forDay = [r"20$", r"12$", r"9$", r"7$"];
@@ -48,6 +63,12 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   List<String> forMonth = [r"50$", r"35$", r"29$", r"21$"];
 
   setQuestId(String value) => questId = value;
+
+  @action
+  setApprove(bool value) {
+    approved = value;
+    if (!value) this.onError("Cancel");
+  }
 
   @action
   setTitleSelectedCoin(TokenSymbols? value) => typeCoin = value;
@@ -86,78 +107,69 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   }
 
   @action
-  changePeriod(int? value) {
-    print('changePeriod - $value');
-    periodGroupValue = value!;
-  }
+  changePeriod(int? value) => periodGroupValue = value!;
 
   @action
-  changeLevel(int? value) {
-    print('changeLevel - $value');
-    levelGroupValue = value!;
-  }
+  changeLevel(int? value) => levelGroupValue = value!;
 
   @computed
   bool get canSubmit => !isLoading && typeCoin != null && typeWallet != null;
 
-  Future<String> getFee({bool isQuestRaise = false}) async {
+  Future<void> getFeeApprove({bool isQuestRaise = false}) async {
     try {
+      this.onLoading();
       final _client = AccountRepository().getClientWorkNet();
-      String _addressWUSD = '';
-      if (AccountRepository().notifierNetwork.value == Network.mainnet) {
-        _addressWUSD = '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa';
-      } else {
-        _addressWUSD = '0xf95ef11d0af1f40995218bb2b67ef909bcf30078';
-      }
-      final _contractApprove = await _client.getDeployedContract("WQBridgeToken", _addressWUSD);
+      final _contract = Erc20(
+          address: EthereumAddress.fromHex(addressWUSD),
+          client: _client.client!);
+      getAmount(
+          isQuest: isQuestRaise,
+          tariff: levelGroupValue,
+          period: getPeriod(isQuest: isQuestRaise));
       if (isQuestRaise) {
-        final _amount = getAmount(
-            isQuest: true,
-            tariff: levelGroupValue,
-            period: getPeriod(isQuest: true));
-        final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
+        final _price = BigInt.from(double.parse(amount) * pow(10, 18));
+        final _gasForApprove = await _client.getEstimateGasForApprove(_price);
+        gas = _gasForApprove.toStringAsFixed(17);
+      } else {
+        final _price = BigInt.from(double.parse(amount) * pow(10, 18));
         final _gasForApprove = await _client.getEstimateGasCallContract(
-          contract: _contractApprove,
+          contract: _contract.self,
           function:
-              _contractApprove.function(WQBridgeTokenFunctions.approve.name),
+              _contract.self.function(WQBridgeTokenFunctions.approve.name),
           params: [
             EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
             _price,
           ],
         );
+        gas = _gasForApprove.toStringAsFixed(17);
+      }
+      print("GAS: $gas");
+    } on SocketException catch (_) {
+      this.onError("Lost connection to server");
+      throw FormatException('Lost connection to server');
+    }
+  }
 
-        final _contractPromote = await _client.getDeployedContract("WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
-        final _quest = await apiProvider.getQuest(id: questId);
-        final _gasForPromote = await _client.getEstimateGasCallContract(
+  Future<void> getFeePromotion(bool isQuestRaise) async {
+    try {
+      final _client = AccountRepository().getClientWorkNet();
+      final _contractPromote = await _client.getDeployedContract(
+          "WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
+      _quest = await apiProvider.getQuest(id: questId);
+      double _gasForPromote = 0.0;
+      if (isQuestRaise)
+        _gasForPromote = await _client.getEstimateGasCallContract(
           contract: _contractPromote,
           function:
               _contractPromote.function(WQPromotionFunctions.promoteQuest.name),
           params: [
-            EthereumAddress.fromHex(_quest.contractAddress!),
+            EthereumAddress.fromHex(_quest!.contractAddress!),
             BigInt.from(levelGroupValue - 1),
             BigInt.from(getPeriod(isQuest: true)),
           ],
         );
-        return (_gasForApprove + _gasForPromote).toStringAsFixed(17);
-      } else {
-        final _amount = getAmount(
-            isQuest: false,
-            tariff: levelGroupValue,
-            period: getPeriod(isQuest: false));
-        final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
-        final _gasForApprove = await _client.getEstimateGasCallContract(
-          contract: _contractApprove,
-          function:
-              _contractApprove.function(WQBridgeTokenFunctions.approve.name),
-          params: [
-            EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
-            _price,
-          ],
-        );
-
-        final _contractPromote =
-            await _client.getDeployedContract("WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
-        final _gasForPromote = await _client.getEstimateGasCallContract(
+      else
+        _gasForPromote = await _client.getEstimateGasCallContract(
           contract: _contractPromote,
           function:
               _contractPromote.function(WQPromotionFunctions.promoteUser.name),
@@ -166,11 +178,26 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
             BigInt.from(getPeriod(isQuest: false)),
           ],
         );
-        return (_gasForApprove + _gasForPromote).toStringAsFixed(17);
-      }
-    } on SocketException catch (_) {
-      onError("Lost connection to server");
-      throw FormatException('Lost connection to server');
+      gas = _gasForPromote.toStringAsFixed(17);
+      print("GAS: $gas");
+    } catch (e) {
+      this.onError(e.toString());
+    }
+  }
+
+  Future<void> approve() async {
+    try {
+      this.onLoading();
+      final _period = getPeriod();
+      getAmount(isQuest: false, tariff: levelGroupValue, period: _period);
+      final _price = BigInt.from(double.parse(amount) * pow(10, 18));
+      await AccountRepository().getClientWorkNet().approveCoin(price: _price);
+    } on FormatException catch (e, trace) {
+      print('raiseProfile FormatException | $e\n$trace');
+      this.onError(e.message);
+    } catch (e, trace) {
+      print('raiseProfile | $e\n$trace');
+      this.onError(e.toString());
     }
   }
 
@@ -179,11 +206,6 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       final _period = getPeriod();
-      print('levelGroupValue: $levelGroupValue | period: ${getPeriod()}');
-      final _amount =
-          getAmount(isQuest: false, tariff: levelGroupValue, period: _period);
-      final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
-      await AccountRepository().getClientWorkNet().approveCoin(price: _price);
       await AccountRepository().getClientWorkNet().promoteUser(
             tariff: levelGroupValue - 1,
             period: _period,
@@ -202,17 +224,15 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   Future<void> raiseQuest(String questId) async {
     try {
       this.onLoading();
-      final _quest = await apiProvider.getQuest(id: questId);
       final _period = getPeriod(isQuest: true);
-      final _amount =
-          getAmount(isQuest: true, tariff: levelGroupValue, period: _period);
-      final _price = BigInt.from(double.parse(_amount) * pow(10, 18));
+      getAmount(isQuest: true, tariff: levelGroupValue, period: _period);
+      final _price = BigInt.from(double.parse(amount) * pow(10, 18));
       await AccountRepository().getClientWorkNet().approveCoin(price: _price);
       await AccountRepository().getClientWorkNet().promoteQuest(
             tariff: levelGroupValue - 1,
             period: _period,
-            amount: _amount,
-            questAddress: _quest.contractAddress!,
+            amount: amount,
+            questAddress: _quest!.contractAddress!,
           );
 
       this.onSuccess(true);
@@ -225,7 +245,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
     }
   }
 
-  String getAmount({
+  void getAmount({
     required bool isQuest,
     required int tariff,
     required int period,
@@ -235,37 +255,49 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
         case 1:
           switch (tariff) {
             case 1:
-              return '20';
+              amount = '20';
+              return;
             case 2:
-              return '12';
+              amount = '12';
+              return;
             case 3:
-              return '9';
+              amount = '9';
+              return;
             case 4:
-              return '7';
+              amount = '7';
+              return;
           }
           break;
         case 5:
           switch (tariff) {
             case 1:
-              return '35';
+              amount = '35';
+              return;
             case 2:
-              return '28';
+              amount = '28';
+              return;
             case 3:
-              return '22';
+              amount = '22';
+              return;
             case 4:
-              return '18';
+              amount = '18';
+              return;
           }
           break;
         case 7:
           switch (tariff) {
             case 1:
-              return '50';
+              amount = '50';
+              return;
             case 2:
-              return '35';
+              amount = '35';
+              return;
             case 3:
-              return '29';
+              amount = '29';
+              return;
             case 4:
-              return '21';
+              amount = '21';
+              return;
           }
           break;
       }
@@ -274,41 +306,52 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
         case 1:
           switch (tariff) {
             case 1:
-              return '20';
+              amount = '20';
+              return;
             case 2:
-              return '12';
+              amount = '12';
+              return;
             case 3:
-              return '9';
+              amount = '9';
+              return;
             case 4:
-              return '7';
+              amount = '7';
+              return;
           }
           break;
         case 7:
           switch (tariff) {
             case 1:
-              return '35';
+              amount = '35';
+              return;
             case 2:
-              return '28';
+              amount = '28';
+              return;
             case 3:
-              return '22';
+              amount = '22';
+              return;
             case 4:
-              return '18';
+              amount = '18';
+              return;
           }
           break;
         case 30:
           switch (tariff) {
             case 1:
-              return '50';
+              amount = '50';
+              return;
             case 2:
-              return '35';
+              amount = '35';
+              return;
             case 3:
-              return '29';
+              amount = '29';
+              return;
             case 4:
-              return '21';
+              amount = '21';
+              return;
           }
           break;
       }
     }
-    return '0';
   }
 }

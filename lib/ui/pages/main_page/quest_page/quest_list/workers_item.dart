@@ -37,18 +37,14 @@ class WorkersItem extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
-            color: workersInfo.raiseView != null
-                ? _getColorBorder(
-                    workersInfo.raiseView!.status,
-                    workersInfo.raiseView!.type,
-                  )
-                : Colors.transparent,
+            color: _getColorBorder(
+              workersInfo.raiseView?.status,
+              workersInfo.raiseView?.type,
+            ),
           ),
           color: Colors.white,
         ),
-        margin: const EdgeInsets.only(
-          top: 10,
-        ),
+        margin: const EdgeInsets.only(top: 10),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,22 +52,21 @@ class WorkersItem extends StatelessWidget {
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: UserAvatar(
-                        width: 61, height: 61, url: workersInfo.avatar?.url)),
-                const SizedBox(
-                  width: 15,
+                  borderRadius: BorderRadius.circular(100),
+                  child: UserAvatar(
+                    width: 61,
+                    height: 61,
+                    url: workersInfo.avatar?.url,
+                  ),
                 ),
+                const SizedBox(width: 15),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       Text(
                         workersInfo.firstName + " " + workersInfo.lastName,
                         style: TextStyle(
@@ -80,9 +75,7 @@ class WorkersItem extends StatelessWidget {
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       Row(
                         children: [
                           if (workersInfo.raiseView != null &&
@@ -95,9 +88,7 @@ class WorkersItem extends StatelessWidget {
                                   height: 18,
                                   width: 18,
                                 ),
-                                SizedBox(
-                                  width: 5,
-                                ),
+                                const SizedBox(width: 5),
                               ],
                             ),
                           UserRating(
@@ -122,11 +113,11 @@ class WorkersItem extends StatelessWidget {
                         Text(
                           "${workersInfo.ratingStatistic?.averageMark.toStringAsFixed(1) ?? 0.0}",
                           style: TextStyle(
-                              fontWeight: FontWeight.w700, fontSize: 23),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 23,
+                          ),
                         ),
-                        const SizedBox(
-                          width: 5,
-                        ),
+                        const SizedBox(width: 5),
                         Icon(
                           Icons.star,
                           color: AppColor.star,
@@ -136,20 +127,14 @@ class WorkersItem extends StatelessWidget {
                   )
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             if (workersInfo.userSpecializations.isNotEmpty)
               tagSkills(
                 questsStore.parser(workersInfo.userSpecializations),
               ),
             const SizedBox(height: 10),
-            Text(
-              "workers.aboutMe".tr(),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
+            Text("workers.aboutMe".tr()),
+            const SizedBox(height: 5),
             Text(
               workersInfo.additionalInfo?.description ??
                   "modals.noDescription".tr(),
@@ -159,9 +144,7 @@ class WorkersItem extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               maxLines: 3,
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             workersInfo.additionalInfo!.address != null
                 ? Text(
                     workersInfo.additionalInfo?.address ?? "",
@@ -170,16 +153,10 @@ class WorkersItem extends StatelessWidget {
                       color: Color(0xFF7C838D),
                     ),
                   )
-                : SizedBox(),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              "settings.costPerHour".tr(),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
+                : const SizedBox(),
+            const SizedBox(height: 10),
+            Text("settings.costPerHour".tr()),
+            const SizedBox(height: 5),
             Text(
               "${workersInfo.wagePerHour}  WUSD",
               style: TextStyle(
@@ -189,9 +166,7 @@ class WorkersItem extends StatelessWidget {
               ),
               overflow: TextOverflow.fade,
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -223,12 +198,8 @@ class WorkersItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "workers.specializations".tr(),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
+        Text("workers.specializations".tr()),
+        const SizedBox(height: 5),
         Text(
           skillsLine,
           style: const TextStyle(
@@ -271,16 +242,12 @@ class ShimmerWorkersItem extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(
-                width: 15,
-              ),
+              const SizedBox(width: 15),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(
-                      height: 5,
-                    ),
+                    const SizedBox(height: 5),
                     Shimmer.stand(
                       child: Container(
                         height: 20,
@@ -291,12 +258,12 @@ class ShimmerWorkersItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
+                    const SizedBox(height: 5),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 4),
+                        horizontal: 5,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         borderRadius: BorderRadius.circular(3),

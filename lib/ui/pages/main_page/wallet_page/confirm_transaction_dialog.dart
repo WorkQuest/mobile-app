@@ -18,62 +18,61 @@ Future confirmTransaction(
   required String? amount,
   required String fee,
   required void Function()? onPressConfirm,
-  void Function()? onPressCancel,
-}) =>
-    Platform.isIOS
-        ? showCupertinoDialog(
-            context: context,
-            builder: (context) => CupertinoAlertDialog(
-              title: Text(
-                transaction,
-                style: TextStyle(fontSize: 18.0),
-              ),
-              content: content(
-                transaction: transaction,
-                amount: amount,
-                address: address,
-                fee: fee,
-              ),
-              actions: [
-                CupertinoDialogAction(
-                  onPressed: onPressConfirm,
-                  child: Text('meta.confirm'.tr()),
-                ),
-                CupertinoDialogAction(
-                  onPressed: onPressCancel != null
-                      ? () => onPressCancel()
-                      : () => Navigator.pop(context),
-                  child: Text('meta.cancel'.tr()),
-                ),
-              ],
+  required void Function() onPressCancel,
+}) {
+  return Platform.isIOS
+      ? showCupertinoDialog(
+          context: context,
+          builder: (context) => CupertinoAlertDialog(
+            title: Text(
+              transaction,
+              style: TextStyle(fontSize: 18.0),
             ),
-          )
-        : showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (context) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              title: Text(transaction),
-              content: content(
-                transaction: transaction,
-                amount: amount,
-                address: address,
-                fee: fee,
-              ),
-              actions: [
-                TextButton(
-                  onPressed: onPressConfirm,
-                  child: Text('meta.confirm'.tr()),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text('meta.cancel'.tr()),
-                ),
-              ],
+            content: content(
+              transaction: transaction,
+              amount: amount,
+              address: address,
+              fee: fee,
             ),
-          );
+            actions: [
+              CupertinoDialogAction(
+                onPressed: onPressConfirm,
+                child: Text('meta.confirm'.tr()),
+              ),
+              CupertinoDialogAction(
+                onPressed: () => onPressCancel(),
+                child: Text('meta.cancel'.tr()),
+              ),
+            ],
+          ),
+        )
+      : showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            title: Text(transaction),
+            content: content(
+              transaction: transaction,
+              amount: amount,
+              address: address,
+              fee: fee,
+            ),
+            actions: [
+              TextButton(
+                onPressed: onPressConfirm,
+                child: Text('meta.confirm'.tr()),
+              ),
+              TextButton(
+                onPressed: () => onPressCancel(),
+                child: Text('meta.cancel'.tr()),
+              ),
+            ],
+          ),
+        );
+}
 
 Widget content({
   required String transaction,

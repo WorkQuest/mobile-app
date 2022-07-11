@@ -204,14 +204,15 @@ class ClientService implements ClientServiceI {
     ));
     return (_estimateGas * _gas.getInWei).toDouble() * pow(10, -18);
   }
-
+//0.000000000000360948
   Future<double> getEstimateGasForApprove(BigInt price) async {
     final _addressWUSD = Web3Utils.getAddressWUSD();
     print('_addressWUSD: $_addressWUSD');
-    final _contractApprove = await getDeployedContract("WQBridgeToken", _addressWUSD);
+    // final _contractApprove = await getDeployedContract("WQBridgeToken", _addressWUSD);
+    final _contract = Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
     final _gasForApprove = await getEstimateGasCallContract(
-      contract: _contractApprove,
-      function: _contractApprove.function(WQBridgeTokenFunctions.approve.name),
+      contract: _contract.self,
+      function: _contract.self.function(WQBridgeTokenFunctions.approve.name),
       params: [
         EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
         price,

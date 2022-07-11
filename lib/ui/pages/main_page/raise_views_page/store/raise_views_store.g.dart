@@ -95,6 +95,17 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
       ActionController(name: '_RaiseViewStore');
 
   @override
+  dynamic setApprove(bool value) {
+    final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
+        name: '_RaiseViewStore.setApprove');
+    try {
+      return super.setApprove(value);
+    } finally {
+      _$_RaiseViewStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic setTitleSelectedCoin(TokenSymbols? value) {
     final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
         name: '_RaiseViewStore.setTitleSelectedCoin');
