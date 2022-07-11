@@ -211,6 +211,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       await Future.delayed(const Duration(seconds: 3));
       _attempts++;
     }
+    final _link = Web3Utils.getLinkToExplorer(network!, _txHashApprove);
+    onError('Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
   }
 
   Future<bool> needApprove() async {
