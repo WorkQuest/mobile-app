@@ -10,7 +10,6 @@ const _baseDerivationPath = "m/44'/60'/0'/0/0";
 
 class AddressService {
 
-
   static String generateMnemonic() {
     try {
       return bip39.generateMnemonic(strength: 128);
@@ -85,6 +84,15 @@ class AddressService {
       return '0x$result';
     } catch (e) {
       return addressBech32;
+    }
+  }
+
+  static String convertToHexAddress(String address) {
+    try {
+      final _isBech = address.substring(0, 2).toLowerCase() == 'wq';
+      return _isBech ? AddressService.bech32ToHex(address) : address;
+    } catch (e) {
+      return address;
     }
   }
 }

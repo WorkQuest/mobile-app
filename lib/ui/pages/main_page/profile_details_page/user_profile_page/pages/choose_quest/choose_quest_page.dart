@@ -1,5 +1,6 @@
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -124,12 +125,44 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                 builder: (_) => ElevatedButton(
                   onPressed: store.questId.isNotEmpty
                       ? () async {
-                          await store.startQuest(userId: widget.workerId);
-                          if (store.isSuccess) {
-                            Navigator.pop(context);
-                            AlertDialogUtils.showSuccessDialog(context);
-                          }
-                        }
+                    try {
+                      await _checkPossibilityTx();
+                    } on FormatException catch (e) {
+                      AlertDialogUtils.showInfoAlertDialog(context,
+                          title: 'modals.error'.tr(), content: e.message);
+                      return;
+                    } catch (e) {
+                      AlertDialogUtils.showInfoAlertDialog(context,
+                          title: 'modals.error'.tr(), content: e.toString());
+                      return;
+                    }
+                    await confirmTransaction(
+                      context,
+                      fee: store.fee,
+                      transaction: "ui.txInfo".tr(),
+                      address: store.quests.firstWhere((element) => element.id == store.questId).contractAddress!,
+                      amount: null,
+                      onPress: () {
+                        store.startQuest(
+                          userId: widget.arguments.workerId,
+                          userAddress: widget.arguments.workerAddress ?? store.user!.walletAddress!,
+                        );
+                        Navigator.pop(context);
+                      },
+                    );
+                    AlertDialogUtils.showLoadingDialog(context);
+                    Timer.periodic(Duration(seconds: 1), (timer) async {
+                      if (!store.isLoading) {
+                        timer.cancel();
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        if (store.isSuccess)
+                          await AlertDialogUtils.showSuccessDialog(
+                            context,
+                          );
+                      }
+                    });
+                  }
                       : null,
                   child: Text("quests.addToQuest".tr()),
                 ),
@@ -138,4 +171,14 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
           ],
         ),
       );
+
+  _checkPossibilityTx() async {
+    await store.getFee(widget.workerId);
+    await Web3Utils.checkPossibilityTx(
+      typeCoin: TokenSymbols.WQT,
+      fee: Decimal.parse(store.fee),
+      amount: 0.0,
+      isMain: true,
+    );
+  }
 }

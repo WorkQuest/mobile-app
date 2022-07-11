@@ -19,7 +19,7 @@ import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/alert_dialog.dart';
-import 'package:app/web3/contractEnums.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -75,8 +75,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share(
-              "https://dev-app.workquest.co/quests/${store.quest.value!.id}");
+          Share.share("https://testnet-app.workquest.co/quests/${store.quest.value!.id}");
         },
       ),
       if (store.quest.value != null &&
@@ -311,9 +310,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            store.quest.value!.status == 5
-                ? "quests.finishedBy".tr()
-                : "quests.inProgressBy".tr(),
+            store.quest.value!.status == 5 ? "quests.finishedBy".tr() : "quests.inProgressBy".tr(),
             style: TextStyle(
               color: const Color(0xFF7C838D),
               fontSize: 12,
@@ -367,7 +364,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   Widget respondedList() {
     return Observer(
       builder: (_) => (store.respondedList.isEmpty && store.isLoading)
-          ? Center(child: CircularProgressIndicator.adaptive())
+          ? Center(
+              child: CircularProgressIndicator.adaptive(),
+            )
           : store.quest.value!.status == 4
               ? TextButton(
                   onPressed: () {
@@ -384,17 +383,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
                         if (states.contains(MaterialState.pressed))
-                          return Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.5);
+                          return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                         return const Color(0xFF0083C7);
                       },
                     ),
                   ),
                 )
-              : (store.respondedList.isNotEmpty &&
-                      (store.quest.value!.status == 1))
+              : (store.respondedList.isNotEmpty && (store.quest.value!.status == 1))
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -696,6 +691,23 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       },
     );
     AlertDialogUtils.showLoadingDialog(context);
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      if (!store.isLoading) {
+        timer.cancel();
+        Navigator.pop(context);
+        nextStep();
+      }
+    });
+  }
+
+  _checkPossibilityTx() async {
+    await store.getFee(store.selectedResponders!.workerId);
+    await Web3Utils.checkPossibilityTx(
+      typeCoin: TokenSymbols.WQT,
+      fee: Decimal.parse(store.fee),
+      amount: 0.0,
+      isMain: true,
+    );
     if (store.isLoading)
       Timer.periodic(Duration(seconds: 1), (timer) async {
         if (!store.isLoading) {
@@ -725,7 +737,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: respondedUser(respond)),
+              Expanded(
+                child: respondedUser(respond),
+              ),
               // Spacer(),
               Transform.scale(
                 scale: 1.5,
@@ -734,8 +748,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   value: respond,
                   groupValue: store.selectedResponders,
-                  onChanged: (RespondModel? user) =>
-                      store.selectedResponders = user,
+                  onChanged: (RespondModel? user) => store.selectedResponders = user,
                 ),
               ),
             ],
@@ -846,7 +859,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(
+                height: 15,
+              ),
               Text(
                 "meta.securityCheck.enterDiginCodeGoogle",
               ),
@@ -893,7 +908,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       softWrap: true,
                       textAlign: TextAlign.start,
                     ),
-                    const SizedBox(height: 50),
+                    const SizedBox(
+                      height: 50,
+                    ),
                   ],
                 ),
               ),

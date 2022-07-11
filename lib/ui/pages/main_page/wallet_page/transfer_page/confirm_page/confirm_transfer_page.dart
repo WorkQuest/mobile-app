@@ -3,6 +3,7 @@ import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/address_service.dart';
+import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +90,11 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                     onPressed: () async {
                       AlertDialogUtils.showLoadingDialog(context);
                       store.sendTransaction(
-                          widget.addressTo, widget.amount, widget.typeCoin);
+                        widget.addressTo,
+                        widget.amount,
+                        widget.typeCoin,
+                        Decimal.parse(widget.fee),
+                      );
                     },
                     child: Text('meta.confirm'.tr()),
                   ),
@@ -122,9 +127,7 @@ class _InformationWidget extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: AppColor.disabledButton),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5.0), color: AppColor.disabledButton),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -191,8 +194,8 @@ class _InformationWidget extends StatelessWidget {
   }
 
   String _getTitleCoinFee() {
-    final _network = Web3Utils.getSwapNetworksFromNetworkName(
-        AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
+    final _network =
+        Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
     switch (_network) {
       case SwapNetworks.ETH:
         return 'ETH';
@@ -206,8 +209,8 @@ class _InformationWidget extends StatelessWidget {
   }
 
   String _getAddress() {
-    final _network = Web3Utils.getSwapNetworksFromNetworkName(
-        AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
+    final _network =
+        Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
     if (_network == null) {
       return AddressService.hexToBech32(addressTo);
     } else {

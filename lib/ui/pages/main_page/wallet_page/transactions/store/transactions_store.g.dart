@@ -113,6 +113,18 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
     }
   }
 
+
+  @override
+  dynamic addTransaction(Tx transaction) {
+    final _$actionInfo = _$TransactionsStoreBaseActionController.startAction(
+        name: 'TransactionsStoreBase.addTransaction');
+    try {
+      return super.addTransaction(transaction);
+    } finally {
+      _$TransactionsStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

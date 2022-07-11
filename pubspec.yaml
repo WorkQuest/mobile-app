@@ -84,6 +84,7 @@ dependencies:
   bech32: ^0.2.1
   hex: ^0.2.0
   ed25519_hd_key: ^2.2.0
+  decimal: ^2.2.0
 
   #url & app launcher
   url_launcher: ^6.0.10

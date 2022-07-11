@@ -1,11 +1,10 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:app/base_store/i_store.dart';
-import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/address_service.dart';
+import 'package:decimal/decimal.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/contracts/erc20.dart';
@@ -17,6 +16,7 @@ part 'transfer_store.g.dart';
 class TransferStore = TransferStoreBase with _$TransferStore;
 
 abstract class TransferStoreBase extends IStore<bool> with Store {
+  @observable
   double? maxAmount;
 
   @observable
@@ -32,8 +32,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   String fee = '';
 
   @computed
-  bool get statusButtonTransfer =>
-      currentCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
+  bool get statusButtonTransfer => currentCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
 
   @action
   setAddressTo(String value) => addressTo = value;
@@ -42,7 +41,21 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   setAmount(String value) => amount = value;
 
   @action
-  setCoin(CoinItem? value) => currentCoin = value;
+  setCoin(CoinItem? value) async {
+    maxAmount = null;
+    currentCoin = value;
+    if (value != null) {
+      final _isNative = Web3Utils.isNativeToken(currentCoin!.typeCoin);
+      final _client = AccountRepository().getClient();
+      final _address = Web3Utils.getAddressToken(currentCoin!.typeCoin);
+      final amount = _isNative
+          ? await _client.getBalance(AccountRepository().privateKey)
+          : await _client.getBalanceFromContract(_address);
+      maxAmount = amount is Decimal
+          ? amount.toDouble()
+          : (Decimal.fromBigInt((amount as EtherAmount).getInWei) / Decimal.fromInt(10).pow(18)).toDouble();
+    }
+  }
 
   @action
   getMaxAmount() async {
@@ -50,27 +63,23 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     try {
       final _client = AccountRepository().getClient();
       final _dataCoins = AccountRepository().getConfigNetwork().dataCoins;
-      final _isHaveAddressCoin = _dataCoins
-          .firstWhere(
-              (element) => element.symbolToken == currentCoin!.typeCoin)
-          .addressToken ==
-          null;
-      if (_isHaveAddressCoin) {
-        final _balance =
-        await _client.getBalance(AccountRepository().privateKey);
+      final _isNotToken =
+          _dataCoins.firstWhere((element) => element.symbolToken == currentCoin!.typeCoin).addressToken == null;
+      if (_isNotToken) {
+        final _balance = await _client.getBalance(AccountRepository().privateKey);
         final _balanceInWei = _balance.getInWei;
         await getFee();
-        final _gas = BigInt.from(double.parse(fee) * pow(10, 18));
-        final _amount = (_balanceInWei - _gas).toDouble() * pow(10, -18);
-        if (_amount < 0.0) {
+        final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);
+        final _amount = ((Decimal.parse(_balanceInWei.toString()) - _gas) / Decimal.fromInt(10).pow(18)).toDecimal();
+        if (_amount < Decimal.zero) {
           amount = 0.0.toStringAsFixed(18);
         } else {
-          amount = ((_balanceInWei - _gas).toDouble() * pow(10, -18))
-              .toStringAsFixed(18);
+          amount = _amount.toStringAsFixed(18);
         }
       } else {
-        final _balance = await _getBalanceToken(
-            Web3Utils.getAddressToken(currentCoin!.typeCoin));
+        final _balance = await AccountRepository()
+            .getClient()
+            .getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
         amount = _balance.toStringAsFixed(18);
       }
       onSuccess(true);
@@ -87,45 +96,37 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   getFee() async {
     try {
       final _client = AccountRepository().getClient();
-      final _currentListTokens =
-          AccountRepository().getConfigNetwork().dataCoins;
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
-      final _isToken =
-          currentCoin!.typeCoin != _currentListTokens.first.symbolToken;
-      String _address = '';
       String _amount = amount.isEmpty ? '0.0' : amount;
-      try {
-        final _isBech = addressTo.substring(0, 2).toLowerCase() == 'wq';
-        _address =
-        _isBech ? AddressService.bech32ToHex(addressTo) : addressTo;
-      } catch (e) {
-        _address = AccountRepository().userAddress;
-      }
+      String _address = AddressService.convertToHexAddress(addressTo);
+      final _gas = await _client.getGas();
+
+      final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
+      final _isToken = currentCoin!.typeCoin != _currentListTokens.first.symbolToken;
+
       if (_isToken) {
         String _addressToken = Web3Utils.getAddressToken(currentCoin!.typeCoin);
-        final _degree = Web3Utils.getDegreeToken(currentCoin!.typeCoin);
         final _contract = Erc20(
           address: EthereumAddress.fromHex(_addressToken),
           client: _client.client!,
-        ).self;
+        );
+        final _degree = await Web3Utils.getDegreeToken(_contract);
         final _estimateGas = await _client.getEstimateGas(
           Transaction.callContract(
-            contract: _contract,
-            function: _contract.abi.functions[7],
+            contract: _contract.self,
+            function: _contract.self.abi.functions[7],
             parameters: [
               EthereumAddress.fromHex(_address),
-              BigInt.from(double.tryParse(_amount) ?? 0.0 * pow(10, _degree)),
+              Web3Utils.getAmountBigInt(amount: _amount, degree: _degree),
             ],
             from: _from,
           ),
         );
-        final _gas = await _client.getGas();
-        fee = ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18))
-            .toStringAsFixed(17);
+        fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18).toStringAsFixed(18);
       } else {
         final _value = EtherAmount.fromUnitAndValue(
           EtherUnit.wei,
-          BigInt.from(double.parse(_amount) * pow(10, 18)),
+          Web3Utils.getAmountBigInt(amount: _amount, degree: 18),
         );
         final _to = EthereumAddress.fromHex(_address);
         final _estimateGas = await _client.getEstimateGas(
@@ -135,13 +136,12 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
             value: _value,
           ),
         );
-        final _gas = await _client.getGas();
-        fee = ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18))
-            .toStringAsFixed(17);
+        fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18).toStringAsFixed(18);
       }
     } on SocketException catch (_) {
       onError("Lost connection to server");
-    } catch (e, trace) {
+    } catch (e) {
+      // print('e: $e');
       onError(e.toString());
     }
   }
@@ -152,14 +152,5 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     amount = '';
     fee = '';
     currentCoin = null;
-  }
-
-  Future<double> _getBalanceToken(String addressToken) async {
-    final _balance =
-    await AccountRepository().getClient().getBalanceFromContract(
-      addressToken,
-      isUSDT: currentCoin!.typeCoin == TokenSymbols.USDT,
-    );
-    return _balance;
   }
 }

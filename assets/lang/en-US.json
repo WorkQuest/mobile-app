@@ -192,6 +192,7 @@
     "change": "Change",
     "apply": "Apply",
     "connectSMSVer": "Connect SMS verification",
+    "serviceUnavailable": "Coming soon",
     "resendSMS": "Resend SMS",
     "disable": "Disable",
     "remindLater": "Remind me later",
@@ -1316,8 +1317,10 @@
     "openWallet": "Open wallet",
     "yourPhrase": "Your phrase",
     "copyPhrase": "Copy phrase",
+    "underConstruction": "Still under construction",
     "chooseWay": "Choose a way to add a wallet",
     "savePhrase": "Save this phrase to be able to login in next time",
+    "chooseAddressType": "Choose address type",
     "savedPhrase": "I’ve saved mnemonic phrase",
     "buyDescriptionWQT": "The easiest way to buy WQT is using USDT.\nNetworks available for purchase: Ethereum, Binance Smart Chain and Polygon. After the purchase, WQT will automatically deposit to your WorkNet network wallet, minus the transaction fee.",
     "changeNetwork": "Change network",
@@ -1336,6 +1339,7 @@
     "deposit": "Deposit",
     "withdraw": "Withdraw",
     "transfer": "Transfer",
+    "swap": "Swap",
     "addCardProposal": "Add your own card for easy withdrawal",
     "addCard": "Add card",
     "addCartToContinue": "You have to add your card to continue",
@@ -1555,8 +1559,8 @@
     }
   },
   "swap": {
-    "minimum": "To avoid unnecessary fees and network slippage, the minimum amount for this pair is \\$5 USDT/USDC",
-    "maximum": "To avoid unnecessary fees and network slippage, the maximum amount for this pair is \\$100 USDT/USDC.",
+    "minimum": "To avoid unnecessary fees and network slippage, the minimum amount for this pair is $5 USDT/USDC",
+    "maximum": "To avoid unnecessary fees and network slippage, the maximum amount for this pair is $100 USDT/USDC.",
     "connecting": "Connecting to {object}...",
     "buying": "Buying WQT",
     "choose": "Choose {object}",
@@ -1994,6 +1998,7 @@
     "wrongCode": "Wrong code",
     "notHaveEnoughTx": "Not have enough WQT for the transaction",
     "notHaveEnoughTxToken": "Not have enough {token} for the transaction",
+    "higherMaxAmount": "Not enough USDT to complete this transaction",
     "emptyData": {
       "employer": {
         "myQuests": {

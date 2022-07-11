@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app/constants.dart';
 import 'package:app/ui/widgets/success_alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -168,10 +169,10 @@ class AlertDialogUtils {
                   ),
                 CupertinoButton(
                   onPressed: () async {
+                    Navigator.pop(context);
                     if (onTabOk != null) {
                       await onTabOk.call();
                     }
-                    Navigator.pop(context);
                   },
                   child: Text(
                     titleOk ?? 'Ok',
@@ -202,10 +203,10 @@ class AlertDialogUtils {
               ),
             TextButton(
               onPressed: () async {
+                Navigator.pop(context);
                 if (onTabOk != null) {
                   await onTabOk.call();
                 }
-                Navigator.pop(context);
               },
               child: Text(
                 titleOk ?? 'Ok',
@@ -215,6 +216,96 @@ class AlertDialogUtils {
           ],
         );
       },
+    );
+  }
+
+  static void showAlertTxConfirm(
+      BuildContext context, {
+        required String typeTx,
+        required String addressTo,
+        required String amount,
+        required String fee,
+        required String tokenSymbol,
+        required String tokenSymbolFee,
+        required Function() onTabOk,
+      }) {
+    AlertDialogUtils.showAlertDialog(
+      context,
+      title: Text(typeTx),
+      content: Container(
+        width: 300,
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: Colors.blue.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(6.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "Recipient's address",
+              style: TextStyle(
+                fontSize: 17.0,
+              ),
+            ),
+            Text(
+              addressTo,
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                fontSize: 15.0,
+                color: Color(0xFF7C838D),
+              ),
+            ),
+            Column(
+              children: [
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  "wallet.amount".tr(),
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontSize: 17.0,
+                  ),
+                ),
+                Text(
+                  "$amount $tokenSymbol",
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontSize: 15.0,
+                    color: Color(0xFF7C838D),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            const Text(
+              "Transaction fee",
+              style: TextStyle(
+                fontSize: 17.0,
+              ),
+            ),
+            Text(
+              "$fee $tokenSymbolFee",
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                fontSize: 15.0,
+                color: Color(0xFF7C838D),
+              ),
+            ),
+          ],
+        ),
+      ),
+      needCancel: true,
+      titleCancel: null,
+      titleOk: 'meta.confirm'.tr(),
+      onTabCancel: null,
+      onTabOk: () => onTabOk(),
+      colorCancel: AppColor.enabledButton,
+      colorOk: Colors.red,
     );
   }
 }

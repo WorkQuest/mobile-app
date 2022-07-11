@@ -35,16 +35,16 @@ class Constants {
       'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 
   static const String worknetMainnetWQFactory = '0x3d9782B4Ba9C10d09973dd1f7C16410c931f5468';
-  // static const String worknetTestnetWQFactory = '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4'; ///testnet
-  static const String worknetTestnetWQFactory = '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066'; ///dev-net
+  static const String worknetTestnetWQFactory = '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4'; ///testnet
+  // static const String worknetTestnetWQFactory = '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066'; ///dev-net
 
   static const String worknetMainnetWQPromotion = '';
-  // static const String worknetTestnetWQPromotion = '0x23918c4cC7001fB4e2BF28c8283b02BcD6975bf0'; ///testnet
-  static const String worknetTestnetWQPromotion = '0xB778e471833102dBe266DE2747D72b91489568c2'; ///dev-net
+  static const String worknetTestnetWQPromotion = '0x23918c4cC7001fB4e2BF28c8283b02BcD6975bf0'; ///testnet
+  // static const String worknetTestnetWQPromotion = '0xB778e471833102dBe266DE2747D72b91489568c2'; ///dev-net
 
   static const String worknetMainnetWUSD = '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa';
-  // static const String worknetTestnetWUSD = '0xf95ef11d0af1f40995218bb2b67ef909bcf30078'; ///testnet
-  static const String worknetTestnetWUSD = '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa'; ///dev-net
+  static const String worknetTestnetWUSD = '0xf95ef11d0af1f40995218bb2b67ef909bcf30078'; ///testnet
+  // static const String worknetTestnetWUSD = '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa'; ///dev-net
 }
 
 abstract class AppColor {
@@ -75,99 +75,99 @@ class Configs {
   static final configsNetwork = {
     NetworkName.workNetMainnet: ConfigNetwork(
       rpc: 'https://mainnet-gate.workquest.co/',
-      wss: 'wss://mainnet-gate-01.workquest.co/tendermint-rpc/websocket',
+      wss: 'wss://mainnet-gate.workquest.co/tendermint-rpc/websocket',
       urlExplorer: '',
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.WQT,
-          iconPath: 'assets/svg/wqt_coin_icon.svg',
+          iconPath: 'assets/wqt_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.WUSD,
           addressToken: '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa',
-          iconPath: 'assets/svg/wusd_coin_icon.svg',
+          iconPath: 'assets/wusd_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.wETH,
           addressToken: '0x8E52341384F5286f4c76cE1072Aba887Be8E4EB9',
-          iconPath: 'assets/svg/weth_coin_icon.svg',
+          iconPath: 'assets/weth_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.wBNB,
           addressToken: '0xD7ca5F803807b03D49606D4f8e66551170b1d689',
-          iconPath: 'assets/svg/wbnb_coin_icon.svg',
+          iconPath: 'assets/wbnb_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken: '0xD93d2cF0e0179112469188F61ceb948F2Dbe4824',
-          iconPath: 'assets/svg/usdt_coin_icon.svg',
+          iconPath: 'assets/usdt_coin_icon.svg',
         ),
       ],
     ),
     /// Dev-net
-    NetworkName.workNetTestnet: ConfigNetwork(
-        rpc: 'https://dev-node-ams3.workquest.co/',
-        wss: 'wss://dev-node-nyc3.workquest.co/tendermint-rpc/websocket',
-        urlExplorer: '',
-        dataCoins: const [
-          DataCoins(
-            symbolToken: TokenSymbols.WQT,
-            iconPath: 'assets/svg/wqt_coin_icon.svg',
-          ),
-          DataCoins(
-            symbolToken: TokenSymbols.WUSD,
-            addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
-            iconPath: 'assets/svg/wusd_coin_icon.svg',
-          ),
-          DataCoins(
-            symbolToken: TokenSymbols.wETH,
-            addressToken: '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24',
-            iconPath: 'assets/svg/weth_coin_icon.svg',
-          ),
-          DataCoins(
-            symbolToken: TokenSymbols.wBNB,
-            addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
-            iconPath: 'assets/svg/wbnb_coin_icon.svg',
-          ),
-          DataCoins(
-            symbolToken: TokenSymbols.USDT,
-            addressToken: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
-            iconPath: 'assets/svg/usdt_coin_icon.svg',
-          ),
-        ],
-      ),
-    /// Testnet
     // NetworkName.workNetTestnet: ConfigNetwork(
-    //   rpc: 'https://testnet-gate.workquest.co/',
-    //   wss: 'wss://testnet-gate.workquest.co/tendermint-rpc/websocket',
-    //   urlExplorer: '',
-    //   dataCoins: const [
-    //     DataCoins(
-    //       symbolToken: TokenSymbols.WQT,
-    //       iconPath: 'assets/svg/wqt_coin_icon.svg',
-    //     ),
-    //     DataCoins(
-    //       symbolToken: TokenSymbols.WUSD,
-    //       addressToken: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
-    //       iconPath: 'assets/svg/wusd_coin_icon.svg',
-    //     ),
-    //     DataCoins(
-    //       symbolToken: TokenSymbols.wETH,
-    //       addressToken: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
-    //       iconPath: 'assets/svg/weth_coin_icon.svg',
-    //     ),
-    //     DataCoins(
-    //       symbolToken: TokenSymbols.wBNB,
-    //       addressToken: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
-    //       iconPath: 'assets/svg/wbnb_coin_icon.svg',
-    //     ),
-    //     DataCoins(
-    //       symbolToken: TokenSymbols.USDT,
-    //       addressToken: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859',
-    //       iconPath: 'assets/svg/usdt_coin_icon.svg',
-    //     ),
-    //   ],
-    // ),
+    //     rpc: 'https://dev-node-ams3.workquest.co/',
+    //     wss: 'wss://wss-dev-node-nyc3.workquest.co/tendermint-rpc/websocket',
+    //     urlExplorer: '',
+    //     dataCoins: const [
+    //       DataCoins(
+    //         symbolToken: TokenSymbols.WQT,
+    //         iconPath: 'assets/wqt_coin_icon.svg',
+    //       ),
+    //       DataCoins(
+    //         symbolToken: TokenSymbols.WUSD,
+    //         addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
+    //         iconPath: 'assets/wusd_coin_icon.svg',
+    //       ),
+    //       DataCoins(
+    //         symbolToken: TokenSymbols.wETH,
+    //         addressToken: '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24',
+    //         iconPath: 'assets/weth_coin_icon.svg',
+    //       ),
+    //       DataCoins(
+    //         symbolToken: TokenSymbols.wBNB,
+    //         addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
+    //         iconPath: 'assets/wbnb_coin_icon.svg',
+    //       ),
+    //       DataCoins(
+    //         symbolToken: TokenSymbols.USDT,
+    //         addressToken: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
+    //         iconPath: 'assets/usdt_coin_icon.svg',
+    //       ),
+    //     ],
+    //   ),
+    /// Testnet
+    NetworkName.workNetTestnet: ConfigNetwork(
+      rpc: 'https://testnet-gate.workquest.co/',
+      wss: 'wss://testnet-gate.workquest.co/tendermint-rpc/websocket',
+      urlExplorer: '',
+      dataCoins: const [
+        DataCoins(
+          symbolToken: TokenSymbols.WQT,
+          iconPath: 'assets/wqt_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.WUSD,
+          addressToken: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
+          iconPath: 'assets/wusd_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.wETH,
+          addressToken: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
+          iconPath: 'assets/weth_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.wBNB,
+          addressToken: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
+          iconPath: 'assets/wbnb_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.USDT,
+          addressToken: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859',
+          iconPath: 'assets/usdt_coin_icon.svg',
+        ),
+      ],
+    ),
     NetworkName.ethereumMainnet: ConfigNetwork(
       rpc: 'https://eth-mainnet.public.blastapi.io/',
       wss:
@@ -176,13 +176,13 @@ class Configs {
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.ETH,
-          iconPath: 'assets/svg/weth_coin_icon.svg',
+          iconPath: 'assets/weth_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0xdAC17F958D2ee523a2206206994597C13D831ec7', // decimals 6
-          iconPath: 'assets/svg/usdt_coin_icon.svg',
+          iconPath: 'assets/usdt_coin_icon.svg',
         ),
       ],
     ),
@@ -195,13 +195,13 @@ class Configs {
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.ETH,
-          iconPath: 'assets/svg/weth_coin_icon.svg',
+          iconPath: 'assets/weth_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0xD92E713d051C37EbB2561803a3b5FBAbc4962431', // decimals 6
-          iconPath: 'assets/svg/usdt_coin_icon.svg',
+          iconPath: 'assets/usdt_coin_icon.svg',
         ),
       ],
     ),
@@ -213,13 +213,13 @@ class Configs {
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.BNB,
-          iconPath: 'assets/svg/wbnb_coin_icon.svg',
+          iconPath: 'assets/wbnb_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0x55d398326f99059ff775485246999027b3197955', // decimals 18
-          iconPath: 'assets/svg/usdt_coin_icon.svg',
+          iconPath: 'assets/usdt_coin_icon.svg',
         ),
       ],
     ),
@@ -232,13 +232,13 @@ class Configs {
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.BNB,
-          iconPath: 'assets/svg/wbnb_coin_icon.svg',
+          iconPath: 'assets/wbnb_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0xC9bda0FA861Bd3F66c7d0Fd75A9A8344e6Caa94A', // decimals 18
-          iconPath: 'assets/svg/usdt_coin_icon.svg',
+          iconPath: 'assets/usdt_coin_icon.svg',
         ),
       ],
     ),
@@ -250,13 +250,13 @@ class Configs {
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.MATIC,
-          iconPath: 'assets/svg/wqt_coin_icon.svg',
+          iconPath: 'assets/wqt_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', // decimals 6
-          iconPath: 'assets/svg/usdt_coin_icon.svg',
+          iconPath: 'assets/usdt_coin_icon.svg',
         ),
       ],
     ),
@@ -269,13 +269,13 @@ class Configs {
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.MATIC,
-          iconPath: 'assets/svg/wqt_coin_icon.svg',
+          iconPath: 'assets/wqt_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0x631E327EA88C37D4238B5c559A715332266e7Ec1', // decimals 6
-          iconPath: 'assets/svg/usdt_coin_icon.svg',
+          iconPath: 'assets/usdt_coin_icon.svg',
         ),
       ],
     ),

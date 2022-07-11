@@ -1,5 +1,11 @@
+import 'package:app/constants.dart';
+import 'package:app/ui/pages/main_page/wallet_page/deposit_page/deposit_bank_card.dart';
+import 'package:app/ui/widgets/default_button.dart';
 import 'package:app/ui/widgets/sliver_sticky_tab_bar.dart';
+import 'package:app/ui/widgets/switch_format_address_widget.dart';
+import 'package:app/utils/snack_bar.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/service/address_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -84,11 +90,8 @@ class _DepositPageState extends State<DepositPage>
               controller: this._tabController,
               children: [
                 ///Wallet Transfer
-                walletTab(),
-
-                Center(
-                  child: Text("modals.serviceUnavailable".tr()),
-                ),
+                const _WalletAddress(),
+                const DepositBankCard(),
 
                 ///Card Transfer
                 // BankCardTransaction(
@@ -210,3 +213,148 @@ class _DepositPageState extends State<DepositPage>
         ),
       );
 }
+
+class _WalletAddress extends StatefulWidget {
+  const _WalletAddress({Key? key}) : super(key: key);
+
+  @override
+  _WalletAddressState createState() => _WalletAddressState();
+}
+
+class _WalletAddressState extends State<_WalletAddress> {
+  late FormatAddress _format;
+
+  @override
+  void initState() {
+    _format = AccountRepository().isOtherNetwork ? FormatAddress.HEX : FormatAddress.BECH32;
+    super.initState();
+  }
+
+  String get address {
+    return _format == FormatAddress.BECH32
+        ? AddressService.hexToBech32(AccountRepository().userWallet!.address!)
+        : AccountRepository().userWallet!.address!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 25,
+            ),
+            QrImage(
+              data: address,
+              version: QrVersions.auto,
+              size: 206,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              'wallet.scanQr'.tr(),
+              style: const TextStyle(
+                fontSize: 16,
+                color: AppColor.subtitleText,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            if (!AccountRepository().isOtherNetwork)
+              SwitchFormatAddressWidget(
+                format: _format,
+                onChanged: (FormatAddress value) {
+                  setState(() {
+                    _format = value;
+                  });
+                },
+              ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12.5, horizontal: 15.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6.0),
+                border: Border.all(
+                  color: AppColor.disabledButton,
+                ),
+              ),
+              child: Text(
+                '${address.substring(0, 7)}...${address.substring(address.length - 7, address.length)}',
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.only(
+          right: 16.0,
+          left: 16.0,
+          bottom: MediaQuery.of(context).padding.bottom + 10,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                pressedOpacity: 0.2,
+                onPressed: _sharePressed,
+                child: Container(
+                  height: 43,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6.0),
+                    border: Border.all(
+                      color: Colors.blue.withOpacity(0.1),
+                    ),
+                  ),
+                  child: Text(
+                    'sharing.title'.tr(),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: AppColor.enabledButton,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              flex: 1,
+              child: DefaultButton(
+                title: 'modals.copy'.tr(),
+                onPressed: () => _copyPressed(context),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _sharePressed() {
+    Share.share(address);
+  }
+
+  void _copyPressed(BuildContext context) {
+    Clipboard.setData(ClipboardData(text: address));
+    SnackBarUtils.success(
+      context,
+      title: 'wallet.copy'.tr(),
+      duration: const Duration(milliseconds: 500),
+    );
+  }
+}
+

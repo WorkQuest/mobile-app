@@ -11,31 +11,30 @@ import 'package:app/base_store/i_store.dart';
 part 'confirm_transfer_store.g.dart';
 
 @injectable
-class ConfirmTransferStore = ConfirmTransferStoreBase
-    with _$ConfirmTransferStore;
+class ConfirmTransferStore = ConfirmTransferStoreBase with _$ConfirmTransferStore;
 
 abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
   @action
-  sendTransaction(
-      String addressTo, String amount, TokenSymbols typeCoin) async {
+  sendTransaction(String addressTo, String amount, TokenSymbols typeCoin, Decimal fee) async {
     onLoading();
     try {
-      final _currentListTokens =
-          AccountRepository().getConfigNetwork().dataCoins;
+      final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
-      await AccountRepository().getClient().sendTransaction(
-            isToken: _isToken,
-            address: addressTo,
-            amount: amount,
-            coin: typeCoin,
-          );
+      await Web3Utils.checkPossibilityTx(typeCoin: typeCoin, amount: double.parse(amount), fee: fee);
+      await AccountRepository().client!.sendTransaction(
+        isToken: _isToken,
+        addressTo: addressTo,
+        amount: amount,
+        coin: typeCoin,
+      );
       GetIt.I.get<WalletStore>().getCoins();
-      Future.delayed(const Duration(seconds: 2)).then((value) {
-        GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
-      });
       onSuccess(true);
+      await Future.delayed(const Duration(seconds: 4));
+      GetIt.I.get<TransactionsStore>().getTransactions();
     } on SocketException catch (_) {
       onError("Lost connection to server");
+    } on RPCError catch (e) {
+      onError(e.message);
     } on FormatException catch (e) {
       onError(e.message);
     } catch (e) {

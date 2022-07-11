@@ -102,6 +102,7 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
         hintText: widget.hint,
         focusColor: Colors.red,
         hoverColor: Colors.green,
+        errorMaxLines: 3,
         hintStyle: const TextStyle(
           fontSize: 16,
           color: AppColor.disabledText,

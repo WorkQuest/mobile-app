@@ -4,6 +4,7 @@ import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.
 import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/web3_utils.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -203,7 +204,7 @@ class _RaiseViewsState extends State<RaiseViews> {
       await raiseViewStore.getFeePromotion(widget.questId.isNotEmpty);
       await Web3Utils.checkPossibilityTx(
         typeCoin: TokenSymbols.WUSD,
-        gas: double.parse(raiseViewStore.gas),
+          fee: Decimal.parse(_gas),
         amount: double.parse(raiseViewStore.amount),
       );
 

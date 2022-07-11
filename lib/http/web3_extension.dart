@@ -30,7 +30,7 @@ extension Web3Requests on ApiProvider {
 
   Future<double> getCourseWQT() async {
     final response = await httpClient.get(
-      query: "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens",
+      query: "https://testnet-oracle.workquest.co/api/v1/oracle/sign-price/tokens",
       useBaseUrl: false,
     );
 

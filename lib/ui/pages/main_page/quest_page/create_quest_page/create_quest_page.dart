@@ -14,6 +14,7 @@ import 'package:app/ui/widgets/skill_specialization_selection/skill_specializati
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/validator.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -717,7 +718,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   Future<void> _checkPossibilityTx(String price, String gas) async {
     await Web3Utils.checkPossibilityTx(
       typeCoin: TokenSymbols.WUSD,
-      gas: double.parse(gas),
+      fee: Decimal.parse(gas),
       amount: double.parse(price),
       isMain: true,
     );

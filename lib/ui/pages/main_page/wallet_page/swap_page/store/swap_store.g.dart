@@ -9,6 +9,14 @@ part of 'swap_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SwapStore on SwapStoreBase, Store {
+  Computed<bool>? _$statusSendComputed;
+
+  @override
+  bool get statusSend =>
+      (_$statusSendComputed ??= Computed<bool>(() => super.statusSend,
+              name: 'SwapStoreBase.statusSend'))
+          .value;
+
   final _$networkAtom = Atom(name: 'SwapStoreBase.network');
 
   @override
@@ -139,7 +147,7 @@ mixin _$SwapStore on SwapStoreBase, Store {
   final _$setNetworkAsyncAction = AsyncAction('SwapStoreBase.setNetwork');
 
   @override
-  Future setNetwork(SwapNetworks value) {
+  Future setNetwork(SwapNetworks? value) {
     return _$setNetworkAsyncAction.run(() => super.setNetwork(value));
   }
 
@@ -154,8 +162,8 @@ mixin _$SwapStore on SwapStoreBase, Store {
   final _$createSwapAsyncAction = AsyncAction('SwapStoreBase.createSwap');
 
   @override
-  Future createSwap(String address) {
-    return _$createSwapAsyncAction.run(() => super.createSwap(address));
+  Future createSwap() {
+    return _$createSwapAsyncAction.run(() => super.createSwap());
   }
 
   final _$SwapStoreBaseActionController =
@@ -204,7 +212,8 @@ maxAmount: ${maxAmount},
 isConnect: ${isConnect},
 convertWQT: ${convertWQT},
 isLoadingCourse: ${isLoadingCourse},
-isSuccessCourse: ${isSuccessCourse}
+isSuccessCourse: ${isSuccessCourse},
+statusSend: ${statusSend}
     ''';
   }
 }

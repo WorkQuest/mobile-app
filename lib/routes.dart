@@ -73,7 +73,6 @@ import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/swap_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
 import 'package:app/ui/pages/pin_code_page/store/pin_code_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/withdraw_page/withdraw_page.dart';
@@ -586,7 +585,7 @@ class Routes {
       case WithdrawPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
-            create: (context) => getIt.get<WithdrawPageStore>(),
+            create: (context) => getIt.get<TransferStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: WithdrawPage(),

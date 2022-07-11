@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/services.dart';
 import 'package:hex/hex.dart';
 import 'package:web3dart/contracts/erc20.dart';
@@ -18,7 +19,7 @@ abstract class ClientServiceI {
 
   Future<EthPrivateKey> getCredentials(String privateKey);
 
-  Future<double> getBalanceFromContract(String address);
+  Future<Decimal> getBalanceFromContract(String address);
 
   Future<EtherAmount> getBalance(String privateKey);
 
@@ -36,14 +37,14 @@ abstract class ClientServiceI {
 
   Future sendTransaction({
     required bool isToken,
-    required String address,
+    required String addressTo,
     required String amount,
     required TokenSymbols coin,
   });
 }
 
 class ClientService implements ClientServiceI {
-  final int _chainId = 20220112;
+  final int _chainId = 1991;
 
   Web3Client? client;
 
@@ -70,7 +71,7 @@ class ClientService implements ClientServiceI {
   @override
   Future sendTransaction({
     required bool isToken,
-    required String address,
+    required String addressTo,
     required String amount,
     required TokenSymbols coin,
   }) async {
@@ -82,7 +83,7 @@ class ClientService implements ClientServiceI {
         EtherUnit.wei,
         BigInt.from(double.parse(amount) * pow(10, 18)),
       );
-      final _to = EthereumAddress.fromHex(address);
+      final _to = EthereumAddress.fromHex(addressTo);
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
       hash = await client!.sendTransaction(
         _credentials,
@@ -95,11 +96,10 @@ class ClientService implements ClientServiceI {
       );
     } else {
       String _addressToken = Web3Utils.getAddressToken(coin);
-      final _degree = Web3Utils.getDegreeToken(coin);
-      final contract = Erc20(
-          address: EthereumAddress.fromHex(_addressToken), client: client!);
+      final contract = Erc20(address: EthereumAddress.fromHex(_addressToken), client: client!);
+      final _degree = await Web3Utils.getDegreeToken(contract);
       hash = await contract.transfer(
-        EthereumAddress.fromHex(address),
+        EthereumAddress.fromHex(addressTo),
         BigInt.from(double.parse(amount) * pow(10, _degree)),
         credentials: _credentials,
       );
@@ -122,22 +122,15 @@ class ClientService implements ClientServiceI {
   }
 
   @override
-  Future<double> getBalanceFromContract(
-    String address, {
-    bool otherNetwork = false,
-    bool isUSDT = false,
-  }) async {
+  Future<Decimal> getBalanceFromContract(String address, {bool otherNetwork = false, bool isUSDT = false}) async {
     try {
       address = address.toLowerCase();
-      final contract =
-          Erc20(address: EthereumAddress.fromHex(address), client: client!);
-      final balance = await contract.balanceOf(
-          EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
-      if (otherNetwork || isUSDT) {
-        return balance.toDouble() * pow(10, -6);
-      }
-
-      return balance.toDouble() * pow(10, -18);
+      final contract = Erc20(address: EthereumAddress.fromHex(address), client: client!);
+      final balance = await contract.balanceOf(EthereumAddress.fromHex(AccountRepository().userWallet!.address!));
+      final _degree = await Web3Utils.getDegreeToken(contract);
+      return (Decimal.parse(balance.toString()) /
+          Decimal.fromInt(10).pow(_degree))
+          .toDecimal();
     } catch (e, trace) {
       print('e: $e\ntrace: $trace');
       throw FormatException("Error connection to network");
@@ -204,7 +197,7 @@ class ClientService implements ClientServiceI {
     ));
     return (_estimateGas * _gas.getInWei).toDouble() * pow(10, -18);
   }
-//0.000000000000360948
+
   Future<double> getEstimateGasForApprove(BigInt price) async {
     final _addressWUSD = Web3Utils.getAddressWUSD();
     print('_addressWUSD: $_addressWUSD');

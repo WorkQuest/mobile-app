@@ -133,8 +133,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         canMoreLoading = false;
       }
       result.map((tran) {
-        final index =
-            transactions.indexWhere((element) => element.hash == tran.hash);
+        final index = transactions.indexWhere((element) => element.hash == tran.hash);
         if (index == -1) {
           transactions.add(tran);
         }
@@ -148,19 +147,32 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     }
   }
 
+  @action
+  addTransaction(Tx transaction) {
+    try {
+      if (isLoading) {
+        return;
+      }
+      final _address = Web3Utils.getAddressToken(type);
+      if (_address != transaction.fromAddressHash!.hex && _address.isNotEmpty) {
+        return;
+      }
+      transactions.insert(0, transaction);
+    } catch (e) {
+      // print('addTransaction | $e\n$trace');
+      onError(e.toString());
+    }
+  }
+
   _setTypeCoinInTxs(List<Tx> txs) {
     txs.map((tran) {
-      if (tran.fromAddressHash!.hex ==
-          Web3Utils.getAddressToken(TokenSymbols.WUSD))
+      if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.WUSD))
         tran.coin = TokenSymbols.WUSD;
-      else if (tran.fromAddressHash!.hex ==
-          Web3Utils.getAddressToken(TokenSymbols.wETH))
+      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.wETH))
         tran.coin = TokenSymbols.wETH;
-      else if (tran.fromAddressHash!.hex ==
-          Web3Utils.getAddressToken(TokenSymbols.wBNB))
+      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.wBNB))
         tran.coin = TokenSymbols.wBNB;
-      else if (tran.fromAddressHash!.hex ==
-          Web3Utils.getAddressToken(TokenSymbols.USDT))
+      else if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.USDT))
         tran.coin = TokenSymbols.USDT;
       else
         tran.coin = TokenSymbols.WQT;
