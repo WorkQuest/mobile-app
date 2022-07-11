@@ -17,6 +17,7 @@ import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -581,7 +582,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     await store.getFee(store.selectedResponders!.workerId);
     await Web3Utils.checkPossibilityTx(
       typeCoin: TokenSymbols.WQT,
-      gas: double.parse(store.fee),
+      fee: Decimal.parse(store.fee),
       amount: 0.0,
       isMain: true,
     );

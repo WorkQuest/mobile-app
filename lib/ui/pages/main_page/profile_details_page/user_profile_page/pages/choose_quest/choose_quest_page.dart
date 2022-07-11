@@ -4,6 +4,7 @@ import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -201,7 +202,7 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
     await store.getFee(widget.arguments.workerId);
     await Web3Utils.checkPossibilityTx(
       typeCoin: TokenSymbols.WQT,
-      gas: double.parse(store.fee),
+      fee: Decimal.parse(store.fee),
       amount: 0.0,
       isMain: true,
     );

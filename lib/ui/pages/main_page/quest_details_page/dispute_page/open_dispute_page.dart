@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -261,7 +262,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
     await store.getFee(widget.quest.contractAddress!);
     await Web3Utils.checkPossibilityTx(
       typeCoin: TokenSymbols.WQT,
-      gas: double.parse(store.fee),
+      fee: Decimal.parse(store.fee),
       amount: 0.0,
       isMain: true,
     );

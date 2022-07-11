@@ -17,6 +17,7 @@ import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/quest_header.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -648,7 +649,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     await store.getFee();
     await Web3Utils.checkPossibilityTx(
       typeCoin: TokenSymbols.WQT,
-      gas: double.parse(store.fee),
+      fee: Decimal.parse(store.fee),
       amount: 0.0,
       isMain: true,
     );

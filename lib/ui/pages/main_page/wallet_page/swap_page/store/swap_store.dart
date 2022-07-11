@@ -273,7 +273,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       degree: 18,
       isETH: network == SwapNetworks.ETH,
     );
-    await Web3Utils.checkPossibilityTx(typeCoin: TokenSymbols.USDT, amount: amount, gas: _fee.toDouble());
+    await Web3Utils.checkPossibilityTx(typeCoin: TokenSymbols.USDT, amount: amount, fee: _fee);
     return ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(17);
   }
 
@@ -319,7 +319,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       degree: 18,
       isETH: network == SwapNetworks.ETH,
     );
-    await Web3Utils.checkPossibilityTx(typeCoin: TokenSymbols.USDT, amount: amount, gas: _fee.toDouble());
+    await Web3Utils.checkPossibilityTx(typeCoin: TokenSymbols.USDT, amount: amount, fee: _fee);
     return ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(17);
   }
 
