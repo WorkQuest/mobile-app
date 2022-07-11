@@ -1,10 +1,7 @@
-import 'dart:math';
-
 import 'package:app/constants.dart';
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/contracts/erc20.dart';
-import 'package:web3dart/web3dart.dart';
 
 import '../ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
 import '../web3/repository/account_repository.dart';
@@ -12,8 +9,8 @@ import '../web3/repository/account_repository.dart';
 class Web3Utils {
   static checkPossibilityTx({
     required TokenSymbols typeCoin,
-    required double gas,
     required double amount,
+    required Decimal fee,
     bool isMain = false,
   }) async {
     final _client = isMain ? AccountRepository().getClientWorkNet() : AccountRepository().getClient();
@@ -23,17 +20,21 @@ class Web3Utils {
         typeCoin == TokenSymbols.ETH ||
         typeCoin == TokenSymbols.BNB ||
         typeCoin == TokenSymbols.MATIC) {
-      final _balanceWQTInWei = (_balanceNative.getValueInUnitBI(EtherUnit.wei).toDouble() * pow(10, -18)).toDouble();
-      if (amount + gas > (_balanceWQTInWei.toDouble())) {
+      final _balanceWQTInWei = (Decimal.fromBigInt(_balanceNative.getInWei) / Decimal.fromInt(10).pow(18)).toDouble();
+      print('fee: $fee');
+      print('_balanceWQTInWei: $_balanceWQTInWei');
+      print('amount: $amount');
+      if (amount > (_balanceWQTInWei.toDouble() - fee.toDouble())) {
         throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     } else {
-      final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin, isMain: isMain));
+      final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin));
       if (amount > _balanceToken.toDouble()) {
         throw FormatException('errors.notHaveEnoughTxToken'.tr(namedArgs: {'token': getTitleToken(typeCoin)}));
       }
-      if (_balanceNative.getInWei < BigInt.from(gas * pow(10, 18))) {
-        throw FormatException('errors.notHaveEnoughTx'.tr());
+      fee = fee * Decimal.fromInt(10).pow(18);
+      if (_balanceNative.getInWei < fee.toBigInt()) {
+        throw FormatException('errors.notHaveEnoughTx'.tr(namedArgs: {'token': getNativeToken()}));
       }
     }
   }
@@ -247,6 +248,28 @@ class Web3Utils {
       return Constants.worknetMainnetWQPromotion;
     } else {
       return Constants.worknetTestnetWQPromotion;
+    }
+  }
+
+  static String getNativeToken() {
+    final _networkName = AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
+    switch (_networkName) {
+      case NetworkName.workNetMainnet:
+        return 'WQT';
+      case NetworkName.workNetTestnet:
+        return 'WQT';
+      case NetworkName.ethereumMainnet:
+        return 'ETH';
+      case NetworkName.ethereumTestnet:
+        return 'ETH';
+      case NetworkName.bscMainnet:
+        return 'BNB';
+      case NetworkName.bscTestnet:
+        return 'BNB';
+      case NetworkName.polygonMainnet:
+        return 'MATIC';
+      case NetworkName.polygonTestnet:
+        return 'MATIC';
     }
   }
 

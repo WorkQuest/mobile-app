@@ -37,7 +37,7 @@ abstract class ClientServiceI {
 
   Future sendTransaction({
     required bool isToken,
-    required String address,
+    required String addressTo,
     required String amount,
     required TokenSymbols coin,
   });
@@ -71,7 +71,7 @@ class ClientService implements ClientServiceI {
   @override
   Future sendTransaction({
     required bool isToken,
-    required String address,
+    required String addressTo,
     required String amount,
     required TokenSymbols coin,
   }) async {
@@ -83,7 +83,7 @@ class ClientService implements ClientServiceI {
         EtherUnit.wei,
         BigInt.from(double.parse(amount) * pow(10, 18)),
       );
-      final _to = EthereumAddress.fromHex(address);
+      final _to = EthereumAddress.fromHex(addressTo);
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
       hash = await client!.sendTransaction(
         _credentials,
@@ -99,7 +99,7 @@ class ClientService implements ClientServiceI {
       final contract = Erc20(address: EthereumAddress.fromHex(_addressToken), client: client!);
       final _degree = await Web3Utils.getDegreeToken(contract);
       hash = await contract.transfer(
-        EthereumAddress.fromHex(address),
+        EthereumAddress.fromHex(addressTo),
         BigInt.from(double.parse(amount) * pow(10, _degree)),
         credentials: _credentials,
       );
