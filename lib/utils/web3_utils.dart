@@ -286,6 +286,16 @@ class Web3Utils {
     }
   }
 
+  static bool isNativeToken(TokenSymbols token) {
+    if (token == TokenSymbols.WQT ||
+        token == TokenSymbols.ETH ||
+        token == TokenSymbols.BNB ||
+        token == TokenSymbols.MATIC) {
+      return true;
+    }
+    return false;
+  }
+
   static String getAddressContractForSwap(SwapNetworks network) {
     final _networkType = AccountRepository().notifierNetwork.value;
     switch (network) {

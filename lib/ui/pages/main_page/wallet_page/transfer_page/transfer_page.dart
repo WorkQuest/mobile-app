@@ -38,6 +38,7 @@ class _TransferPageState extends State<TransferPage> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final _key = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   late final List<CoinItem> _coins = [];
 
@@ -168,44 +169,64 @@ class _TransferPageState extends State<TransferPage> {
                 const SizedBox(
                   height: 5,
                 ),
-                DefaultTextField(
-                  controller: _amountController,
-                  hint: 'wallet.enterAmount'.tr(),
-                  // keyboardType: TextInputType.number,
-                  suffixIcon: ObserverListener<TransferStore>(
-                    onFailure: () {
-                      return false;
-                    },
-                    onSuccess: () {
-                      _amountController.text = store.amount;
-                    },
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.only(right: 12.5),
-                      child: Text(
-                        'wallet.max'.tr(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: AppColor.enabledButton,
-                        ),
-                      ),
-                      onPressed: () async {
-                        if (_key.currentState!.validate()) {
-                          if (store.currentCoin != null) {
-                            store.getMaxAmount();
-                          } else {
-                            final title = 'meta.error'.tr();
-                            final content = 'crediting.chooseCoin'.tr();
-                            AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
+                Form(
+                  key: _formKey,
+                  child: DefaultTextField(
+                    controller: _amountController,
+                    hint: 'wallet.enterAmount'.tr(),
+                    validator: (value) {
+                      if (value == null) {
+                        return null;
+                      }
+                      if (value.isEmpty) {
+                        return 'errors.fieldEmpty'.tr();
+                      }
+                      try {
+                        final _value = double.parse(value);
+                        if (store.maxAmount != null) {
+                          if (_value > store.maxAmount!) {
+                            return 'Max: ${store.maxAmount}';
                           }
                         }
+                      } catch (e) {
+                        return 'errors.incorrectFormat'.tr();
+                      }
+                    },
+                    suffixIcon: ObserverListener<TransferStore>(
+                      onFailure: () {
+                        return false;
                       },
+                      onSuccess: () {
+                        _amountController.text = store.amount;
+                      },
+                      child: CupertinoButton(
+                        padding: const EdgeInsets.only(right: 12.5),
+                        child: Text(
+                          'wallet.max'.tr(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColor.enabledButton,
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (_key.currentState!.validate()) {
+                            if (store.currentCoin != null) {
+                              store.getMaxAmount();
+                            } else {
+                              final title = 'meta.error'.tr();
+                              final content = 'crediting.chooseCoin'.tr();
+                              AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
+                            }
+                          }
+                        },
+                      ),
                     ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                    ],
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   ),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
-                  ],
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 ),
                 const SizedBox(
                   height: 20,
@@ -231,7 +252,7 @@ class _TransferPageState extends State<TransferPage> {
   }
 
   Future<void> _pushConfirmTransferPage() async {
-    if (_key.currentState!.validate()) {
+    if (_key.currentState!.validate() && _formKey.currentState!.validate()) {
       FocusScopeNode currentFocus = FocusScope.of(context);
       if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
         FocusManager.instance.primaryFocus?.unfocus();
