@@ -147,6 +147,23 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     }
   }
 
+  @action
+  addTransaction(Tx transaction) {
+    try {
+      if (isLoading) {
+        return;
+      }
+      final _address = Web3Utils.getAddressToken(type);
+      if (_address != transaction.fromAddressHash!.hex && _address.isNotEmpty) {
+        return;
+      }
+      transactions.insert(0, transaction);
+    } catch (e) {
+      // print('addTransaction | $e\n$trace');
+      onError(e.toString());
+    }
+  }
+
   _setTypeCoinInTxs(List<Tx> txs) {
     txs.map((tran) {
       if (tran.fromAddressHash!.hex == Web3Utils.getAddressToken(TokenSymbols.WUSD))
