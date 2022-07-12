@@ -8,6 +8,7 @@ import 'package:app/ui/widgets/layout_with_scroll.dart';
 import 'package:app/ui/widgets/selected_item.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/bottom_sheet.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/address_service.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -68,6 +69,15 @@ class _TransferPageState extends State<TransferPage> {
       store.setAddressTo(_addressController.text);
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    store.setAmount('');
+    store.setAddressTo('');
+    store.setFee('');
+    store.setCoin(null);
+    super.dispose();
   }
 
   @override
@@ -135,6 +145,7 @@ class _TransferPageState extends State<TransferPage> {
                         color: AppColor.enabledButton,
                       ),
                     ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
                       if (value != null) {
                         final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
@@ -174,6 +185,7 @@ class _TransferPageState extends State<TransferPage> {
                   child: DefaultTextField(
                     controller: _amountController,
                     hint: 'wallet.enterAmount'.tr(),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
                       if (value == null) {
                         return null;
@@ -191,6 +203,7 @@ class _TransferPageState extends State<TransferPage> {
                       } catch (e) {
                         return 'errors.incorrectFormat'.tr();
                       }
+                      return null;
                     },
                     suffixIcon: ObserverListener<TransferStore>(
                       onFailure: () {
@@ -229,8 +242,14 @@ class _TransferPageState extends State<TransferPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 15,
                 ),
+                Observer(
+                  builder: (_) => Text(
+                    _getTitleTrxFee(),
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                )
               ],
             ),
           ),
@@ -300,6 +319,12 @@ class _TransferPageState extends State<TransferPage> {
         });
       }
     }
+  }
+
+  _getTitleTrxFee() {
+    final _value = store.amount.isNotEmpty ? (double.tryParse(store.fee) ?? 0.0) : 0.0;
+    return '${'wallet.table.trxFee'.tr()}: ${_value.toStringAsFixed(7)} '
+        '${Web3Utils.getNativeToken()}';
   }
 
   void _chooseCoin() {
