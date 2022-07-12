@@ -140,6 +140,17 @@ mixin _$TransferStore on TransferStoreBase, Store {
   }
 
   @override
+  dynamic setFee(String value) {
+    final _$actionInfo = _$TransferStoreBaseActionController.startAction(
+        name: 'TransferStoreBase.setFee');
+    try {
+      return super.setFee(value);
+    } finally {
+      _$TransferStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic clearData() {
     final _$actionInfo = _$TransferStoreBaseActionController.startAction(
         name: 'TransferStoreBase.clearData');

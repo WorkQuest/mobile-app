@@ -45,6 +45,8 @@ class Constants {
   static const String worknetMainnetWUSD = '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa';
   static const String worknetTestnetWUSD = '0xf95ef11d0af1f40995218bb2b67ef909bcf30078'; ///testnet
   // static const String worknetTestnetWUSD = '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa'; ///dev-net
+
+  static final double commissionForQuest = 1.025;
 }
 
 abstract class AppColor {

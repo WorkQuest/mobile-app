@@ -47,12 +47,15 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
   }
 
   ReactionDisposer get _failureReaction {
+    print('_failureReaction');
     return reaction(
       (_) => _store.errorMessage,
       (String? errorMessage) {
         if (errorMessage != null) {
+          print('qweasd');
           if (widget.onFailure != null) if (widget.onFailure!()) return;
           final _words = errorMessage.split(' ');
+          print('words: $_words');
           showCupertinoDialog(
             context: context,
             barrierDismissible: true,
@@ -64,20 +67,20 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                             text: '',
-                            style: DefaultTextStyle.of(context).style,
                             children: _words.map((word) {
                               return TextSpan(
                                   text: '$word ',
                                   style: TextStyle(
                                     color: isLink(word) ? AppColor.enabledButton : Colors.black,
+                                    fontSize: 14,
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = isLink(word)
                                         ? () async {
-                                      if (await canLaunchUrl(Uri.parse(word))) {
-                                        launchUrl(Uri.parse(word));
-                                      }
-                                    }
+                                            if (await canLaunchUrl(Uri.parse(word))) {
+                                              launchUrl(Uri.parse(word));
+                                            }
+                                          }
                                         : null);
                             }).toList()),
                       ),
@@ -94,20 +97,20 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                             text: '',
-                            style: DefaultTextStyle.of(context).style,
                             children: _words.map((word) {
                               return TextSpan(
                                   text: '$word ',
                                   style: TextStyle(
                                     color: isLink(word) ? AppColor.enabledButton : Colors.black,
+                                    fontSize: 14,
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = isLink(word)
                                         ? () async {
-                                      if (await canLaunchUrl(Uri.parse(word))) {
-                                        launchUrl(Uri.parse(word));
-                                      }
-                                    }
+                                            if (await canLaunchUrl(Uri.parse(word))) {
+                                              launchUrl(Uri.parse(word));
+                                            }
+                                          }
                                         : null);
                             }).toList()),
                       ),

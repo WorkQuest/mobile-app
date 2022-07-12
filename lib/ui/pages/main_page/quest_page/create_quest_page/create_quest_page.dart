@@ -14,6 +14,8 @@ import 'package:app/ui/widgets/skill_specialization_selection/skill_specializati
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/validator.dart';
+import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/service/client_service.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -62,22 +64,17 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       final store = context.read<CreateQuestStore>();
       store.oldPrice = BigInt.parse(widget.questInfo!.price);
       store.setConfirmUnderstandAboutEdit(true);
-      store.priority =
-          QuestConstants.priorityList[widget.questInfo!.priority - 1];
+      store.priority = QuestConstants.priorityList[widget.questInfo!.priority - 1];
       store.contractAddress = widget.questInfo!.contractAddress ?? '';
       store.questTitle = widget.questInfo!.title;
-      store.changedDistantWork(
-          QuestUtils.getEmployment(widget.questInfo!.workplace));
-      store.changedEmployment(
-          QuestUtils.getEmployment(widget.questInfo!.employment));
+      print('workplace: ${widget.questInfo?.workplace}');
+      store.changedDistantWork(QuestUtils.getWorkplace(widget.questInfo!.workplace));
+      store.changedEmployment(QuestUtils.getEmployment(widget.questInfo!.employment));
       store.description = widget.questInfo!.description;
-      store.price =
-          (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18))
-              .toString();
+      store.price = (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18)).toString();
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
       store.setImages(widget.questInfo!.medias ?? []);
-      _controller = SkillSpecializationController(
-          initialValue: widget.questInfo!.questSpecializations);
+      _controller = SkillSpecializationController(initialValue: widget.questInfo!.questSpecializations);
     } else
       _controller = SkillSpecializationController();
   }
@@ -97,9 +94,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
             slivers: [
               CupertinoSliverNavigationBar(
                 largeTitle: Text(
-                  isEdit
-                      ? "registration.edit".tr()
-                      : "quests.createAQuest".tr(),
+                  isEdit ? "registration.edit".tr() : "quests.createAQuest".tr(),
                 ),
               ),
               SliverPadding(
@@ -140,8 +135,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedPriority(value!);
                                       },
-                                      items: QuestConstants.priorityList
-                                          .map<DropdownMenuItem<String>>(
+                                      items: QuestConstants.priorityList.map<DropdownMenuItem<String>>(
                                         (String value) {
                                           return DropdownMenuItem<String>(
                                             value: value.tr(),
@@ -252,9 +246,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedEmployment(value!);
                                       },
-                                      items: QuestConstants.employmentList
-                                          .map<DropdownMenuItem<String>>(
-                                              (String value) {
+                                      items:
+                                          QuestConstants.employmentList.map<DropdownMenuItem<String>>((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: new Text(value),
@@ -306,9 +299,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedDistantWork(value!);
                                       },
-                                      items: QuestConstants.distantWorkList
-                                          .map<DropdownMenuItem<String>>(
-                                              (String value) {
+                                      items:
+                                          QuestConstants.distantWorkList.map<DropdownMenuItem<String>>((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: new Text(value),
@@ -360,8 +352,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedPayPeriod(value!.tr());
                                       },
-                                      items: QuestConstants.payPeriodList
-                                          .map<DropdownMenuItem<String>>(
+                                      items: QuestConstants.payPeriodList.map<DropdownMenuItem<String>>(
                                         (String value) {
                                           return DropdownMenuItem<String>(
                                             value: value.tr(),
@@ -439,10 +430,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   key: confirmUnderstandAboutEdit,
                                   contentPadding: const EdgeInsets.all(0),
                                   value: store.confirmUnderstandAboutEdit,
-                                  onChanged: (value) => store
-                                      .setConfirmUnderstandAboutEdit(value!),
-                                  controlAffinity:
-                                      ListTileControlAffinity.leading,
+                                  onChanged: (value) => store.setConfirmUnderstandAboutEdit(value!),
+                                  controlAffinity: ListTileControlAffinity.leading,
                                   title: Text(
                                     'I understand that editing the title and the description of this quest will be '
                                     'impossible after its creation',
@@ -507,11 +496,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             return false;
                           },
                           onSuccess: () async {
-                            Navigator.pop(context);
-                            AlertDialogUtils.showSuccessDialog(
-                              context,
-                            );
-
                             ///review
                             await questStore.getQuests(
                               QuestsType.Created,
@@ -545,161 +529,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               enabled: store.isLoading,
                               onTap: store.isLoading
                                   ? null
-                                  : () async {
-                                      store.skillFilters = _controller!
-                                          .getSkillAndSpecialization();
-                                      final _gas = await store.getFee(
-                                        isEdit: isEdit,
-                                      );
-                                      if (isEdit) {
-                                        if (store.canSubmitEditQuest) {
-                                          if (_formKey.currentState
-                                                  ?.validate() ??
-                                              false) {
-                                            try {
-                                              await _checkPossibilityTx(
-                                                store.price,
-                                                _gas,
-                                              );
-                                            } on FormatException catch (e) {
-                                              AlertDialogUtils
-                                                  .showInfoAlertDialog(
-                                                context,
-                                                title: 'modals.error'.tr(),
-                                                content: e.message,
-                                              );
-                                              return;
-                                            } catch (e) {
-                                              AlertDialogUtils
-                                                  .showInfoAlertDialog(
-                                                context,
-                                                title: 'modals.error'.tr(),
-                                                content: e.toString(),
-                                              );
-                                              return;
-                                            }
-                                            await confirmTransaction(
-                                              context,
-                                              fee: _gas,
-                                              transaction: "ui.txInfo".tr(),
-                                              address: contractAddress,
-                                              amount: store.price,
-                                              onPressConfirm: () async {
-                                                Navigator.pop(context);
-                                                store.createQuest(
-                                                  isEdit: true,
-                                                  questId: widget.questInfo!.id,
-                                                );
-                                                AlertDialogUtils
-                                                    .showLoadingDialog(
-                                                  context,
-                                                );
-                                                Timer.periodic(
-                                                    Duration(seconds: 1),
-                                                    (timer) {
-                                                  if (!store.isLoading) {
-                                                    timer.cancel();
-                                                    Navigator.pop(context);
-                                                  }
-                                                });
-                                              },
-                                              onPressCancel: () {
-                                                store.onError("Cancel");
-                                                Navigator.pop(context);
-                                                Navigator.pop(context);
-                                              },
-                                            );
-                                          }
-                                        }
-                                      } else if (store.canCreateQuest) {
-                                        if (_formKey.currentState?.validate() ??
-                                            false) {
-                                          if (!store
-                                              .confirmUnderstandAboutEdit) {
-                                            Scrollable.ensureVisible(
-                                              confirmUnderstandAboutEdit
-                                                  .currentContext!,
-                                            );
-                                            return;
-                                          }
-                                          try {
-                                            await _checkPossibilityTx(
-                                              store.price,
-                                              _gas,
-                                            );
-                                          } on FormatException catch (e) {
-                                            AlertDialogUtils
-                                                .showInfoAlertDialog(
-                                              context,
-                                              title: 'modals.error'.tr(),
-                                              content: e.message,
-                                            );
-                                            return;
-                                          } catch (e) {
-                                            AlertDialogUtils
-                                                .showInfoAlertDialog(
-                                              context,
-                                              title: 'modals.error'.tr(),
-                                              content: e.toString(),
-                                            );
-                                            return;
-                                          }
-                                          await confirmTransaction(
-                                            context,
-                                            fee: _gas,
-                                            transaction: "ui.txInfo".tr(),
-                                            address: contractAddress,
-                                            amount: store.price,
-                                            onPressConfirm: () async {
-                                              Navigator.pop(context);
-                                              store.createQuest();
-                                              AlertDialogUtils
-                                                  .showLoadingDialog(
-                                                context,
-                                              );
-                                              Timer.periodic(
-                                                  Duration(seconds: 1),
-                                                  (timer) {
-                                                if (!store.isLoading) {
-                                                  timer.cancel();
-                                                  Navigator.pop(context);
-                                                }
-                                              });
-                                            },
-                                            onPressCancel: () {
-                                              store.onError("Cancel");
-                                              Navigator.pop(context);
-                                              Navigator.pop(context);
-                                            },
-                                          );
-                                        }
-                                      } else {
-                                        store.emptyField(context);
-                                      }
-                                      if (store.skillFilters.isEmpty)
-                                        Scrollable.ensureVisible(
-                                          specializationKey.currentContext!,
-                                        );
-                                      else if (store.locationPlaceName.isEmpty)
-                                        Scrollable.ensureVisible(
-                                          addressKey.currentContext!,
-                                        );
-                                      else if (store.questTitle.isEmpty)
-                                        Scrollable.ensureVisible(
-                                          titleKey.currentContext!,
-                                        );
-                                      else if (store.description.isEmpty)
-                                        Scrollable.ensureVisible(
-                                          descriptionKey.currentContext!,
-                                        );
-                                      else if (store.price.isEmpty)
-                                        Scrollable.ensureVisible(
-                                          priceKey.currentContext!,
-                                        );
-                                    },
-                              title: isEdit
-                                  ? "quests.editQuest".tr()
-                                  : 'quests.createAQuest'.tr(),
+                                  : () => _onPressedOnCreateOrEditQuest(store),
+                              title: isEdit ? "quests.editQuest".tr() : 'quests.createAQuest'.tr(),
                             ),
                           ),
                         ),
@@ -715,13 +546,150 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     );
   }
 
-  Future<void> _checkPossibilityTx(String price, String gas) async {
-    await Web3Utils.checkPossibilityTx(
-      typeCoin: TokenSymbols.WUSD,
-      fee: Decimal.parse(gas),
-      amount: double.parse(price),
-      isMain: true,
+  _onPressedOnCreateOrEditQuest(CreateQuestStore store) async {
+    store.skillFilters = _controller!.getSkillAndSpecialization();
+    final _gasApprove = await store.getGasApprove();
+    if (_gasApprove != null) {
+      await confirmTransaction(
+        context,
+        fee: _gasApprove,
+        transaction: '${"ui.txInfo".tr()} Approve',
+        address: contractAddress,
+        amount: ((double.tryParse(store.price) ?? 0.0) * Constants.commissionForQuest).toString(),
+        onPressConfirm: () async {
+          try {
+            Navigator.pop(context);
+            final _price = BigInt.from((double.parse(store.price)) * pow(10, 18));
+            final _priceForApprove = BigInt.from((_price.toDouble() * 1.025));
+            AlertDialogUtils.showLoadingDialog(
+              context,
+            );
+            await AccountRepository().getClientWorkNet().approveCoin(price: _priceForApprove);
+            Navigator.pop(context);
+            _onPressedOnCreateOrEditQuest(store);
+          } on FormatException catch (e) {
+            Navigator.pop(context);
+            AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: e.message);
+          } catch (e) {
+            Navigator.pop(context);
+            AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: e.toString());
+          }
+        },
+        onPressCancel: () {
+          store.onError("Cancel");
+          Navigator.pop(context);
+        },
+      );
+      return;
+    }
+    final _gasEditOrCreate = await store.getGasEditOrCreateQuest(isEdit: isEdit);
+    if (isEdit) {
+      _onEditQuest(store, _gasEditOrCreate);
+    } else if (store.canCreateQuest) {
+      _onCreateQuest(store, _gasEditOrCreate);
+    } else {
+      store.emptyField(context);
+    }
+    if (store.skillFilters.isEmpty)
+      Scrollable.ensureVisible(
+        specializationKey.currentContext!,
+      );
+    else if (store.locationPlaceName.isEmpty)
+      Scrollable.ensureVisible(
+        addressKey.currentContext!,
+      );
+    else if (store.questTitle.isEmpty)
+      Scrollable.ensureVisible(
+        titleKey.currentContext!,
+      );
+    else if (store.description.isEmpty)
+      Scrollable.ensureVisible(
+        descriptionKey.currentContext!,
+      );
+    else if (store.price.isEmpty)
+      Scrollable.ensureVisible(
+        priceKey.currentContext!,
+      );
+  }
+
+  _onCreateQuest(CreateQuestStore store, String fee) async {
+    if (_formKey.currentState?.validate() ?? false) {
+      if (!store.confirmUnderstandAboutEdit) {
+        Scrollable.ensureVisible(confirmUnderstandAboutEdit.currentContext!);
+        return;
+      }
+      await _checkPossibilityTx(store.price, fee);
+
+      _showConfirmTxAlert(store, fee);
+    }
+  }
+
+  _onEditQuest(CreateQuestStore store, String fee) async {
+    if (store.canSubmitEditQuest) {
+      if (_formKey.currentState?.validate() ?? false) {
+        await _checkPossibilityTx(store.price, fee);
+        _showConfirmTxAlert(store, fee, isEdit: true);
+      }
+    }
+  }
+
+  _showConfirmTxAlert(CreateQuestStore store, String fee, {bool isEdit = false}) async {
+    await confirmTransaction(
+      context,
+      fee: fee,
+      transaction: "ui.txInfo".tr(),
+      address: contractAddress,
+      amount: store.price,
+      onPressConfirm: () async {
+        Navigator.pop(context);
+        if (isEdit) {
+          store.createQuest(
+            isEdit: true,
+            questId: widget.questInfo!.id,
+          );
+        } else {
+          store.createQuest();
+        }
+        AlertDialogUtils.showLoadingDialog(
+          context,
+        );
+        Timer.periodic(Duration(seconds: 1), (timer) {
+          if (!store.isLoading) {
+            timer.cancel();
+            Navigator.pop(context);
+          }
+        });
+      },
+      onPressCancel: () {
+        store.onError("Cancel");
+        Navigator.pop(context);
+      },
     );
+  }
+
+  _checkPossibilityTx(String price, String gas) async {
+    try {
+      await Web3Utils.checkPossibilityTx(
+        typeCoin: TokenSymbols.WUSD,
+        fee: Decimal.parse(gas),
+        amount: double.parse(price),
+        isMain: true,
+      );
+    } on FormatException catch (e) {
+      AlertDialogUtils.showInfoAlertDialog(
+        context,
+        title: 'modals.error'.tr(),
+        content: e.message,
+      );
+      throw FormatException(e.message);
+    } catch (e) {
+      AlertDialogUtils.showInfoAlertDialog(
+        context,
+        title: 'modals.error'.tr(),
+        content: e.toString(),
+      );
+      throw Exception(e.toString());
+    }
   }
 
   Widget titledField(
@@ -792,9 +760,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       onSelectedItemChanged: (int index) {
                         changedEmployment = children[index];
                       },
-                      children: children
-                          .map((e) => Center(child: Text(e.tr())))
-                          .toList(),
+                      children: children.map((e) => Center(child: Text(e.tr()))).toList(),
                     ),
                   ),
                   CupertinoButton(
