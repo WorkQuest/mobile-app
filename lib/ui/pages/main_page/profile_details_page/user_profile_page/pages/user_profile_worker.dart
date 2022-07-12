@@ -1,3 +1,4 @@
+import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/choose_quest_page.dart';
@@ -98,11 +99,11 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                         index++)
                       PortfolioWidget(
                         index: index,
-                        imageUrl: portfolioStore!
-                                .portfolioList[index].medias.isEmpty
-                            ? "https://testnet-app.workquest.co/_nuxt/img/logo.1baae1e.svg"
-                            : portfolioStore!
-                                .portfolioList[index].medias.first.url,
+                        imageUrl:
+                            portfolioStore!.portfolioList[index].medias.isEmpty
+                                ? Constants.defaultImageNetwork
+                                : portfolioStore!
+                                    .portfolioList[index].medias.first.url,
                         title: portfolioStore!.portfolioList[index].title,
                         isProfileYour:
                             viewOtherUser?.userData == null ? true : false,
@@ -361,7 +362,8 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               ),
             ],
           ),
-        if (viewOtherUser?.userData == null)
+        if (viewOtherUser?.userData == null &&
+            userStore!.userData?.raiseView?.status == 1)
           Column(
             children: [
               spacer,

@@ -77,6 +77,29 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
     });
   }
 
+  final _$needApproveAtom = Atom(name: '_RaiseViewStore.needApprove');
+
+  @override
+  bool get needApprove {
+    _$needApproveAtom.reportRead();
+    return super.needApprove;
+  }
+
+  @override
+  set needApprove(bool value) {
+    _$needApproveAtom.reportWrite(value, super.needApprove, () {
+      super.needApprove = value;
+    });
+  }
+
+  final _$checkAllowanceAsyncAction =
+      AsyncAction('_RaiseViewStore.checkAllowance');
+
+  @override
+  Future<void> checkAllowance() {
+    return _$checkAllowanceAsyncAction.run(() => super.checkAllowance());
+  }
+
   final _$raiseProfileAsyncAction = AsyncAction('_RaiseViewStore.raiseProfile');
 
   @override
@@ -167,6 +190,7 @@ typeCoin: ${typeCoin},
 typeWallet: ${typeWallet},
 periodGroupValue: ${periodGroupValue},
 levelGroupValue: ${levelGroupValue},
+needApprove: ${needApprove},
 canSubmit: ${canSubmit}
     ''';
   }

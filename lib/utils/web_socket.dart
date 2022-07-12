@@ -87,7 +87,7 @@ class WebSocket {
   }
 
   void _connectSender() {
-    _senderChannel = IOWebSocketChannel.connect("wss://testnet-app.workquest.co/api");
+    _senderChannel = IOWebSocketChannel.connect("wss://dev-app.workquest.co/api");
     _senderChannel?.sink.add("""{
           "type": "hello",
           "id": 1,
