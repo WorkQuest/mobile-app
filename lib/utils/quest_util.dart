@@ -130,9 +130,9 @@ class QuestUtils {
         return "PartTime";
       case "Fixed term":
         return "FixedTerm";
-      case "Remote Work":
+      case "Remote work":
         return "RemoteWork";
-      case "Employment Contract":
+      case "Employment contract":
         return "EmploymentContract";
       default:
         throw FormatException('Unknown Employment Value');

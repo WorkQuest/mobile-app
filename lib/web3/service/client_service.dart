@@ -202,8 +202,6 @@ class ClientService implements ClientServiceI {
 
   Future<double> getEstimateGasForApprove(BigInt price) async {
     final _addressWUSD = Web3Utils.getAddressWUSD();
-    print('_addressWUSD: $_addressWUSD');
-    // final _contractApprove = await getDeployedContract("WQBridgeToken", _addressWUSD);
     final _contract = Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
     final _gasForApprove = await getEstimateGasCallContract(
       contract: _contract.self,
@@ -369,10 +367,9 @@ extension ApproveCoin on ClientService {
   }
 
   Future<BigInt> allowanceCoin() async {
-    print("Allowance coin");
-    final _addressWUSD = Web3Utils.getAddressWUSD();
+    final _address = Web3Utils.getAddressWUSD();
 
-    final _contract = Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
+    final _contract = Erc20(address: EthereumAddress.fromHex(_address), client: client!);
     final _result = await _contract.allowance(
       EthereumAddress.fromHex(AccountRepository().userAddress),
       EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),

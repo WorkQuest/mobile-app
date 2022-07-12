@@ -837,7 +837,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   }) {
     AlertDialogUtils.showAlertDialog(
       context,
-      title: Text("meta.securityCheck.title".tr()),
+      title: Text("securityCheck.title".tr()),
       content: Builder(builder: (context) {
         var width = MediaQuery.of(context).size.width;
         return Container(
@@ -846,7 +846,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("meta.securityCheck.confCode".tr()),
+              Text("securityCheck.confCode".tr()),
               const SizedBox(
                 height: 15,
               ),
@@ -866,7 +866,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 height: 15,
               ),
               Text(
-                "meta.securityCheck.enterDiginCodeGoogle",
+                "securityCheck.enterDiginCodeGoogle".tr(),
               ),
             ],
           ),

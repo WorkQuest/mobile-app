@@ -32,6 +32,10 @@ class TwoFAPage extends StatelessWidget {
 
     return DismissKeyboard(
       child: ObserverListener<TwoFAStore>(
+        onFailure: () {
+          print('onFailure');
+          return false;
+        },
         onSuccess: () {},
         child: WillPopScope(
           onWillPop: () async {

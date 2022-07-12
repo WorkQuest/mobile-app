@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
 import 'package:app/model/quests_models/create_quest_request_model.dart';
@@ -108,8 +108,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   void decreaseRuntime() {}
 
   @action
-  setConfirmUnderstandAboutEdit(bool value) =>
-      confirmUnderstandAboutEdit = value;
+  setConfirmUnderstandAboutEdit(bool value) => confirmUnderstandAboutEdit = value;
 
   @action
   void setQuestTitle(String value) => questTitle = value;
@@ -124,36 +123,28 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   void changedPriority(String selectedPriority) => priority = selectedPriority;
 
   @action
-  void changedEmployment(String selectedEmployment) =>
-      employment = selectedEmployment;
+  void changedEmployment(String selectedEmployment) => employment = selectedEmployment;
 
   @action
   void changedPayPeriod(String value) => payPeriod = value;
 
   @action
-  void changedDistantWork(String selectedEmployment) =>
-      workplace = selectedEmployment;
+  void changedDistantWork(String selectedEmployment) => workplace = selectedEmployment;
 
   @computed
-  bool get canCreateQuest =>
-      locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
+  bool get canCreateQuest => locationPlaceName.isNotEmpty && skillFilters.isNotEmpty;
 
   @computed
   bool get canSubmitEditQuest =>
-      !isLoading &&
-      locationPlaceName.isNotEmpty &&
-      skillFilters.isNotEmpty &&
-      confirmUnderstandAboutEdit;
+      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty && confirmUnderstandAboutEdit;
 
   @action
   void emptyField(BuildContext context) {
     if (locationPlaceName.isEmpty) {
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'Error', content: "Address is empty");
+      AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: "Address is empty");
     }
     if (skillFilters.isEmpty) {
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'Error', content: "Skills are empty");
+      AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: "Skills are empty");
     }
   }
 
@@ -185,68 +176,54 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
     );
   }
 
-  Future<String> getFee({bool isEdit = false}) async {
-    double _resultGas = 0.0;
+  @action
+  Future<String?> getGasApprove() async {
     try {
-      this.onLoading();
+      onLoading();
       final _client = AccountRepository().getClientWorkNet();
-      if (isEdit) {
-        final _price = BigInt.from((double.parse(price)) * pow(10, 18));
-        if (_price > oldPrice) {
-          final _allowance = await _client.allowanceCoin();
-          print('allowance: $_allowance');
-          final _priceForApprove = BigInt.from((_price.toDouble() * 1.1));
-          print('priceForApprove: $_priceForApprove');
-          final _isNeedApprove = _allowance < _priceForApprove;
-          if (_isNeedApprove) {
-            final _gasForApprove =
-                await _client.getEstimateGasForApprove(_price);
-            _resultGas += _gasForApprove;
-            print("1 _resultGas: $_resultGas");
-          }
-        }
-        final _contract =
-            await _client.getDeployedContract("WorkQuest", contractAddress);
-        final _function = _contract.function(WQContractFunctions.editJob.name);
-
-        final _params = [
-          Uint8List.fromList(
-              utf8.encode(description.padRight(32).substring(0, 32))),
-          _price,
-        ];
-        final _gas = await _client.getEstimateGasCallContract(
-            contract: _contract, function: _function, params: _params);
-        _resultGas += _gas;
-        return _resultGas.toStringAsFixed(17);
-      } else {
-        final _price = BigInt.from(double.parse(price) * pow(10, 18));
+      final _price = BigInt.from((double.parse(price)) * pow(10, 18));
+      final _isNeedCheckApprove = _price > oldPrice;
+      if (_isNeedCheckApprove) {
         final _allowance = await _client.allowanceCoin();
         print('allowance: $_allowance');
-        final _priceForApprove = BigInt.from((_price.toDouble() * 1.1));
+        final _priceForApprove = BigInt.from((_price.toDouble() * Constants.commissionForQuest));
         print('priceForApprove: $_priceForApprove');
         final _isNeedApprove = _allowance < _priceForApprove;
         if (_isNeedApprove) {
           final _gasForApprove = await _client.getEstimateGasForApprove(_price);
-          _resultGas += _gasForApprove;
-          print("1 _resultGas: $_resultGas");
+          return _gasForApprove.toStringAsFixed(17);
         }
-        final _contract = await _client.getDeployedContract("WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
-        final _function = _contract.function(WQFContractFunctions.newWorkQuest.name);
-        final _params = [
-          _client.stringToBytes32(description),
-          BigInt.zero,
-          BigInt.from(0.0),
-          BigInt.from(0.0),
-        ];
-        final _gas = await _client.getEstimateGasCallContract(
-            contract: _contract, function: _function, params: _params);
-        _resultGas += _gas;
-        print("2 _resultGas: $_resultGas");
-        return _resultGas.toStringAsFixed(17);
       }
-    } on SocketException catch (_) {
-      onError("Lost connection to server");
-      throw FormatException('Lost connection to server');
+    } catch (e) {
+      onError('Try again.');
+      throw FormatException('Try again.');
+    }
+    return null;
+  }
+
+  Future<String> getGasEditOrCreateQuest({bool isEdit = false}) async {
+    final _client = AccountRepository().getClientWorkNet();
+    if (isEdit) {
+      final _price = BigInt.from((double.parse(price)) * pow(10, 18));
+      final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
+      final _function = _contract.function(WQContractFunctions.editJob.name);
+      final _params = [
+        Uint8List.fromList(utf8.encode(description.padRight(32).substring(0, 32))),
+        _price,
+      ];
+      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: _params);
+      return _gas.toStringAsFixed(17);
+    } else {
+      final _contract = await _client.getDeployedContract("WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
+      final _function = _contract.function(WQFContractFunctions.newWorkQuest.name);
+      final _params = [
+        _client.stringToBytes32(description),
+        BigInt.zero,
+        BigInt.from(0.0),
+        BigInt.from(0.0),
+      ];
+      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: _params);
+      return _gas.toStringAsFixed(17);
     }
   }
 
@@ -266,6 +243,10 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       );
       await sendImages(apiProvider);
       final _price = BigInt.from((double.parse(price)) * pow(10, 18));
+      print('employment: $employment');
+      print('workplace: $workplace');
+      print('payPeriod: $payPeriod');
+      print('priority: $priority');
       final CreateQuestRequestModel questModel = CreateQuestRequestModel(
         employment: QuestUtils.getEmploymentValue(employment),
         workplace: QuestUtils.getWorkplaceValue(workplace),
@@ -289,8 +270,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           function: WQContractFunctions.editJob,
           contractAddress: contractAddress,
           params: [
-            Uint8List.fromList(
-                utf8.encode(description.padRight(32).substring(0, 32))),
+            Uint8List.fromList(utf8.encode(description.padRight(32).substring(0, 32))),
             _price,
           ],
           value: null,
@@ -300,8 +280,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           questId: questId,
         );
       } else {
-        final balanceWusd = await _client.getBalanceInUnit(
-            EtherUnit.ether, AccountRepository().privateKey);
+        final balanceWusd = await _client.getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
         final gas = await _client.getGas();
 
         if (balanceWusd < double.parse(price) + (gas.getInEther).toDouble()) {
@@ -312,12 +291,11 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           quest: questModel,
         );
 
-        final _priceForApprove = BigInt.from((_price.toDouble() * 1.1));
+        final _priceForApprove = BigInt.from((_price.toDouble() * Constants.commissionForQuest));
         final _allowance = await _client.allowanceCoin();
         final _isNeedApprove = _allowance < _priceForApprove;
         if (_isNeedApprove) {
-          final approveCoin =
-              await _client.approveCoin(price: _priceForApprove);
+          final approveCoin = await _client.approveCoin(price: _priceForApprove);
 
           if (approveCoin) {
             await _client.createNewContract(
@@ -341,8 +319,10 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
 
       this.onSuccess(true);
     } on FormatException catch (e) {
+      print('createQuest FormatException | ${e.message}');
       this.onError(e.message);
-    } catch (e) {
+    } catch (e, trace) {
+      print('createQuest | $e\n$trace');
       this.onError(e.toString());
     }
   }
