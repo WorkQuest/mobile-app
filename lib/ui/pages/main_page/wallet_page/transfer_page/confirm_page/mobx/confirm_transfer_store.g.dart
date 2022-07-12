@@ -14,7 +14,7 @@ mixin _$ConfirmTransferStore on ConfirmTransferStoreBase, Store {
 
   @override
   Future sendTransaction(
-      String addressTo, String amount, TokenSymbols typeCoin, dynamic fee) {
+      String addressTo, String amount, TokenSymbols typeCoin, Decimal fee) {
     return _$sendTransactionAsyncAction
         .run(() => super.sendTransaction(addressTo, amount, typeCoin, fee));
   }
