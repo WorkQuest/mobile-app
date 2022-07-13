@@ -39,6 +39,8 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         statePin = StatePinCode.Check;
         canCheckBiometrics = await auth.canCheckBiometrics;
         if (canCheckBiometrics) {
+          final _typesBiometric = await auth.getAvailableBiometrics();
+          isFaceId = _typesBiometric.contains(BiometricType.face);
           bool didAuthenticate = await auth.authenticate(
             localizedReason: 'Login authorization',
           );
@@ -75,6 +77,9 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   @observable
   bool canCheckBiometrics = false;
 
+  @observable
+  bool isFaceId = false;
+
   @action
   setPlatform(String value) => platform = value;
 
@@ -100,6 +105,8 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
     //   print(e);
     // }
     try {
+      final _typesBiometric = await localAuth.getAvailableBiometrics();
+      isFaceId = _typesBiometric.contains(BiometricType.face);
       bool didAuthenticate = await localAuth.authenticate(
         localizedReason: 'Login authorization',
       );
@@ -240,7 +247,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
         Storage.writePushToken(firebaseToken ?? "");
       }
     } catch (e) {
-      this.onError(e.toString());
+      // this.onError(e.toString());
     }
   }
 

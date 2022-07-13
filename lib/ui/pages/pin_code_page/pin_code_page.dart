@@ -28,8 +28,7 @@ class PinCodePage extends StatefulWidget {
   State<StatefulWidget> createState() => _PinCodePageState();
 }
 
-class _PinCodePageState extends State<PinCodePage>
-    with SingleTickerProviderStateMixin {
+class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStateMixin {
   AnimationController? controller;
   late PinCodeStore store;
 
@@ -142,11 +141,12 @@ class _PinCodePageState extends State<PinCodePage>
                   PinCodeKeyboard(
                     store.inputPin,
                     onTabRemove: store.popPin,
-                    onTabSensor: (store.statePin == StatePinCode.Check &&
-                            store.canCheckBiometrics)
-                        ? store.biometricScan
-                        : null,
+                    onTabSensor:
+                        (store.statePin == StatePinCode.Check && store.canCheckBiometrics)
+                            ? store.biometricScan
+                            : null,
                     canBiometric: store.canCheckBiometrics,
+                    isFaceId: store.isFaceId,
                   ),
                 ],
               ),
@@ -255,12 +255,14 @@ class PinCodeKeyboard extends StatelessWidget {
   final Function()? onTabSensor;
   final Function()? onTabRemove;
   final bool canBiometric;
+  final bool isFaceId;
 
   PinCodeKeyboard(
     this.onTabNumber, {
     this.onTabSensor,
     this.onTabRemove,
     this.canBiometric = false,
+    required this.isFaceId,
   });
 
   @override
@@ -283,9 +285,9 @@ class PinCodeKeyboard extends StatelessWidget {
             ),
           KeyboardButton(
             SvgPicture.asset(
-              "assets/biometric.svg",
-              width: 20,
-              height: 20,
+              isFaceId ? 'assets/face_id.svg' : "assets/biometric.svg",
+              width: 30,
+              height: 30,
               color: canBiometric ? Color(0xFF0083C7) : Colors.grey[500],
             ),
             onTabSensor,

@@ -145,6 +145,21 @@ mixin _$PinCodeStore on _PinCodeStore, Store {
     });
   }
 
+  final _$isFaceIdAtom = Atom(name: '_PinCodeStore.isFaceId');
+
+  @override
+  bool get isFaceId {
+    _$isFaceIdAtom.reportRead();
+    return super.isFaceId;
+  }
+
+  @override
+  set isFaceId(bool value) {
+    _$isFaceIdAtom.reportWrite(value, super.isFaceId, () {
+      super.isFaceId = value;
+    });
+  }
+
   final _$signInAsyncAction = AsyncAction('_PinCodeStore.signIn');
 
   @override
@@ -211,7 +226,8 @@ statePin: ${statePin},
 newPinCode: ${newPinCode},
 startSwitch: ${startSwitch},
 startAnimation: ${startAnimation},
-canCheckBiometrics: ${canCheckBiometrics}
+canCheckBiometrics: ${canCheckBiometrics},
+isFaceId: ${isFaceId}
     ''';
   }
 }
