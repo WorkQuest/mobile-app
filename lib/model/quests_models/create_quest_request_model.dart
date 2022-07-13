@@ -4,12 +4,12 @@ class CreateQuestRequestModel {
   String category;
   int priority;
   LocationFull location;
-  String title;
-  String description;
+  String? title;
+  String? description;
 
   // String locationPlaceName;
   String workplace;
-  String price;
+  String? price;
   List media;
   List<String> specializationKeys;
   String employment;
@@ -26,10 +26,10 @@ class CreateQuestRequestModel {
     required this.payPeriod,
     // required this.locationPlaceName,
     required this.workplace,
-    required this.title,
     required this.media,
-    required this.description,
-    required this.price,
+    this.title,
+    this.description,
+    this.price,
   });
 
   Map<String, dynamic> toJson() {
@@ -40,11 +40,11 @@ class CreateQuestRequestModel {
     questData['payPeriod'] = this.payPeriod;
 
     // questData['locationPlaceName'] = this.locationPlaceName;
-    questData['title'] = this.title;
+    if (title != null) questData['title'] = this.title;
+    if (price != null) questData['price'] = this.price;
+    if (description != null) questData['description'] = this.description;
     questData['specializationKeys'] = this.specializationKeys;
     questData['medias'] = this.media;
-    questData['description'] = this.description;
-    questData['price'] = this.price;
     questData['typeOfEmployment'] = this.employment;
     return questData;
   }
