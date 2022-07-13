@@ -46,6 +46,7 @@ abstract class _WalletStore extends IStore<bool> with Store {
         onSuccess(true);
       }
     } catch (e) {
+      // print('getCoins | $e\n$trace');
       onError(e.toString());
     }
   }

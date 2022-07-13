@@ -230,11 +230,11 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   bool get _isShowBanner {
+    if (GetIt.I.get<WalletStore>().coins.isEmpty) {
+      return false;
+    }
     final _networkName = AccountRepository().networkName.value!;
     if (_networkName == NetworkName.workNetTestnet || _networkName == NetworkName.workNetMainnet) {
-      if (GetIt.I.get<WalletStore>().coins.isEmpty) {
-        return false;
-      }
       try {
         final _wqt = GetIt.I.get<WalletStore>().coins.firstWhere((element) => element.symbol == TokenSymbols.WQT);
         if (double.parse(_wqt.amount!) == 0.0) {
