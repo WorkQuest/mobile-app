@@ -39,11 +39,11 @@ class QuestConstants {
 class QuestUtils {
   static String getEmployment(String employment) {
     switch (employment) {
-      case "fullTime":
+      case "FullTime":
         return "Full time";
-      case "partTime":
+      case "PartTime":
         return "Part time";
-      case "fixedTerm":
+      case "FixedTerm":
         return "Fixed term";
       case "RemoteWork":
         return "Remote Work";

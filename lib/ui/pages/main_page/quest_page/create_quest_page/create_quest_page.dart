@@ -69,6 +69,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.questTitle = widget.questInfo!.title;
       print('workplace: ${widget.questInfo?.workplace}');
       store.changedDistantWork(QuestUtils.getWorkplace(widget.questInfo!.workplace));
+      print('workplace: ${widget.questInfo?.employment}');
       store.changedEmployment(QuestUtils.getEmployment(widget.questInfo!.employment));
       store.description = widget.questInfo!.description;
       store.price = (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18)).toString();
