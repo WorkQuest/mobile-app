@@ -390,8 +390,15 @@ class Routes {
 
       case ChooseQuestPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<ChooseQuestStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<ChooseQuestStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChatStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChooseQuestPage(
