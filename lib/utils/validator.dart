@@ -10,7 +10,7 @@ class Validators {
     if (text.isEmpty) {
       return "Empty field";
     }
-    if (int.parse(text) < 1) return "Please enter a value greater than zero";
+    if (double.parse(text) < 1) return "Please enter a value greater than zero";
     return null;
   }
 

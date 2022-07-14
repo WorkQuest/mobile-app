@@ -40,6 +40,9 @@ class WebSocket {
   }
 
   void _connectWallet() {
+    if (AccountRepository().isOtherNetwork) {
+      return;
+    }
     walletChannel = IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
     walletChannel!.sink.add("""
       {

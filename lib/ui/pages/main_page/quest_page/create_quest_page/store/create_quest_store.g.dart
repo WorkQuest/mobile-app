@@ -343,6 +343,15 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
     return _$displayPredictionAsyncAction.run(() => super.displayPrediction(p));
   }
 
+  final _$getGasApproveAsyncAction =
+      AsyncAction('_CreateQuestStore.getGasApprove');
+
+  @override
+  Future<String?> getGasApprove({String? addressQuest}) {
+    return _$getGasApproveAsyncAction
+        .run(() => super.getGasApprove(addressQuest: addressQuest));
+  }
+
   final _$createQuestAsyncAction = AsyncAction('_CreateQuestStore.createQuest');
 
   @override

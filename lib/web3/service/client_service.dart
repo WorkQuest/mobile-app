@@ -349,7 +349,7 @@ extension GetContract on ClientService {
 extension ApproveCoin on ClientService {
   Future<bool> approveCoin({
     required BigInt price,
-    bool isRaise = false,
+    EthereumAddress? address,
   }) async {
     final credentials = await getCredentials(AccountRepository().privateKey);
     final _addressWUSD = Web3Utils.getAddressWUSD();
@@ -365,9 +365,7 @@ extension ApproveCoin on ClientService {
       function: ethFunction,
       from: fromAddress,
       params: [
-        EthereumAddress.fromHex(isRaise
-            ? Web3Utils.getAddressWorknetWQPromotion()
-            : Web3Utils.getAddressWorknetWQFactory()),
+        EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
         price,
       ],
     );
@@ -378,17 +376,13 @@ extension ApproveCoin on ClientService {
       return false;
   }
 
-  Future<BigInt> allowanceCoin({bool isRaise = false}) async {
-    print("Allowance coin");
-    final _addressWUSD = Web3Utils.getAddressWUSD();
+  Future<BigInt> allowanceCoin({EthereumAddress? address}) async {
+    final _address = Web3Utils.getAddressWUSD();
 
-    final _contract =
-        Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
+    final _contract = Erc20(address: EthereumAddress.fromHex(_address), client: client!);
     final _result = await _contract.allowance(
       EthereumAddress.fromHex(AccountRepository().userAddress),
-      EthereumAddress.fromHex(isRaise
-          ? Web3Utils.getAddressWorknetWQPromotion()
-          : Web3Utils.getAddressWorknetWQFactory()),
+      address ?? EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
     );
     return _result;
   }

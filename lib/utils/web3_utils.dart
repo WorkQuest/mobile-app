@@ -1,4 +1,5 @@
 import 'package:app/constants.dart';
+import 'package:app/keys.dart';
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/contracts/erc20.dart';
@@ -279,15 +280,15 @@ class Web3Utils {
       case SwapNetworks.ETH:
         return _networkType == Network.mainnet
             ? 'https://eth-mainnet.public.blastapi.io/'
-            : 'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/eth/rinkeby';
+            : 'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/rinkeby';
       case SwapNetworks.BSC:
         return _networkType == Network.mainnet
             ? 'https://bscrpc.com/'
-            : 'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/bsc/testnet';
+            : 'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/bsc/testnet';
       case SwapNetworks.POLYGON:
         return _networkType == Network.mainnet
             ? 'https://polygon-mainnet.public.blastapi.io/'
-            : 'https://speedy-nodes-nyc.moralis.io/b42d7d2a9baf055b2076cc12/polygon/mumbai';
+            : 'https://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/polygon/mumbai';
     }
   }
 

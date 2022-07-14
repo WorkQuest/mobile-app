@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:math';
-import 'dart:typed_data';
-
 import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/keys.dart';
@@ -15,6 +11,7 @@ import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/client_service.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -136,15 +133,20 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
 
   @computed
   bool get canSubmitEditQuest =>
-      !isLoading && locationPlaceName.isNotEmpty && skillFilters.isNotEmpty && confirmUnderstandAboutEdit;
+      !isLoading &&
+      locationPlaceName.isNotEmpty &&
+      skillFilters.isNotEmpty &&
+      confirmUnderstandAboutEdit;
 
   @action
   void emptyField(BuildContext context) {
     if (locationPlaceName.isEmpty) {
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: "Address is empty");
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'Error', content: "Address is empty");
     }
     if (skillFilters.isEmpty) {
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: "Skills are empty");
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'Error', content: "Skills are empty");
     }
   }
 
@@ -177,20 +179,23 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   }
 
   @action
-  Future<String?> getGasApprove() async {
+  Future<String?> getGasApprove({String? addressQuest}) async {
     try {
-      onLoading();
       final _client = AccountRepository().getClientWorkNet();
-      final _price = BigInt.from((double.parse(price)) * pow(10, 18));
-      final _isNeedCheckApprove = _price > oldPrice;
+      final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
+      final _isNeedCheckApprove = _price.toBigInt() > oldPrice;
       if (_isNeedCheckApprove) {
-        final _allowance = await _client.allowanceCoin();
+        final _allowance = await _client.allowanceCoin(
+          address: addressQuest == null ? null : EthereumAddress.fromHex(addressQuest),
+        );
         print('allowance: $_allowance');
-        final _priceForApprove = BigInt.from((_price.toDouble() * Constants.commissionForQuest));
+        final _priceForApprove =
+            _price * Decimal.parse(Constants.commissionForQuest.toString());
         print('priceForApprove: $_priceForApprove');
-        final _isNeedApprove = _allowance < _priceForApprove;
+        final _isNeedApprove = _allowance < _priceForApprove.toBigInt();
         if (_isNeedApprove) {
-          final _gasForApprove = await _client.getEstimateGasForApprove(_price);
+          final _gasForApprove =
+              await _client.getEstimateGasForApprove(_price.toBigInt());
           return _gasForApprove.toStringAsFixed(17);
         }
       }
@@ -204,17 +209,18 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   Future<String> getGasEditOrCreateQuest({bool isEdit = false}) async {
     final _client = AccountRepository().getClientWorkNet();
     if (isEdit) {
-      final _price = BigInt.from((double.parse(price)) * pow(10, 18));
+      final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
       final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
       final _function = _contract.function(WQContractFunctions.editJob.name);
       final _params = [
-        Uint8List.fromList(utf8.encode(description.padRight(32).substring(0, 32))),
-        _price,
+        _price.toBigInt(),
       ];
-      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: _params);
+      final _gas = await _client.getEstimateGasCallContract(
+          contract: _contract, function: _function, params: _params);
       return _gas.toStringAsFixed(17);
     } else {
-      final _contract = await _client.getDeployedContract("WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
+      final _contract = await _client.getDeployedContract(
+          "WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
       final _function = _contract.function(WQFContractFunctions.newWorkQuest.name);
       final _params = [
         _client.stringToBytes32(description),
@@ -222,7 +228,8 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         BigInt.from(0.0),
         BigInt.from(0.0),
       ];
-      final _gas = await _client.getEstimateGasCallContract(contract: _contract, function: _function, params: _params);
+      final _gas = await _client.getEstimateGasCallContract(
+          contract: _contract, function: _function, params: _params);
       return _gas.toStringAsFixed(17);
     }
   }
@@ -242,7 +249,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         ),
       );
       await sendImages(apiProvider);
-      final _price = BigInt.from((double.parse(price)) * pow(10, 18));
+      final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
       print('employment: $employment');
       print('workplace: $workplace');
       print('payPeriod: $payPeriod');
@@ -257,9 +264,9 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         adType: adType,
         category: category,
         media: medias.map((media) => media.id).toList(),
-        title: questTitle,
-        description: description,
-        price: (_price.toDouble()).toStringAsFixed(0),
+        title: isEdit ? null : questTitle,
+        description: isEdit ? null :description,
+        price: isEdit ? null : (_price.toDouble()).toStringAsFixed(0),
       );
       //priority show item
 
@@ -270,8 +277,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           function: WQContractFunctions.editJob,
           contractAddress: contractAddress,
           params: [
-            Uint8List.fromList(utf8.encode(description.padRight(32).substring(0, 32))),
-            _price,
+            _price.toBigInt(),
           ],
           value: null,
         );
@@ -280,7 +286,8 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           questId: questId,
         );
       } else {
-        final balanceWusd = await _client.getBalanceInUnit(EtherUnit.ether, AccountRepository().privateKey);
+        final balanceWusd = await _client.getBalanceInUnit(
+            EtherUnit.ether, AccountRepository().privateKey);
         final gas = await _client.getGas();
 
         if (balanceWusd < double.parse(price) + (gas.getInEther).toDouble()) {
@@ -291,16 +298,18 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
           quest: questModel,
         );
 
-        final _priceForApprove = BigInt.from((_price.toDouble() * Constants.commissionForQuest));
+        final _priceForApprove =
+            _price * Decimal.parse(Constants.commissionForQuest.toString());
         final _allowance = await _client.allowanceCoin();
-        final _isNeedApprove = _allowance < _priceForApprove;
+        final _isNeedApprove = _allowance < _priceForApprove.toBigInt();
         if (_isNeedApprove) {
-          final approveCoin = await _client.approveCoin(price: _priceForApprove);
+          final approveCoin =
+              await _client.approveCoin(price: _priceForApprove.toBigInt());
 
           if (approveCoin) {
             await _client.createNewContract(
               jobHash: description,
-              price: _price,
+              price: _price.toBigInt(),
               deadline: 0.toString(),
               nonce: nonce,
             );
@@ -310,7 +319,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         } else {
           await _client.createNewContract(
             jobHash: description,
-            price: _price,
+            price: _price.toBigInt(),
             deadline: 0.toString(),
             nonce: nonce,
           );

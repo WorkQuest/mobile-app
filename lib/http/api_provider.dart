@@ -135,7 +135,7 @@ extension QuestService on ApiProvider {
     required String questId,
   }) async {
     await httpClient.put(
-      query: '/v1/quest/$questId',
+      query: '/v1/quest/$questId/edit',
       data: quest.toJson(),
     );
   }

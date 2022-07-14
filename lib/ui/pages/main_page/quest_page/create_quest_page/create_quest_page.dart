@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import "package:provider/provider.dart";
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:web3dart/credentials.dart';
 import '../../../../../enums.dart';
 import '../../../../../observer_consumer.dart';
 import '../../../../../utils/web3_utils.dart';
@@ -69,12 +70,15 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.questTitle = widget.questInfo!.title;
       print('workplace: ${widget.questInfo?.workplace}');
       store.changedDistantWork(QuestUtils.getWorkplace(widget.questInfo!.workplace));
+      print('workplace: ${widget.questInfo?.employment}');
       store.changedEmployment(QuestUtils.getEmployment(widget.questInfo!.employment));
       store.description = widget.questInfo!.description;
-      store.price = (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18)).toString();
+      store.price =
+          (BigInt.parse(widget.questInfo!.price).toDouble() * pow(10, -18)).toString();
       store.locationPlaceName = widget.questInfo!.locationPlaceName;
       store.setImages(widget.questInfo!.medias ?? []);
-      _controller = SkillSpecializationController(initialValue: widget.questInfo!.questSpecializations);
+      _controller = SkillSpecializationController(
+          initialValue: widget.questInfo!.questSpecializations);
     } else
       _controller = SkillSpecializationController();
   }
@@ -135,7 +139,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedPriority(value!);
                                       },
-                                      items: QuestConstants.priorityList.map<DropdownMenuItem<String>>(
+                                      items: QuestConstants.priorityList
+                                          .map<DropdownMenuItem<String>>(
                                         (String value) {
                                           return DropdownMenuItem<String>(
                                             value: value.tr(),
@@ -246,8 +251,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedEmployment(value!);
                                       },
-                                      items:
-                                          QuestConstants.employmentList.map<DropdownMenuItem<String>>((String value) {
+                                      items: QuestConstants.employmentList
+                                          .map<DropdownMenuItem<String>>((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: new Text(value),
@@ -299,8 +304,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedDistantWork(value!);
                                       },
-                                      items:
-                                          QuestConstants.distantWorkList.map<DropdownMenuItem<String>>((String value) {
+                                      items: QuestConstants.distantWorkList
+                                          .map<DropdownMenuItem<String>>((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: new Text(value),
@@ -352,7 +357,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                       onChanged: (String? value) {
                                         store.changedPayPeriod(value!.tr());
                                       },
-                                      items: QuestConstants.payPeriodList.map<DropdownMenuItem<String>>(
+                                      items: QuestConstants.payPeriodList
+                                          .map<DropdownMenuItem<String>>(
                                         (String value) {
                                           return DropdownMenuItem<String>(
                                             value: value.tr(),
@@ -430,7 +436,8 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                   key: confirmUnderstandAboutEdit,
                                   contentPadding: const EdgeInsets.all(0),
                                   value: store.confirmUnderstandAboutEdit,
-                                  onChanged: (value) => store.setConfirmUnderstandAboutEdit(value!),
+                                  onChanged: (value) =>
+                                      store.setConfirmUnderstandAboutEdit(value!),
                                   controlAffinity: ListTileControlAffinity.leading,
                                   title: Text(
                                     'I understand that editing the title and the description of this quest will be '
@@ -470,15 +477,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           key: priceKey,
                           height: 60,
                           child: TextFormField(
-                            keyboardType: TextInputType.number,
                             onChanged: store.setPrice,
                             initialValue: store.price.toString(),
                             validator: Validators.zeroValidator,
                             inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                RegExp(r'[0-9]'),
-                              ),
+                              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                             ],
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
                             decoration: InputDecoration(
                               hintText: 'quests.price'.tr(),
                             ),
@@ -493,6 +498,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                         margin: const EdgeInsets.symmetric(vertical: 30),
                         child: ObserverListener<CreateQuestStore>(
                           onFailure: () {
+                            Navigator.of(context, rootNavigator: true).pop();
                             return false;
                           },
                           onSuccess: () async {
@@ -530,7 +536,9 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               onTap: store.isLoading
                                   ? null
                                   : () => _onPressedOnCreateOrEditQuest(store),
-                              title: isEdit ? "quests.editQuest".tr() : 'quests.createAQuest'.tr(),
+                              title: isEdit
+                                  ? "quests.editQuest".tr()
+                                  : 'quests.createAQuest'.tr(),
                             ),
                           ),
                         ),
@@ -548,31 +556,40 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
 
   _onPressedOnCreateOrEditQuest(CreateQuestStore store) async {
     store.skillFilters = _controller!.getSkillAndSpecialization();
-    final _gasApprove = await store.getGasApprove();
+    final _gasApprove = await store.getGasApprove(
+      addressQuest: isEdit ? widget.questInfo!.contractAddress! : null,
+    );
     if (_gasApprove != null) {
       await confirmTransaction(
         context,
         fee: _gasApprove,
         transaction: '${"ui.txInfo".tr()} Approve',
         address: contractAddress,
-        amount: ((double.tryParse(store.price) ?? 0.0) * Constants.commissionForQuest).toString(),
+        amount: ((double.tryParse(store.price) ?? 0.0) * Constants.commissionForQuest)
+            .toString(),
         onPressConfirm: () async {
           try {
             Navigator.pop(context);
-            final _price = BigInt.from((double.parse(store.price)) * pow(10, 18));
-            final _priceForApprove = BigInt.from((_price.toDouble() * 1.025));
+            final _price = Decimal.parse(store.price) * Decimal.fromInt(10).pow(18);
+            final _priceForApprove =
+                _price * Decimal.parse(Constants.commissionForQuest.toString());
             AlertDialogUtils.showLoadingDialog(
               context,
             );
-            await AccountRepository().getClientWorkNet().approveCoin(price: _priceForApprove);
+            await AccountRepository().getClientWorkNet().approveCoin(
+                  price: _priceForApprove.toBigInt(),
+                  address: EthereumAddress.fromHex(widget.questInfo!.contractAddress!),
+                );
             Navigator.pop(context);
             _onPressedOnCreateOrEditQuest(store);
           } on FormatException catch (e) {
             Navigator.pop(context);
-            AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: e.message);
+            AlertDialogUtils.showInfoAlertDialog(context,
+                title: 'Error', content: e.message);
           } catch (e) {
             Navigator.pop(context);
-            AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: e.toString());
+            AlertDialogUtils.showInfoAlertDialog(context,
+                title: 'Error', content: e.toString());
           }
         },
         onPressCancel: () {
