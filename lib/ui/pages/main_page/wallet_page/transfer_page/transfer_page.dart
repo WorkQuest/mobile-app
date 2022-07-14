@@ -148,6 +148,9 @@ class _TransferPageState extends State<TransferPage> {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
                       if (value != null) {
+                        if (value.isEmpty) {
+                          return 'errors.fieldEmpty'.tr();
+                        }
                         final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
                         if (_isBech) {
                           if (value.length != 41) {
