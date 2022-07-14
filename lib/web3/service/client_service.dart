@@ -116,7 +116,7 @@ class ClientService implements ClientServiceI {
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
       if (attempts == 5) {
-        throw Exception("The waiting time is over. Expect a balance update.");
+        throw FormatException("The waiting time is over. Expect a balance update.");
       }
     }
   }

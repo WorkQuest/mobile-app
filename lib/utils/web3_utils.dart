@@ -26,7 +26,7 @@ class Web3Utils {
       print('_balanceWQTInWei: $_balanceWQTInWei');
       print('amount: $amount');
       if (amount > (_balanceWQTInWei.toDouble() - fee.toDouble())) {
-        throw FormatException('errors.notHaveEnoughTx'.tr());
+        throw FormatException('errors.notHaveEnoughTx'.tr(namedArgs: {'token': getNativeToken()}));
       }
     } else {
       final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin));
