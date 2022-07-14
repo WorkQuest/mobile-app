@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
-import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:decimal/decimal.dart';
@@ -32,8 +31,6 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
       );
       GetIt.I.get<WalletStore>().getCoins();
       onSuccess(true);
-      await Future.delayed(const Duration(seconds: 4));
-      GetIt.I.get<TransactionsStore>().getTransactions();
     } on SocketException catch (_) {
       onError("Lost connection to server");
     } on RPCError catch (e) {

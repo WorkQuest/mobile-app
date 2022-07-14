@@ -150,11 +150,17 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   @action
   addTransaction(Tx transaction) {
     try {
-      if (isLoading) {
+      if (isLoading || AccountRepository().isOtherNetwork) {
         return;
       }
       final _address = Web3Utils.getAddressToken(type);
-      if (_address != transaction.fromAddressHash!.hex && _address.isNotEmpty) {
+
+      final _currentTokenIsNative = _address.isEmpty;
+      final _isCurrentToken =
+          _address == transaction.fromAddressHash!.hex ||
+              _address == transaction.toAddressHash!.hex ||
+              _currentTokenIsNative;
+      if (!_isCurrentToken) {
         return;
       }
       transactions.insert(0, transaction);

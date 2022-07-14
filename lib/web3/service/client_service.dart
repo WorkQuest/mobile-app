@@ -2,10 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:app/model/web3/transactions_response.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/service/address_service.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hex/hex.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
@@ -75,8 +79,10 @@ class ClientService implements ClientServiceI {
     required TokenSymbols coin,
   }) async {
     String? hash;
+    int? degree;
     final _privateKey = AccountRepository().privateKey;
     final _credentials = await getCredentials(_privateKey);
+    String _addressToken = Web3Utils.getAddressToken(coin);
     if (!isToken) {
       final _value = EtherAmount.fromUnitAndValue(
         EtherUnit.wei,
@@ -95,12 +101,11 @@ class ClientService implements ClientServiceI {
         chainId: _chainId.toInt(),
       );
     } else {
-      String _addressToken = Web3Utils.getAddressToken(coin);
       final contract = Erc20(address: EthereumAddress.fromHex(_addressToken), client: client!);
-      final _degree = await Web3Utils.getDegreeToken(contract);
+      degree = await Web3Utils.getDegreeToken(contract);
       hash = await contract.transfer(
         EthereumAddress.fromHex(addressTo),
-        BigInt.from(double.parse(amount) * pow(10, _degree)),
+        BigInt.from(double.parse(amount) * pow(10, degree)),
         credentials: _credentials,
       );
       print('${coin.toString()} hash - $hash');
@@ -119,6 +124,31 @@ class ClientService implements ClientServiceI {
         throw FormatException("The waiting time is over. Expect a balance update.");
       }
     }
+    final _tx = Tx(
+      hash: hash,
+      fromAddressHash: AddressHash(
+        bech32: AddressService.hexToBech32(AccountRepository().userAddress),
+        hex: AccountRepository().userAddress,
+      ),
+      toAddressHash: AddressHash(
+        bech32: AddressService.hexToBech32(isToken ? _addressToken : addressTo),
+        hex: isToken ? _addressToken : addressTo,
+      ),
+      amount: isToken
+          ? null
+          : (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toString(),
+      insertedAt: DateTime.now(),
+      block: Block(timestamp: DateTime.now()),
+      tokenTransfers: !isToken
+          ? null
+          : [
+        TokenTransfer(
+          amount:
+          (Decimal.parse(amount) * Decimal.fromInt(10).pow(degree!)).toString(),
+        ),
+      ],
+    );
+    GetIt.I.get<TransactionsStore>().addTransaction(_tx);
   }
 
   @override
