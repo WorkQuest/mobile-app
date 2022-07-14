@@ -18,7 +18,7 @@ part 'swap_store.g.dart';
 
 enum SwapNetworks { ETH, BSC, POLYGON }
 
-enum SwapToken { tusdt, usdc }
+enum SwapToken { usdt }
 
 @injectable
 class SwapStore extends SwapStoreBase with _$SwapStore {
@@ -36,7 +36,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   SwapNetworks? network;
 
   @observable
-  SwapToken token = SwapToken.tusdt;
+  SwapToken token = SwapToken.usdt;
 
   @observable
   double amount = 0.0;
