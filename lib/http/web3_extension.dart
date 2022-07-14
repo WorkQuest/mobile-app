@@ -15,7 +15,7 @@ extension Web3Requests on ApiProvider {
     required String addressToken,
   }) {
     if (_network == Network.testnet) {
-      return "https://testnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
+      return "https://dev-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
     } else {
       return "https://mainnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
     }
@@ -23,7 +23,7 @@ extension Web3Requests on ApiProvider {
 
   String _transactions(String address) {
     if (_network == Network.testnet) {
-      return "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
+      return "https://dev-explorer-api.workquest.co/api/v1/account/$address/transactions";
     } else {
       return "https://mainnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
     }

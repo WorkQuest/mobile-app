@@ -107,70 +107,70 @@ class Configs {
         ),
       ],
     ),
-    // /// Dev-net
-    // NetworkName.workNetTestnet: ConfigNetwork(
-    //     rpc: 'https://dev-node-ams3.workquest.co/',
-    //     wss: 'wss://wss-dev-node-nyc3.workquest.co/tendermint-rpc/websocket',
-    //     urlExplorer: '',
-    //     dataCoins: const [
-    //       DataCoins(
-    //         symbolToken: TokenSymbols.WQT,
-    //         iconPath: 'assets/wqt_coin_icon.svg',
-    //       ),
-    //       DataCoins(
-    //         symbolToken: TokenSymbols.WUSD,
-    //         addressToken: '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa',
-    //         iconPath: 'assets/wusd_coin_icon.svg',
-    //       ),
-    //       DataCoins(
-    //         symbolToken: TokenSymbols.wETH,
-    //         addressToken: '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24',
-    //         iconPath: 'assets/weth_coin_icon.svg',
-    //       ),
-    //       DataCoins(
-    //         symbolToken: TokenSymbols.wBNB,
-    //         addressToken: '0x75349C3f2C3CFD94488A71a350Ba841C14309c5b',
-    //         iconPath: 'assets/wbnb_coin_icon.svg',
-    //       ),
-    //       DataCoins(
-    //         symbolToken: TokenSymbols.USDT,
-    //         addressToken: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
-    //         iconPath: 'assets/usdt_coin_icon.svg',
-    //       ),
-    //     ],
-    //   ),
-    /// Testnet
+    /// Dev-net
     NetworkName.workNetTestnet: ConfigNetwork(
-      rpc: 'https://testnet-gate.workquest.co/',
-      wss: 'wss://testnet-gate.workquest.co/tendermint-rpc/websocket',
-      urlExplorer: '',
-      dataCoins: const [
-        DataCoins(
-          symbolToken: TokenSymbols.WQT,
-          iconPath: 'assets/wqt_coin_icon.svg',
-        ),
-        DataCoins(
-          symbolToken: TokenSymbols.WUSD,
-          addressToken: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
-          iconPath: 'assets/wusd_coin_icon.svg',
-        ),
-        DataCoins(
-          symbolToken: TokenSymbols.wETH,
-          addressToken: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
-          iconPath: 'assets/weth_coin_icon.svg',
-        ),
-        DataCoins(
-          symbolToken: TokenSymbols.wBNB,
-          addressToken: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
-          iconPath: 'assets/wbnb_coin_icon.svg',
-        ),
-        DataCoins(
-          symbolToken: TokenSymbols.USDT,
-          addressToken: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859',
-          iconPath: 'assets/usdt_coin_icon.svg',
-        ),
-      ],
-    ),
+        rpc: 'https://dev-node-ams3.workquest.co/',
+        wss: 'wss://wss-dev-node-nyc3.workquest.co/tendermint-rpc/websocket',
+        urlExplorer: '',
+        dataCoins: const [
+          DataCoins(
+            symbolToken: TokenSymbols.WQT,
+            iconPath: 'assets/wqt_coin_icon.svg',
+          ),
+          DataCoins(
+            symbolToken: TokenSymbols.WUSD,
+            addressToken: '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa',
+            iconPath: 'assets/wusd_coin_icon.svg',
+          ),
+          DataCoins(
+            symbolToken: TokenSymbols.wETH,
+            addressToken: '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24',
+            iconPath: 'assets/weth_coin_icon.svg',
+          ),
+          DataCoins(
+            symbolToken: TokenSymbols.wBNB,
+            addressToken: '0x75349C3f2C3CFD94488A71a350Ba841C14309c5b',
+            iconPath: 'assets/wbnb_coin_icon.svg',
+          ),
+          DataCoins(
+            symbolToken: TokenSymbols.USDT,
+            addressToken: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
+            iconPath: 'assets/usdt_coin_icon.svg',
+          ),
+        ],
+      ),
+    // /// Testnet
+    // NetworkName.workNetTestnet: ConfigNetwork(
+    //   rpc: 'https://testnet-gate.workquest.co/',
+    //   wss: 'wss://testnet-gate.workquest.co/tendermint-rpc/websocket',
+    //   urlExplorer: '',
+    //   dataCoins: const [
+    //     DataCoins(
+    //       symbolToken: TokenSymbols.WQT,
+    //       iconPath: 'assets/wqt_coin_icon.svg',
+    //     ),
+    //     DataCoins(
+    //       symbolToken: TokenSymbols.WUSD,
+    //       addressToken: '0xf95ef11d0af1f40995218bb2b67ef909bcf30078',
+    //       iconPath: 'assets/wusd_coin_icon.svg',
+    //     ),
+    //     DataCoins(
+    //       symbolToken: TokenSymbols.wETH,
+    //       addressToken: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
+    //       iconPath: 'assets/weth_coin_icon.svg',
+    //     ),
+    //     DataCoins(
+    //       symbolToken: TokenSymbols.wBNB,
+    //       addressToken: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
+    //       iconPath: 'assets/wbnb_coin_icon.svg',
+    //     ),
+    //     DataCoins(
+    //       symbolToken: TokenSymbols.USDT,
+    //       addressToken: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859',
+    //       iconPath: 'assets/usdt_coin_icon.svg',
+    //     ),
+    //   ],
+    // ),
     NetworkName.ethereumMainnet: ConfigNetwork(
       rpc: 'https://eth-mainnet.public.blastapi.io/',
       wss:

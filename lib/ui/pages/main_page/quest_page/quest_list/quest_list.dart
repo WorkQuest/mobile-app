@@ -13,6 +13,7 @@ import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filte
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,8 @@ class _QuestListState extends State<QuestList> {
     });
     _incomingLinkHandler();
     _initURIHandler();
+    final newToken = FirebaseMessaging.instance.onTokenRefresh.last;
+    print("firebase newToken: $newToken");
   }
 
   @override

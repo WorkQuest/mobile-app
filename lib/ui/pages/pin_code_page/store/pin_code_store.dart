@@ -243,6 +243,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       if (pushToken != firebaseToken) {
         if (pushToken != null)
           await _apiProvider.deletePushToken(token: pushToken);
+        FirebaseMessaging.instance.deleteToken();
         await _apiProvider.registerPushToken(token: firebaseToken ?? "");
         Storage.writePushToken(firebaseToken ?? "");
       }
@@ -255,6 +256,7 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
     try {
       final token = await Storage.readPushToken();
       if (token != null) _apiProvider.deletePushToken(token: token);
+      FirebaseMessaging.instance.deleteToken();
     } catch (e) {
       this.onError(e.toString());
     }
