@@ -156,14 +156,17 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
       final _address = Web3Utils.getAddressToken(type);
 
       final _currentTokenIsNative = _address.isEmpty;
-      final _isCurrentToken =
-          _address == transaction.fromAddressHash!.hex ||
-              _address == transaction.toAddressHash!.hex ||
-              _currentTokenIsNative;
+      final _isCurrentToken = _address == transaction.fromAddressHash!.hex ||
+          _address == transaction.toAddressHash!.hex ||
+          _currentTokenIsNative;
       if (!_isCurrentToken) {
         return;
       }
-      transactions.insert(0, transaction);
+      final _index =
+          transactions.indexWhere((element) => element.hash == transaction.hash);
+      if (_index == -1) {
+        transactions.insert(0, transaction);
+      }
     } catch (e) {
       // print('addTransaction | $e\n$trace');
       onError(e.toString());
@@ -192,5 +195,4 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
     canMoreLoading = true;
     type = TokenSymbols.WQT;
   }
-
 }
