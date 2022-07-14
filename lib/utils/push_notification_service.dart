@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:app/main.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_page.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -105,18 +105,20 @@ class PushNotificationService {
   ///
   Future<void> _onMessageOpenApp() async {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      if (notification != null) {
-        print("notification.body: ${notification.body}");
-        if (notification.body == "New message")
+      // RemoteNotification? notification = message.notification;
+      if (message.notification != null) {
+        if (message.data["action"] == "newMessage")
           Navigator.pushNamed(
             navigatorKey.currentState!.context,
-            ChatPage.routeName,
+            ChatRoomPage.routeName,
+            arguments: ChatRoomArguments(message.data["id"], true),
           );
-        else
+        else {
+          // final userId =
           Navigator.of(navigatorKey.currentState!.context).pushNamed(
             NotificationPage.routeName,
           );
+        }
       }
     });
   }

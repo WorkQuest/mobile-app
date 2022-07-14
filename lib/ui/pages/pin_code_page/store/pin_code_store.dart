@@ -139,8 +139,8 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
   }
 
   Future<void> onWillPop() async {
-    await Storage.deleteAllFromSecureStorage();
     await deletePushToken();
+    await Storage.deleteAllFromSecureStorage();
   }
 
   @action
@@ -174,8 +174,8 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
               pin = "";
               attempts += 1;
               if (attempts >= 3) {
-                await Storage.deleteAllFromSecureStorage();
                 await deletePushToken();
+                await Storage.deleteAllFromSecureStorage();
                 final cookieManager = WebviewCookieManager();
                 cookieManager.clearCookies();
                 this.onSuccess(StatePinCode.ToLogin);
@@ -200,8 +200,8 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       }
       String? token = await Storage.readRefreshToken();
       if (token == null) {
-        await Storage.deleteAllFromSecureStorage();
         await deletePushToken();
+        await Storage.deleteAllFromSecureStorage();
         this.onSuccess(StatePinCode.ToLogin);
         return;
       }
@@ -222,8 +222,8 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
       if (e.toString() == "Token invalid" ||
           e.toString() == "Token expired" ||
           e.toString() == "Session not found") {
-        await Storage.deleteAllFromSecureStorage();
         await deletePushToken();
+        await Storage.deleteAllFromSecureStorage();
         this.onSuccess(StatePinCode.ToLogin);
         startAnimation = false;
         return;

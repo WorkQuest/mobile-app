@@ -31,8 +31,8 @@ class MnemonicPage extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
+        await signInStore.deletePushToken();
         Storage.deleteAllFromSecureStorage();
-        signInStore.deletePushToken();
         Navigator.of(context, rootNavigator: true)
             .pushNamedAndRemoveUntil(SignInPage.routeName, (route) => false);
         return true;

@@ -25,7 +25,8 @@ const AndroidNotificationChannel _channel = AndroidNotificationChannel(
   playSound: true,
 );
 
-final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 ///BackGround Message Handler
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -40,7 +41,8 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -52,14 +54,14 @@ void main() async {
   injectDependencies(env: Environment.test);
   if (Platform.isAndroid)
     await Firebase.initializeApp(
-      name: "WorkQuest",
+      // name: "WorkQuest",
       options: DefaultFirebaseOptions.currentPlatform,
     ).then(
       (value) => _initialisePushNotification(),
     );
   else
     await Firebase.initializeApp(
-      // name: "WorkQuest",
+      // name: "WorkQuest_iOS",
       options: DefaultFirebaseOptions.currentPlatform,
     ).then(
       (value) => _initialisePushNotification(),
@@ -71,10 +73,12 @@ void main() async {
     if (wallet != null) {
       AccountRepository().setWallet(wallet);
     }
-    final _networkNameStorage = await Storage.read(StorageKeys.networkName.name);
+    final _networkNameStorage =
+        await Storage.read(StorageKeys.networkName.name);
     if (_networkNameStorage == null) {
       AccountRepository().setNetwork(NetworkName.workNetMainnet);
-      await Storage.write(StorageKeys.networkName.name, NetworkName.workNetMainnet.name);
+      await Storage.write(
+          StorageKeys.networkName.name, NetworkName.workNetMainnet.name);
     } else {
       final _networkName = Web3Utils.getNetworkName(_networkNameStorage);
       AccountRepository().setNetwork(_networkName);
@@ -105,7 +109,7 @@ void main() async {
   );
 }
 
-void _initialisePushNotification() {
+void _initialisePushNotification() async {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   PushNotificationService(
     _firebaseMessaging,
@@ -113,7 +117,9 @@ void _initialisePushNotification() {
     _flutterLocalNotificationsPlugin,
   );
   _firebaseMessaging.subscribeToTopic('all');
-  _firebaseMessaging.getToken().then((token) => print(" firebase token $token"));
+  _firebaseMessaging
+      .getToken()
+      .then((token) => print(" firebase token $token"));
   final sender = _firebaseMessaging.app.options.messagingSenderId;
   print("firebase sender: $sender");
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
