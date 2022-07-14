@@ -693,6 +693,9 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
+              Provider(
+                create: (context) => getIt.get<UserProfileStore>(),
+              ),
             ],
             child: Directionality(
               textDirection: checkDirection(context),

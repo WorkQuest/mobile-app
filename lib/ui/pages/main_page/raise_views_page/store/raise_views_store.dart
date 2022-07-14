@@ -62,6 +62,9 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
           ? '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa'
           : '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa';
 
+  final address =
+      EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQPromotion());
+
   Map<int, List<String>> price = {};
 
   List<String> forDay = [r"20$", r"12$", r"9$", r"7$"];
@@ -136,8 +139,9 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       final _client = AccountRepository().getClientWorkNet();
-      final _allowance = await _client.allowanceCoin(isRaise: true);
-      _priceForApprove = (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt();
+      final _allowance = await _client.allowanceCoin(address: address);
+      _priceForApprove =
+          (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt();
       needApprove = _allowance < _priceForApprove!;
       this.onSuccess(true);
     } catch (e) {
@@ -198,7 +202,7 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
       this.onLoading();
       await AccountRepository()
           .getClientWorkNet()
-          .approveCoin(price: _priceForApprove!, isRaise: true);
+          .approveCoin(price: _priceForApprove!, address: address);
     } on FormatException catch (e, trace) {
       print('raiseProfile FormatException | $e\n$trace');
       this.onError(e.message);
