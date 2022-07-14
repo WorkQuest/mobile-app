@@ -234,20 +234,11 @@ class WebSocket {
       } catch (e) {
         _sender = _events?['message.sender']?[2].toString().toLowerCase();
       }
-      print('_recipient: $_recipient');
-      print('_sender: $_sender');
       final _txHash = _events?['tx.hash']?[0]?.toString().toLowerCase();
-      print('txHash: $_txHash');
       final _blockNumber = _events?['tx.height']?[0];
-      print('blockNumber: $_blockNumber');
       final _block = DateTime.now();
-      print('block: $_block');
       final _value = _events?['ethereum_tx.amount']?[0];
-      print('value: ${_events?['ethereum_tx.amount']?[0]}');
       final _transactionFee = _events?['tx.fee']?[0].toString().split('a').first;
-      print('transaction_fee: ${_events?['tx.fee']?[0].toString().split('a').first}');
-      print('from_address_hash: $_sender');
-      print('to_address_hash: $_recipient');
 
       if (_recipient.toString().toLowerCase() == myAddress.toLowerCase()) {
         if (double.parse(_value) == 0.0) {
@@ -286,8 +277,8 @@ class WebSocket {
           GetIt.I.get<TransactionsStore>().getTransactions();
         }
       }
-    } catch (e, trace) {
-      print('web socket e - $e\ntrace - $trace');
+    } catch (e) {
+      // print('web socket e - $e\ntrace - $trace');
     }
   }
 
