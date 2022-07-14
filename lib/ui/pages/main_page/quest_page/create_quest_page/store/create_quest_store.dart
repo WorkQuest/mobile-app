@@ -181,6 +181,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   @action
   Future<String?> getGasApprove({String? addressQuest}) async {
     try {
+      this.onLoading();
       final _client = AccountRepository().getClientWorkNet();
       final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
       final _isNeedCheckApprove = _price.toBigInt() > oldPrice;
