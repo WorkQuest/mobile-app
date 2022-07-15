@@ -175,29 +175,35 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
             ),
           ),
         ),
-        const SizedBox(
-          height: 40,
-        ),
         if (isLoading)
-          AnimationCompression(
-            first: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: PasswordField(
-                animationController: controller,
-                pinCode: pinCode,
+          Container(
+            height: 50,
+            margin: const EdgeInsets.only(top: 16.0),
+            child: AnimationCompression(
+              first: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: PasswordField(
+                  animationController: controller,
+                  pinCode: pinCode,
+                ),
               ),
+              second: const SizedBox(
+                height: 50,
+                width: 50,
+                child: CircularProgressIndicator(),
+              ),
+              enabled: isLoading,
             ),
-            second: const CircularProgressIndicator(),
-            enabled: isLoading,
           )
         else
-          PasswordField(
-            animationController: controller,
-            pinCode: pinCode,
+          Container(
+            height: 50,
+            margin: const EdgeInsets.only(top: 16.0),
+            child: PasswordField(
+              animationController: controller,
+              pinCode: pinCode,
+            ),
           ),
-        const SizedBox(
-          height: 20,
-        ),
       ],
     );
   }
