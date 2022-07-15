@@ -54,7 +54,7 @@ extension LoginService on ApiProvider {
     required String totp,
   }) async {
     final responseData = await httpClient.post(
-      query: '/v1/auth/validate-totp',
+      query: '/v1/auth/session/current/validate-totp',
       data: {
         'token': totp,
       },
