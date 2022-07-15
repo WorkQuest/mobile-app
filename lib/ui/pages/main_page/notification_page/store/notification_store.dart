@@ -26,9 +26,6 @@ abstract class _NotificationStore extends IStore<bool> with Store {
   @observable
   ObservableMap<String, DisputeModel> disputes = ObservableMap.of({});
 
-  @observable
-  bool isMoreLoading = false;
-
   Future<void> getQuest(String questId) async {
     try {
       this.onLoading();
@@ -41,11 +38,9 @@ abstract class _NotificationStore extends IStore<bool> with Store {
 
   @action
   Future<void> getNotification({bool isForce = false}) async {
+    onLoading();
     if (isForce) {
-      onLoading();
       listOfNotifications.clear();
-    } else {
-      isMoreLoading = true;
     }
     try {
       final _result = await _apiProvider.getNotifications(
@@ -56,7 +51,6 @@ abstract class _NotificationStore extends IStore<bool> with Store {
     } catch (e) {
       this.onError(e.toString());
     }
-    isMoreLoading = false;
   }
 
   @action

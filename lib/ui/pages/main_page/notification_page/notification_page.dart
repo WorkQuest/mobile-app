@@ -1,3 +1,4 @@
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_cell.dart';
 import 'package:app/ui/pages/main_page/notification_page/store/notification_store.dart';
 import 'package:app/ui/widgets/shimmer.dart';
@@ -30,88 +31,114 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   Widget build(context) {
-    return Scaffold(
-      body: SafeArea(
-        child: RefreshIndicator(
-          displacement: 50,
-          edgeOffset: 100,
-          onRefresh: () {
-            return store.getNotification(isForce: true);
-          },
-          child: NotificationListener<ScrollEndNotification>(
-            onNotification: (scrollEnd) {
-              final metrics = scrollEnd.metrics;
-              if (metrics.maxScrollExtent <= metrics.pixels) {
-                store.getNotification(isForce: false);
+    return ObserverListener<NotificationStore>(
+      onSuccess: () {},
+      onFailure: () => false,
+      child: Scaffold(
+        body: SafeArea(
+          child: RefreshIndicator(
+            displacement: 50,
+            edgeOffset: 100,
+            onRefresh: () {
+              if (store.isLoading) {
+                return Future.value(false);
               }
-              return true;
+              return store.getNotification(isForce: true);
             },
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-              slivers: [
-                CupertinoSliverNavigationBar(
-                  largeTitle: Text("ui.notifications.title".tr()),
-                ),
-                Observer(
-                  builder: (_) {
-                    if (store.isSuccess && store.listOfNotifications.isEmpty) {
-                      return SliverFillRemaining(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              "assets/empty_quest_icon.svg",
-                            ),
-                            const SizedBox(height: 10),
-                            Text('quests.notification.noNotifications'.tr(),
-                              style: TextStyle(
-                                color: Color(0xFFD8DFE3),
+            child: NotificationListener<ScrollEndNotification>(
+              onNotification: (scrollEnd) {
+                final metrics = scrollEnd.metrics;
+                if (metrics.maxScrollExtent < metrics.pixels) {
+                  if (store.isLoading) {
+                    return false;
+                  }
+                  store.getNotification(isForce: false);
+                }
+                return true;
+              },
+              child: CustomScrollView(
+                physics:
+                    const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                slivers: [
+                  CupertinoSliverNavigationBar(
+                    largeTitle: Text("ui.notifications.title".tr()),
+                  ),
+                  Observer(
+                    builder: (_) {
+                      if (store.isSuccess && store.listOfNotifications.isEmpty) {
+                        return SliverFillRemaining(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                "assets/empty_quest_icon.svg",
                               ),
-                            ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'quests.notification.noNotifications'.tr(),
+                                style: TextStyle(
+                                  color: Color(0xFFD8DFE3),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      return SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            if (store.isLoading && store.listOfNotifications.isEmpty)
+                              ListView.separated(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: 6,
+                                separatorBuilder: (context, index) => Divider(
+                                  thickness: 1,
+                                ),
+                                itemBuilder: (context, index) =>
+                                    const _ShimmerNotificationView(),
+                              )
+                            else
+                              ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: store.isLoading
+                                      ? store.listOfNotifications.length + 1
+                                      : store.listOfNotifications.length,
+                                  separatorBuilder: (context, index) => Divider(
+                                        thickness: 1,
+                                      ),
+                                  itemBuilder: (context, index) {
+                                    if (store.isLoading &&
+                                        index == store.listOfNotifications.length) {
+                                      return Column(
+                                        children: const [
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          CircularProgressIndicator.adaptive(),
+                                        ],
+                                      );
+                                    }
+                                    return Column(
+                                      children: [
+                                        NotificationCell(
+                                          store: store,
+                                          body: store.listOfNotifications[index],
+                                          userId: widget.userId,
+                                        ),
+                                        if (index == store.listOfNotifications.length - 1)
+                                          Divider(thickness: 1),
+                                      ],
+                                    );
+                                  }),
                           ],
                         ),
                       );
-                    }
-                    return SliverList(
-                      delegate: SliverChildListDelegate(
-                        [
-                          if (store.isLoading)
-                            ListView.separated(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: 6,
-                              separatorBuilder: (context, index) => Divider(
-                                thickness: 1,
-                              ),
-                              itemBuilder: (context, index) =>
-                                  const _ShimmerNotificationView(),
-                            )
-                          else if (store.isSuccess && store.listOfNotifications.isNotEmpty)
-                            ListView.separated(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: store.listOfNotifications.length,
-                              separatorBuilder: (context, index) => Divider(
-                                thickness: 1,
-                              ),
-                              itemBuilder: (context, index) => Column(
-                                children: [
-                                  NotificationCell(
-                                    store: store,
-                                    body: store.listOfNotifications[index],
-                                    userId: widget.userId,
-                                  ),
-                                  if (index == store.listOfNotifications.length - 1)
-                                    Divider(thickness: 1),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ],
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
