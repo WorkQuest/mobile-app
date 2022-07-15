@@ -100,7 +100,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                         index: index,
                         imageUrl: portfolioStore!
                                 .portfolioList[index].medias.isEmpty
-                            ? "https://testnet-app.workquest.co/_nuxt/img/logo.1baae1e.svg"
+                            ? "https://dev-app.workquest.co/_nuxt/img/logo.1baae1e.svg"
                             : portfolioStore!
                                 .portfolioList[index].medias.first.url,
                         title: portfolioStore!.portfolioList[index].title,
