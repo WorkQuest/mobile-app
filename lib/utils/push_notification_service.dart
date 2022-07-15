@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:app/main.dart';
+import 'package:app/model/notification_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -82,7 +85,6 @@ class PushNotificationService {
   Future<void> _getRemoteNotification() async {
     try {
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print("notification.body: ${message.toMap()}");
         RemoteNotification? notification = message.notification;
         AndroidNotification? androidNotification =
             message.notification?.android;
@@ -106,19 +108,32 @@ class PushNotificationService {
   Future<void> _onMessageOpenApp() async {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       // RemoteNotification? notification = message.notification;
-      if (message.notification != null) {
-        if (message.data["action"] == "newMessage")
-          Navigator.pushNamed(
-            navigatorKey.currentState!.context,
-            ChatRoomPage.routeName,
-            arguments: ChatRoomArguments(message.data["id"], true),
-          );
-        else {
-          // final userId =
-          Navigator.of(navigatorKey.currentState!.context).pushNamed(
-            NotificationPage.routeName,
-          );
-        }
+      final notification = NotificationNotification.fromJson(message.data);
+      if (notification.action.toLowerCase().contains("message")) {
+        Navigator.pushNamed(
+          navigatorKey.currentState!.context,
+          ChatRoomPage.routeName,
+          arguments: ChatRoomArguments(notification.data.chatId, true),
+        );
+      } else if (notification.action.toLowerCase().contains("quest")) {
+        Navigator.pushNamed(
+          navigatorKey.currentState!.context,
+          QuestDetails.routeName,
+          arguments: QuestArguments(
+            questInfo: null,
+            id: notification.data.id,
+          ),
+        );
+      } else if (notification.action.toLowerCase().contains("dispute")) {
+        Navigator.pushNamed(
+          navigatorKey.currentState!.context,
+          DisputePage.routeName,
+          arguments: notification.data.questId,
+        );
+      } else {
+        Navigator.of(navigatorKey.currentState!.context).pushNamed(
+          NotificationPage.routeName,
+        );
       }
     });
   }

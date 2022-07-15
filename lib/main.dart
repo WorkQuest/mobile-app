@@ -120,7 +120,5 @@ void _initialisePushNotification() async {
   _firebaseMessaging
       .getToken()
       .then((token) => print(" firebase token $token"));
-  final sender = _firebaseMessaging.app.options.messagingSenderId;
-  print("firebase sender: $sender");
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 }
