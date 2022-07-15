@@ -81,10 +81,9 @@ class AccountRepository {
   }
 
   _disconnectWeb3Client() {
-    if (client?.client != null) {
-      client!.client!.dispose();
-      client!.client = null;
-    }
+    client?.client?.dispose();
+    client?.client = null;
+    client?.stream?.cancel();
   }
 
   ClientService getClientWorkNet(){

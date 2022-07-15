@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:app/model/web3/transactions_response.dart';
+import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
@@ -50,18 +51,29 @@ abstract class ClientServiceI {
 class ClientService implements ClientServiceI {
 
   Web3Client? client;
+  StreamSubscription<String>? stream;
 
-  ClientService(ConfigNetwork config, {String? customRpc}) {
+  ClientService(ConfigNetwork config) {
     try {
-      if (customRpc != null) {
-        client = Web3Client(customRpc, Client());
-        return;
-      }
       client = Web3Client(config.rpc, Client(), socketConnector: () {
         return IOWebSocketChannel.connect(config.wss).cast<String>();
       });
-    } catch (e, trace) {
-      print('e -> $e\ntrace -> $trace');
+      if (AccountRepository().isOtherNetwork) {
+        final _stream = client!.socketConnector!.call();
+        _stream.sink.add("""
+          {
+            "jsonrpc": "2.0",
+            "method": "eth_subscribe",
+            "id": 1,
+            "params": ["newHeads"]
+          }
+        """);
+        stream = _stream.stream.listen((event) {
+          GetIt.I.get<WalletStore>().getCoins(isForce: false);
+        });
+      }
+    } catch (e) {
+      // print('e -> $e\ntrace -> $trace');
       throw Exception(e.toString());
     }
   }
