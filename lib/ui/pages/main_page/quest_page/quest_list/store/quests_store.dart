@@ -165,12 +165,16 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   String getFilterPrice({bool isWorker = false}) {
     String result = '';
     if (isWorker) {
-      if (fromPrice.isNotEmpty)
-        result += '&betweenCostPerHour[from]=$fromPrice';
-      if (toPrice.isNotEmpty) result += '&betweenCostPerHour[to]=$toPrice';
+      if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
+        result += '&betweenCostPerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result +=
+        '&betweenCostPerHour[to]=${toPrice.isNotEmpty ? toPrice : '999999999999999'}';
+      }
     } else {
-      if (fromPrice.isNotEmpty) result += '&priceBetween[from]=$fromPrice';
-      if (toPrice.isNotEmpty) result += '&priceBetween[to]=$toPrice';
+      if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
+        result += '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result += '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '999999999999999'}';
+      }
     }
     return result;
   }

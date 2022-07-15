@@ -53,6 +53,14 @@ class _FilterQuestsPageState extends State<FilterQuestsPage>
     super.initState();
   }
 
+
+  @override
+  void dispose() {
+    fromPriceController.dispose();
+    toPriceController.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     super.build(context);
     return DismissKeyboard(

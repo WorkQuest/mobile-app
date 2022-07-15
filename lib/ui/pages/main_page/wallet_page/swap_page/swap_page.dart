@@ -26,10 +26,6 @@ const _divider = SizedBox(
 const _spaceDivider = SizedBox(
   height: 15,
 );
-const _minimumError = 'To avoid unnecessary fees and network slippage, the minimum amount for this pair is \$5 '
-    'USDT/USDC';
-const _maximumError = 'To avoid unnecessary fees and network slippage, the maximum amount for this pair is \$100 '
-    'USDT/USDC.';
 
 class SwapPage extends StatefulWidget {
   static const String routeName = "/swapPage";
@@ -424,7 +420,7 @@ class _SwapPageState extends State<SwapPage> {
         title: 'swap.choose'.tr(namedArgs: {'object': 'token'}),
         items: [
           _ModelItem(
-              item: SwapToken.tusdt, iconPath: 'assets/usdt_coin_icon.svg'),
+              item: SwapToken.usdt, iconPath: 'assets/usdt_coin_icon.svg'),
         ],
       ),
     );
@@ -444,12 +440,11 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   _getTitleToken(SwapToken token) {
-    switch (token) {
-      case SwapToken.tusdt:
-        return 'USDT';
-      case SwapToken.usdc:
-        return 'USDC';
+    final _isTestnet = AccountRepository().notifierNetwork.value == Network.testnet;
+    if (_isTestnet) {
+      return 'T${token.name}'.toUpperCase();
     }
+    return token.name.toUpperCase();
   }
 
   _getIconPathNetwork(SwapNetworks? network) {
@@ -609,7 +604,10 @@ class _ListBottomWidget extends StatelessWidget {
 
   String _getName(dynamic value) {
     if (value is SwapToken) {
-      return value.name.toUpperCase();
+      final _isTestnet = AccountRepository().notifierNetwork.value == Network.testnet;
+      if (_isTestnet) {
+        return 'T${value.name}'.toUpperCase();
+      }
     } else if (value is SwapNetworks) {
       switch (value) {
         case SwapNetworks.ETH:

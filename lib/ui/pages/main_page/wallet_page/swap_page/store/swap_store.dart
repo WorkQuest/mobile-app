@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:app/utils/web3_utils.dart';
@@ -6,6 +7,7 @@ import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/contracts/erc20.dart';
 import 'package:web3dart/web3dart.dart';
+import 'package:web_socket_channel/io.dart';
 
 import '../../../../../../constants.dart';
 import '../../../../../../http/web3_extension.dart';
@@ -18,7 +20,7 @@ part 'swap_store.g.dart';
 
 enum SwapNetworks { ETH, BSC, POLYGON }
 
-enum SwapToken { tusdt, usdc }
+enum SwapToken { usdt }
 
 @injectable
 class SwapStore extends SwapStoreBase with _$SwapStore {
@@ -32,11 +34,16 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
 
   double? courseWQT;
 
+  String? hashWorknetTrx;
+
+  bool shouldReconnect = true;
+  IOWebSocketChannel? _notificationChannel;
+
   @observable
   SwapNetworks? network;
 
   @observable
-  SwapToken token = SwapToken.tusdt;
+  SwapToken token = SwapToken.usdt;
 
   @observable
   double amount = 0.0;
@@ -116,6 +123,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
 
   @action
   createSwap() async {
+    hashWorknetTrx = null;
+    shouldReconnect = true;
     try {
       onLoading();
       Web3Client _client = service.client!;
@@ -161,10 +170,13 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         ),
         chainId: _chainId.toInt(),
       );
+      _connectSocket();
       int _attempts = 0;
-      while (_attempts < 8) {
+      while (_attempts < 60) {
         final result = await _client.getTransactionReceipt(_hashTx);
-        if (result != null) {
+        if (result != null && hashWorknetTrx != null) {
+          shouldReconnect = false;
+          _notificationChannel?.sink.close();
           getMaxBalance();
           onSuccess(true);
           return;
@@ -173,6 +185,8 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         _attempts++;
       }
       getMaxBalance();
+      shouldReconnect = false;
+      _notificationChannel?.sink.close();
       final _link = Web3Utils.getLinkToExplorer(network!, _hashTx);
       onError('Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
     } catch (e) {
@@ -201,7 +215,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       ),
     );
     int _attempts = 0;
-    while (_attempts < 8) {
+    while (_attempts < 60) {
       final result = await service.client!.getTransactionReceipt(_txHashApprove);
       if (result != null) {
         getMaxBalance();
@@ -323,6 +337,42 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     );
     await Web3Utils.checkPossibilityTx(typeCoin: TokenSymbols.USDT, amount: amount, fee: _fee);
     return ((_estimateGas * _gas.getInWei).toDouble() * pow(10, -18)).toStringAsFixed(17);
+  }
+
+  _connectSocket() {
+    _notificationChannel = IOWebSocketChannel.connect(
+        "wss://notifications.workquest.co/api/v1/notifications");
+
+    _notificationChannel!.sink.add("""{
+                  "type": "hello",
+                  "id": 1,
+                  "version": "2",                  
+                  "auth": {
+                      "headers": {"authorization": null}
+                  },
+                  "subs": ["/notifications/bridgeUsdt/${AccountRepository().userAddress}"]
+                }""");
+
+    _notificationChannel!.stream.listen(
+          (message) {
+        print('message connect: $message');
+        try {
+          final _response = jsonDecode(message);
+          hashWorknetTrx = _response['message']['data']['hash'];
+        } catch (e) {
+          // print('catch socket: $e');
+        }
+      },
+      onError: (error) {
+        print('message error: $error');
+      },
+      onDone: () {
+        print('done conntect');
+        if (shouldReconnect) {
+          _connectSocket();
+        }
+      },
+    );
   }
 
   @action

@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 class Constants {
   static const Map<String, Locale> languageList = {
     "English": Locale('en', 'US'),
-    "Mandarin Chinese": Locale('zh', 'ZH'),
-    "Hindi": Locale('hi', 'HI'),
-    "Spanish": Locale('es', 'ES'),
-    "French": Locale('fr', 'FR'),
-    "Standard Arabic": Locale('ar', 'SA'),
-    "Bengali": Locale('bn', 'BN'),
-    "Russian": Locale('ru', 'RU'),
-    "Portuguese": Locale('pt', 'PT'),
-    "Indonesian ": Locale('id', 'ID'),
+    // "Mandarin Chinese": Locale('zh', 'ZH'),
+    // "Hindi": Locale('hi', 'HI'),
+    // "Spanish": Locale('es', 'ES'),
+    // "French": Locale('fr', 'FR'),
+    // "Standard Arabic": Locale('ar', 'SA'),
+    // "Bengali": Locale('bn', 'BN'),
+    // "Russian": Locale('ru', 'RU'),
+    // "Portuguese": Locale('pt', 'PT'),
+    // "Indonesian ": Locale('id', 'ID'),
   };
 
   static const List<Color> priorityColors = [
