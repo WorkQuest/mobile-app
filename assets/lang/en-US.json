@@ -379,7 +379,8 @@
       "workerRejectedInvitationToQuest": "Worker rejected invitation to quest",
       "employerRejectedWorkersResponse": "Employer rejected workers response",
       "userLeftReviewAboutQuest": "User left review about quest",
-      "openDispute": "Open dispute"
+      "openDispute": "Open dispute",
+      "noNotifications": "No notifications"
     },
     "finishedBy": "Finished by",
     "youResponded": "You responded",

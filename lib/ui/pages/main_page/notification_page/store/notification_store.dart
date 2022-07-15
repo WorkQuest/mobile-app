@@ -18,16 +18,16 @@ abstract class _NotificationStore extends IStore<bool> with Store {
 
   _NotificationStore(this._apiProvider);
 
-  int offset = 0;
-
   BaseQuestResponse? quest;
 
   @observable
-  ObservableList<NotificationElement> listOfNotifications =
-      ObservableList.of([]);
+  ObservableList<NotificationElement> listOfNotifications = ObservableList.of([]);
 
   @observable
   ObservableMap<String, DisputeModel> disputes = ObservableMap.of({});
+
+  @observable
+  bool isMoreLoading = false;
 
   Future<void> getQuest(String questId) async {
     try {
@@ -40,19 +40,23 @@ abstract class _NotificationStore extends IStore<bool> with Store {
   }
 
   @action
-  Future<void> getNotification(bool newList) async {
+  Future<void> getNotification({bool isForce = false}) async {
+    if (isForce) {
+      onLoading();
+      listOfNotifications.clear();
+    } else {
+      isMoreLoading = true;
+    }
     try {
-      if (newList) offset = 0;
-      if (offset == listOfNotifications.length) {
-        final responseData =
-            await _apiProvider.getNotifications(offset: offset);
-        listOfNotifications.addAll(responseData.notifications);
-        offset += 10;
-        this.onSuccess(true);
-      }
+      final _result = await _apiProvider.getNotifications(
+        offset: listOfNotifications.length,
+      );
+      listOfNotifications.addAll(_result.notifications);
+      this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
     }
+    isMoreLoading = false;
   }
 
   @action
@@ -60,8 +64,7 @@ abstract class _NotificationStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.deleteNotification(notificationId: notificationId);
-      listOfNotifications
-          .removeWhere((element) => element.id == notificationId);
+      listOfNotifications.removeWhere((element) => element.id == notificationId);
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

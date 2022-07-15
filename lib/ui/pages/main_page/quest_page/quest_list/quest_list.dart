@@ -151,8 +151,9 @@ class _QuestListState extends State<QuestList> {
                           : "workers.workers".tr(),
                     ),
                   ),
-                  InkWell(
-                    onTap: () => Navigator.of(
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () => Navigator.of(
                       context,
                       rootNavigator: true,
                     ).pushNamed(
@@ -161,7 +162,7 @@ class _QuestListState extends State<QuestList> {
                     ),
                     child: const Icon(Icons.notifications_none_outlined),
                   ),
-                  const SizedBox(width: 20.0)
+                  const SizedBox(width: 12.0)
                 ],
               ),
             ),

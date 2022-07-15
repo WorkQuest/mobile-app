@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -24,67 +25,93 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   void initState() {
     store = context.read<NotificationStore>();
-    store.getNotification(true);
+    store.getNotification(isForce: true);
     super.initState();
   }
 
   Widget build(context) {
     return Scaffold(
-      body: NotificationListener<ScrollEndNotification>(
-        onNotification: (scrollEnd) {
-          final metrics = scrollEnd.metrics;
-          if (metrics.maxScrollExtent == metrics.pixels) {
-            store.getNotification(false);
-          }
-          return true;
+      body: RefreshIndicator(
+        displacement: 50,
+        edgeOffset: 150,
+        onRefresh: () {
+          return store.getNotification(isForce: true);
         },
-        child: CustomScrollView(
-          slivers: [
-            CupertinoSliverNavigationBar(
-              largeTitle: Text("ui.notifications.title".tr()),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  Observer(
-                    builder: (_) {
-                      if (store.isLoading) {
-                        return ListView.separated(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: 6,
-                          separatorBuilder: (context, index) => Divider(
-                            thickness: 1,
-                          ),
-                          itemBuilder: (context, index) =>
-                              const _ShimmerNotificationView(),
-                        );
-                      }
-                      return ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: store.listOfNotifications.length,
-                        separatorBuilder: (context, index) => Divider(
-                          thickness: 1,
-                        ),
-                        itemBuilder: (context, index) => Column(
-                          children: [
-                            NotificationCell(
-                              store: store,
-                              body: store.listOfNotifications[index],
-                              userId: widget.userId,
-                            ),
-                            if (index == store.listOfNotifications.length - 1)
-                              Divider(thickness: 1),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ],
+        child: NotificationListener<ScrollEndNotification>(
+          onNotification: (scrollEnd) {
+            final metrics = scrollEnd.metrics;
+            if (metrics.maxScrollExtent <= metrics.pixels) {
+              store.getNotification(isForce: false);
+            }
+            return true;
+          },
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            slivers: [
+              CupertinoSliverNavigationBar(
+                largeTitle: Text("ui.notifications.title".tr()),
               ),
-            ),
-          ],
+              Observer(
+                builder: (_) {
+                  if (store.isSuccess && store.listOfNotifications.isEmpty) {
+                    return SliverFillRemaining(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            "assets/empty_quest_icon.svg",
+                          ),
+                          const SizedBox(height: 10),
+                          Text('quests.notification.noNotifications'.tr(),
+                            style: TextStyle(
+                              color: Color(0xFFD8DFE3),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        if (store.isLoading)
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: 6,
+                            separatorBuilder: (context, index) => Divider(
+                              thickness: 1,
+                            ),
+                            itemBuilder: (context, index) =>
+                                const _ShimmerNotificationView(),
+                          )
+                        else if (store.isSuccess && store.listOfNotifications.isNotEmpty)
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: store.listOfNotifications.length,
+                            separatorBuilder: (context, index) => Divider(
+                              thickness: 1,
+                            ),
+                            itemBuilder: (context, index) => Column(
+                              children: [
+                                NotificationCell(
+                                  store: store,
+                                  body: store.listOfNotifications[index],
+                                  userId: widget.userId,
+                                ),
+                                if (index == store.listOfNotifications.length - 1)
+                                  Divider(thickness: 1),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

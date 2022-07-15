@@ -40,13 +40,28 @@ mixin _$NotificationStore on _NotificationStore, Store {
     });
   }
 
+  final _$isMoreLoadingAtom = Atom(name: '_NotificationStore.isMoreLoading');
+
+  @override
+  bool get isMoreLoading {
+    _$isMoreLoadingAtom.reportRead();
+    return super.isMoreLoading;
+  }
+
+  @override
+  set isMoreLoading(bool value) {
+    _$isMoreLoadingAtom.reportWrite(value, super.isMoreLoading, () {
+      super.isMoreLoading = value;
+    });
+  }
+
   final _$getNotificationAsyncAction =
       AsyncAction('_NotificationStore.getNotification');
 
   @override
-  Future<void> getNotification(bool newList) {
+  Future<void> getNotification({bool isForce = false}) {
     return _$getNotificationAsyncAction
-        .run(() => super.getNotification(newList));
+        .run(() => super.getNotification(isForce: isForce));
   }
 
   final _$deleteNotificationAsyncAction =
@@ -69,7 +84,8 @@ mixin _$NotificationStore on _NotificationStore, Store {
   String toString() {
     return '''
 listOfNotifications: ${listOfNotifications},
-disputes: ${disputes}
+disputes: ${disputes},
+isMoreLoading: ${isMoreLoading}
     ''';
   }
 }
