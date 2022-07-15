@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app/main.dart';
@@ -36,6 +37,14 @@ class PushNotificationService {
         provisional: false,
         sound: true,
       );
+      var initializationSettingsAndroid =
+          AndroidInitializationSettings('@drawable/logo_icon');
+      var initializationSettingsIOS = new IOSInitializationSettings();
+      var initializationSettings = new InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS);
+      flutterLocalNotificationsPlugin.initialize(initializationSettings,
+          onSelectNotification: onSelectNotification);
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         //FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
         Platform.isAndroid
@@ -48,6 +57,11 @@ class PushNotificationService {
     } catch (e, trace) {
       print("Push Notifications error: $e\n$trace");
     }
+  }
+
+  Future onSelectNotification(String? payload) async {
+    final message = NotificationNotification.fromJson(jsonDecode(payload!));
+    _openScreen(message);
   }
 
   ///FlutterLocalNotificationPlugin Implementation for android
@@ -91,10 +105,15 @@ class PushNotificationService {
         AppleNotification? appleNotification = message.notification?.apple;
         if (notification != null &&
             (androidNotification != null || appleNotification != null)) {
+          Map<String, dynamic> data = {
+            "data": message.data["data"],
+            "action": message.data["action"],
+          };
           showNotification(
             notification.hashCode,
             notification.body,
             notification.title,
+            JsonEncoder.withIndent('  ').convert(data),
           );
         }
       });
@@ -107,8 +126,13 @@ class PushNotificationService {
   ///
   Future<void> _onMessageOpenApp() async {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      // RemoteNotification? notification = message.notification;
       final notification = NotificationNotification.fromJson(message.data);
+      _openScreen(notification);
+    });
+  }
+
+  void _openScreen(NotificationNotification notification) {
+    try {
       if (notification.action.toLowerCase().contains("message")) {
         Navigator.pushNamed(
           navigatorKey.currentState!.context,
@@ -135,7 +159,10 @@ class PushNotificationService {
           NotificationPage.routeName,
         );
       }
-    });
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+    }
   }
 
   ///Show Notification using flutter Local Notification
@@ -143,6 +170,7 @@ class PushNotificationService {
     int hashcode,
     String? body,
     String? title,
+    String? data,
   ) async {
     flutterLocalNotificationsPlugin.show(
       hashcode,
@@ -164,6 +192,7 @@ class PushNotificationService {
           presentSound: true,
         ),
       ),
+      payload: data,
     );
   }
 }

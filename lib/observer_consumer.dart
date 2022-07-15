@@ -52,10 +52,8 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
       (_) => _store.errorMessage,
       (String? errorMessage) {
         if (errorMessage != null) {
-          print('qweasd');
           if (widget.onFailure != null) if (widget.onFailure!()) return;
           final _words = errorMessage.split(' ');
-          print('words: $_words');
           showCupertinoDialog(
             context: context,
             barrierDismissible: true,
