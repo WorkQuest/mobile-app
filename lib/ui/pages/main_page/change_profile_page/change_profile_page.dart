@@ -547,8 +547,8 @@ class _FieldsForWorkerWidgetState extends State<_FieldsForWorkerWidget> {
         ),
         _InputWidget(
           title: "settings.costPerHour".tr(),
-          initialValue: widget.pageStore.userData.wagePerHour,
-          onChanged: (text) => widget.pageStore.userData.wagePerHour = text,
+          initialValue: widget.pageStore.userData.costPerHour,
+          onChanged: (text) => widget.pageStore.userData.costPerHour = text,
           validator: Validators.emptyValidator,
           inputType: TextInputType.number,
           maxLength: null,

@@ -756,7 +756,7 @@ extension UserInfoService on ApiProvider {
       },
       "firstName": userData.firstName,
       "lastName": userData.lastName.isNotEmpty ? userData.lastName : null,
-      if (userData.role == UserRole.Worker) "costPerHour": userData.wagePerHour,
+      if (userData.role == UserRole.Worker) "costPerHour": userData.costPerHour,
       if (userData.role == UserRole.Worker) "priority": userData.priority,
       if (userData.role == UserRole.Worker) "workplace": userData.workplace,
       if (userData.role == UserRole.Worker) "payPeriod": userData.payPeriod,
