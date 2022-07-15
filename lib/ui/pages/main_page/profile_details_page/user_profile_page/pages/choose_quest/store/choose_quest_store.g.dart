@@ -39,6 +39,21 @@ mixin _$ChooseQuestStore on _ChooseQuestStore, Store {
     });
   }
 
+  final _$showMoreAtom = Atom(name: '_ChooseQuestStore.showMore');
+
+  @override
+  bool get showMore {
+    _$showMoreAtom.reportRead();
+    return super.showMore;
+  }
+
+  @override
+  set showMore(bool value) {
+    _$showMoreAtom.reportWrite(value, super.showMore, () {
+      super.showMore = value;
+    });
+  }
+
   final _$getQuestsAsyncAction = AsyncAction('_ChooseQuestStore.getQuests');
 
   @override
@@ -75,7 +90,8 @@ mixin _$ChooseQuestStore on _ChooseQuestStore, Store {
   String toString() {
     return '''
 quests: ${quests},
-questId: ${questId}
+questId: ${questId},
+showMore: ${showMore}
     ''';
   }
 }

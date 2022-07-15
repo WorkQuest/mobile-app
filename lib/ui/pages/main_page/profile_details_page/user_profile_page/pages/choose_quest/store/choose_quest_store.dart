@@ -17,13 +17,14 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
 
   _ChooseQuestStore(this._apiProvider);
 
-  int offset = 0;
-
   @observable
   ObservableList<BaseQuestResponse> quests = ObservableList.of([]);
 
   @observable
   String questId = "";
+
+  @observable
+  bool showMore = false;
 
   @action
   void setQuest(String id) => questId = id;
@@ -35,28 +36,26 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
     required bool isProfileYours,
   }) async {
     try {
-      this.onLoading();
       if (newList) {
+        this.onLoading();
         quests.clear();
-        offset = 0;
+      } else {
+        showMore = true;
       }
-      if (offset == quests.length) {
-        quests.addAll(await _apiProvider.getAvailableQuests(
-          userId: userId,
-          offset: offset,
-        ));
+      quests.addAll(await _apiProvider.getAvailableQuests(
+        userId: userId,
+        offset: quests.length,
+      ));
 
-        quests.toList().sort((key1, key2) =>
-            key1.createdAt!.millisecondsSinceEpoch <
-                    key2.createdAt!.millisecondsSinceEpoch
-                ? 1
-                : 0);
-        offset += 10;
-        this.onSuccess(true);
-      }
+      quests.toList().sort((key1, key2) =>
+          key1.createdAt!.millisecondsSinceEpoch < key2.createdAt!.millisecondsSinceEpoch
+              ? 1
+              : 0);
+      this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
     }
+    showMore = false;
   }
 
   @action

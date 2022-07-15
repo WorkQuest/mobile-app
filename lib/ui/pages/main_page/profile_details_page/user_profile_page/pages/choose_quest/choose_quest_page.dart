@@ -60,20 +60,29 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
             : NotificationListener<ScrollEndNotification>(
                 onNotification: (scrollEnd) {
                   final metrics = scrollEnd.metrics;
-                  if ((metrics.atEdge ||
-                          metrics.maxScrollExtent < metrics.pixels) &&
+                  if ((metrics.atEdge || metrics.maxScrollExtent < metrics.pixels) &&
                       !store.isLoading) {
                     store.getQuests(
                       userId: widget.workerId,
-                      newList: true,
+                      newList: false,
                       isProfileYours: false,
                     );
                   }
                   return true;
                 },
                 child: ListView.builder(
-                  itemBuilder: (context, index) => Observer(
-                    builder: (_) => RadioListTile<String>(
+                  itemBuilder: (context, index) => Observer(builder: (_) {
+                    if (store.showMore && index == store.quests.length) {
+                      return Column(
+                        children: const [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          CircularProgressIndicator.adaptive(),
+                        ],
+                      );
+                    }
+                    return RadioListTile<String>(
                       title: Text(
                         store.quests[index].title,
                       ),
@@ -84,9 +93,10 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                           store.quests[index].id,
                         );
                       },
-                    ),
-                  ),
-                  itemCount: store.quests.length,
+                    );
+                  }),
+                  itemCount:
+                      store.showMore ? store.quests.length + 1 : store.quests.length,
                 ),
               ),
       ),
