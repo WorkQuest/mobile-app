@@ -59,8 +59,10 @@ class ClientService implements ClientServiceI {
         return IOWebSocketChannel.connect(config.wss).cast<String>();
       });
       if (AccountRepository().isOtherNetwork) {
-        final _stream = client!.socketConnector!.call();
-        _stream.sink.add("""
+        Future.delayed(const Duration(seconds: 2)).then((value) {
+          try {
+            final _stream = client!.socketConnector!.call();
+            _stream.sink.add("""
           {
             "jsonrpc": "2.0",
             "method": "eth_subscribe",
@@ -68,8 +70,14 @@ class ClientService implements ClientServiceI {
             "params": ["newHeads"]
           }
         """);
-        stream = _stream.stream.listen((event) {
-          GetIt.I.get<WalletStore>().getCoins(isForce: false);
+            stream = _stream.stream.listen((event) {
+              if (!GetIt.I.get<WalletStore>().isLoading) {
+                GetIt.I.get<WalletStore>().getCoins(isForce: false);
+              }
+            });
+          } catch (e) {
+            // print('ethClient!.socketConnector!.call | $e\n$trace');
+          }
         });
       }
     } catch (e) {
