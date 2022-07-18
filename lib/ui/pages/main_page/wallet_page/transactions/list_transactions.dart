@@ -77,11 +77,15 @@ class ListTransactions extends StatelessWidget {
               ),
             );
           } else {
-            return SliverFillRemaining(
-              child: Center(
-                child: LoginButton(
-                  title: 'wallet.goExplorer'.tr(),
-                  onTap: _onPressedGoToExplorer,
+            return SliverToBoxAdapter(
+              child: SizedBox(
+                width: double.infinity,
+                height: 250,
+                child: Center(
+                  child: LoginButton(
+                    title: 'wallet.goExplorer'.tr(),
+                    onTap: _onPressedGoToExplorer,
+                  ),
                 ),
               ),
             );
