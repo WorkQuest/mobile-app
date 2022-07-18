@@ -603,11 +603,14 @@ class _ListBottomWidget extends StatelessWidget {
   }
 
   String _getName(dynamic value) {
+    print('value: $value');
+    print('value: ${value.runtimeType}');
     if (value is SwapToken) {
       final _isTestnet = AccountRepository().notifierNetwork.value == Network.testnet;
       if (_isTestnet) {
         return 'T${value.name}'.toUpperCase();
       }
+      return value.name.toUpperCase();
     } else if (value is SwapNetworks) {
       switch (value) {
         case SwapNetworks.ETH:

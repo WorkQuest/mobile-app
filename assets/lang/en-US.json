@@ -1568,7 +1568,8 @@
     "amountBalance": "Amount (Balance: {maxAmount})",
     "addressWalletTo": "Address wallet to",
     "addressTo": "Address to",
-    "amountOfWQT": "Amount of WQT"
+    "amountOfWQT": "Amount of WQT",
+    "includesWorkNetNetwork": "Includes a WorkNet network fee."
   },
   "dispute": {
     "statuses": {
