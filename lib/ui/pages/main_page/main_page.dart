@@ -112,7 +112,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     navigatorKey: firstTabNavKey,
                     builder: (context) {
                       final AnimationController _controller = AnimationController(
-                        duration: const Duration(milliseconds: 500),
+                        duration: const Duration(milliseconds: 300),
                         vsync: this,
                       )..forward(from: 0.5);
                       late final Animation<double> _animation = CurvedAnimation(
@@ -130,7 +130,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   navigatorKey: secondTabNavKey,
                   builder: (context) {
                     final AnimationController _controller = AnimationController(
-                      duration: const Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 300),
                       vsync: this,
                     )..forward(from: 0.5);
                     late final Animation<double> _animation = CurvedAnimation(
@@ -149,7 +149,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   navigatorKey: thirdTabNavKey,
                   builder: (BuildContext context) {
                     final AnimationController _controller = AnimationController(
-                      duration: const Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 300),
                       vsync: this,
                     )..forward(from: 0.5);
                     late final Animation<double> _animation = CurvedAnimation(
@@ -168,7 +168,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   navigatorKey: forthTabNavKey,
                   builder: (BuildContext context) {
                     final AnimationController _controller = AnimationController(
-                      duration: const Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 300),
                       vsync: this,
                     )..forward(from: 0.5);
                     late final Animation<double> _animation = CurvedAnimation(
@@ -187,7 +187,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   navigatorKey: fiveTabNavKey,
                   builder: (context) {
                     final AnimationController _controller = AnimationController(
-                      duration: const Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 300),
                       vsync: this,
                     )..forward(from: 0.5);
                     late final Animation<double> _animation = CurvedAnimation(
