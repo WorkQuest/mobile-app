@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:app/model/web3/transactions_response.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
@@ -71,8 +72,13 @@ class ClientService implements ClientServiceI {
           }
         """);
             stream = _stream.stream.listen((event) {
-              if (!GetIt.I.get<WalletStore>().isLoading) {
-                GetIt.I.get<WalletStore>().getCoins(isForce: false);
+              final _walletStore = GetIt.I.get<WalletStore>();
+              if (!_walletStore.isLoading) {
+                _walletStore.getCoins(isForce: false);
+              }
+              final _swapStore = GetIt.I.get<SwapStore>();
+              if (_swapStore.network != null && !_swapStore.isLoading) {
+                _swapStore.getMaxBalance();
               }
             });
           } catch (e) {

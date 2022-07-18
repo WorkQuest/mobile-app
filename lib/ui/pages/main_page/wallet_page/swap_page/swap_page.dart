@@ -167,22 +167,6 @@ class _SwapPageState extends State<SwapPage> {
                             const SizedBox(
                               width: 4,
                             ),
-                            if (store.isConnect)
-                              SizedBox(
-                                height: 18,
-                                child: CupertinoButton(
-                                  padding: EdgeInsets.zero,
-                                  child: Text(
-                                    'meta.update'.tr(),
-                                    style: const TextStyle(
-                                      color: AppColor.enabledButton,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    store.getMaxBalance();
-                                  },
-                                ),
-                              )
                           ],
                         ),
                         _divider,
