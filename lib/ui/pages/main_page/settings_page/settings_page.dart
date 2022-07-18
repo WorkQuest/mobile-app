@@ -323,7 +323,7 @@ class SettingsPage extends StatelessWidget {
         );
       }
     } else {
-      _showAlertInfo(context, title: "settings.disabled2FA");
+      _showAlertInfo(context, title: "settings.disabled2FA".tr());
     }
   }
 
