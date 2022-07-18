@@ -9,6 +9,7 @@ import 'package:app/work_quest_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'di/injector.dart';
@@ -25,7 +26,8 @@ const AndroidNotificationChannel _channel = AndroidNotificationChannel(
   playSound: true,
 );
 
-final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 ///BackGround Message Handler
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -50,20 +52,20 @@ void main() async {
   //_initialisePushNotification();
   //init get_it
   injectDependencies(env: Environment.test);
-  if (Platform.isAndroid)
-    await Firebase.initializeApp(
-      name: "WorkQuest",
-      options: DefaultFirebaseOptions.currentPlatform,
-    ).then(
-      (value) => _initialisePushNotification(),
-    );
-  else
-    await Firebase.initializeApp(
-      // name: "WorkQuest",
-      options: DefaultFirebaseOptions.currentPlatform,
-    ).then(
-      (value) => _initialisePushNotification(),
-    );
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      statusBarColor: Colors.transparent,
+    ),
+  );
+  await Firebase.initializeApp(
+    name: "WorkQuest",
+    options: DefaultFirebaseOptions.currentPlatform,
+  ).then(
+    (value) => _initialisePushNotification(),
+  );
+  // }
 
   await EasyLocalization.ensureInitialized();
   try {

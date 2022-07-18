@@ -119,10 +119,7 @@ class _QuestListState extends State<QuestList> {
       child: NotificationListener<ScrollEndNotification>(
         onNotification: (ScrollEndNotification scrollEnd) {
           final metrics = scrollEnd.metrics;
-          print('metrics.maxScrollExtent: ${metrics.maxScrollExtent}');
-          print('metrics.pixels: ${metrics.pixels}');
           if (metrics.maxScrollExtent <= metrics.pixels) {
-            print('questsStore!.isLoading: ${questsStore!.isLoading}');
             if (questsStore!.isLoading) return true;
             if (profileMeStore!.userData!.role == UserRole.Worker) {
               questsStore!.searchWord.length > 2
