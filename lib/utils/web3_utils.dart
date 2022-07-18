@@ -373,6 +373,27 @@ class Web3Utils {
     }
   }
 
+  static String getPathIcon(TokenSymbols token) {
+    switch (token) {
+      case TokenSymbols.WUSD:
+        return 'assets/wusd_coin_icon.svg';
+      case TokenSymbols.WQT:
+        return 'assets/wqt_coin_icon.svg';
+      case TokenSymbols.wBNB:
+        return 'assets/bsc_logo.svg';
+      case TokenSymbols.wETH:
+        return 'assets/eth_coin_icon.svg';
+      case TokenSymbols.USDT:
+        return 'assets/tusdt_coin_icon.svg';
+      case TokenSymbols.BNB:
+        return 'assets/bsc_logo.svg';
+      case TokenSymbols.ETH:
+        return 'assets/eth_coin_icon.svg';
+      case TokenSymbols.MATIC:
+        return 'assets/matic_coin_icon.svg';
+    }
+  }
+
   static String getTitleToken(TokenSymbols typeCoin) {
     if (typeCoin == TokenSymbols.WQT) {
       return 'WQT';

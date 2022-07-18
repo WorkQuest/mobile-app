@@ -93,17 +93,17 @@ class Configs {
         DataCoins(
           symbolToken: TokenSymbols.wETH,
           addressToken: '0x8E52341384F5286f4c76cE1072Aba887Be8E4EB9',
-          iconPath: 'assets/weth_coin_icon.svg',
+          iconPath: 'assets/eth_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.wBNB,
           addressToken: '0xD7ca5F803807b03D49606D4f8e66551170b1d689',
-          iconPath: 'assets/wbnb_coin_icon.svg',
+          iconPath: 'assets/bsc_logo.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken: '0xD93d2cF0e0179112469188F61ceb948F2Dbe4824',
-          iconPath: 'assets/usdt_coin_icon.svg',
+          iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
     ),
@@ -125,17 +125,17 @@ class Configs {
     //       DataCoins(
     //         symbolToken: TokenSymbols.wETH,
     //         addressToken: '0xd9679c4bc6e1546cfcb9c70ac81a4cbf400e7d24',
-    //         iconPath: 'assets/weth_coin_icon.svg',
+    //         iconPath: 'assets/eth_coin_icon.svg',
     //       ),
     //       DataCoins(
     //         symbolToken: TokenSymbols.wBNB,
     //         addressToken: '0x0ed13a696fa29151f3064077acb2a281e68df2aa',
-    //         iconPath: 'assets/wbnb_coin_icon.svg',
+    //         iconPath: 'assets/bsc_logo.svg',
     //       ),
     //       DataCoins(
     //         symbolToken: TokenSymbols.USDT,
     //         addressToken: '0xbd5bbed9677401e911044947cff9fa4979c29bd8',
-    //         iconPath: 'assets/usdt_coin_icon.svg',
+    //         iconPath: 'assets/tusdt_coin_icon.svg',
     //       ),
     //     ],
     //   ),
@@ -157,40 +157,39 @@ class Configs {
         DataCoins(
           symbolToken: TokenSymbols.wETH,
           addressToken: '0xe550018bc9cf68fed303dfb5f225bb0e6b1e201f',
-          iconPath: 'assets/weth_coin_icon.svg',
+          iconPath: 'assets/eth_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.wBNB,
           addressToken: '0x0c874699373d34c3ccb322a10ed81aef005004a6',
-          iconPath: 'assets/wbnb_coin_icon.svg',
+          iconPath: 'assets/bsc_logo.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken: '0x72603c4cf5a8474e7e85fa1b352bbda5539c3859',
-          iconPath: 'assets/usdt_coin_icon.svg',
+          iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
     ),
     NetworkName.ethereumMainnet: ConfigNetwork(
       rpc: 'https://eth-mainnet.public.blastapi.io/',
-      wss:
-      'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/mainnet/ws',
+      wss: 'wss://speedy-nodes-nyc.moralis.io/${Keys.moralicKey}/eth/mainnet/ws',
       urlExplorer: 'https://etherscan.io/address/',
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.ETH,
-          iconPath: 'assets/weth_coin_icon.svg',
+          iconPath: 'assets/eth_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.WQT,
           addressToken: '0x06677Dc4fE12d3ba3C7CCfD0dF8Cd45e4D4095bF',
-          iconPath: 'assets/svg/wqt_coin_icon.svg',
+          iconPath: 'assets/wqt_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0xdAC17F958D2ee523a2206206994597C13D831ec7', // decimals 6
-          iconPath: 'assets/usdt_coin_icon.svg',
+          iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
     ),
@@ -203,18 +202,18 @@ class Configs {
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.ETH,
-          iconPath: 'assets/weth_coin_icon.svg',
+          iconPath: 'assets/eth_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.WQT,
           addressToken: '0xe21D8B17CF2550DE4bC80779486BDC68Cb3a379E',
-          iconPath: 'assets/svg/wqt_coin_icon.svg',
+          iconPath: 'assets/wqt_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0xD92E713d051C37EbB2561803a3b5FBAbc4962431', // decimals 6
-          iconPath: 'assets/usdt_coin_icon.svg',
+          iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
     ),
@@ -226,18 +225,18 @@ class Configs {
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.BNB,
-          iconPath: 'assets/wbnb_coin_icon.svg',
+          iconPath: 'assets/bsc_logo.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.WQT,
           addressToken: '0xe89508D74579A06A65B907c91F697CF4F8D9Fac7',
-          iconPath: 'assets/svg/wqt_coin_icon.svg',
+          iconPath: 'assets/wqt_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0x55d398326f99059ff775485246999027b3197955', // decimals 18
-          iconPath: 'assets/usdt_coin_icon.svg',
+          iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
     ),
@@ -250,18 +249,18 @@ class Configs {
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.BNB,
-          iconPath: 'assets/wbnb_coin_icon.svg',
+          iconPath: 'assets/bsc_logo.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.WQT,
           addressToken: '0x8a62Ee790900Df4349B3c57a0FeBbf71f1f729Db',
-          iconPath: 'assets/svg/wqt_coin_icon.svg',
+          iconPath: 'assets/wqt_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0xC9bda0FA861Bd3F66c7d0Fd75A9A8344e6Caa94A', // decimals 18
-          iconPath: 'assets/usdt_coin_icon.svg',
+          iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
     ),
@@ -279,7 +278,7 @@ class Configs {
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', // decimals 6
-          iconPath: 'assets/usdt_coin_icon.svg',
+          iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
     ),
@@ -298,7 +297,7 @@ class Configs {
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0x631E327EA88C37D4238B5c559A715332266e7Ec1', // decimals 6
-          iconPath: 'assets/usdt_coin_icon.svg',
+          iconPath: 'assets/tusdt_coin_icon.svg',
         ),
       ],
     ),

@@ -149,7 +149,7 @@ class _SwapPageState extends State<SwapPage> {
                         _divider,
                         SelectedItem(
                           title: _getTitleToken(store.token),
-                          iconPath: 'assets/usdt_coin_icon.svg',
+                          iconPath: 'assets/tusdt_coin_icon.svg',
                           isSelected: true,
                           onTap: _onPressedSelectToken,
                         ),
@@ -420,7 +420,7 @@ class _SwapPageState extends State<SwapPage> {
         title: 'swap.choose'.tr(namedArgs: {'object': 'token'}),
         items: [
           _ModelItem(
-              item: SwapToken.usdt, iconPath: 'assets/usdt_coin_icon.svg'),
+              item: SwapToken.usdt, iconPath: 'assets/tusdt_coin_icon.svg'),
         ],
       ),
     );

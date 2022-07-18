@@ -15,6 +15,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import '../../../../constants.dart';
 import 'transactions/list_transactions.dart';
@@ -364,37 +365,73 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                           const SizedBox(
                             height: 15,
                           ),
-                          if (store.isLoading)
-                            const _ShimmerWidget(
-                              width: double.infinity,
-                              height: 30,
-                            )
-                          else
-                            Text(
-                              '${num.parse(balance.amount!).toStringAsFixed(6)} ${balance.symbol.name}',
-                              style: const TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w700,
-                                color: AppColor.enabledButton,
+                          Row(
+                            children: [
+                              Container(
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      AppColor.enabledButton,
+                                      AppColor.blue,
+                                    ],
+                                  ),
+                                ),
+                                child: SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: SvgPicture.asset(
+                                    Web3Utils.getPathIcon(balance.symbol),
+                                  ),
+                                ),
                               ),
-                            ),
-                          const SizedBox(
-                            height: 5,
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (store.isLoading)
+                                    const _ShimmerWidget(
+                                      width: double.infinity,
+                                      height: 30,
+                                    )
+                                  else
+                                    Text(
+                                      '${num.parse(balance.amount!).toStringAsFixed(6)} ${balance.symbol.name}',
+                                      style: const TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColor.enabledButton,
+                                      ),
+                                    ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  if (store.isLoading)
+                                    const _ShimmerWidget(
+                                      width: 140,
+                                      height: 15,
+                                    )
+                                  else if (balance.pricePerDollar != null)
+                                    Text(
+                                      '\$ ${balance.pricePerDollar}',
+                                      // _getCourseDollar(balance.symbol.name, balance.amount!),
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: AppColor.unselectedBottomIcon,
+                                      ),
+                                    )
+                                  else
+                                    const SizedBox(
+                                      height: 17,
+                                    )
+                                ],
+                              ),
+                            ],
                           ),
-                          if (store.isLoading)
-                            const _ShimmerWidget(
-                              width: 140,
-                              height: 15,
-                            )
-                          else if (balance.pricePerDollar != null)
-                            Text(
-                              '\$ ${balance.pricePerDollar}',
-                              // _getCourseDollar(balance.symbol.name, balance.amount!),
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: AppColor.unselectedBottomIcon,
-                              ),
-                            ),
                         ],
                       ),
                     );
@@ -496,7 +533,6 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
       _currencyIndex = index;
     });
   }
-
 }
 
 class _ShimmerInfoCard extends StatelessWidget {
