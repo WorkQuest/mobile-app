@@ -359,6 +359,20 @@ class Web3Utils {
     }
   }
 
+  static TokenSymbols? getTokenSymbol(String token) {
+    if (token == "WQT") {
+      return TokenSymbols.WQT;
+    } else if (token == "BNB") {
+      return TokenSymbols.wBNB;
+    } else if (token == "USDT") {
+      return TokenSymbols.USDT;
+    } else if (token == "ETH") {
+      return TokenSymbols.wETH;
+    } else {
+      return null;
+    }
+  }
+
   static String getTitleToken(TokenSymbols typeCoin) {
     if (typeCoin == TokenSymbols.WQT) {
       return 'WQT';

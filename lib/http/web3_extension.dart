@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:app/constants.dart';
 import 'package:app/model/web3/course_token_response.dart';
+import 'package:app/model/web3/current_course_tokens_response.dart';
 import 'package:app/model/web3/transactions_response.dart';
 import 'package:app/web3/repository/account_repository.dart';
 
@@ -15,7 +16,7 @@ extension Web3Requests on ApiProvider {
     required String addressToken,
   }) {
     if (_network == Network.testnet) {
-      return "https://dev-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
+      return "https://testnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
     } else {
       return "https://mainnet-explorer-api.workquest.co/api/v1/token/$addressToken/account/$address/transfers";
     }
@@ -23,10 +24,17 @@ extension Web3Requests on ApiProvider {
 
   String _transactions(String address) {
     if (_network == Network.testnet) {
-      return "https://dev-explorer-api.workquest.co/api/v1/account/$address/transactions";
+      return "https://testnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
     } else {
       return "https://mainnet-explorer-api.workquest.co/api/v1/account/$address/transactions";
     }
+  }
+
+  String get _courseTokens {
+    if (_network == Network.testnet) {
+      return "https://testnet-oracle.workquest.co/api/v1/oracle/current-prices";
+    }
+    return "https://mainnet-oracle.workquest.co/api/v1/oracle/current-prices";
   }
 
   Future<void> registerWallet(String publicKey, String address) async {
@@ -41,7 +49,7 @@ extension Web3Requests on ApiProvider {
 
   Future<double> getCourseWQT() async {
     final response = await httpClient.get(
-      query: "https://dev-oracle.workquest.co/api/v1/oracle/sign-price/tokens",
+      query: "https://testnet-oracle.workquest.co/api/v1/oracle/sign-price/tokens",
       useBaseUrl: false,
     );
 
@@ -49,6 +57,18 @@ extension Web3Requests on ApiProvider {
     final _indexWQT = result.symbols!.indexWhere((element) => element == 'WQT');
     final _course = result.prices![_indexWQT];
     return double.parse(_course) * pow(10, -18);
+  }
+
+  Future<List<CurrentCourseTokensResponse>> getCourseTokens() async {
+    final response = await httpClient.get(
+      query: _courseTokens,
+      useBaseUrl: false,
+    );
+    return List<CurrentCourseTokensResponse>.from(
+      response.map(
+            (x) => CurrentCourseTokensResponse.fromJson(x),
+      ),
+    );
   }
 
   Future<List<Tx>?> getTransactions(String address,
