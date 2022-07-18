@@ -109,12 +109,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
       body: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-              16.0,
-              16.0,
-              16.0,
-              0.0,
-            ),
+            padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [

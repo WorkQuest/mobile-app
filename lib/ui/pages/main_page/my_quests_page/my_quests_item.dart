@@ -240,7 +240,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
   }
 
   Color _getColorBorder(int? status, int? type) {
-    if (status != null && status != 0) {
+    if (status == 0) {
       switch (type) {
         case 0:
           return Color(0xFFF6CF00);

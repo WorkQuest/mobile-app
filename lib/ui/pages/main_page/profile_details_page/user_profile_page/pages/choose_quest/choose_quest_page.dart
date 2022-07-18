@@ -1,3 +1,5 @@
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
+import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +62,8 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
             : NotificationListener<ScrollEndNotification>(
                 onNotification: (scrollEnd) {
                   final metrics = scrollEnd.metrics;
-                  if ((metrics.atEdge || metrics.maxScrollExtent < metrics.pixels) &&
+                  if ((metrics.atEdge ||
+                          metrics.maxScrollExtent < metrics.pixels) &&
                       !store.isLoading) {
                     store.getQuests(
                       userId: widget.workerId,
@@ -136,7 +139,12 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                       ? () async {
                           await store.startQuest(userId: widget.workerId);
                           if (store.isSuccess) {
-                            Navigator.pop(context);
+                            context.read<ChatStore>().refreshChats();
+                            Navigator.of(context, rootNavigator: true)
+                                .pushNamed(
+                              ChatRoomPage.routeName,
+                              arguments: ChatRoomArguments(store.chatId, true),
+                            );
                             AlertDialogUtils.showSuccessDialog(context);
                           }
                         }

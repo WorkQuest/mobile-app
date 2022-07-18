@@ -224,22 +224,29 @@ class ClientService implements ClientServiceI {
     required List params,
     String? value,
   }) async {
-    final _gas = await getGas();
-    final _estimateGas = await getEstimateGas(Transaction.callContract(
-      contract: contract,
-      function: function,
-      parameters: params,
-      from: EthereumAddress.fromHex(AccountRepository().userAddress),
-      value: value != null
-          ? EtherAmount.fromUnitAndValue(
-              EtherUnit.wei,
-              BigInt.from(double.parse(value) * pow(10, 18)),
-            )
-          : null,
-    ));
-    print('_gas: $_gas');
-    print('_estimateGas: $_estimateGas');
-    return (Decimal.fromBigInt(_estimateGas) * Decimal.fromBigInt(_gas.getInWei) / Decimal.fromInt(10).pow(18)).toDouble();
+    try {
+      final _gas = await getGas();
+      final _estimateGas = await getEstimateGas(Transaction.callContract(
+        contract: contract,
+        function: function,
+        parameters: params,
+        from: EthereumAddress.fromHex(AccountRepository().userAddress),
+        value: value != null
+            ? EtherAmount.fromUnitAndValue(
+                EtherUnit.wei,
+                BigInt.from(double.parse(value) * pow(10, 18)),
+              )
+            : null,
+      ));
+      return (Decimal.fromBigInt(_estimateGas) *
+              Decimal.fromBigInt(_gas.getInWei) /
+              Decimal.fromInt(10).pow(18))
+          .toDouble();
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+      return 0.0;
+    }
   }
 
   Future<double> getEstimateGasForApprove(BigInt price) async {
@@ -388,17 +395,19 @@ extension ApproveCoin on ClientService {
   }) async {
     final credentials = await getCredentials(AccountRepository().privateKey);
     final _addressWUSD = Web3Utils.getAddressWUSD();
-    final contract = await getDeployedContract("WQBridgeToken", _addressWUSD);
-    final ethFunction = contract.function(WQBridgeTokenFunctions.approve.name);
+    final contract =
+        Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
+    final ethFunction =
+        contract.self.function(WQBridgeTokenFunctions.approve.name);
     final fromAddress = await credentials.extractAddress();
     print('fromAddress: $fromAddress');
     print('chainID: ${await client!.getChainId()}');
     final result = await handleContract(
-      contract: contract,
+      contract: contract.self,
       function: ethFunction,
       from: fromAddress,
       params: [
-        address ?? EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
+        EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
         price,
       ],
     );
@@ -482,7 +491,7 @@ extension Promote on ClientService {
         contract: contract,
         function: function,
         gasPrice: _gasPrice,
-        maxGas: 2000000,
+        maxGas: 3000000,
         parameters: [
           EthereumAddress.fromHex(questAddress),
           BigInt.from(tariff),
@@ -529,7 +538,7 @@ extension Promote on ClientService {
         contract: contract,
         function: function,
         gasPrice: _gasPrice,
-        maxGas: 2000000,
+        maxGas: 3000000,
         parameters: [
           BigInt.from(tariff),
           BigInt.from(period),

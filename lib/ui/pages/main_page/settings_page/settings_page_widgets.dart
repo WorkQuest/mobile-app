@@ -162,13 +162,13 @@ Widget logOutButton(context, userStore) {
         context,
         title: "ui.profile.logout".tr(),
         message: "modals.areYouSure".tr(),
-        confirmAction: () {
+        confirmAction: () async {
           Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
             SignInPage.routeName,
             (route) => false,
           );
           final cookieManager = WebviewCookieManager();
-          userStore.deletePushToken();
+          await userStore.deletePushToken();
           cookieManager.clearCookies();
           AccountRepository().clearData();
           Storage.deleteAllFromSecureStorage();

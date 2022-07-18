@@ -466,25 +466,7 @@ extension QuestService on ApiProvider {
     }
   }
 
-  // Future<bool> startQuest({
-  //   required String questId,
-  //   required String userId,
-  // }) async {
-  //   try {
-  //     final body = {
-  //       "assignedWorkerId": userId,
-  //     };
-  //     final responseData = await httpClient.post(
-  //       query: '/v1/quest/$questId/start',
-  //       data: body,
-  //     );
-  //     return responseData == null;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
-
-  Future<bool> inviteOnQuest({
+  Future<String> inviteOnQuest({
     required String questId,
     required String userId,
     required String message,
@@ -497,23 +479,13 @@ extension QuestService on ApiProvider {
           "message": message,
         },
       );
-      return responseData == null;
+      print("responseData: ${responseData.toString()}");
+      return responseData["questChat"]["chatId"];
     } catch (e) {
-      return false;
+      print("ERROR: $e");
+      return "";
     }
   }
-
-  // Future<bool> acceptCompletedWork({
-  //   required String questId,
-  // }) async {
-  //   try {
-  //     final responseData = await httpClient.post(
-  //         query: '/v1/quest/$questId/accept-completed-work');
-  //     return responseData == null;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
 
   Future<bool> rejectCompletedWork({
     required String questId,
@@ -527,18 +499,6 @@ extension QuestService on ApiProvider {
     }
   }
 
-  // Future<bool> acceptOnQuest({
-  //   required String questId,
-  // }) async {
-  //   try {
-  //     final responseData =
-  //         await httpClient.post(query: '/v1/quest/$questId/accept-work');
-  //     return responseData == null;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
-
   Future<bool> acceptInvite({
     required String responseId,
   }) async {
@@ -551,18 +511,6 @@ extension QuestService on ApiProvider {
     }
   }
 
-  // Future<bool> rejectOnQuest({
-  //   required String questId,
-  // }) async {
-  //   try {
-  //     final responseData =
-  //         await httpClient.post(query: '/v1/quest/$questId/reject-work');
-  //     return responseData == null;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
-
   Future<bool> rejectInvite({
     required String responseId,
   }) async {
@@ -574,29 +522,6 @@ extension QuestService on ApiProvider {
       return false;
     }
   }
-
-  // Future<bool> completeWork({
-  //   required String questId,
-  // }) async {
-  //   try {
-  //     final responseData =
-  //         await httpClient.post(query: '/v1/quest/$questId/complete-work');
-  //     return responseData == null;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
-
-  // Future<bool> deleteQuest({
-  //   required String questId,
-  // }) async {
-  //   try {
-  //     final responseData = await httpClient.delete(query: '/v1/quest/$questId');
-  //     return responseData == null;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
 
   Future<List<RespondModel>> responsesQuest(String id) async {
     try {

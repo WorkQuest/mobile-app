@@ -78,8 +78,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
         starred: type == TypeChat.favourites ? true : null,
       );
 
-      // listChats.removeWhere((element) => element.meMember?.status == -1);
-
       chats[type]!.setChats(listChats);
 
       listChats.forEach((element) {
@@ -92,6 +90,11 @@ abstract class _ChatStore extends IStore<bool> with Store {
     } catch (e) {
       this.onError(e.toString());
     }
+  }
+
+  void refreshChats() {
+    loadChats(questChatStatus: 0);
+    loadChats(starred: true, type: TypeChat.favourites);
   }
 
   String? getChatTypeValue(TypeChat type) {

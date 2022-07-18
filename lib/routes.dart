@@ -390,8 +390,15 @@ class Routes {
 
       case ChooseQuestPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<ChooseQuestStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<ChooseQuestStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ChatStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChooseQuestPage(
@@ -595,8 +602,15 @@ class Routes {
 
       case RaiseViews.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<RaiseViewStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<RaiseViewStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<MyQuestStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: RaiseViews(settings.arguments as String),
@@ -685,6 +699,9 @@ class Routes {
               ),
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<UserProfileStore>(),
               ),
             ],
             child: Directionality(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app/base_store/i_store.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/bearer_token.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:mobx/mobx.dart';
@@ -145,6 +146,7 @@ abstract class _ChooseRoleStore extends IStore<bool> with Store {
       this.onLoading();
       final token = await Storage.readPushToken();
       if (token != null) await _apiProvider.deletePushToken(token: token);
+      FirebaseMessaging.instance.deleteToken();
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

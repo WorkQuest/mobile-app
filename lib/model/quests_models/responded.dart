@@ -11,10 +11,10 @@ class Responded {
   });
 
   String id;
-  String workerId;
-  String questId;
-  int type;
-  int status;
+  String? workerId;
+  String? questId;
+  int? type;
+  int? status;
   String? message;
   DateTime? createdAt;
   DateTime? updatedAt;

@@ -1,8 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app/main.dart';
-import 'package:app/ui/pages/main_page/chat_page/chat_page.dart';
+import 'package:app/model/notification_model.dart';
+import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
+import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -33,6 +37,14 @@ class PushNotificationService {
         provisional: false,
         sound: true,
       );
+      var initializationSettingsAndroid =
+          AndroidInitializationSettings('@drawable/logo_icon');
+      var initializationSettingsIOS = new IOSInitializationSettings();
+      var initializationSettings = new InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS);
+      flutterLocalNotificationsPlugin.initialize(initializationSettings,
+          onSelectNotification: onSelectNotification);
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         //FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
         Platform.isAndroid
@@ -45,6 +57,11 @@ class PushNotificationService {
     } catch (e, trace) {
       print("Push Notifications error: $e\n$trace");
     }
+  }
+
+  Future onSelectNotification(String? payload) async {
+    final message = NotificationNotification.fromJson(jsonDecode(payload!));
+    _openScreen(message);
   }
 
   ///FlutterLocalNotificationPlugin Implementation for android
@@ -82,17 +99,21 @@ class PushNotificationService {
   Future<void> _getRemoteNotification() async {
     try {
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print("notification.body: ${message.toMap()}");
         RemoteNotification? notification = message.notification;
         AndroidNotification? androidNotification =
             message.notification?.android;
         AppleNotification? appleNotification = message.notification?.apple;
         if (notification != null &&
             (androidNotification != null || appleNotification != null)) {
+          Map<String, dynamic> data = {
+            "data": message.data["data"],
+            "action": message.data["action"],
+          };
           showNotification(
             notification.hashCode,
             notification.body,
             notification.title,
+            JsonEncoder.withIndent('  ').convert(data),
           );
         }
       });
@@ -105,20 +126,43 @@ class PushNotificationService {
   ///
   Future<void> _onMessageOpenApp() async {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      if (notification != null) {
-        print("notification.body: ${notification.body}");
-        if (notification.body == "New message")
-          Navigator.pushNamed(
-            navigatorKey.currentState!.context,
-            ChatPage.routeName,
-          );
-        else
-          Navigator.of(navigatorKey.currentState!.context).pushNamed(
-            NotificationPage.routeName,
-          );
-      }
+      final notification = NotificationNotification.fromJson(message.data);
+      _openScreen(notification);
     });
+  }
+
+  void _openScreen(NotificationNotification notification) {
+    try {
+      if (notification.action.toLowerCase().contains("message")) {
+        Navigator.pushNamed(
+          navigatorKey.currentState!.context,
+          ChatRoomPage.routeName,
+          arguments: ChatRoomArguments(notification.data.chatId, true),
+        );
+      } else if (notification.action.toLowerCase().contains("quest")) {
+        Navigator.pushNamed(
+          navigatorKey.currentState!.context,
+          QuestDetails.routeName,
+          arguments: QuestArguments(
+            questInfo: null,
+            id: notification.data.id,
+          ),
+        );
+      } else if (notification.action.toLowerCase().contains("dispute")) {
+        Navigator.pushNamed(
+          navigatorKey.currentState!.context,
+          DisputePage.routeName,
+          arguments: notification.data.questId,
+        );
+      } else {
+        Navigator.of(navigatorKey.currentState!.context).pushNamed(
+          NotificationPage.routeName,
+        );
+      }
+    } catch (e, trace) {
+      print("ERROR: $e");
+      print("ERROR: $trace");
+    }
   }
 
   ///Show Notification using flutter Local Notification
@@ -126,6 +170,7 @@ class PushNotificationService {
     int hashcode,
     String? body,
     String? title,
+    String? data,
   ) async {
     flutterLocalNotificationsPlugin.show(
       hashcode,
@@ -147,6 +192,7 @@ class PushNotificationService {
           presentSound: true,
         ),
       ),
+      payload: data,
     );
   }
 }

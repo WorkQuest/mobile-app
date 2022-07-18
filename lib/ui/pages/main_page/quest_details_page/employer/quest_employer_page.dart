@@ -160,7 +160,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             return {
               if ((store.quest.value!.status == 1 ||
                       store.quest.value!.status == 2) &&
-                  store.quest.value!.raiseView?.type == null)
+                  store.quest.value!.raiseView?.status != 0)
                 'quests.raiseViews',
               if (store.quest.value!.status == 1 ||
                   store.quest.value!.status == 2)

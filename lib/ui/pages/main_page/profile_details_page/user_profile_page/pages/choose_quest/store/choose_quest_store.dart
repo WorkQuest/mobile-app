@@ -29,6 +29,8 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
   @action
   void setQuest(String id) => questId = id;
 
+  String chatId = "";
+
   @action
   Future<void> getQuests({
     required String userId,
@@ -64,7 +66,7 @@ abstract class _ChooseQuestStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
-      await _apiProvider.inviteOnQuest(
+      chatId = await _apiProvider.inviteOnQuest(
         questId: questId,
         userId: userId,
         message: "quests.inviteToQuest".tr(),

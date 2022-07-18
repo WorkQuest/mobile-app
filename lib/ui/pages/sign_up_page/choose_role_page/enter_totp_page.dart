@@ -55,8 +55,8 @@ class EnterTotpPage extends StatelessWidget {
                         ? () async {
                             await store.changeRole();
                             if (store.isSuccess) {
-                              Storage.deleteAllFromSecureStorage();
                               await store.deletePushToken();
+                              Storage.deleteAllFromSecureStorage();
                               await AlertDialogUtils.showSuccessDialog(context);
                               Navigator.of(context, rootNavigator: true)
                                   .pushNamedAndRemoveUntil(

@@ -9,6 +9,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/wallet.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
@@ -179,6 +180,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
       this.onLoading();
       final token = await Storage.readPushToken();
       if (token != null) await _apiProvider.deletePushToken(token: token);
+      FirebaseMessaging.instance.deleteToken();
       this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());

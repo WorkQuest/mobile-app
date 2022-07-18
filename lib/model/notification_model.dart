@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/avatar.dart';
 
@@ -69,19 +70,23 @@ class NotificationNotification {
 
   Data data;
   String action;
-  List<dynamic> recipients;
+  List<dynamic>? recipients;
 
-  factory NotificationNotification.fromJson(Map<String, dynamic> json) =>
-      NotificationNotification(
-        data: Data.fromJson(json["data"]),
-        action: json["action"],
-        recipients: List<String>.from(json["recipients"].map((x) => x)),
-      );
+  factory NotificationNotification.fromJson(Map<String, dynamic> json) {
+    final _data = jsonDecode(json['data']);
+    return NotificationNotification(
+      data: Data.fromJson(_data as Map<String, dynamic>),
+      action: json["action"],
+      recipients: json["recipients"] == null
+          ? null
+          : List<String>.from(json["recipients"].map((x) => x)),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "data": data.toJson(),
         "action": action,
-        "recipients": List<dynamic>.from(recipients.map((x) => x)),
+        "recipients": List<dynamic>.from(recipients!.map((x) => x)),
       };
 }
 
@@ -90,6 +95,7 @@ class Data {
     required this.id,
     required this.title,
     required this.questId,
+    required this.chatId,
     required this.disputeId,
     required this.user,
   });
@@ -97,6 +103,7 @@ class Data {
   String id;
   String? title;
   String questId;
+  String chatId;
   String? disputeId;
   User user;
 
@@ -117,10 +124,13 @@ class Data {
           : json["quest"]["id"],
       title: title,
       questId: json["questId"] ?? "",
+      chatId: json["chatId"] ?? "",
       disputeId: json["opponentUserId"] == null ? null : json["id"],
       user: json["fromUser"] == null
           ? json["user"] == null
-              ? User.fromJson(json["quest"]["user"])
+              ? json["sender"] == null
+                  ? User.fromJson(json["quest"]["user"])
+                  : User.fromJson(json["sender"]["user"])
               : User.fromJson(json["user"])
           : User.fromJson(json["fromUser"]),
     );
