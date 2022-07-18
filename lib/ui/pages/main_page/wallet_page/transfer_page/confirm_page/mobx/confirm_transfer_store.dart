@@ -3,6 +3,7 @@ import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/service/address_service.dart';
 import 'package:decimal/decimal.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
@@ -21,11 +22,12 @@ abstract class ConfirmTransferStoreBase extends IStore<bool> with Store {
     onLoading();
     try {
       final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
+      final _isBech = addressTo.substring(0, 2).toLowerCase() == 'wq';
       final _isToken = typeCoin != _currentListTokens.first.symbolToken;
       await Web3Utils.checkPossibilityTx(typeCoin: typeCoin, amount: double.parse(amount), fee: fee);
       await AccountRepository().client!.sendTransaction(
         isToken: _isToken,
-        addressTo: addressTo,
+        addressTo: _isBech ? AddressService.bech32ToHex(addressTo) : addressTo,
         amount: amount,
         coin: typeCoin,
       );

@@ -2,7 +2,6 @@ import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.da
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
-import 'package:app/web3/service/address_service.dart';
 import 'package:decimal/decimal.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -142,7 +141,7 @@ class _InformationWidget extends StatelessWidget {
             height: 5,
           ),
           Text(
-            _getAddress(),
+            addressTo,
             style: const TextStyle(
               fontSize: 14,
               color: AppColor.subtitleText,
@@ -208,13 +207,4 @@ class _InformationWidget extends StatelessWidget {
     }
   }
 
-  String _getAddress() {
-    final _network =
-        Web3Utils.getSwapNetworksFromNetworkName(AccountRepository().networkName.value ?? NetworkName.workNetMainnet);
-    if (_network == null) {
-      return AddressService.hexToBech32(addressTo);
-    } else {
-      return AddressService.bech32ToHex(addressTo);
-    }
-  }
 }
