@@ -33,7 +33,7 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
+class _MainPageState extends State<MainPage> {
   final controller = CupertinoTabController();
 
   @override
@@ -104,43 +104,20 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ],
           ),
           tabBuilder: (context, index) {
-
             switch (index) {
               case 0:
                 return CupertinoTabView(
                     onGenerateRoute: Routes.generateRoute,
                     navigatorKey: firstTabNavKey,
                     builder: (context) {
-                      final AnimationController _controller = AnimationController(
-                        duration: const Duration(milliseconds: 300),
-                        vsync: this,
-                      )..forward(from: 0.5);
-                      late final Animation<double> _animation = CurvedAnimation(
-                        parent: _controller,
-                        curve: Curves.easeIn,
-                      );
-                      return FadeTransition(
-                        opacity: _animation,
-                        child: QuestPage(),
-                      );
+                      return QuestPage();
                     });
               case 1:
                 return CupertinoTabView(
                   onGenerateRoute: Routes.generateRoute,
                   navigatorKey: secondTabNavKey,
                   builder: (context) {
-                    final AnimationController _controller = AnimationController(
-                      duration: const Duration(milliseconds: 300),
-                      vsync: this,
-                    )..forward(from: 0.5);
-                    late final Animation<double> _animation = CurvedAnimation(
-                      parent: _controller,
-                      curve: Curves.easeIn,
-                    );
-                    return FadeTransition(
-                      opacity: _animation,
-                      child: MyQuestsPage(),
-                    );
+                    return MyQuestsPage();
                   },
                 );
               case 2:
@@ -148,18 +125,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   onGenerateRoute: Routes.generateRoute,
                   navigatorKey: thirdTabNavKey,
                   builder: (BuildContext context) {
-                    final AnimationController _controller = AnimationController(
-                      duration: const Duration(milliseconds: 300),
-                      vsync: this,
-                    )..forward(from: 0.5);
-                    late final Animation<double> _animation = CurvedAnimation(
-                      parent: _controller,
-                      curve: Curves.easeIn,
-                    );
-                    return FadeTransition(
-                      opacity: _animation,
-                      child: ChatPage(),
-                    );
+                    return ChatPage();
                   },
                 );
               case 3:
@@ -167,18 +133,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   onGenerateRoute: Routes.generateRoute,
                   navigatorKey: forthTabNavKey,
                   builder: (BuildContext context) {
-                    final AnimationController _controller = AnimationController(
-                      duration: const Duration(milliseconds: 300),
-                      vsync: this,
-                    )..forward(from: 0.5);
-                    late final Animation<double> _animation = CurvedAnimation(
-                      parent: _controller,
-                      curve: Curves.easeIn,
-                    );
-                    return FadeTransition(
-                      opacity: _animation,
-                      child: WalletPage(),
-                    );
+                    return WalletPage();
                   },
                 );
               default:
@@ -186,18 +141,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   onGenerateRoute: Routes.generateRoute,
                   navigatorKey: fiveTabNavKey,
                   builder: (context) {
-                    final AnimationController _controller = AnimationController(
-                      duration: const Duration(milliseconds: 300),
-                      vsync: this,
-                    )..forward(from: 0.5);
-                    late final Animation<double> _animation = CurvedAnimation(
-                      parent: _controller,
-                      curve: Curves.easeIn,
-                    );
-                    return FadeTransition(
-                      opacity: _animation,
-                      child: SettingsPage(),
-                    );
+                    return SettingsPage();
                   },
                 );
             }
