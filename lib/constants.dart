@@ -253,7 +253,7 @@ class Configs {
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.MATIC,
-          iconPath: 'assets/wqt_coin_icon.svg',
+          iconPath: 'assets/matic_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
@@ -272,7 +272,7 @@ class Configs {
       dataCoins: const [
         DataCoins(
           symbolToken: TokenSymbols.MATIC,
-          iconPath: 'assets/wqt_coin_icon.svg',
+          iconPath: 'assets/matic_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
