@@ -22,13 +22,19 @@ final fiveTabNavKey = GlobalKey<NavigatorState>();
 
 final key = GlobalKey<FormState>();
 
-class MainPage extends StatelessWidget {
-  final controller = CupertinoTabController();
+class MainPage extends StatefulWidget {
   static const String routeName = '/mainPage';
 
   MainPage(this.role);
 
   final UserRole role;
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
+  final controller = CupertinoTabController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +58,7 @@ class MainPage extends StatelessWidget {
             items: [
               NavBarItem(
                 svgPath: 'assets/list_alt.svg',
-                title: role == UserRole.Worker ? 'quests.quests' : "ui.workers",
+                title: widget.role == UserRole.Worker ? 'quests.quests' : "ui.workers",
                 context: context,
               ),
               NavBarItem(
@@ -64,8 +70,7 @@ class MainPage extends StatelessWidget {
                 icon: StreamBuilder<bool>(
                   key: key,
                   initialData: false,
-                  stream:
-                      context.read<ChatStore>().streamChatNotification!.stream,
+                  stream: context.read<ChatStore>().streamChatNotification!.stream,
                   builder: (context, snapshot) {
                     if (controller.index == 2 && snapshot.data!) {
                       return SvgPicture.asset(
@@ -99,20 +104,43 @@ class MainPage extends StatelessWidget {
             ],
           ),
           tabBuilder: (context, index) {
+
             switch (index) {
               case 0:
                 return CupertinoTabView(
                     onGenerateRoute: Routes.generateRoute,
                     navigatorKey: firstTabNavKey,
                     builder: (context) {
-                      return QuestPage();
+                      final AnimationController _controller = AnimationController(
+                        duration: const Duration(milliseconds: 500),
+                        vsync: this,
+                      )..forward(from: 0.5);
+                      late final Animation<double> _animation = CurvedAnimation(
+                        parent: _controller,
+                        curve: Curves.easeIn,
+                      );
+                      return FadeTransition(
+                        opacity: _animation,
+                        child: QuestPage(),
+                      );
                     });
               case 1:
                 return CupertinoTabView(
                   onGenerateRoute: Routes.generateRoute,
                   navigatorKey: secondTabNavKey,
                   builder: (context) {
-                    return MyQuestsPage();
+                    final AnimationController _controller = AnimationController(
+                      duration: const Duration(milliseconds: 500),
+                      vsync: this,
+                    )..forward(from: 0.5);
+                    late final Animation<double> _animation = CurvedAnimation(
+                      parent: _controller,
+                      curve: Curves.easeIn,
+                    );
+                    return FadeTransition(
+                      opacity: _animation,
+                      child: MyQuestsPage(),
+                    );
                   },
                 );
               case 2:
@@ -120,7 +148,18 @@ class MainPage extends StatelessWidget {
                   onGenerateRoute: Routes.generateRoute,
                   navigatorKey: thirdTabNavKey,
                   builder: (BuildContext context) {
-                    return ChatPage();
+                    final AnimationController _controller = AnimationController(
+                      duration: const Duration(milliseconds: 500),
+                      vsync: this,
+                    )..forward(from: 0.5);
+                    late final Animation<double> _animation = CurvedAnimation(
+                      parent: _controller,
+                      curve: Curves.easeIn,
+                    );
+                    return FadeTransition(
+                      opacity: _animation,
+                      child: ChatPage(),
+                    );
                   },
                 );
               case 3:
@@ -128,7 +167,18 @@ class MainPage extends StatelessWidget {
                   onGenerateRoute: Routes.generateRoute,
                   navigatorKey: forthTabNavKey,
                   builder: (BuildContext context) {
-                    return WalletPage();
+                    final AnimationController _controller = AnimationController(
+                      duration: const Duration(milliseconds: 500),
+                      vsync: this,
+                    )..forward(from: 0.5);
+                    late final Animation<double> _animation = CurvedAnimation(
+                      parent: _controller,
+                      curve: Curves.easeIn,
+                    );
+                    return FadeTransition(
+                      opacity: _animation,
+                      child: WalletPage(),
+                    );
                   },
                 );
               default:
@@ -136,7 +186,18 @@ class MainPage extends StatelessWidget {
                   onGenerateRoute: Routes.generateRoute,
                   navigatorKey: fiveTabNavKey,
                   builder: (context) {
-                    return SettingsPage();
+                    final AnimationController _controller = AnimationController(
+                      duration: const Duration(milliseconds: 500),
+                      vsync: this,
+                    )..forward(from: 0.5);
+                    late final Animation<double> _animation = CurvedAnimation(
+                      parent: _controller,
+                      curve: Curves.easeIn,
+                    );
+                    return FadeTransition(
+                      opacity: _animation,
+                      child: SettingsPage(),
+                    );
                   },
                 );
             }
