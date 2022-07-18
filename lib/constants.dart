@@ -36,16 +36,16 @@ class Constants {
       'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
 
   static const String worknetMainnetWQFactory = '0x3d9782B4Ba9C10d09973dd1f7C16410c931f5468';
-  // static const String worknetTestnetWQFactory = '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4'; ///testnet
-  static const String worknetTestnetWQFactory = '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066'; ///dev-net
+  static const String worknetTestnetWQFactory = '0xD7B31905E3ff7dDAD0707dCEe6a3537587FD2ca4'; ///testnet
+  // static const String worknetTestnetWQFactory = '0x455Fc7ac84ee418F4bD414ab92c9c27b18B7B066'; ///dev-net
 
   static const String worknetMainnetWQPromotion = '';
-  // static const String worknetTestnetWQPromotion = '0x23918c4cC7001fB4e2BF28c8283b02BcD6975bf0'; ///testnet
-  static const String worknetTestnetWQPromotion = '0xB778e471833102dBe266DE2747D72b91489568c2'; ///dev-net
+  static const String worknetTestnetWQPromotion = '0x23918c4cC7001fB4e2BF28c8283b02BcD6975bf0'; ///testnet
+  // static const String worknetTestnetWQPromotion = '0xB778e471833102dBe266DE2747D72b91489568c2'; ///dev-net
 
   static const String worknetMainnetWUSD = '0x4d9F307F1fa63abC943b5db2CBa1c71D02d86AAa';
-  // static const String worknetTestnetWUSD = '0xf95ef11d0af1f40995218bb2b67ef909bcf30078'; ///testnet
-  static const String worknetTestnetWUSD = '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa'; ///dev-net
+  static const String worknetTestnetWUSD = '0xf95ef11d0af1f40995218bb2b67ef909bcf30078'; ///testnet
+  // static const String worknetTestnetWUSD = '0x0Ed13A696Fa29151F3064077aCb2a281e68df2aa'; ///dev-net
 
   static final double commissionForQuest = 1.025;
 }
