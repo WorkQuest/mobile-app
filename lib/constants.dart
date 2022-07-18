@@ -182,6 +182,11 @@ class Configs {
           iconPath: 'assets/weth_coin_icon.svg',
         ),
         DataCoins(
+          symbolToken: TokenSymbols.WQT,
+          addressToken: '0x06677Dc4fE12d3ba3C7CCfD0dF8Cd45e4D4095bF',
+          iconPath: 'assets/svg/wqt_coin_icon.svg',
+        ),
+        DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0xdAC17F958D2ee523a2206206994597C13D831ec7', // decimals 6
@@ -199,6 +204,11 @@ class Configs {
         DataCoins(
           symbolToken: TokenSymbols.ETH,
           iconPath: 'assets/weth_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.WQT,
+          addressToken: '0xe21D8B17CF2550DE4bC80779486BDC68Cb3a379E',
+          iconPath: 'assets/svg/wqt_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,
@@ -219,6 +229,11 @@ class Configs {
           iconPath: 'assets/wbnb_coin_icon.svg',
         ),
         DataCoins(
+          symbolToken: TokenSymbols.WQT,
+          addressToken: '0xe89508D74579A06A65B907c91F697CF4F8D9Fac7',
+          iconPath: 'assets/svg/wqt_coin_icon.svg',
+        ),
+        DataCoins(
           symbolToken: TokenSymbols.USDT,
           addressToken:
           '0x55d398326f99059ff775485246999027b3197955', // decimals 18
@@ -236,6 +251,11 @@ class Configs {
         DataCoins(
           symbolToken: TokenSymbols.BNB,
           iconPath: 'assets/wbnb_coin_icon.svg',
+        ),
+        DataCoins(
+          symbolToken: TokenSymbols.WQT,
+          addressToken: '0x8a62Ee790900Df4349B3c57a0FeBbf71f1f729Db',
+          iconPath: 'assets/svg/wqt_coin_icon.svg',
         ),
         DataCoins(
           symbolToken: TokenSymbols.USDT,

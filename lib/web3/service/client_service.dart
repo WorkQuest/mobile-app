@@ -182,8 +182,8 @@ class ClientService implements ClientServiceI {
           Decimal.fromInt(10).pow(_degree))
           .toDecimal();
     } catch (e, trace) {
-      print('e: $e\ntrace: $trace');
-      throw FormatException("Error connection to network");
+      print('getBalanceFromContract | $e\n$trace');
+      return Decimal.zero;
     }
   }
 
