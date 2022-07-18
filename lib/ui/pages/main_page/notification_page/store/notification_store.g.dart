@@ -69,7 +69,7 @@ mixin _$NotificationStore on _NotificationStore, Store {
   String toString() {
     return '''
 listOfNotifications: ${listOfNotifications},
-disputes: ${disputes},
+disputes: ${disputes}
     ''';
   }
 }
