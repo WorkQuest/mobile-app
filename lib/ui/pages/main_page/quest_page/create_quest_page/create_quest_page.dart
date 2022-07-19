@@ -489,9 +489,11 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             initialValue: store.price.toString(),
                             validator: Validators.zeroValidator,
                             inputFormatters: [
-                              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'^\d+\.?\d{0,18}')),
                             ],
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                            keyboardType:
+                                const TextInputType.numberWithOptions(decimal: true),
                             decoration: InputDecoration(
                               hintText: 'quests.price'.tr(),
                             ),
@@ -564,6 +566,31 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
 
   _onPressedOnCreateOrEditQuest(CreateQuestStore store) async {
     store.skillFilters = _controller!.getSkillAndSpecialization();
+    if (store.skillFilters.isEmpty) {
+      Scrollable.ensureVisible(specializationKey.currentContext!);
+      return;
+    } else if (store.locationPlaceName.isEmpty) {
+      Scrollable.ensureVisible(addressKey.currentContext!);
+      return;
+    } else if (store.questTitle.isEmpty) {
+      Scrollable.ensureVisible(titleKey.currentContext!);
+      return;
+    } else if (store.description.isEmpty) {
+      Scrollable.ensureVisible(descriptionKey.currentContext!);
+      return;
+    } else if (store.price.isEmpty) {
+      Scrollable.ensureVisible(priceKey.currentContext!);
+      return;
+    } else if (store.locationPlaceName.isEmpty) {
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'Error', content: "Address is empty");
+      return;
+    } else if (store.skillFilters.isEmpty) {
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'Error', content: "Skills are empty");
+      return;
+    }
+
     final _gasApprove = await store.getGasApprove(
       addressQuest: isEdit ? widget.questInfo!.contractAddress! : null,
     );
@@ -586,15 +613,19 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
             );
             await AccountRepository().getClientWorkNet().approveCoin(
                   price: _priceForApprove.toBigInt(),
-                  address: EthereumAddress.fromHex(widget.questInfo!.contractAddress!),
+                  address: isEdit
+                      ? EthereumAddress.fromHex(widget.questInfo!.contractAddress!)
+                      : null,
                 );
             Navigator.pop(context);
             _onPressedOnCreateOrEditQuest(store);
-          } on FormatException catch (e) {
+          } on FormatException catch (e, trace) {
+            print('FormatException Approve: $e\n$trace');
             Navigator.pop(context);
             AlertDialogUtils.showInfoAlertDialog(context,
                 title: 'Error', content: e.message);
-          } catch (e) {
+          } catch (e, trace) {
+            print('Exception Approve: $e\n$trace');
             Navigator.pop(context);
             AlertDialogUtils.showInfoAlertDialog(context,
                 title: 'Error', content: e.toString());
@@ -612,29 +643,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       _onEditQuest(store, _gasEditOrCreate);
     } else if (store.canCreateQuest) {
       _onCreateQuest(store, _gasEditOrCreate);
-    } else {
-      store.emptyField(context);
     }
-    if (store.skillFilters.isEmpty)
-      Scrollable.ensureVisible(
-        specializationKey.currentContext!,
-      );
-    else if (store.locationPlaceName.isEmpty)
-      Scrollable.ensureVisible(
-        addressKey.currentContext!,
-      );
-    else if (store.questTitle.isEmpty)
-      Scrollable.ensureVisible(
-        titleKey.currentContext!,
-      );
-    else if (store.description.isEmpty)
-      Scrollable.ensureVisible(
-        descriptionKey.currentContext!,
-      );
-    else if (store.price.isEmpty)
-      Scrollable.ensureVisible(
-        priceKey.currentContext!,
-      );
   }
 
   _onCreateQuest(CreateQuestStore store, String fee) async {

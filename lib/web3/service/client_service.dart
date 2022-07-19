@@ -418,7 +418,7 @@ extension ApproveCoin on ClientService {
       function: ethFunction,
       from: fromAddress,
       params: [
-        EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
+        address ?? EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
         price,
       ],
     );

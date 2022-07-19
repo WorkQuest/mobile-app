@@ -141,10 +141,12 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   @action
   void emptyField(BuildContext context) {
     if (locationPlaceName.isEmpty) {
+      onError('Address is empty');
       AlertDialogUtils.showInfoAlertDialog(context,
           title: 'Error', content: "Address is empty");
     }
     if (skillFilters.isEmpty) {
+      onError('Skills is empty');
       AlertDialogUtils.showInfoAlertDialog(context,
           title: 'Error', content: "Skills are empty");
     }
