@@ -9,8 +9,7 @@ part of 'wallet_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$WalletStore on _WalletStore, Store {
-  late final _$currentTokenAtom =
-      Atom(name: 'WalletStoreBase.currentToken', context: context);
+  final _$currentTokenAtom = Atom(name: '_WalletStore.currentToken');
 
   @override
   TokenSymbols get currentToken {
@@ -53,7 +52,7 @@ mixin _$WalletStore on _WalletStore, Store {
   @override
   dynamic setCurrentToken(TokenSymbols value) {
     final _$actionInfo = _$_WalletStoreActionController.startAction(
-        name: 'WalletStoreBase.setCurrentToken');
+        name: '_WalletStore.setCurrentToken');
     try {
       return super.setCurrentToken(value);
     } finally {
@@ -63,8 +62,8 @@ mixin _$WalletStore on _WalletStore, Store {
 
   @override
   dynamic clearData() {
-    final _$actionInfo =
-        _$_WalletStoreActionController.startAction(name: '_WalletStore.clearData');
+    final _$actionInfo = _$_WalletStoreActionController.startAction(
+        name: '_WalletStore.clearData');
     try {
       return super.clearData();
     } finally {
