@@ -214,7 +214,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       ],
                       Text(
                         DateFormat('dd MMMM yyyy, kk:mm')
-                            .format(storeQuest.questInfo!.createdAt!),
+                            .format(storeQuest.questInfo!.createdAt!.toLocal()),
                         style: TextStyle(
                           color: Color(0xFFAAB0B9),
                           fontSize: 12,
