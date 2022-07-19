@@ -92,66 +92,6 @@ mixin _$QuestsStore on _QuestsStore, Store {
     });
   }
 
-  final _$offsetAtom = Atom(name: '_QuestsStore.offset');
-
-  @override
-  int get offset {
-    _$offsetAtom.reportRead();
-    return super.offset;
-  }
-
-  @override
-  set offset(int value) {
-    _$offsetAtom.reportWrite(value, super.offset, () {
-      super.offset = value;
-    });
-  }
-
-  final _$offsetWorkersAtom = Atom(name: '_QuestsStore.offsetWorkers');
-
-  @override
-  int get offsetWorkers {
-    _$offsetWorkersAtom.reportRead();
-    return super.offsetWorkers;
-  }
-
-  @override
-  set offsetWorkers(int value) {
-    _$offsetWorkersAtom.reportWrite(value, super.offsetWorkers, () {
-      super.offsetWorkers = value;
-    });
-  }
-
-  final _$limitAtom = Atom(name: '_QuestsStore.limit');
-
-  @override
-  int get limit {
-    _$limitAtom.reportRead();
-    return super.limit;
-  }
-
-  @override
-  set limit(int value) {
-    _$limitAtom.reportWrite(value, super.limit, () {
-      super.limit = value;
-    });
-  }
-
-  final _$statusAtom = Atom(name: '_QuestsStore.status');
-
-  @override
-  int get status {
-    _$statusAtom.reportRead();
-    return super.status;
-  }
-
-  @override
-  set status(int value) {
-    _$statusAtom.reportWrite(value, super.status, () {
-      super.status = value;
-    });
-  }
-
   final _$questsListAtom = Atom(name: '_QuestsStore.questsList');
 
   @override
@@ -179,51 +119,6 @@ mixin _$QuestsStore on _QuestsStore, Store {
   set workersList(ObservableList<ProfileMeResponse> value) {
     _$workersListAtom.reportWrite(value, super.workersList, () {
       super.workersList = value;
-    });
-  }
-
-  final _$searchResultListAtom = Atom(name: '_QuestsStore.searchResultList');
-
-  @override
-  ObservableList<BaseQuestResponse> get searchResultList {
-    _$searchResultListAtom.reportRead();
-    return super.searchResultList;
-  }
-
-  @override
-  set searchResultList(ObservableList<BaseQuestResponse> value) {
-    _$searchResultListAtom.reportWrite(value, super.searchResultList, () {
-      super.searchResultList = value;
-    });
-  }
-
-  final _$searchWorkersListAtom = Atom(name: '_QuestsStore.searchWorkersList');
-
-  @override
-  ObservableList<ProfileMeResponse> get searchWorkersList {
-    _$searchWorkersListAtom.reportRead();
-    return super.searchWorkersList;
-  }
-
-  @override
-  set searchWorkersList(ObservableList<ProfileMeResponse> value) {
-    _$searchWorkersListAtom.reportWrite(value, super.searchWorkersList, () {
-      super.searchWorkersList = value;
-    });
-  }
-
-  final _$loadQuestsListAtom = Atom(name: '_QuestsStore.loadQuestsList');
-
-  @override
-  ObservableList<BaseQuestResponse> get loadQuestsList {
-    _$loadQuestsListAtom.reportRead();
-    return super.loadQuestsList;
-  }
-
-  @override
-  set loadQuestsList(ObservableList<BaseQuestResponse> value) {
-    _$loadQuestsListAtom.reportWrite(value, super.loadQuestsList, () {
-      super.loadQuestsList = value;
     });
   }
 
@@ -270,22 +165,6 @@ mixin _$QuestsStore on _QuestsStore, Store {
     _$locationPlaceNameAtom.reportWrite(value, super.locationPlaceName, () {
       super.locationPlaceName = value;
     });
-  }
-
-  final _$getPredictionAsyncAction = AsyncAction('_QuestsStore.getPrediction');
-
-  @override
-  Future<Null> getPrediction(BuildContext context, UserRole role) {
-    return _$getPredictionAsyncAction
-        .run(() => super.getPrediction(context, role));
-  }
-
-  final _$displayPredictionAsyncAction =
-      AsyncAction('_QuestsStore.displayPrediction');
-
-  @override
-  Future<Null> displayPrediction(String? p) {
-    return _$displayPredictionAsyncAction.run(() => super.displayPrediction(p));
   }
 
   final _$getSearchedQuestsAsyncAction =
@@ -363,15 +242,8 @@ searchWord: ${searchWord},
 sort: ${sort},
 fromPrice: ${fromPrice},
 toPrice: ${toPrice},
-offset: ${offset},
-offsetWorkers: ${offsetWorkers},
-limit: ${limit},
-status: ${status},
 questsList: ${questsList},
 workersList: ${workersList},
-searchResultList: ${searchResultList},
-searchWorkersList: ${searchWorkersList},
-loadQuestsList: ${loadQuestsList},
 latitude: ${latitude},
 longitude: ${longitude},
 locationPlaceName: ${locationPlaceName},
