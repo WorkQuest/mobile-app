@@ -9,18 +9,19 @@ part of 'wallet_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$WalletStore on _WalletStore, Store {
-  final _$typeAtom = Atom(name: '_WalletStore.type');
+  late final _$currentTokenAtom =
+      Atom(name: 'WalletStoreBase.currentToken', context: context);
 
   @override
-  TokenSymbols get type {
-    _$typeAtom.reportRead();
-    return super.type;
+  TokenSymbols get currentToken {
+    _$currentTokenAtom.reportRead();
+    return super.currentToken;
   }
 
   @override
-  set type(TokenSymbols value) {
-    _$typeAtom.reportWrite(value, super.type, () {
-      super.type = value;
+  set currentToken(TokenSymbols value) {
+    _$currentTokenAtom.reportWrite(value, super.currentToken, () {
+      super.currentToken = value;
     });
   }
 
@@ -39,51 +40,22 @@ mixin _$WalletStore on _WalletStore, Store {
     });
   }
 
-  final _$isLoadingTestAtom = Atom(name: '_WalletStore.isLoadingTest');
-
-  @override
-  bool get isLoadingTest {
-    _$isLoadingTestAtom.reportRead();
-    return super.isLoadingTest;
-  }
-
-  @override
-  set isLoadingTest(bool value) {
-    _$isLoadingTestAtom.reportWrite(value, super.isLoadingTest, () {
-      super.isLoadingTest = value;
-    });
-  }
-
-  final _$errorTestAtom = Atom(name: '_WalletStore.errorTest');
-
-  @override
-  String get errorTest {
-    _$errorTestAtom.reportRead();
-    return super.errorTest;
-  }
-
-  @override
-  set errorTest(String value) {
-    _$errorTestAtom.reportWrite(value, super.errorTest, () {
-      super.errorTest = value;
-    });
-  }
-
   final _$getCoinsAsyncAction = AsyncAction('_WalletStore.getCoins');
 
   @override
   Future getCoins({bool isForce = true, bool tryAgain = true}) {
-    return _$getCoinsAsyncAction.run(() => super.getCoins(isForce: isForce, tryAgain: tryAgain));
+    return _$getCoinsAsyncAction
+        .run(() => super.getCoins(isForce: isForce, tryAgain: tryAgain));
   }
 
   final _$_WalletStoreActionController = ActionController(name: '_WalletStore');
 
   @override
-  dynamic setType(TokenSymbols value) {
+  dynamic setCurrentToken(TokenSymbols value) {
     final _$actionInfo = _$_WalletStoreActionController.startAction(
-        name: '_WalletStore.setType');
+        name: 'WalletStoreBase.setCurrentToken');
     try {
-      return super.setType(value);
+      return super.setCurrentToken(value);
     } finally {
       _$_WalletStoreActionController.endAction(_$actionInfo);
     }
@@ -91,8 +63,8 @@ mixin _$WalletStore on _WalletStore, Store {
 
   @override
   dynamic clearData() {
-    final _$actionInfo = _$_WalletStoreActionController.startAction(
-        name: '_WalletStore.clearData');
+    final _$actionInfo =
+        _$_WalletStoreActionController.startAction(name: '_WalletStore.clearData');
     try {
       return super.clearData();
     } finally {
@@ -103,10 +75,8 @@ mixin _$WalletStore on _WalletStore, Store {
   @override
   String toString() {
     return '''
-type: ${type},
-coins: ${coins},
-isLoadingTest: ${isLoadingTest},
-errorTest: ${errorTest}
+currentToken: ${currentToken},
+coins: ${coins}
     ''';
   }
 }

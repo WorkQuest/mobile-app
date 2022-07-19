@@ -23,19 +23,13 @@ abstract class _WalletStore extends IStore<bool> with Store {
   _WalletStore(this._apiProvider);
 
   @observable
-  TokenSymbols type = TokenSymbols.WQT;
+  TokenSymbols currentToken = TokenSymbols.WQT;
 
   @observable
   ObservableList<_CoinEntity> coins = ObservableList.of([]);
 
-  @observable
-  bool isLoadingTest = false;
-
-  @observable
-  String errorTest = '';
-
   @action
-  setType(TokenSymbols value) => type = value;
+  setCurrentToken(TokenSymbols value) => currentToken = value;
 
   @action
   getCoins({bool isForce = true, bool tryAgain = true}) async {
@@ -49,6 +43,10 @@ abstract class _WalletStore extends IStore<bool> with Store {
       await Future.delayed(const Duration(milliseconds: 250));
       final _listCoinsEntity = await _getCoinEntities(_tokens);
       _setCoins(_listCoinsEntity);
+
+      if (isForce) {
+        currentToken = coins.first.symbol;
+      }
       onSuccess(true);
     } catch (e, trace) {
       print('getCoins | $e\n$trace');
@@ -121,7 +119,7 @@ abstract class _WalletStore extends IStore<bool> with Store {
   @action
   clearData() {
     coins.clear();
-    type = TokenSymbols.WQT;
+    currentToken = TokenSymbols.WQT;
   }
 }
 

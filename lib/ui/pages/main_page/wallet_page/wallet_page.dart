@@ -327,12 +327,17 @@ class _InfoCardBalance extends StatefulWidget {
 
 class _InfoCardBalanceState extends State<_InfoCardBalance> {
   final CarouselController _controller = CarouselController();
+  late final WalletStore store;
 
-  int _currencyIndex = 0;
+
+  @override
+  void initState() {
+    store = GetIt.I.get<WalletStore>();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final store = GetIt.I.get<WalletStore>();
     return Container(
       height: 180,
       width: double.infinity,
@@ -446,11 +451,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: store.coins.map((balance) {
-                    if (_currencyIndex >= store.coins.length) {
-                      _currencyIndex = 0;
-                    }
-                    bool isCurrency = balance == store.coins[_currencyIndex];
-
+                    bool isCurrency = balance.symbol == store.currentToken;
                     return GestureDetector(
                       onTap: () => _controller.nextPage(),
                       child: Container(
@@ -508,30 +509,23 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
   _onPageChanged(int index, dynamic _) {
     switch (index) {
       case 0:
-        GetIt.I.get<WalletStore>().setType(TokenSymbols.WQT);
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.WQT);
         break;
       case 1:
-        GetIt.I.get<WalletStore>().setType(TokenSymbols.WUSD);
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.WUSD);
         break;
       case 2:
-        GetIt.I.get<WalletStore>().setType(TokenSymbols.wBNB);
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.wBNB);
         break;
       case 3:
-        GetIt.I.get<WalletStore>().setType(TokenSymbols.wETH);
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.wETH);
         break;
       case 4:
-        GetIt.I.get<WalletStore>().setType(TokenSymbols.USDT);
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.USDT);
         break;
     }
     GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
-    setState(() {
-      _currencyIndex = index;
-    });
+    store.setCurrentToken(store.coins[index].symbol);
   }
 }
 
