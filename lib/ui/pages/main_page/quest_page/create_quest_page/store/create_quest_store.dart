@@ -259,7 +259,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         employment: QuestUtils.getEmploymentValue(employment),
         workplace: QuestUtils.getWorkplaceValue(workplace),
         payPeriod: QuestUtils.getPayPeriodValue(payPeriod),
-        priority: QuestUtils.getPriority(priority),
+        priority: QuestUtils.getPriorityToValue(priority),
         specializationKeys: skillFilters,
         location: location,
         adType: adType,

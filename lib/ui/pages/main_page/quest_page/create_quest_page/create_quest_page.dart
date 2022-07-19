@@ -64,8 +64,10 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       this.isEdit = true;
       final store = context.read<CreateQuestStore>();
       store.oldPrice = BigInt.parse(widget.questInfo!.price);
+      store.payPeriod = widget.questInfo!.payPeriod;
+      store.payPeriodValue = QuestUtils.getPayPeriodValue(widget.questInfo!.payPeriod);
       store.setConfirmUnderstandAboutEdit(true);
-      store.priority = QuestConstants.priorityList[widget.questInfo!.priority - 1];
+      store.priority = QuestUtils.getPriorityFromValue(widget.questInfo!.priority);
       store.contractAddress = widget.questInfo!.contractAddress ?? '';
       store.questTitle = widget.questInfo!.title;
       print('workplace: ${widget.questInfo?.workplace}');
@@ -123,46 +125,49 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             ),
                           ),
                           alignment: Alignment.centerLeft,
-                          child: Observer(
-                            builder: (_) => Platform.isIOS
-                                ? dropDownWithModalSheep(
-                                    value: store.priority,
-                                    children: QuestConstants.priorityList,
-                                    onPressed: (value) {
-                                      store.changedPriority(value);
-                                    },
-                                  )
-                                : DropdownButtonHideUnderline(
-                                    child: DropdownButton(
-                                      isExpanded: true,
+                          child: IgnorePointer(
+                            ignoring: isEdit,
+                            child: Observer(
+                              builder: (_) => Platform.isIOS
+                                  ? dropDownWithModalSheep(
                                       value: store.priority,
-                                      onChanged: (String? value) {
-                                        store.changedPriority(value!);
+                                      children: QuestConstants.priorityList,
+                                      onPressed: (value) {
+                                        store.changedPriority(value);
                                       },
-                                      items: QuestConstants.priorityList
-                                          .map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value.tr(),
-                                            child: Text(value.tr()),
-                                          );
+                                    )
+                                  : DropdownButtonHideUnderline(
+                                      child: DropdownButton(
+                                        isExpanded: true,
+                                        value: store.priority,
+                                        onChanged: (String? value) {
+                                          store.changedPriority(value!);
                                         },
-                                      ).toList(),
-                                      icon: Icon(
-                                        Icons.arrow_drop_down,
-                                        size: 30,
-                                        color: Colors.blueAccent,
-                                      ),
-                                      hint: Text(
-                                        'mining.choose'.tr(),
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
+                                        items: QuestConstants.priorityList
+                                            .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value.tr(),
+                                              child: Text(value.tr()),
+                                            );
+                                          },
+                                        ).toList(),
+                                        icon: Icon(
+                                          Icons.arrow_drop_down,
+                                          size: 30,
+                                          color: Colors.blueAccent,
+                                        ),
+                                        hint: Text(
+                                          'mining.choose'.tr(),
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                            ),
                           ),
                         ),
                       ),
@@ -341,46 +346,49 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             ),
                           ),
                           alignment: Alignment.centerLeft,
-                          child: Observer(
-                            builder: (_) => Platform.isIOS
-                                ? dropDownWithModalSheep(
-                                    value: store.payPeriod,
-                                    children: QuestConstants.payPeriodList,
-                                    onPressed: (value) {
-                                      store.changedPayPeriod(value.tr());
-                                    },
-                                  )
-                                : DropdownButtonHideUnderline(
-                                    child: DropdownButton(
-                                      isExpanded: true,
+                          child: IgnorePointer(
+                            ignoring: isEdit,
+                            child: Observer(
+                              builder: (_) => Platform.isIOS
+                                  ? dropDownWithModalSheep(
                                       value: store.payPeriod,
-                                      onChanged: (String? value) {
-                                        store.changedPayPeriod(value!.tr());
+                                      children: QuestConstants.payPeriodList,
+                                      onPressed: (value) {
+                                        store.changedPayPeriod(value.tr());
                                       },
-                                      items: QuestConstants.payPeriodList
-                                          .map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value.tr(),
-                                            child: Text(value.tr()),
-                                          );
+                                    )
+                                  : DropdownButtonHideUnderline(
+                                      child: DropdownButton(
+                                        isExpanded: true,
+                                        value: store.payPeriod,
+                                        onChanged: (String? value) {
+                                          store.changedPayPeriod(value!.tr());
                                         },
-                                      ).toList(),
-                                      icon: Icon(
-                                        Icons.arrow_drop_down,
-                                        size: 30,
-                                        color: Colors.blueAccent,
-                                      ),
-                                      hint: Text(
-                                        'mining.choose'.tr(),
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
+                                        items: QuestConstants.payPeriodList
+                                            .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value.tr(),
+                                              child: Text(value.tr()),
+                                            );
+                                          },
+                                        ).toList(),
+                                        icon: Icon(
+                                          Icons.arrow_drop_down,
+                                          size: 30,
+                                          color: Colors.blueAccent,
+                                        ),
+                                        hint: Text(
+                                          'mining.choose'.tr(),
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                            ),
                           ),
                         ),
                       ),

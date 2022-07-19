@@ -54,6 +54,18 @@ class QuestUtils {
     }
   }
 
+  static String getPriorityFromValue(int index) {
+    if (index == 1) {
+      return "Fixed delivery";
+    } else if (index == 2) {
+      return "Short term 1 week";
+    } else if (index == 3) {
+      return "Urgent 24-72h";
+    } else {
+      throw FormatException('Unknown Priority');
+    }
+  }
+
   static String getPayPeriodValue(String payPeriod) {
     switch (payPeriod) {
       case "Hourly":
@@ -109,7 +121,7 @@ class QuestUtils {
     }
   }
 
-  static int getPriority(String priority) {
+  static int getPriorityToValue(String priority) {
     switch (priority) {
       case "Fixed delivery":
         return 1;
@@ -118,7 +130,7 @@ class QuestUtils {
       case "Urgent 24-72h":
         return 3;
       default:
-        throw FormatException('Unknown Priority');
+        throw FormatException('Unknown Priority Value');
     }
   }
 
