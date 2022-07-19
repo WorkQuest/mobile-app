@@ -21,19 +21,7 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
     WebSocket().handlerQuestList = this.changeLists;
   }
 
-  @observable
-  String sort = "sort[createdAt]=desc";
-
-  @observable
-  int priority = -1;
-
   Map<QuestsType, int> offset = {};
-
-  @observable
-  int limit = 10;
-
-  @observable
-  int status = -1;
 
   @observable
   ObservableMap<QuestsType, ObservableList<BaseQuestResponse>> quests =
@@ -172,6 +160,12 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
+  }
+
+  @action
+  deleteQuestFromList(QuestsType questsType, String id) {
+    quests[questsType]!.removeWhere((quest) => quest.id == id);
+    sortQuests();
   }
 
   List<int> getStatuses(QuestsType questsType) {

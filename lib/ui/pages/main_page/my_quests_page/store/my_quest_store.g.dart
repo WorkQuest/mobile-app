@@ -9,66 +9,6 @@ part of 'my_quest_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$MyQuestStore on _MyQuestStore, Store {
-  final _$sortAtom = Atom(name: '_MyQuestStore.sort');
-
-  @override
-  String get sort {
-    _$sortAtom.reportRead();
-    return super.sort;
-  }
-
-  @override
-  set sort(String value) {
-    _$sortAtom.reportWrite(value, super.sort, () {
-      super.sort = value;
-    });
-  }
-
-  final _$priorityAtom = Atom(name: '_MyQuestStore.priority');
-
-  @override
-  int get priority {
-    _$priorityAtom.reportRead();
-    return super.priority;
-  }
-
-  @override
-  set priority(int value) {
-    _$priorityAtom.reportWrite(value, super.priority, () {
-      super.priority = value;
-    });
-  }
-
-  final _$limitAtom = Atom(name: '_MyQuestStore.limit');
-
-  @override
-  int get limit {
-    _$limitAtom.reportRead();
-    return super.limit;
-  }
-
-  @override
-  set limit(int value) {
-    _$limitAtom.reportWrite(value, super.limit, () {
-      super.limit = value;
-    });
-  }
-
-  final _$statusAtom = Atom(name: '_MyQuestStore.status');
-
-  @override
-  int get status {
-    _$statusAtom.reportRead();
-    return super.status;
-  }
-
-  @override
-  set status(int value) {
-    _$statusAtom.reportWrite(value, super.status, () {
-      super.status = value;
-    });
-  }
-
   final _$questsAtom = Atom(name: '_MyQuestStore.quests');
 
   @override
@@ -131,12 +71,19 @@ mixin _$MyQuestStore on _MyQuestStore, Store {
   }
 
   @override
+  dynamic deleteQuestFromList(QuestsType questsType, String id) {
+    final _$actionInfo = _$_MyQuestStoreActionController.startAction(
+        name: '_MyQuestStore.deleteQuestFromList');
+    try {
+      return super.deleteQuestFromList(questsType, id);
+    } finally {
+      _$_MyQuestStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
-sort: ${sort},
-priority: ${priority},
-limit: ${limit},
-status: ${status},
 quests: ${quests}
     ''';
   }

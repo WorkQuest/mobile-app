@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:app/base_store/i_store.dart';
 import 'package:app/constants.dart';
@@ -82,8 +81,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
 
   @action
   void changeQuest(dynamic json) {
-    var changedQuest =
-        BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+    var changedQuest = BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
     if (changedQuest.id == quest.value?.id) {
       quest.value = changedQuest;
       _getQuest();
@@ -113,26 +111,28 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   Future<void> getFee(String userId, String functionName) async {
     try {
       this.onLoading();
-      final _user = await _apiProvider.getProfileUser(userId: userId);
+      final _needParams = functionName == WQContractFunctions.assignJob.name;
+      List<dynamic> _params = [];
       final _client = AccountRepository().getClientWorkNet();
       final _contract = await _client.getDeployedContract(
-          "WorkQuest", quest.value!.contractAddress!);
+        "WorkQuest",
+        quest.value!.contractAddress!,
+      );
       final _function = _contract.function(functionName);
-      final params = functionName != WQContractFunctions.acceptJobResult.name &&
-              functionName != WQContractFunctions.arbitration.name
-          ? [EthereumAddress.fromHex(_user.walletAddress!)]
-          : [];
+      if (_needParams) {
+        final _user = await _apiProvider.getProfileUser(userId: userId);
+        _params = [EthereumAddress.fromHex(_user.walletAddress!)];
+      }
       final _gas = await _client.getEstimateGasCallContract(
           contract: _contract,
           function: _function,
-          params: params,
-          value: functionName == WQContractFunctions.arbitration.name
-              ? "1"
-              : null);
+          params: _params,
+          value: functionName == WQContractFunctions.arbitration.name ? "1" : null);
       fee = _gas.toStringAsFixed(17);
       this.onSuccess(true);
-    } on SocketException catch (_) {
-      this.onError("Lost connection to server");
+    } catch (e) {
+      onError(e.toString());
+      throw Exception(e.toString());
     }
   }
 
@@ -186,7 +186,6 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _getQuest();
-      // await _apiProvider.deleteQuest(questId: questId);
       await AccountRepository().getClientWorkNet().handleEvent(
             function: WQContractFunctions.cancelJob,
             contractAddress: quest.value!.contractAddress!,

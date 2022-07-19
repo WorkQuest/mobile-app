@@ -234,29 +234,23 @@ class ClientService implements ClientServiceI {
     required List params,
     String? value,
   }) async {
-    try {
-      final _gas = await getGas();
-      final _estimateGas = await getEstimateGas(Transaction.callContract(
-        contract: contract,
-        function: function,
-        parameters: params,
-        from: EthereumAddress.fromHex(AccountRepository().userAddress),
-        value: value != null
-            ? EtherAmount.fromUnitAndValue(
-                EtherUnit.wei,
-                BigInt.from(double.parse(value) * pow(10, 18)),
-              )
-            : null,
-      ));
-      return (Decimal.fromBigInt(_estimateGas) *
-              Decimal.fromBigInt(_gas.getInWei) /
-              Decimal.fromInt(10).pow(18))
-          .toDouble();
-    } catch (e, trace) {
-      print("ERROR: $e");
-      print("ERROR: $trace");
-      return 0.0;
-    }
+    final _gas = await getGas();
+    final _estimateGas = await getEstimateGas(Transaction.callContract(
+      contract: contract,
+      function: function,
+      parameters: params,
+      from: EthereumAddress.fromHex(AccountRepository().userAddress),
+      value: value != null
+          ? EtherAmount.fromUnitAndValue(
+              EtherUnit.wei,
+              BigInt.from(double.parse(value) * pow(10, 18)),
+            )
+          : null,
+    ));
+    return (Decimal.fromBigInt(_estimateGas) *
+            Decimal.fromBigInt(_gas.getInWei) /
+            Decimal.fromInt(10).pow(18))
+        .toDouble();
   }
 
   Future<double> getEstimateGasForApprove(BigInt price) async {
@@ -393,8 +387,7 @@ extension GetContract on ClientService {
       );
       final contract = DeployedContract(_contractAbi, _contractAddress);
       return contract;
-    } catch (e, tr) {
-      print("getDeployedContract | Error: $e \n Trace: $tr");
+    } catch (e) {
       throw Exception("Error Creating Contract");
     }
   }

@@ -38,15 +38,25 @@ class MyQuestsItem extends StatefulWidget {
 }
 
 class _MyQuestsItemState extends State<MyQuestsItem> {
+  late final MyQuestStore myQuestStore;
+
+  @override
+  void initState() {
+    super.initState();
+    myQuestStore = GetIt.I.get<MyQuestStore>();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final myQuestStore = GetIt.I.get<MyQuestStore>();
     return GestureDetector(
       onTap: () async {
-        await Navigator.of(context, rootNavigator: true).pushNamed(
+        final result = await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
           arguments: QuestArguments(questInfo: widget.questInfo, id: null),
         );
+        if (result != null && result as bool) {
+          myQuestStore.deleteQuestFromList(widget.itemType, widget.questInfo.id);
+        }
       },
       child: Container(
         decoration: BoxDecoration(
@@ -69,8 +79,8 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 itemType: widget.itemType,
                 questStatus: widget.questInfo.status,
                 rounded: true,
-                responded: widget.questInfo.responded ??
-                    widget.questInfo.questChat?.response,
+                responded:
+                    widget.questInfo.responded ?? widget.questInfo.questChat?.response,
                 invited: widget.questInfo.invited,
                 role: widget.myRole,
               ),
@@ -102,8 +112,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                                   widget.questInfo.status == 2) ||
                           widget.questInfo.invited != null &&
                               widget.questInfo.invited?.status == 1) &&
-                      context.read<ProfileMeStore>().userData!.role ==
-                          UserRole.Worker)
+                      context.read<ProfileMeStore>().userData!.role == UserRole.Worker)
                     Row(
                       children: [
                         const SizedBox(width: 5),
@@ -122,9 +131,8 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                   IconButton(
                     icon: Icon(
                       Icons.star,
-                      color: widget.questInfo.star
-                          ? Color(0xFFE8D20D)
-                          : Color(0xFFE9EDF2),
+                      color:
+                          widget.questInfo.star ? Color(0xFFE8D20D) : Color(0xFFE9EDF2),
                     ),
                     onPressed: () async {
                       await myQuestStore.setStar(
@@ -137,8 +145,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
               ],
             ),
             const SizedBox(height: 17.5),
-            if (widget.questInfo.userId !=
-                    context.read<ProfileMeStore>().userData!.id &&
+            if (widget.questInfo.userId != context.read<ProfileMeStore>().userData!.id &&
                 widget.questInfo.status != 5 &&
                 widget.questInfo.status != 6)
               Column(
@@ -210,9 +217,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 Row(
                   children: [
                     PriorityView(
-                      widget.questInfo.priority != 0
-                          ? widget.questInfo.priority - 1
-                          : 0,
+                      widget.questInfo.priority != 0 ? widget.questInfo.priority - 1 : 0,
                     ),
                     const SizedBox(width: 5),
                     PayPeriodView(widget.questInfo.payPeriod),

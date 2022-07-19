@@ -15,10 +15,10 @@ import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
-import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:decimal/decimal.dart';
@@ -46,6 +46,35 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   late QuestsStore questStore;
   AnimationController? controller;
 
+  bool get isMyQuest =>
+      store.quest.value != null && store.quest.value!.userId == profile!.userData!.id;
+
+  bool get canActionsQuest =>
+      isMyQuest &&
+      (store.quest.value!.status == QuestConstants.questCreated ||
+          store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign);
+
+  bool get canRaiseView =>
+      (store.quest.value!.status == QuestConstants.questCreated ||
+          store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign) &&
+      store.quest.value!.raiseView?.status != 0;
+
+  bool get canEditOrDelete =>
+      store.quest.value!.status == QuestConstants.questCreated ||
+      store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign;
+
+  bool get canCreateReview =>
+      storeQuest.questInfo!.status == QuestConstants.questDone &&
+      !profile!.review &&
+      (storeQuest.questInfo!.userId == profile!.userData!.id ||
+          storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id);
+
+  bool get showReview =>
+      storeQuest.questInfo!.status == QuestConstants.questDone &&
+      profile!.review &&
+      (storeQuest.questInfo!.userId == profile!.userData!.id ||
+          storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id);
+
   @override
   void initState() {
     store = context.read<EmployerStore>();
@@ -53,6 +82,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     questStore = context.read<QuestsStore>();
     profile = context.read<ProfileMeStore>();
     chatStore = context.read<ChatStore>();
+
     if (widget.arguments.questInfo != null) {
       profile!.getProfileMe().then((value) => {
             if (widget.arguments.questInfo!.userId == profile!.userData!.id)
@@ -64,10 +94,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       store.quest.value = widget.arguments.questInfo;
     } else
       store.getQuest(widget.arguments.id!);
+
     controller = BottomSheet.createAnimationController(this);
+
     controller!.duration = Duration(
       milliseconds: 500,
     );
+
     super.initState();
   }
 
@@ -77,13 +110,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share(
-              "https://dev-app.workquest.co/quests/${store.quest.value!.id}");
+          Share.share("https://dev-app.workquest.co/quests/${store.quest.value!.id}");
         },
       ),
-      if (store.quest.value != null &&
-          store.quest.value!.userId == profile!.userData!.id &&
-          (store.quest.value!.status == 1 || store.quest.value!.status == 2))
+      if (canActionsQuest)
         PopupMenuButton<String>(
           elevation: 10,
           icon: Icon(Icons.more_vert),
@@ -91,83 +121,86 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
             borderRadius: BorderRadius.circular(6.0),
           ),
           onSelected: (value) async {
-            switch (value) {
-              case "quests.raiseViews":
-                await Navigator.pushNamed(
+            if (value == "quests.raiseViews") {
+              await Navigator.pushNamed(
+                context,
+                RaiseViews.routeName,
+                arguments: store.quest.value!.id,
+              );
+            } else if (value == "registration.edit") {
+              if (profile?.userData?.isTotpActive == true) {
+                _showSecurityTOTPDialog(onTabOk: () async {
+                  await store.validateTotp();
+                  if (store.isValid) {
+                    await Navigator.pushNamed(
+                      context,
+                      CreateQuestPage.routeName,
+                      arguments: widget.arguments.questInfo,
+                    );
+                  } else {
+                    await AlertDialogUtils.showInfoAlertDialog(
+                      context,
+                      title: 'modals.error'.tr(),
+                      content: "modals.invalid2FA".tr(),
+                    );
+                  }
+                });
+              } else {
+                await AlertDialogUtils.showInfoAlertDialog(
                   context,
-                  RaiseViews.routeName,
-                  arguments: store.quest.value!.id,
+                  title: 'modals.error'.tr(),
+                  content: "modals.errorEditQuest2FA".tr(),
                 );
-                break;
-              case "registration.edit":
-                if (profile?.userData?.isTotpActive == true) {
-                  _showSecurityTOTPDialog(onTabOk: () async {
+              }
+            } else if (value == "settings.delete") {
+              if (profile?.userData?.isTotpActive == true) {
+                _showSecurityTOTPDialog(
+                  onTabOk: () async {
                     await store.validateTotp();
                     if (store.isValid) {
-                      await Navigator.pushNamed(
-                        context,
-                        CreateQuestPage.routeName,
-                        arguments: widget.arguments.questInfo,
-                      );
-                    } else {
-                      await AlertDialogUtils.showInfoAlertDialog(
-                        context,
-                        title: 'modals.error'.tr(),
-                        content: "modals.invalid2FA".tr(),
-                      );
+                      try {
+                        await store.getFee(store.quest.value?.assignedWorkerId ?? '1',
+                            WQContractFunctions.cancelJob.name);
+                        AlertDialogUtils.showAlertTxConfirm(
+                          context,
+                          typeTx: "quests.deleteQuest".tr(),
+                          addressTo: store.quest.value!.contractAddress!,
+                          amount: '0.0',
+                          fee: store.fee,
+                          tokenSymbol: TokenSymbols.WQT.name,
+                          tokenSymbolFee: TokenSymbols.WQT.name,
+                          onTabOk: () async {
+                            AlertDialogUtils.showLoadingDialog(context);
+                            await store.deleteQuest(
+                              questId: widget.arguments.questInfo!.id,
+                            );
+                            if (profile!.userData!.questsStatistic != null) {
+                              profile!.userData!.questsStatistic!.opened -= 1;
+                            }
+                            Navigator.pop(context);
+                            Navigator.pop(context, true);
+                          },
+                        );
+                      } catch (e) {
+                        AlertDialogUtils.showInfoAlertDialog(context, title: 'modals.error'.tr(), content: e.toString());
+                      }
                     }
-                  });
-                } else {
-                  await AlertDialogUtils.showInfoAlertDialog(
-                    context,
-                    title: 'modals.error'.tr(),
-                    content: "modals.errorEditQuest2FA".tr(),
-                  );
-                }
-                break;
-              case "settings.delete":
-                if (profile?.userData?.isTotpActive == true) {
-                  _showSecurityTOTPDialog(onTabOk: () async {
-                    await store.validateTotp();
-                    if (store.isValid)
-                      await dialog(
-                        context,
-                        title: "quests.deleteQuest".tr(),
-                        message: "quests.deleteQuestMessage".tr(),
-                        confirmAction: () async {
-                          await store.deleteQuest(
-                            questId: widget.arguments.questInfo!.id,
-                          );
-                          if (profile!.userData!.questsStatistic != null)
-                            profile!.userData!.questsStatistic!.opened -= 1;
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },
-                      );
-                  });
-                } else {
-                  await AlertDialogUtils.showInfoAlertDialog(
-                    context,
-                    title: 'modals.error'.tr(),
-                    content: "modals.errorDeleteQuest2FA".tr(),
-                  );
-                }
-                break;
-              default:
+                  },
+                );
+              } else {
+                await AlertDialogUtils.showInfoAlertDialog(
+                  context,
+                  title: 'modals.error'.tr(),
+                  content: "modals.errorDeleteQuest2FA".tr(),
+                );
+              }
             }
           },
           itemBuilder: (BuildContext context) {
             return {
-              if ((store.quest.value!.status == 1 ||
-                      store.quest.value!.status == 2) &&
-                  store.quest.value!.raiseView?.status != 0)
-                'quests.raiseViews',
-              if (store.quest.value!.status == 1 ||
-                  store.quest.value!.status == 2)
-                'registration.edit',
-              if (store.quest.value!.status == 1 ||
-                  store.quest.value!.status == 2)
-                'settings.delete',
+              if (canRaiseView) 'quests.raiseViews',
+              if (canEditOrDelete) 'registration.edit',
+              if (canEditOrDelete) 'settings.delete',
             }.map((String choice) {
               return PopupMenuItem<String>(
                 value: choice,
@@ -203,11 +236,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   @override
   Widget review() {
-    return storeQuest.questInfo!.status == 5 &&
-            !profile!.review &&
-            (storeQuest.questInfo!.userId == profile!.userData!.id ||
-                storeQuest.questInfo!.assignedWorker?.id ==
-                    profile!.userData!.id)
+    return canCreateReview
         ? Column(
             children: [
               const SizedBox(height: 20),
@@ -236,10 +265,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
                       if (states.contains(MaterialState.pressed))
-                        return Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.5);
+                        return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                       return const Color(0xFF0083C7);
                     },
                   ),
@@ -247,11 +273,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               ),
             ],
           )
-        : storeQuest.questInfo!.status == 5 &&
-                profile!.review &&
-                (storeQuest.questInfo!.userId == profile!.userData!.id ||
-                    storeQuest.questInfo!.assignedWorker?.id ==
-                        profile!.userData!.id)
+        : showReview
             ? reviewCard()
             : SizedBox();
   }
@@ -283,9 +305,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     color: Color(0xFFE8D20D),
                     size: 20.0,
                   ),
-                for (int i = 0;
-                    i < 5 - storeQuest.questInfo!.yourReview!.mark;
-                    i++)
+                for (int i = 0; i < 5 - storeQuest.questInfo!.yourReview!.mark; i++)
                   Icon(
                     Icons.star,
                     color: Color(0xFFE9EDF2),
@@ -313,7 +333,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            store.quest.value!.status == 5
+            store.quest.value!.status == QuestConstants.questDone
                 ? "quests.finishedBy".tr()
                 : "quests.inProgressBy".tr(),
             style: TextStyle(
@@ -388,17 +408,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
                         if (states.contains(MaterialState.pressed))
-                          return Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.5);
+                          return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                         return const Color(0xFF0083C7);
                       },
                     ),
                   ),
                 )
-              : (store.respondedList.isNotEmpty &&
-                      (store.quest.value!.status == 1))
+              : (store.respondedList.isNotEmpty && (store.quest.value!.status == 1))
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -417,44 +433,39 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         const SizedBox(height: 15),
                         Observer(
                           builder: (_) => TextButton(
-                            onPressed: store.selectedResponders == null ||
-                                    store.isLoading
+                            onPressed: store.selectedResponders == null || store.isLoading
                                 ? null
                                 : () async {
                                     await sendTransaction(
                                       onPress: () async {
                                         Navigator.pop(context);
                                         await store.startQuest(
-                                          userId: store
-                                              .selectedResponders!.workerId,
+                                          userId: store.selectedResponders!.workerId,
                                           questId: store.quest.value!.id,
                                         );
                                       },
                                       nextStep: () async {
                                         store.quest.value!.assignedWorker =
                                             AssignedWorker(
-                                          firstName: store.selectedResponders!
-                                              .worker.firstName,
-                                          lastName: store.selectedResponders!
-                                              .worker.lastName,
-                                          avatar: store.selectedResponders!
-                                              .worker.avatar,
+                                          firstName:
+                                              store.selectedResponders!.worker.firstName,
+                                          lastName:
+                                              store.selectedResponders!.worker.lastName,
+                                          avatar: store.selectedResponders!.worker.avatar,
                                           id: store.selectedResponders!.id,
                                         );
-                                        store.setQuestStatus(2);
+                                        store.setQuestStatus(
+                                            QuestConstants.questWaitWorkerOnAssign);
 
                                         await questStore.getQuests(true);
                                         await myQuestStore.updateListQuest();
                                         myQuestStore.sortQuests();
-                                        await AlertDialogUtils
-                                            .showSuccessDialog(
+                                        await AlertDialogUtils.showSuccessDialog(
                                           context,
                                         );
                                       },
-                                      functionName:
-                                          WQContractFunctions.assignJob.name,
-                                      userId:
-                                          store.selectedResponders!.workerId,
+                                      functionName: WQContractFunctions.assignJob.name,
+                                      userId: store.selectedResponders!.workerId,
                                     );
                                   },
                             child: Text(
@@ -466,8 +477,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                               ),
                             ),
                             style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.resolveWith<Color>(
+                              backgroundColor: MaterialStateProperty.resolveWith<Color>(
                                 (Set<MaterialState> states) {
                                   if (states.contains(MaterialState.disabled))
                                     return const Color(0xFFF7F8FA);
@@ -561,11 +571,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                   await myQuestStore.updateListQuest();
                                   myQuestStore.sortQuests();
                                   chatStore.loadChats(starred: false);
-                                  await AlertDialogUtils.showSuccessDialog(
-                                      context);
+                                  await AlertDialogUtils.showSuccessDialog(context);
                                 },
-                                functionName:
-                                    WQContractFunctions.acceptJobResult.name,
+                                functionName: WQContractFunctions.acceptJobResult.name,
                                 userId: store.quest.value!.assignedWorkerId!,
                               );
                             },
@@ -577,8 +585,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
                               return Theme.of(context)
@@ -601,8 +608,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                   AlertDialogUtils.showInfoAlertDialog(
                                     context,
                                     title: "Error",
-                                    content:
-                                        "You cannot create a dispute until 24"
+                                    content: "You cannot create a dispute until 24"
                                         " hours have passed from the start of "
                                         "this quest",
                                   );
@@ -624,8 +630,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                     titleCancel: "Cancel",
                                     titleOk: "Ok",
                                     onTabCancel: () => Navigator.pop(context),
-                                    onTabOk: () async =>
-                                        await Navigator.pushNamed(
+                                    onTabOk: () async => await Navigator.pushNamed(
                                       context,
                                       OpenDisputePage.routeName,
                                       arguments: store.quest.value!,
@@ -646,8 +651,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
                               return Theme.of(context)
@@ -750,8 +754,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   value: respond,
                   groupValue: store.selectedResponders,
-                  onChanged: (RespondModel? user) =>
-                      store.selectedResponders = user,
+                  onChanged: (RespondModel? user) => store.selectedResponders = user,
                 ),
               ),
             ],
