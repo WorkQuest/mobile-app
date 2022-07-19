@@ -34,6 +34,17 @@ class QuestConstants {
     "quests.payPeriod.fixedPeriod",
     "quests.payPeriod.byAgreement",
   ];
+
+  static int questClosed = -3;
+  static int questDispute = -2;
+  static int questRejected = -1;
+  static int questBlocked = -1;
+  static int questPending = 0;
+  static int questCreated = 1;
+  static int questWaitWorkerOnAssign = 2;
+  static int questWaitWorker = 3;
+  static int questWaitEmployerConfirm = 4;
+  static int questDone = 5;
 }
 
 class QuestUtils {

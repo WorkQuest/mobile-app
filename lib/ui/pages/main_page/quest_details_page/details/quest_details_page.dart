@@ -8,6 +8,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/pay_period_view.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -76,9 +77,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) => Scaffold(
-        appBar: storeQuest.questInfo == null
-            ? null
-            : AppBar(actions: actionAppBar()),
+        appBar: storeQuest.questInfo == null ? null : AppBar(actions: actionAppBar()),
         body: storeQuest.questInfo == null
             ? Center(
                 child: Transform.scale(
@@ -116,8 +115,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                 context.read<UserProfileStore>().initRole(
                                       UserRole.Employer,
                                     );
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushNamed(
+                                Navigator.of(context, rootNavigator: true).pushNamed(
                                   UserProfile.routeName,
                                   arguments: ProfileArguments(
                                     role: UserRole.Employer,
@@ -152,8 +150,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       const SizedBox(height: 17),
                       Row(
                         children: [
-                          if (storeQuest.questInfo!.userId !=
-                              profile!.userData!.id)
+                          if (storeQuest.questInfo!.userId != profile!.userData!.id)
                             Icon(
                               Icons.location_on_rounded,
                               color: Color(0xFF7C838D),
@@ -178,8 +175,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         ),
                       ),
                       if (storeQuest.questInfo!.assignedWorker != null &&
-                          (storeQuest.questInfo!.status == 1 ||
-                              storeQuest.questInfo!.status == 5))
+                          (storeQuest.questInfo!.status == QuestConstants.questCreated ||
+                              storeQuest.questInfo!.status == QuestConstants.questDone))
                         inProgressBy(),
                       const SizedBox(height: 15),
                       GestureDetector(
@@ -196,8 +193,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                       const SizedBox(height: 15),
                       Text(storeQuest.questInfo!.description),
                       const SizedBox(height: 15),
-                      if (storeQuest.questInfo!.medias?.isNotEmpty ??
-                          false) ...[
+                      if (storeQuest.questInfo!.medias?.isNotEmpty ?? false) ...[
                         Text(
                           "quests.questMaterials".tr(),
                           style: TextStyle(
@@ -248,10 +244,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                     initialCameraPosition: CameraPosition(
                                       bearing: 0,
                                       target: LatLng(
-                                        storeQuest
-                                            .questInfo!.locationCode!.latitude,
-                                        storeQuest
-                                            .questInfo!.locationCode!.longitude,
+                                        storeQuest.questInfo!.locationCode!.latitude,
+                                        storeQuest.questInfo!.locationCode!.longitude,
                                       ),
                                       zoom: 15.0,
                                     ),
@@ -263,8 +257,8 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                                 "assets/marker.svg",
                                 width: 22,
                                 height: 29,
-                                color: Constants.priorityColors[
-                                    storeQuest.questInfo!.priority],
+                                color: Constants
+                                    .priorityColors[storeQuest.questInfo!.priority],
                               ),
                               Container(
                                 color: Colors.transparent,

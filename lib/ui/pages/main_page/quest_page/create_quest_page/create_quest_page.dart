@@ -3,17 +3,22 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:app/constants.dart';
+import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
+import 'package:app/ui/widgets/media_upload/media_upload_widget.dart';
 import 'package:app/ui/widgets/skill_specialization_selection/skill_specialization_selection.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/validator.dart';
+import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/client_service.dart';
 import 'package:decimal/decimal.dart';
@@ -25,11 +30,6 @@ import "package:provider/provider.dart";
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/credentials.dart';
-import '../../../../../enums.dart';
-import '../../../../../observer_consumer.dart';
-import '../../../../../utils/web3_utils.dart';
-import '../../../../widgets/media_upload/media_upload_widget.dart';
-import '../../wallet_page/confirm_transaction_dialog.dart';
 
 class CreateQuestPage extends StatefulWidget {
   static const String routeName = '/createQuestPage';
@@ -43,9 +43,9 @@ class CreateQuestPage extends StatefulWidget {
 
 class _CreateQuestPageState extends State<CreateQuestPage> {
   final _formKey = GlobalKey<FormState>();
-  SkillSpecializationController? _controller;
+  late SkillSpecializationController _controller;
   late ProfileMeStore? profile;
-  final _scrollController = ScrollController();
+  late final CreateQuestStore store;
 
   final addressKey = new GlobalKey();
   final specializationKey = new GlobalKey();
@@ -55,14 +55,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   final confirmUnderstandAboutEdit = new GlobalKey();
   final contractAddress = Web3Utils.getAddressWorknetWQFactory();
 
-  bool isEdit = false;
+  bool get isEdit => widget.questInfo != null;
 
   void initState() {
     super.initState();
     profile = context.read<ProfileMeStore>();
+    _controller = SkillSpecializationController();
     if (widget.questInfo != null) {
-      this.isEdit = true;
-      final store = context.read<CreateQuestStore>();
       store.oldPrice = BigInt.parse(widget.questInfo!.price);
       store.payPeriod = widget.questInfo!.payPeriod;
       store.payPeriodValue = QuestUtils.getPayPeriodValue(widget.questInfo!.payPeriod);
@@ -70,9 +69,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.priority = QuestUtils.getPriorityFromValue(widget.questInfo!.priority);
       store.contractAddress = widget.questInfo!.contractAddress ?? '';
       store.questTitle = widget.questInfo!.title;
-      print('workplace: ${widget.questInfo?.workplace}');
       store.changedDistantWork(QuestUtils.getWorkplace(widget.questInfo!.workplace));
-      print('workplace: ${widget.questInfo?.employment}');
       store.changedEmployment(QuestUtils.getEmployment(widget.questInfo!.employment));
       store.description = widget.questInfo!.description;
       store.price =
@@ -81,21 +78,16 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       store.setImages(widget.questInfo!.medias ?? []);
       _controller = SkillSpecializationController(
           initialValue: widget.questInfo!.questSpecializations);
-    } else
-      _controller = SkillSpecializationController();
+    }
   }
 
+  @override
   Widget build(context) {
-    final store = context.read<CreateQuestStore>();
-
-    final questStore = context.read<MyQuestStore>();
-
     return Form(
       key: _formKey,
       child: Scaffold(
         body: DismissKeyboard(
           child: CustomScrollView(
-            controller: _scrollController,
             cacheExtent: 1000,
             slivers: [
               CupertinoSliverNavigationBar(
@@ -113,7 +105,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate(
                     [
-                      titledField(
+                      _TitleWithField(
                         "settings.priority".tr(),
                         Container(
                           height: 50,
@@ -177,7 +169,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           controller: _controller,
                         ),
                       ),
-                      titledField(
+                      _TitleWithField(
                         "quests.address".tr(),
                         Observer(
                           builder: (_) => GestureDetector(
@@ -228,7 +220,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           ),
                         ),
                       ),
-                      titledField(
+                      _TitleWithField(
                         "quests.employment.title".tr(),
                         Container(
                           height: 50,
@@ -281,7 +273,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           ),
                         ),
                       ),
-                      titledField(
+                      _TitleWithField(
                         "quests.distantWork.title".tr(),
                         Container(
                           height: 50,
@@ -334,7 +326,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           ),
                         ),
                       ),
-                      titledField(
+                      _TitleWithField(
                         "quests.payPeriod.title".tr(),
                         Container(
                           height: 50,
@@ -392,7 +384,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           ),
                         ),
                       ),
-                      titledField(
+                      _TitleWithField(
                         "quests.title".tr(),
                         Container(
                           key: titleKey,
@@ -413,7 +405,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           ),
                         ),
                       ),
-                      titledField(
+                      _TitleWithField(
                         "quests.aboutQuest".tr(),
                         TextFormField(
                           key: descriptionKey,
@@ -479,7 +471,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           type: MediaType.images,
                         ),
                       ),
-                      titledField(
+                      _TitleWithField(
                         "quests.price".tr(),
                         Container(
                           key: priceKey,
@@ -513,6 +505,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           },
                           onSuccess: () async {
                             ///review
+                            final questStore = context.read<MyQuestStore>();
                             await questStore.getQuests(
                               QuestsType.Created,
                               UserRole.Employer,
@@ -565,7 +558,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   }
 
   _onPressedOnCreateOrEditQuest(CreateQuestStore store) async {
-    store.skillFilters = _controller!.getSkillAndSpecialization();
+    store.skillFilters = _controller.getSkillAndSpecialization();
     if (store.skillFilters.isEmpty) {
       Scrollable.ensureVisible(specializationKey.currentContext!);
       return;
@@ -726,24 +719,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     }
   }
 
-  Widget titledField(
-    String title,
-    Widget child,
-  ) =>
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
-            alignment: Alignment.centerLeft,
-            child: Text(
-              title,
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-          child,
-        ],
-      );
+  
 
   dropDownWithModalSheep({
     required String value,
@@ -810,6 +786,31 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
           },
         );
       },
+    );
+  }
+}
+
+class _TitleWithField extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const _TitleWithField(this.title, this.child, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 10),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+        child,
+      ],
     );
   }
 }
