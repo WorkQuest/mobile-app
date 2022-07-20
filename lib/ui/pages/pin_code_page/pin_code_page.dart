@@ -68,7 +68,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
             if (widget.isRecheck) {
               Navigator.pop(context);
             } else {
-              await store.checkPushToken();
+              store.checkPushToken();
               AccountRepository().connectClient();
               await AlertDialogUtils.showSuccessDialog(context);
               Navigator.pushNamedAndRemoveUntil(
