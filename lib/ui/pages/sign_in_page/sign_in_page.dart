@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:app/constants.dart';
+import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
-import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/restore_password_page/send_code.dart';
 import "package:app/ui/pages/sign_in_page/store/sign_in_store.dart";
 import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.dart';
@@ -44,182 +44,151 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
-  late SignInStore signInStore;
-  late ProfileMeStore profile;
+  late SignInStore store;
 
   final TextEditingController totpController = new TextEditingController();
 
   @override
   void initState() {
-    signInStore = context.read<SignInStore>();
-    profile = context.read<ProfileMeStore>();
-    signInStore.setPlatform(Platform.isIOS ? "iOS" : "Android");
+    store = context.read<SignInStore>();
+    store.setPlatform(Platform.isIOS ? "iOS" : "Android");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Scaffold(
-        body: CustomScrollView(
-          physics: const ClampingScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.44,
-                alignment: Alignment.bottomLeft,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Color(0xFF103D7C),
-                      BlendMode.color,
-                    ),
-                    image: AssetImage(
-                      "assets/login_page_header.png",
-                    ),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    16.0,
-                    0.0,
-                    16.0,
-                    30.0,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "modals.welcomeToWorkQuest".tr(),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 34,
-                          fontWeight: FontWeight.bold,
-                        ),
+    return ObserverListener<SignInStore>(
+      onSuccess: () async {
+        await AlertDialogUtils.showSuccessDialog(context);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          PinCodePage.routeName,
+          (_) => false,
+        );
+      },
+      onFailure: () {
+        if (store.errorMessage == "unconfirmed") {
+          AlertDialogUtils.showSuccessDialog(context).then((value) {
+            Navigator.pushNamed(context, ConfirmEmail.routeName,
+                arguments: store.getUsername());
+          });
+          return true;
+        }
+        if (store.errorMessage == "TOTP is invalid" ||
+            store.errorMessage == "User must pass 2FA") {
+          _showAlertTotp(context, store);
+          return true;
+        }
+        return false;
+      },
+      child: Form(
+        key: _formKey,
+        child: Scaffold(
+          body: CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.44,
+                  alignment: Alignment.bottomLeft,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Color(0xFF103D7C),
+                        BlendMode.color,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Text(
-                          "signIn.pleaseSignIn".tr(),
+                      image: AssetImage(
+                        "assets/login_page_header.png",
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      16.0,
+                      0.0,
+                      16.0,
+                      30.0,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "modals.welcomeToWorkQuest".tr(),
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: 34,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: _InputFieldsWidget(
-                signInStore: signInStore,
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
-                child: Observer(
-                  builder: (context) {
-                    return LoginButton(
-                      withColumn: true,
-                      onTap: signInStore.canSignIn
-                          ? signInStore.isLoading
-                              ? () {}
-                              : () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    _onPressedSignIn(
-                                      context,
-                                      signInStore: signInStore,
-                                      profile: profile,
-                                    );
-                                  }
-                                }
-                          : null,
-                      title: "signIn.login".tr(),
-                      enabled: signInStore.isLoading,
-                    );
-                  },
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Center(
-                  child: Text(
-                    "signIn.or".tr(),
-                    style: TextStyle(
-                      color: Color(0xFFCBCED2),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Text(
+                            "signIn.pleaseSignIn".tr(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: const _SocialLoginWidget(),
-            ),
-            SliverToBoxAdapter(
-              child: const _HintsAccountWidget(),
-            ),
-          ],
+              SliverToBoxAdapter(
+                child: _InputFieldsWidget(
+                  signInStore: store,
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 30.0, 16.0, 0.0),
+                  child: Observer(
+                    builder: (context) {
+                      return LoginButton(
+                        withColumn: true,
+                        onTap: store.canSignIn
+                            ? store.isLoading
+                                ? () {}
+                                : () async {
+                                    if (_formKey.currentState!.validate()) {
+                                      store.signIn(Platform.isIOS ? "iOS" : "Android");
+                                    }
+                                  }
+                            : null,
+                        title: "signIn.login".tr(),
+                        enabled: store.isLoading,
+                      );
+                    },
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Center(
+                    child: Text(
+                      "signIn.or".tr(),
+                      style: TextStyle(
+                        color: Color(0xFFCBCED2),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: const _SocialLoginWidget(),
+              ),
+              SliverToBoxAdapter(
+                child: const _HintsAccountWidget(),
+              ),
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  _onPressedSignIn(
-    BuildContext context, {
-    required SignInStore signInStore,
-    required ProfileMeStore profile,
-  }) async {
-    final platform = Platform.isIOS ? "iOS" : "Android";
-    await signInStore.signIn(platform);
-    if (signInStore.isSuccess)
-      await profile.getProfileMe();
-    else {
-      _errorHandler(context, signInStore: signInStore, profile: profile);
-      return;
-    }
-    if (profile.error.isEmpty)
-      await signInStore.signInWallet();
-    else {
-      _errorHandler(context, signInStore: signInStore, profile: profile);
-      return;
-    }
-    if (signInStore.isSuccess && signInStore.error.isEmpty) {
-      await AlertDialogUtils.showSuccessDialog(context);
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        PinCodePage.routeName,
-        (_) => false,
-      );
-    } else {
-      _errorHandler(context, signInStore: signInStore, profile: profile);
-    }
-  }
-
-  _errorHandler(
-    BuildContext context, {
-    required SignInStore signInStore,
-    required ProfileMeStore profile,
-  }) async {
-    if (signInStore.errorMessage == "unconfirmed") {
-      await AlertDialogUtils.showSuccessDialog(context);
-      Navigator.pushNamed(context, ConfirmEmail.routeName,
-          arguments: signInStore.getUsername());
-    } else if (signInStore.errorMessage == "TOTP is invalid" ||
-        signInStore.errorMessage == "User must pass 2FA" ||
-        profile.errorMessage == "TOTP is invalid" ||
-        profile.errorMessage == "User must pass 2FA") {
-      _showAlertTotp(context, signInStore);
-    } else {
-      _errorMessage(context, signInStore.error);
-    }
   }
 
   _showAlertTotp(BuildContext context, SignInStore signInStore) {
@@ -243,17 +212,12 @@ class _SignInPageState extends State<SignInPage> {
       titleOk: 'OK',
       onTabCancel: null,
       onTabOk: () {
-        _onPressedSignIn(context,
-            signInStore: signInStore, profile: context.read<ProfileMeStore>());
+        store.signIn(Platform.isIOS ? "iOS" : "Android");
       },
       colorCancel: Colors.red,
       colorOk: AppColor.enabledButton,
     );
   }
-
-  _errorMessage(BuildContext context, String msg) =>
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: "modals.error".tr(), content: msg);
 }
 
 class _HintsAccountWidget extends StatelessWidget {
@@ -460,8 +424,7 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
               minSize: 22.0,
               padding: EdgeInsets.zero,
               onPressed: () async {
-                ClipboardData? data =
-                    await Clipboard.getData(Clipboard.kTextPlain);
+                ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
                 mnemonicController.text = data?.text ?? "";
                 widget.signInStore.setMnemonic(data?.text ?? "");
               },
@@ -483,8 +446,9 @@ class _InputFieldsWidgetState extends State<_InputFieldsWidget> {
             value: AccountRepository().notifierNetwork.value,
             onChanged: (value) {
               setState(() {
-                final _networkName =
-                (value as Network) == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+                final _networkName = (value as Network) == Network.mainnet
+                    ? NetworkName.workNetMainnet
+                    : NetworkName.workNetTestnet;
                 AccountRepository().setNetwork(_networkName);
                 Storage.write(StorageKeys.networkName.name, _networkName.name);
               });

@@ -15,7 +15,6 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../../../constants.dart';
 import '../../widgets/login_button.dart';
-import '../profile_me_store/profile_me_store.dart';
 
 class MnemonicPage extends StatelessWidget {
   MnemonicPage();
@@ -27,7 +26,6 @@ class MnemonicPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final signInStore = context.read<SignInStore>();
-    final profile = context.read<ProfileMeStore>();
 
     return WillPopScope(
       onWillPop: () async {
@@ -102,11 +100,8 @@ class MnemonicPage extends StatelessWidget {
                               : () async {
                                   if (_formKey.currentState!.validate()) {
                                     await signInStore.refreshToken();
-                                    await profile.getProfileMe();
-                                    await signInStore.signInWallet();
-
-                                    if (signInStore.isSuccess &&
-                                        signInStore.error.isEmpty) {
+                                    await signInStore.signInWallet(isMain: true);
+                                    if (signInStore.isSuccess) {
                                       await AlertDialogUtils.showSuccessDialog(
                                           context);
                                       Navigator.pushNamedAndRemoveUntil(
@@ -115,7 +110,7 @@ class MnemonicPage extends StatelessWidget {
                                         (_) => false,
                                       );
                                     } else {
-                                      _errorMessage(context, signInStore.error);
+                                      _errorMessage(context, signInStore.errorMessage!);
                                     }
                                   }
                                 }

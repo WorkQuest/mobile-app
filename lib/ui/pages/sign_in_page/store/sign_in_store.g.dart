@@ -91,29 +91,6 @@ mixin _$SignInStore on _SignInStore, Store {
     });
   }
 
-  final _$errorAtom = Atom(name: '_SignInStore.error');
-
-  @override
-  String get error {
-    _$errorAtom.reportRead();
-    return super.error;
-  }
-
-  @override
-  set error(String value) {
-    _$errorAtom.reportWrite(value, super.error, () {
-      super.error = value;
-    });
-  }
-
-  final _$loginSocialMediaAsyncAction =
-      AsyncAction('_SignInStore.loginSocialMedia');
-
-  @override
-  Future<dynamic> loginSocialMedia(String link) {
-    return _$loginSocialMediaAsyncAction
-        .run(() => super.loginSocialMedia(link));
-  }
 
   final _$refreshTokenAsyncAction = AsyncAction('_SignInStore.refreshToken');
 
@@ -125,8 +102,8 @@ mixin _$SignInStore on _SignInStore, Store {
   final _$signInWalletAsyncAction = AsyncAction('_SignInStore.signInWallet');
 
   @override
-  Future signInWallet() {
-    return _$signInWalletAsyncAction.run(() => super.signInWallet());
+  Future signInWallet({bool isMain = false, String? walletAddress}) {
+    return _$signInWalletAsyncAction.run(() => super.signInWallet(isMain: isMain, walletAddress: walletAddress));
   }
 
   final _$signInAsyncAction = AsyncAction('_SignInStore.signIn');
@@ -210,7 +187,6 @@ mixin _$SignInStore on _SignInStore, Store {
 platform: ${platform},
 mnemonic: ${mnemonic},
 totp: ${totp},
-error: ${error},
 canSignIn: ${canSignIn}
     ''';
   }
