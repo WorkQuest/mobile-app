@@ -1,13 +1,10 @@
-
 import 'package:app/base_store/i_store.dart';
-import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
-import 'package:app/utils/web3_utils.dart';
 import 'package:app/utils/web_socket.dart';
 import 'package:app/web3/repository/account_repository.dart';
-import 'package:decimal/decimal.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:web3dart/credentials.dart';
@@ -22,7 +19,7 @@ class EmployerStore extends _EmployerStore with _$EmployerStore {
   EmployerStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _EmployerStore extends IStore<bool> with Store {
+abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
   final ApiProvider _apiProvider;
 
   _EmployerStore(this._apiProvider) {
@@ -73,7 +70,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       quest.value = await _apiProvider.getQuest(id: questId);
-      this.onSuccess(true);
+      this.onSuccess(EmployerStoreState.getQuest);
     } catch (e) {
       this.onError(e.toString());
     }
@@ -86,25 +83,6 @@ abstract class _EmployerStore extends IStore<bool> with Store {
       quest.value = changedQuest;
       _getQuest();
       getRespondedList(changedQuest.id, changedQuest.assignedWorker?.id ?? "");
-    }
-  }
-
-  @action
-  Future<void> checkPossibilityTx(String userId, String functionName) async {
-    try {
-      this.onLoading();
-      await getFee(userId, functionName);
-      await Web3Utils.checkPossibilityTx(
-        typeCoin: TokenSymbols.WQT,
-        fee: Decimal.parse(fee),
-        amount: 0.0,
-        isMain: true,
-      );
-      this.onSuccess(true);
-    } catch (e, trace) {
-      print("ERROR: $e");
-      print("ERROR: $trace");
-      this.onError(e.toString());
     }
   }
 
@@ -129,7 +107,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
           params: _params,
           value: functionName == WQContractFunctions.arbitration.name ? "1" : null);
       fee = _gas.toStringAsFixed(17);
-      this.onSuccess(true);
+      this.onSuccess(EmployerStoreState.getFee);
     } catch (e) {
       onError(e.toString());
       throw Exception(e.toString());
@@ -143,6 +121,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }) async {
     try {
       this.onLoading();
+      print('startQuest');
       final user = await _apiProvider.getProfileUser(userId: userId);
       await AccountRepository().getClient().handleEvent(
             function: WQContractFunctions.assignJob,
@@ -153,7 +132,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
             value: null,
           );
       await _getQuest();
-      this.onSuccess(true);
+      this.onSuccess(EmployerStoreState.startQuest);
     } catch (e, trace) {
       print("accept error: $e\n$trace");
       this.onError(e.toString());
@@ -172,7 +151,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
             value: null,
           );
       await _getQuest();
-      this.onSuccess(true);
+      this.onSuccess(EmployerStoreState.acceptCompletedWork);
     } catch (e, trace) {
       print("accept error: $e\n$trace");
       this.onError(e.toString());
@@ -191,7 +170,7 @@ abstract class _EmployerStore extends IStore<bool> with Store {
             contractAddress: quest.value!.contractAddress!,
             value: null,
           );
-      this.onSuccess(true);
+      this.onSuccess(EmployerStoreState.deleteQuest);
     } catch (e, trace) {
       print("accept error: $e\n$trace");
       this.onError(e.toString());
@@ -199,17 +178,29 @@ abstract class _EmployerStore extends IStore<bool> with Store {
   }
 
   @action
-  Future<void> validateTotp() async {
+  validateTotp({bool isEdit = false}) async {
     try {
       this.onLoading();
       isValid = await _apiProvider.validateTotp(totp: totp);
       if (isValid == false) {
-        this.onError("Invalid 2FA");
+        this.onError("modals.invalid2FA".tr());
         return;
       }
-      this.onSuccess(true);
+      this.onSuccess(isEdit
+          ? EmployerStoreState.validateTotpEdit
+          : EmployerStoreState.validateTotpDelete);
     } catch (e) {
       this.onError(e.toString());
     }
   }
+}
+
+enum EmployerStoreState {
+  startQuest,
+  deleteQuest,
+  validateTotpDelete,
+  validateTotpEdit,
+  acceptCompletedWork,
+  getQuest,
+  getFee
 }

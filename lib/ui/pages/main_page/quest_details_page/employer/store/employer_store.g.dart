@@ -86,15 +86,6 @@ mixin _$EmployerStore on _EmployerStore, Store {
     return _$getQuestAsyncAction.run(() => super.getQuest(questId));
   }
 
-  final _$checkPossibilityTxAsyncAction =
-      AsyncAction('_EmployerStore.checkPossibilityTx');
-
-  @override
-  Future<void> checkPossibilityTx(String userId, String functionName) {
-    return _$checkPossibilityTxAsyncAction
-        .run(() => super.checkPossibilityTx(userId, functionName));
-  }
-
   final _$startQuestAsyncAction = AsyncAction('_EmployerStore.startQuest');
 
   @override
@@ -123,8 +114,8 @@ mixin _$EmployerStore on _EmployerStore, Store {
   final _$validateTotpAsyncAction = AsyncAction('_EmployerStore.validateTotp');
 
   @override
-  Future<void> validateTotp() {
-    return _$validateTotpAsyncAction.run(() => super.validateTotp());
+  Future validateTotp({bool isEdit = false}) {
+    return _$validateTotpAsyncAction.run(() => super.validateTotp(isEdit: isEdit));
   }
 
   final _$_EmployerStoreActionController =
