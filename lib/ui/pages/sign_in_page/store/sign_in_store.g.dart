@@ -91,7 +91,6 @@ mixin _$SignInStore on _SignInStore, Store {
     });
   }
 
-
   final _$refreshTokenAsyncAction = AsyncAction('_SignInStore.refreshToken');
 
   @override
@@ -103,7 +102,8 @@ mixin _$SignInStore on _SignInStore, Store {
 
   @override
   Future signInWallet({bool isMain = false, String? walletAddress}) {
-    return _$signInWalletAsyncAction.run(() => super.signInWallet(isMain: isMain, walletAddress: walletAddress));
+    return _$signInWalletAsyncAction.run(
+        () => super.signInWallet(isMain: isMain, walletAddress: walletAddress));
   }
 
   final _$signInAsyncAction = AsyncAction('_SignInStore.signIn');
