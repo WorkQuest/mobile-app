@@ -234,7 +234,7 @@ class WebSocket {
       } catch (e) {
         _sender = _events?['message.sender']?[2].toString().toLowerCase();
       }
-      final _txHash = _events?['tx.hash']?[0]?.toString().toLowerCase();
+      final _txHash = _events?['ethereum_tx.ethereumTxHash']?[0]?.toString().toLowerCase();
       final _blockNumber = _events?['tx.height']?[0];
       final _block = DateTime.now();
       final _value = _events?['ethereum_tx.amount']?[0];
