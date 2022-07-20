@@ -232,7 +232,6 @@ class _WalletPageState extends State<WalletPage> {
   }
 
   Future _onRefresh() async {
-    GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
     return GetIt.I.get<WalletStore>().getCoins();
   }
 

@@ -1,8 +1,10 @@
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/web3/current_course_tokens_response.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:decimal/decimal.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
@@ -46,6 +48,8 @@ abstract class _WalletStore extends IStore<bool> with Store {
 
       if (isForce) {
         currentToken = coins.first.symbol;
+        GetIt.I.get<TransactionsStore>().setType(currentToken);
+        GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
       }
       onSuccess(true);
     } catch (e, trace) {
