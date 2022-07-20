@@ -115,7 +115,8 @@ mixin _$EmployerStore on _EmployerStore, Store {
 
   @override
   Future validateTotp({bool isEdit = false}) {
-    return _$validateTotpAsyncAction.run(() => super.validateTotp(isEdit: isEdit));
+    return _$validateTotpAsyncAction
+        .run(() => super.validateTotp(isEdit: isEdit));
   }
 
   final _$_EmployerStoreActionController =
