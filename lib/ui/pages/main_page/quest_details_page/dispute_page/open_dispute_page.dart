@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                         Navigator.pop(context);
                         if (store.isSuccess) {
                           await AlertDialogUtils.showSuccessDialog(context);
-                          widget.quest.status = -2;
+                          widget.quest.status = QuestConstants.questDispute;
                         }
                         setState(() {});
                         Navigator.pop(context);

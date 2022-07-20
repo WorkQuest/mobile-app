@@ -18,6 +18,7 @@ import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/media_upload_widget.dart';
 import 'package:app/ui/widgets/quest_header.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:decimal/decimal.dart';
@@ -62,8 +63,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       store.quest.value = widget.arguments.questInfo;
     else
       store.getQuest(widget.arguments.id ?? "").then(
-            (value) =>
-                isMyQuest = store.quest.value!.userId == profile!.userData!.id,
+            (value) => isMyQuest = store.quest.value!.userId == profile!.userData!.id,
           );
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
@@ -86,9 +86,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         builder: (_) => IconButton(
           icon: Icon(
             store.quest.value?.star ?? false ? Icons.star : Icons.star_border,
-            color: store.quest.value?.star ?? false
-                ? Color(0xFFE8D20D)
-                : Color(0xFFD8DFE3),
+            color:
+                store.quest.value?.star ?? false ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
           ),
           onPressed: () {
             store.onStar();
@@ -113,12 +112,12 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           );
         },
       ),
-      if (store.quest.value?.status == 0)
+      if (store.quest.value?.status == QuestConstants.questPending)
         IconButton(
           icon: Icon(Icons.share_outlined),
           onPressed: () {
             Share.share(
-                "https://dev-app.workquest.co/quests/${store.quest.value!.id}");
+                "https://testnet-app.workquest.co/quests/${store.quest.value!.id}");
           },
         ),
     ];
@@ -131,15 +130,14 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       questStatus: store.quest.value!.status,
       rounded: false,
       role: UserRole.Worker,
-      responded: store.quest.value!.responded ??
-          store.quest.value!.questChat?.response,
+      responded: store.quest.value!.responded ?? store.quest.value!.questChat?.response,
       invited: store.quest.value!.invited,
     );
   }
 
   @override
   Widget review() {
-    return store.quest.value!.status == 5 &&
+    return store.quest.value!.status == QuestConstants.questDone &&
             !profile!.review &&
             (store.quest.value!.userId == profile!.userData!.id ||
                 store.quest.value!.assignedWorker?.id == profile!.userData!.id)
@@ -168,10 +166,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
                       if (states.contains(MaterialState.pressed))
-                        return Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.5);
+                        return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                       return const Color(0xFF0083C7);
                     },
                   ),
@@ -179,11 +174,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               ),
             ],
           )
-        : store.quest.value!.status == 5 &&
+        : store.quest.value!.status == QuestConstants.questDone &&
                 profile!.review &&
                 (store.quest.value!.userId == profile!.userData!.id ||
-                    store.quest.value!.assignedWorker?.id ==
-                        profile!.userData!.id)
+                    store.quest.value!.assignedWorker?.id == profile!.userData!.id)
             ? reviewCard()
             : SizedBox();
   }
@@ -215,9 +209,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                     color: Color(0xFFE8D20D),
                     size: 20.0,
                   ),
-                for (int i = 0;
-                    i < 5 - storeQuest.questInfo!.yourReview!.mark;
-                    i++)
+                for (int i = 0; i < 5 - storeQuest.questInfo!.yourReview!.mark; i++)
                   Icon(
                     Icons.star,
                     color: Color(0xFFE9EDF2),
@@ -259,7 +251,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           const SizedBox(height: 20),
           Observer(
             builder: (_) => !store.response &&
-                    store.quest.value!.status == 1 &&
+                    store.quest.value!.status == QuestConstants.questCreated &&
                     store.quest.value!.invited == null &&
                     store.quest.value!.responded?.status != -1
                 ? store.isLoading
@@ -276,8 +268,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                           fixedSize: MaterialStateProperty.all(
                             Size(double.maxFinite, 43),
                           ),
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith<Color>(
+                          backgroundColor: MaterialStateProperty.resolveWith<Color>(
                             (Set<MaterialState> states) {
                               if (states.contains(MaterialState.pressed))
                                 return Theme.of(context)
@@ -291,11 +282,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       )
                 : SizedBox(),
           ),
-          if ((store.quest.value!.status == 2 &&
-                  store.quest.value!.assignedWorker?.id ==
-                      profile!.userData!.id) ||
+          if ((store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign &&
+                  store.quest.value!.assignedWorker?.id == profile!.userData!.id) ||
               (store.quest.value!.invited != null &&
-                  store.quest.value!.status == 1 &&
+                  store.quest.value!.status == QuestConstants.questCreated &&
                   store.quest.value!.invited?.status == 0))
             store.isLoading
                 ? Center(child: CircularProgressIndicator.adaptive())
@@ -314,16 +304,13 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.5);
+                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
                     ),
                   ),
-          if (store.quest.value!.status == 3 &&
+          if (store.quest.value!.status == QuestConstants.questWaitWorker &&
               store.quest.value!.assignedWorker?.id == profile!.userData!.id)
             store.isLoading
                 ? Center(child: CircularProgressIndicator.adaptive())
@@ -342,17 +329,14 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
-                            return Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.5);
+                            return Theme.of(context).colorScheme.primary.withOpacity(0.5);
                           return const Color(0xFF0083C7);
                         },
                       ),
                     ),
                   ),
           if (store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
-              store.quest.value?.status == 4)
+              store.quest.value?.status == QuestConstants.questWaitEmployerConfirm)
             store.isLoading
                 ? Center(child: CircularProgressIndicator.adaptive())
                 : Observer(
@@ -364,8 +348,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                   AlertDialogUtils.showInfoAlertDialog(
                                     context,
                                     title: "Error",
-                                    content:
-                                        "You cannot create a dispute until 24"
+                                    content: "You cannot create a dispute until 24"
                                         " hours have passed from the start of "
                                         "this quest",
                                   );
@@ -381,8 +364,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                     titleCancel: "Cancel",
                                     titleOk: "Ok",
                                     onTabCancel: () => Navigator.pop(context),
-                                    onTabOk: () async =>
-                                        await Navigator.pushNamed(
+                                    onTabOk: () async => await Navigator.pushNamed(
                                       context,
                                       OpenDisputePage.routeName,
                                       arguments: store.quest.value!,
@@ -403,8 +385,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
                               return Theme.of(context)
