@@ -156,6 +156,7 @@ abstract class _SignInStore extends IStore<bool> with Store {
       }
     }
     await Storage.write(StorageKeys.wallet.name, jsonEncode(wallet.toJson()));
+    await Storage.write(StorageKeys.networkName.name, AccountRepository().networkName.value!.name);
   }
 
   Future<void> deletePushToken() async {
