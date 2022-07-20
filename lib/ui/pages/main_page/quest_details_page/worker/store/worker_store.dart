@@ -1,19 +1,16 @@
 import 'dart:io';
 
 import 'package:app/base_store/i_store.dart';
-import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/media_model.dart';
-import 'package:app/utils/web3_utils.dart';
-import 'package:decimal/decimal.dart';
+import 'package:app/web3/contractEnums.dart';
+import 'package:app/web3/repository/account_repository.dart';
+import 'package:app/web3/service/client_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/utils/web_socket.dart';
 
-import '../../../../../../web3/contractEnums.dart';
-import '../../../../../../web3/repository/account_repository.dart';
-import '../../../../../../web3/service/client_service.dart';
 
 part 'worker_store.g.dart';
 
@@ -22,8 +19,12 @@ class WorkerStore extends _WorkerStore with _$WorkerStore {
   WorkerStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _WorkerStore extends IStore<bool> with Store {
+abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
   final ApiProvider _apiProvider;
+
+  _WorkerStore(this._apiProvider) {
+    WebSocket().handlerQuests = this.changeQuest;
+  }
 
   @observable
   String opinion = "";
@@ -39,11 +40,17 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   @observable
   ObservableList<Media> mediaIds = ObservableList();
 
-  Future<void> getFee(String functionName) async {
+  @observable
+  Observable<BaseQuestResponse?> quest = Observable(null);
+
+  @action
+  setOpinion(String value) => opinion = value;
+
+  getFee(String functionName) async {
     try {
       final _client = AccountRepository().getClientWorkNet();
-      final _contract = await _client.getDeployedContract(
-          "WorkQuest", quest.value!.contractAddress!);
+      final _contract =
+          await _client.getDeployedContract("WorkQuest", quest.value!.contractAddress!);
       final _function = _contract.function(functionName);
       final _gas = await _client.getEstimateGasCallContract(
           contract: _contract, function: _function, params: []);
@@ -54,29 +61,19 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   }
 
   @action
-  Future<void> getQuest(String questId) async {
+  getQuest(String questId) async {
     try {
       this.onLoading();
       quest.value = await _apiProvider.getQuest(id: questId);
-      this.onSuccess(true);
+      this.onSuccess(WorkerStoreState.getQuest);
     } catch (e) {
       this.onError(e.toString());
     }
   }
 
   @action
-  void setOpinion(String value) => opinion = value;
-
-  _WorkerStore(this._apiProvider) {
-    WebSocket().handlerQuests = this.changeQuest;
-  }
-
-  Observable<BaseQuestResponse?> quest = Observable(null);
-
-  @action
-  void changeQuest(dynamic json) {
-    var changedQuest =
-        BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
+  changeQuest(dynamic json) {
+    var changedQuest = BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
     if (changedQuest.id == quest.value?.id) {
       quest.value = changedQuest;
       _getQuest();
@@ -95,111 +92,99 @@ abstract class _WorkerStore extends IStore<bool> with Store {
   onStar() async {
     if (quest.value!.star) {
       await _apiProvider.removeStar(id: quest.value!.id);
-    } else
+    } else {
       await _apiProvider.setStar(id: quest.value!.id);
+    }
     await _getQuest();
   }
 
   @action
-  Future<void> checkPossibilityTx(String functionName) async {
-    try {
-      this.onLoading();
-      await getFee(functionName);
-      await Web3Utils.checkPossibilityTx(
-        typeCoin: TokenSymbols.WQT,
-        fee: Decimal.parse(fee),
-        amount: 0.0,
-        isMain: true,
-      );
-      this.onSuccess(true);
-    } catch (e) {
-      this.onError(e.toString());
-    }
-  }
-
   sendAcceptOnQuest() async {
     try {
       this.onLoading();
-      // await _apiProvider.acceptOnQuest(questId: quest.value!.id);
       await AccountRepository().getClientWorkNet().handleEvent(
             function: WQContractFunctions.acceptJob,
             contractAddress: quest.value!.contractAddress!,
           );
       await _getQuest();
-      this.onSuccess(true);
+      this.onSuccess(WorkerStoreState.sendAcceptOnQuest);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
   }
 
-  sendRejectOnQuest() async {
-    try {
-      this.onLoading();
-      // await _apiProvider.rejectOnQuest(questId: quest.value!.id);
-      AccountRepository().getClientWorkNet().handleEvent(
-            function: WQContractFunctions.declineJob,
-            contractAddress: quest.value!.contractAddress!,
-        value: null,
-          );
-      await _getQuest();
-      this.onSuccess(true);
-    } catch (e, trace) {
-      print("getQuests error: $e\n$trace");
-      this.onError(e.toString());
-    }
-  }
+  // @action
+  // sendRejectOnQuest() async {
+  //   try {
+  //     this.onLoading();
+  //     AccountRepository().getClientWorkNet().handleEvent(
+  //           function: WQContractFunctions.declineJob,
+  //           contractAddress: quest.value!.contractAddress!,
+  //           value: null,
+  //         );
+  //     await _getQuest();
+  //     this.onSuccess(WorkerStoreState.sendRejectOnQuest);
+  //   } catch (e, trace) {
+  //     print("getQuests error: $e\n$trace");
+  //     this.onError(e.toString());
+  //   }
+  // }
 
+  @action
   acceptInvite(String responseId) async {
     try {
       this.onLoading();
       await _apiProvider.acceptInvite(responseId: responseId);
       await AccountRepository().getClient().handleEvent(
-        function: WQContractFunctions.acceptJob,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
+            function: WQContractFunctions.acceptJob,
+            contractAddress: quest.value!.contractAddress!,
+            value: null,
+          );
       await _getQuest();
-      this.onSuccess(true);
+      this.onSuccess(WorkerStoreState.acceptInvite);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
   }
 
+  @action
   rejectInvite(String responseId) async {
     try {
       this.onLoading();
       await _apiProvider.rejectInvite(responseId: responseId);
       AccountRepository().getClient().handleEvent(
-        function: WQContractFunctions.declineJob,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
+            function: WQContractFunctions.declineJob,
+            contractAddress: quest.value!.contractAddress!,
+            value: null,
+          );
       await _getQuest();
-      this.onSuccess(true);
+      this.onSuccess(WorkerStoreState.rejectInvite);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
   }
 
+  @action
   sendCompleteWork() async {
     try {
       this.onLoading();
       await AccountRepository().getClientWorkNet().handleEvent(
             function: WQContractFunctions.verificationJob,
             contractAddress: quest.value!.contractAddress!,
-        value: null,
+            value: null,
           );
       await _getQuest();
-      this.onSuccess(true);
+      this.onSuccess(WorkerStoreState.sendCompleteWork);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
   }
 
+  @action
   sendRespondOnQuest(String message) async {
     try {
       this.onLoading();
@@ -212,10 +197,20 @@ abstract class _WorkerStore extends IStore<bool> with Store {
             ),
       );
       await _getQuest();
-      this.onSuccess(true);
+      this.onSuccess(WorkerStoreState.sendRespondOnQuest);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
   }
+}
+
+enum WorkerStoreState {
+  getQuest,
+  sendAcceptOnQuest,
+  sendRejectOnQuest,
+  acceptInvite,
+  rejectInvite,
+  sendCompleteWork,
+  sendRespondOnQuest,
 }

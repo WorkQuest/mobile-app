@@ -69,26 +69,71 @@ mixin _$WorkerStore on _WorkerStore, Store {
     });
   }
 
+  final _$questAtom = Atom(name: '_WorkerStore.quest');
+
+  @override
+  Observable<BaseQuestResponse?> get quest {
+    _$questAtom.reportRead();
+    return super.quest;
+  }
+
+  @override
+  set quest(Observable<BaseQuestResponse?> value) {
+    _$questAtom.reportWrite(value, super.quest, () {
+      super.quest = value;
+    });
+  }
+
   final _$getQuestAsyncAction = AsyncAction('_WorkerStore.getQuest');
 
   @override
-  Future<void> getQuest(String questId) {
+  Future getQuest(String questId) {
     return _$getQuestAsyncAction.run(() => super.getQuest(questId));
   }
 
-  final _$checkPossibilityTxAsyncAction =
-      AsyncAction('_WorkerStore.checkPossibilityTx');
+  final _$sendAcceptOnQuestAsyncAction =
+      AsyncAction('_WorkerStore.sendAcceptOnQuest');
 
   @override
-  Future<void> checkPossibilityTx(String functionName) {
-    return _$checkPossibilityTxAsyncAction
-        .run(() => super.checkPossibilityTx(functionName));
+  Future sendAcceptOnQuest() {
+    return _$sendAcceptOnQuestAsyncAction.run(() => super.sendAcceptOnQuest());
+  }
+
+  final _$acceptInviteAsyncAction = AsyncAction('_WorkerStore.acceptInvite');
+
+  @override
+  Future acceptInvite(String responseId) {
+    return _$acceptInviteAsyncAction.run(() => super.acceptInvite(responseId));
+  }
+
+  final _$rejectInviteAsyncAction = AsyncAction('_WorkerStore.rejectInvite');
+
+  @override
+  Future rejectInvite(String responseId) {
+    return _$rejectInviteAsyncAction.run(() => super.rejectInvite(responseId));
+  }
+
+  final _$sendCompleteWorkAsyncAction =
+      AsyncAction('_WorkerStore.sendCompleteWork');
+
+  @override
+  Future sendCompleteWork() {
+    return _$sendCompleteWorkAsyncAction.run(() => super.sendCompleteWork());
+  }
+
+  final _$sendRespondOnQuestAsyncAction =
+      AsyncAction('_WorkerStore.sendRespondOnQuest');
+
+  @override
+  Future sendRespondOnQuest(String message) {
+    return _$sendRespondOnQuestAsyncAction
+        .run(() => super.sendRespondOnQuest(message));
   }
 
   final _$_WorkerStoreActionController = ActionController(name: '_WorkerStore');
 
   @override
-  void setOpinion(String value) {
+  dynamic setOpinion(String value) {
     final _$actionInfo = _$_WorkerStoreActionController.startAction(
         name: '_WorkerStore.setOpinion');
     try {
@@ -99,7 +144,7 @@ mixin _$WorkerStore on _WorkerStore, Store {
   }
 
   @override
-  void changeQuest(dynamic json) {
+  dynamic changeQuest(dynamic json) {
     final _$actionInfo = _$_WorkerStoreActionController.startAction(
         name: '_WorkerStore.changeQuest');
     try {
@@ -126,7 +171,8 @@ mixin _$WorkerStore on _WorkerStore, Store {
 opinion: ${opinion},
 response: ${response},
 mediaFile: ${mediaFile},
-mediaIds: ${mediaIds}
+mediaIds: ${mediaIds},
+quest: ${quest}
     ''';
   }
 }
