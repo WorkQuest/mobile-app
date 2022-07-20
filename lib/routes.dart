@@ -1,5 +1,6 @@
 import 'package:app/enums.dart';
 import 'package:app/model/chat_model/chat_model.dart';
+import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
@@ -20,9 +21,10 @@ import 'package:app/ui/pages/main_page/main_page.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/notification_page/store/notification_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio/create_portfolio_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio/store/create_portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/portfolio_details_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/choose_quest_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
@@ -857,16 +859,13 @@ class Routes {
           builder: (context) => MultiProvider(
             providers: [
               Provider(
-                create: (context) => getIt.get<PortfolioStore>(),
-              ),
-              Provider(
-                create: (context) => getIt.get<ProfileMeStore>(),
+                create: (context) => getIt.get<CreatePortfolioStore>(),
               ),
             ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: CreatePortfolioPage(
-                allowEdit: settings.arguments as bool,
+                portfolio: settings.arguments as PortfolioModel?,
               ),
             ),
           ),

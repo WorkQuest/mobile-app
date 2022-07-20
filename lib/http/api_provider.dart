@@ -1141,13 +1141,13 @@ extension TwoFA on ApiProvider {
 
 ///Portfolio
 extension Portfolio on ApiProvider {
-  Future<void> editPortfolio({
+  Future<PortfolioModel> editPortfolio({
     required String portfolioId,
     required String title,
     required String description,
     required List<String> media,
   }) async {
-    await httpClient.put(
+    final response = await httpClient.put(
       query: '/v1/portfolio/$portfolioId',
       data: {
         "title": title,
@@ -1155,14 +1155,15 @@ extension Portfolio on ApiProvider {
         "mediaIds": media,
       },
     );
+    return PortfolioModel.fromJson(response);
   }
 
-  Future<void> addPortfolio({
+  Future<PortfolioModel> addPortfolio({
     required String title,
     required String description,
     required List<String> media,
   }) async {
-    await httpClient.post(
+    final response = await httpClient.post(
       query: '/v1/portfolio/add-case',
       data: {
         "title": title,
@@ -1170,6 +1171,7 @@ extension Portfolio on ApiProvider {
         "mediaIds": media,
       },
     );
+    return PortfolioModel.fromJson(response);
   }
 
   Future<void> deletePortfolio({

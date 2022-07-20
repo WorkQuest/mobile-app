@@ -1,25 +1,39 @@
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:app/constants.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/store/portfolio_store.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
-import '../user_profile_page/widgets/profile_widgets.dart';
-import 'create_portfolio_page.dart';
+import '../../user_profile_page/widgets/profile_widgets.dart';
+import '../create_portfolio/create_portfolio_page.dart';
 
-class PortfolioDetails extends StatelessWidget {
+class PortfolioDetails extends StatefulWidget {
   final PortfolioArguments arguments;
   static const String routeName = "/portfolioDetails";
 
   const PortfolioDetails({required this.arguments});
 
   @override
+  State<PortfolioDetails> createState() => _PortfolioDetailsState();
+}
+
+class _PortfolioDetailsState extends State<PortfolioDetails> {
+  late PortfolioStore store;
+
+  @override
+  void initState() {
+    store = context.read<PortfolioStore>();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final portfolioStore = context.read<PortfolioStore>();
-    print('index: ${arguments.index}');
-    print('len list: ${portfolioStore.portfolioList}');
-    portfolioStore.pageNumber = 0;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Observer(
@@ -34,7 +48,7 @@ class PortfolioDetails extends StatelessWidget {
                         "profiler.portfolio".tr(),
                       ),
                     ),
-                    if (arguments.isProfileYour)
+                    if (widget.arguments.isProfileYour)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(
                           20.0,
@@ -44,12 +58,13 @@ class PortfolioDetails extends StatelessWidget {
                           child: IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
-                              portfolioStore.portfolioIndex = arguments.index;
-                              Navigator.of(context, rootNavigator: false)
-                                  .popAndPushNamed(
+                              final result =
+                                  await Navigator.of(context, rootNavigator: false)
+                                      .pushNamed(
                                 CreatePortfolioPage.routeName,
-                                arguments: true,
+                                arguments: store.portfolioList[widget.arguments.index],
                               );
+                              Navigator.pop(context, result);
                             },
                             icon: Icon(
                               Icons.edit,
@@ -58,7 +73,7 @@ class PortfolioDetails extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (arguments.isProfileYour)
+                    if (widget.arguments.isProfileYour)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(
                           20.0,
@@ -68,13 +83,20 @@ class PortfolioDetails extends StatelessWidget {
                           child: IconButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
-                              await portfolioStore.deletePortfolio(
-                                portfolioId: portfolioStore
-                                    .portfolioList[arguments.index].id,
-                                userId: portfolioStore
-                                    .portfolioList[arguments.index].userId,
-                              );
-                              Navigator.pop(context);
+                              AlertDialogUtils.showAlertDialog(context,
+                                  title: Text('meta.areYouSure'.tr()),
+                                  content: Text('profiler.areYouSurePortfolio'.tr()),
+                                  needCancel: true,
+                                  colorCancel: AppColor.enabledButton,
+                                  colorOk: Colors.red, onTabOk: () {
+                                store.deletePortfolio(
+                                  portfolioId:
+                                      store.portfolioList[widget.arguments.index].id,
+                                  userId:
+                                      store.portfolioList[widget.arguments.index].userId,
+                                );
+                                Navigator.pop(context);
+                              });
                             },
                             icon: Icon(
                               Icons.delete_forever,
@@ -93,16 +115,21 @@ class PortfolioDetails extends StatelessWidget {
                   width: double.infinity,
                   height: 300,
                   child: PageView(
-                    onPageChanged: portfolioStore.changePageNumber,
-                    children:
-                        portfolioStore.portfolioList[arguments.index].medias
-                            .map(
-                              (e) => Image.network(
-                                e.url,
-                                fit: BoxFit.fitHeight,
-                              ),
-                            )
-                            .toList(),
+                    onPageChanged: store.changePageNumber,
+                    children: store.portfolioList[widget.arguments.index].medias
+                        .map(
+                          (e) => FadeInImage(
+                            placeholder: MemoryImage(
+                              Uint8List.fromList(
+                                  base64Decode(Constants.base64WhiteHolder)),
+                            ),
+                            fit: BoxFit.fitHeight,
+                            image: NetworkImage(
+                              e.url,
+                            ),
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
               ),
@@ -121,10 +148,10 @@ class PortfolioDetails extends StatelessWidget {
                         child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          itemCount: portfolioStore
-                              .portfolioList[arguments.index].medias.length,
+                          itemCount:
+                              store.portfolioList[widget.arguments.index].medias.length,
                           itemBuilder: (_, index) => Observer(
-                            builder: (_) => index == portfolioStore.pageNumber
+                            builder: (_) => index == store.pageNumber
                                 ? _indicator(true, context)
                                 : _indicator(false, context),
                           ),
@@ -133,7 +160,7 @@ class PortfolioDetails extends StatelessWidget {
 
                       ///Portfolio Title
                       Text(
-                        portfolioStore.portfolioList[arguments.index].title,
+                        store.portfolioList[widget.arguments.index].title,
                         style: const TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.w500,
@@ -145,8 +172,7 @@ class PortfolioDetails extends StatelessWidget {
 
                       ///Portfolio Description
                       Text(
-                        portfolioStore
-                            .portfolioList[arguments.index].description,
+                        store.portfolioList[widget.arguments.index].description,
                       ),
                     ],
                   ),

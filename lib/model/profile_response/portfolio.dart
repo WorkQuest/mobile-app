@@ -1,4 +1,3 @@
-import 'package:app/constants.dart';
 import 'package:app/model/media_model.dart';
 
 class PortfolioModel {
@@ -10,7 +9,6 @@ class PortfolioModel {
     required this.createdAt,
     required this.updatedAt,
     required this.medias,
-    required this.user,
   });
 
   String id;
@@ -20,7 +18,6 @@ class PortfolioModel {
   DateTime createdAt;
   DateTime updatedAt;
   List<Media> medias;
-  User user;
 
   factory PortfolioModel.fromJson(
     Map<String, dynamic> json,
@@ -35,7 +32,6 @@ class PortfolioModel {
         medias: json["medias"] == null
             ? []
             : List<Media>.from(json["medias"].map((x) => Media.fromJson(x))),
-        user: User.fromJson(json["user"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -46,41 +42,5 @@ class PortfolioModel {
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
         "medias": List<dynamic>.from(medias.map((x) => x.toJson())),
-        "user": user.toJson(),
-      };
-}
-
-class User {
-  User({
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.avatar,
-  });
-
-  String id;
-  String firstName;
-  String lastName;
-  Media avatar;
-
-  factory User.fromJson(Map<String, dynamic> json) => User(
-        id: json["id"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
-        avatar: Media.fromJson(
-          json["avatar"] ??
-              {
-                "id": "",
-                "url": Constants.defaultImageNetwork,
-                "contentType": "",
-              },
-        ),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "firstName": firstName,
-        "lastName": lastName,
-        "avatar": avatar.toJson(),
       };
 }

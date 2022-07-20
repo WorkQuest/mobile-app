@@ -17,14 +17,14 @@ abstract class _IMediaStore<T> extends IStore<T> with Store {
   StateLoading state = StateLoading.nothing;
 
   @observable
-  ObservableList<ValueNotifier<LoadImageState>> progressImages =
-      ObservableList.of([]);
+  ObservableList<ValueNotifier<LoadImageState>> progressImages = ObservableList.of([]);
 
   @observable
   ObservableList<Media> medias = ObservableList.of([]);
 
   @action
   setImages(List<Media> medias) {
+    this.medias.addAll(medias);
     for (Media media in medias) {
       progressImages.add(
         ValueNotifier<LoadImageState>(
@@ -67,14 +67,18 @@ abstract class _IMediaStore<T> extends IStore<T> with Store {
       state = StateLoading.loading;
 
       await Stream.fromIterable(progressImages).asyncMap((notifier) async {
-        final media = await apiProvider.uploadMediaWithProgress(
-          media: notifier.value.file!,
-          notifier: notifier,
-        );
-        medias.add(media);
+        final needSend = notifier.value.file != null;
+        if (needSend) {
+          final media = await apiProvider.uploadMediaWithProgress(
+            media: notifier.value.file!,
+            notifier: notifier,
+          );
+          medias.add(media);
+        }
       }).toList();
       state = StateLoading.success;
-    } catch (e) {
+    } catch (e, trace) {
+      print('sendImages | $e\n$trace');
       onError(e.toString());
     }
   }
