@@ -60,6 +60,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   void initState() {
     super.initState();
     profile = context.read<ProfileMeStore>();
+    store = context.read<CreateQuestStore>();
     _controller = SkillSpecializationController();
     if (widget.questInfo != null) {
       store.oldPrice = BigInt.parse(widget.questInfo!.price);
