@@ -176,16 +176,12 @@ extension ReviewsTab on UserProfileState {
                                 : "role.worker",
                         questTitle:
                             portfolioStore!.reviewsList[index].quest.title,
-                        cutMessage: portfolioStore!.messages[index],
                         message: portfolioStore!.reviewsList[index].message,
                         id: portfolioStore!.reviewsList[index].fromUserId,
                         myId: viewOtherUser?.userData == null
                             ? userStore!.userData!.id
                             : viewOtherUser!.userData!.id,
                         role: portfolioStore!.reviewsList[index].fromUser.role,
-                        last: index == portfolioStore!.reviewsList.length - 1
-                            ? true
-                            : false,
                       ),
                     Padding(
                       padding: EdgeInsets.only(
@@ -212,7 +208,7 @@ extension ReviewsTab on UserProfileState {
                             userId: viewOtherUser?.userData == null
                                 ? userStore!.userData!.id
                                 : viewOtherUser!.userData!.id,
-                            newList: true,
+                            isForce: true,
                           );
                         },
                         child: Text(

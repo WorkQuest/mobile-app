@@ -1,10 +1,12 @@
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/default_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import '../../portfolio_page/store/portfolio_store.dart';
+import 'package:get_it/get_it.dart';
 
 class ReviewPageArguments {
   final String userId;
@@ -30,148 +32,120 @@ class ReviewPage extends StatefulWidget {
 }
 
 class _ReviewPageState extends State<ReviewPage> {
-  late bool isProfileYour;
+  late PortfolioStore store;
+
+  bool get isReviews => store.titleName == "Reviews";
+  bool get isPortfolio => store.titleName == "Portfolio";
 
   @override
   void initState() {
-    if (widget.arguments.store.titleName == "Reviews")
-      widget.arguments.store
-          .getReviews(userId: widget.arguments.userId, newList: true);
-    if (widget.arguments.store.titleName == "Portfolio")
-      widget.arguments.store
-          .getPortfolio(userId: widget.arguments.userId, newList: true);
+    store = widget.arguments.store;
+    if (isReviews) store.getReviews(userId: widget.arguments.userId, isForce: true);
+    if (isPortfolio) store.getPortfolio(userId: widget.arguments.userId, isForce: true);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CupertinoNavigationBar(
-        automaticallyImplyLeading: true,
-        middle: Text(
-          widget.arguments.store.titleName,
-        ),
-      ),
+      appBar: DefaultAppBar(title: store.titleName),
       body: NotificationListener<ScrollEndNotification>(
-        onNotification: (scrollNotification) {
-          if (scrollNotification.metrics.atEdge &&
-              scrollNotification.metrics.pixels ==
-                  scrollNotification.metrics.maxScrollExtent &&
-              !widget.arguments.store.isLoading) {
-            print('NotificationListener | getReviews');
-            if (widget.arguments.store.titleName == "Reviews")
-              widget.arguments.store
-                  .getReviews(userId: widget.arguments.userId, newList: false);
+        onNotification: (scrollEnd) {
+          final metrics = scrollEnd.metrics;
+          if (metrics.maxScrollExtent < metrics.pixels) {
+            if (store.isLoading) {
+              return false;
+            }
+            if (isReviews) {
+              store.getReviews(
+                userId: widget.arguments.userId,
+              );
+            }
 
-            if (widget.arguments.store.titleName == "Portfolio")
-              widget.arguments.store.getPortfolio(
-                  userId: widget.arguments.userId, newList: false);
+            if (isPortfolio) {
+              store.getPortfolio(
+                userId: widget.arguments.userId,
+              );
+            }
           }
-          setState(() {});
-          return false;
+          return true;
         },
         child: Observer(
-          builder: (_) => widget.arguments.store.isLoading &&
-                  widget.arguments.store.reviewsList.isEmpty
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : CustomScrollView(
-                  slivers: [
-                    SliverList(
-                      delegate: SliverChildListDelegate(
-                        [
-                          if (widget.arguments.store.titleName == "Reviews")
-                            for (int index = 0;
-                                index <
-                                    widget.arguments.store.reviewsList.length;
-                                index++)
-                              ReviewsWidget(
-                                avatar: widget
-                                        .arguments
-                                        .store
-                                        .reviewsList[index]
-                                        .fromUser
-                                        .avatar
-                                        ?.url ??
-                                    Constants.defaultImageNetwork,
-                                name: widget.arguments.store.reviewsList[index]
-                                        .fromUser.firstName +
-                                    " " +
-                                    widget.arguments.store.reviewsList[index]
-                                        .fromUser.lastName,
-                                mark: widget
-                                    .arguments.store.reviewsList[index].mark,
-                                userRole: widget.arguments.store
-                                            .reviewsList[index].fromUser.role ==
-                                        UserRole.Employer
-                                    ? "role.employer"
-                                    : "role.worker",
-                                questTitle: widget.arguments.store
-                                    .reviewsList[index].quest.title,
-                                cutMessage:
-                                    widget.arguments.store.messages[index],
-                                message: widget
-                                    .arguments.store.reviewsList[index].message,
-                                id: widget.arguments.store.reviewsList[index]
-                                    .fromUserId,
-                                myId: widget.arguments.userId,
-                                role: widget.arguments.role,
-                                last: index ==
-                                        widget.arguments.store.reviewsList
-                                                .length -
-                                            1
-                                    ? true
-                                    : false,
-                              ),
-                          if (widget.arguments.store.titleName == "Portfolio")
-                            Column(
-                              children: [
-                                Observer(
-                                  builder: (_) => widget.arguments.store
-                                              .portfolioList.isEmpty &&
-                                          !widget.arguments.store.isLoading
-                                      ? Center(
-                                          child: CircularProgressIndicator(),
-                                        )
-                                      : Column(
-                                          children: [
-                                            for (int index = 0;
-                                                index <
-                                                    widget.arguments.store
-                                                        .portfolioList.length;
-                                                index++)
-                                              PortfolioWidget(
-                                                index: index,
-                                                imageUrl: widget
-                                                        .arguments
-                                                        .store
-                                                        .portfolioList[index]
-                                                        .medias
-                                                        .isEmpty
-                                                    ? Constants
-                                                        .defaultImageNetwork
-                                                    : widget
-                                                        .arguments
-                                                        .store
-                                                        .portfolioList[index]
-                                                        .medias
-                                                        .first
-                                                        .url,
-                                                title: widget.arguments.store
-                                                    .portfolioList[index].title,
-                                                isProfileYour: false,
-                                              ),
-                                          ],
-                                        ),
-                                ),
-                              ],
-                            ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+          builder: (_) {
+            if (store.isLoading &&
+                (isReviews ? store.reviewsList.isEmpty : store.portfolioList.isEmpty)) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (isReviews) {
+              return ListView.builder(
+                physics:
+                    const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                itemCount: store.isLoading
+                    ? store.reviewsList.length + 1
+                    : store.reviewsList.length,
+                itemBuilder: (_, index) {
+                  if (store.isLoading && index == store.reviewsList.length) {
+                    return Column(
+                      children: const [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CircularProgressIndicator.adaptive(),
+                      ],
+                    );
+                  }
+                  final review = store.reviewsList[index];
+                  return ReviewsWidget(
+                    avatar: review.fromUser.avatar?.url ?? Constants.defaultImageNetwork,
+                    name: review.fromUser.firstName + " " + review.fromUser.lastName,
+                    mark: review.mark,
+                    userRole: review.fromUser.role == UserRole.Employer
+                        ? "role.employer"
+                        : "role.worker",
+                    questTitle: review.quest.title,
+                    message: review.message,
+                    id: review.fromUserId,
+                    myId: widget.arguments.userId,
+                    role: widget.arguments.role,
+                  );
+                },
+              );
+            }
+            if (isPortfolio) {
+              return ListView.builder(
+                physics:
+                    const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                itemCount: store.isLoading
+                    ? store.portfolioList.length + 1
+                    : store.portfolioList.length,
+                itemBuilder: (_, index) {
+                  if (store.isLoading && index == store.portfolioList.length) {
+                    return Column(
+                      children: const [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CircularProgressIndicator.adaptive(),
+                      ],
+                    );
+                  }
+                  final portfolio = store.portfolioList[index];
+                  return PortfolioWidget(
+                    addPortfolio: store.addPortfolio,
+                    index: index,
+                    imageUrl: portfolio.medias.isEmpty
+                        ? Constants.defaultImageNetwork
+                        : portfolio.medias.first.url,
+                    title: portfolio.title,
+                    isProfileYour: GetIt.I.get<ProfileMeStore>().userData!.id == widget.arguments.userId,
+                  );
+                },
+              );
+            }
+            return SizedBox();
+          },
         ),
       ),
     );

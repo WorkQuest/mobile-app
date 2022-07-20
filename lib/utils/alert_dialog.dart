@@ -42,8 +42,7 @@ class AlertDialogUtils {
     );
   }
 
-  static Future<void> showLoadingDialog(BuildContext context,
-      {String? message}) async {
+  static Future<void> showLoadingDialog(BuildContext context, {String? message}) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -131,14 +130,14 @@ class AlertDialogUtils {
   static Future<void> showAlertDialog(
     BuildContext context, {
     required Widget title,
-    required Widget? content,
+    required Widget content,
     required bool needCancel,
-    required String? titleCancel,
-    required String? titleOk,
-    required Function()? onTabCancel,
-    required Function()? onTabOk,
-    required Color? colorCancel,
-    required Color? colorOk,
+    String? titleCancel,
+    String? titleOk,
+    Function()? onTabCancel,
+    Function()? onTabOk,
+    Color? colorCancel,
+    Color? colorOk,
   }) async {
     showDialog(
       context: context,
@@ -220,15 +219,15 @@ class AlertDialogUtils {
   }
 
   static void showAlertTxConfirm(
-      BuildContext context, {
-        required String typeTx,
-        required String addressTo,
-        required String amount,
-        required String fee,
-        required String tokenSymbol,
-        required String tokenSymbolFee,
-        required Function() onTabOk,
-      }) {
+    BuildContext context, {
+    required String typeTx,
+    required String addressTo,
+    required String amount,
+    required String fee,
+    required String tokenSymbol,
+    required String tokenSymbolFee,
+    required Function() onTabOk,
+  }) {
     AlertDialogUtils.showAlertDialog(
       context,
       title: Text(typeTx),

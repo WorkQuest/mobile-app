@@ -74,7 +74,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                 else
                   portfolioStore!.getReviews(
                     userId: viewOtherUser!.userData!.id,
-                    newList: true,
+                    isForce: true,
                   );
               },
               child: Text(

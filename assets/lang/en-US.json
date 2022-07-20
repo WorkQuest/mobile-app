@@ -153,6 +153,7 @@
     "editPortfolio": "Edit Portfolio",
     "addPortfolio": "Add Portfolio",
     "dontHavePortfolio": "You do not have any  Portfolio",
+    "areYouSurePortfolio": "Are you sure delete portfolio?",
     "dontHavePortfolioOtherUser": "You do not have any  Portfolio",
     "sidebar": {
       "filter": "Filter All quests",

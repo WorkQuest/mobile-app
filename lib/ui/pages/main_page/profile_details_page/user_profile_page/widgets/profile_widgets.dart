@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:app/constants.dart';
+import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/social_network.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/portfolio_details_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/portfolio_details_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
@@ -20,12 +25,14 @@ import '../../../../../../enums.dart';
 
 ///Portfolio Widget
 class PortfolioWidget extends StatelessWidget {
+  final Function(PortfolioModel value) addPortfolio;
   final String title;
   final String imageUrl;
   final int index;
   final bool isProfileYour;
 
   const PortfolioWidget({
+    required this.addPortfolio,
     required this.title,
     required this.index,
     required this.imageUrl,
@@ -35,63 +42,61 @@ class PortfolioWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          PortfolioDetails.routeName,
-          arguments: PortfolioArguments(index, isProfileYour),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-        child: Stack(
-          children: [
-            Container(
-              height: 230,
-              width: double.maxFinite,
-              foregroundDecoration: BoxDecoration(
+        onTap: () async {
+          final result = await Navigator.pushNamed(
+            context,
+            PortfolioDetails.routeName,
+            arguments: PortfolioArguments(index, isProfileYour),
+          );
+          print('result: $result');
+          if (result != null && result is PortfolioModel) {
+            addPortfolio.call(result);
+            (context as Element).markNeedsBuild();
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          child: Stack(
+            children: [
+              ClipRRect(
                 borderRadius: const BorderRadius.all(
                   Radius.circular(6.0),
                 ),
-                color: Colors.black38,
-              ),
-              decoration: BoxDecoration(
-                image: DecorationImage(
+                child: FadeInImage(
+                  height: 230,
+                  width: double.maxFinite,
+                  placeholder: MemoryImage(
+                    Uint8List.fromList(base64Decode(Constants.base64BlueHolder)),
+                  ),
                   fit: BoxFit.cover,
                   image: NetworkImage(
                     imageUrl,
                   ),
                 ),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(
-                    6.0,
+              ),
+              Positioned(
+                bottom: 15.0,
+                left: 21.0,
+                right: 55.0,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.white,
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 15.0,
-              left: 21.0,
-              right: 55.0,
-              child: Text(
-                title,
-                style: TextStyle(
+              Positioned(
+                bottom: 15.0,
+                right: 21.0,
+                child: Icon(
+                  Icons.arrow_right_sharp,
                   color: Colors.white,
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 15.0,
-              right: 21.0,
-              child: Icon(
-                Icons.arrow_right_sharp,
-                color: Colors.white,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -103,11 +108,9 @@ class ReviewsWidget extends StatefulWidget {
   final String userRole;
   final String questTitle;
   final String message;
-  final String cutMessage;
   final String id;
   final String myId;
   final UserRole role;
-  final bool last;
 
   const ReviewsWidget({
     required this.avatar,
@@ -116,11 +119,9 @@ class ReviewsWidget extends StatefulWidget {
     required this.userRole,
     required this.questTitle,
     required this.message,
-    required this.cutMessage,
     required this.id,
     required this.myId,
     required this.role,
-    required this.last,
   });
 
   @override
@@ -172,7 +173,7 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                     if (widget.role == UserRole.Worker)
                       portfolioStore.getPortfolio(
                         userId: widget.myId,
-                        newList: true,
+                        isForce: true,
                       );
                     else {
                       userProfileStore.quests.clear();
@@ -182,8 +183,7 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                         isProfileYours: widget.id == widget.myId ? true : false,
                       );
                     }
-                    portfolioStore.getReviews(
-                        userId: widget.myId, newList: true);
+                    portfolioStore.getReviews(userId: widget.myId, isForce: true);
                     profile.assignedWorker = null;
                   },
                   child: ListTile(
@@ -291,13 +291,6 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
             ],
           ),
         ),
-        if (widget.last)
-          Container(
-            height: 10,
-            decoration: BoxDecoration(
-              color: Color(0xFFF7F8FA),
-            ),
-          ),
       ],
     );
   }
@@ -399,9 +392,8 @@ Widget employerRating({
                     "workers.showAll".tr(),
                     style: TextStyle(
                       decoration: TextDecoration.underline,
-                      color: completedQuests != "0"
-                          ? Color(0xFF00AA5B)
-                          : Color(0xFFF7F8FA),
+                      color:
+                          completedQuests != "0" ? Color(0xFF00AA5B) : Color(0xFFF7F8FA),
                       fontSize: 12.0,
                     ),
                   ),
@@ -1027,9 +1019,7 @@ class _SkillsWidgetState extends State<SkillsWidget>
           alignment: Alignment.topCenter,
           child: skills(
             isProfileMy: widget.isProfileMy,
-            skills: widget.isExpanded
-                ? widget.skills
-                : widget.skills!.sublist(0, 5),
+            skills: widget.isExpanded ? widget.skills : widget.skills!.sublist(0, 5),
             context: context,
           ),
         ),

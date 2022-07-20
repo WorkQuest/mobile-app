@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:app/enums.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/store/portfolio_store.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_shimmer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
@@ -73,12 +73,12 @@ class UserProfileState<T extends UserProfile> extends State<T>
       if (role == UserRole.Worker)
         portfolioStore!.getPortfolio(
           userId: userStore!.userData!.id,
-          newList: true,
+          isForce: true,
         );
 
       portfolioStore!.getReviews(
         userId: userStore!.userData!.id,
-        newList: true,
+        isForce: true,
       );
       portfolioStore!.setOtherUserData(userStore!.userData);
       myQuests!.getQuests(
@@ -109,9 +109,9 @@ class UserProfileState<T extends UserProfile> extends State<T>
 
           if (role == UserRole.Worker)
             portfolioStore!.getPortfolio(
-                userId: viewOtherUser!.userData!.id, newList: true);
+                userId: viewOtherUser!.userData!.id, isForce: true);
           portfolioStore!
-              .getReviews(userId: viewOtherUser!.userData!.id, newList: true);
+              .getReviews(userId: viewOtherUser!.userData!.id, isForce: true);
 
           isVerify = viewOtherUser!.userData!.phone != null;
         });
