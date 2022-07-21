@@ -21,8 +21,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
     WebSocket().handlerQuestList = this.changeLists;
   }
 
-  Map<QuestsType, int> offset = {};
-
   @observable
   ObservableMap<QuestsType, ObservableList<BaseQuestResponse>> quests =
       ObservableMap.of({});
@@ -121,31 +119,28 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   ) async {
     await Future.delayed(const Duration(milliseconds: 250));
     try {
-      if (offset[questType] == null) offset[questType] = 0;
       if (quests[questType] == null) quests[questType] = ObservableList.of([]);
       if (createNewList) {
-        offset[questType] = 0;
         quests[questType] = ObservableList.of([]);
       }
-      if (quests[questType]!.length != offset[questType]) return;
       this.onLoading();
 
       if (questType == QuestsType.Favorites)
         quests[questType]!.addAll(await _apiProvider.getQuests(
-          offset: offset[questType]!,
+          offset: quests[questType]!.length,
           sort: "sort[createdAt]=desc",
           starred: true,
         ));
       else {
         quests[questType]!.addAll(role == UserRole.Employer
             ? await _apiProvider.getEmployerQuests(
-                offset: offset[questType]!,
+                offset: quests[questType]!.length,
                 sort: "sort[createdAt]=desc",
                 statuses: getStatuses(questType),
                 me: true,
               )
             : await _apiProvider.getWorkerQuests(
-                offset: offset[questType]!,
+                offset: quests[questType]!.length,
                 sort: "sort[createdAt]=desc",
                 responded: questType == QuestsType.Responded ? true : false,
                 invited: questType == QuestsType.Invited ? true : false,
@@ -153,7 +148,6 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
                 me: true,
               ));
       }
-      offset[questType] = offset[questType]! + 10;
 
       this.onSuccess(true);
     } catch (e, trace) {
