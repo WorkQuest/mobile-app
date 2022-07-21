@@ -5,6 +5,8 @@ import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat.dart';
 import 'package:app/http/web_socket.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/http/chat_extension.dart';
@@ -26,8 +28,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   StreamController<bool>? streamChatNotification;
 
-  String myId = "";
-
   @observable
   bool starred = false;
 
@@ -48,7 +48,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   void initialSetup(String myId) async {
-    this.myId = myId;
     WebSocket().connect();
   }
 
@@ -135,8 +134,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
       });
 
   @action
-  void setChatHighlighted(ChatModel chat) =>
-      selectedChats[chat] = !selectedChats[chat]!;
+  void setChatHighlighted(ChatModel chat) => selectedChats[chat] = !selectedChats[chat]!;
 
   String getCountStarredChats() {
     int count = 0;
@@ -217,7 +215,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
     chats.forEach((key, value) {
       value.chat.forEach((element) {
         if (element.chatData.lastMessage!.senderStatus == "Unread" &&
-            element.chatData.lastMessage!.sender?.userId != myId) {
+            element.chatData.lastMessage!.sender?.userId !=
+                GetIt.I.get<ProfileMeStore>().userData!.id) {
           check = true;
           return;
         }

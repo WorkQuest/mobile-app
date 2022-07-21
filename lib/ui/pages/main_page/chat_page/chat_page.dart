@@ -7,11 +7,13 @@ import 'package:app/model/chat_model/member.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/group_chat/create_group_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/starred_message.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_it/get_it.dart';
 import "package:provider/provider.dart";
 import '../../../widgets/default_textfield.dart';
 import '../../../widgets/shimmer.dart';
@@ -34,6 +36,8 @@ class _ChatPageState extends State<ChatPage>
   late TextEditingController _searchTextController;
   late TabController _tabController;
   Timer? _timer;
+
+  String get myId => GetIt.I.get<ProfileMeStore>().userData?.id ?? '';
 
   @override
   void initState() {
@@ -93,7 +97,7 @@ class _ChatPageState extends State<ChatPage>
                                   Navigator.of(context, rootNavigator: true)
                                       .pushNamed(
                                     StarredMessage.routeName,
-                                    arguments: store.myId,
+                                    arguments: myId,
                                   );
                                   break;
                                 case "Create private chat":
@@ -161,7 +165,6 @@ class _ChatPageState extends State<ChatPage>
                       _ListChatsWidget(
                         typeChat: TypeChat.active,
                         query: _searchTextController.text,
-                        myId: store.myId,
                         store: store,
                         onLongPress: onLongPress,
                         onPress: onPress,
@@ -169,7 +172,6 @@ class _ChatPageState extends State<ChatPage>
                       _ListChatsWidget(
                         typeChat: TypeChat.privates,
                         query: _searchTextController.text,
-                        myId: store.myId,
                         store: store,
                         onLongPress: onLongPress,
                         onPress: onPress,
@@ -177,7 +179,6 @@ class _ChatPageState extends State<ChatPage>
                       _ListChatsWidget(
                         typeChat: TypeChat.favourites,
                         query: _searchTextController.text,
-                        myId: store.myId,
                         store: store,
                         onLongPress: onLongPress,
                         onPress: onPress,
@@ -185,7 +186,6 @@ class _ChatPageState extends State<ChatPage>
                       _ListChatsWidget(
                         typeChat: TypeChat.group,
                         query: _searchTextController.text,
-                        myId: store.myId,
                         store: store,
                         onLongPress: onLongPress,
                         onPress: onPress,
@@ -193,7 +193,6 @@ class _ChatPageState extends State<ChatPage>
                       _ListChatsWidget(
                         typeChat: TypeChat.completed,
                         query: _searchTextController.text,
-                        myId: store.myId,
                         store: store,
                         onLongPress: onLongPress,
                         onPress: onPress,
@@ -235,7 +234,7 @@ class _ChatPageState extends State<ChatPage>
         if (store.selectedChats.values.toList()[i] == true) return;
       store.setChatSelected(false);
     } else {
-      if (chat.chatData.lastMessage?.sender?.userId != store.myId &&
+      if (chat.chatData.lastMessage?.sender?.userId != myId &&
           chat.chatData.lastMessage?.senderStatus == "Unread") {
         store.setMessageRead(
           chat.id,
@@ -254,7 +253,6 @@ class _ChatPageState extends State<ChatPage>
 class _ListChatsWidget extends StatefulWidget {
   final TypeChat typeChat;
   final String query;
-  final String myId;
   final ChatStore store;
   final void Function(ChatModel) onLongPress;
   final void Function(ChatModel) onPress;
@@ -263,7 +261,6 @@ class _ListChatsWidget extends StatefulWidget {
     Key? key,
     required this.typeChat,
     required this.query,
-    required this.myId,
     required this.store,
     required this.onLongPress,
     required this.onPress,
@@ -348,7 +345,7 @@ class _ListChatsWidgetState extends State<_ListChatsWidget>
                       onLongPress: () => widget.onLongPress(chat),
                       onTap: () => widget.onPress(chat),
                       chat: chat,
-                      userId: widget.store.myId,
+                      userId: GetIt.I.get<ProfileMeStore>().userData?.id ?? '',
                       infoActionMessage: infoMessage,
                       chatStarred: widget.store.selectedChats[chat]!,
                     );
