@@ -145,7 +145,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         IconButton(
           icon: Icon(Icons.share_outlined),
           onPressed: () {
-            Share.share("https://dev-app.workquest.co/quests/${store.quest.value!.id}");
+            Share.share("https://testnet-app.workquest.co/quests/${store.quest.value!.id}");
           },
         ),
     ];

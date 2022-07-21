@@ -9,6 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
 import 'package:app/utils/storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @Injectable(as: IHttpClient, env: [Environment.test])
 class TestHttpClient extends _HttpClient {
@@ -35,7 +36,7 @@ class _HttpClient implements IHttpClient {
 
   String get _baseUrl {
     if (_network == Network.testnet) {
-      return 'https://dev-app.workquest.co/api';
+      return 'https://testnet-app.workquest.co/api';
     } else if (_network == Network.mainnet) {
       return 'https://app.workquest.co/api';
     }
@@ -121,6 +122,7 @@ class _HttpClient implements IHttpClient {
   }
 
   void _setInterceptors() {
+
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
