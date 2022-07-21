@@ -89,9 +89,8 @@ class BaseQuestResponse with ClusterItem {
       user: json["user"] == null ? null : User.fromJson(json["user"]),
       status: json["status"],
       priority: json["priority"] ?? 0,
-      locationCode: json["location"] == null
-          ? null
-          : LocationCode.fromJson(json["location"]),
+      locationCode:
+          json["location"] == null ? null : LocationCode.fromJson(json["location"]),
       locationPlaceName: json["locationPlaceName"] ?? "",
       title: json["title"] ?? "",
       assignedWorkerId: json["assignedWorkerId"] ?? "",
@@ -99,10 +98,8 @@ class BaseQuestResponse with ClusterItem {
       nonce: json["nonce"] ?? "",
       description: json["description"] ?? "",
       price: json["price"] ?? "",
-      createdAt:
-          json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-      startedAt:
-          json["startedAt"] == null ? null : DateTime.parse(json["startedAt"]),
+      createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+      startedAt: json["startedAt"] == null ? null : DateTime.parse(json["startedAt"]),
       star: json["star"] == null ? false : true,
       assignedWorker: json["assignedWorker"] == null
           ? null
@@ -117,23 +114,14 @@ class BaseQuestResponse with ClusterItem {
         return skillsString;
       }([...json["questSpecializations"] ?? []]),
       workplace: json["workplace"] ?? "",
-      invited:
-          json["invited"] == null ? null : Invited.fromJson(json["invited"]),
-      responded: json["responded"] == null
-          ? null
-          : Responded.fromJson(json["responded"]),
-      yourReview: json["yourReview"] == null
-          ? null
-          : YourReview.fromJson(json["yourReview"]),
-      questChat: json["questChat"] == null
-          ? null
-          : QuestChat.fromJson(json["questChat"]),
-      raiseView: json["raiseView"] == null
-          ? null
-          : RaiseView.fromJson(json["raiseView"]),
-      openDispute: json["openDispute"] == null
-          ? null
-          : OpenDispute.fromJson(json["openDispute"]),
+      invited: json["invited"] == null ? null : Invited.fromJson(json["invited"]),
+      responded: json["responded"] == null ? null : Responded.fromJson(json["responded"]),
+      yourReview:
+          json["yourReview"] == null ? null : YourReview.fromJson(json["yourReview"]),
+      questChat: json["questChat"] == null ? null : QuestChat.fromJson(json["questChat"]),
+      raiseView: json["raiseView"] == null ? null : RaiseView.fromJson(json["raiseView"]),
+      openDispute:
+          json["openDispute"] == null ? null : OpenDispute.fromJson(json["openDispute"]),
     );
   }
 
@@ -181,6 +169,5 @@ class BaseQuestResponse with ClusterItem {
       };
 
   @override
-  LatLng get location =>
-      LatLng(locationCode!.latitude, locationCode!.longitude);
+  LatLng get location => LatLng(locationCode!.latitude, locationCode!.longitude);
 }
