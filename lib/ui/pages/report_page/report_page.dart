@@ -86,6 +86,7 @@ class _ReportPageState extends State<ReportPage> {
                       child: DefaultTextField(
                         controller: _titleController,
                         hint: 'meta.enterTitle'.tr(),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value == null) {
                             return null;
@@ -109,6 +110,7 @@ class _ReportPageState extends State<ReportPage> {
                           textAlign: TextAlign.start,
                           maxLength: 200,
                           keyboardType: TextInputType.multiline,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
                             if (value == null) {
                               return null;
