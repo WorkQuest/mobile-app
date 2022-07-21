@@ -76,7 +76,9 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
             quests[key]![i].star = set;
             if (set) {
               quests[QuestsType.Favorites]?.add(quest);
-              value.length -= 1;
+              if (key == QuestsType.Favorites) {
+                value.length -= 1;
+              }
             } else
               quests[QuestsType.Favorites]
                   ?.removeWhere((element) => element.id == quest.id);
