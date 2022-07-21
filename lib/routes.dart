@@ -230,9 +230,6 @@ class Routes {
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
               Provider(
-                create: (context) => getIt.get<UserProfileStore>(),
-              ),
-              Provider(
                 create: (context) => getIt.get<WalletStore>(),
               ),
               Provider(
@@ -688,9 +685,6 @@ class Routes {
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
               ),
-              Provider(
-                create: (context) => getIt.get<UserProfileStore>(),
-              ),
             ],
             child: Directionality(
               textDirection: checkDirection(context),
@@ -817,9 +811,6 @@ class Routes {
             providers: [
               Provider(
                 create: (context) => getIt.get<ProfileMeStore>(),
-              ),
-              Provider(
-                create: (context) => getIt.get<UserProfileStore>(),
               ),
             ],
             child: Directionality(

@@ -7,7 +7,7 @@ import 'package:app/http/api_provider.dart';
 
 part 'user_profile_store.g.dart';
 
-@singleton
+@injectable
 class UserProfileStore extends _UserProfileStore with _$UserProfileStore {
   UserProfileStore(ApiProvider apiProvider) : super(apiProvider);
 }
