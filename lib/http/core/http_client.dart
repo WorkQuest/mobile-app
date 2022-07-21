@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:app/constants.dart';
 import 'package:app/exceptions.dart';
@@ -60,8 +61,7 @@ class _HttpClient implements IHttpClient {
     bool useBaseUrl = true,
   }) async {
     return await _sendRequest(
-      _dio.get(useBaseUrl ? _baseUrl + query : query,
-          queryParameters: queryParameters),
+      _dio.get(useBaseUrl ? _baseUrl + query : query, queryParameters: queryParameters),
     );
   }
 
@@ -122,13 +122,11 @@ class _HttpClient implements IHttpClient {
   }
 
   void _setInterceptors() {
-
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           if (accessToken != null) {
-            options.headers["Authorization"] =
-                "Bearer " + accessToken.toString();
+            options.headers["Authorization"] = "Bearer " + accessToken.toString();
           }
           if (tokenExpired == true) {
             String? token = await Storage.readRefreshToken();
@@ -169,6 +167,26 @@ class _HttpClient implements IHttpClient {
           if (error.response?.data["code"] == 401001) {
             await refreshToken();
           }
+          print('data test: ${options.data}');
+
+          SharedPreferences.getInstance().then((value) async {
+            List<String> _old = value.getStringList(errorsSharedKeys) ?? [];
+            print(_old);
+            _old.add(jsonEncode(ErrorRequestModel(
+              url: options.baseUrl + options.path,
+              method: options.method,
+              query: options.queryParameters.toString(),
+              data: options.data.toString(),
+              message: error.message,
+              response: error.response.toString(),
+              date: DateTime.now().toString(),
+            ).toJson()));
+
+            value.setStringList(
+              errorsSharedKeys,
+              _old,
+            );
+          });
 
           // if (error.response?.data["code"] == 401001) {
           //   if (refreshAttempt == 5) {
@@ -226,6 +244,8 @@ class _HttpClient implements IHttpClient {
   }
 }
 
+const errorsSharedKeys = "errorsShared";
+
 class CustomException implements Exception {
   final dynamic message;
 
@@ -234,5 +254,58 @@ class CustomException implements Exception {
   @override
   String toString() {
     return message;
+  }
+}
+
+class ErrorRequestModel {
+  final String url;
+  final String method;
+  final String query;
+  final String? data;
+  final String message;
+  final String? response;
+  final String date;
+
+  const ErrorRequestModel({
+    required this.url,
+    required this.method,
+    required this.query,
+    required this.data,
+    required this.message,
+    required this.response,
+    required this.date,
+  });
+
+  factory ErrorRequestModel.fromJson(Map<String, dynamic> json) {
+    return ErrorRequestModel(
+      url: json["url"],
+      method: json["method"],
+      query: json["query"],
+      data: json["data"],
+      message: json["message"],
+      date: json["date"],
+      response: json["response"] == null ? null : json["response"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "url": url,
+        "method": method,
+        "query": query,
+        "data": data,
+        "message": message,
+        "date": date,
+        "response": response,
+      };
+
+  @override
+  String toString() {
+    return "Url: $url\n"
+        "Method: $method\n"
+        "Query: $query\n"
+        "Data: $data\n"
+        "Message: $message\n"
+        "Response: $response\n"
+        "Date: $date";
   }
 }

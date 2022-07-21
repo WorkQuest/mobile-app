@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:app/ui/pages/main_page/settings_page/pages/2FA_page/2FA_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/SMS_verification_page/sms_verification_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/change_password_page.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/jurnal_errors/journal_errors_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/my_disputes_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/profile_visibility_page/profile_settings_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/settings_page_widgets.dart';
@@ -43,9 +44,9 @@ class SettingsPage extends StatelessWidget {
                 if (isHavePhone)
                   InkWell(
                     onTap: () async {
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(ProfileSettings.routeName,
-                              arguments: userStore.userData);
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                          ProfileSettings.routeName,
+                          arguments: userStore.userData);
                       await Future.delayed(const Duration(seconds: 1));
                       userStore.getProfileMe();
                     },
@@ -79,8 +80,7 @@ class SettingsPage extends StatelessWidget {
                               ),
                               title: "settings.changePass".tr(),
                               onTap: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .pushNamed(
+                                Navigator.of(context, rootNavigator: true).pushNamed(
                                   ChangePasswordPage.routeName,
                                 );
                               },
@@ -92,8 +92,7 @@ class SettingsPage extends StatelessWidget {
                               icon: CupertinoSwitch(
                                 activeColor: const Color(0xFF0083C7),
                                 onChanged: (_) {},
-                                value:
-                                    userStore.userData?.isTotpActive ?? false,
+                                value: userStore.userData?.isTotpActive ?? false,
                               ),
                               title: "settings.2FA".tr(),
                               onTap: () {
@@ -119,8 +118,7 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title: "settings.smsVerification2".tr(),
                                 onTap: () =>
-                                    Navigator.of(context, rootNavigator: true)
-                                        .pushNamed(
+                                    Navigator.of(context, rootNavigator: true).pushNamed(
                                   SMSVerificationPage.routeName,
                                 ),
                               ),
@@ -176,9 +174,7 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title:
                                     "${'meta.language'.tr()} \n${Constants.languageList.keys.firstWhere(
-                                  (k) =>
-                                      Constants.languageList[k] ==
-                                      context.locale,
+                                  (k) => Constants.languageList[k] == context.locale,
                                 )}",
                                 onTap: () {
                                   AlertDialogUtils.showInfoAlertDialog(
@@ -195,6 +191,7 @@ class SettingsPage extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 15.0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SettingsCard(
                                 icon: GradientIcon(
@@ -205,14 +202,26 @@ class SettingsPage extends StatelessWidget {
                                 ),
                                 title: "wallet.network".tr(),
                                 onTap: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pushNamed(
+                                  Navigator.of(context, rootNavigator: true).pushNamed(
                                     NetworkPage.routeName,
                                   );
                                 },
                               ),
                               _spacer,
-                              Spacer(),
+                              SettingsCard(
+                                icon: Icon(
+                                  Icons.error_outline,
+                                  size: 20,
+                                ),
+                                title: "Journal errors",
+                                onTap: () {
+                                  Navigator.of(context, rootNavigator: true).push(
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) => JournalErrorsPage(),
+                                    ),
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ),
