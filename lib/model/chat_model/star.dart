@@ -18,13 +18,13 @@ class Star {
   DateTime? updatedAt;
 
   factory Star.fromJson(Map<String, dynamic> json) => Star(
-        id: json["id"],
-        userId: json["userId"],
-        chatId: json["chatId"],
-        adminId: json["adminId"],
-        messageId: json["messageId"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        updatedAt: DateTime.parse(json["updatedAt"]),
+        id: json["id"] == null ? null : json["id"],
+        userId: json["userId"] == null ? null : json["userId"],
+        chatId: json["chatId"] == null ? null : json["chatId"],
+        adminId: json["adminId"] == null ? null : json["adminId"],
+        messageId: json["messageId"] == null ? null : json["messageId"],
+        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -33,7 +33,7 @@ class Star {
         "chatId": chatId,
         "adminId": adminId,
         "messageId": messageId,
-        "createdAt": createdAt!.toIso8601String(),
-        "updatedAt": updatedAt!.toIso8601String(),
+        "createdAt": createdAt?.toIso8601String(),
+        "updatedAt": updatedAt?.toIso8601String(),
       };
 }
