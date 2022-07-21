@@ -88,7 +88,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
       isVerify = userStore!.userData?.phone != null;
     } else {
       viewOtherUser = context.read<UserProfileStore>();
-      viewOtherUser!.offset = 0;
       viewOtherUser!.quests.clear();
 
       Future.delayed(Duration.zero, () {

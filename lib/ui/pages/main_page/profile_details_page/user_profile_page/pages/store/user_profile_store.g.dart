@@ -39,64 +39,29 @@ mixin _$UserProfileStore on _UserProfileStore, Store {
     });
   }
 
-  final _$questIdAtom = Atom(name: '_UserProfileStore.questId');
-
-  @override
-  String get questId {
-    _$questIdAtom.reportRead();
-    return super.questId;
-  }
-
-  @override
-  set questId(String value) {
-    _$questIdAtom.reportWrite(value, super.questId, () {
-      super.questId = value;
-    });
-  }
-
-  final _$contractAddressAtom = Atom(name: '_UserProfileStore.contractAddress');
-
-  @override
-  String get contractAddress {
-    _$contractAddressAtom.reportRead();
-    return super.contractAddress;
-  }
-
-  @override
-  set contractAddress(String value) {
-    _$contractAddressAtom.reportWrite(value, super.contractAddress, () {
-      super.contractAddress = value;
-    });
-  }
-
   final _$getProfileAsyncAction = AsyncAction('_UserProfileStore.getProfile');
 
   @override
-  Future<void> getProfile({required String userId}) {
+  Future getProfile({required String userId}) {
     return _$getProfileAsyncAction.run(() => super.getProfile(userId: userId));
   }
 
-  final _$_UserProfileStoreActionController =
-      ActionController(name: '_UserProfileStore');
+  final _$getQuestsAsyncAction = AsyncAction('_UserProfileStore.getQuests');
 
   @override
-  void setQuest(String id, String contractAddress) {
-    final _$actionInfo = _$_UserProfileStoreActionController.startAction(
-        name: '_UserProfileStore.setQuest');
-    try {
-      return super.setQuest(id, contractAddress);
-    } finally {
-      _$_UserProfileStoreActionController.endAction(_$actionInfo);
-    }
+  Future getQuests(
+      {required String userId,
+      required bool newList,
+      required bool isProfileYours}) {
+    return _$getQuestsAsyncAction.run(() => super.getQuests(
+        userId: userId, newList: newList, isProfileYours: isProfileYours));
   }
 
   @override
   String toString() {
     return '''
 userData: ${userData},
-quests: ${quests},
-questId: ${questId},
-contractAddress: ${contractAddress}
+quests: ${quests}
     ''';
   }
 }

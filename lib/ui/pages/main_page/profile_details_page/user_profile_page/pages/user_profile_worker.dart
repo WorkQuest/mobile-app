@@ -337,16 +337,12 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               spacer,
               ElevatedButton(
                 onPressed: () async {
-                  viewOtherUser!.offset = 0;
                   viewOtherUser!.quests.clear();
-                  viewOtherUser!.questId = "";
-                  viewOtherUser!.workerId = viewOtherUser!.userData!.id;
                   await Navigator.of(context, rootNavigator: true).pushNamed(
                     ChooseQuestPage.routeName,
                     arguments: viewOtherUser!.userData!.id,
                   );
                   viewOtherUser!.quests.clear();
-                  viewOtherUser!.offset = 0;
                 },
                 child: Text(
                   "quests.addToQuest".tr(),

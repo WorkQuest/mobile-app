@@ -16,38 +16,20 @@ class UserProfileStore extends _UserProfileStore with _$UserProfileStore {
 abstract class _UserProfileStore extends IStore<bool> with Store {
   final ApiProvider _apiProvider;
 
+  _UserProfileStore(this._apiProvider);
+
   @observable
   ProfileMeResponse? userData;
 
   @observable
   ObservableList<BaseQuestResponse> quests = ObservableList.of([]);
 
-  _UserProfileStore(
-    this._apiProvider,
-  );
-
-  int offset = 0;
-
-  String workerId = "";
-
   UserRole? role;
-
-  @observable
-  String questId = "";
-
-  @observable
-  String contractAddress = "";
 
   void initRole(UserRole value) => role = value;
 
   @action
-  void setQuest(String id, String contractAddress) {
-    questId = id;
-    this.contractAddress = contractAddress;
-  }
-
-  @action
-  Future<void> getProfile({
+  getProfile({
     required String userId,
   }) async {
     try {
@@ -59,7 +41,8 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> getQuests({
+  @action
+  getQuests({
     required String userId,
     required bool newList,
     required bool isProfileYours,
@@ -68,24 +51,19 @@ abstract class _UserProfileStore extends IStore<bool> with Store {
       this.onLoading();
       if (newList) {
         quests.clear();
-        offset = 0;
       }
-      if (offset == quests.length) {
-        quests.addAll(await _apiProvider.getEmployerQuests(
-          userId: userId,
-          offset: offset,
-          sort: "sort[createdAt]=desc",
-          me: isProfileYours ? true : false,
-        ));
+      quests.addAll(await _apiProvider.getEmployerQuests(
+        userId: userId,
+        offset: quests.length,
+        sort: "sort[createdAt]=desc",
+        me: isProfileYours ? true : false,
+      ));
 
-        quests.toList().sort((key1, key2) =>
-            key1.createdAt!.millisecondsSinceEpoch <
-                    key2.createdAt!.millisecondsSinceEpoch
-                ? 1
-                : 0);
-        offset += 10;
-        this.onSuccess(true);
-      }
+      quests.toList().sort((key1, key2) =>
+          key1.createdAt!.millisecondsSinceEpoch < key2.createdAt!.millisecondsSinceEpoch
+              ? 1
+              : 0);
+      this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
