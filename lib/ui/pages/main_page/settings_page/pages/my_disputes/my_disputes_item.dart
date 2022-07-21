@@ -96,7 +96,7 @@ class _MyDisputesItemState extends State<MyDisputesItem> {
                   await Navigator.pushNamed(
                     context,
                     CreateReviewPage.routeName,
-                    arguments: ReviewArguments(
+                    arguments: CreateReviewArguments(
                       null,
                       widget.store.disputes[widget.index].id,
                     ),

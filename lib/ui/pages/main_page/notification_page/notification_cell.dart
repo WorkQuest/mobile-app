@@ -68,7 +68,7 @@ class _NotificationCellState extends State<NotificationCell> {
                               await Navigator.pushNamed(
                                 context,
                                 CreateReviewPage.routeName,
-                                arguments: ReviewArguments(
+                                arguments: CreateReviewArguments(
                                   null,
                                   widget.body.notification.data.disputeId,
                                 ),

@@ -818,7 +818,7 @@ class Routes {
             child: Directionality(
               textDirection: checkDirection(context),
               child: CreateReviewPage(
-                settings.arguments as ReviewArguments,
+                settings.arguments as CreateReviewArguments,
               ),
             ),
           ),

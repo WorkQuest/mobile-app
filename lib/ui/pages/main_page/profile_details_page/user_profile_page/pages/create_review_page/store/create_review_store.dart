@@ -10,7 +10,7 @@ class CreateReviewStore extends _CreateReviewStore with _$CreateReviewStore {
   CreateReviewStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _CreateReviewStore extends IStore<bool> with Store {
+abstract class _CreateReviewStore extends IStore<CreateReviewStoreState> with Store {
   final ApiProvider _apiProvider;
 
   _CreateReviewStore(this._apiProvider);
@@ -46,7 +46,7 @@ abstract class _CreateReviewStore extends IStore<bool> with Store {
         message: message,
         mark: mark,
       );
-      this.onSuccess(true);
+      this.onSuccess(CreateReviewStoreState.addReview);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
@@ -62,10 +62,12 @@ abstract class _CreateReviewStore extends IStore<bool> with Store {
         message: message,
         mark: mark,
       );
-      this.onSuccess(true);
+      this.onSuccess(CreateReviewStoreState.addReviewDispute);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
       this.onError(e.toString());
     }
   }
 }
+
+enum CreateReviewStoreState { addReview, addReviewDispute }

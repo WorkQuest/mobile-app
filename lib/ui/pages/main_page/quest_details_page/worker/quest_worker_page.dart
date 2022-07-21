@@ -176,7 +176,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               await Navigator.pushNamed(
                 context,
                 CreateReviewPage.routeName,
-                arguments: ReviewArguments(storeQuest.questInfo, null),
+                arguments: CreateReviewArguments(storeQuest.questInfo, null),
               );
               store.quest.value!.yourReview != null
                   ? profile!.review = true

@@ -387,7 +387,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       await Navigator.pushNamed(
                         context,
                         CreateReviewPage.routeName,
-                        arguments: ReviewArguments(
+                        arguments: CreateReviewArguments(
                           null,
                           _store.chatRoom!.questChat?.quest?.openDispute!.id,
                         ),

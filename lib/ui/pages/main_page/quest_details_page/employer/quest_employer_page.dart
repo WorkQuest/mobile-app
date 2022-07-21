@@ -282,7 +282,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               await Navigator.pushNamed(
                 context,
                 CreateReviewPage.routeName,
-                arguments: ReviewArguments(
+                arguments: CreateReviewArguments(
                   store.quest.value!,
                   null,
                 ),
