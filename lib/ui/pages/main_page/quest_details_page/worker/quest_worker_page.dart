@@ -111,6 +111,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   List<Widget>? actionAppBar() {
+    print("store.quest.value?.star: ${store.quest.value?.star}");
     return <Widget>[
       Observer(
         builder: (_) => IconButton(
@@ -119,11 +120,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
             color:
                 store.quest.value?.star ?? false ? Color(0xFFE8D20D) : Color(0xFFD8DFE3),
           ),
-          onPressed: () {
+          onPressed: () async {
+            await myQuestStore.setStar(store.quest.value!, !store.quest.value!.star);
             store.onStar();
-            store.quest.value!.star
-                ? myQuestStore.setStar(store.quest.value!, false)
-                : myQuestStore.setStar(store.quest.value!, true);
           },
         ),
       ),
@@ -146,8 +145,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         IconButton(
           icon: Icon(Icons.share_outlined),
           onPressed: () {
-            Share.share(
-                "https://dev-app.workquest.co/quests/${store.quest.value!.id}");
+            Share.share("https://dev-app.workquest.co/quests/${store.quest.value!.id}");
           },
         ),
     ];

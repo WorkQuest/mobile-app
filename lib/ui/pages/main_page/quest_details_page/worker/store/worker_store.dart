@@ -89,13 +89,9 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
     quest.reportChanged();
   }
 
+  @action
   onStar() async {
-    if (quest.value!.star) {
-      await _apiProvider.removeStar(id: quest.value!.id);
-    } else {
-      await _apiProvider.setStar(id: quest.value!.id);
-    }
-    await _getQuest();
+    quest.reportChanged();
   }
 
   @action

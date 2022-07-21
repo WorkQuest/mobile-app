@@ -91,6 +91,13 @@ mixin _$WorkerStore on _WorkerStore, Store {
     return _$getQuestAsyncAction.run(() => super.getQuest(questId));
   }
 
+  final _$onStarAsyncAction = AsyncAction('_WorkerStore.onStar');
+
+  @override
+  Future onStar() {
+    return _$onStarAsyncAction.run(() => super.onStar());
+  }
+
   final _$sendAcceptOnQuestAsyncAction =
       AsyncAction('_WorkerStore.sendAcceptOnQuest');
 
