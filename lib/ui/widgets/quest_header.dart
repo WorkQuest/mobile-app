@@ -25,7 +25,7 @@ class QuestHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (itemType == QuestsType.All || itemType == QuestsType.Favorites)
+    if (itemType == QuestsType.All || itemType == QuestsType.Favorites) {
       switch (questStatus) {
         case -3:
           return header(
@@ -43,9 +43,7 @@ class QuestHeader extends StatelessWidget {
             title: "quests.headers.blocked",
           );
         case 1:
-          if (invited != null &&
-              invited!.status != -1 &&
-              role == UserRole.Worker)
+          if (invited != null && invited!.status != -1 && role == UserRole.Worker)
             return header(
               color: Color(0xFFE8D20D),
               title: "quests.headers.pending",
@@ -123,7 +121,7 @@ class QuestHeader extends StatelessWidget {
             height: 16,
           );
       }
-    else
+    } else {
       switch (itemType) {
         case QuestsType.Responded:
           if ((responded?.status == -1 || invited?.status == -1) &&
@@ -204,6 +202,7 @@ class QuestHeader extends StatelessWidget {
             height: 16,
           );
       }
+    }
   }
 
   Widget header({

@@ -94,17 +94,18 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
       store.quest.value = widget.arguments.questInfo;
     } else {
       store.getQuest(widget.arguments.id ?? "");
-      controller = BottomSheet.createAnimationController(this);
-      controller!.duration = Duration(seconds: 1);
-      respondedList.add(store.quest.value?.responded);
-      respondedList.forEach((element) {
-        if (element != null) if (element.workerId == profile!.userData!.id &&
-            element.status != -1) {
-          store.response = true;
-          return;
-        }
-      });
     }
+    controller = BottomSheet.createAnimationController(this);
+    controller!.duration = Duration(seconds: 1);
+    respondedList.add(store.quest.value?.responded);
+    respondedList.forEach((element) {
+      if (element != null) if (element.workerId == profile!.userData!.id &&
+          element.status != -1) {
+        store.response = true;
+        return;
+      }
+    });
+
     super.initState();
   }
 
