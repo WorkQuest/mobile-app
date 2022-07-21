@@ -1,13 +1,11 @@
 import 'package:app/constants.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/widgets/shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../widgets/user_avatar.dart';
 import '../../../../widgets/user_rating.dart';
@@ -24,7 +22,6 @@ class WorkersItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        context.read<UserProfileStore>().initRole(workersInfo.role);
         await Navigator.of(context, rootNavigator: true).pushNamed(
           UserProfile.routeName,
           arguments: ProfileArguments(

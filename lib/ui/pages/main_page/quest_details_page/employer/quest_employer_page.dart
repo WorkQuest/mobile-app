@@ -7,7 +7,6 @@ import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employer_store.dart';
@@ -344,7 +343,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           const SizedBox(height: 10),
           GestureDetector(
             onTap: () async {
-              context.read<UserProfileStore>().initRole(UserRole.Worker);
               await Navigator.of(context, rootNavigator: true).pushNamed(
                 UserProfile.routeName,
                 arguments: ProfileArguments(
@@ -842,7 +840,6 @@ class _RespondedListState extends State<_RespondedList> {
   Widget respondedUser(RespondModel respond) {
     return GestureDetector(
       onTap: () async {
-        context.read<UserProfileStore>().initRole(UserRole.Worker);
         await Navigator.of(context, rootNavigator: true).pushNamed(
           UserProfile.routeName,
           arguments: ProfileArguments(

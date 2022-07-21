@@ -164,7 +164,6 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
               Flexible(
                 child: GestureDetector(
                   onTap: () async {
-                    context.read<UserProfileStore>().initRole(widget.role);
                     await Navigator.of(context, rootNavigator: true).pushNamed(
                       UserProfile.routeName,
                       arguments: widget.id == GetIt.I.get<ProfileMeStore>().userData?.id

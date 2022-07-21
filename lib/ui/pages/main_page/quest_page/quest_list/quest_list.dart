@@ -7,7 +7,6 @@ import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
@@ -58,7 +57,6 @@ class _QuestListState extends State<QuestList> {
     profileMeStore!.getProfileMe().then((value) {
       context.read<ChatStore>().initialSetup(profileMeStore!.userData!.id);
       context.read<MyQuestStore>().setRole(profileMeStore!.userData!.role);
-      context.read<UserProfileStore>().initRole(profileMeStore!.userData!.role);
       profileMeStore!.userData!.role == UserRole.Worker
           ? questsStore!.getQuests(true)
           : questsStore!.getWorkers(true);
@@ -354,9 +352,6 @@ class _QuestListState extends State<QuestList> {
             );
           else if (initialURI.path.contains("profile")) {
             await profileMeStore!.getQuestHolder(argument);
-            context.read<UserProfileStore>().initRole(
-                  profileMeStore!.questHolder!.role,
-                );
             await Navigator.of(context, rootNavigator: true).pushNamed(
               UserProfile.routeName,
               arguments: ProfileArguments(
@@ -396,9 +391,6 @@ class _QuestListState extends State<QuestList> {
         );
       else if ((uri?.path ?? "").contains("profile")) {
         await profileMeStore!.getQuestHolder(argument!);
-        context.read<UserProfileStore>().initRole(
-              profileMeStore!.questHolder!.role,
-            );
         await Navigator.of(context, rootNavigator: true).pushNamed(
           UserProfile.routeName,
           arguments: ProfileArguments(

@@ -8,7 +8,6 @@ import 'package:app/ui/pages/main_page/chat_page/chat_room_page/store/chat_room_
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/choose_quest_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/login_button.dart';
@@ -281,9 +280,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             )
           : GestureDetector(
               onTap: () async {
-                context.read<UserProfileStore>().initRole(
-                      profile!.userData!.role != role1! ? role1! : role2!,
-                    );
                 Navigator.of(context, rootNavigator: true).pushNamed(
                   UserProfile.routeName,
                   arguments: ProfileArguments(
@@ -324,9 +320,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 : SizedBox()
             : GestureDetector(
                 onTap: () async {
-                  context.read<UserProfileStore>().initRole(
-                        profile!.userData!.role != role1! ? role1! : role2!,
-                      );
                   Navigator.of(context, rootNavigator: true).pushNamed(
                     UserProfile.routeName,
                     arguments: ProfileArguments(

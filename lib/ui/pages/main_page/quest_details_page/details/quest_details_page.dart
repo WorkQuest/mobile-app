@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -106,9 +105,6 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         ? Text("quests.yourQuest".tr())
                         : GestureDetector(
                             onTap: () async {
-                              context.read<UserProfileStore>().initRole(
-                                    UserRole.Employer,
-                                  );
                               Navigator.of(context, rootNavigator: true).pushNamed(
                                 UserProfile.routeName,
                                 arguments: ProfileArguments(

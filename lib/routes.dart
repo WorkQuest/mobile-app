@@ -103,9 +103,7 @@ import 'di/injector.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    return context.locale.toString() == "ar_SA"
-        ? TextDirection.rtl
-        : TextDirection.ltr;
+    return context.locale.toString() == "ar_SA" ? TextDirection.rtl : TextDirection.ltr;
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -327,8 +325,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child:
-                  FilterQuestsPage(settings.arguments as Map<int, List<int>>),
+              child: FilterQuestsPage(settings.arguments as Map<int, List<int>>),
             ),
           ),
         );
@@ -421,13 +418,7 @@ class Routes {
         );
 
       case UserProfile.routeName:
-        final role = getIt.get<UserProfileStore>().role;
         final arguments = settings.arguments as ProfileArguments?;
-        final isViewProfile;
-        if (settings.arguments == null)
-          isViewProfile = role ?? UserRole.Worker;
-        else
-          isViewProfile = arguments!.role;
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
             providers: [
@@ -446,13 +437,9 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: (settings.arguments == null)
-                  ? role == UserRole.Worker
-                      ? WorkerProfile(arguments)
-                      : EmployerProfile(arguments)
-                  : isViewProfile == UserRole.Worker
-                      ? WorkerProfile(arguments)
-                      : EmployerProfile(arguments),
+              child: settings.arguments == null
+                  ? WorkerProfile(arguments)
+                  : EmployerProfile(arguments),
             ),
           ),
         );
