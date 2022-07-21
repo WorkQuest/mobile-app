@@ -17,6 +17,7 @@ import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/user_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:provider/provider.dart';
@@ -163,17 +164,17 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
               Flexible(
                 child: GestureDetector(
                   onTap: () async {
-                    print("ROLEROLE: ${widget.role}");
-                    print("ROLEROLE: ${widget.userRole.tr()}");
                     context.read<UserProfileStore>().initRole(widget.role);
                     await Navigator.of(context, rootNavigator: true).pushNamed(
                       UserProfile.routeName,
-                      arguments: ProfileArguments(
-                        role: widget.role,
-                        userId: widget.id,
-                      ),
+                      arguments: widget.id == GetIt.I.get<ProfileMeStore>().userData?.id
+                          ? null
+                          : ProfileArguments(
+                              role: widget.role,
+                              userId: widget.id,
+                            ),
                     );
-                    if(widget.role != UserRole.Worker) {
+                    if (widget.role != UserRole.Worker) {
                       userProfileStore.quests.clear();
                       userProfileStore.getQuests(
                         userId: widget.myId,

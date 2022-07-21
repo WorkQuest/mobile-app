@@ -191,7 +191,7 @@ extension ReviewsTab on UserProfileState {
                       child: ElevatedButton(
                         onPressed: () async {
                           portfolioStore!.setTitleName("Reviews");
-                          await Navigator.pushNamed(
+                          Navigator.pushNamed(
                             context,
                             ReviewPage.routeName,
                             arguments: ReviewPageArguments(
@@ -203,12 +203,6 @@ extension ReviewsTab on UserProfileState {
                                   : widget.arguments!.role,
                               store: portfolioStore!,
                             ),
-                          );
-                          await portfolioStore!.getReviews(
-                            userId: viewOtherUser?.userData == null
-                                ? userStore!.userData!.id
-                                : viewOtherUser!.userData!.id,
-                            isForce: true,
                           );
                         },
                         child: Text(

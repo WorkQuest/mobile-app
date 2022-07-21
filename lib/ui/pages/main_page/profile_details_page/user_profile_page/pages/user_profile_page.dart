@@ -65,7 +65,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
     myQuests = context.read<MyQuestStore>();
     userStore = context.read<ProfileMeStore>();
 
-
     if (widget.arguments == null) {
       role = userStore!.userData?.role ?? UserRole.Worker;
 
@@ -93,9 +92,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
       viewOtherUser!.quests.clear();
 
       Future.delayed(Duration.zero, () {
-        viewOtherUser!
-            .getProfile(userId: widget.arguments!.userId)
-            .then((value) {
+        viewOtherUser!.getProfile(userId: widget.arguments!.userId).then((value) {
           portfolioStore!.setOtherUserData(viewOtherUser!.userData);
           role = viewOtherUser!.userData!.role;
 
@@ -107,10 +104,9 @@ class UserProfileState<T extends UserProfile> extends State<T>
             );
 
           if (role == UserRole.Worker)
-            portfolioStore!.getPortfolio(
-                userId: viewOtherUser!.userData!.id, isForce: true);
-          portfolioStore!
-              .getReviews(userId: viewOtherUser!.userData!.id, isForce: true);
+            portfolioStore!
+                .getPortfolio(userId: viewOtherUser!.userData!.id, isForce: true);
+          portfolioStore!.getReviews(userId: viewOtherUser!.userData!.id, isForce: true);
 
           isVerify = viewOtherUser!.userData!.phone != null;
         });
@@ -173,10 +169,8 @@ class UserProfileState<T extends UserProfile> extends State<T>
             : NotificationListener<ScrollNotification>(
                 onNotification: (scrollNotification) {
                   if (controllerMain.offset < 180) {
-                    double width =
-                        240 + (controllerMain.offset.round() / 200 * 60);
-                    double appBarPosition =
-                        controllerMain.offset.round() / 200 * 28;
+                    double width = 240 + (controllerMain.offset.round() / 200 * 60);
+                    double appBarPosition = controllerMain.offset.round() / 200 * 28;
                     double appBarPositionVertical =
                         (controllerMain.offset.round() / 200 * 10);
                     _streamController.sink.add(
@@ -223,30 +217,23 @@ class UserProfileState<T extends UserProfile> extends State<T>
                               ///Social Accounts
                               socialAccounts(
                                 socialNetwork: viewOtherUser?.userData == null
-                                    ? userStore!
-                                        .userData?.additionalInfo?.socialNetwork
-                                    : viewOtherUser!.userData!.additionalInfo
-                                        ?.socialNetwork,
+                                    ? userStore!.userData?.additionalInfo?.socialNetwork
+                                    : viewOtherUser!
+                                        .userData!.additionalInfo?.socialNetwork,
                               ),
 
                               ///Contact Details
                               contactDetails(
                                 location: viewOtherUser?.userData == null
-                                    ? userStore!.userData?.additionalInfo
-                                            ?.address ??
-                                        ''
-                                    : viewOtherUser!.userData!.additionalInfo
-                                            ?.address ??
+                                    ? userStore!.userData?.additionalInfo?.address ?? ''
+                                    : viewOtherUser!.userData!.additionalInfo?.address ??
                                         "",
                                 number: viewOtherUser?.userData == null
                                     ? userStore!.userData?.phone?.fullPhone ??
-                                        userStore!
-                                            .userData?.tempPhone?.fullPhone ??
+                                        userStore!.userData?.tempPhone?.fullPhone ??
                                         ""
-                                    : viewOtherUser!
-                                            .userData?.phone?.fullPhone ??
-                                        viewOtherUser!
-                                            .userData!.tempPhone?.fullPhone ??
+                                    : viewOtherUser!.userData?.phone?.fullPhone ??
+                                        viewOtherUser!.userData!.tempPhone?.fullPhone ??
                                         "",
                                 secondNumber: viewOtherUser?.userData == null
                                     ? userStore!.userData?.additionalInfo
@@ -263,25 +250,15 @@ class UserProfileState<T extends UserProfile> extends State<T>
                                     ? userStore!.userData!.role
                                     : viewOtherUser!.userData!.role,
                                 company: viewOtherUser?.userData == null
-                                    ? userStore!.userData!.additionalInfo
-                                            ?.company ??
-                                        ""
-                                    : viewOtherUser!.userData!.additionalInfo
-                                            ?.company ??
+                                    ? userStore!.userData!.additionalInfo?.company ?? ""
+                                    : viewOtherUser!.userData!.additionalInfo?.company ??
                                         "",
                                 ceo: viewOtherUser?.userData == null
-                                    ? userStore!
-                                            .userData!.additionalInfo?.ceo ??
-                                        ""
-                                    : viewOtherUser!
-                                            .userData!.additionalInfo?.ceo ??
-                                        "",
+                                    ? userStore!.userData!.additionalInfo?.ceo ?? ""
+                                    : viewOtherUser!.userData!.additionalInfo?.ceo ?? "",
                                 website: viewOtherUser?.userData == null
-                                    ? userStore!.userData!.additionalInfo
-                                            ?.website ??
-                                        ""
-                                    : viewOtherUser!.userData!.additionalInfo
-                                            ?.website ??
+                                    ? userStore!.userData!.additionalInfo?.website ?? ""
+                                    : viewOtherUser!.userData!.additionalInfo?.website ??
                                         "",
                               ),
 
