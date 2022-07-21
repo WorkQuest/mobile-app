@@ -1,4 +1,3 @@
-
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
@@ -9,7 +8,7 @@ import 'package:mobx/mobx.dart';
 
 part 'portfolio_store.g.dart';
 
-@singleton
+@injectable
 class PortfolioStore extends _PortfolioStore with _$PortfolioStore {
   PortfolioStore(ApiProvider apiProvider) : super(apiProvider);
 }

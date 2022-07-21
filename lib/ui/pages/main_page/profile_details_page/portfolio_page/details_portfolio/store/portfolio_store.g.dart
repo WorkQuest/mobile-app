@@ -110,7 +110,7 @@ mixin _$PortfolioStore on _PortfolioStore, Store {
     return '''
 pageNumber: ${pageNumber},
 portfolioList: ${portfolioList},
-reviewsList: ${reviewsList},
+reviewsList: ${reviewsList}
     ''';
   }
 }

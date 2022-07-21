@@ -71,11 +71,6 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                     userStore!.userData!.role,
                     true,
                   );
-                else
-                  portfolioStore!.getReviews(
-                    userId: viewOtherUser!.userData!.id,
-                    isForce: true,
-                  );
               },
               child: Text(
                 "meta.showAllQuests".tr(),

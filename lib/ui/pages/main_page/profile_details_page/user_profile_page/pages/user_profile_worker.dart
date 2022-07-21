@@ -100,6 +100,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
             children: [
               for (int index = 0; index < (_len < 3 ? _len : 3); index++)
                 PortfolioWidget(
+                  store: portfolioStore!,
                   addPortfolio: portfolioStore!.addPortfolio,
                   index: index,
                   imageUrl: portfolioStore!.portfolioList[index].medias.isEmpty

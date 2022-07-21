@@ -4,9 +4,13 @@ import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/detai
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/default_app_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
+
+const _physics = BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
 
 class ReviewPageArguments {
   final String userId;
@@ -35,7 +39,11 @@ class _ReviewPageState extends State<ReviewPage> {
   late PortfolioStore store;
 
   bool get isReviews => store.titleName == "Reviews";
+
   bool get isPortfolio => store.titleName == "Portfolio";
+
+  bool get listEmpty =>
+      isReviews ? store.reviewsList.isEmpty : store.portfolioList.isEmpty;
 
   @override
   void initState() {
@@ -70,82 +78,131 @@ class _ReviewPageState extends State<ReviewPage> {
           }
           return true;
         },
-        child: Observer(
-          builder: (_) {
-            if (store.isLoading &&
-                (isReviews ? store.reviewsList.isEmpty : store.portfolioList.isEmpty)) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+        child: RefreshIndicator(
+          onRefresh: () async {
             if (isReviews) {
-              return ListView.builder(
-                physics:
-                    const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                itemCount: store.isLoading
-                    ? store.reviewsList.length + 1
-                    : store.reviewsList.length,
-                itemBuilder: (_, index) {
-                  if (store.isLoading && index == store.reviewsList.length) {
-                    return Column(
-                      children: const [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        CircularProgressIndicator.adaptive(),
-                      ],
-                    );
-                  }
-                  final review = store.reviewsList[index];
-                  return ReviewsWidget(
-                    avatar: review.fromUser.avatar?.url ?? Constants.defaultImageNetwork,
-                    name: review.fromUser.firstName + " " + review.fromUser.lastName,
-                    mark: review.mark,
-                    userRole: review.fromUser.role == UserRole.Employer
-                        ? "role.employer"
-                        : "role.worker",
-                    questTitle: review.quest.title,
-                    message: review.message,
-                    id: review.fromUserId,
-                    myId: widget.arguments.userId,
-                    role: widget.arguments.role,
-                  );
-                },
+              store.getReviews(
+                userId: widget.arguments.userId,
+                isForce: true,
               );
             }
+
             if (isPortfolio) {
-              return ListView.builder(
-                physics:
-                    const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                itemCount: store.isLoading
-                    ? store.portfolioList.length + 1
-                    : store.portfolioList.length,
-                itemBuilder: (_, index) {
-                  if (store.isLoading && index == store.portfolioList.length) {
-                    return Column(
-                      children: const [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        CircularProgressIndicator.adaptive(),
-                      ],
-                    );
-                  }
-                  final portfolio = store.portfolioList[index];
-                  return PortfolioWidget(
-                    addPortfolio: store.addPortfolio,
-                    index: index,
-                    imageUrl: portfolio.medias.isEmpty
-                        ? Constants.defaultImageNetwork
-                        : portfolio.medias.first.url,
-                    title: portfolio.title,
-                    isProfileYour: GetIt.I.get<ProfileMeStore>().userData!.id == widget.arguments.userId,
-                  );
-                },
+              store.getPortfolio(
+                userId: widget.arguments.userId,
+                isForce: true,
               );
             }
-            return SizedBox();
+            return;
           },
+          child: Observer(
+            builder: (_) {
+              if (store.isLoading && listEmpty) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (store.isSuccess && listEmpty) {
+                return SingleChildScrollView(
+                  physics: _physics,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          height: 18.0,
+                        ),
+                        SvgPicture.asset(
+                          "assets/empty_quest_icon.svg",
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          isReviews
+                              ? "quests.noReview".tr()
+                              : "profiler.dontHavePortfolioOtherUser".tr(),
+                          style: TextStyle(
+                            color: Color(0xFFD8DFE3),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              if (isReviews) {
+                return ListView.builder(
+                  physics: _physics,
+                  itemCount: store.isLoading
+                      ? store.reviewsList.length + 1
+                      : store.reviewsList.length,
+                  itemBuilder: (_, index) {
+                    if (store.isLoading && index == store.reviewsList.length) {
+                      return Column(
+                        children: const [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          CircularProgressIndicator.adaptive(),
+                        ],
+                      );
+                    }
+                    final review = store.reviewsList[index];
+                    return ReviewsWidget(
+                      avatar:
+                          review.fromUser.avatar?.url ?? Constants.defaultImageNetwork,
+                      name: review.fromUser.firstName + " " + review.fromUser.lastName,
+                      mark: review.mark,
+                      userRole: review.fromUser.role == UserRole.Employer
+                          ? "role.employer"
+                          : "role.worker",
+                      questTitle: review.quest.title,
+                      message: review.message,
+                      id: review.fromUserId,
+                      myId: widget.arguments.userId,
+                      role: widget.arguments.role,
+                    );
+                  },
+                );
+              }
+              if (isPortfolio) {
+                return ListView.builder(
+                  physics: _physics,
+                  itemCount: store.isLoading
+                      ? store.portfolioList.length + 1
+                      : store.portfolioList.length,
+                  itemBuilder: (_, index) {
+                    if (store.isLoading && index == store.portfolioList.length) {
+                      return Column(
+                        children: const [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          CircularProgressIndicator.adaptive(),
+                        ],
+                      );
+                    }
+                    final portfolio = store.portfolioList[index];
+                    return PortfolioWidget(
+                      store: store,
+                      addPortfolio: store.addPortfolio,
+                      index: index,
+                      imageUrl: portfolio.medias.isEmpty
+                          ? Constants.defaultImageNetwork
+                          : portfolio.medias.first.url,
+                      title: portfolio.title,
+                      isProfileYour: GetIt.I.get<ProfileMeStore>().userData!.id ==
+                          widget.arguments.userId,
+                    );
+                  },
+                );
+              }
+              return SizedBox();
+            },
+          ),
         ),
       ),
     );

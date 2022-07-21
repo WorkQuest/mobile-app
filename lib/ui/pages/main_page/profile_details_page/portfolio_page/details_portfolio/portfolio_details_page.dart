@@ -7,14 +7,24 @@ import 'package:app/utils/alert_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../user_profile_page/widgets/profile_widgets.dart';
 import '../create_portfolio/create_portfolio_page.dart';
 
+class PortfolioDetailsArguments {
+  int index;
+  bool isProfileYour;
+  PortfolioStore store;
+
+  PortfolioDetailsArguments({
+    required this.index,
+    required this.store,
+    required this.isProfileYour,
+  });
+}
+
 class PortfolioDetails extends StatefulWidget {
-  final PortfolioArguments arguments;
+  final PortfolioDetailsArguments arguments;
   static const String routeName = "/portfolioDetails";
 
   const PortfolioDetails({required this.arguments});
@@ -28,7 +38,7 @@ class _PortfolioDetailsState extends State<PortfolioDetails> {
 
   @override
   void initState() {
-    store = context.read<PortfolioStore>();
+    store = widget.arguments.store;
     super.initState();
   }
 

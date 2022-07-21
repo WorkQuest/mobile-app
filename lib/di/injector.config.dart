@@ -18,17 +18,17 @@ import '../ui/pages/main_page/chat_page/chat_room_page/group_chat/edit_chat/stor
 import '../ui/pages/main_page/chat_page/chat_room_page/group_chat/store/group_chat_store.dart'
     as _i20;
 import '../ui/pages/main_page/chat_page/chat_room_page/starred_message/store/starred_message_store.dart'
-    as _i33;
+    as _i34;
 import '../ui/pages/main_page/chat_page/chat_room_page/store/chat_room_store.dart'
     as _i7;
-import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i38;
-import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i40;
+import '../ui/pages/main_page/chat_page/store/chat_store.dart' as _i39;
+import '../ui/pages/main_page/my_quests_page/store/my_quest_store.dart' as _i41;
 import '../ui/pages/main_page/notification_page/store/notification_store.dart'
     as _i23;
 import '../ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio/store/create_portfolio_store.dart'
     as _i11;
-import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/store/portfolio_store.dart'
-    as _i42;
+import '../ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/store/portfolio_store.dart'
+    as _i25;
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart'
     as _i9;
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart'
@@ -36,23 +36,23 @@ import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/creat
 import '../ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart'
     as _i49;
 import '../ui/pages/main_page/quest_details_page/details/store/quest_details_store.dart'
-    as _i26;
+    as _i27;
 import '../ui/pages/main_page/quest_details_page/dispute_page/store/open_dispute_store.dart'
     as _i24;
 import '../ui/pages/main_page/quest_details_page/employer/store/employer_store.dart'
     as _i19;
 import '../ui/pages/main_page/quest_details_page/worker/store/worker_store.dart'
-    as _i36;
+    as _i37;
 import '../ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart'
     as _i13;
 import '../ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart'
-    as _i39;
+    as _i40;
 import '../ui/pages/main_page/quest_page/quest_list/store/quests_store.dart'
     as _i45;
 import '../ui/pages/main_page/quest_page/quest_map/store/quest_map_store.dart'
     as _i44;
 import '../ui/pages/main_page/raise_views_page/store/raise_views_store.dart'
-    as _i27;
+    as _i28;
 import '../ui/pages/main_page/settings_page/pages/2FA_page/2FA_store.dart'
     as _i48;
 import '../ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/dispute_store.dart'
@@ -60,39 +60,39 @@ import '../ui/pages/main_page/settings_page/pages/my_disputes/dispute/store/disp
 import '../ui/pages/main_page/settings_page/pages/my_disputes/store/my_disputes_store.dart'
     as _i21;
 import '../ui/pages/main_page/settings_page/pages/profile_visibility_page/store/profile_visibility_store.dart'
-    as _i25;
+    as _i26;
 import '../ui/pages/main_page/settings_page/pages/SMS_verification_page/store/sms_verification_store.dart'
     as _i46;
-import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i30;
+import '../ui/pages/main_page/settings_page/store/settings_store.dart' as _i31;
 import '../ui/pages/main_page/wallet_page/deposit_page/store/deposit_store.dart'
     as _i16;
 import '../ui/pages/main_page/wallet_page/network_page/store/network_store.dart'
     as _i22;
 import '../ui/pages/main_page/wallet_page/store/wallet_store.dart' as _i50;
 import '../ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart'
-    as _i34;
+    as _i35;
 import '../ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart'
     as _i47;
 import '../ui/pages/main_page/wallet_page/transfer_page/confirm_page/mobx/confirm_transfer_store.dart'
     as _i3;
 import '../ui/pages/main_page/wallet_page/transfer_page/mobx/transfer_store.dart'
-    as _i37;
+    as _i38;
 import '../ui/pages/main_page/wallet_page/withdraw_page/store/withdraw_page_store.dart'
-    as _i35;
-import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i41;
+    as _i36;
+import '../ui/pages/pin_code_page/store/pin_code_store.dart' as _i42;
 import '../ui/pages/profile_me_store/profile_me_store.dart' as _i43;
-import '../ui/pages/report_page/store/report_store.dart' as _i28;
-import '../ui/pages/restore_password_page/store.dart' as _i29;
-import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i31;
+import '../ui/pages/report_page/store/report_store.dart' as _i29;
+import '../ui/pages/restore_password_page/store.dart' as _i30;
+import '../ui/pages/sign_in_page/store/sign_in_store.dart' as _i32;
 import '../ui/pages/sign_up_page/choose_role_page/store/choose_role_store.dart'
     as _i10;
 import '../ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart'
     as _i15;
-import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i32;
+import '../ui/pages/sign_up_page/store/sign_up_store.dart' as _i33;
 
 const String _test = 'test';
-const String _prod = 'prod';
 const String _dev = 'dev';
+const String _prod = 'prod';
 
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: lines_longer_than_80_chars
@@ -105,10 +105,10 @@ extension GetItInjectableX on _i1.GetIt {
     gh.factory<_i3.ConfirmTransferStore>(() => _i3.ConfirmTransferStore());
     gh.factory<_i4.IHttpClient>(() => _i5.TestHttpClient(),
         registerFor: {_test});
-    gh.factory<_i6.LogService>(() => _i6.LogServiceProd(),
-        registerFor: {_prod});
     gh.factory<_i6.LogService>(() => _i6.LogServiceDev(),
         registerFor: {_dev, _test});
+    gh.factory<_i6.LogService>(() => _i6.LogServiceProd(),
+        registerFor: {_prod});
     gh.factory<_i7.ChatRoomStore>(
         () => _i7.ChatRoomStore(get<_i8.ApiProvider>()));
     gh.factory<_i9.ChooseQuestStore>(
@@ -143,38 +143,38 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i23.NotificationStore(get<_i8.ApiProvider>()));
     gh.factory<_i24.OpenDisputeStore>(
         () => _i24.OpenDisputeStore(get<_i8.ApiProvider>()));
-    gh.factory<_i25.ProfileVisibilityStore>(
-        () => _i25.ProfileVisibilityStore(get<_i8.ApiProvider>()));
-    gh.factory<_i26.QuestDetailsStore>(
-        () => _i26.QuestDetailsStore(get<_i8.ApiProvider>()));
-    gh.factory<_i27.RaiseViewStore>(
-        () => _i27.RaiseViewStore(get<_i8.ApiProvider>()));
-    gh.factory<_i28.ReportStore>(
-        () => _i28.ReportStore(get<_i8.ApiProvider>()));
-    gh.factory<_i29.RestorePasswordStore>(
-        () => _i29.RestorePasswordStore(get<_i8.ApiProvider>()));
-    gh.factory<_i30.SettingsPageStore>(
-        () => _i30.SettingsPageStore(get<_i8.ApiProvider>()));
-    gh.factory<_i31.SignInStore>(
-        () => _i31.SignInStore(get<_i8.ApiProvider>()));
-    gh.factory<_i32.SignUpStore>(
-        () => _i32.SignUpStore(get<_i8.ApiProvider>()));
-    gh.factory<_i33.StarredMessageStore>(
-        () => _i33.StarredMessageStore(get<_i8.ApiProvider>()));
-    gh.factory<_i34.SwapStore>(() => _i34.SwapStore(get<_i8.ApiProvider>()));
-    gh.factory<_i35.WithdrawPageStore>(
-        () => _i35.WithdrawPageStore(get<_i8.ApiProvider>()));
-    gh.factory<_i36.WorkerStore>(
-        () => _i36.WorkerStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i37.TransferStore>(_i37.TransferStore());
+    gh.factory<_i25.PortfolioStore>(
+        () => _i25.PortfolioStore(get<_i8.ApiProvider>()));
+    gh.factory<_i26.ProfileVisibilityStore>(
+        () => _i26.ProfileVisibilityStore(get<_i8.ApiProvider>()));
+    gh.factory<_i27.QuestDetailsStore>(
+        () => _i27.QuestDetailsStore(get<_i8.ApiProvider>()));
+    gh.factory<_i28.RaiseViewStore>(
+        () => _i28.RaiseViewStore(get<_i8.ApiProvider>()));
+    gh.factory<_i29.ReportStore>(
+        () => _i29.ReportStore(get<_i8.ApiProvider>()));
+    gh.factory<_i30.RestorePasswordStore>(
+        () => _i30.RestorePasswordStore(get<_i8.ApiProvider>()));
+    gh.factory<_i31.SettingsPageStore>(
+        () => _i31.SettingsPageStore(get<_i8.ApiProvider>()));
+    gh.factory<_i32.SignInStore>(
+        () => _i32.SignInStore(get<_i8.ApiProvider>()));
+    gh.factory<_i33.SignUpStore>(
+        () => _i33.SignUpStore(get<_i8.ApiProvider>()));
+    gh.factory<_i34.StarredMessageStore>(
+        () => _i34.StarredMessageStore(get<_i8.ApiProvider>()));
+    gh.factory<_i35.SwapStore>(() => _i35.SwapStore(get<_i8.ApiProvider>()));
+    gh.factory<_i36.WithdrawPageStore>(
+        () => _i36.WithdrawPageStore(get<_i8.ApiProvider>()));
+    gh.factory<_i37.WorkerStore>(
+        () => _i37.WorkerStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i38.TransferStore>(_i38.TransferStore());
     gh.singleton<_i8.ApiProvider>(_i8.ApiProvider(get<_i4.IHttpClient>()));
-    gh.singleton<_i38.ChatStore>(_i38.ChatStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i39.FilterQuestsStore>(
-        _i39.FilterQuestsStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i40.MyQuestStore>(_i40.MyQuestStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i41.PinCodeStore>(_i41.PinCodeStore(get<_i8.ApiProvider>()));
-    gh.singleton<_i42.PortfolioStore>(
-        _i42.PortfolioStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i39.ChatStore>(_i39.ChatStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i40.FilterQuestsStore>(
+        _i40.FilterQuestsStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i41.MyQuestStore>(_i41.MyQuestStore(get<_i8.ApiProvider>()));
+    gh.singleton<_i42.PinCodeStore>(_i42.PinCodeStore(get<_i8.ApiProvider>()));
     gh.singleton<_i43.ProfileMeStore>(
         _i43.ProfileMeStore(get<_i8.ApiProvider>()));
     gh.singleton<_i44.QuestMapStore>(

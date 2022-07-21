@@ -26,6 +26,7 @@ import '../../../../../../enums.dart';
 ///Portfolio Widget
 class PortfolioWidget extends StatelessWidget {
   final Function(PortfolioModel value) addPortfolio;
+  final PortfolioStore store;
   final String title;
   final String imageUrl;
   final int index;
@@ -33,6 +34,7 @@ class PortfolioWidget extends StatelessWidget {
 
   const PortfolioWidget({
     required this.addPortfolio,
+    required this.store,
     required this.title,
     required this.index,
     required this.imageUrl,
@@ -42,61 +44,65 @@ class PortfolioWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () async {
-          final result = await Navigator.pushNamed(
-            context,
-            PortfolioDetails.routeName,
-            arguments: PortfolioArguments(index, isProfileYour),
-          );
-          print('result: $result');
-          if (result != null && result is PortfolioModel) {
-            addPortfolio.call(result);
-            (context as Element).markNeedsBuild();
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-          child: Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(6.0),
+      onTap: () async {
+        final result = await Navigator.pushNamed(
+          context,
+          PortfolioDetails.routeName,
+          arguments: PortfolioDetailsArguments(
+            index: index,
+            store: store,
+            isProfileYour: isProfileYour,
+          ),
+        );
+        print('result: $result');
+        if (result != null && result is PortfolioModel) {
+          addPortfolio.call(result);
+          (context as Element).markNeedsBuild();
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(6.0),
+              ),
+              child: FadeInImage(
+                height: 230,
+                width: double.maxFinite,
+                placeholder: MemoryImage(
+                  Uint8List.fromList(base64Decode(Constants.base64BlueHolder)),
                 ),
-                child: FadeInImage(
-                  height: 230,
-                  width: double.maxFinite,
-                  placeholder: MemoryImage(
-                    Uint8List.fromList(base64Decode(Constants.base64BlueHolder)),
-                  ),
-                  fit: BoxFit.cover,
-                  image: NetworkImage(
-                    imageUrl,
-                  ),
+                fit: BoxFit.cover,
+                image: NetworkImage(
+                  imageUrl,
                 ),
               ),
-              Positioned(
-                bottom: 15.0,
-                left: 21.0,
-                right: 55.0,
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 15.0,
-                right: 21.0,
-                child: Icon(
-                  Icons.arrow_right_sharp,
+            ),
+            Positioned(
+              bottom: 15.0,
+              left: 21.0,
+              right: 55.0,
+              child: Text(
+                title,
+                style: TextStyle(
                   color: Colors.white,
                 ),
               ),
-            ],
-          ),
+            ),
+            Positioned(
+              bottom: 15.0,
+              right: 21.0,
+              child: Icon(
+                Icons.arrow_right_sharp,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 }
 
@@ -134,7 +140,6 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
   @override
   Widget build(BuildContext context) {
     final profile = context.read<ProfileMeStore>();
-    final portfolioStore = context.read<PortfolioStore>();
     final userProfileStore = context.read<UserProfileStore>();
     return Column(
       children: [
@@ -158,7 +163,6 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
               Flexible(
                 child: GestureDetector(
                   onTap: () async {
-                    portfolioStore.clearData();
                     print("ROLEROLE: ${widget.role}");
                     print("ROLEROLE: ${widget.userRole.tr()}");
                     context.read<UserProfileStore>().initRole(widget.role);
@@ -169,13 +173,7 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                         userId: widget.id,
                       ),
                     );
-                    portfolioStore.clearData();
-                    if (widget.role == UserRole.Worker)
-                      portfolioStore.getPortfolio(
-                        userId: widget.myId,
-                        isForce: true,
-                      );
-                    else {
+                    if(widget.role != UserRole.Worker) {
                       userProfileStore.quests.clear();
                       userProfileStore.getQuests(
                         userId: widget.myId,
@@ -183,7 +181,6 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                         isProfileYours: widget.id == widget.myId ? true : false,
                       );
                     }
-                    portfolioStore.getReviews(userId: widget.myId, isForce: true);
                     profile.assignedWorker = null;
                   },
                   child: ListTile(
@@ -1137,11 +1134,4 @@ Widget experience({
       ),
     ],
   );
-}
-
-class PortfolioArguments {
-  int index;
-  bool isProfileYour;
-
-  PortfolioArguments(this.index, this.isProfileYour);
 }

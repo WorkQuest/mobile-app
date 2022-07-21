@@ -65,7 +65,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
     myQuests = context.read<MyQuestStore>();
     userStore = context.read<ProfileMeStore>();
 
-    portfolioStore!.clearData();
 
     if (widget.arguments == null) {
       role = userStore!.userData?.role ?? UserRole.Worker;
