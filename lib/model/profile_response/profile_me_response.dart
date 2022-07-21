@@ -143,7 +143,7 @@ class ProfileMeResponse with ClusterItem {
           json["location"] == null ? null : LocationCode.fromJson(json["location"]),
       locationPlaceName: json["locationPlaceName"] ?? "",
       costPerHour: json["costPerHour"] ?? "0",
-      workplace: json["workplace"] ?? "",
+      workplace: json["workplace"],
       priority: json["priority"] ?? 0,
       questsStatistic: json["questsStatistic"] == null
           ? null
@@ -151,7 +151,7 @@ class ProfileMeResponse with ClusterItem {
       raiseView: json["raiseView"] == null ? null : RaiseView.fromJson(json["raiseView"]),
       walletAddress: json["wallet"]?["address"] ?? '',
       isTotpActive: json["totpIsActive"] == null ? false : json["totpIsActive"],
-      payPeriod: json["payPeriod"] ?? "",
+      payPeriod: json["payPeriod"],
       workerOrEmployerProfileVisibilitySetting: json[json["role"] == "employer"
                   ? 'employerProfileVisibilitySetting'
                   : 'workerProfileVisibilitySetting'] ==
