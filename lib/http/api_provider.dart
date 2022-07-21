@@ -323,7 +323,7 @@ extension QuestService on ApiProvider {
     String employments = "";
     employment.forEach((text) {
       print(text);
-      employments += "employments[]=$text&";
+      employments += "typeOfEmployments[]=$text&";
     });
     String payPeriods = "";
     payPeriod.forEach((text) {
