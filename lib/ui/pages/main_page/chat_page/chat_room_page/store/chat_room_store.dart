@@ -7,7 +7,7 @@ import 'package:app/model/dispute_model.dart';
 import 'package:app/model/media_model.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/utils/thumbnails.dart';
-import 'package:app/utils/web_socket.dart';
+import 'package:app/http/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/http/chat_extension.dart';

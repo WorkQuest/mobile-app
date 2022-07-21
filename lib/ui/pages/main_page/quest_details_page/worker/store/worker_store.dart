@@ -9,7 +9,7 @@ import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/client_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
-import 'package:app/utils/web_socket.dart';
+import 'package:app/http/web_socket.dart';
 
 
 part 'worker_store.g.dart';

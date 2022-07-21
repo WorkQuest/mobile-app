@@ -4,7 +4,7 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat.dart';
-import 'package:app/utils/web_socket.dart';
+import 'package:app/http/web_socket.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/http/chat_extension.dart';

@@ -2,7 +2,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
-import 'package:app/utils/web_socket.dart';
+import 'package:app/http/web_socket.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';

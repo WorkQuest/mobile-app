@@ -8,7 +8,7 @@ import 'package:get_it/get_it.dart';
 import '../../constants.dart';
 import '../../ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import '../../utils/storage.dart';
-import '../../utils/web_socket.dart';
+import '../../http/web_socket.dart';
 import '../wallet.dart';
 
 class AccountRepository {
