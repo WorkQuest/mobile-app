@@ -28,8 +28,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   String myId = "";
 
-  Map<TypeChat, int> offset = {};
-
   @observable
   bool starred = false;
 
@@ -63,15 +61,13 @@ abstract class _ChatStore extends IStore<bool> with Store {
     int? questChatStatus,
   }) async {
     chats[type] ??= Chats([]);
-    offset[type] ??= 0;
     if (!loadMore) {
       chats[type]!.clearChat();
-      offset[type] = 0;
       this.onLoading();
-    } else if (chats[type]!.chat.length != offset[type]) return;
+    }
     try {
       final listChats = await _apiProvider.getChats(
-        offset: this.offset[type]!,
+        offset: chats[type]!.chat.length,
         query: query,
         type: getChatTypeValue(type),
         questChatStatus: questChatStatus,
@@ -83,8 +79,6 @@ abstract class _ChatStore extends IStore<bool> with Store {
       listChats.forEach((element) {
         if (selectedChats[element] == null) selectedChats[element] = false;
       });
-
-      offset[type] = offset[type]! + 10;
       checkMessage();
       this.onSuccess(true);
     } catch (e) {
