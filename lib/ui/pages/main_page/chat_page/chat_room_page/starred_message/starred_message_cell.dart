@@ -1,23 +1,24 @@
 import 'package:app/constants.dart';
 import 'package:app/model/chat_model/message_model.dart';
-import 'package:app/model/chat_model/star.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/starred_message/store/starred_message_store.dart';
 import 'package:app/ui/widgets/image_viewer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class StarredMessageCell extends StatefulWidget {
-  final MessageModel message;
-  final int index;
-  final String userId;
   final StarredMessageStore store;
+  final MessageModel message;
+  final Function()? setStar;
+  final String userId;
+  final int index;
 
-  const StarredMessageCell(
-    this.message,
-    this.index,
-    this.userId,
-    this.store,
-  );
+  const StarredMessageCell({
+    required this.message,
+    required this.setStar,
+    required this.userId,
+    required this.index,
+    required this.store,
+  });
 
   @override
   State<StarredMessageCell> createState() => _StarredMessageCellState();
@@ -42,8 +43,7 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: [
-            if (!isNotMyMessage)
-              Text("chat.you".tr()),
+            if (!isNotMyMessage) Text("chat.you".tr()),
             if (isNotMyMessage)
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
@@ -55,8 +55,7 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
                   fit: BoxFit.cover,
                 ),
               ),
-            if (isNotMyMessage)
-              const SizedBox(width: 10.0),
+            if (isNotMyMessage) const SizedBox(width: 10.0),
             if (isNotMyMessage)
               Flexible(
                 child: Text(
@@ -69,15 +68,7 @@ class _StarredMessageCellState extends State<StarredMessageCell> {
               icon: Icon(Icons.star),
               iconSize: 22,
               color: widget.message.star != null ? Color(0xFFE8D20D) : Color(0xFFE9EDF2),
-              onPressed: () {
-                widget.store.removeStar(widget.message);
-                if (widget.message.star != null) {
-                  widget.message.star = null;
-                } else {
-                  widget.message.star = Star();
-                }
-                setState(() {});
-              },
+              onPressed: widget.setStar,
             ),
           ],
         ),

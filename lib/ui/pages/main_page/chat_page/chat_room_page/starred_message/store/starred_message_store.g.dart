@@ -9,21 +9,6 @@ part of 'starred_message_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$StarredMessageStore on _StarredMessageStore, Store {
-  final _$initPageAtom = Atom(name: '_StarredMessageStore.initPage');
-
-  @override
-  bool get initPage {
-    _$initPageAtom.reportRead();
-    return super.initPage;
-  }
-
-  @override
-  set initPage(bool value) {
-    _$initPageAtom.reportWrite(value, super.initPage, () {
-      super.initPage = value;
-    });
-  }
-
   final _$messagesAtom = Atom(name: '_StarredMessageStore.messages');
 
   @override
@@ -36,22 +21,6 @@ mixin _$StarredMessageStore on _StarredMessageStore, Store {
   set messages(ObservableList<MessageModel> value) {
     _$messagesAtom.reportWrite(value, super.messages, () {
       super.messages = value;
-    });
-  }
-
-  final _$starredMessagesAtom =
-      Atom(name: '_StarredMessageStore.starredMessages');
-
-  @override
-  Map<String, bool> get starredMessages {
-    _$starredMessagesAtom.reportRead();
-    return super.starredMessages;
-  }
-
-  @override
-  set starredMessages(Map<String, bool> value) {
-    _$starredMessagesAtom.reportWrite(value, super.starredMessages, () {
-      super.starredMessages = value;
     });
   }
 
@@ -74,24 +43,23 @@ mixin _$StarredMessageStore on _StarredMessageStore, Store {
       AsyncAction('_StarredMessageStore.getMessages');
 
   @override
-  Future<void> getMessages() {
-    return _$getMessagesAsyncAction.run(() => super.getMessages());
+  Future getMessages({bool isForce = false}) {
+    return _$getMessagesAsyncAction
+        .run(() => super.getMessages(isForce: isForce));
   }
 
   final _$removeStarAsyncAction =
       AsyncAction('_StarredMessageStore.removeStar');
 
   @override
-  Future<void> removeStar(MessageModel message) {
+  Future removeStar(MessageModel message) {
     return _$removeStarAsyncAction.run(() => super.removeStar(message));
   }
 
   @override
   String toString() {
     return '''
-initPage: ${initPage},
 messages: ${messages},
-starredMessages: ${starredMessages},
 mediaPaths: ${mediaPaths}
     ''';
   }
