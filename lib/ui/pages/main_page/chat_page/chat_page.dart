@@ -43,7 +43,7 @@ class _ChatPageState extends State<ChatPage>
   void initState() {
     store = context.read<ChatStore>();
     _searchTextController = TextEditingController();
-    _tabController = TabController(vsync: this, length: 5)
+    _tabController = TabController(vsync: this, length: 6)
       ..addListener(() {
         store.getChatTypeFromIndex(_tabController.index);
         setState(() {});
@@ -151,6 +151,7 @@ class _ChatPageState extends State<ChatPage>
                   isScrollable: true,
                   controller: _tabController,
                   tabs: [
+                    tab(text: 'chat.tabs.all'),
                     tab(text: 'chat.tabs.active'),
                     tab(text: 'chat.tabs.privates'),
                     tab(text: 'chat.tabs.favorite'),
@@ -162,6 +163,13 @@ class _ChatPageState extends State<ChatPage>
                   child: TabBarView(
                     controller: _tabController,
                     children: [
+                      _ListChatsWidget(
+                        typeChat: TypeChat.all,
+                        query: _searchTextController.text,
+                        store: store,
+                        onLongPress: onLongPress,
+                        onPress: onPress,
+                      ),
                       _ListChatsWidget(
                         typeChat: TypeChat.active,
                         query: _searchTextController.text,

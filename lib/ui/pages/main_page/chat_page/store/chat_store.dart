@@ -108,18 +108,21 @@ abstract class _ChatStore extends IStore<bool> with Store {
   void getChatTypeFromIndex(int index) {
     switch (index) {
       case 0:
-        typeChat = TypeChat.active;
+        typeChat = TypeChat.all;
         return;
       case 1:
-        typeChat = TypeChat.privates;
+        typeChat = TypeChat.active;
         return;
       case 2:
-        typeChat = TypeChat.favourites;
+        typeChat = TypeChat.privates;
         return;
       case 3:
-        typeChat = TypeChat.group;
+        typeChat = TypeChat.favourites;
         return;
       case 4:
+        typeChat = TypeChat.group;
+        return;
+      case 5:
         typeChat = TypeChat.completed;
         return;
     }

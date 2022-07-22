@@ -1426,6 +1426,7 @@
       "anotherReason": "Another reason"
     },
     "tabs": {
+      "all": "All",
       "active": "Active",
       "favorite": "Favourites",
       "group": "Group",

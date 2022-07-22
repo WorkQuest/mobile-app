@@ -54,6 +54,7 @@ enum ErrorCodes {
 }
 
 enum TypeChat {
+  all,
   active,
   privates,
   favourites,
