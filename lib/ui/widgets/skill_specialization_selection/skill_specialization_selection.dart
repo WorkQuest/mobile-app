@@ -8,16 +8,16 @@ import 'package:easy_localization/easy_localization.dart';
 class SkillSpecializationSelection extends StatefulWidget {
   final SkillSpecializationController? controller;
   final List<String>? data;
+  final Function(dynamic)? callback;
 
-  SkillSpecializationSelection({this.controller, this.data});
+  SkillSpecializationSelection({this.controller, this.data, this.callback});
 
   @override
   _SkillSpecializationSelectionState createState() =>
       _SkillSpecializationSelectionState();
 }
 
-class _SkillSpecializationSelectionState
-    extends State<SkillSpecializationSelection>
+class _SkillSpecializationSelectionState extends State<SkillSpecializationSelection>
     with AutomaticKeepAliveClientMixin {
   final store = SkillSpecializationStore();
   final maxLength = 5;
@@ -43,7 +43,9 @@ class _SkillSpecializationSelectionState
           if (store.selectedSkills.length != 0)
             if (store.numberOfSpices != 0)
               OutlinedButton(
-                onPressed: store.deleteSpices,
+                onPressed: () {
+                  store.deleteSpices();
+                },
                 child: Text(
                   "settings.delete".tr(),
                   style: const TextStyle(
@@ -61,7 +63,9 @@ class _SkillSpecializationSelectionState
               ),
           if (store.numberOfSpices < 3)
             OutlinedButton(
-              onPressed: store.addSpices,
+              onPressed: () {
+                store.addSpices();
+              },
               child: Text(
                 "settings.addSpec".tr(),
                 style: const TextStyle(
@@ -125,6 +129,9 @@ class _SkillSpecializationSelectionState
                     store.selectedSkills[count]!.add(item);
                     store.countSkills = true;
                   }
+                  if (widget.callback != null) {
+                    widget.callback!.call(store.selectedSkills[count]!.length);
+                  }
                 },
         ),
         if (store.countSkills == false &&
@@ -142,6 +149,9 @@ class _SkillSpecializationSelectionState
             children: store.selectedSkills[count]!
                 .map((str) => skillBody("filters.items.$title.sub.$str", () {
                       store.selectedSkills[count]!.remove(str);
+                      if (widget.callback != null) {
+                        widget.callback!.call(store.selectedSkills[count]!.length);
+                      }
                       setState(() {});
                     }))
                 .toList(),
@@ -312,8 +322,7 @@ class SkillSpecializationController {
         int index = int.parse(pars.first);
         if (!equivalent.containsKey(index)) {
           if (store.selectedSpices[store.numberOfSpices] == null) {
-            store.selectedSpices[store.numberOfSpices] =
-                store.allSpices[index - 1];
+            store.selectedSpices[store.numberOfSpices] = store.allSpices[index - 1];
             equivalent[index] = store.numberOfSpices;
             store.numberOfSpices++;
           }

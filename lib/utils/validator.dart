@@ -1,14 +1,14 @@
 class Validators {
-  static String? emptyValidator(dynamic text) {
+  static String? emptyValidator(dynamic text, {String? customMessage}) {
     if (text.isEmpty) {
-      return "Empty field";
+      return customMessage ?? "Empty field";
     }
     return null;
   }
 
-  static String? zeroValidator(dynamic text) {
+  static String? zeroValidator(dynamic text, {String? customMessage}) {
     if (text.isEmpty) {
-      return "Empty field";
+      return customMessage ?? "Empty field";
     }
     if (double.parse(text) < 1) return "Please enter a value greater than zero";
     return null;

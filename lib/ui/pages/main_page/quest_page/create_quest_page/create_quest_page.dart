@@ -31,6 +31,20 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:web3dart/credentials.dart';
 
+const _addressIndex = 0;
+const _specializationIndex = 1;
+const _titleIndex = 2;
+const _descriptionIndex = 3;
+const _priceIndex = 4;
+const _confirmUnderstandAboutEdit = 5;
+
+class _WarningFieldModel {
+  final GlobalKey key;
+  bool warningEnabled;
+
+  _WarningFieldModel(this.key, this.warningEnabled);
+}
+
 class CreateQuestPage extends StatefulWidget {
   static const String routeName = '/createQuestPage';
   final BaseQuestResponse? questInfo;
@@ -47,15 +61,16 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   late ProfileMeStore? profile;
   late final CreateQuestStore store;
 
-  final addressKey = new GlobalKey();
-  final specializationKey = new GlobalKey();
-  final titleKey = new GlobalKey();
-  final descriptionKey = new GlobalKey();
-  final priceKey = new GlobalKey();
-  final confirmUnderstandAboutEdit = new GlobalKey();
-  final contractAddress = Web3Utils.getAddressWorknetWQFactory();
-
   bool get isEdit => widget.questInfo != null;
+
+  List<_WarningFieldModel> _warningFields = [
+    _WarningFieldModel(GlobalKey(), false),
+    _WarningFieldModel(GlobalKey(), false),
+    _WarningFieldModel(GlobalKey(), false),
+    _WarningFieldModel(GlobalKey(), false),
+    _WarningFieldModel(GlobalKey(), false),
+    _WarningFieldModel(GlobalKey(), false),
+  ];
 
   void initState() {
     super.initState();
@@ -164,58 +179,81 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                           ),
                         ),
                       ),
-                      Container(
-                        key: specializationKey,
-                        child: SkillSpecializationSelection(
-                          controller: _controller,
+                      __WarningFields(
+                        warningEnabled:
+                            _warningFields[_specializationIndex].warningEnabled,
+                        errorMessage: 'quests.specializationRequired'.tr(),
+                        child: Container(
+                          key: _warningFields[_specializationIndex].key,
+                          child: SkillSpecializationSelection(
+                            controller: _controller,
+                            callback: (value) {
+                              print('value: $value');
+                              if (value is int && value > 0) {
+                                setState(() {
+                                  _warningFields[_specializationIndex].warningEnabled =
+                                      false;
+                                });
+                              }
+                            },
+                          ),
                         ),
                       ),
-                      _TitleWithField(
-                        "quests.address".tr(),
-                        Observer(
-                          builder: (_) => GestureDetector(
-                            onTap: () {
-                              store.getPrediction(context);
-                            },
-                            child: Container(
-                              key: addressKey,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Color(0xFFF7F8FA),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(6.0),
+                      __WarningFields(
+                        warningEnabled: _warningFields[_addressIndex].warningEnabled,
+                        errorMessage: 'quests.addressRequired'.tr(),
+                        child: _TitleWithField(
+                          "quests.address".tr(),
+                          Observer(
+                            builder: (_) => GestureDetector(
+                              onTap: () async {
+                                await store.getPrediction(context);
+                                if (store.locationPlaceName.isNotEmpty) {
+                                  setState(() {
+                                    _warningFields[_addressIndex].warningEnabled = false;
+                                  });
+                                }
+                              },
+                              child: Container(
+                                key: _warningFields[_addressIndex].key,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFF7F8FA),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(6.0),
+                                  ),
                                 ),
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 17,
-                                  ),
-                                  Icon(
-                                    Icons.map_outlined,
-                                    color: Colors.blueAccent,
-                                    size: 26.0,
-                                  ),
-                                  SizedBox(
-                                    width: 12,
-                                  ),
-                                  Flexible(
-                                    child: store.locationPlaceName.isEmpty
-                                        ? Text(
-                                            "Moscow, Lenina street, 3",
-                                            style: TextStyle(
-                                              color: Color(
-                                                0xFFD8DFE3,
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 17,
+                                    ),
+                                    Icon(
+                                      Icons.map_outlined,
+                                      color: Colors.blueAccent,
+                                      size: 26.0,
+                                    ),
+                                    SizedBox(
+                                      width: 12,
+                                    ),
+                                    Flexible(
+                                      child: store.locationPlaceName.isEmpty
+                                          ? Text(
+                                              "Moscow, Lenina street, 3",
+                                              style: TextStyle(
+                                                color: Color(
+                                                  0xFFD8DFE3,
+                                                ),
                                               ),
+                                              overflow: TextOverflow.fade,
+                                            )
+                                          : Text(
+                                              store.locationPlaceName,
+                                              overflow: TextOverflow.fade,
                                             ),
-                                            overflow: TextOverflow.fade,
-                                          )
-                                        : Text(
-                                            store.locationPlaceName,
-                                            overflow: TextOverflow.fade,
-                                          ),
-                                  ),
-                                ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -388,13 +426,14 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       _TitleWithField(
                         "quests.title".tr(),
                         Container(
-                          key: titleKey,
+                          key: _warningFields[_titleIndex].key,
                           height: 60,
                           alignment: Alignment.centerLeft,
                           child: TextFormField(
                             onChanged: store.setQuestTitle,
-                            validator: Validators.emptyValidator,
+                            validator: (value) => Validators.emptyValidator(value, customMessage: 'errors.fieldRequired'.tr(namedArgs: {'name': 'Title'})),
                             initialValue: store.questTitle,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             maxLines: 1,
                             enabled: !isEdit,
                             decoration: InputDecoration(
@@ -409,11 +448,12 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       _TitleWithField(
                         "quests.aboutQuest".tr(),
                         TextFormField(
-                          key: descriptionKey,
+                          key: _warningFields[_descriptionIndex].key,
                           initialValue: store.description,
                           onChanged: store.setAboutQuest,
-                          validator: Validators.emptyValidator,
+                          validator: (value) => Validators.emptyValidator(value, customMessage: 'errors.fieldRequired'.tr(namedArgs: {'name': 'Description'})),
                           keyboardType: TextInputType.multiline,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           enabled: !isEdit,
                           maxLines: 12,
                           decoration: InputDecoration(
@@ -434,7 +474,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CheckboxListTile(
-                                  key: confirmUnderstandAboutEdit,
+                                  key: _warningFields[_confirmUnderstandAboutEdit].key,
                                   contentPadding: const EdgeInsets.all(0),
                                   value: store.confirmUnderstandAboutEdit,
                                   onChanged: (value) =>
@@ -448,11 +488,11 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                                 ),
                                 if (!store.confirmUnderstandAboutEdit)
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 4.0),
+                                    padding: const EdgeInsets.only(top: 4.0, left: 10.0),
                                     child: Text(
                                       'The field is required',
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 12,
                                         color: Colors.red,
                                       ),
                                     ),
@@ -475,12 +515,13 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                       _TitleWithField(
                         "quests.price".tr(),
                         Container(
-                          key: priceKey,
+                          key: _warningFields[_priceIndex].key,
                           height: 60,
                           child: TextFormField(
                             onChanged: store.setPrice,
                             initialValue: store.price.toString(),
-                            validator: Validators.zeroValidator,
+                            validator: (value) => Validators.zeroValidator(value, customMessage: 'errors.fieldRequired'.tr(namedArgs: {'name': 'Price'})),
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
                                   RegExp(r'^\d+\.?\d{0,18}')),
@@ -558,30 +599,37 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     );
   }
 
+  _setWarning(_WarningFieldModel field) {
+    Scrollable.ensureVisible(field.key.currentContext!,
+        duration: const Duration(milliseconds: 350));
+    setState(() {
+      field.warningEnabled = true;
+    });
+  }
+
   _onPressedOnCreateOrEditQuest(CreateQuestStore store) async {
     store.skillFilters = _controller.getSkillAndSpecialization();
     if (store.skillFilters.isEmpty) {
-      Scrollable.ensureVisible(specializationKey.currentContext!);
+      _setWarning(_warningFields[_specializationIndex]);
       return;
     } else if (store.locationPlaceName.isEmpty) {
-      Scrollable.ensureVisible(addressKey.currentContext!);
+      _setWarning(_warningFields[_addressIndex]);
       return;
     } else if (store.questTitle.isEmpty) {
-      Scrollable.ensureVisible(titleKey.currentContext!);
+      _formKey.currentState?.validate();
+      _setWarning(_warningFields[_titleIndex]);
       return;
     } else if (store.description.isEmpty) {
-      Scrollable.ensureVisible(descriptionKey.currentContext!);
+      _formKey.currentState?.validate();
+      _setWarning(_warningFields[_descriptionIndex]);
       return;
     } else if (store.price.isEmpty) {
-      Scrollable.ensureVisible(priceKey.currentContext!);
+      _formKey.currentState?.validate();
+      _setWarning(_warningFields[_priceIndex]);
       return;
-    } else if (store.locationPlaceName.isEmpty) {
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'Error', content: "Address is empty");
-      return;
-    } else if (store.skillFilters.isEmpty) {
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'Error', content: "Skills are empty");
+    } else if (!store.confirmUnderstandAboutEdit) {
+      Scrollable.ensureVisible(
+          _warningFields[_confirmUnderstandAboutEdit].key.currentContext!);
       return;
     }
 
@@ -593,7 +641,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
         context,
         fee: _gasApprove,
         transaction: '${"ui.txInfo".tr()} Approve',
-        address: contractAddress,
+        address: Web3Utils.getAddressWorknetWQFactory(),
         amount: ((double.tryParse(store.price) ?? 0.0) * Constants.commissionForQuest)
             .toString(),
         onPressConfirm: () async {
@@ -642,10 +690,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
 
   _onCreateQuest(CreateQuestStore store, String fee) async {
     if (_formKey.currentState?.validate() ?? false) {
-      if (!store.confirmUnderstandAboutEdit) {
-        Scrollable.ensureVisible(confirmUnderstandAboutEdit.currentContext!);
-        return;
-      }
       await _checkPossibilityTx(store.price, fee);
 
       _showConfirmTxAlert(store, fee);
@@ -666,7 +710,7 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       context,
       fee: fee,
       transaction: "ui.txInfo".tr(),
-      address: contractAddress,
+      address: Web3Utils.getAddressWorknetWQFactory(),
       amount: store.price,
       onPressConfirm: () async {
         Navigator.pop(context);
@@ -719,8 +763,6 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
       throw Exception(e.toString());
     }
   }
-
-  
 
   dropDownWithModalSheep({
     required String value,
@@ -811,6 +853,37 @@ class _TitleWithField extends StatelessWidget {
           ),
         ),
         child,
+      ],
+    );
+  }
+}
+
+class __WarningFields extends StatelessWidget {
+  final bool warningEnabled;
+  final String errorMessage;
+  final Widget child;
+
+  const __WarningFields({
+    Key? key,
+    required this.child,
+    required this.warningEnabled,
+    required this.errorMessage,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        child,
+        if (warningEnabled)
+          Padding(
+            padding: const EdgeInsets.only(top: 6.0),
+            child: Text(
+              errorMessage,
+              style: TextStyle(color: Colors.red, fontSize: 14),
+            ),
+          ),
       ],
     );
   }
