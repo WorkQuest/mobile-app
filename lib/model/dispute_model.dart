@@ -1,5 +1,4 @@
 import 'package:app/model/profile_response/avatar.dart';
-import 'package:app/model/profile_response/rating_statistic.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 
 class DisputeModel {
@@ -21,7 +20,6 @@ class DisputeModel {
     required this.quest,
     required this.currentUserDisputeReview,
     required this.resolveAt,
-    required this.createdAt,
   });
 
   String id;
@@ -41,7 +39,6 @@ class DisputeModel {
   BaseQuestResponse quest;
   CurrentUserDisputeReview? currentUserDisputeReview;
   DateTime? resolveAt;
-  DateTime createdAt;
 
   factory DisputeModel.fromJson(Map<String, dynamic> json) => DisputeModel(
         id: json["id"],
@@ -68,7 +65,6 @@ class DisputeModel {
         resolveAt: json["resolveAt"] == null
             ? null
             : DateTime.parse(json["resolveAt"]),
-        createdAt: DateTime.parse(json["createdAt"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -89,7 +85,6 @@ class DisputeModel {
         "quest": quest.toJson(),
         "currentUserDisputeReview": currentUserDisputeReview!.toJson(),
         "resolveAt": resolveAt?.toIso8601String(),
-        "createdAt": createdAt.toIso8601String(),
       };
 }
 
@@ -136,7 +131,6 @@ class DisputeUser {
     required this.firstName,
     required this.lastName,
     required this.avatar,
-    required this.ratingStatistic,
   });
 
   String id;
@@ -144,7 +138,6 @@ class DisputeUser {
   String firstName;
   String lastName;
   Avatar? avatar;
-  RatingStatistic ratingStatistic;
 
   factory DisputeUser.fromJson(Map<String, dynamic> json) => DisputeUser(
         id: json["id"],
@@ -152,7 +145,6 @@ class DisputeUser {
         firstName: json["firstName"],
         lastName: json["lastName"],
         avatar: json["avatar"] == null ? null : Avatar.fromJson(json["avatar"]),
-        ratingStatistic: RatingStatistic.fromJson(json["ratingStatistic"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -161,7 +153,6 @@ class DisputeUser {
         "firstName": firstName,
         "lastName": lastName,
         "avatar": avatar == null ? null : avatar!.toJson(),
-        "ratingStatistic": ratingStatistic.toJson(),
       };
 }
 

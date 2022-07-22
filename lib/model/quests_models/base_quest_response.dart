@@ -87,7 +87,7 @@ class BaseQuestResponse with ClusterItem {
               .map((e) => Media.fromJson(e as Map<String, dynamic>))
               .toList(),
       user: json["user"] == null ? null : User.fromJson(json["user"]),
-      status: json["status"],
+      status: json["status"] ?? 0,
       priority: json["priority"] ?? 0,
       locationCode:
           json["location"] == null ? null : LocationCode.fromJson(json["location"]),
