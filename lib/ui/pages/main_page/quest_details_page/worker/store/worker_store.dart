@@ -4,13 +4,16 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/media_model.dart';
+import 'package:app/model/quests_models/responded.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:app/web3/service/client_service.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/http/web_socket.dart';
-
 
 part 'worker_store.g.dart';
 
@@ -102,7 +105,8 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
             function: WQContractFunctions.acceptJob,
             contractAddress: quest.value!.contractAddress!,
           );
-      await _getQuest();
+      quest.value!.status = QuestConstants.questWaitEmployerConfirm;
+      quest.reportChanged();
       this.onSuccess(WorkerStoreState.sendAcceptOnQuest);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -137,7 +141,8 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
             contractAddress: quest.value!.contractAddress!,
             value: null,
           );
-      await _getQuest();
+      quest.value!.status = QuestConstants.questWaitWorker;
+      quest.reportChanged();
       this.onSuccess(WorkerStoreState.acceptInvite);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -155,7 +160,12 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
             contractAddress: quest.value!.contractAddress!,
             value: null,
           );
-      await _getQuest();
+      quest.value!.status = QuestConstants.questWaitWorkerOnAssign;
+      quest.value!.responded = Responded(
+        workerId: GetIt.I.get<ProfileMeStore>().userData!.id,
+        status: -1,
+      );
+      quest.reportChanged();
       this.onSuccess(WorkerStoreState.rejectInvite);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -172,7 +182,8 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
             contractAddress: quest.value!.contractAddress!,
             value: null,
           );
-      await _getQuest();
+      quest.value!.status = QuestConstants.questWaitEmployerConfirm;
+      quest.reportChanged();
       this.onSuccess(WorkerStoreState.sendCompleteWork);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -192,7 +203,8 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
               medias: mediaFile,
             ),
       );
-      await _getQuest();
+      quest.value!.status =  QuestConstants.questWaitEmployerConfirm;
+      quest.reportChanged();
       this.onSuccess(WorkerStoreState.sendRespondOnQuest);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");

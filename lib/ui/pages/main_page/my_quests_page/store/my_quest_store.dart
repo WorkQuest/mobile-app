@@ -44,14 +44,8 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
       (json["recipients"] as List).forEach((element) {
         if (element == myId)
           quest.responded = Responded(
-            id: "",
             workerId: myId,
-            questId: quest.id,
             status: 0,
-            type: 0,
-            message: "message",
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now(),
           );
       });
       await updateListQuest();
