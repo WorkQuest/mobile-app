@@ -127,7 +127,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     } else {
       if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
         result += '&betweenCostPerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-        result += '&betweenCostPerHour[to]=${toPrice.isNotEmpty ? toPrice : '999999999999999'}';
+        result +=
+            '&betweenCostPerHour[to]=${toPrice.isNotEmpty ? toPrice : '999999999999999'}';
       }
     }
     return result;
@@ -286,5 +287,28 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       this.onError(e.toString());
     }
     isLoadingMore = false;
+  }
+
+  @action
+  clearData() {
+    role = UserRole.Worker;
+    isLoadingMore = false;
+    searchWord = "";
+    selectedSkill = [];
+    selectedSkillFilters.clear();
+    sort = "sort[createdAt]=desc";
+    fromPrice = '';
+    toPrice = '';
+    questsList.clear();
+    workersList.clear();
+    latitude = null;
+    longitude = null;
+    debounce = null;
+    locationPlaceName = '';
+    employments.clear();
+    workplaces.clear();
+    payPeriod.clear();
+    employeeRatings.clear();
+    priorities.clear();
   }
 }

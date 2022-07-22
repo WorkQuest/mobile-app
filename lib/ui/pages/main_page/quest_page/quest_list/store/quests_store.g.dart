@@ -235,6 +235,17 @@ mixin _$QuestsStore on _QuestsStore, Store {
   }
 
   @override
+  dynamic clearData() {
+    final _$actionInfo = _$_QuestsStoreActionController.startAction(
+        name: '_QuestsStore.clearData');
+    try {
+      return super.clearData();
+    } finally {
+      _$_QuestsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isLoadingMore: ${isLoadingMore},

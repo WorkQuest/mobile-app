@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:app/utils/storage.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
 import 'package:webview_cookie_manager/webview_cookie_manager.dart';
 
 ///Instrument Card
@@ -151,41 +153,45 @@ class SettingsCard extends StatelessWidget {
     );
   }
 }
+class LogoutButton extends StatelessWidget {
+  const LogoutButton({Key? key}) : super(key: key);
 
-///Logout button
-Widget logOutButton(context, userStore) {
-  return OutlinedButton(
-    onPressed: () {
-      dialog(
-        context,
-        title: "ui.profile.logout".tr(),
-        message: "modals.areYouSure".tr(),
-        confirmAction: () async {
-          Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
-            SignInPage.routeName,
-            (route) => false,
-          );
-          final cookieManager = WebviewCookieManager();
-          await userStore.deletePushToken();
-          cookieManager.clearCookies();
-          AccountRepository().clearData();
-          Storage.deleteAllFromSecureStorage();
-        },
-      );
-    },
-    child: Text(
-      "ui.profile.logout".tr(),
-      style: TextStyle(
-        color: Color(0xFFDF3333),
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: () {
+        dialog(
+          context,
+          title: "ui.profile.logout".tr(),
+          message: "modals.areYouSure".tr(),
+          confirmAction: () async {
+            Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+              SignInPage.routeName,
+                  (route) => false,
+            );
+            final cookieManager = WebviewCookieManager();
+            context.read<ProfileMeStore>().deletePushToken();
+            context.read<QuestsStore>().clearData();
+            cookieManager.clearCookies();
+            AccountRepository().clearData();
+            Storage.deleteAllFromSecureStorage();
+          },
+        );
+      },
+      child: Text(
+        "ui.profile.logout".tr(),
+        style: TextStyle(
+          color: Color(0xFFDF3333),
+        ),
       ),
-    ),
-    style: OutlinedButton.styleFrom(
-      side: BorderSide(
-        width: 1.0,
-        color: Color.fromRGBO(223, 51, 51, 0.1),
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(
+          width: 1.0,
+          color: Color.fromRGBO(223, 51, 51, 0.1),
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 ///Profile Image Widget
