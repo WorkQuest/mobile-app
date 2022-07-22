@@ -523,7 +523,8 @@
         "selectAll": "Select all",
         "verifiedEmployee": "Verified employee",
         "reliableEmployee": "Reliable employee",
-        "aHigherLevelOfTrustEmployee": "A higher level of trust employee"
+        "topRanked": "Top ranked employee",
+        "notRated": "Not rated employee"
       }
     },
     "ads": {

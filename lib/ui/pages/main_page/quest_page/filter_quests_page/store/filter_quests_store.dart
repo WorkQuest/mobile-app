@@ -89,12 +89,13 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
     "quests.filter.sortByEmployeeRating.selectAll",
     "quests.filter.sortByEmployeeRating.verifiedEmployee",
     "quests.filter.sortByEmployeeRating.reliableEmployee",
-    "quests.filter.sortByEmployeeRating.aHigherLevelOfTrustEmployee",
+    "quests.filter.sortByEmployeeRating.topRanked",
+    "quests.filter.sortByEmployeeRating.notRated",
   ];
 
   @observable
   ObservableList<bool> selectEmployeeRating =
-      ObservableList.of(List.generate(4, (index) => false));
+      ObservableList.of(List.generate(5, (index) => false));
 
   final List<String> sortByWorkplace = [
     "quests.distantWork.allWorkplaces",
@@ -424,6 +425,9 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
       case 3:
         selectEmployeeRating[3] = value ?? false;
         break;
+        case 4:
+        selectEmployeeRating[4] = value ?? false;
+        break;
     }
     for (int i = 1; i < selectEmployeeRating.length; i++) {
       if (selectEmployeeRating[i] == false) {
@@ -437,20 +441,19 @@ abstract class FilterQuestsStoreBase extends IStore<bool> with Store {
   List<int> getEmployeeRating() {
     employeeRatingValue.clear();
     if (selectEmployeeRating[0] == true) {
-      employeeRatingValue.add(0);
-      employeeRatingValue.add(1);
-      employeeRatingValue.add(2);
-      employeeRatingValue.add(3);
       return employeeRatingValue;
     }
     if (selectEmployeeRating[1] == true) {
       employeeRatingValue.add(2);
     }
     if (selectEmployeeRating[2] == true) {
-      employeeRatingValue.add(1);
+      employeeRatingValue.add(4);
     }
     if (selectEmployeeRating[3] == true) {
-      employeeRatingValue.add(0);
+      employeeRatingValue.add(8);
+    }
+    if (selectEmployeeRating[4] == true) {
+      employeeRatingValue.add(1);
     }
     return employeeRatingValue;
   }
