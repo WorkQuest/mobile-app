@@ -474,17 +474,6 @@ mixin _$CreateQuestStore on _CreateQuestStore, Store {
   }
 
   @override
-  void emptyField(BuildContext context) {
-    final _$actionInfo = _$_CreateQuestStoreActionController.startAction(
-        name: '_CreateQuestStore.emptyField');
-    try {
-      return super.emptyField(context);
-    } finally {
-      _$_CreateQuestStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 employment: ${employment},

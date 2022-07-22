@@ -5,7 +5,6 @@ import 'package:app/model/quests_models/create_quest_request_model.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/location_full.dart';
 import 'package:app/ui/widgets/media_upload/store/i_media_store.dart';
-import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/contractEnums.dart';
@@ -137,20 +136,6 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       locationPlaceName.isNotEmpty &&
       skillFilters.isNotEmpty &&
       confirmUnderstandAboutEdit;
-
-  @action
-  void emptyField(BuildContext context) {
-    if (locationPlaceName.isEmpty) {
-      onError('Address is empty');
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'Error', content: "Address is empty");
-    }
-    if (skillFilters.isEmpty) {
-      onError('Skills is empty');
-      AlertDialogUtils.showInfoAlertDialog(context,
-          title: 'Error', content: "Skills are empty");
-    }
-  }
 
   @action
   Future<Null> getPrediction(BuildContext context) async {
