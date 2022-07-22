@@ -1,6 +1,7 @@
 import 'package:app/constants.dart';
 import 'package:app/model/quests_models/invited.dart';
 import 'package:app/model/quests_models/responded.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -27,22 +28,22 @@ class QuestHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     if (itemType == QuestsType.All || itemType == QuestsType.Favorites) {
       switch (questStatus) {
-        case -3:
+        case QuestConstants.questClosed:
           return header(
             color: Colors.red,
             title: "quests.headers.closed",
           );
-        case -2:
+        case QuestConstants.questDispute:
           return header(
             color: Colors.red,
             title: "quests.disputeQuest",
           );
-        case -1:
+        case QuestConstants.questRejected:
           return header(
             color: Colors.red,
             title: "quests.headers.blocked",
           );
-        case 1:
+        case QuestConstants.questCreated:
           if (invited != null && invited!.status != -1 && role == UserRole.Worker)
             return header(
               color: Color(0xFFE8D20D),
@@ -64,7 +65,7 @@ class QuestHeader extends StatelessWidget {
             return SizedBox(
               height: 16,
             );
-        case 2:
+        case QuestConstants.questWaitWorkerOnAssign:
           if ((responded?.status == -1 || invited?.status == -1) &&
               role == UserRole.Worker)
             return header(
@@ -80,7 +81,7 @@ class QuestHeader extends StatelessWidget {
             return SizedBox(
               height: 16,
             );
-        case 3:
+        case QuestConstants.questWaitWorker:
           if ((responded?.status == -1 || invited?.status == -1) &&
               role == UserRole.Worker)
             return header(
@@ -92,7 +93,7 @@ class QuestHeader extends StatelessWidget {
               color: AppColor.green,
               title: "quests.headers.active",
             );
-        case 4:
+        case QuestConstants.questWaitEmployerConfirm:
           if ((responded?.status == -1 || invited?.status == -1) &&
               role == UserRole.Worker)
             return header(
@@ -104,7 +105,7 @@ class QuestHeader extends StatelessWidget {
               color: Colors.green,
               title: "quests.headers.pendingConsideration",
             );
-        case 5:
+        case QuestConstants.questDone:
           if ((responded?.status == -1 || invited?.status == -1) &&
               role == UserRole.Worker)
             return header(

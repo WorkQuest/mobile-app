@@ -35,16 +35,16 @@ class QuestConstants {
     "quests.payPeriod.byAgreement",
   ];
 
-  static int questClosed = -3;
-  static int questDispute = -2;
-  static int questRejected = -1;
-  static int questBlocked = -1;
-  static int questPending = 0;
-  static int questCreated = 1;
-  static int questWaitWorkerOnAssign = 2;
-  static int questWaitWorker = 3;
-  static int questWaitEmployerConfirm = 4;
-  static int questDone = 5;
+  static const int questClosed = -3;
+  static const int questDispute = -2;
+  static const int questRejected = -1;
+  static const int questBlocked = -1;
+  static const int questPending = 0;
+  static const int questCreated = 1;
+  static const int questWaitWorkerOnAssign = 2;
+  static const int questWaitWorker = 3;
+  static const int questWaitEmployerConfirm = 4;
+  static const int questDone = 5;
 }
 
 class QuestUtils {
