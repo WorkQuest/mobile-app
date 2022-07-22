@@ -5,10 +5,10 @@ import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:decimal/decimal.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
-
 
 part 'quests_store.g.dart';
 
@@ -113,18 +113,21 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     toPrice = to;
   }
 
-  String getFilterPrice({bool isWorker = false}) {
+  String getFilterPrice() {
     String result = '';
-    if (isWorker) {
+    if (role == UserRole.Worker) {
       if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
-        result += '&betweenCostPerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-        result +=
-            '&betweenCostPerHour[to]=${toPrice.isNotEmpty ? toPrice : '999999999999999'}';
+        final _fromPrice = Decimal.parse(fromPrice.isNotEmpty ? fromPrice : '0') *
+            Decimal.fromInt(10).pow(18);
+        result += '&priceBetween[from]=${_fromPrice.toBigInt()}';
+        final _toPrice = Decimal.parse(toPrice.isNotEmpty ? toPrice : '999999999999999') *
+            Decimal.fromInt(10).pow(18);
+        result += '&priceBetween[to]=${_toPrice.toBigInt()}';
       }
     } else {
       if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
-        result += '&priceBetween[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
-        result += '&priceBetween[to]=${toPrice.isNotEmpty ? toPrice : '999999999999999'}';
+        result += '&betweenCostPerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result += '&betweenCostPerHour[to]=${toPrice.isNotEmpty ? toPrice : '999999999999999'}';
       }
     }
     return result;
@@ -209,7 +212,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     debounce = Timer(const Duration(milliseconds: 300), () async {
       workersList.addAll(await _apiProvider.getWorkers(
         searchWord: this.searchWord,
-        price: getFilterPrice(isWorker: true),
+        price: getFilterPrice(),
         offset: workersList.length,
         sort: this.sort,
         workplace: workplaces,
@@ -266,7 +269,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       workersList.addAll(await _apiProvider.getWorkers(
         // searchWord: searchWord,
         sort: this.sort,
-        price: getFilterPrice(isWorker: true),
+        price: getFilterPrice(),
         offset: workersList.length,
         workplace: workplaces,
         payPeriod: payPeriod,
