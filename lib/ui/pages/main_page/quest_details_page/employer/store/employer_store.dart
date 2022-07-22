@@ -3,6 +3,7 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/http/web_socket.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
@@ -81,7 +82,7 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
     var changedQuest = BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
     if (changedQuest.id == quest.value?.id) {
       quest.value = changedQuest;
-      _getQuest();
+      // _getQuest();
       getRespondedList(changedQuest.id, changedQuest.assignedWorker?.id ?? "");
     }
   }
@@ -131,7 +132,8 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
             ],
             value: null,
           );
-      await _getQuest();
+      quest.value!.status = QuestConstants.questWaitWorker;
+      quest.reportChanged();
       this.onSuccess(EmployerStoreState.startQuest);
     } catch (e, trace) {
       print("accept error: $e\n$trace");
@@ -150,7 +152,8 @@ abstract class _EmployerStore extends IStore<EmployerStoreState> with Store {
             contractAddress: quest.value!.contractAddress!,
             value: null,
           );
-      await _getQuest();
+      quest.value!.status = QuestConstants.questDone;
+      quest.reportChanged();
       this.onSuccess(EmployerStoreState.acceptCompletedWork);
     } catch (e, trace) {
       print("accept error: $e\n$trace");

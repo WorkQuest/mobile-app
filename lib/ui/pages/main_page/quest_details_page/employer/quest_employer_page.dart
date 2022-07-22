@@ -578,7 +578,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   }
 
   _checkPossibilityTx(String functionName) async {
-    await store.getFee(store.selectedResponders!.workerId, functionName);
+    await store.getFee(store.selectedResponders?.workerId ?? '', functionName);
     await Web3Utils.checkPossibilityTx(
       typeCoin: TokenSymbols.WQT,
       fee: Decimal.parse(store.fee),
