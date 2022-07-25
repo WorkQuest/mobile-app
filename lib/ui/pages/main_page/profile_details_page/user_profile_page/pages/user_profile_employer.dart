@@ -65,12 +65,6 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                     active: false,
                   ),
                 );
-                if (viewOtherUser?.userData == null)
-                  myQuests!.getQuests(
-                    QuestsType.Performed,
-                    userStore!.userData!.role,
-                    true,
-                  );
               },
               child: Text(
                 "meta.showAllQuests".tr(),
@@ -98,16 +92,14 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                   ? userStore!.userData!.questsStatistic!.completed.toString()
                   : '0'
               : viewOtherUser!.userData!.questsStatistic != null
-                  ? viewOtherUser!.userData!.questsStatistic!.completed
-                      .toString()
+                  ? viewOtherUser!.userData!.questsStatistic!.completed.toString()
                   : '0',
           averageRating: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.averageMark
               : viewOtherUser!.userData!.ratingStatistic!.averageMark,
           reviews: viewOtherUser?.userData == null
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
-              : viewOtherUser!.userData!.ratingStatistic!.reviewCount
-                  .toString(),
+              : viewOtherUser!.userData!.ratingStatistic!.reviewCount.toString(),
           userId: viewOtherUser?.userData == null
               ? userStore!.userData!.id
               : viewOtherUser!.userData!.id,

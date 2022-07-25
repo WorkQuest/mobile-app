@@ -8,6 +8,7 @@ import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.d
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/profile_quests_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/animation_show_more.dart';
@@ -328,6 +329,7 @@ Widget employerRating({
 }) {
   final rating = ((averageRating * 10).round() / 10).toString();
   final profile = context.read<ProfileMeStore>();
+  final viewOtherUser = context.read<UserProfileStore>();
   return Padding(
     padding: const EdgeInsets.only(top: 20.0),
     child: Row(
@@ -369,7 +371,9 @@ Widget employerRating({
                         context,
                         ProfileQuestsPage.routeName,
                         arguments: ProfileQuestsArguments(
-                          profile: profile.userData!,
+                          profile: viewOtherUser.userData == null
+                              ? profile.userData!
+                              : viewOtherUser.userData!,
                           active: false,
                         ),
                       );
