@@ -487,40 +487,22 @@ extension QuestService on ApiProvider {
     }
   }
 
-  Future<bool> rejectCompletedWork({
+  Future<void> rejectCompletedWork({
     required String questId,
   }) async {
-    try {
-      final responseData =
           await httpClient.post(query: '/v1/quest/employer/$questId/reject');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
   }
 
-  Future<bool> acceptInvite({
+  Future<void> acceptInvite({
     required String responseId,
   }) async {
-    try {
-      final responseData =
-          await httpClient.post(query: '/v1/quest/response/$responseId/accept');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
+    await httpClient.post(query: '/v1/quest/response/$responseId/accept');
   }
 
-  Future<bool> rejectInvite({
+  Future<void> rejectInvite({
     required String responseId,
   }) async {
-    try {
-      final responseData =
-          await httpClient.post(query: '/v1/quest/response/$responseId/reject');
-      return responseData == null;
-    } catch (e) {
-      return false;
-    }
+    await httpClient.post(query: '/v1/quest/response/$responseId/reject');
   }
 
   Future<List<RespondModel>> responsesQuest(String id) async {

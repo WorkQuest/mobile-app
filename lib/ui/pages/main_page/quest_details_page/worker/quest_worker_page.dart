@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
-import 'package:app/model/quests_models/responded.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -43,7 +42,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   late MyQuestStore myQuestStore;
   late QuestsStore questStore;
   ChatStore? chatStore;
-  List<Responded?> respondedList = [];
 
   AnimationController? controller;
 
@@ -62,10 +60,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           store.quest.value!.assignedWorker?.id == profile!.userData!.id);
 
   bool get canSendRequest =>
-      !store.response &&
       store.quest.value!.status == QuestConstants.questCreated &&
       store.quest.value!.invited == null &&
-      store.quest.value!.responded?.status != -1;
+      store.quest.value!.responded?.status != 0;
 
   bool get canAnswerAnQuest =>
       (store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign &&
@@ -97,14 +94,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     }
     controller = BottomSheet.createAnimationController(this);
     controller!.duration = Duration(seconds: 1);
-    respondedList.add(store.quest.value?.responded);
-    respondedList.forEach((element) {
-      if (element != null) if (element.workerId == profile!.userData!.id &&
-          element.status != -1) {
-        store.response = true;
-        return;
-      }
-    });
 
     super.initState();
   }
@@ -154,13 +143,15 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   @override
   Widget questHeader() {
-    return QuestHeader(
-      itemType: QuestsType.All,
-      questStatus: store.quest.value!.status,
-      rounded: false,
-      role: UserRole.Worker,
-      responded: store.quest.value!.responded ?? store.quest.value!.questChat?.response,
-      invited: store.quest.value!.invited,
+    return Observer(
+      builder: (_) => QuestHeader(
+        itemType: QuestsType.All,
+        questStatus: store.quest.value!.status,
+        rounded: false,
+        role: UserRole.Worker,
+        responded: store.quest.value!.responded ?? store.quest.value!.questChat?.response,
+        invited: store.quest.value!.invited,
+      ),
     );
   }
 
@@ -213,9 +204,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   @override
   Widget getBody() {
     if (isMyQuest) return const SizedBox();
-    final differentTime = DateTime.now().millisecondsSinceEpoch -
+    final differentTime = DateTime.now().toUtc().millisecondsSinceEpoch -
         (store.quest.value!.startedAt?.millisecondsSinceEpoch ?? 0);
-    print('differentTime: $differentTime');
     return ObserverListener<WorkerStore>(
       onSuccess: () async {
         if (store.successData == WorkerStoreState.rejectInvite) {
@@ -387,7 +377,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                       needCancel: true,
                                       titleCancel: "Cancel",
                                       titleOk: "Ok",
-                                      onTabCancel: () => Navigator.pop(context),
+                                      onTabCancel: null,
                                       onTabOk: () async {
                                         final result = await Navigator.pushNamed(
                                           context,
@@ -395,7 +385,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                           arguments: store.quest.value!,
                                         );
                                         if (result != null && result is bool && result) {
-                                          store.quest.value!.status = QuestConstants.questDispute;
+                                          store.quest.value!.status =
+                                              QuestConstants.questDispute;
                                           store.quest.reportChanged();
                                         }
                                       },

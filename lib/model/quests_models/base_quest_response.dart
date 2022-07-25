@@ -159,12 +159,12 @@ class BaseQuestResponse with ClusterItem {
         "category": category,
         "status": status,
         "priority": priority,
-        "location": locationCode!.toJson(),
+        "location": locationCode?.toJson(),
         "title": title,
         "description": description,
         "payPeriod": payPeriod,
         "price": price,
-        "startedAt": startedAt!.toIso8601String(),
+        "startedAt": startedAt?.toIso8601String(),
         // "questChat": questChat,
       };
 

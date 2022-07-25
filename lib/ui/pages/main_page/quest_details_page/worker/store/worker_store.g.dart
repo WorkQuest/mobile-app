@@ -24,21 +24,6 @@ mixin _$WorkerStore on _WorkerStore, Store {
     });
   }
 
-  final _$responseAtom = Atom(name: '_WorkerStore.response');
-
-  @override
-  bool get response {
-    _$responseAtom.reportRead();
-    return super.response;
-  }
-
-  @override
-  set response(bool value) {
-    _$responseAtom.reportWrite(value, super.response, () {
-      super.response = value;
-    });
-  }
-
   final _$mediaFileAtom = Atom(name: '_WorkerStore.mediaFile');
 
   @override
@@ -176,7 +161,6 @@ mixin _$WorkerStore on _WorkerStore, Store {
   String toString() {
     return '''
 opinion: ${opinion},
-response: ${response},
 mediaFile: ${mediaFile},
 mediaIds: ${mediaIds},
 quest: ${quest}

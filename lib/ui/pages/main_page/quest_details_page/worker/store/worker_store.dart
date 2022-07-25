@@ -4,6 +4,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/media_model.dart';
+import 'package:app/model/quests_models/invited.dart';
 import 'package:app/model/quests_models/responded.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/quest_util.dart';
@@ -32,9 +33,6 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
   @observable
   String opinion = "";
 
-  @observable
-  bool response = false;
-
   String fee = "";
 
   @observable
@@ -53,7 +51,7 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
     try {
       final _client = AccountRepository().getClientWorkNet();
       final _contract =
-      await _client.getDeployedContract("WorkQuest", quest.value!.contractAddress!);
+          await _client.getDeployedContract("WorkQuest", quest.value!.contractAddress!);
       final _function = _contract.function(functionName);
       final _gas = await _client.getEstimateGasCallContract(
           contract: _contract, function: _function, params: []);
@@ -65,33 +63,20 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
 
   @action
   getQuest(String questId) async {
-    try {
-      this.onLoading();
-      quest.value = await _apiProvider.getQuest(id: questId);
-      quest.reportChanged();
-      this.onSuccess(WorkerStoreState.getQuest);
-    } catch (e) {
-      this.onError(e.toString());
-    }
+    quest.value = await _apiProvider.getQuest(id: questId);
+    quest.reportChanged();
   }
 
   @action
   changeQuest(dynamic json) {
     var changedQuest = BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
     if (changedQuest.id == quest.value?.id) {
-      quest.value = changedQuest;
-      quest.reportChanged();
+      getQuest(quest.value!.id);
     }
   }
 
   @action
   setQuestStatus(int value) => quest.value!.status = value;
-
-  _getQuest() async {
-    final newQuest = await _apiProvider.getQuest(id: quest.value!.id);
-    quest.value!.update(newQuest);
-    quest.reportChanged();
-  }
 
   @action
   onStar() async {
@@ -103,9 +88,9 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
     try {
       this.onLoading();
       await AccountRepository().getClientWorkNet().handleEvent(
-        function: WQContractFunctions.acceptJob,
-        contractAddress: quest.value!.contractAddress!,
-      );
+            function: WQContractFunctions.acceptJob,
+            contractAddress: quest.value!.contractAddress!,
+          );
       quest.value!.status = QuestConstants.questWaitWorker;
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.sendAcceptOnQuest);
@@ -137,12 +122,8 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
     try {
       this.onLoading();
       await _apiProvider.acceptInvite(responseId: responseId);
-      await AccountRepository().getClient().handleEvent(
-        function: WQContractFunctions.acceptJob,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
       quest.value!.status = QuestConstants.questCreated;
+      quest.value!.invited = Invited(id: quest.value!.invited!.id, status: 1);
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.acceptInvite);
     } catch (e, trace) {
@@ -157,16 +138,13 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
       this.onLoading();
       await _apiProvider.rejectInvite(responseId: responseId);
       AccountRepository().getClient().handleEvent(
-        function: WQContractFunctions.declineJob,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
+            function: WQContractFunctions.declineJob,
+            contractAddress: quest.value!.contractAddress!,
+            value: null,
+          );
       quest.value!.status = QuestConstants.questWaitWorkerOnAssign;
       quest.value!.responded = Responded(
-        workerId: GetIt.I
-            .get<ProfileMeStore>()
-            .userData!
-            .id,
+        workerId: GetIt.I.get<ProfileMeStore>().userData!.id,
         status: -1,
       );
       quest.reportChanged();
@@ -182,10 +160,10 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
     try {
       this.onLoading();
       await AccountRepository().getClientWorkNet().handleEvent(
-        function: WQContractFunctions.verificationJob,
-        contractAddress: quest.value!.contractAddress!,
-        value: null,
-      );
+            function: WQContractFunctions.verificationJob,
+            contractAddress: quest.value!.contractAddress!,
+            value: null,
+          );
       quest.value!.status = QuestConstants.questWaitEmployerConfirm;
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.sendCompleteWork);
@@ -208,10 +186,10 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
             ),
       );
       quest.value!.status = QuestConstants.questCreated;
-      quest.value!.responded = Responded(workerId: GetIt.I
-          .get<ProfileMeStore>()
-          .userData!
-          .id, status: 0);
+      quest.value!.responded = Responded(
+        workerId: GetIt.I.get<ProfileMeStore>().userData!.id,
+        status: 0,
+      );
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.sendRespondOnQuest);
     } catch (e, trace) {
