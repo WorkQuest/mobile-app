@@ -132,7 +132,6 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
 
   @computed
   bool get canSubmitEditQuest =>
-      !isLoading &&
       locationPlaceName.isNotEmpty &&
       skillFilters.isNotEmpty &&
       confirmUnderstandAboutEdit;

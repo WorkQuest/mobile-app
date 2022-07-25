@@ -608,83 +608,90 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
   }
 
   _onPressedOnCreateOrEditQuest(CreateQuestStore store) async {
-    store.skillFilters = _controller.getSkillAndSpecialization();
-    if (store.skillFilters.isEmpty) {
-      _setWarning(_warningFields[_specializationIndex]);
-      return;
-    } else if (store.locationPlaceName.isEmpty) {
-      _setWarning(_warningFields[_addressIndex]);
-      return;
-    } else if (store.questTitle.isEmpty) {
-      _formKey.currentState?.validate();
-      _setWarning(_warningFields[_titleIndex]);
-      return;
-    } else if (store.description.isEmpty) {
-      _formKey.currentState?.validate();
-      _setWarning(_warningFields[_descriptionIndex]);
-      return;
-    } else if (store.price.isEmpty) {
-      _formKey.currentState?.validate();
-      _setWarning(_warningFields[_priceIndex]);
-      return;
-    } else if (!store.confirmUnderstandAboutEdit) {
-      Scrollable.ensureVisible(
-          _warningFields[_confirmUnderstandAboutEdit].key.currentContext!);
-      return;
-    }
+    try {
+      store.skillFilters = _controller.getSkillAndSpecialization();
+      if (store.skillFilters.isEmpty) {
+        _setWarning(_warningFields[_specializationIndex]);
+        return;
+      } else if (store.locationPlaceName.isEmpty) {
+        _setWarning(_warningFields[_addressIndex]);
+        return;
+      } else if (store.questTitle.isEmpty) {
+        _formKey.currentState?.validate();
+        _setWarning(_warningFields[_titleIndex]);
+        return;
+      } else if (store.description.isEmpty) {
+        _formKey.currentState?.validate();
+        _setWarning(_warningFields[_descriptionIndex]);
+        return;
+      } else if (store.price.isEmpty) {
+        _formKey.currentState?.validate();
+        _setWarning(_warningFields[_priceIndex]);
+        return;
+      } else if (!store.confirmUnderstandAboutEdit) {
+        Scrollable.ensureVisible(
+            _warningFields[_confirmUnderstandAboutEdit].key.currentContext!);
+        return;
+      }
 
-    final _gasApprove = await store.getGasApprove(
-      addressQuest: isEdit ? widget.questInfo!.contractAddress! : null,
-    );
-    if (_gasApprove != null) {
-      await confirmTransaction(
-        context,
-        fee: _gasApprove,
-        transaction: '${"ui.txInfo".tr()} Approve',
-        address: Web3Utils.getAddressWorknetWQFactory(),
-        amount: ((double.tryParse(store.price) ?? 0.0) * Constants.commissionForQuest)
-            .toString(),
-        onPressConfirm: () async {
-          try {
-            Navigator.pop(context);
-            final _price = Decimal.parse(store.price) * Decimal.fromInt(10).pow(18);
-            final _priceForApprove =
-                _price * Decimal.parse(Constants.commissionForQuest.toString());
-            AlertDialogUtils.showLoadingDialog(
-              context,
-            );
-            await AccountRepository().getClientWorkNet().approveCoin(
-                  price: _priceForApprove.toBigInt(),
-                  address: isEdit
-                      ? EthereumAddress.fromHex(widget.questInfo!.contractAddress!)
-                      : null,
-                );
-            Navigator.pop(context);
-            _onPressedOnCreateOrEditQuest(store);
-          } on FormatException catch (e, trace) {
-            print('FormatException Approve: $e\n$trace');
-            Navigator.pop(context);
-            AlertDialogUtils.showInfoAlertDialog(context,
-                title: 'Error', content: e.message);
-          } catch (e, trace) {
-            print('Exception Approve: $e\n$trace');
-            Navigator.pop(context);
-            AlertDialogUtils.showInfoAlertDialog(context,
-                title: 'Error', content: e.toString());
-          }
-        },
-        onPressCancel: () {
-          store.onError("Cancel");
-          Navigator.pop(context);
-        },
+      final _gasApprove = await store.getGasApprove(
+        addressQuest: isEdit ? widget.questInfo!.contractAddress! : null,
       );
-      return;
-    }
-    final _gasEditOrCreate = await store.getGasEditOrCreateQuest(isEdit: isEdit);
-    if (isEdit) {
-      _onEditQuest(store, _gasEditOrCreate);
-    } else if (store.canCreateQuest) {
-      _onCreateQuest(store, _gasEditOrCreate);
+      if (_gasApprove != null) {
+        await confirmTransaction(
+          context,
+          fee: _gasApprove,
+          transaction: '${"ui.txInfo".tr()} Approve',
+          address: Web3Utils.getAddressWorknetWQFactory(),
+          amount: ((double.tryParse(store.price) ?? 0.0) * Constants.commissionForQuest)
+              .toString(),
+          onPressConfirm: () async {
+            try {
+              Navigator.pop(context);
+              final _price = Decimal.parse(store.price) * Decimal.fromInt(10).pow(18);
+              final _priceForApprove =
+                  _price * Decimal.parse(Constants.commissionForQuest.toString());
+              AlertDialogUtils.showLoadingDialog(
+                context,
+              );
+              await AccountRepository().getClientWorkNet().approveCoin(
+                price: _priceForApprove.toBigInt(),
+                address: isEdit
+                    ? EthereumAddress.fromHex(widget.questInfo!.contractAddress!)
+                    : null,
+              );
+              Navigator.pop(context);
+              _onPressedOnCreateOrEditQuest(store);
+            } on FormatException catch (e, trace) {
+              print('FormatException Approve: $e\n$trace');
+              Navigator.pop(context);
+              AlertDialogUtils.showInfoAlertDialog(context,
+                  title: 'Error', content: e.message);
+            } catch (e, trace) {
+              print('Exception Approve: $e\n$trace');
+              Navigator.pop(context);
+              AlertDialogUtils.showInfoAlertDialog(context,
+                  title: 'Error', content: e.toString());
+            }
+          },
+          onPressCancel: () {
+            store.onError("Cancel");
+            Navigator.pop(context);
+          },
+        );
+        return;
+      }
+      final _gasEditOrCreate = await store.getGasEditOrCreateQuest(isEdit: isEdit);
+      print('store.canSubmitEditQuest: ${store.canSubmitEditQuest}');
+      if (isEdit) {
+        _onEditQuest(store, _gasEditOrCreate);
+      } else if (store.canCreateQuest) {
+        _onCreateQuest(store, _gasEditOrCreate);
+      }
+    } catch (e, trace) {
+      print('_onPressedOnCreateOrEditQuest | $e\n$trace');
+      store.onError(e.toString());
+
     }
   }
 
