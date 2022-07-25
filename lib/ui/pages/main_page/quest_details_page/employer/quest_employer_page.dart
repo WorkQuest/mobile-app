@@ -385,8 +385,6 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   }
 
   bottomForm() {
-    final differentTime = DateTime.now().millisecondsSinceEpoch -
-        (store.quest.value!.startedAt?.millisecondsSinceEpoch ?? 0);
     return showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -476,17 +474,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                     builder: (_) => TextButton(
                       onPressed: store.isLoading
                           ? null
-                          : differentTime < 60000
-                              ? () {
-                                  AlertDialogUtils.showInfoAlertDialog(
-                                    context,
-                                    title: "Error",
-                                    content: "You cannot create a dispute until 24"
-                                        " hours have passed from the start of "
-                                        "this quest",
-                                  );
-                                }
-                              : () async {
+                          : () async {
                                   await store.getFee(
                                     store.quest.value!.assignedWorkerId!,
                                     WQContractFunctions.arbitration.name,
