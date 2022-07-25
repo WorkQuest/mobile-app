@@ -1,5 +1,5 @@
 import 'package:app/ui/pages/main_page/my_quests_page/quests_list.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/profile_quests_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -43,7 +43,7 @@ class _EmployerProfileState extends UserProfileState<UserProfile> {
                 child: Text(
                   viewOtherUser?.userData == null
                       ? "errors.emptyData.worker.myQuests.desc".tr()
-                      : "errors.emptyData.worker.myQuests.noQuest".tr(),
+                      : "errors.emptyData.worker.myQuests.notQuest".tr(),
                 ),
               ),
         if ((myQuests!.quests[QuestsType.Performed]?.isNotEmpty ?? false) ||
