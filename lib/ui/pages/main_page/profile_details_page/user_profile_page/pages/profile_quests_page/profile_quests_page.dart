@@ -49,7 +49,6 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
   void initState() {
     store = context.read<ProfileQuestsStore>();
     profile = widget.arguments.profile;
-    print('profile: ${profile.toJson()}');
     if (isActiveQuest) {
       store.getActiveQuests(
         userRole: profile.role,
