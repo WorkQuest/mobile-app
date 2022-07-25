@@ -59,7 +59,7 @@ mixin _$OpenDisputeStore on _OpenDisputeStore, Store {
       ActionController(name: '_OpenDisputeStore');
 
   @override
-  void setDescription(String value) {
+  dynamic setDescription(String value) {
     final _$actionInfo = _$_OpenDisputeStoreActionController.startAction(
         name: '_OpenDisputeStore.setDescription');
     try {
@@ -70,7 +70,7 @@ mixin _$OpenDisputeStore on _OpenDisputeStore, Store {
   }
 
   @override
-  void setTheme(String theme) {
+  dynamic setTheme(String theme) {
     final _$actionInfo = _$_OpenDisputeStoreActionController.startAction(
         name: '_OpenDisputeStore.setTheme');
     try {
