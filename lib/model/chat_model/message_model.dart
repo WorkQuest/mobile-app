@@ -24,7 +24,7 @@ class MessageModel {
   String? chatId;
   String? senderMemberId;
   String? senderStatus;
-  String? type;
+  int? type;
   String? text;
   DateTime? createdAt;
   Star? star;

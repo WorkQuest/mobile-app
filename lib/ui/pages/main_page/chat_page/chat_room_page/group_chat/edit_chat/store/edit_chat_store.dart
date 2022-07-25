@@ -109,7 +109,7 @@ abstract class _EditChatStore extends IStore<bool> with Store {
       chatId: chat.id,
       senderMemberId: userData.id,
       senderStatus: "Unread",
-      type: "Info",
+      type: 1,
       text: null,
       createdAt: DateTime.now(),
       star: null,
