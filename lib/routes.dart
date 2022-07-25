@@ -29,7 +29,7 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/store/choose_quest_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/create_review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page.dart';
+import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/profile_quests_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
@@ -97,9 +97,11 @@ import 'package:app/ui/pages/sign_up_page/confirm_email_page/confirm_email_page.
 import 'package:app/ui/pages/sign_up_page/sign_up_page.dart';
 import 'package:app/ui/pages/sign_up_page/store/sign_up_store.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart' as lang;
 import 'di/injector.dart';
+import 'ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/store/profile_quests_store.dart';
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
@@ -341,7 +343,7 @@ class Routes {
       case ProfileQuestsPage.routeName:
         return MaterialPageRoute(
           builder: (context) => Provider(
-            create: (context) => getIt.get<ProfileMeStore>(),
+            create: (context) => getIt.get<ProfileQuestsStore>(),
             child: Directionality(
               textDirection: checkDirection(context),
               child: ProfileQuestsPage(
@@ -416,6 +418,9 @@ class Routes {
 
       case UserProfile.routeName:
         final arguments = settings.arguments as ProfileArguments?;
+        final _isWorker =
+            (arguments?.role ?? GetIt.I.get<ProfileMeStore>().userData!.role) ==
+                UserRole.Worker;
         return MaterialPageRoute(
           builder: (context) => MultiProvider(
             providers: [
@@ -434,9 +439,7 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: settings.arguments == null
-                  ? WorkerProfile(arguments)
-                  : EmployerProfile(arguments),
+              child: _isWorker ? WorkerProfile(arguments) : EmployerProfile(arguments),
             ),
           ),
         );

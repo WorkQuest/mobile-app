@@ -12,7 +12,6 @@ import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
-import "package:provider/provider.dart";
 import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -107,12 +106,12 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 ),
                 if (widget.questInfo.responded != null)
                   if ((widget.questInfo.responded!.workerId ==
-                                  context.read<ProfileMeStore>().userData!.id &&
+                                  GetIt.I.get<ProfileMeStore>().userData!.id &&
                               (widget.questInfo.status == 1 ||
                                   widget.questInfo.status == 2) ||
                           widget.questInfo.invited != null &&
                               widget.questInfo.invited?.status == 1) &&
-                      context.read<ProfileMeStore>().userData!.role == UserRole.Worker)
+                      GetIt.I.get<ProfileMeStore>().userData!.role == UserRole.Worker)
                     Row(
                       children: [
                         const SizedBox(width: 5),
@@ -145,7 +144,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
               ],
             ),
             const SizedBox(height: 17.5),
-            if (widget.questInfo.userId != context.read<ProfileMeStore>().userData!.id &&
+            if (widget.questInfo.userId != GetIt.I.get<ProfileMeStore>().userData!.id &&
                 widget.questInfo.status != 5 &&
                 widget.questInfo.status != 6)
               Column(

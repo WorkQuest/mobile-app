@@ -25,9 +25,7 @@ class QuestsList extends StatelessWidget {
     this.questItemPriorityType,
     this.questsList, {
     this.update,
-    this.physics = const BouncingScrollPhysics(
-      parent: AlwaysScrollableScrollPhysics(),
-    ),
+    this.physics = const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
     required this.isLoading,
     required this.from,
     this.short = false,
