@@ -53,7 +53,7 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
     try {
       final _client = AccountRepository().getClientWorkNet();
       final _contract =
-          await _client.getDeployedContract("WorkQuest", quest.value!.contractAddress!);
+      await _client.getDeployedContract("WorkQuest", quest.value!.contractAddress!);
       final _function = _contract.function(functionName);
       final _gas = await _client.getEstimateGasCallContract(
           contract: _contract, function: _function, params: []);
@@ -68,6 +68,7 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
     try {
       this.onLoading();
       quest.value = await _apiProvider.getQuest(id: questId);
+      quest.reportChanged();
       this.onSuccess(WorkerStoreState.getQuest);
     } catch (e) {
       this.onError(e.toString());
@@ -79,7 +80,7 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
     var changedQuest = BaseQuestResponse.fromJson(json["data"]["quest"] ?? json["data"]);
     if (changedQuest.id == quest.value?.id) {
       quest.value = changedQuest;
-      _getQuest();
+      quest.reportChanged();
     }
   }
 
@@ -102,10 +103,10 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
     try {
       this.onLoading();
       await AccountRepository().getClientWorkNet().handleEvent(
-            function: WQContractFunctions.acceptJob,
-            contractAddress: quest.value!.contractAddress!,
-          );
-      quest.value!.status = QuestConstants.questWaitEmployerConfirm;
+        function: WQContractFunctions.acceptJob,
+        contractAddress: quest.value!.contractAddress!,
+      );
+      quest.value!.status = QuestConstants.questWaitWorker;
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.sendAcceptOnQuest);
     } catch (e, trace) {
@@ -137,11 +138,11 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
       this.onLoading();
       await _apiProvider.acceptInvite(responseId: responseId);
       await AccountRepository().getClient().handleEvent(
-            function: WQContractFunctions.acceptJob,
-            contractAddress: quest.value!.contractAddress!,
-            value: null,
-          );
-      quest.value!.status = QuestConstants.questWaitWorker;
+        function: WQContractFunctions.acceptJob,
+        contractAddress: quest.value!.contractAddress!,
+        value: null,
+      );
+      quest.value!.status = QuestConstants.questCreated;
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.acceptInvite);
     } catch (e, trace) {
@@ -156,13 +157,16 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
       this.onLoading();
       await _apiProvider.rejectInvite(responseId: responseId);
       AccountRepository().getClient().handleEvent(
-            function: WQContractFunctions.declineJob,
-            contractAddress: quest.value!.contractAddress!,
-            value: null,
-          );
+        function: WQContractFunctions.declineJob,
+        contractAddress: quest.value!.contractAddress!,
+        value: null,
+      );
       quest.value!.status = QuestConstants.questWaitWorkerOnAssign;
       quest.value!.responded = Responded(
-        workerId: GetIt.I.get<ProfileMeStore>().userData!.id,
+        workerId: GetIt.I
+            .get<ProfileMeStore>()
+            .userData!
+            .id,
         status: -1,
       );
       quest.reportChanged();
@@ -178,10 +182,10 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
     try {
       this.onLoading();
       await AccountRepository().getClientWorkNet().handleEvent(
-            function: WQContractFunctions.verificationJob,
-            contractAddress: quest.value!.contractAddress!,
-            value: null,
-          );
+        function: WQContractFunctions.verificationJob,
+        contractAddress: quest.value!.contractAddress!,
+        value: null,
+      );
       quest.value!.status = QuestConstants.questWaitEmployerConfirm;
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.sendCompleteWork);
@@ -203,7 +207,11 @@ abstract class _WorkerStore extends IStore<WorkerStoreState> with Store {
               medias: mediaFile,
             ),
       );
-      quest.value!.status =  QuestConstants.questWaitEmployerConfirm;
+      quest.value!.status = QuestConstants.questCreated;
+      quest.value!.responded = Responded(workerId: GetIt.I
+          .get<ProfileMeStore>()
+          .userData!
+          .id, status: 0);
       quest.reportChanged();
       this.onSuccess(WorkerStoreState.sendRespondOnQuest);
     } catch (e, trace) {

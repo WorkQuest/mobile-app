@@ -145,7 +145,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         IconButton(
           icon: Icon(Icons.share_outlined),
           onPressed: () {
-            Share.share("https://testnet-app.workquest.co/quests/${store.quest.value!.id}");
+            Share.share(
+                "https://testnet-app.workquest.co/quests/${store.quest.value!.id}");
           },
         ),
     ];
@@ -214,6 +215,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     if (isMyQuest) return const SizedBox();
     final differentTime = DateTime.now().millisecondsSinceEpoch -
         (store.quest.value!.startedAt?.millisecondsSinceEpoch ?? 0);
+    print('differentTime: $differentTime');
     return ObserverListener<WorkerStore>(
       onSuccess: () async {
         if (store.successData == WorkerStoreState.rejectInvite) {
@@ -224,6 +226,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           AlertDialogUtils.showSuccessDialog(context);
         }
         if (store.successData == WorkerStoreState.sendAcceptOnQuest) {
+          Navigator.pop(context);
           await questStore.getQuests(true);
           await myQuestStore.updateListQuest();
           myQuestStore.sortQuests();
@@ -233,6 +236,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           Navigator.pop(context);
           AlertDialogUtils.showSuccessDialog(context);
         } else if (store.successData == WorkerStoreState.sendCompleteWork) {
+          Navigator.pop(context);
           store.setQuestStatus(4);
           await myQuestStore.updateListQuest();
           myQuestStore.sortQuests();
@@ -247,7 +251,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           myQuestStore.sortQuests();
           chatStore!.loadChats(starred: false);
           await Future.delayed(const Duration(milliseconds: 250));
-          Navigator.pop(context);
           Navigator.pop(context);
           await AlertDialogUtils.showSuccessDialog(context);
         }
@@ -385,15 +388,17 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                       titleCancel: "Cancel",
                                       titleOk: "Ok",
                                       onTabCancel: () => Navigator.pop(context),
-                                      onTabOk: () async => await Navigator.pushNamed(
-                                        context,
-                                        OpenDisputePage.routeName,
-                                        arguments: store.quest.value!,
-                                      ).then(
-                                        (value) async => await store.getQuest(
-                                          store.quest.value!.id,
-                                        ),
-                                      ),
+                                      onTabOk: () async {
+                                        final result = await Navigator.pushNamed(
+                                          context,
+                                          OpenDisputePage.routeName,
+                                          arguments: store.quest.value!,
+                                        );
+                                        if (result != null && result is bool && result) {
+                                          store.quest.value!.status = QuestConstants.questDispute;
+                                          store.quest.reportChanged();
+                                        }
+                                      },
                                       colorCancel: Colors.blue,
                                       colorOk: Colors.red,
                                     );
@@ -555,6 +560,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                   onPress: () async {
                     Navigator.pop(context);
                     store.sendAcceptOnQuest();
+                    AlertDialogUtils.showLoadingDialog(context);
                   },
                   functionName: WQContractFunctions.acceptJob.name,
                 );
@@ -614,7 +620,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         Navigator.pop(context);
       },
     );
-    AlertDialogUtils.showLoadingDialog(context);
   }
 
   _checkPossibilityTx(String functionName) async {
@@ -650,6 +655,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                 onPress: () async {
                   Navigator.pop(context);
                   store.sendCompleteWork();
+                  AlertDialogUtils.showLoadingDialog(context);
                 },
                 functionName: WQContractFunctions.verificationJob.name,
               );
