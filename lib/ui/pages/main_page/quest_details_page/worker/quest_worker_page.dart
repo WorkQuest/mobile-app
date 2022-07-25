@@ -204,8 +204,8 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   @override
   Widget getBody() {
     if (isMyQuest) return const SizedBox();
-    final differentTime = DateTime.now().toUtc().millisecondsSinceEpoch -
-        (store.quest.value!.startedAt?.millisecondsSinceEpoch ?? 0);
+    final _dif = DateTime.now().toUtc().difference(store.quest.value!.startedAt ?? DateTime.now().toUtc()).inHours;
+    print('dif: $_dif');
     return ObserverListener<WorkerStore>(
       onSuccess: () async {
         if (store.successData == WorkerStoreState.rejectInvite) {
@@ -357,7 +357,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       builder: (_) => TextButton(
                         onPressed: store.isLoading
                             ? null
-                            : differentTime < 60000
+                            : _dif < 24
                                 ? () {
                                     AlertDialogUtils.showInfoAlertDialog(
                                       context,
