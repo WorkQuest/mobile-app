@@ -8,7 +8,6 @@ import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.d
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/portfolio_details_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/details_portfolio/store/portfolio_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_quests_page/profile_quests_page.dart';
-import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/animation_show_more.dart';
@@ -141,7 +140,6 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
   @override
   Widget build(BuildContext context) {
     final profile = context.read<ProfileMeStore>();
-    final userProfileStore = context.read<UserProfileStore>();
     return Column(
       children: [
         Container(
@@ -173,14 +171,6 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                               userId: widget.id,
                             ),
                     );
-                    if (widget.role != UserRole.Worker) {
-                      userProfileStore.quests.clear();
-                      userProfileStore.getQuests(
-                        userId: widget.myId,
-                        newList: true,
-                        isProfileYours: widget.id == widget.myId ? true : false,
-                      );
-                    }
                     profile.assignedWorker = null;
                   },
                   child: ListTile(
