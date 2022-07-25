@@ -1,4 +1,3 @@
-
 import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/observer_consumer.dart';
@@ -51,15 +50,15 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
   Widget build(context) {
     return ObserverListener<OpenDisputeStore>(
       onSuccess: () async {
-        Navigator.pop(context);
-        if (store.isSuccess) {
-          await AlertDialogUtils.showSuccessDialog(context);
-          widget.quest.status = QuestConstants.questDispute;
-        }
-        setState(() {});
-        Navigator.pop(context);
+        Navigator.of(context, rootNavigator: true).pop();
+        await AlertDialogUtils.showSuccessDialog(context);
+        widget.quest.status = QuestConstants.questDispute;
+        Navigator.pop(context, true);
       },
-      onFailure: () => false,
+      onFailure: () {
+        Navigator.of(context, rootNavigator: true).pop();
+        return false;
+      },
       child: Scaffold(
         appBar: DefaultAppBar(
           title: "modals.openADispute".tr(),
@@ -161,105 +160,6 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
             ),
           ),
         ),
-        // CustomScrollView(
-        //   slivers: [
-        //     SliverList(
-        //       delegate: SliverChildListDelegate(
-        //         [
-        //           _TitledField(
-        //             title: "modals.disputeTheme".tr(),
-        //             child: Container(
-        //               height: 50,
-        //               padding: EdgeInsets.symmetric(horizontal: 15),
-        //               decoration: BoxDecoration(
-        //                 color: Color(0xFFF7F8FA),
-        //                 borderRadius: BorderRadius.all(
-        //                   const Radius.circular(
-        //                     6.0,
-        //                   ),
-        //                 ),
-        //               ),
-        //               alignment: Alignment.centerLeft,
-        //               child: InkWell(
-        //                 onTap: () => modalBottomSheet(store),
-        //                 child: Row(
-        //                   children: [
-        //                     Expanded(
-        //                       child: Observer(
-        //                         builder: (_) => Text(
-        //                           store.theme.tr(),
-        //                           maxLines: 2,
-        //                         ),
-        //                       ),
-        //                     ),
-        //                     Icon(
-        //                       Icons.arrow_drop_down,
-        //                       size: 30,
-        //                       color: Colors.blueAccent,
-        //                     ),
-        //                   ],
-        //                 ),
-        //               ),
-        //             ),
-        //           ),
-        //           _TitledField(
-        //             title: "modals.description".tr(),
-        //             child: Container(
-        //               height: 200,
-        //               padding: EdgeInsets.symmetric(horizontal: 15),
-        //               decoration: BoxDecoration(
-        //                 color: Color(0xFFF7F8FA),
-        //                 borderRadius: BorderRadius.all(
-        //                   Radius.circular(6.0),
-        //                 ),
-        //               ),
-        //               alignment: Alignment.centerLeft,
-        //               child: SizedBox(
-        //                 height: 200,
-        //                 child: DefaultTextField(
-        //                   controller: _descriptionController,
-        //                   onChanged: (text) => store.setDescription(text),
-        //                   hint: 'modals.enterDescription'.tr(),
-        //                   expands: true,
-        //                   textAlign: TextAlign.start,
-        //                   maxLength: 1000,
-        //                   keyboardType: TextInputType.multiline,
-        //                   autovalidateMode: AutovalidateMode.onUserInteraction,
-        //                   validator: (value) {
-        //                     if (value == null) {
-        //                       return null;
-        //                     }
-        //                     if (value.isEmpty) {
-        //                       return 'errors.fieldEmpty'.tr();
-        //                     }
-        //                     if (value.length < 50) {
-        //                       return 'errors.fieldLeastCharacters'.tr();
-        //                     }
-        //                     return null;
-        //                   },
-        //                   inputFormatters: [],
-        //                 ),
-        //               ),
-        //               // TextField(
-        //               //   maxLength: 1000,
-        //               //   textAlign: TextAlign.start,
-        //               //   onChanged: (text) => store.setDescription(text),
-        //               //   keyboardType: TextInputType.multiline,
-        //               //   maxLines: null,
-        //               //   textAlignVertical: TextAlignVertical.top,
-        //               //   expands: true,
-        //               //   decoration: InputDecoration(
-        //               //     contentPadding: EdgeInsets.only(top: 10),
-        //               //     hintText: "modals.description".tr(),
-        //               //   ),
-        //               // ),
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ),
     );
   }
@@ -344,11 +244,10 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
           widget.quest.contractAddress!,
         );
         Navigator.pop(context);
-        Navigator.pop(context);
+        AlertDialogUtils.showLoadingDialog(context);
       },
       onPressCancel: () => Navigator.pop(context),
     );
-    AlertDialogUtils.showLoadingDialog(context);
   }
 
   _checkPossibilityTx() async {

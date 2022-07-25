@@ -36,10 +36,10 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
       theme != "dispute.theme" && description.isNotEmpty && !this.isLoading;
 
   @action
-  void setDescription(String value) => description = value;
+  setDescription(String value) => description = value;
 
   @action
-  void setTheme(String theme) => this.theme = theme;
+  setTheme(String theme) => this.theme = theme;
 
   getFee(String contractAddress) async {
     try {
@@ -77,7 +77,8 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
       } else {
         this.onError("modals.disputeNotCreated".tr());
       }
-    } catch (e) {
+    } catch (e, trace) {
+      print('openDispute | $e\n$trace');
       this.onError(e.toString());
     }
   }
