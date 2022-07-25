@@ -168,6 +168,40 @@ class BaseQuestResponse with ClusterItem {
         // "questChat": questChat,
       };
 
+  factory BaseQuestResponse.empty() {
+    return BaseQuestResponse(
+      id: 'id',
+      userId: 'userId',
+      medias: [],
+      user: null,
+      category: 'category',
+      status: 0,
+      priority: 0,
+      locationCode: null,
+      title: 'title',
+      assignedWorkerId: 'assignedWorkerId',
+      contractAddress: 'contractAddress',
+      nonce: 'nonce',
+      description: 'description',
+      price: 'price',
+      createdAt: DateTime.now(),
+      startedAt: DateTime.now(),
+      star: false,
+      locationPlaceName: 'locationPlaceName',
+      assignedWorker: null,
+      employment: 'employment',
+      questSpecializations: [],
+      workplace: 'workplace',
+      payPeriod: 'payPeriod',
+      invited: null,
+      responded: null,
+      yourReview: null,
+      questChat: null,
+      raiseView: null,
+      openDispute: null,
+    );
+  }
+
   @override
   LatLng get location => LatLng(locationCode!.latitude, locationCode!.longitude);
 }

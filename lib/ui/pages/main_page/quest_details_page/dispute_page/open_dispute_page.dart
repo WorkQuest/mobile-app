@@ -1,11 +1,15 @@
-import 'dart:async';
 
 import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/observer_consumer.dart';
+import 'package:app/ui/widgets/default_app_bar.dart';
+import 'package:app/ui/widgets/default_textfield.dart';
+import 'package:app/ui/widgets/dismiss_keyboard.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/dispute_util.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:decimal/decimal.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:provider/provider.dart";
@@ -27,96 +31,49 @@ class OpenDisputePage extends StatefulWidget {
 }
 
 class _OpenDisputePageState extends State<OpenDisputePage> {
-  late OpenDisputeStore store;
+  late final OpenDisputeStore store;
+  late final TextEditingController _descriptionController;
 
   @override
   void initState() {
     store = context.read<OpenDisputeStore>();
+    _descriptionController = TextEditingController();
     super.initState();
   }
 
   @override
+  void dispose() {
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(context) {
-    return Scaffold(
-      appBar: CupertinoNavigationBar(
-        automaticallyImplyLeading: true,
-        middle: Text("modals.openADispute".tr()),
-      ),
-      persistentFooterButtons: [
-        Observer(
-          builder: (_) => ElevatedButton(
-            onPressed: store.isButtonEnable()
-                ? () async {
-                    try {
-                      await _checkPossibilityTx();
-                    } on FormatException catch (e) {
-                      AlertDialogUtils.showInfoAlertDialog(
-                        context,
-                        title: 'modals.error'.tr(),
-                        content: e.message,
-                      );
-                      return;
-                    } catch (e) {
-                      AlertDialogUtils.showInfoAlertDialog(
-                        context,
-                        title: 'modals.error'.tr(),
-                        content: e.toString(),
-                      );
-                      return;
-                    }
-                    await confirmTransaction(
-                      context,
-                      fee: store.fee,
-                      transaction: "ui.txInfo".tr(),
-                      address: widget.quest.contractAddress!,
-                      amount: null,
-                      onPressConfirm: () async {
-                        store.openDispute(
-                          widget.quest.id,
-                          widget.quest.contractAddress!,
-                        );
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      },
-                      onPressCancel: () => Navigator.pop(context),
-                    );
-                    AlertDialogUtils.showLoadingDialog(context);
-                    Timer.periodic(Duration(seconds: 1), (timer) async {
-                      if (!store.isLoading) {
-                        timer.cancel();
-                        Navigator.pop(context);
-                        if (store.isSuccess) {
-                          await AlertDialogUtils.showSuccessDialog(context);
-                          widget.quest.status = QuestConstants.questDispute;
-                        }
-                        setState(() {});
-                        Navigator.pop(context);
-                        if (!store.isSuccess)
-                          await AlertDialogUtils.showInfoAlertDialog(
-                            context,
-                            title: "modals.warning".tr(),
-                            content: "modals.disputeNotCreated".tr(),
-                          );
-                      }
-                    });
-                  }
-                : null,
-            child: Text(
-              "modals.openADispute".tr(),
-            ),
-          ),
+    return ObserverListener<OpenDisputeStore>(
+      onSuccess: () async {
+        Navigator.pop(context);
+        if (store.isSuccess) {
+          await AlertDialogUtils.showSuccessDialog(context);
+          widget.quest.status = QuestConstants.questDispute;
+        }
+        setState(() {});
+        Navigator.pop(context);
+      },
+      onFailure: () => false,
+      child: Scaffold(
+        appBar: DefaultAppBar(
+          title: "modals.openADispute".tr(),
         ),
-      ],
-      body: CustomScrollView(
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  titledField(
-                    "modals.disputeTheme".tr(),
-                    Container(
+        body: SingleChildScrollView(
+          child: DismissKeyboard(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  _TitledField(
+                    title: "modals.disputeTheme".tr(),
+                    child: Container(
                       height: 50,
                       padding: EdgeInsets.symmetric(horizontal: 15),
                       decoration: BoxDecoration(
@@ -150,62 +107,162 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
                       ),
                     ),
                   ),
-                  titledField(
-                    "modals.description".tr(),
-                    Container(
+                  _TitledField(
+                    title: "modals.description".tr(),
+                    child: SizedBox(
                       height: 200,
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      decoration: BoxDecoration(
-                        color: Color(0xFFF7F8FA),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(6.0),
-                        ),
-                      ),
-                      alignment: Alignment.centerLeft,
-                      child: TextField(
-                        maxLength: 1000,
-                        textAlign: TextAlign.start,
+                      child: DefaultTextField(
+                        controller: _descriptionController,
                         onChanged: (text) => store.setDescription(text),
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        textAlignVertical: TextAlignVertical.top,
+                        hint: 'modals.enterDescription'.tr(),
                         expands: true,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(top: 10),
-                          hintText: "modals.description".tr(),
-                        ),
+                        textAlign: TextAlign.start,
+                        maxLength: 1000,
+                        keyboardType: TextInputType.multiline,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        enableDispose: false,
+                        validator: (value) {
+                          if (value == null) {
+                            return null;
+                          }
+                          if (value.isEmpty) {
+                            return 'errors.fieldEmpty'.tr();
+                          }
+                          if (value.length < 50) {
+                            return 'errors.fieldLeastCharacters'.tr();
+                          }
+                          return null;
+                        },
+                        inputFormatters: [],
                       ),
                     ),
                   ),
+                  Container(
+                    width: double.infinity,
+                    height: 250,
+                    color: Colors.transparent,
+                  )
                 ],
               ),
             ),
-          )
-        ],
+          ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(
+            right: 16.0,
+            left: 16.0,
+            bottom: MediaQuery.of(context).padding.bottom + 10.0,
+          ),
+          child: Observer(
+            builder: (_) => LoginButton(
+              enabled: store.isLoading,
+              title: 'crediting.sendReport'.tr(),
+              onTap: store.isButtonEnable ? _onPressedOpenDispute : null,
+            ),
+          ),
+        ),
+        // CustomScrollView(
+        //   slivers: [
+        //     SliverList(
+        //       delegate: SliverChildListDelegate(
+        //         [
+        //           _TitledField(
+        //             title: "modals.disputeTheme".tr(),
+        //             child: Container(
+        //               height: 50,
+        //               padding: EdgeInsets.symmetric(horizontal: 15),
+        //               decoration: BoxDecoration(
+        //                 color: Color(0xFFF7F8FA),
+        //                 borderRadius: BorderRadius.all(
+        //                   const Radius.circular(
+        //                     6.0,
+        //                   ),
+        //                 ),
+        //               ),
+        //               alignment: Alignment.centerLeft,
+        //               child: InkWell(
+        //                 onTap: () => modalBottomSheet(store),
+        //                 child: Row(
+        //                   children: [
+        //                     Expanded(
+        //                       child: Observer(
+        //                         builder: (_) => Text(
+        //                           store.theme.tr(),
+        //                           maxLines: 2,
+        //                         ),
+        //                       ),
+        //                     ),
+        //                     Icon(
+        //                       Icons.arrow_drop_down,
+        //                       size: 30,
+        //                       color: Colors.blueAccent,
+        //                     ),
+        //                   ],
+        //                 ),
+        //               ),
+        //             ),
+        //           ),
+        //           _TitledField(
+        //             title: "modals.description".tr(),
+        //             child: Container(
+        //               height: 200,
+        //               padding: EdgeInsets.symmetric(horizontal: 15),
+        //               decoration: BoxDecoration(
+        //                 color: Color(0xFFF7F8FA),
+        //                 borderRadius: BorderRadius.all(
+        //                   Radius.circular(6.0),
+        //                 ),
+        //               ),
+        //               alignment: Alignment.centerLeft,
+        //               child: SizedBox(
+        //                 height: 200,
+        //                 child: DefaultTextField(
+        //                   controller: _descriptionController,
+        //                   onChanged: (text) => store.setDescription(text),
+        //                   hint: 'modals.enterDescription'.tr(),
+        //                   expands: true,
+        //                   textAlign: TextAlign.start,
+        //                   maxLength: 1000,
+        //                   keyboardType: TextInputType.multiline,
+        //                   autovalidateMode: AutovalidateMode.onUserInteraction,
+        //                   validator: (value) {
+        //                     if (value == null) {
+        //                       return null;
+        //                     }
+        //                     if (value.isEmpty) {
+        //                       return 'errors.fieldEmpty'.tr();
+        //                     }
+        //                     if (value.length < 50) {
+        //                       return 'errors.fieldLeastCharacters'.tr();
+        //                     }
+        //                     return null;
+        //                   },
+        //                   inputFormatters: [],
+        //                 ),
+        //               ),
+        //               // TextField(
+        //               //   maxLength: 1000,
+        //               //   textAlign: TextAlign.start,
+        //               //   onChanged: (text) => store.setDescription(text),
+        //               //   keyboardType: TextInputType.multiline,
+        //               //   maxLines: null,
+        //               //   textAlignVertical: TextAlignVertical.top,
+        //               //   expands: true,
+        //               //   decoration: InputDecoration(
+        //               //     contentPadding: EdgeInsets.only(top: 10),
+        //               //     hintText: "modals.description".tr(),
+        //               //   ),
+        //               // ),
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }
-
-  Widget titledField(
-    String title,
-    Widget child,
-  ) =>
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 10),
-            alignment: Alignment.centerLeft,
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-          ),
-          child,
-        ],
-      );
 
   modalBottomSheet(OpenDisputeStore store) => showModalBottomSheet(
         shape: RoundedRectangleBorder(
@@ -233,19 +290,21 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
               ),
               controller: scrollController,
               shrinkWrap: false,
-              itemCount: store.disputeCategoriesList.length,
+              itemCount: DisputeConstants.disputeCategoriesList.length,
               itemBuilder: (context, index) => Container(
                 height: 45.0,
                 width: double.infinity,
                 child: InkWell(
                   onTap: () {
-                    store.changeTheme(store.disputeCategoriesList[index]);
+                    final _theme = DisputeUtil.changeTheme(
+                        DisputeConstants.disputeCategoriesList[index]);
+                    store.setTheme(_theme);
                     Navigator.pop(context);
                   },
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      store.disputeCategoriesList[index].tr(),
+                      DisputeConstants.disputeCategoriesList[index].tr(),
                     ),
                   ),
                 ),
@@ -255,6 +314,43 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
         },
       );
 
+  _onPressedOpenDispute() async {
+    try {
+      await _checkPossibilityTx();
+    } on FormatException catch (e) {
+      AlertDialogUtils.showInfoAlertDialog(
+        context,
+        title: 'modals.error'.tr(),
+        content: e.message,
+      );
+      return;
+    } catch (e) {
+      AlertDialogUtils.showInfoAlertDialog(
+        context,
+        title: 'modals.error'.tr(),
+        content: e.toString(),
+      );
+      return;
+    }
+    await confirmTransaction(
+      context,
+      fee: store.fee,
+      transaction: "ui.txInfo".tr(),
+      address: widget.quest.contractAddress!,
+      amount: null,
+      onPressConfirm: () async {
+        store.openDispute(
+          widget.quest.id,
+          widget.quest.contractAddress!,
+        );
+        Navigator.pop(context);
+        Navigator.pop(context);
+      },
+      onPressCancel: () => Navigator.pop(context),
+    );
+    AlertDialogUtils.showLoadingDialog(context);
+  }
+
   _checkPossibilityTx() async {
     await store.getFee(widget.quest.contractAddress!);
     await Web3Utils.checkPossibilityTx(
@@ -262,6 +358,39 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
       fee: Decimal.parse(store.fee),
       amount: 0.0,
       isMain: true,
+    );
+  }
+}
+
+class _TitledField extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const _TitledField({
+    Key? key,
+    required this.title,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
+        SizedBox(
+          height: 6,
+        ),
+        child,
+        SizedBox(
+          height: 20,
+        ),
+      ],
     );
   }
 }

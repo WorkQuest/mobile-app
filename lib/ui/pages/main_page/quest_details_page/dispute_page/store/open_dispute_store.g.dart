@@ -9,6 +9,14 @@ part of 'open_dispute_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$OpenDisputeStore on _OpenDisputeStore, Store {
+  Computed<bool>? _$isButtonEnableComputed;
+
+  @override
+  bool get isButtonEnable =>
+      (_$isButtonEnableComputed ??= Computed<bool>(() => super.isButtonEnable,
+              name: '_OpenDisputeStore.isButtonEnable'))
+          .value;
+
   final _$themeAtom = Atom(name: '_OpenDisputeStore.theme');
 
   @override
@@ -39,6 +47,14 @@ mixin _$OpenDisputeStore on _OpenDisputeStore, Store {
     });
   }
 
+  final _$openDisputeAsyncAction = AsyncAction('_OpenDisputeStore.openDispute');
+
+  @override
+  Future openDispute(String questId, String contractAddress) {
+    return _$openDisputeAsyncAction
+        .run(() => super.openDispute(questId, contractAddress));
+  }
+
   final _$_OpenDisputeStoreActionController =
       ActionController(name: '_OpenDisputeStore');
 
@@ -54,11 +70,11 @@ mixin _$OpenDisputeStore on _OpenDisputeStore, Store {
   }
 
   @override
-  void changeTheme(String selectTheme) {
+  void setTheme(String theme) {
     final _$actionInfo = _$_OpenDisputeStoreActionController.startAction(
-        name: '_OpenDisputeStore.changeTheme');
+        name: '_OpenDisputeStore.setTheme');
     try {
-      return super.changeTheme(selectTheme);
+      return super.setTheme(theme);
     } finally {
       _$_OpenDisputeStoreActionController.endAction(_$actionInfo);
     }
@@ -68,7 +84,8 @@ mixin _$OpenDisputeStore on _OpenDisputeStore, Store {
   String toString() {
     return '''
 theme: ${theme},
-description: ${description}
+description: ${description},
+isButtonEnable: ${isButtonEnable}
     ''';
   }
 }

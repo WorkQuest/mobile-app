@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:app/http/api_provider.dart';
+import 'package:app/utils/dispute_util.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/service/client_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
@@ -21,82 +23,29 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
 
   final ApiProvider _apiProvider;
 
-  final List<String> disputeCategoriesList = [
-    "chat.disputeTheme.noResponse",
-    "chat.disputeTheme.badlyDone",
-    "chat.disputeTheme.additionalRequirements",
-    "chat.disputeTheme.inconsistencies",
-    "chat.disputeTheme.notConfirmed",
-    "chat.disputeTheme.anotherReason"
-  ];
-
   @observable
   String theme = "dispute.theme";
-
-  String themeValue = "";
 
   @observable
   String description = '';
 
   String fee = "";
 
-  bool isButtonEnable() =>
+  @computed
+  bool get isButtonEnable =>
       theme != "dispute.theme" && description.isNotEmpty && !this.isLoading;
 
   @action
   void setDescription(String value) => description = value;
 
   @action
-  void changeTheme(String selectTheme) {
-    switch (selectTheme) {
-      case "chat.disputeTheme.noResponse":
-        theme = "chat.disputeTheme.noResponse";
-        break;
-      case "chat.disputeTheme.badlyDone":
-        theme = "chat.disputeTheme.badlyDone";
-        break;
-      case "chat.disputeTheme.additionalRequirements":
-        theme = "chat.disputeTheme.additionalRequirements";
-        break;
-      case "chat.disputeTheme.inconsistencies":
-        theme = "chat.disputeTheme.inconsistencies";
-        break;
-      case "chat.disputeTheme.notConfirmed":
-        theme = "chat.disputeTheme.notConfirmed";
-        break;
-      case "chat.disputeTheme.anotherReason":
-        theme = "chat.disputeTheme.anotherReason";
-        break;
-      default:
-        theme = "chat.disputeTheme.anotherReason";
-    }
-  }
+  void setTheme(String theme) => this.theme = theme;
 
-  String getTheme() {
-    switch (theme) {
-      case "chat.disputeTheme.noResponse":
-        return themeValue = "NoAnswer";
-      case "chat.disputeTheme.badlyDone":
-        return themeValue = "PoorlyDoneJob";
-      case "chat.disputeTheme.additionalRequirements":
-        return themeValue = "AdditionalRequirement";
-      case "chat.disputeTheme.inconsistencies":
-        return themeValue = "RequirementDoesNotMatch";
-      case "chat.disputeTheme.notConfirmed":
-        return themeValue = "NoConfirmationOfComplete";
-      case "chat.disputeTheme.anotherReason":
-        return themeValue = "AnotherReason";
-    }
-    return themeValue;
-  }
-
-  Future<void> getFee(String contractAddress) async {
+  getFee(String contractAddress) async {
     try {
       final _client = AccountRepository().getClientWorkNet();
-      final _contract =
-          await _client.getDeployedContract("WorkQuest", contractAddress);
-      final _function =
-          _contract.function(WQContractFunctions.arbitration.name);
+      final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
+      final _function = _contract.function(WQContractFunctions.arbitration.name);
       final _gas = await _client.getEstimateGasCallContract(
         contract: _contract,
         function: _function,
@@ -109,12 +58,13 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
     }
   }
 
-  Future<void> openDispute(String questId, String contractAddress) async {
+  @action
+  openDispute(String questId, String contractAddress) async {
     try {
       this.onLoading();
       final result = await _apiProvider.openDispute(
         questId: questId,
-        reason: getTheme(),
+        reason: DisputeUtil.getThemeValue(theme),
         problemDescription: description,
       );
       if (result) {
@@ -124,8 +74,9 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
               value: "1",
             );
         this.onSuccess(true);
-      } else
-        this.onError("Dispute not created");
+      } else {
+        this.onError("modals.disputeNotCreated".tr());
+      }
     } catch (e) {
       this.onError(e.toString());
     }
