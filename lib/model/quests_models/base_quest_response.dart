@@ -155,18 +155,29 @@ class BaseQuestResponse with ClusterItem {
   }
 
   Map<String, dynamic> toJson() => {
-        "userId": userId,
-        "category": category,
-        "status": status,
-        "priority": priority,
-        "location": locationCode?.toJson(),
-        "title": title,
-        "description": description,
-        "payPeriod": payPeriod,
-        "price": price,
-        "startedAt": startedAt?.toIso8601String(),
-        // "questChat": questChat,
-      };
+    "id": id,
+    "userId": userId,
+    "assignedWorkerId": assignedWorkerId,
+    "contractAddress": contractAddress,
+    "nonce": nonce,
+    "status": status,
+    "title": title,
+    "description": description,
+    "price": price,
+    "payPeriod": payPeriod,
+    "workplace": workplace,
+    "priority": priority,
+    "location": location.toJson(),
+    "locationPlaceName": locationPlaceName,
+    "startedAt": startedAt,
+    "createdAt": createdAt?.toIso8601String(),
+    "assignedWorker": assignedWorker,
+    "raiseView": raiseView?.toJson(),
+    "star": star,
+    "response": responded?.toJson(),
+    "openDispute": openDispute,
+    "yourReview": yourReview,
+  };
 
   factory BaseQuestResponse.empty() {
     return BaseQuestResponse(
