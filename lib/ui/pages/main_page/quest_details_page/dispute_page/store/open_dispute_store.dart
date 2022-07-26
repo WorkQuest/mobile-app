@@ -4,7 +4,6 @@ import 'package:app/http/api_provider.dart';
 import 'package:app/utils/dispute_util.dart';
 import 'package:app/web3/contractEnums.dart';
 import 'package:app/web3/service/client_service.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/base_store/i_store.dart';
@@ -18,7 +17,7 @@ class OpenDisputeStore extends _OpenDisputeStore with _$OpenDisputeStore {
   OpenDisputeStore(ApiProvider _apiProvider) : super(_apiProvider);
 }
 
-abstract class _OpenDisputeStore extends IStore<bool> with Store {
+abstract class _OpenDisputeStore extends IStore<String> with Store {
   _OpenDisputeStore(this._apiProvider);
 
   final ApiProvider _apiProvider;
@@ -67,16 +66,12 @@ abstract class _OpenDisputeStore extends IStore<bool> with Store {
         reason: DisputeUtil.getThemeValue(theme),
         problemDescription: description,
       );
-      if (result) {
-        await AccountRepository().getClientWorkNet().handleEvent(
-              function: WQContractFunctions.arbitration,
-              contractAddress: contractAddress,
-              value: "1",
-            );
-        this.onSuccess(true);
-      } else {
-        this.onError("modals.disputeNotCreated".tr());
-      }
+      await AccountRepository().getClientWorkNet().handleEvent(
+            function: WQContractFunctions.arbitration,
+            contractAddress: contractAddress,
+            value: "1",
+          );
+      this.onSuccess(result);
     } catch (e, trace) {
       print('openDispute | $e\n$trace');
       this.onError(e.toString());

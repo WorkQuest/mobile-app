@@ -490,7 +490,7 @@ extension QuestService on ApiProvider {
   Future<void> rejectCompletedWork({
     required String questId,
   }) async {
-          await httpClient.post(query: '/v1/quest/employer/$questId/reject');
+    await httpClient.post(query: '/v1/quest/employer/$questId/reject');
   }
 
   Future<void> acceptInvite({
@@ -1065,25 +1065,19 @@ extension Disputes on ApiProvider {
     }
   }
 
-  Future<bool> openDispute({
+  Future<String> openDispute({
     String questId = "",
     String reason = "",
     String problemDescription = "",
   }) async {
-    try {
-      await httpClient.post(
-        query: '/v1/quest/$questId/dispute',
-        data: {
-          "reason": reason,
-          "problemDescription": problemDescription,
-        },
-      );
-      return true;
-    } on Exception catch (e, trace) {
-      print("ERROR: $e");
-      print("ERROR: $trace");
-      return false;
-    }
+    final _result = await httpClient.post(
+      query: '/v1/quest/$questId/dispute',
+      data: {
+        "reason": reason,
+        "problemDescription": problemDescription,
+      },
+    );
+    return _result['id'];
   }
 }
 

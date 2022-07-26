@@ -1,5 +1,6 @@
 import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/model/quests_models/open_dispute.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/widgets/default_app_bar.dart';
 import 'package:app/ui/widgets/default_textfield.dart';
@@ -7,7 +8,6 @@ import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/dispute_util.dart';
-import 'package:app/utils/quest_util.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -52,8 +52,14 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
       onSuccess: () async {
         Navigator.of(context, rootNavigator: true).pop();
         await AlertDialogUtils.showSuccessDialog(context);
-        widget.quest.status = QuestConstants.questDispute;
-        Navigator.pop(context, true);
+        final _dispute = OpenDispute(
+          id: store.successData!,
+          openDisputeUserId: null,
+          opponentUserId: null,
+          assignedAdminId: null,
+          status: 0,
+        );
+        Navigator.pop(context, _dispute);
       },
       onFailure: () {
         Navigator.of(context, rootNavigator: true).pop();
