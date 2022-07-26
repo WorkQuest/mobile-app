@@ -362,7 +362,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                       builder: (_) => TextButton(
                         onPressed: store.isLoading
                             ? null
-                            // : _dif < 24 /// TODO: Don't forger remove that
+                            // : _dif < 24 /// TODO: Don't forget remove that
                             : false
                                 ? () {
                                     AlertDialogUtils.showInfoAlertDialog(
