@@ -791,7 +791,7 @@ extension ChangePassword on ApiProvider {
 
 ///SMSVerification
 extension SMSVerification on ApiProvider {
-  Future<void> submitPhoneNumber(String phone) async {
+  Future<void> submitPhoneNumber() async {
     await httpClient.post(query: '/v1/profile/phone/send-code');
   }
 

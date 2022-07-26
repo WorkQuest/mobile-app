@@ -355,7 +355,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     if (userPhone != null &&
         userPhone.fullPhone.isNotEmpty &&
         pageStore.numberChanged(userPhone.fullPhone)) {
-      await profile!.submitPhoneNumber(pageStore.userData.tempPhone!.fullPhone);
+      await profile!.submitPhoneNumber();
       profile!.userData?.phone = null;
       userPhone = profile!.userData!.tempPhone;
     }

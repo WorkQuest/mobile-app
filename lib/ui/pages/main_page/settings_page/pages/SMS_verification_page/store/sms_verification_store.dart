@@ -8,13 +8,11 @@ import 'package:mobx/mobx.dart';
 part 'sms_verification_store.g.dart';
 
 @singleton
-class SMSVerificationStore extends _SMSVerificationStore
-    with _$SMSVerificationStore {
+class SMSVerificationStore extends _SMSVerificationStore with _$SMSVerificationStore {
   SMSVerificationStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus>
-    with Store {
+abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus> with Store {
   final ApiProvider apiProvider;
 
   _SMSVerificationStore(this.apiProvider);
@@ -25,10 +23,19 @@ abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus>
   @observable
   int secondsCodeAgain = 60;
 
+  @observable
+  String code = '';
+
   @action
-  startTimer() {
+  setCode(String value) => code = value;
+
+  @computed
+  bool get canSubmitCode => secondsCodeAgain == 60 && !isLoading && code.length == 6;
+
+  @action
+  startTimer() async {
     try {
-      //TODO Add request resending code
+      await apiProvider.submitPhoneNumber();
       timer = Timer.periodic(Duration(seconds: 1), (timer) {
         if (secondsCodeAgain == 0) {
           timer.cancel();
@@ -37,7 +44,7 @@ abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus>
           secondsCodeAgain--;
         }
       });
-      onSuccess(SMSVerificationStatus.resending_code);
+      onSuccess(SMSVerificationStatus.startTimer);
     } catch (e) {
       onError(e.toString());
     }
@@ -51,14 +58,6 @@ abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus>
     secondsCodeAgain = 60;
   }
 
-  @observable
-  String code = '';
-
-  @action
-  void setCode(String value) {
-    code = value;
-  }
-
   @action
   Future submitCode() async {
     try {
@@ -66,11 +65,11 @@ abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus>
       await apiProvider.submitCode(
         confirmCode: code,
       );
-      this.onSuccess(SMSVerificationStatus.send_code);
+      this.onSuccess(SMSVerificationStatus.submitCode);
     } catch (e) {
       this.onError(e.toString());
     }
   }
 }
 
-enum SMSVerificationStatus { send_code, resending_code }
+enum SMSVerificationStatus { submitCode, startTimer }

@@ -360,10 +360,10 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     }
   }
 
-  Future submitPhoneNumber(String phone) async {
+  Future submitPhoneNumber() async {
     try {
       this.onLoading();
-      await _apiProvider.submitPhoneNumber(phone);
+      await _apiProvider.submitPhoneNumber();
 
       this.onSuccess(true);
     } catch (e) {

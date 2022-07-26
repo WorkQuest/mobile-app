@@ -9,6 +9,14 @@ part of 'sms_verification_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
+  Computed<bool>? _$canSubmitCodeComputed;
+
+  @override
+  bool get canSubmitCode =>
+      (_$canSubmitCodeComputed ??= Computed<bool>(() => super.canSubmitCode,
+              name: '_SMSVerificationStore.canSubmitCode'))
+          .value;
+
   final _$timerAtom = Atom(name: '_SMSVerificationStore.timer');
 
   @override
@@ -55,6 +63,14 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
     });
   }
 
+  final _$startTimerAsyncAction =
+      AsyncAction('_SMSVerificationStore.startTimer');
+
+  @override
+  Future startTimer() {
+    return _$startTimerAsyncAction.run(() => super.startTimer());
+  }
+
   final _$submitCodeAsyncAction =
       AsyncAction('_SMSVerificationStore.submitCode');
 
@@ -67,11 +83,11 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
       ActionController(name: '_SMSVerificationStore');
 
   @override
-  dynamic startTimer() {
+  dynamic setCode(String value) {
     final _$actionInfo = _$_SMSVerificationStoreActionController.startAction(
-        name: '_SMSVerificationStore.startTimer');
+        name: '_SMSVerificationStore.setCode');
     try {
-      return super.startTimer();
+      return super.setCode(value);
     } finally {
       _$_SMSVerificationStoreActionController.endAction(_$actionInfo);
     }
@@ -89,22 +105,12 @@ mixin _$SMSVerificationStore on _SMSVerificationStore, Store {
   }
 
   @override
-  void setCode(String value) {
-    final _$actionInfo = _$_SMSVerificationStoreActionController.startAction(
-        name: '_SMSVerificationStore.setCode');
-    try {
-      return super.setCode(value);
-    } finally {
-      _$_SMSVerificationStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 timer: ${timer},
 secondsCodeAgain: ${secondsCodeAgain},
-code: ${code}
+code: ${code},
+canSubmitCode: ${canSubmitCode}
     ''';
   }
 }
