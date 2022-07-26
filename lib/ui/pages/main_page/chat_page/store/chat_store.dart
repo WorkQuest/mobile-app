@@ -179,16 +179,19 @@ abstract class _ChatStore extends IStore<bool> with Store {
       }
 
       bool isChatExist = false;
-      chats.forEach((key, value) {
+      ObservableMap<TypeChat, Chats> temp = chats;
+      temp.forEach((key, value) {
         value.chat.forEach((element) {
           if (element.id == message!.chatId) {
-            chats[key]!.chat.removeWhere((chat) => chat.id == element.id);
-            element.chatData.lastMessage = message;
-            chats[key]!.chat.insert(0, element);
+            final _old = temp[key]!.chat.firstWhere((chat) => chat.id == element.id);
+            _old.chatData.lastMessage = message;
+            temp[key]!.chat.removeWhere((chat) => chat.id == element.id);
+            temp[key]!.chat.insert(0, _old);
             isChatExist = true;
           }
         });
       });
+      chats = ObservableMap.of(temp);
 
       if (!isChatExist) getChat(message!.chatId!);
       checkMessage();
