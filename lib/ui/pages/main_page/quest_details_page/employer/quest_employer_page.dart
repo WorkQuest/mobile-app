@@ -524,6 +524,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                     arguments: store.quest.value!,
                                   );
                                   if (_result != null && _result is OpenDispute) {
+                                    Navigator.pop(context);
                                     store.quest.value!.status =
                                         QuestConstants.questDispute;
                                     store.quest.value!.openDispute = _result;
