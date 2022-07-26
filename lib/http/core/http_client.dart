@@ -172,7 +172,7 @@ class _HttpClient implements IHttpClient {
           SharedPreferences.getInstance().then((value) async {
             List<String> _old = value.getStringList(errorsSharedKeys) ?? [];
             print(_old);
-            _old.add(jsonEncode(ErrorRequestModel(
+            _old.insert(0, jsonEncode(ErrorRequestModel(
               url: options.baseUrl + options.path,
               method: options.method,
               query: options.queryParameters.toString(),
