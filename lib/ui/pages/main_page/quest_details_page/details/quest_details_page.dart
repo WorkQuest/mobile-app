@@ -45,18 +45,10 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
     storeQuest = context.read<QuestDetailsStore>();
     if (widget.arguments.questInfo != null) {
       storeQuest.initQuest(widget.arguments.questInfo!);
-
-      storeQuest.questInfo!.yourReview != null
-          ? profile!.review = true
-          : profile!.review = false;
     } else {
       storeQuest.initQuestId(widget.arguments.id!);
       storeQuest.updateQuest().then((value) {
         storeQuest.initQuest(storeQuest.questInfo!);
-
-        storeQuest.questInfo!.yourReview != null
-            ? profile!.review = true
-            : profile!.review = false;
       });
     }
     profile = context.read<ProfileMeStore>();

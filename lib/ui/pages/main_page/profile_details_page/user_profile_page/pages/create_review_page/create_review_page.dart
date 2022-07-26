@@ -2,6 +2,7 @@ import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/create_review_page/store/create_review_store.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/validator.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,7 +44,7 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
     return ObserverListener<CreateReviewStore>(
       onSuccess: () {
         if (store.successData == CreateReviewStoreState.addReview) {
-          widget.arguments.quest!.yourReview = YourReview(
+          final _review = YourReview(
             id: "",
             questId: widget.arguments.quest!.id,
             fromUserId: "",
@@ -53,8 +54,10 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
             createdAt: DateTime.now(),
             updatedAt: DateTime.now(),
           );
+          Navigator.pop(context, _review);
+        } else {
+          Navigator.pop(context);
         }
-        Navigator.pop(context);
         AlertDialogUtils.showSuccessDialog(context);
       },
       onFailure: () => false,
@@ -103,15 +106,8 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                       const SizedBox(height: 32),
                       Text("quests.addYourReview".tr()),
                       const SizedBox(height: 16),
-                      Container(
+                      SizedBox(
                         height: 200,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFF7F8FA),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(6.0),
-                          ),
-                        ),
-                        alignment: Alignment.centerLeft,
                         child: TextFormField(
                           textAlign: TextAlign.start,
                           validator: Validators.emptyValidator,
@@ -127,9 +123,10 @@ class _CreateReviewPageState extends State<CreateReviewPage> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _onPressedAddReview,
-                        child: Text("quests.addReview".tr()),
+                      LoginButton(
+                        enabled: store.isLoading,
+                        onTap: _onPressedAddReview,
+                        title: "quests.addReview".tr(),
                       ),
                     ],
                   ),

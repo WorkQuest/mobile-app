@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/assigned_worker.dart';
+import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
@@ -65,13 +66,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   bool get canCreateReview =>
       storeQuest.questInfo!.status == QuestConstants.questDone &&
-      !profile!.review &&
       (storeQuest.questInfo!.userId == profile!.userData!.id ||
           storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id);
 
   bool get showReview =>
       storeQuest.questInfo!.status == QuestConstants.questDone &&
-      profile!.review &&
       (storeQuest.questInfo!.userId == profile!.userData!.id ||
           storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id);
 
@@ -278,7 +277,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           const SizedBox(height: 20),
           TextButton(
             onPressed: () async {
-              await Navigator.pushNamed(
+              final result = await Navigator.pushNamed(
                 context,
                 CreateReviewPage.routeName,
                 arguments: CreateReviewArguments(
@@ -286,9 +285,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   null,
                 ),
               );
-              store.quest.value!.yourReview != null
-                  ? profile!.review = true
-                  : profile!.review = false;
+              if (result != null && result is YourReview) {
+                store.quest.value!.yourReview = result;
+                store.quest.reportChanged();
+              }
             },
             child: Text(
               "quests.addReview".tr(),

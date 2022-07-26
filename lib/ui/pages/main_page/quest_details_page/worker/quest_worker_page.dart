@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
+import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
@@ -49,15 +50,15 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
   bool get canCreateReview =>
       store.quest.value!.status == QuestConstants.questDone &&
-      !profile!.review &&
-      (store.quest.value!.userId == profile!.userData!.id ||
-          store.quest.value!.assignedWorker?.id == profile!.userData!.id);
+      ((store.quest.value!.userId == profile!.userData!.id ||
+              store.quest.value!.assignedWorker?.id == profile!.userData!.id) &&
+          store.quest.value!.yourReview == null);
 
   bool get showReview =>
       store.quest.value!.status == QuestConstants.questDone &&
-      profile!.review &&
-      (store.quest.value!.userId == profile!.userData!.id ||
-          store.quest.value!.assignedWorker?.id == profile!.userData!.id);
+      ((store.quest.value!.userId == profile!.userData!.id ||
+              store.quest.value!.assignedWorker?.id == profile!.userData!.id) &&
+          store.quest.value!.yourReview != null);
 
   bool get canSendRequest =>
       store.quest.value!.status == QuestConstants.questCreated &&
@@ -163,14 +164,15 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
           const SizedBox(height: 20),
           TextButton(
             onPressed: () async {
-              await Navigator.pushNamed(
+              final result = await Navigator.pushNamed(
                 context,
                 CreateReviewPage.routeName,
                 arguments: CreateReviewArguments(storeQuest.questInfo, null),
               );
-              store.quest.value!.yourReview != null
-                  ? profile!.review = true
-                  : profile!.review = false;
+              if (result != null && result is YourReview) {
+                store.quest.value!.yourReview = result;
+                store.quest.reportChanged();
+              }
             },
             child: Text(
               "quests.addReview".tr(),
@@ -204,7 +206,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   @override
   Widget getBody() {
     if (isMyQuest) return const SizedBox();
-    final _dif = DateTime.now().toUtc().difference(store.quest.value!.startedAt ?? DateTime.now().toUtc()).inHours;
+    final _dif = DateTime.now()
+        .toUtc()
+        .difference(store.quest.value!.startedAt ?? DateTime.now().toUtc())
+        .inHours;
     print('dif: $_dif');
     return ObserverListener<WorkerStore>(
       onSuccess: () async {
