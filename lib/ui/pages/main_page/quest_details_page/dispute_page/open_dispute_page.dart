@@ -155,7 +155,7 @@ class _OpenDisputePageState extends State<OpenDisputePage> {
           child: Observer(
             builder: (_) => LoginButton(
               enabled: store.isLoading,
-              title: 'crediting.sendReport'.tr(),
+              title: "modals.openADispute".tr(),
               onTap: store.isButtonEnable ? _onPressedOpenDispute : null,
             ),
           ),
