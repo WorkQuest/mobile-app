@@ -300,7 +300,6 @@ class _SkillSpecializationSelectionState extends State<SkillSpecializationSelect
           });
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
 

@@ -193,7 +193,6 @@ class ProfileMeResponse with ClusterItem {
       };
 
   @override
-  // TODO: implement location
   LatLng get location => LatLng(locationCode!.latitude, locationCode!.longitude);
 
   List<int> getMySearchVisibilityList() {

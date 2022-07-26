@@ -299,7 +299,6 @@ class _StartPageState extends State<StartPage> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              //TODO:Remove lib and rewrite
               child: DotsIndicator(
                 dotsCount: 3,
                 position: position * 1.0,

@@ -33,7 +33,6 @@ class _CreateWalletPageState extends State<CreateWalletPage> {
     return Observer(
       builder: (_) => WillPopScope(
         onWillPop: () {
-          //TODO: Correct
           Future<bool> close = Future.value(false);
           AlertDialogUtils.showAlertDialog(
             context,

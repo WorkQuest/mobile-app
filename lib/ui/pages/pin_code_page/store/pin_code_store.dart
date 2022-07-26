@@ -128,8 +128,6 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
     }
   }
 
-  ///TODO:clear password field on error password
-
   changeState(StatePinCode state, {errorAnimation = false}) {
     statePin = state;
     if (errorAnimation)
@@ -188,13 +186,10 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
             await Future.delayed(const Duration(seconds: 1));
             break;
           case StatePinCode.ToLogin:
-            // TODO: Handle this case.
             break;
           case StatePinCode.Success:
-            // TODO: Handle this case.
             break;
           case StatePinCode.NaN:
-            // TODO: Handle this case.
             break;
         }
       }
