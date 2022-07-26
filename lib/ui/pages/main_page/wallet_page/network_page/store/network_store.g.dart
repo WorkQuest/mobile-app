@@ -24,15 +24,6 @@ mixin _$NetworkStore on _NetworkStoreBase, Store {
     });
   }
 
-  final _$changeNetworkAsyncAction =
-      AsyncAction('_NetworkStoreBase.changeNetwork');
-
-  @override
-  Future changeNetwork(Network newNetwork) {
-    return _$changeNetworkAsyncAction
-        .run(() => super.changeNetwork(newNetwork));
-  }
-
   final _$_NetworkStoreBaseActionController =
       ActionController(name: '_NetworkStoreBase');
 
