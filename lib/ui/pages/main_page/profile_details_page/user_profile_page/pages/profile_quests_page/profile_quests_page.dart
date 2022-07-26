@@ -132,38 +132,35 @@ class _ProfileQuestsPageState extends State<ProfileQuestsPage> {
                   ),
                 );
               }
-              if (store.isSuccess && store.quests.isNotEmpty) {
-                return NotificationListener<ScrollEndNotification>(
-                  onNotification: (scrollEnd) {
-                    final metrics = scrollEnd.metrics;
-                    if (metrics.atEdge ||
-                        metrics.maxScrollExtent < metrics.pixels && !store.isLoading) {
-                      if (isActiveQuest) {
-                        store.getActiveQuests(
-                          userId: profile.id,
-                          isProfileYours: isMyProfile,
-                          userRole: profile.role,
-                        );
-                      } else {
-                        store.getCompletedQuests(
-                          userRole: profile.role,
-                          userId: profile.id,
-                          isProfileYours: isMyProfile,
-                        );
-                      }
+              return NotificationListener<ScrollEndNotification>(
+                onNotification: (scrollEnd) {
+                  final metrics = scrollEnd.metrics;
+                  if (metrics.atEdge ||
+                      metrics.maxScrollExtent < metrics.pixels && !store.isLoading) {
+                    if (isActiveQuest) {
+                      store.getActiveQuests(
+                        userId: profile.id,
+                        isProfileYours: isMyProfile,
+                        userRole: profile.role,
+                      );
+                    } else {
+                      store.getCompletedQuests(
+                        userRole: profile.role,
+                        userId: profile.id,
+                        isProfileYours: isMyProfile,
+                      );
                     }
-                    return true;
-                  },
-                  child: QuestsList(
-                    widget.arguments.active ? QuestsType.Active : QuestsType.Performed,
-                    store.quests,
-                    isLoading: store.isLoading,
-                    from: FromQuestList.questSearch,
-                    role: profile.role,
-                  ),
-                );
-              }
-              return SizedBox();
+                  }
+                  return true;
+                },
+                child: QuestsList(
+                  widget.arguments.active ? QuestsType.Active : QuestsType.Performed,
+                  store.quests,
+                  isLoading: store.isLoading,
+                  from: FromQuestList.questSearch,
+                  role: profile.role,
+                ),
+              );
             },
           ),
         ),
