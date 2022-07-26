@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
+import 'package:app/model/quests_models/open_dispute.dart';
 import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
@@ -12,6 +13,7 @@ import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_
 import 'package:app/ui/pages/main_page/quest_details_page/dispute_page/open_dispute_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/worker/store/worker_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/dismiss_keyboard.dart';
@@ -49,36 +51,41 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
   bool get isMyQuest => (store.quest.value?.userId ?? '') == profile!.userData!.id;
 
   bool get canCreateReview =>
-      store.quest.value!.status == QuestConstants.questDone &&
-      ((store.quest.value!.userId == profile!.userData!.id ||
-              store.quest.value!.assignedWorker?.id == profile!.userData!.id) &&
-          store.quest.value!.yourReview == null);
+      store.quest.value?.status == QuestConstants.questDone &&
+      ((store.quest.value?.userId == profile!.userData!.id ||
+              store.quest.value?.assignedWorker?.id == profile!.userData!.id) &&
+          store.quest.value?.yourReview == null);
 
   bool get showReview =>
-      store.quest.value!.status == QuestConstants.questDone &&
-      ((store.quest.value!.userId == profile!.userData!.id ||
-              store.quest.value!.assignedWorker?.id == profile!.userData!.id) &&
-          store.quest.value!.yourReview != null);
+      store.quest.value?.status == QuestConstants.questDone &&
+      ((store.quest.value?.userId == profile!.userData!.id ||
+              store.quest.value?.assignedWorker?.id == profile!.userData!.id) &&
+          store.quest.value?.yourReview != null);
 
   bool get canSendRequest =>
-      store.quest.value!.status == QuestConstants.questCreated &&
-      store.quest.value!.invited == null &&
-      store.quest.value!.responded?.status != 0;
+      store.quest.value?.status == QuestConstants.questCreated &&
+      store.quest.value?.invited == null &&
+      store.quest.value?.responded?.status != 0;
 
   bool get canAnswerAnQuest =>
-      (store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign &&
-          store.quest.value!.assignedWorker?.id == profile!.userData!.id) ||
-      (store.quest.value!.invited != null &&
-          store.quest.value!.status == QuestConstants.questCreated &&
-          store.quest.value!.invited?.status == 0);
+      (store.quest.value?.status == QuestConstants.questWaitWorkerOnAssign &&
+          store.quest.value?.assignedWorker?.id == profile!.userData!.id) ||
+      (store.quest.value?.invited != null &&
+          store.quest.value?.status == QuestConstants.questCreated &&
+          store.quest.value?.invited?.status == 0);
 
   bool get canCompleteQuest =>
-      store.quest.value!.status == QuestConstants.questWaitWorker &&
-      store.quest.value!.assignedWorker?.id == profile!.userData!.id;
+      store.quest.value?.status == QuestConstants.questWaitWorker &&
+      store.quest.value?.assignedWorker?.id == profile!.userData!.id;
 
   bool get canCreateDispute =>
       store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
       store.quest.value?.status == QuestConstants.questWaitEmployerConfirm;
+
+  bool get canPushToDispute =>
+      store.quest.value?.assignedWorker?.id == profile!.userData!.id &&
+      store.quest.value?.status == QuestConstants.questDispute &&
+      store.quest.value?.openDispute != null;
 
   @override
   void initState() {
@@ -90,6 +97,10 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
     if (widget.arguments.questInfo != null) {
       store.quest.value = widget.arguments.questInfo;
+      final needUpdate = store.quest.value!.status == QuestConstants.questDispute;
+      if (needUpdate) {
+        store.getQuest(widget.arguments.questInfo!.id);
+      }
     } else {
       store.getQuest(widget.arguments.id ?? "");
     }
@@ -98,6 +109,9 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
 
     super.initState();
   }
+
+  @override
+  Future<dynamic> update() => store.getQuest(store.quest.value!.id);
 
   @override
   List<Widget>? actionAppBar() {
@@ -147,11 +161,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     return Observer(
       builder: (_) => QuestHeader(
         itemType: QuestsType.All,
-        questStatus: store.quest.value!.status,
+        questStatus: store.quest.value?.status ?? 0,
         rounded: false,
         role: UserRole.Worker,
-        responded: store.quest.value!.responded ?? store.quest.value!.questChat?.response,
-        invited: store.quest.value!.invited,
+        responded: store.quest.value?.responded ?? store.quest.value?.questChat?.response,
+        invited: store.quest.value?.invited,
       ),
     );
   }
@@ -208,9 +222,16 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
     if (isMyQuest) return const SizedBox();
     final _dif = DateTime.now()
         .toUtc()
-        .difference(store.quest.value!.startedAt ?? DateTime.now().toUtc())
+        .difference(store.quest.value?.startedAt ?? DateTime.now().toUtc())
         .inHours;
     print('dif: $_dif');
+    print('canPush: $canPushToDispute');
+    print(
+        'store.quest.value?.assignedWorker?.id == profile!.userData!.id: ${store.quest.value?.assignedWorker?.id == profile!.userData!.id}');
+    print(
+        'store.quest.value?.status == QuestConstants.questDispute: ${store.quest.value?.status == QuestConstants.questDispute}');
+    print(
+        'store.quest.value!.openDispute != null: ${store.quest.value?.openDispute != null}');
     return ObserverListener<WorkerStore>(
       onSuccess: () async {
         if (store.successData == WorkerStoreState.rejectInvite) {
@@ -260,7 +281,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               children: [
                 Expanded(
                   child: Text(
-                    "${_getPrice(store.quest.value!.price)} WUSD",
+                    "${_getPrice(store.quest.value?.price ?? '0')} WUSD",
                     overflow: TextOverflow.fade,
                     style: const TextStyle(
                       color: Color(0xFF00AA5B),
@@ -390,9 +411,11 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                                           OpenDisputePage.routeName,
                                           arguments: store.quest.value!,
                                         );
-                                        if (result != null && result is bool && result) {
+                                        if (result != null && result is OpenDispute) {
+                                          print('result: ${result.toJson()}');
                                           store.quest.value!.status =
                                               QuestConstants.questDispute;
+                                          store.quest.value!.openDispute = result;
                                           store.quest.reportChanged();
                                         }
                                       },
@@ -420,6 +443,20 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
                           ),
                         ),
                       ),
+                    ),
+            if (canPushToDispute)
+              store.isLoading
+                  ? Center(child: CircularProgressIndicator.adaptive())
+                  : LoginButton(
+                      enabled: store.isLoading,
+                      title: 'modals.openADispute'.tr(),
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          DisputePage.routeName,
+                          arguments: store.quest.value!.openDispute!.id,
+                        );
+                      },
                     ),
           ],
         ),

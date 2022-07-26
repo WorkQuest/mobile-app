@@ -56,6 +56,9 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
   }
 
   @protected
+  Future<dynamic> update() => storeQuest.updateQuest();
+
+  @protected
   Widget getBody() {
     return const SizedBox();
   }
@@ -81,7 +84,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
 
   Widget _getBody() {
     return RefreshIndicator(
-      onRefresh: () => storeQuest.updateQuest(),
+      onRefresh: update,
       child: SingleChildScrollView(
         physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         child: Observer(

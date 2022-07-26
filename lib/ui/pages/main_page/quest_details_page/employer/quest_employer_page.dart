@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/assigned_worker.dart';
+import 'package:app/model/quests_models/open_dispute.dart';
 import 'package:app/model/quests_models/your_review.dart';
 import 'package:app/model/respond_model.dart';
 import 'package:app/observer_consumer.dart';
@@ -14,8 +15,10 @@ import 'package:app/ui/pages/main_page/quest_details_page/employer/store/employe
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
+import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
 import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/user_rating.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -74,6 +77,11 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       (storeQuest.questInfo!.userId == profile!.userData!.id ||
           storeQuest.questInfo!.assignedWorker?.id == profile!.userData!.id);
 
+  bool get canPushToDispute =>
+      store.quest.value?.userId == profile!.userData!.id &&
+      store.quest.value?.status == QuestConstants.questDispute &&
+      store.quest.value!.openDispute != null;
+
   @override
   void initState() {
     store = context.read<EmployerStore>();
@@ -83,16 +91,19 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     chatStore = context.read<ChatStore>();
 
     if (widget.arguments.questInfo != null) {
-      profile!.getProfileMe().then((value) => {
-            if (widget.arguments.questInfo!.userId == profile!.userData!.id)
-              store.getRespondedList(
-                widget.arguments.questInfo!.id,
-                widget.arguments.questInfo!.assignedWorker?.id ?? "",
-              ),
-          });
+      if (widget.arguments.questInfo!.userId == profile!.userData!.id) {
+        store.getRespondedList(
+          widget.arguments.questInfo!.id,
+          widget.arguments.questInfo!.assignedWorker?.id ?? "",
+        );
+      }
       store.quest.value = widget.arguments.questInfo;
-    } else
+      if (store.quest.value!.status == QuestConstants.questDispute) {
+        store.getQuest(widget.arguments.questInfo!.id);
+      }
+    } else {
       store.getQuest(widget.arguments.id!);
+    }
 
     controller = BottomSheet.createAnimationController(this);
 
@@ -102,6 +113,9 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
     super.initState();
   }
+
+  @override
+  Future<dynamic> update() => store.getQuest(store.quest.value!.id);
 
   @override
   List<Widget>? actionAppBar() {
@@ -314,6 +328,18 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         message: storeQuest.questInfo!.yourReview!.message,
         mark: storeQuest.questInfo!.yourReview!.mark,
       );
+    } else if (canPushToDispute) {
+      return LoginButton(
+        enabled: store.isLoading,
+        title: 'modals.openADispute'.tr(),
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            DisputePage.routeName,
+            arguments: store.quest.value!.openDispute!.id,
+          );
+        },
+      );
     }
     return SizedBox();
   }
@@ -475,35 +501,39 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                       onPressed: store.isLoading
                           ? null
                           : () async {
-                                  await store.getFee(
-                                    store.quest.value!.assignedWorkerId!,
-                                    WQContractFunctions.arbitration.name,
-                                  );
-                                  await AlertDialogUtils.showAlertDialog(
+                              await store.getFee(
+                                store.quest.value!.assignedWorkerId!,
+                                WQContractFunctions.arbitration.name,
+                              );
+                              await AlertDialogUtils.showAlertDialog(
+                                context,
+                                title: Text("Dispute payment"),
+                                content: Text(
+                                  "You need to pay\n"
+                                  "${double.parse(store.fee) + 1.0} WUSD\n"
+                                  "to open a dispute",
+                                ),
+                                needCancel: true,
+                                titleCancel: "Cancel",
+                                titleOk: "Ok",
+                                onTabCancel: () => Navigator.pop(context),
+                                onTabOk: () async {
+                                  final _result = await Navigator.pushNamed(
                                     context,
-                                    title: Text("Dispute payment"),
-                                    content: Text(
-                                      "You need to pay\n"
-                                      "${double.parse(store.fee) + 1.0} WUSD\n"
-                                      "to open a dispute",
-                                    ),
-                                    needCancel: true,
-                                    titleCancel: "Cancel",
-                                    titleOk: "Ok",
-                                    onTabCancel: () => Navigator.pop(context),
-                                    onTabOk: () async => await Navigator.pushNamed(
-                                      context,
-                                      OpenDisputePage.routeName,
-                                      arguments: store.quest.value!,
-                                    ).then(
-                                      (value) async => await store.getQuest(
-                                        store.quest.value!.id,
-                                      ),
-                                    ),
-                                    colorCancel: Colors.blue,
-                                    colorOk: Colors.red,
+                                    OpenDisputePage.routeName,
+                                    arguments: store.quest.value!,
                                   );
+                                  if (_result != null && _result is OpenDispute) {
+                                    store.quest.value!.status =
+                                        QuestConstants.questDispute;
+                                    store.quest.value!.openDispute = _result;
+                                    store.quest.reportChanged();
+                                  }
                                 },
+                                colorCancel: Colors.blue,
+                                colorOk: Colors.red,
+                              );
+                            },
                       child: Text(
                         "btn.dispute".tr(),
                         style: TextStyle(color: Colors.white),
