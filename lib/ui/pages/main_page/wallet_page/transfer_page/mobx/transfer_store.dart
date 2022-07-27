@@ -32,13 +32,19 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   String fee = '';
 
   @computed
-  bool get statusButtonTransfer => currentCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
+  bool get statusButtonTransfer =>
+      currentCoin != null && addressTo.isNotEmpty && amount.isNotEmpty;
 
   @action
   setAddressTo(String value) => addressTo = value;
 
   @action
-  setAmount(String value) => amount = value;
+  setAmount(String value) {
+    amount = value;
+    if (value.isNotEmpty) {
+      getFee();
+    }
+  }
 
   @action
   setFee(String value) => fee = value;
@@ -74,8 +80,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       final _client = AccountRepository().getClient();
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
       String _amount = amount.isEmpty ? '0.0' : amount;
-      String _address =
-          AddressService.convertToHexAddress(addressTo.isEmpty ? AccountRepository().userAddress : addressTo);
+      String _address = AddressService.convertToHexAddress(
+          addressTo.isEmpty ? AccountRepository().userAddress : addressTo);
       final _gas = await _client.getGas();
 
       final _currentListTokens = AccountRepository().getConfigNetwork().dataCoins;
@@ -99,7 +105,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
             from: _from,
           ),
         );
-        fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18).toStringAsFixed(18);
+        fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18)
+            .toStringAsFixed(18);
       } else {
         final _value = EtherAmount.fromUnitAndValue(
           EtherUnit.wei,
@@ -113,7 +120,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
             value: _value,
           ),
         );
-        fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18).toStringAsFixed(18);
+        fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18)
+            .toStringAsFixed(18);
       }
     } on SocketException catch (_) {
       onError("Lost connection to server");
@@ -134,8 +142,10 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   Future<String> _getMaxAmount() async {
     final _client = AccountRepository().getClient();
     final _dataCoins = AccountRepository().getConfigNetwork().dataCoins;
-    final _isNotToken =
-        _dataCoins.firstWhere((element) => element.symbolToken == currentCoin!.typeCoin).addressToken == null;
+    final _isNotToken = _dataCoins
+            .firstWhere((element) => element.symbolToken == currentCoin!.typeCoin)
+            .addressToken ==
+        null;
     if (_isNotToken) {
       final _balance = await _client.getBalance(AccountRepository().privateKey);
       final _balanceInWei = _balance.getInWei;
@@ -143,7 +153,9 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       print('type fee: ${fee.runtimeType}');
       print('fee: $fee');
       final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);
-      final _amount = ((Decimal.parse(_balanceInWei.toString()) - _gas) / Decimal.fromInt(10).pow(18)).toDecimal();
+      final _amount =
+          ((Decimal.parse(_balanceInWei.toString()) - _gas) / Decimal.fromInt(10).pow(18))
+              .toDecimal();
       if (_amount < Decimal.zero) {
         return 0.0.toStringAsFixed(18);
       } else {
@@ -151,8 +163,9 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       }
     }
 
-    final _balance =
-        await AccountRepository().getClient().getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
+    final _balance = await AccountRepository()
+        .getClient()
+        .getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
     return _balance.toStringAsFixed(18);
   }
 }
