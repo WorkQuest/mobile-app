@@ -91,9 +91,16 @@ class ListTransactions extends StatelessWidget {
             );
           }
         }
-        return SliverFillRemaining(
+        if (store.errorMessage != null) {
+          return SliverFillRemaining(
+            child: Center(
+              child: Text(store.errorMessage!),
+            ),
+          );
+        }
+        return const SliverFillRemaining(
           child: Center(
-            child: Text(store.errorMessage!),
+            child: CircularProgressIndicator.adaptive(),
           ),
         );
       },
