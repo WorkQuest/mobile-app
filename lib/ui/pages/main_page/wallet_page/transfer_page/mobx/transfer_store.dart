@@ -79,7 +79,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     try {
       final _client = AccountRepository().getClient();
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
-      String _amount = amount.isEmpty ? '0.0' : amount;
+      String _amount = amount.isEmpty ? '1.0' : amount;
       String _address = AddressService.convertToHexAddress(
           addressTo.isEmpty ? AccountRepository().userAddress : addressTo);
       final _gas = await _client.getGas();
