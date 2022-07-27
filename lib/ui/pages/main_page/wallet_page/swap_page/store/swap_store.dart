@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:app/utils/web3_utils.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/services.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
@@ -149,7 +150,6 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
           contract: _contract,
           function: _contract.function('swap'),
           gasPrice: _gas,
-          maxGas: 2000000,
           parameters: [
             ///nonce uint256
             BigInt.from(_nonce),
@@ -208,11 +208,10 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     final _degree = await Web3Utils.getDegreeToken(contract);
     final _txHashApprove = await contract.approve(
       _spender,
-      BigInt.from(amount * pow(10, _degree)),
+      (Decimal.parse(amount.toString()) * Decimal.fromInt(10).pow(_degree)).toBigInt(),
       credentials: _cred,
       transaction: Transaction(
         gasPrice: _gas,
-        maxGas: 2000000,
         value: EtherAmount.zero(),
       ),
     );
