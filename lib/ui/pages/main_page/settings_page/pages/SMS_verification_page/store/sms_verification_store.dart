@@ -30,7 +30,7 @@ abstract class _SMSVerificationStore extends IStore<SMSVerificationStatus> with 
   setCode(String value) => code = value;
 
   @computed
-  bool get canSubmitCode => secondsCodeAgain == 60 && !isLoading && code.length == 6;
+  bool get canSubmitCode => !isLoading && code.length == 6;
 
   @action
   startTimer() async {
