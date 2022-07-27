@@ -14,28 +14,37 @@ class Web3Utils {
     required Decimal fee,
     bool isMain = false,
   }) async {
-    final _client = isMain ? AccountRepository().getClientWorkNet() : AccountRepository().getClient();
+    final _client =
+        isMain ? AccountRepository().getClientWorkNet() : AccountRepository().getClient();
     final _balanceNative = await _client.getBalance(AccountRepository().privateKey);
+    final _isNativeToken = AccountRepository().isOtherNetwork
+        ? typeCoin == TokenSymbols.ETH ||
+            typeCoin == TokenSymbols.BNB ||
+            typeCoin == TokenSymbols.MATIC
+        : typeCoin == TokenSymbols.WQT;
 
-    if (typeCoin == TokenSymbols.WQT ||
-        typeCoin == TokenSymbols.ETH ||
-        typeCoin == TokenSymbols.BNB ||
-        typeCoin == TokenSymbols.MATIC) {
-      final _balanceWQTInWei = (Decimal.fromBigInt(_balanceNative.getInWei) / Decimal.fromInt(10).pow(18)).toDouble();
+    if (_isNativeToken) {
+      final _balanceWQTInWei =
+          (Decimal.fromBigInt(_balanceNative.getInWei) / Decimal.fromInt(10).pow(18))
+              .toDouble();
       print('fee: $fee');
       print('_balanceWQTInWei: $_balanceWQTInWei');
       print('amount: $amount');
       if (amount > (_balanceWQTInWei.toDouble() - fee.toDouble())) {
-        throw FormatException('errors.notHaveEnoughTx'.tr(namedArgs: {'token': getNativeToken()}));
+        throw FormatException(
+            'errors.notHaveEnoughTx'.tr(namedArgs: {'token': getNativeToken()}));
       }
     } else {
-      final _balanceToken = await _client.getBalanceFromContract(getAddressToken(typeCoin));
+      final _balanceToken =
+          await _client.getBalanceFromContract(getAddressToken(typeCoin));
       if (amount > _balanceToken.toDouble()) {
-        throw FormatException('errors.notHaveEnoughTxToken'.tr(namedArgs: {'token': getTitleToken(typeCoin)}));
+        throw FormatException('errors.notHaveEnoughTxToken'
+            .tr(namedArgs: {'token': getTitleToken(typeCoin)}));
       }
       fee = fee * Decimal.fromInt(10).pow(18);
       if (_balanceNative.getInWei < fee.toBigInt()) {
-        throw FormatException('errors.notHaveEnoughTx'.tr(namedArgs: {'token': getNativeToken()}));
+        throw FormatException(
+            'errors.notHaveEnoughTx'.tr(namedArgs: {'token': getNativeToken()}));
       }
     }
   }
@@ -51,14 +60,20 @@ class Web3Utils {
         final _network = AccountRepository().notifierNetwork.value;
         if (_network == Network.mainnet) {
           final _config = Configs.configsNetwork[NetworkName.workNetMainnet];
-          return _config!.dataCoins.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
+          return _config!.dataCoins
+              .firstWhere((element) => element.symbolToken == typeCoin)
+              .addressToken!;
         } else {
           final _config = Configs.configsNetwork[NetworkName.workNetTestnet];
-          return _config!.dataCoins.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
+          return _config!.dataCoins
+              .firstWhere((element) => element.symbolToken == typeCoin)
+              .addressToken!;
         }
       }
       final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
-      return _dataTokens.firstWhere((element) => element.symbolToken == typeCoin).addressToken!;
+      return _dataTokens
+          .firstWhere((element) => element.symbolToken == typeCoin)
+          .addressToken!;
     } catch (e) {
       return '';
     }
@@ -81,7 +96,8 @@ class Web3Utils {
     required String amount,
     required int degree,
   }) {
-    return (Decimal.tryParse(amount) ?? Decimal.zero * Decimal.fromInt(10).pow(degree)).toBigInt();
+    return (Decimal.tryParse(amount) ?? Decimal.zero * Decimal.fromInt(10).pow(degree))
+        .toBigInt();
   }
 
   static Network getNetwork(NetworkName networkName) {
@@ -167,16 +183,25 @@ class Web3Utils {
     }
   }
 
-  static NetworkName getNetworkNameFromSwitchNetworkName(SwitchNetworkNames name, Network network) {
+  static NetworkName getNetworkNameFromSwitchNetworkName(
+      SwitchNetworkNames name, Network network) {
     switch (name) {
       case SwitchNetworkNames.WORKNET:
-        return network == Network.mainnet ? NetworkName.workNetMainnet : NetworkName.workNetTestnet;
+        return network == Network.mainnet
+            ? NetworkName.workNetMainnet
+            : NetworkName.workNetTestnet;
       case SwitchNetworkNames.ETH:
-        return network == Network.mainnet ? NetworkName.ethereumMainnet : NetworkName.ethereumTestnet;
+        return network == Network.mainnet
+            ? NetworkName.ethereumMainnet
+            : NetworkName.ethereumTestnet;
       case SwitchNetworkNames.BSC:
-        return network == Network.mainnet ? NetworkName.bscMainnet : NetworkName.bscTestnet;
+        return network == Network.mainnet
+            ? NetworkName.bscMainnet
+            : NetworkName.bscTestnet;
       case SwitchNetworkNames.POLYGON:
-        return network == Network.mainnet ? NetworkName.polygonMainnet : NetworkName.polygonTestnet;
+        return network == Network.mainnet
+            ? NetworkName.polygonMainnet
+            : NetworkName.polygonTestnet;
     }
   }
 
@@ -196,11 +221,17 @@ class Web3Utils {
     final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
     switch (name) {
       case SwapNetworks.ETH:
-        return _isMainnet ? 'https://etherscan.io/tx/$tx' : 'https://rinkeby.etherscan.io/tx/$tx';
+        return _isMainnet
+            ? 'https://etherscan.io/tx/$tx'
+            : 'https://rinkeby.etherscan.io/tx/$tx';
       case SwapNetworks.BSC:
-        return _isMainnet ? 'https://bscscan.com/tx/$tx' : 'https://testnet.bscscan.com/tx/$tx';
+        return _isMainnet
+            ? 'https://bscscan.com/tx/$tx'
+            : 'https://testnet.bscscan.com/tx/$tx';
       case SwapNetworks.POLYGON:
-        return _isMainnet ? 'https://polygonscan.com/tx/$tx' : 'https://mumbai.polygonscan.com/tx/$tx';
+        return _isMainnet
+            ? 'https://polygonscan.com/tx/$tx'
+            : 'https://mumbai.polygonscan.com/tx/$tx';
     }
   }
 
@@ -253,7 +284,8 @@ class Web3Utils {
   }
 
   static String getNativeToken() {
-    final _networkName = AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
+    final _networkName =
+        AccountRepository().networkName.value ?? NetworkName.workNetMainnet;
     switch (_networkName) {
       case NetworkName.workNetMainnet:
         return 'WQT';
