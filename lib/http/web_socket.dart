@@ -273,7 +273,7 @@ class WebSocket {
         print('token _address: $_address');
         if (_address.toLowerCase() == myAddress) {
           await Future.delayed(const Duration(seconds: 9));
-          GetIt.I.get<WalletStore>().getCoins(isForce: true);
+          GetIt.I.get<WalletStore>().getCoins(isForce: false);
           GetIt.I.get<TransactionsStore>().getTransactions();
         }
       }
