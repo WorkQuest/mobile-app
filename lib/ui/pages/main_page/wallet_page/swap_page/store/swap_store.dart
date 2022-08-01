@@ -28,7 +28,7 @@ class SwapStore extends SwapStoreBase with _$SwapStore {
   SwapStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class SwapStoreBase extends IStore<bool> with Store {
+abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
   final ApiProvider _apiProvider;
 
   SwapStoreBase(this._apiProvider);
@@ -100,7 +100,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       }
       await getMaxBalance();
       isConnect = true;
-      onSuccess(false);
+      onSuccess(SwapStoreState.setNetwork);
     } catch (e) {
       isConnect = false;
       onError(e.toString());
@@ -162,7 +162,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
           shouldReconnect = false;
           _notificationChannel?.sink.close();
           getMaxBalance();
-          onSuccess(true);
+          onSuccess(SwapStoreState.createSwap);
           return;
         }
         await Future.delayed(const Duration(seconds: 3));
@@ -180,36 +180,47 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   }
 
   approve() async {
-    final contract = Erc20(
-      address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
-      client: service.client!,
-    );
-    final _cred = await service.getCredentials(AccountRepository().userWallet!.privateKey!);
-    final _spender = EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
-    final _gas = await service.getGas();
-    final _degree = await Web3Utils.getDegreeToken(contract);
-    final _txHashApprove = await contract.approve(
-      _spender,
-      (Decimal.parse(amount.toString()) * Decimal.fromInt(10).pow(_degree)).toBigInt(),
-      credentials: _cred,
-      transaction: Transaction(
-        gasPrice: _gas,
-        value: EtherAmount.zero(),
-      ),
-    );
-    int _attempts = 0;
-    while (_attempts < 140) {
-      final result = await service.client!.getTransactionReceipt(_txHashApprove);
-      if (result != null) {
-        getMaxBalance();
-        onSuccess(true);
-        return;
+    try {
+      onLoading();
+      print('approve');
+      final contract = Erc20(
+        address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
+        client: service.client!,
+      );
+      final _cred = await service.getCredentials(
+          AccountRepository().userWallet!.privateKey!);
+      final _spender = EthereumAddress.fromHex(
+          Web3Utils.getAddressContractForSwap(network!));
+      final _gas = await service.getGas();
+      final _degree = await Web3Utils.getDegreeToken(contract);
+      final _txHashApprove = await contract.approve(
+        _spender,
+        (Decimal.parse(amount.toString()) * Decimal.fromInt(10).pow(_degree)).toBigInt(),
+        credentials: _cred,
+        transaction: Transaction(
+          gasPrice: _gas,
+          value: EtherAmount.zero(),
+        ),
+      );
+      int _attempts = 0;
+      while (_attempts < 140) {
+        final result = await service.client!.getTransactionReceipt(_txHashApprove);
+        if (result != null) {
+          getMaxBalance();
+          onSuccess(SwapStoreState.approve);
+          return;
+        }
+        await Future.delayed(const Duration(seconds: 3));
+        _attempts++;
       }
-      await Future.delayed(const Duration(seconds: 3));
-      _attempts++;
+      final _link = Web3Utils.getLinkToExplorer(network!, _txHashApprove);
+      onError(
+          'Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
+    } on FormatException catch (e) {
+      onError(e.message);
+    } catch (e) {
+      onError(e.toString());
     }
-    final _link = Web3Utils.getLinkToExplorer(network!, _txHashApprove);
-    onError('Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
   }
 
   Future<bool> needApprove() async {
@@ -377,3 +388,5 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     isSuccessCourse = false;
   }
 }
+
+enum SwapStoreState {setNetwork, createSwap, approve}
