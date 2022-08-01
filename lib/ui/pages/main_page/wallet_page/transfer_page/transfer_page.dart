@@ -26,6 +26,21 @@ import 'mobx/transfer_store.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
+class DecimalFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    String truncated = newValue.text;
+    TextSelection newSelection = newValue.selection;
+    if (newValue.text.contains(",")) {
+      truncated = newValue.text.replaceFirst(RegExp(','), '.');
+    }
+    return TextEditingValue(
+      text: truncated,
+      selection: newSelection,
+    );
+  }
+}
+
 class TransferPage extends StatefulWidget {
   const TransferPage({
     Key? key,
@@ -243,6 +258,7 @@ class _TransferPageState extends State<TransferPage> {
                       ),
                     ),
                     inputFormatters: [
+                      DecimalFormatter(),
                       FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                     ],
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
