@@ -313,6 +313,7 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   _onPressedSend() async {
+    _unFocus();
     if (_formKey.currentState!.validate()) {
       try {
         _showLoading();
@@ -375,6 +376,15 @@ class _SwapPageState extends State<SwapPage> {
       }
     }
   }
+
+  _unFocus() {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus &&
+        currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+  }
+
 
   String _getTitleCoinFee() {
     final _network = Web3Utils.getSwapNetworksFromNetworkName(
