@@ -1,6 +1,8 @@
 import 'package:app/keys.dart';
 import 'package:flutter/material.dart';
-
+class Commission {
+  static const commissionBuy = 0.98;
+}
 class Constants {
   static const Map<String, Locale> languageList = {
     "English": Locale('en', 'US'),

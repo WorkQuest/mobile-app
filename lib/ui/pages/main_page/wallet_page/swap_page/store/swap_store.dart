@@ -116,7 +116,7 @@ abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
       if (isForce) {
         courseWQT = await _apiProvider.getCourseWQT();
       }
-      convertWQT = (amount / courseWQT!) * (1 - 0.01);
+      convertWQT = (amount / courseWQT!) * Commission.commissionBuy;
       isSuccessCourse = true;
     } catch (e) {
       // print('getCourseWQT | $e\n$trace');
