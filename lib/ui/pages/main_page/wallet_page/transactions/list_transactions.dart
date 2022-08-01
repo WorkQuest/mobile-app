@@ -72,14 +72,9 @@ class ListTransactions extends StatelessWidget {
                       ],
                     );
                   }
-                  final increase = store.transactions[index].fromAddressHash!.hex! != AccountRepository().userAddress;
                   return TransactionItem(
                     transaction: store.transactions[index],
-                    coin: increase
-                        ? _getTitleCoin(store.transactions[index].fromAddressHash!.hex!,
-                        store.transactions[index].token_contract_address_hash?.hex)
-                        : _getTitleCoin(store.transactions[index].toAddressHash!.hex!,
-                        store.transactions[index].token_contract_address_hash?.hex),
+                    coin: store.transactions[index].coin!,
                     opacity: !store.transactions[index].show,
                   );
                 },
@@ -115,64 +110,6 @@ class ListTransactions extends StatelessWidget {
         );
       },
     );
-  }
-
-  TokenSymbols _getTitleCoin(String addressContract, String? contractAddress) {
-    if (GetIt.I.get<TransactionsStore>().type == TokenSymbols.WQT) {
-      final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
-      final _address = contractAddress ?? addressContract;
-      if (_address ==
-          _dataTokens
-              .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
-              .addressToken) {
-        return TokenSymbols.WUSD;
-      } else if (_address ==
-          _dataTokens
-              .firstWhere((element) => element.symbolToken == TokenSymbols.wBNB)
-              .addressToken) {
-        return TokenSymbols.wBNB;
-      } else if (_address ==
-          _dataTokens
-              .firstWhere((element) => element.symbolToken == TokenSymbols.wETH)
-              .addressToken) {
-        return TokenSymbols.wETH;
-      } else if (_address ==
-          _dataTokens
-              .firstWhere((element) => element.symbolToken == TokenSymbols.USDT)
-              .addressToken) {
-        return TokenSymbols.USDT;
-      } else {
-        return TokenSymbols.WQT;
-      }
-    } else {
-      if (contractAddress != null) {
-        final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
-        if (contractAddress ==
-            _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
-                .addressToken) {
-          return TokenSymbols.WUSD;
-        } else if (contractAddress ==
-            _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.wBNB)
-                .addressToken) {
-          return TokenSymbols.wBNB;
-        } else if (contractAddress ==
-            _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.wETH)
-                .addressToken) {
-          return TokenSymbols.wETH;
-        } else if (contractAddress ==
-            _dataTokens
-                .firstWhere((element) => element.symbolToken == TokenSymbols.USDT)
-                .addressToken) {
-          return TokenSymbols.USDT;
-        } else {
-          return TokenSymbols.WQT;
-        }
-      }
-      return GetIt.I.get<TransactionsStore>().type;
-    }
   }
 
   _onPressedGoToExplorer() {
