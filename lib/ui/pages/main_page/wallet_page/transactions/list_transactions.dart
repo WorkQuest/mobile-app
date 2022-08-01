@@ -40,10 +40,17 @@ class ListTransactions extends StatelessWidget {
             ),
           );
         }
-        if (store.isSuccess && !GetIt.I.get<WalletStore>().isLoading) {
+        if (store.isSuccess) {
           final _isOtherNetwork = AccountRepository().isOtherNetwork;
           if (!_isOtherNetwork) {
             if (store.transactions.isEmpty) {
+              if (GetIt.I.get<WalletStore>().isLoading) {
+                return const SliverFillRemaining(
+                  child: Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
+                );
+              }
               return SliverFillRemaining(
                 child: Center(
                   child: Text(
