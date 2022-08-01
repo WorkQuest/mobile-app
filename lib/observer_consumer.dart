@@ -54,33 +54,37 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
         if (errorMessage != null) {
           if (widget.onFailure != null) if (widget.onFailure!()) return;
           final _words = errorMessage.split(' ');
-          showCupertinoDialog(
+          showDialog(
             context: context,
             barrierDismissible: true,
             builder: (BuildContext contextDialog) {
               return Platform.isIOS
                   ? CupertinoAlertDialog(
                       title: Text('Error'),
-                      content: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                            text: '',
-                            children: _words.map((word) {
-                              return TextSpan(
-                                  text: '$word ',
-                                  style: TextStyle(
-                                    color: isLink(word) ? AppColor.enabledButton : Colors.black,
-                                    fontSize: 14,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = isLink(word)
-                                        ? () async {
-                                            if (await canLaunchUrl(Uri.parse(word))) {
-                                              launchUrl(Uri.parse(word));
-                                            }
-                                          }
-                                        : null);
-                            }).toList()),
+                      content: Builder(
+                        builder: (context) {
+                          return RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                                text: '',
+                                children: _words.map((word) {
+                                  return TextSpan(
+                                      text: '$word ',
+                                      style: TextStyle(
+                                        color: isLink(word) ? AppColor.enabledButton : Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = isLink(word)
+                                            ? () async {
+                                                if (await canLaunchUrl(Uri.parse(word))) {
+                                                  launchUrl(Uri.parse(word));
+                                                }
+                                              }
+                                            : null);
+                                }).toList()),
+                          );
+                        }
                       ),
                       actions: [
                         CupertinoDialogAction(
@@ -91,26 +95,28 @@ class _ObserverListenerState<T extends IStore> extends State<ObserverListener> {
                     )
                   : AlertDialog(
                       title: Text('Error'),
-                      content: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                            text: '',
-                            children: _words.map((word) {
-                              return TextSpan(
-                                  text: '$word ',
-                                  style: TextStyle(
-                                    color: isLink(word) ? AppColor.enabledButton : Colors.black,
-                                    fontSize: 14,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = isLink(word)
-                                        ? () async {
-                                            if (await canLaunchUrl(Uri.parse(word))) {
-                                              launchUrl(Uri.parse(word));
+                      content: Builder(
+                        builder: (_) => RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                              text: '',
+                              children: _words.map((word) {
+                                return TextSpan(
+                                    text: '$word ',
+                                    style: TextStyle(
+                                      color: isLink(word) ? AppColor.enabledButton : Colors.black,
+                                      fontSize: 14,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = isLink(word)
+                                          ? () async {
+                                              if (await canLaunchUrl(Uri.parse(word))) {
+                                                launchUrl(Uri.parse(word));
+                                              }
                                             }
-                                          }
-                                        : null);
-                            }).toList()),
+                                          : null);
+                              }).toList()),
+                        ),
                       ),
                       actions: [
                         CupertinoDialogAction(
