@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:app/base_store/i_store.dart';
+import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
@@ -178,9 +179,10 @@ abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
       print('type fee: ${fee.runtimeType}');
       print('fee: $fee');
       final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);
-      final _amount =
-          ((Decimal.parse(_balanceInWei.toString()) - _gas) / Decimal.fromInt(10).pow(18))
-              .toDecimal();
+      final _amount = ((Decimal.parse(_balanceInWei.toString()) -
+          (_gas * Decimal.parse(Commission.percentTransfer.toString()))) /
+          Decimal.fromInt(10).pow(18))
+          .toDecimal();
       if (_amount < Decimal.zero) {
         return 0.0.toString();
       } else {

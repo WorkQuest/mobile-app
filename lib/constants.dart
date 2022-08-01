@@ -2,6 +2,7 @@ import 'package:app/keys.dart';
 import 'package:flutter/material.dart';
 class Commission {
   static const commissionBuy = 0.98;
+  static const percentTransfer = 1.01;
 }
 class Constants {
   static const Map<String, Locale> languageList = {
