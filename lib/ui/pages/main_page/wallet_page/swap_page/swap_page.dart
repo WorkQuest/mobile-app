@@ -1,4 +1,5 @@
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -220,6 +221,7 @@ class _SwapPageState extends State<SwapPage> {
                           keyboardType:
                               const TextInputType.numberWithOptions(decimal: true),
                           inputFormatters: [
+                            DecimalFormatter(),
                             FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                           ],
                           suffixIcon: CupertinoButton(
