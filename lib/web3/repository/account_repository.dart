@@ -60,7 +60,6 @@ class AccountRepository {
     _disconnectWeb3Client();
     WebSocket().reconnectWalletSocket();
     connectClient();
-    GetIt.I.get<TransactionsStore>().getTransactions();
     GetIt.I.get<WalletStore>().getCoins(isForce: true);
     GetIt.I.get<TransferStore>().setCoin(null);
   }

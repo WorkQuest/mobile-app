@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -39,7 +40,7 @@ class ListTransactions extends StatelessWidget {
             ),
           );
         }
-        if (store.isSuccess) {
+        if (store.isSuccess && !GetIt.I.get<WalletStore>().isLoading) {
           final _isOtherNetwork = AccountRepository().isOtherNetwork;
           if (!_isOtherNetwork) {
             if (store.transactions.isEmpty) {
