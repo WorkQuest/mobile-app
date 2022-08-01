@@ -146,7 +146,7 @@ class ClientService implements ClientServiceI {
       }
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
-      if (attempts == 5) {
+      if (attempts == 20) {
         throw FormatException("The waiting time is over. Expect a balance update.");
       }
     }
@@ -311,7 +311,7 @@ extension CreateQuestContract on ClientService {
         if (result != null) print('Block: ${result.blockNumber}');
         await Future.delayed(const Duration(seconds: 3));
         attempts++;
-        if (attempts == 5) {
+        if (attempts == 20) {
           throw Exception("The waiting time is over. Expect a balance update.");
         }
       }
@@ -520,7 +520,7 @@ extension Promote on ClientService {
       }
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
-      if (attempts == 5) {
+      if (attempts == 20) {
         throw Exception("The waiting time is over. Expect a balance update.");
       }
     }
@@ -566,7 +566,7 @@ extension Promote on ClientService {
       }
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
-      if (attempts == 5) {
+      if (attempts == 20) {
         throw Exception("The waiting time is over. Expect a balance update.");
       }
     }

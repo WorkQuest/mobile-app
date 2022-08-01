@@ -156,7 +156,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       );
       _connectSocket();
       int _attempts = 0;
-      while (_attempts < 60) {
+      while (_attempts < 140) {
         final result = await _client.getTransactionReceipt(_hashTx);
         if (result != null && hashWorknetTrx != null) {
           shouldReconnect = false;
@@ -198,7 +198,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       ),
     );
     int _attempts = 0;
-    while (_attempts < 60) {
+    while (_attempts < 140) {
       final result = await service.client!.getTransactionReceipt(_txHashApprove);
       if (result != null) {
         getMaxBalance();
