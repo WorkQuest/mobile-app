@@ -15,7 +15,7 @@ part 'transfer_store.g.dart';
 @singleton
 class TransferStore = TransferStoreBase with _$TransferStore;
 
-abstract class TransferStoreBase extends IStore<bool> with Store {
+abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
   @observable
   double? maxAmount;
 
@@ -64,7 +64,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     this.onLoading();
     try {
       amount = await _getMaxAmount();
-      onSuccess(true);
+      onSuccess(TransferStoreState.getMaxAmount);
     } on SocketException catch (_) {
       onError("Lost connection to server");
     } on FormatException catch (e) {
@@ -142,6 +142,21 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
   }
 
   @action
+  checkBeforeSend() async {
+    try {
+      onLoading();
+      await getFee();
+      print('fee: $fee');
+      maxAmount = double.parse(await _getMaxAmount());
+      onSuccess(TransferStoreState.checkBeforeSend);
+    } on FormatException catch (e) {
+      onError(e.message);
+    } catch (e) {
+      onError(e.toString());
+    }
+  }
+
+  @action
   clearData() {
     addressTo = '';
     amount = '';
@@ -178,4 +193,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
         .getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
     return _balance.toStringAsFixed(18);
   }
+}
+
+enum TransferStoreState {
+  checkBeforeSend, getMaxAmount
 }
