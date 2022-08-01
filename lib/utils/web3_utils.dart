@@ -265,6 +265,11 @@ class Web3Utils {
     }
   }
 
+  static bool isETH() {
+    return AccountRepository().networkName.value == NetworkName.ethereumMainnet ||
+        AccountRepository().networkName.value == NetworkName.ethereumTestnet;
+  }
+
   static String getAddressWorknetWQFactory() {
     final _isMainnet = AccountRepository().notifierNetwork.value == Network.mainnet;
     if (_isMainnet) {
