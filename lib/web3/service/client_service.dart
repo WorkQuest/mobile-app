@@ -119,7 +119,7 @@ class ClientService implements ClientServiceI {
     if (!isToken) {
       final _value = EtherAmount.fromUnitAndValue(
         EtherUnit.wei,
-        BigInt.from(double.parse(amount) * pow(10, 18)),
+        (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt(),
       );
       final _to = EthereumAddress.fromHex(addressTo);
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
@@ -502,7 +502,7 @@ extension Promote on ClientService {
     final _fromAddress = await _credentials.extractAddress();
     final _value = EtherAmount.fromUnitAndValue(
       EtherUnit.wei,
-      BigInt.from(double.parse(amount) * pow(10, 18)),
+      (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt(),
     );
     final _chainId = await client!.getChainId();
     final _transactionHash = await client!.sendTransaction(
