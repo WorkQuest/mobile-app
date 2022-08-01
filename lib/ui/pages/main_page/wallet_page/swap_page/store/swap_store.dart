@@ -150,25 +150,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
           contract: _contract,
           function: _contract.function('swap'),
           gasPrice: _gas,
-          parameters: [
-            ///nonce uint256
-            BigInt.from(_nonce),
-
-            ///chainTo uint256
-            BigInt.from(1.0),
-
-            ///amount uint256
-            BigInt.from(amount * pow(10, _degree)),
-
-            ///recipient address
-            EthereumAddress.fromHex(AccountRepository().userAddress),
-
-            ///userId string
-            '1',
-
-            ///symbol string
-            'USDT'
-          ],
+          parameters: _setParameters(nonce: _nonce, degree: _degree),
         ),
         chainId: _chainId.toInt(),
       );
@@ -309,25 +291,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         from: EthereumAddress.fromHex(_address),
         contract: _contract,
         function: _contract.function('swap'),
-        parameters: [
-          ///nonce uint256
-          BigInt.from(_nonce),
-
-          ///chainTo uint256
-          BigInt.from(1.0),
-
-          ///amount uint256
-          BigInt.from(amount * pow(10, _degree)),
-
-          ///recipient address
-          EthereumAddress.fromHex(AccountRepository().userAddress),
-
-          ///userId string
-          '1',
-
-          ///symbol string
-          'USDT'
-        ],
+        parameters: _setParameters(nonce: _nonce, degree: _degree),
       ),
     );
     final _fee = Web3Utils.getGas(
@@ -374,6 +338,31 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         }
       },
     );
+  }
+
+  List<dynamic> _setParameters({
+    required int nonce,
+    required int degree,
+  }) {
+    return [
+      ///nonce uint256
+      BigInt.from(nonce),
+
+      ///chainTo uint256
+      BigInt.from(1.0),
+
+      ///amount uint256
+      BigInt.from(amount * pow(10, degree)),
+
+      ///recipient address
+      EthereumAddress.fromHex(AccountRepository().userAddress),
+
+      ///userId string
+      '1',
+
+      ///symbol string
+      'USDT'
+    ];
   }
 
   @action
