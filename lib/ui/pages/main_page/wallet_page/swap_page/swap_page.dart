@@ -71,9 +71,9 @@ class _SwapPageState extends State<SwapPage> {
             Navigator.of(context, rootNavigator: true).pop();
             final _network = AccountRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetMainnet);
+              AccountRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetTestnet);
+              AccountRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
             store.setNetwork(null);
             _amountController.clear();
@@ -90,9 +90,9 @@ class _SwapPageState extends State<SwapPage> {
           if (store.errorMessage!.contains('Waiting time has expired')) {
             final _network = AccountRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetMainnet);
+              AccountRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetTestnet);
+              AccountRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
             store.setNetwork(null);
             _amountController.clear();

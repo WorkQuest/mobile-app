@@ -327,6 +327,7 @@ class _TransferPageState extends State<TransferPage> {
         AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
+      await store.getFee();
       final result = await Navigator.of(context, rootNavigator: true).push(
         MaterialPageRoute(
           builder: (_) => Provider(

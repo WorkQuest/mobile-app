@@ -38,6 +38,7 @@ class Tx {
     this.hash,
     this.fromAddressHash,
     this.toAddressHash,
+    this.token_contract_address_hash,
     this.gas,
     this.error,
     this.value,
@@ -54,6 +55,7 @@ class Tx {
   String? hash;
   AddressHash? fromAddressHash;
   AddressHash? toAddressHash;
+  AddressHash? token_contract_address_hash;
   String? gas;
   dynamic error;
   String? value;
@@ -75,6 +77,9 @@ class Tx {
         toAddressHash: json["to_address_hash"] == null
             ? null
             : AddressHash.fromJson(json["to_address_hash"]),
+        token_contract_address_hash: json["token_contract_address_hash"] == null
+            ? null
+            : AddressHash.fromJson(json["token_contract_address_hash"]),
         gas: json["gas"],
         error: json["error"],
         value: json["value"],
@@ -82,9 +87,8 @@ class Tx {
         gasUsed: json["gas_used"],
         gasPrice: json["gas_price"],
         blockNumber: json["block_number"],
-        insertedAt: json["inserted_at"] == null
-            ? null
-            : DateTime.parse(json["inserted_at"]),
+        insertedAt:
+            json["inserted_at"] == null ? null : DateTime.parse(json["inserted_at"]),
         block: json["block"] == null ? null : Block.fromJson(json["block"]),
         tokenTransfers: json["tokenTransfers"] == null
             ? null
@@ -96,6 +100,7 @@ class Tx {
         "hash": hash,
         "from_address_hash": fromAddressHash,
         "to_address_hash": toAddressHash,
+        "token_contract_address_hash": token_contract_address_hash,
         "gas": gas,
         "error": error,
         "value": value,
@@ -117,9 +122,7 @@ class Block {
   DateTime? timestamp;
 
   factory Block.fromJson(Map<String, dynamic> json) => Block(
-        timestamp: json["timestamp"] == null
-            ? null
-            : DateTime.parse(json["timestamp"]),
+        timestamp: json["timestamp"] == null ? null : DateTime.parse(json["timestamp"]),
       );
 
   Map<String, dynamic> toJson() => {

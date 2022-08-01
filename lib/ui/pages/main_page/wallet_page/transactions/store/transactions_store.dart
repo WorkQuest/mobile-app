@@ -48,7 +48,6 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   @action
   getTransactions({bool isForce = false}) async {
     if (_isOtherNetwork) {
-      transactions.clear();
       onSuccess(true);
       return;
     }
@@ -107,7 +106,6 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   @action
   getTransactionsMore() async {
     if (_isOtherNetwork) {
-      transactions.clear();
       onSuccess(true);
       return;
     }
@@ -150,7 +148,7 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   @action
   addTransaction(Tx transaction) {
     try {
-      if (isLoading || AccountRepository().isOtherNetwork) {
+      if (isLoading) {
         return;
       }
       final _address = Web3Utils.getAddressToken(type);

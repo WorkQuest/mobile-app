@@ -26,6 +26,8 @@ class WebSocket {
   IOWebSocketChannel? _senderChannel;
   IOWebSocketChannel? _notificationChannel;
 
+  String? currentWss;
+
   factory WebSocket() {
     return _singleton;
   }
@@ -40,9 +42,8 @@ class WebSocket {
   }
 
   void _connectWallet() {
-    if (AccountRepository().isOtherNetwork) {
-      return;
-    }
+    currentWss = AccountRepository().getConfigNetworkWorknet().wss;
+    walletChannel = IOWebSocketChannel.connect(currentWss!);
     walletChannel = IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
     walletChannel!.sink.add("""
       {
@@ -86,6 +87,9 @@ class WebSocket {
   }
 
   reconnectWalletSocket() {
+    if (currentWss == AccountRepository().getConfigNetworkWorknet().wss) {
+      return;
+    }
     _closeWalletSocket();
   }
 
@@ -220,10 +224,6 @@ class WebSocket {
   String get myAddress => AccountRepository().userAddress;
 
   void handleSubscription(dynamic jsonResponse) async {
-    final _isNotWorknet = AccountRepository().isOtherNetwork;
-    if (_isNotWorknet) {
-      return;
-    }
     try {
       final transaction = TrxEthereumResponse.fromJson(jsonResponse);
       final _events = transaction.result?.events;

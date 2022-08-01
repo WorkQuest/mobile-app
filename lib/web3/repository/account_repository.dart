@@ -49,18 +49,24 @@ class AccountRepository {
     userWallet = wallet;
   }
 
+  ConfigNetwork getConfigNetworkWorknet() {
+    final _isTestnet = notifierNetwork.value == Network.testnet;
+    return Configs.configsNetwork[
+    _isTestnet ? NetworkName.workNetTestnet : NetworkName.workNetMainnet]!;
+  }
+
   setNetwork(NetworkName networkName) {
     this.networkName.value = networkName;
     final _network = Web3Utils.getNetwork(networkName);
     notifierNetwork.value = _network;
   }
 
-  changeNetwork(NetworkName networkName) {
+  changeNetwork(NetworkName networkName,{bool updateTrxList = false}) {
     _saveNetwork(networkName);
     _disconnectWeb3Client();
     WebSocket().reconnectWalletSocket();
     connectClient();
-    GetIt.I.get<WalletStore>().getCoins(isForce: true);
+    GetIt.I.get<WalletStore>().getCoins(isForce: true, fromSwap: updateTrxList);
     GetIt.I.get<TransferStore>().setCoin(null);
   }
 

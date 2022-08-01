@@ -110,6 +110,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
           gas: _gas.getInWei,
           degree: 18,
           isETH: Web3Utils.isETH(),
+          isTransfer: true,
         ).toStringAsFixed(18);
       } else {
         final _value = EtherAmount.fromUnitAndValue(
@@ -129,6 +130,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
           gas: _gas.getInWei,
           degree: 18,
           isETH: Web3Utils.isETH(),
+          isTransfer: true,
         ).toStringAsFixed(18);
       }
     } on SocketException catch (_) {

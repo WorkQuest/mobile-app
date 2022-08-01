@@ -76,8 +76,10 @@ class ListTransactions extends StatelessWidget {
                   return TransactionItem(
                     transaction: store.transactions[index],
                     coin: increase
-                        ? _getTitleCoin(store.transactions[index].fromAddressHash!.hex!)
-                        : _getTitleCoin(store.transactions[index].toAddressHash!.hex!),
+                        ? _getTitleCoin(store.transactions[index].fromAddressHash!.hex!,
+                        store.transactions[index].token_contract_address_hash?.hex)
+                        : _getTitleCoin(store.transactions[index].toAddressHash!.hex!,
+                        store.transactions[index].token_contract_address_hash?.hex),
                     opacity: !store.transactions[index].show,
                   );
                 },
@@ -115,37 +117,61 @@ class ListTransactions extends StatelessWidget {
     );
   }
 
-  TokenSymbols _getTitleCoin(String? addressContract) {
+  TokenSymbols _getTitleCoin(String addressContract, String? contractAddress) {
     if (GetIt.I.get<TransactionsStore>().type == TokenSymbols.WQT) {
       final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
-      if (addressContract == _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.WUSD).addressToken)
+      final _address = contractAddress ?? addressContract;
+      if (_address ==
+          _dataTokens
+              .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+              .addressToken) {
         return TokenSymbols.WUSD;
-      else if (addressContract ==
-          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.wBNB).addressToken)
+      } else if (_address ==
+          _dataTokens
+              .firstWhere((element) => element.symbolToken == TokenSymbols.wBNB)
+              .addressToken) {
         return TokenSymbols.wBNB;
-      else if (addressContract ==
-          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.wETH).addressToken)
+      } else if (_address ==
+          _dataTokens
+              .firstWhere((element) => element.symbolToken == TokenSymbols.wETH)
+              .addressToken) {
         return TokenSymbols.wETH;
-      else if (addressContract ==
-          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.USDT).addressToken)
+      } else if (_address ==
+          _dataTokens
+              .firstWhere((element) => element.symbolToken == TokenSymbols.USDT)
+              .addressToken) {
         return TokenSymbols.USDT;
-      else
+      } else {
         return TokenSymbols.WQT;
-    } else {
-      switch (GetIt.I.get<TransactionsStore>().type) {
-        case TokenSymbols.WQT:
-          return TokenSymbols.WQT;
-        case TokenSymbols.WUSD:
-          return TokenSymbols.WUSD;
-        case TokenSymbols.wBNB:
-          return TokenSymbols.wBNB;
-        case TokenSymbols.USDT:
-          return TokenSymbols.USDT;
-        case TokenSymbols.wETH:
-          return TokenSymbols.wETH;
-        default:
-          return TokenSymbols.WUSD;
       }
+    } else {
+      if (contractAddress != null) {
+        final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
+        if (contractAddress ==
+            _dataTokens
+                .firstWhere((element) => element.symbolToken == TokenSymbols.WUSD)
+                .addressToken) {
+          return TokenSymbols.WUSD;
+        } else if (contractAddress ==
+            _dataTokens
+                .firstWhere((element) => element.symbolToken == TokenSymbols.wBNB)
+                .addressToken) {
+          return TokenSymbols.wBNB;
+        } else if (contractAddress ==
+            _dataTokens
+                .firstWhere((element) => element.symbolToken == TokenSymbols.wETH)
+                .addressToken) {
+          return TokenSymbols.wETH;
+        } else if (contractAddress ==
+            _dataTokens
+                .firstWhere((element) => element.symbolToken == TokenSymbols.USDT)
+                .addressToken) {
+          return TokenSymbols.USDT;
+        } else {
+          return TokenSymbols.WQT;
+        }
+      }
+      return GetIt.I.get<TransactionsStore>().type;
     }
   }
 

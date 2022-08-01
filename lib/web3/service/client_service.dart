@@ -73,7 +73,7 @@ class ClientService implements ClientServiceI {
             stream = _stream.stream.listen((event) {
               final _walletStore = GetIt.I.get<WalletStore>();
               if (!_walletStore.isLoading) {
-                _walletStore.getCoins(isForce: false);
+                _walletStore.getCoins(isForce: false, fromSwap: true);
               }
               final _swapStore = GetIt.I.get<SwapStore>();
               if (_swapStore.network != null && !_swapStore.isLoading) {
