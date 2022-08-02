@@ -46,23 +46,20 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
   }
 
   @action
-  getTransactions({bool isForce = false}) async {
+  getTransactions() async {
     if (_isOtherNetwork) {
       onSuccess(true);
       return;
     }
     canMoreLoading = true;
-    if (isForce) {
-      onLoading();
-    }
+    onLoading();
 
     try {
-      if (isForce) {
-        if (transactions.isNotEmpty) {
-          transactions.clear();
-        }
-        isMoreLoading = false;
+      if (transactions.isNotEmpty) {
+        transactions.clear();
       }
+      isMoreLoading = false;
+
       List<Tx>? result;
       final _addressToken = Web3Utils.getAddressToken(type);
 
@@ -70,29 +67,21 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
         result = await _apiProvider.getTransactions(
           AccountRepository().userAddress,
           limit: 10,
-          offset: isForce ? transactions.length : 0,
+          offset: transactions.length,
         );
       } else {
         result = await _apiProvider.getTransactionsByToken(
           address: AccountRepository().userAddress,
           addressToken: _addressToken,
           limit: 10,
-          offset: isForce ? transactions.length : 0,
+          offset: transactions.length,
         );
       }
 
       _setTypeCoinInTxs(result!);
 
-      if (isForce) {
-        transactions.addAll(result);
-      } else {
-        result = result.reversed.toList();
-        result.map((tran) {
-          if (!transactions.contains(tran)) {
-            transactions.insert(0, tran);
-          }
-        }).toList();
-      }
+      transactions.addAll(result);
+
       onSuccess(true);
     } on FormatException catch (e, trace) {
       print('$e\n$trace');
@@ -159,15 +148,15 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
           (AccountRepository().userWallet?.address ?? '1234');
       transaction.coin = increase
           ? _getTitleCoin(
-        transaction.fromAddressHash!.hex!,
-        transaction.token_contract_address_hash?.hex,
-        fromSocket: true,
-      )
+              transaction.fromAddressHash!.hex!,
+              transaction.token_contract_address_hash?.hex,
+              fromSocket: true,
+            )
           : _getTitleCoin(
-        transaction.toAddressHash!.hex!,
-        transaction.token_contract_address_hash?.hex,
-        fromSocket: true,
-      );
+              transaction.toAddressHash!.hex!,
+              transaction.token_contract_address_hash?.hex,
+              fromSocket: true,
+            );
       final _index =
           transactions.indexWhere((element) => element.hash == transaction.hash);
       if (_index == -1) {
@@ -185,17 +174,17 @@ abstract class TransactionsStoreBase extends IStore<bool> with Store {
           (AccountRepository().userWallet?.address ?? '1234');
       tran.coin = increase
           ? _getTitleCoin(
-          tran.fromAddressHash!.hex!, tran.token_contract_address_hash?.hex)
+              tran.fromAddressHash!.hex!, tran.token_contract_address_hash?.hex)
           : _getTitleCoin(
-          tran.toAddressHash!.hex!, tran.token_contract_address_hash?.hex);
+              tran.toAddressHash!.hex!, tran.token_contract_address_hash?.hex);
     }).toList();
   }
 
   TokenSymbols _getTitleCoin(
-      String addressContract,
-      String? contractAddress, {
-        bool fromSocket = false,
-      }) {
+    String addressContract,
+    String? contractAddress, {
+    bool fromSocket = false,
+  }) {
     if (type == TokenSymbols.WQT || fromSocket) {
       final _dataTokens = AccountRepository().getConfigNetworkWorknet().dataCoins;
       final _address = contractAddress ?? addressContract;

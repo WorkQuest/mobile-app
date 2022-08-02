@@ -74,9 +74,9 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
       AsyncAction('TransactionsStoreBase.getTransactions');
 
   @override
-  Future getTransactions({bool isForce = false}) {
+  Future getTransactions() {
     return _$getTransactionsAsyncAction
-        .run(() => super.getTransactions(isForce: isForce));
+        .run(() => super.getTransactions());
   }
 
   final _$getTransactionsMoreAsyncAction =

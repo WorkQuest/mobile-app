@@ -523,7 +523,7 @@ class _InfoCardBalanceState extends State<_InfoCardBalance> {
         GetIt.I.get<TransactionsStore>().setType(TokenSymbols.USDT);
         break;
     }
-    GetIt.I.get<TransactionsStore>().getTransactions(isForce: true);
+    GetIt.I.get<TransactionsStore>().getTransactions();
     store.setCurrentToken(store.coins[index].symbol);
   }
 }
