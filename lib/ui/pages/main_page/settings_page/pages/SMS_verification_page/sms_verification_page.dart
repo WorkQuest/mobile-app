@@ -86,7 +86,7 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
                   LoginButton(
                     withColumn: true,
                     enabled: smsStore.isLoading,
-                    onTap: smsStore.canSubmitCode ? null : _sendCodeOnPressed,
+                    onTap: smsStore.canSubmitCode ? smsStore.submitCode : null,
                     title: "meta.send".tr(),
                   ),
                 ],
@@ -96,9 +96,5 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
         ),
       ),
     );
-  }
-
-  _sendCodeOnPressed() {
-    smsStore.submitCode();
   }
 }

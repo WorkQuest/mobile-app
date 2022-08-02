@@ -7,6 +7,8 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:dev-app.workquest.co</string>
+		<string>applinks:testnet-app.workquest.co</string>
+		<string>applinks:app.workquest.co</string>
 	</array>
 </dict>
 </plist>

@@ -364,8 +364,7 @@ abstract class _ProfileMeStore extends IStore<bool> with Store {
     try {
       this.onLoading();
       await _apiProvider.submitPhoneNumber();
-
-      this.onSuccess(true);
+      // this.onSuccess(true);
     } catch (e) {
       this.onError(e.toString());
     }
