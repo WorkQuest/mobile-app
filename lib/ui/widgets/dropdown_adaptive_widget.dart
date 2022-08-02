@@ -205,28 +205,28 @@ class _ItemEnvironmentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: CupertinoButton(
-        onPressed: onPressed,
-        padding: EdgeInsets.zero,
-        child: SizedBox(
-          height: 46,
-          width: double.infinity,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.check,
-                  color: isEnabled ? Colors.black : Colors.transparent, size: 25),
-              const SizedBox(width: 10),
-              Text(
-                title,
-                style: const TextStyle(
-                    fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
-              )
-            ],
-          ),
+    return InkWell(
+      onTap: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(width: 5),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+            ),
+            const Spacer(),
+            if (isEnabled) Icon(Icons.check, color: AppColor.enabledButton, size: 25),
+            const SizedBox(
+              width: 4.0,
+            )
+          ],
         ),
       ),
     );
