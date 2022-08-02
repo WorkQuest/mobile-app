@@ -78,9 +78,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                 ),
               ),
             ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -90,9 +88,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
     return Column(
       key: ValueKey(kng.id),
       children: <Widget>[
-        const SizedBox(
-          height: 15,
-        ),
+        const SizedBox(height: 15),
         Container(
           decoration: BoxDecoration(
             border: Border.all(
@@ -116,7 +112,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                           : kng.dateFrom,
                       onChanged: (value) {
                         kng.dateFrom =
-                            '${value.year}-${value.month}-${value.day}';
+                            '${value.year}.${value.month}.${value.day}';
                         setState(() {});
                       },
                       from: true,
@@ -138,7 +134,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                           : kng.dateTo,
                       onChanged: (value) {
                         kng.dateTo =
-                            '${value.year}-${value.month}-${value.day}';
+                            '${value.year}.${value.month}.${value.day}';
                         setState(() {});
                       },
                       from: false,
@@ -146,9 +142,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 Container(
                   height: 43,
                   decoration: BoxDecoration(
@@ -172,9 +166,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 if (store.numberOfFiled.length > 1)
                   OutlinedButton(
                     onPressed: () {
@@ -215,7 +207,10 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
         _localeCode = element;
     });
     List<String> minTime = [];
-    if (dateFrom != null) minTime.addAll(dateFrom.split("-"));
+    if (dateFrom != null) {
+      if (dateFrom.contains("-")) minTime.addAll(dateFrom.split("-"));
+      if (dateFrom.contains(".")) minTime.addAll(dateFrom.split("."));
+    }
     return Container(
       height: 43,
       width: 147,
@@ -274,10 +269,6 @@ class KnowledgeWorkSelectionController {
       });
     }
   }
-
-  // List<KnowledgeWork> getAllKnowledge() {
-  //   return store?.numberOfFiled ?? [];
-  // }
 
   List<Map<String, String>> getListMap() {
     List<Map<String, String>> listMap = [];
