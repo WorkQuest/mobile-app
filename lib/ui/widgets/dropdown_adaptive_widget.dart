@@ -71,7 +71,6 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                 color: widget.colorText,
               ),
             ),
-            // if (widget.value is Network)
             Row(
               children: [
                 const SizedBox(
@@ -131,7 +130,7 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                           isEnabled: widget.value == widget.items[i],
                           onPressed: () {
                             widget.onChanged(widget.items[i]);
-                            Navigator.pop(context);
+                            Navigator.of(context, rootNavigator: true).pop();
                           },
                           title: _getName(_getTitleItem(widget.items[i].toString())),
                         )
@@ -140,7 +139,7 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                           isEnabled: widget.value == widget.items[i],
                           onPressed: () {
                             widget.onChanged(widget.items[i]);
-                            Navigator.pop(context);
+                            Navigator.of(context, rootNavigator: true).pop();
                           },
                           title: _getName(_getTitleItem(widget.items[i].toString())),
                           pathIcon: widget.haveIcon
@@ -161,13 +160,13 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
 
   String _getPathIcons(String value) {
     if (value == 'WORKNET') {
-      return 'assets/svg/wq_logo.svg';
+      return 'assets/wq_logo.svg';
     } else if (value == 'ETH') {
-      return 'assets/svg/eth_logo.svg';
+      return 'assets/eth_logo.svg';
     } else if (value == 'BSC') {
-      return 'assets/svg/bsc_logo.svg';
+      return 'assets/bsc_logo.svg';
     } else {
-      return 'assets/svg/polygon_logo.svg';
+      return 'assets/polygon_logo.svg';
     }
   }
 
