@@ -34,62 +34,68 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ObserverListener<SMSVerificationStore>(
-      onSuccess: () async {
-        if (smsStore.successData == SMSVerificationStatus.submitCode) {
-          await AlertDialogUtils.showSuccessDialog(context);
-          await profileStore.getProfileMe();
-          Navigator.pop(context);
-        }
+    return WillPopScope(
+      onWillPop: () async {
+        smsStore.setCode("");
+        return true;
       },
-      onFailure: () => false,
-      child: Observer(
-        builder: (_) => Scaffold(
-          appBar: CupertinoNavigationBar(
-            automaticallyImplyLeading: true,
-            middle: Text(
-              "modals.smsVerification".tr(),
-            ),
-          ),
-          body: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 16.0,
+      child: ObserverListener<SMSVerificationStore>(
+        onSuccess: () async {
+          if (smsStore.successData == SMSVerificationStatus.submitCode) {
+            await AlertDialogUtils.showSuccessDialog(context);
+            await profileStore.getProfileMe();
+            Navigator.pop(context);
+          }
+        },
+        onFailure: () => false,
+        child: Observer(
+          builder: (_) => Scaffold(
+            appBar: CupertinoNavigationBar(
+              automaticallyImplyLeading: true,
+              middle: Text(
+                "modals.smsVerification".tr(),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TimerWidget(
-                    startTimer: () => smsStore.startTimer(),
-                    seconds: smsStore.secondsCodeAgain,
-                    isActiveTimer: smsStore.timer != null && smsStore.timer!.isActive,
-                  ),
-                  Text(
-                    "modals.codeFromSMS".tr(),
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  DefaultTextField(
-                    controller: _smsController,
-                    onChanged: smsStore.setCode,
-                    keyboardType: TextInputType.phone,
-                    hint: "modals.codeFromSMS".tr(),
-                    inputFormatters: [],
-                    suffixIcon: null,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Spacer(),
-                  LoginButton(
-                    withColumn: true,
-                    enabled: smsStore.isLoading,
-                    onTap: smsStore.canSubmitCode ? smsStore.submitCode : null,
-                    title: "meta.send".tr(),
-                  ),
-                ],
+            ),
+            body: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 16.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TimerWidget(
+                      startTimer: () => smsStore.startTimer(),
+                      seconds: smsStore.secondsCodeAgain,
+                      isActiveTimer: smsStore.timer != null && smsStore.timer!.isActive,
+                    ),
+                    Text(
+                      "modals.codeFromSMS".tr(),
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    DefaultTextField(
+                      controller: _smsController,
+                      onChanged: smsStore.setCode,
+                      keyboardType: TextInputType.phone,
+                      hint: "modals.codeFromSMS".tr(),
+                      inputFormatters: [],
+                      suffixIcon: null,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Spacer(),
+                    LoginButton(
+                      withColumn: true,
+                      enabled: smsStore.isLoading,
+                      onTap: smsStore.canSubmitCode ? smsStore.submitCode : null,
+                      title: "meta.send".tr(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
