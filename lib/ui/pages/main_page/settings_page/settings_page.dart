@@ -91,7 +91,10 @@ class SettingsPage extends StatelessWidget {
                             SettingsCard(
                               icon: CupertinoSwitch(
                                 activeColor: const Color(0xFF0083C7),
-                                onChanged: (_) {},
+                                onChanged: (_) {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed(TwoFAPage.routeName);
+                                  },
                                 value: userStore.userData?.isTotpActive ?? false,
                               ),
                               title: "settings.2FA".tr(),
