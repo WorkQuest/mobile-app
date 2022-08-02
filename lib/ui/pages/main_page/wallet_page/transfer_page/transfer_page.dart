@@ -260,35 +260,27 @@ class _TransferPageState extends State<TransferPage> {
                         }
                         return null;
                       },
-                      suffixIcon: ObserverListener<TransferStore>(
-                        onFailure: () {
-                          return false;
-                        },
-                        onSuccess: () {
-                          _amountController.text = (store.maxAmount ?? 0.0).toString();
-                        },
-                        child: CupertinoButton(
-                          padding: const EdgeInsets.only(right: 12.5),
-                          child: Text(
-                            'wallet.max'.tr(),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: AppColor.enabledButton,
-                            ),
+                      suffixIcon: CupertinoButton(
+                        padding: const EdgeInsets.only(right: 12.5),
+                        child: Text(
+                          'wallet.max'.tr(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColor.enabledButton,
                           ),
-                          onPressed: () async {
-                            if (_key.currentState!.validate()) {
-                              if (store.currentCoin != null) {
-                                store.getMaxAmount();
-                              } else {
-                                final title = 'meta.error'.tr();
-                                final content = 'crediting.chooseCoin'.tr();
-                                AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
-                              }
-                            }
-                          },
                         ),
+                        onPressed: () async {
+                          if (_key.currentState!.validate()) {
+                            if (store.currentCoin != null) {
+                              store.getMaxAmount();
+                            } else {
+                              final title = 'meta.error'.tr();
+                              final content = 'crediting.chooseCoin'.tr();
+                              AlertDialogUtils.showInfoAlertDialog(context, title: title, content: content);
+                            }
+                          }
+                        },
                       ),
                       inputFormatters: [
                         DecimalFormatter(),

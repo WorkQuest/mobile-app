@@ -103,29 +103,17 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                 ),
                 child: SizedBox(
                   width: double.infinity,
-                  child: ObserverListener<ConfirmTransferStore>(
-                    onFailure: () {
-                      Navigator.of(context, rootNavigator: true).pop();
-                      return false;
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      AlertDialogUtils.showLoadingDialog(context);
+                      store.sendTransaction(
+                        widget.addressTo,
+                        widget.amount,
+                        widget.typeCoin,
+                        Decimal.parse(widget.fee),
+                      );
                     },
-                    onSuccess: () async {
-                      Navigator.pop(context, true);
-                      await AlertDialogUtils.showSuccessDialog(context);
-                      Navigator.pop(context, true);
-                      Navigator.pop(context, true);
-                    },
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        AlertDialogUtils.showLoadingDialog(context);
-                        store.sendTransaction(
-                          widget.addressTo,
-                          widget.amount,
-                          widget.typeCoin,
-                          Decimal.parse(widget.fee),
-                        );
-                      },
-                      child: Text('meta.confirm'.tr()),
-                    ),
+                    child: Text('meta.confirm'.tr()),
                   ),
                 ),
               )
