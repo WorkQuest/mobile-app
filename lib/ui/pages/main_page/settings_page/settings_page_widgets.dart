@@ -10,6 +10,7 @@ import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
+import 'package:app/utils/alert_dialog.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,13 @@ class InstrumentCard extends StatelessWidget {
                 arguments: urlArgument,
               );
             }
-          : null,
+          : () {
+              AlertDialogUtils.showInfoAlertDialog(
+                context,
+                title: title,
+                content: "Coming soon, still under construction",
+              );
+            },
       padding: EdgeInsets.zero,
       child: Container(
         margin: EdgeInsets.only(bottom: 10.0),
@@ -154,6 +161,7 @@ class SettingsCard extends StatelessWidget {
     );
   }
 }
+
 class LogoutButton extends StatelessWidget {
   const LogoutButton({Key? key}) : super(key: key);
 
@@ -168,7 +176,7 @@ class LogoutButton extends StatelessWidget {
           confirmAction: () async {
             Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
               SignInPage.routeName,
-                  (route) => false,
+              (route) => false,
             );
             final cookieManager = WebviewCookieManager();
             context.read<ProfileMeStore>().deletePushToken();

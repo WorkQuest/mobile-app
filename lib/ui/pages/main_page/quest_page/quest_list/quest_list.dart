@@ -120,11 +120,11 @@ class _QuestListState extends State<QuestList> {
           if (metrics.maxScrollExtent <= metrics.pixels) {
             if (questsStore!.isLoading) return true;
             if (profileMeStore!.userData!.role == UserRole.Worker) {
-              questsStore!.searchWord.length > 2
+              questsStore!.searchWord.length > 0
                   ? questsStore!.getSearchedQuests(false)
                   : questsStore!.getQuests(false);
             } else {
-              questsStore!.searchWord.length > 2
+              questsStore!.searchWord.length > 0
                   ? questsStore!.getSearchedWorkers(false)
                   : questsStore!.getWorkers(false);
             }
