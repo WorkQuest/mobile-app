@@ -2009,8 +2009,8 @@
     "smallLength": "Small length",
     "wrongCode": "Wrong code",
     "fieldRequired": "The {name} field is required",
-    "notHaveEnoughTx": "Not have enough WQT for the transaction",
-    "notHaveEnoughTxToken": "Not have enough {token} for the transaction",
+    "notHaveEnoughTx": "Insufficient funds to complete the transaction.",
+    "notHaveEnoughTxToken": "Insufficient funds to complete the transaction.",
     "higherMaxAmount": "Not enough USDT to complete this transaction",
     "emptyData": {
       "employer": {

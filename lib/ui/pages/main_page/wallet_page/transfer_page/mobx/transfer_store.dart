@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:app/base_store/i_store.dart';
+import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/repository/account_repository.dart';
@@ -15,7 +16,7 @@ part 'transfer_store.g.dart';
 @singleton
 class TransferStore = TransferStoreBase with _$TransferStore;
 
-abstract class TransferStoreBase extends IStore<bool> with Store {
+abstract class TransferStoreBase extends IStore<TransferStoreState> with Store {
   @observable
   double? maxAmount;
 
@@ -64,7 +65,7 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
     this.onLoading();
     try {
       amount = await _getMaxAmount();
-      onSuccess(true);
+      onSuccess(TransferStoreState.getMaxAmount);
     } on SocketException catch (_) {
       onError("Lost connection to server");
     } on FormatException catch (e) {
@@ -105,8 +106,13 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
             from: _from,
           ),
         );
-        fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18)
-            .toStringAsFixed(18);
+        fee = Web3Utils.getGas(
+          estimateGas: _estimateGas,
+          gas: _gas.getInWei,
+          degree: 18,
+          isETH: Web3Utils.isETH(),
+          isTransfer: true,
+        ).toStringAsFixed(18);
       } else {
         final _value = EtherAmount.fromUnitAndValue(
           EtherUnit.wei,
@@ -120,13 +126,33 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
             value: _value,
           ),
         );
-        fee = Web3Utils.getGas(estimateGas: _estimateGas, gas: _gas.getInWei, degree: 18)
-            .toStringAsFixed(18);
+        fee = Web3Utils.getGas(
+          estimateGas: _estimateGas,
+          gas: _gas.getInWei,
+          degree: 18,
+          isETH: Web3Utils.isETH(),
+          isTransfer: true,
+        ).toStringAsFixed(18);
       }
     } on SocketException catch (_) {
       onError("Lost connection to server");
     } catch (e) {
       // print('e: $e');
+      onError(e.toString());
+    }
+  }
+
+  @action
+  checkBeforeSend() async {
+    try {
+      onLoading();
+      await getFee();
+      print('fee: $fee');
+      maxAmount = double.parse(await _getMaxAmount());
+      onSuccess(TransferStoreState.checkBeforeSend);
+    } on FormatException catch (e) {
+      onError(e.message);
+    } catch (e) {
       onError(e.toString());
     }
   }
@@ -153,13 +179,14 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
       print('type fee: ${fee.runtimeType}');
       print('fee: $fee');
       final _gas = Decimal.parse(fee) * Decimal.fromInt(10).pow(18);
-      final _amount =
-          ((Decimal.parse(_balanceInWei.toString()) - _gas) / Decimal.fromInt(10).pow(18))
-              .toDecimal();
+      final _amount = ((Decimal.parse(_balanceInWei.toString()) -
+          (_gas * Decimal.parse(Commission.percentTransfer.toString()))) /
+          Decimal.fromInt(10).pow(18))
+          .toDecimal();
       if (_amount < Decimal.zero) {
-        return 0.0.toStringAsFixed(18);
+        return 0.0.toString();
       } else {
-        return _amount.toStringAsFixed(18);
+        return _amount.toString();
       }
     }
 
@@ -168,4 +195,8 @@ abstract class TransferStoreBase extends IStore<bool> with Store {
         .getBalanceFromContract(Web3Utils.getAddressToken(currentCoin!.typeCoin));
     return _balance.toStringAsFixed(18);
   }
+}
+
+enum TransferStoreState {
+  checkBeforeSend, getMaxAmount
 }

@@ -1,5 +1,7 @@
 import 'package:app/constants.dart';
+import 'package:app/ui/widgets/dismiss_keyboard.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
+import 'package:app/utils/bottom_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -32,24 +34,23 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
     return InkWell(
       onTap: _showDialog,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.only(right: 16.0, left: 4.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (widget.haveIcon)
               if (_isWorkNet)
                 GradientIcon(
-                  SvgPicture.asset(
-                    _getPathIcons(
-                      _getTitleItem(
-                        widget.value.toString(),
+                    SvgPicture.asset(
+                      _getPathIcons(
+                        _getTitleItem(
+                          widget.value.toString(),
+                        ),
                       ),
+                      width: 24,
+                      height: 24,
                     ),
-                    width: 24,
-                    height: 24,
-                  ),
-                  24,
-                )
+                    24)
               else
                 SvgPicture.asset(
                   _getPathIcons(
@@ -70,18 +71,17 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
                 color: widget.colorText,
               ),
             ),
-            if (widget.value is Network)
-              Row(
-                children: [
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  Icon(
-                    Icons.arrow_drop_down,
-                    color: widget.colorText,
-                  ),
-                ],
-              )
+            Row(
+              children: [
+                const SizedBox(
+                  width: 16,
+                ),
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: widget.colorText,
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -89,125 +89,72 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
   }
 
   _showDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          titlePadding: const EdgeInsets.only(top: 10, left: 8.0, right: 8.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
+    BottomSheetUtils.showDefaultBottomSheet(
+      context,
+      height: 275,
+      child: Column(
+        children: [
+          Container(
+            width: 100,
+            height: 5,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: const Color(0xffE9EDF2),
+            ),
           ),
-          scrollable: true,
-          title: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Select network'),
-              const SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                width: double.infinity,
-                height: 1,
-                color: Colors.grey,
-              )
-            ],
+          const SizedBox(
+            height: 21,
           ),
-          content: SizedBox(
-            height: 250.0,
-            width: 250.0,
-            child: Scrollbar(
-              child: ListView(
-                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                shrinkWrap: true,
-                children: [
-                  for (int i = 0; i < widget.items.length; i++)
-                    if (widget.value is Network)
-                      Column(
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: 1,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                            color: const Color(0xc1e2e2e2),
-                          ),
-                          _ItemEnvironmentWidget(
-                            isEnabled: widget.value == widget.items[i],
-                            onPressed: () {
-                              widget.onChanged(widget.items[i]);
-                              Navigator.pop(context);
-                            },
-                            title: _getName(_getTitleItem(widget.items[i].toString())),
-                          ),
-                          Container(
-                            width: double.infinity,
-                            height: 1,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                            color: const Color(0xc1e2e2e2),
-                          ),
-                        ],
-                      )
-                    else
-                      Column(
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            height: 1,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                            color: const Color(0xc1e2e2e2),
-                          ),
-                          _ItemNetworkWidget(
-                            isEnabled: widget.value == widget.items[i],
-                            onPressed: () {
-                              widget.onChanged(widget.items[i]);
-                              Navigator.pop(context);
-                            },
-                            title: _getName(_getTitleItem(widget.items[i].toString())),
-                            pathIcon: widget.haveIcon ? _getPathIcons(_getTitleItem(widget.items[i].toString())) : null,
-                            haveGradient: _getTitleItem(widget.items[i].toString()) == 'WORKNET',
-                          ),
-                          Container(
-                            width: double.infinity,
-                            height: 1,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                            color: const Color(0xc1e2e2e2),
-                          ),
-                        ],
-                      )
-                ],
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Choose network',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
-          actionsPadding: EdgeInsets.zero,
-          actionsOverflowDirection: VerticalDirection.down,
-          actions: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 1,
-                  color: Colors.grey,
+          const SizedBox(
+            height: 16.5,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: DismissKeyboard(
+                child: Column(
+                  children: [
+                    for (int i = 0; i < widget.items.length; i++)
+                      if (widget.value is Network)
+                        _ItemEnvironmentWidget(
+                          isEnabled: widget.value == widget.items[i],
+                          onPressed: () {
+                            widget.onChanged(widget.items[i]);
+                            Navigator.of(context, rootNavigator: true).pop();
+                          },
+                          title: _getName(_getTitleItem(widget.items[i].toString())),
+                        )
+                      else
+                        _ItemNetworkWidget(
+                          isEnabled: widget.value == widget.items[i],
+                          onPressed: () {
+                            widget.onChanged(widget.items[i]);
+                            Navigator.of(context, rootNavigator: true).pop();
+                          },
+                          title: _getName(_getTitleItem(widget.items[i].toString())),
+                          pathIcon: widget.haveIcon
+                              ? _getPathIcons(_getTitleItem(widget.items[i].toString()))
+                              : null,
+                          haveGradient:
+                              _getTitleItem(widget.items[i].toString()) == 'WORKNET',
+                        )
+                  ],
                 ),
-                const SizedBox(
-                  height: 6.0,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    child: const Text(
-                      'Close',
-                      style: TextStyle(fontSize: 16, color: AppColor.enabledButton),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
-              ],
-            )
-          ],
-        );
-      },
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -236,7 +183,7 @@ class _DropDownAdaptiveWidgetState<T> extends State<DropDownAdaptiveWidget> {
     } else if (value == 'BSC') {
       return 'Binance Smart Chain';
     } else if (value == 'POLYGON') {
-      return 'POLYGON';
+      return 'Polygon';
     } else {
       return value;
     }
@@ -257,26 +204,28 @@ class _ItemEnvironmentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 10.0),
-      child: CupertinoButton(
-        onPressed: onPressed,
-        padding: EdgeInsets.zero,
-        child: SizedBox(
-          height: 46,
-          width: double.infinity,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.check, color: isEnabled ? Colors.black : Colors.transparent, size: 25),
-              const SizedBox(width: 10),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
-              )
-            ],
-          ),
+    return InkWell(
+      onTap: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(width: 5),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+            ),
+            const Spacer(),
+            if (isEnabled) Icon(Icons.check, color: AppColor.enabledButton, size: 25),
+            const SizedBox(
+              width: 4.0,
+            )
+          ],
         ),
       ),
     );
@@ -301,39 +250,43 @@ class _ItemNetworkWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 10.0),
-      child: CupertinoButton(
-        onPressed: onPressed,
-        padding: EdgeInsets.zero,
-        child: SizedBox(
-          height: 46,
-          width: double.infinity,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.check, color: isEnabled ? Colors.black : Colors.transparent, size: 25),
-              const SizedBox(width: 5),
-              if (pathIcon != null)
-                if (haveGradient)
-                  SizedBox(
-                    width: 35,
-                    height: 35,
-                    child: GradientIcon(
-                      SvgPicture.asset(pathIcon!, width: 35, height: 35),
-                      35,
-                    ),
-                  )
-                else
-                  SvgPicture.asset(pathIcon!, width: 35, height: 35),
-              const SizedBox(width: 10),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
-              )
-            ],
-          ),
+    return InkWell(
+      onTap: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(width: 5),
+            if (pathIcon != null)
+              if (haveGradient)
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: GradientIcon(
+                      SvgPicture.asset(pathIcon!, width: 24, height: 24), 35),
+                )
+              else
+                SvgPicture.asset(pathIcon!, width: 24, height: 24),
+            const SizedBox(width: 10),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+            ),
+            const Spacer(),
+            if (isEnabled)
+              const Icon(
+                Icons.check,
+                color: AppColor.enabledButton,
+              ),
+            const SizedBox(
+              width: 4.0,
+            )
+          ],
         ),
       ),
     );

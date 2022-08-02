@@ -192,6 +192,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                   onChanged: (PhoneNumber phone) {
                     pageStore.setPhoneNumber(phone);
                   },
+                  needValidator: phone.phoneNumber?.isEmpty ?? true,
                 ),
                 if (profile!.userData!.role == UserRole.Employer)
                   _PhoneNumberWidget(
@@ -200,7 +201,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                     onChanged: (PhoneNumber phone) {
                       pageStore.setSecondPhoneNumber(phone);
                     },
-                    needValidator: phone.phoneNumber?.isEmpty ?? true,
                   ),
                 _InputWidget(
                   title: "signUp.email".tr(),
@@ -695,7 +695,7 @@ class _PhoneNumberWidget extends StatefulWidget {
     required this.title,
     required this.initialValue,
     required this.onChanged,
-    this.needValidator = true,
+    this.needValidator = false,
   }) : super(key: key);
 
   @override

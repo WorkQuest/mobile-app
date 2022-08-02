@@ -1,4 +1,5 @@
 import 'package:app/ui/pages/main_page/wallet_page/swap_page/store/swap_store.dart';
+import 'package:app/ui/pages/main_page/wallet_page/transfer_page/transfer_page.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -67,22 +68,36 @@ class _SwapPageState extends State<SwapPage> {
       ),
       body: ObserverListener<SwapStore>(
         onSuccess: () {
-          if (store.isConnect && store.successData!) {
+          if (store.successData == SwapStoreState.createSwap) {
             Navigator.of(context, rootNavigator: true).pop();
             final _network = AccountRepository().notifierNetwork.value;
             if (_network == Network.mainnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetMainnet);
+              AccountRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
             } else if (_network == Network.testnet) {
-              AccountRepository().changeNetwork(NetworkName.workNetTestnet);
+              AccountRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
             }
             store.setNetwork(null);
             _amountController.clear();
-            AlertDialogUtils.showSuccessDialog(context);
+            AlertDialogUtils.showSuccessDialog(context).then((value) => Navigator.pop(
+                context));
+          } else if (store.successData == SwapStoreState.approve) {
+            Navigator.of(context, rootNavigator: true).pop();
+            _onPressedSend();
           }
         },
         onFailure: () {
           if (store.isConnect) {
             Navigator.of(context, rootNavigator: true).pop('dialog');
+          }
+          if (store.errorMessage!.contains('Waiting time has expired')) {
+            final _network = AccountRepository().notifierNetwork.value;
+            if (_network == Network.mainnet) {
+              AccountRepository().changeNetwork(NetworkName.workNetMainnet, updateTrxList: true);
+            } else if (_network == Network.testnet) {
+              AccountRepository().changeNetwork(NetworkName.workNetTestnet, updateTrxList: true);
+            }
+            store.setNetwork(null);
+            _amountController.clear();
           }
           return false;
         },
@@ -207,6 +222,7 @@ class _SwapPageState extends State<SwapPage> {
                           keyboardType:
                               const TextInputType.numberWithOptions(decimal: true),
                           inputFormatters: [
+                            DecimalFormatter(),
                             FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
                           ],
                           suffixIcon: CupertinoButton(
@@ -313,6 +329,7 @@ class _SwapPageState extends State<SwapPage> {
   }
 
   _onPressedSend() async {
+    _unFocus();
     if (_formKey.currentState!.validate()) {
       try {
         _showLoading();
@@ -331,20 +348,8 @@ class _SwapPageState extends State<SwapPage> {
             tokenSymbol: 'USDT',
             onTabOk: () async {
               print('onTabOk');
-              try {
-                _showLoading(message: 'Approving...');
-                await store.approve();
-                Navigator.of(context, rootNavigator: true).pop();
-                _onPressedSend();
-              } on FormatException catch (e) {
-                Navigator.of(context, rootNavigator: true).pop();
-                AlertDialogUtils.showInfoAlertDialog(context,
-                    title: 'meta.error'.tr(), content: e.message);
-              } catch (e) {
-                Navigator.of(context, rootNavigator: true).pop();
-                AlertDialogUtils.showInfoAlertDialog(context,
-                    title: 'meta.error'.tr(), content: e.toString());
-              }
+              _showLoading(message: 'Approving...');
+              store.approve();
             },
           );
           return;
@@ -368,11 +373,18 @@ class _SwapPageState extends State<SwapPage> {
         print('_onPressedSend | $e');
         Navigator.of(context, rootNavigator: true).pop();
         AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'meta.warning'.tr(), content: e.message);
+            title: 'modals.warning'.tr(), content: e.message);
       } catch (e, trace) {
         print('_onPressedSend | $e\n$trace');
         Navigator.of(context, rootNavigator: true).pop();
       }
+    }
+  }
+
+  _unFocus() {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus?.unfocus();
     }
   }
 

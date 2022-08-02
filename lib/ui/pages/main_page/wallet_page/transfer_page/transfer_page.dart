@@ -26,6 +26,21 @@ import 'mobx/transfer_store.dart';
 
 const _padding = EdgeInsets.symmetric(horizontal: 16.0);
 
+class DecimalFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    String truncated = newValue.text;
+    TextSelection newSelection = newValue.selection;
+    if (newValue.text.contains(",")) {
+      truncated = newValue.text.replaceFirst(RegExp(','), '.');
+    }
+    return TextEditingValue(
+      text: truncated,
+      selection: newSelection,
+    );
+  }
+}
+
 class TransferPage extends StatefulWidget {
   const TransferPage({
     Key? key,
@@ -83,143 +98,169 @@ class _TransferPageState extends State<TransferPage> {
   @override
   Widget build(BuildContext context) {
     _initCoins();
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: LayoutWithScroll(
-        child: Observer(
-          builder: (_) => Padding(
-            padding: _padding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 10,
-                  width: double.infinity,
+    return ObserverListener<TransferStore>(
+      onSuccess: () async {
+        if (store.successData == TransferStoreState.getMaxAmount) {
+          _amountController.text = (store.maxAmount ?? 0.0).toString();
+        } else if (store.successData == TransferStoreState.checkBeforeSend) {
+          if (_key.currentState!.validate() && _formKey.currentState!.validate()) {
+            final result = await Navigator.of(context, rootNavigator: true).push(
+              MaterialPageRoute(
+                builder: (_) => Provider(
+                  create: (_) => getIt.get<ConfirmTransferStore>(),
+                  child: ConfirmTransferPage(
+                    fee: store.fee,
+                    typeCoin: store.currentCoin!.typeCoin,
+                    addressTo: store.addressTo,
+                    amount: store.amount,
+                  ),
                 ),
-                Text(
-                  'wallet.chooseCoin'.tr(),
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                SelectedItem(
-                  title: store.currentCoin?.title,
-                  iconPath: store.currentCoin?.iconPath,
-                  isSelected: store.currentCoin != null,
-                  onTap: _chooseCoin,
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'wallet.recipientsAddress'.tr(),
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Form(
-                  key: _key,
-                  child: DefaultTextField(
-                    controller: _addressController,
-                    hint: 'wallet.enterAddress'.tr(),
-                    suffixIcon: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () async {
-                        String? qrResult = await MajaScan.startScan(
-                            title: "QRcode scanner",
-                            barColor: Colors.black,
-                            titleColor: Colors.white,
-                            qRCornerColor: Colors.blue,
-                            qRScannerColor: Colors.white,
-                            flashlightEnable: true,
-                            scanAreaScale: 0.7);
-                        if (qrResult != null) {
-                          _addressController.text = qrResult;
-                          store.setAddressTo(qrResult);
-                        }
-                      },
-                      child: SvgPicture.asset(
-                        'assets/scan_qr.svg',
-                        color: AppColor.enabledButton,
+              ),
+            );
+            if (result != null && result) {
+              setState(() {
+                store.setCoin(null);
+                store.setAddressTo('');
+                store.setAmount('');
+                _amountController.clear();
+                _addressController.clear();
+              });
+              Navigator.pop(context);
+            }
+          }
+        }
+      },
+      onFailure: () => false,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: LayoutWithScroll(
+          child: Observer(
+            builder: (_) => Padding(
+              padding: _padding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 10,
+                    width: double.infinity,
+                  ),
+                  Text(
+                    'wallet.chooseCoin'.tr(),
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  SelectedItem(
+                    title: store.currentCoin?.title,
+                    iconPath: store.currentCoin?.iconPath,
+                    isSelected: store.currentCoin != null,
+                    onTap: _chooseCoin,
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    'wallet.recipientsAddress'.tr(),
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Form(
+                    key: _key,
+                    child: DefaultTextField(
+                      controller: _addressController,
+                      hint: 'wallet.enterAddress'.tr(),
+                      suffixIcon: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () async {
+                          String? qrResult = await MajaScan.startScan(
+                              title: "QRcode scanner",
+                              barColor: Colors.black,
+                              titleColor: Colors.white,
+                              qRCornerColor: Colors.blue,
+                              qRScannerColor: Colors.white,
+                              flashlightEnable: true,
+                              scanAreaScale: 0.7);
+                          if (qrResult != null) {
+                            _addressController.text = qrResult;
+                            store.setAddressTo(qrResult);
+                          }
+                        },
+                        child: SvgPicture.asset(
+                          'assets/scan_qr.svg',
+                          color: AppColor.enabledButton,
+                        ),
                       ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value != null) {
+                          if (value.isEmpty) {
+                            return 'errors.fieldEmpty'.tr();
+                          }
+                          try {
+                            final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
+                            if (_isBech) {
+                              if (value.length != 41) {
+                                return "errors.incorrectFormat".tr();
+                              }
+                              if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
+                                return "errors.incorrectFormat".tr();
+                              }
+                            } else {
+                              if (value.length != 42) {
+                                return "errors.incorrectFormat".tr();
+                              }
+                              if (!RegExpFields.addressRegExp.hasMatch(value)) {
+                                return "errors.incorrectFormat".tr();
+                              }
+                            }
+                          } catch (e) {
+                            return 'errors.incorrectFormat'.tr();
+                          }
+                        }
+                        return null;
+                      },
+                      inputFormatters: [],
                     ),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) {
-                      if (value != null) {
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    'wallet.amount'.tr(),
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Form(
+                    key: _formKey,
+                    child: DefaultTextField(
+                      controller: _amountController,
+                      hint: 'wallet.enterAmount'.tr(),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null) {
+                          return null;
+                        }
                         if (value.isEmpty) {
                           return 'errors.fieldEmpty'.tr();
                         }
                         try {
-                          final _isBech = value.substring(0, 2).toLowerCase() == 'wq';
-                          if (_isBech) {
-                            if (value.length != 41) {
-                              return "errors.incorrectFormat".tr();
-                            }
-                            if (!RegExpFields.addressBech32RegExp.hasMatch(value)) {
-                              return "errors.incorrectFormat".tr();
-                            }
-                          } else {
-                            if (value.length != 42) {
-                              return "errors.incorrectFormat".tr();
-                            }
-                            if (!RegExpFields.addressRegExp.hasMatch(value)) {
-                              return "errors.incorrectFormat".tr();
+                          final _value = double.parse(value);
+                          if (store.maxAmount != null) {
+                            if (_value > store.maxAmount!) {
+                              return 'Max: ${store.maxAmount}';
                             }
                           }
                         } catch (e) {
                           return 'errors.incorrectFormat'.tr();
                         }
-                      }
-                      return null;
-                    },
-                    inputFormatters: [],
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'wallet.amount'.tr(),
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Form(
-                  key: _formKey,
-                  child: DefaultTextField(
-                    controller: _amountController,
-                    hint: 'wallet.enterAmount'.tr(),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) {
-                      if (value == null) {
                         return null;
-                      }
-                      if (value.isEmpty) {
-                        return 'errors.fieldEmpty'.tr();
-                      }
-                      try {
-                        final _value = double.parse(value);
-                        if (store.maxAmount != null) {
-                          if (_value > store.maxAmount!) {
-                            return 'Max: ${store.maxAmount}';
-                          }
-                        }
-                      } catch (e) {
-                        return 'errors.incorrectFormat'.tr();
-                      }
-                      return null;
-                    },
-                    suffixIcon: ObserverListener<TransferStore>(
-                      onFailure: () {
-                        return false;
                       },
-                      onSuccess: () {
-                        _amountController.text = store.amount;
-                      },
-                      child: CupertinoButton(
+                      suffixIcon: CupertinoButton(
                         padding: const EdgeInsets.only(right: 12.5),
                         child: Text(
                           'wallet.max'.tr(),
@@ -241,35 +282,44 @@ class _TransferPageState extends State<TransferPage> {
                           }
                         },
                       ),
+                      inputFormatters: [
+                        DecimalFormatter(),
+                        FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
+                      ],
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,18}')),
-                    ],
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Observer(
-                  builder: (_) => Text(
-                    _getTitleTrxFee(),
-                    style: const TextStyle(fontSize: 16, color: Colors.black),
+                  const SizedBox(
+                    height: 15,
                   ),
-                )
-              ],
+                  Text(
+                    _getTitleAvailableTx(),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColor.enabledButton,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Observer(
+                    builder: (_) => Text(
+                      _getTitleTrxFee(),
+                      style: const TextStyle(fontSize: 16, color: Colors.black),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(bottom: 10 + MediaQuery.of(context).padding.bottom, left: 16.0, right: 16.0),
-        child: SizedBox(
-          width: double.infinity,
-          child: Observer(
-            builder: (_) => DefaultButton(
-              title: 'wallet.withdraw'.tr(),
-              onPressed: store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(bottom: 10 + MediaQuery.of(context).padding.bottom, left: 16.0, right: 16.0),
+          child: SizedBox(
+            width: double.infinity,
+            child: Observer(
+              builder: (_) => DefaultButton(
+                title: 'wallet.withdraw'.tr(),
+                onPressed: store.statusButtonTransfer ? _pushConfirmTransferPage : null,
+              ),
             ),
           ),
         ),
@@ -278,6 +328,9 @@ class _TransferPageState extends State<TransferPage> {
   }
 
   Future<void> _pushConfirmTransferPage() async {
+    if (store.isLoading) {
+      return;
+    }
     if (_key.currentState!.validate() && _formKey.currentState!.validate()) {
       FocusScopeNode currentFocus = FocusScope.of(context);
       if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
@@ -303,29 +356,17 @@ class _TransferPageState extends State<TransferPage> {
         AlertDialogUtils.showInfoAlertDialog(context, title: 'meta.error'.tr(), content: 'errors.invalidAmount'.tr());
         return;
       }
-      final result = await Navigator.of(context, rootNavigator: true).push(
-        MaterialPageRoute(
-          builder: (_) => Provider(
-            create: (_) => getIt.get<ConfirmTransferStore>(),
-            child: ConfirmTransferPage(
-              fee: store.fee,
-              typeCoin: store.currentCoin!.typeCoin,
-              addressTo: store.addressTo,
-              amount: store.amount,
-            ),
-          ),
-        ),
-      );
-      if (result != null && result) {
-        setState(() {
-          store.setCoin(null);
-          store.setAddressTo('');
-          store.setAmount('');
-          _amountController.clear();
-          _addressController.clear();
-        });
-      }
+      store.checkBeforeSend();
     }
+  }
+
+  _getTitleAvailableTx() {
+    final value = store.maxAmount ?? 0.0;
+    final network = store.currentCoin?.title;
+    if (network != null) {
+      return 'Available balance: $value $network';
+    }
+    return 'Available balance: ';
   }
 
   _getTitleTrxFee() {

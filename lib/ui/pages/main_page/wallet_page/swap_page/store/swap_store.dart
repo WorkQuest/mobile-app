@@ -28,7 +28,7 @@ class SwapStore extends SwapStoreBase with _$SwapStore {
   SwapStore(ApiProvider apiProvider) : super(apiProvider);
 }
 
-abstract class SwapStoreBase extends IStore<bool> with Store {
+abstract class SwapStoreBase extends IStore<SwapStoreState> with Store {
   final ApiProvider _apiProvider;
 
   SwapStoreBase(this._apiProvider);
@@ -100,7 +100,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       }
       await getMaxBalance();
       isConnect = true;
-      onSuccess(false);
+      onSuccess(SwapStoreState.setNetwork);
     } catch (e) {
       isConnect = false;
       onError(e.toString());
@@ -116,7 +116,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
       if (isForce) {
         courseWQT = await _apiProvider.getCourseWQT();
       }
-      convertWQT = (amount / courseWQT!) * (1 - 0.01);
+      convertWQT = (amount / courseWQT!) * Commission.commissionBuy;
       isSuccessCourse = true;
     } catch (e) {
       // print('getCourseWQT | $e\n$trace');
@@ -150,37 +150,19 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
           contract: _contract,
           function: _contract.function('swap'),
           gasPrice: _gas,
-          parameters: [
-            ///nonce uint256
-            BigInt.from(_nonce),
-
-            ///chainTo uint256
-            BigInt.from(1.0),
-
-            ///amount uint256
-            BigInt.from(amount * pow(10, _degree)),
-
-            ///recipient address
-            EthereumAddress.fromHex(AccountRepository().userAddress),
-
-            ///userId string
-            '1',
-
-            ///symbol string
-            'USDT'
-          ],
+          parameters: _setParameters(nonce: _nonce, degree: _degree),
         ),
         chainId: _chainId.toInt(),
       );
       _connectSocket();
       int _attempts = 0;
-      while (_attempts < 60) {
+      while (_attempts < 140) {
         final result = await _client.getTransactionReceipt(_hashTx);
         if (result != null && hashWorknetTrx != null) {
           shouldReconnect = false;
           _notificationChannel?.sink.close();
           getMaxBalance();
-          onSuccess(true);
+          onSuccess(SwapStoreState.createSwap);
           return;
         }
         await Future.delayed(const Duration(seconds: 3));
@@ -198,36 +180,47 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
   }
 
   approve() async {
-    final contract = Erc20(
-      address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
-      client: service.client!,
-    );
-    final _cred = await service.getCredentials(AccountRepository().userWallet!.privateKey!);
-    final _spender = EthereumAddress.fromHex(Web3Utils.getAddressContractForSwap(network!));
-    final _gas = await service.getGas();
-    final _degree = await Web3Utils.getDegreeToken(contract);
-    final _txHashApprove = await contract.approve(
-      _spender,
-      (Decimal.parse(amount.toString()) * Decimal.fromInt(10).pow(_degree)).toBigInt(),
-      credentials: _cred,
-      transaction: Transaction(
-        gasPrice: _gas,
-        value: EtherAmount.zero(),
-      ),
-    );
-    int _attempts = 0;
-    while (_attempts < 60) {
-      final result = await service.client!.getTransactionReceipt(_txHashApprove);
-      if (result != null) {
-        getMaxBalance();
-        onSuccess(true);
-        return;
+    try {
+      onLoading();
+      print('approve');
+      final contract = Erc20(
+        address: EthereumAddress.fromHex(Web3Utils.getTokenUSDTForSwap(network!)),
+        client: service.client!,
+      );
+      final _cred = await service.getCredentials(
+          AccountRepository().userWallet!.privateKey!);
+      final _spender = EthereumAddress.fromHex(
+          Web3Utils.getAddressContractForSwap(network!));
+      final _gas = await service.getGas();
+      final _degree = await Web3Utils.getDegreeToken(contract);
+      final _txHashApprove = await contract.approve(
+        _spender,
+        (Decimal.parse(amount.toString()) * Decimal.fromInt(10).pow(_degree)).toBigInt(),
+        credentials: _cred,
+        transaction: Transaction(
+          gasPrice: _gas,
+          value: EtherAmount.zero(),
+        ),
+      );
+      int _attempts = 0;
+      while (_attempts < 140) {
+        final result = await service.client!.getTransactionReceipt(_txHashApprove);
+        if (result != null) {
+          getMaxBalance();
+          onSuccess(SwapStoreState.approve);
+          return;
+        }
+        await Future.delayed(const Duration(seconds: 3));
+        _attempts++;
       }
-      await Future.delayed(const Duration(seconds: 3));
-      _attempts++;
+      final _link = Web3Utils.getLinkToExplorer(network!, _txHashApprove);
+      onError(
+          'Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
+    } on FormatException catch (e) {
+      onError(e.message);
+    } catch (e) {
+      onError(e.toString());
     }
-    final _link = Web3Utils.getLinkToExplorer(network!, _txHashApprove);
-    onError('Waiting time has expired\n\nYou can check the transaction status in the explorer: \n $_link');
   }
 
   Future<bool> needApprove() async {
@@ -309,25 +302,7 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
         from: EthereumAddress.fromHex(_address),
         contract: _contract,
         function: _contract.function('swap'),
-        parameters: [
-          ///nonce uint256
-          BigInt.from(_nonce),
-
-          ///chainTo uint256
-          BigInt.from(1.0),
-
-          ///amount uint256
-          BigInt.from(amount * pow(10, _degree)),
-
-          ///recipient address
-          EthereumAddress.fromHex(AccountRepository().userAddress),
-
-          ///userId string
-          '1',
-
-          ///symbol string
-          'USDT'
-        ],
+        parameters: _setParameters(nonce: _nonce, degree: _degree),
       ),
     );
     final _fee = Web3Utils.getGas(
@@ -376,6 +351,31 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     );
   }
 
+  List<dynamic> _setParameters({
+    required int nonce,
+    required int degree,
+  }) {
+    return [
+      ///nonce uint256
+      BigInt.from(nonce),
+
+      ///chainTo uint256
+      BigInt.from(1.0),
+
+      ///amount uint256
+      BigInt.from(amount * pow(10, degree)),
+
+      ///recipient address
+      EthereumAddress.fromHex(AccountRepository().userAddress),
+
+      ///userId string
+      '1',
+
+      ///symbol string
+      'USDT'
+    ];
+  }
+
   @action
   clearData() {
     courseWQT = null;
@@ -388,3 +388,5 @@ abstract class SwapStoreBase extends IStore<bool> with Store {
     isSuccessCourse = false;
   }
 }
+
+enum SwapStoreState {setNetwork, createSwap, approve}

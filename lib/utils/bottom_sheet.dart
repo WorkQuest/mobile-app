@@ -5,6 +5,7 @@ class BottomSheetUtils {
     BuildContext context, {
     required Widget child,
     EdgeInsetsGeometry? padding,
+    double? height,
   }) {
     showModalBottomSheet(
       context: context,
@@ -13,7 +14,7 @@ class BottomSheetUtils {
       isScrollControlled: true,
       builder: (BuildContext context) {
         return Container(
-          height: 300,
+          height: height ?? 300,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(24.0),
@@ -22,8 +23,8 @@ class BottomSheetUtils {
             color: Colors.white,
           ),
           child: Padding(
-            padding: padding ??
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding:
+                padding ?? const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: child,
           ),
         );

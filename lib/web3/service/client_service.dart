@@ -73,7 +73,7 @@ class ClientService implements ClientServiceI {
             stream = _stream.stream.listen((event) {
               final _walletStore = GetIt.I.get<WalletStore>();
               if (!_walletStore.isLoading) {
-                _walletStore.getCoins(isForce: false);
+                _walletStore.getCoins(isForce: false, fromSwap: true);
               }
               final _swapStore = GetIt.I.get<SwapStore>();
               if (_swapStore.network != null && !_swapStore.isLoading) {
@@ -108,10 +108,18 @@ class ClientService implements ClientServiceI {
     final _privateKey = AccountRepository().privateKey;
     final _credentials = await getCredentials(_privateKey);
     String _addressToken = Web3Utils.getAddressToken(coin);
+    final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
+    final _gas = await getGas();
+    final _isETH = Web3Utils.isETH();
+    final _gasPrice = EtherAmount.fromUnitAndValue(
+      EtherUnit.wei,
+      ((Decimal.fromBigInt(_gas.getInWei) * Decimal.parse(_isETH ? '1.05' : '1.0'))
+          .toBigInt()),
+    );
     if (!isToken) {
       final _value = EtherAmount.fromUnitAndValue(
         EtherUnit.wei,
-        BigInt.from(double.parse(amount) * pow(10, 18)),
+        (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt(),
       );
       final _to = EthereumAddress.fromHex(addressTo);
       final _from = EthereumAddress.fromHex(AccountRepository().userAddress);
@@ -122,6 +130,7 @@ class ClientService implements ClientServiceI {
           to: _to,
           from: _from,
           value: _value,
+          gasPrice: _gasPrice,
         ),
         chainId: _chainId.toInt(),
       );
@@ -133,6 +142,10 @@ class ClientService implements ClientServiceI {
         EthereumAddress.fromHex(addressTo),
         BigInt.from(double.parse(amount) * pow(10, degree)),
         credentials: _credentials,
+        transaction: Transaction(
+          from: _from,
+          gasPrice: _gasPrice,
+        ),
       );
       print('${coin.toString()} hash - $hash');
     }
@@ -146,7 +159,7 @@ class ClientService implements ClientServiceI {
       }
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
-      if (attempts == 5) {
+      if (attempts == 20) {
         throw FormatException("The waiting time is over. Expect a balance update.");
       }
     }
@@ -311,7 +324,7 @@ extension CreateQuestContract on ClientService {
         if (result != null) print('Block: ${result.blockNumber}');
         await Future.delayed(const Duration(seconds: 3));
         attempts++;
-        if (attempts == 5) {
+        if (attempts == 20) {
           throw Exception("The waiting time is over. Expect a balance update.");
         }
       }
@@ -489,7 +502,7 @@ extension Promote on ClientService {
     final _fromAddress = await _credentials.extractAddress();
     final _value = EtherAmount.fromUnitAndValue(
       EtherUnit.wei,
-      BigInt.from(double.parse(amount) * pow(10, 18)),
+      (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt(),
     );
     final _chainId = await client!.getChainId();
     final _transactionHash = await client!.sendTransaction(
@@ -520,7 +533,7 @@ extension Promote on ClientService {
       }
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
-      if (attempts == 5) {
+      if (attempts == 20) {
         throw Exception("The waiting time is over. Expect a balance update.");
       }
     }
@@ -566,7 +579,7 @@ extension Promote on ClientService {
       }
       await Future.delayed(const Duration(seconds: 3));
       attempts++;
-      if (attempts == 5) {
+      if (attempts == 20) {
         throw Exception("The waiting time is over. Expect a balance update.");
       }
     }

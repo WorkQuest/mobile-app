@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
 import 'package:app/ui/pages/main_page/wallet_page/transactions/store/transactions_store.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -43,6 +44,13 @@ class ListTransactions extends StatelessWidget {
           final _isOtherNetwork = AccountRepository().isOtherNetwork;
           if (!_isOtherNetwork) {
             if (store.transactions.isEmpty) {
+              if (GetIt.I.get<WalletStore>().isLoading) {
+                return const SliverFillRemaining(
+                  child: Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
+                );
+              }
               return SliverFillRemaining(
                 child: Center(
                   child: Text(
@@ -64,12 +72,9 @@ class ListTransactions extends StatelessWidget {
                       ],
                     );
                   }
-                  final increase = store.transactions[index].fromAddressHash!.hex! != AccountRepository().userAddress;
                   return TransactionItem(
                     transaction: store.transactions[index],
-                    coin: increase
-                        ? _getTitleCoin(store.transactions[index].fromAddressHash!.hex!)
-                        : _getTitleCoin(store.transactions[index].toAddressHash!.hex!),
+                    coin: store.transactions[index].coin!,
                     opacity: !store.transactions[index].show,
                   );
                 },
@@ -105,40 +110,6 @@ class ListTransactions extends StatelessWidget {
         );
       },
     );
-  }
-
-  TokenSymbols _getTitleCoin(String? addressContract) {
-    if (GetIt.I.get<TransactionsStore>().type == TokenSymbols.WQT) {
-      final _dataTokens = AccountRepository().getConfigNetwork().dataCoins;
-      if (addressContract == _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.WUSD).addressToken)
-        return TokenSymbols.WUSD;
-      else if (addressContract ==
-          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.wBNB).addressToken)
-        return TokenSymbols.wBNB;
-      else if (addressContract ==
-          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.wETH).addressToken)
-        return TokenSymbols.wETH;
-      else if (addressContract ==
-          _dataTokens.firstWhere((element) => element.symbolToken == TokenSymbols.USDT).addressToken)
-        return TokenSymbols.USDT;
-      else
-        return TokenSymbols.WQT;
-    } else {
-      switch (GetIt.I.get<TransactionsStore>().type) {
-        case TokenSymbols.WQT:
-          return TokenSymbols.WQT;
-        case TokenSymbols.WUSD:
-          return TokenSymbols.WUSD;
-        case TokenSymbols.wBNB:
-          return TokenSymbols.wBNB;
-        case TokenSymbols.USDT:
-          return TokenSymbols.USDT;
-        case TokenSymbols.wETH:
-          return TokenSymbols.wETH;
-        default:
-          return TokenSymbols.WUSD;
-      }
-    }
   }
 
   _onPressedGoToExplorer() {

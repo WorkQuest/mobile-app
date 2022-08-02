@@ -32,59 +32,77 @@ class ConfirmTransferPage extends StatefulWidget {
 }
 
 class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
+  late final ConfirmTransferStore store;
+
+
+  @override
+  void initState() {
+    store = context.read<ConfirmTransferStore>();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final store = context.read<ConfirmTransferStore>();
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          'wallet.transfer'.tr(),
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
-        centerTitle: true,
-        leading: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(
-            Icons.arrow_back_ios,
-            color: AppColor.enabledButton,
+    return ObserverListener<ConfirmTransferStore>(
+      onSuccess: () async {
+        Navigator.of(context, rootNavigator: true).pop();
+        await AlertDialogUtils.showSuccessDialog(context);
+        Navigator.pop(context, true);
+      },
+      onFailure: () {
+        Navigator.of(context, rootNavigator: true).pop();
+        if (store.errorMessage!.contains('The waiting time is over')) {
+          AlertDialogUtils.showInfoAlertDialog(
+            context,
+            title: 'meta.warning'.tr(),
+            content: store.errorMessage!,
+            okPressed: () {
+              Navigator.pop(context, true);
+            },
+          );
+          return true;
+        }
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(
+            'wallet.transfer'.tr(),
+            style: TextStyle(fontSize: 16, color: Colors.black),
+          ),
+          centerTitle: true,
+          leading: CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(
+              Icons.arrow_back_ios,
+              color: AppColor.enabledButton,
+            ),
           ),
         ),
-      ),
-      body: Padding(
-        padding: _padding,
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 12,
-            ),
-            _InformationWidget(
-              fee: widget.fee,
-              typeCoins: widget.typeCoin,
-              addressTo: widget.addressTo,
-              amount: widget.amount,
-            ),
-            Expanded(child: SizedBox()),
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).padding.bottom + 10.0,
+        body: Padding(
+          padding: _padding,
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 12,
               ),
-              child: SizedBox(
-                width: double.infinity,
-                child: ObserverListener<ConfirmTransferStore>(
-                  onFailure: () {
-                    Navigator.of(context, rootNavigator: true).pop();
-                    return false;
-                  },
-                  onSuccess: () async {
-                    Navigator.pop(context, true);
-                    await AlertDialogUtils.showSuccessDialog(context);
-                    Navigator.pop(context, true);
-                    Navigator.pop(context, true);
-                  },
+              _InformationWidget(
+                fee: widget.fee,
+                typeCoins: widget.typeCoin,
+                addressTo: widget.addressTo,
+                amount: widget.amount,
+              ),
+              Expanded(child: SizedBox()),
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom + 10.0,
+                ),
+                child: SizedBox(
+                  width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () async {
                       AlertDialogUtils.showLoadingDialog(context);
@@ -98,9 +116,9 @@ class _ConfirmTransferPageState extends State<ConfirmTransferPage> {
                     child: Text('meta.confirm'.tr()),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

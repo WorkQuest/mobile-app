@@ -31,20 +31,17 @@ class Web3Utils {
       print('_balanceWQTInWei: $_balanceWQTInWei');
       print('amount: $amount');
       if (amount > (_balanceWQTInWei.toDouble() - fee.toDouble())) {
-        throw FormatException(
-            'errors.notHaveEnoughTx'.tr(namedArgs: {'token': getNativeToken()}));
+        throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     } else {
       final _balanceToken =
           await _client.getBalanceFromContract(getAddressToken(typeCoin));
       if (amount > _balanceToken.toDouble()) {
-        throw FormatException('errors.notHaveEnoughTxToken'
-            .tr(namedArgs: {'token': getTitleToken(typeCoin)}));
+        throw FormatException('errors.notHaveEnoughTxToken'.tr());
       }
       fee = fee * Decimal.fromInt(10).pow(18);
       if (_balanceNative.getInWei < fee.toBigInt()) {
-        throw FormatException(
-            'errors.notHaveEnoughTx'.tr(namedArgs: {'token': getNativeToken()}));
+        throw FormatException('errors.notHaveEnoughTx'.tr());
       }
     }
   }
@@ -84,10 +81,11 @@ class Web3Utils {
     required BigInt gas,
     required int degree,
     bool isETH = false,
+    bool isTransfer = false,
   }) {
     return ((Decimal.parse(estimateGas.toString()) *
                 Decimal.parse(gas.toString()) *
-                Decimal.parse(isETH ? '1.1' : '1.0')) /
+                Decimal.parse(isETH ? (isTransfer ? '1.05' : '1.1') : '1.0')) /
             Decimal.fromInt(10).pow(18))
         .toDecimal();
   }
@@ -263,6 +261,11 @@ class Web3Utils {
     } else {
       return Constants.worknetTestnetWUSD;
     }
+  }
+
+  static bool isETH() {
+    return AccountRepository().networkName.value == NetworkName.ethereumMainnet ||
+        AccountRepository().networkName.value == NetworkName.ethereumTestnet;
   }
 
   static String getAddressWorknetWQFactory() {
