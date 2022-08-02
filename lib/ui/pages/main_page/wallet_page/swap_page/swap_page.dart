@@ -78,7 +78,8 @@ class _SwapPageState extends State<SwapPage> {
             }
             store.setNetwork(null);
             _amountController.clear();
-            AlertDialogUtils.showSuccessDialog(context);
+            AlertDialogUtils.showSuccessDialog(context).then((value) => Navigator.pop(
+                context));
           } else if (store.successData == SwapStoreState.approve) {
             Navigator.of(context, rootNavigator: true).pop();
             _onPressedSend();
@@ -372,7 +373,7 @@ class _SwapPageState extends State<SwapPage> {
         print('_onPressedSend | $e');
         Navigator.of(context, rootNavigator: true).pop();
         AlertDialogUtils.showInfoAlertDialog(context,
-            title: 'meta.warning'.tr(), content: e.message);
+            title: 'modals.warning'.tr(), content: e.message);
       } catch (e, trace) {
         print('_onPressedSend | $e\n$trace');
         Navigator.of(context, rootNavigator: true).pop();
