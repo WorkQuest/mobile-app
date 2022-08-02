@@ -152,11 +152,11 @@ class _ChatPageState extends State<ChatPage>
                   controller: _tabController,
                   tabs: [
                     tab(text: 'chat.tabs.all'),
-                    tab(text: 'chat.tabs.active'),
                     tab(text: 'chat.tabs.privates'),
-                    tab(text: 'chat.tabs.favorite'),
                     tab(text: 'chat.tabs.group'),
+                    tab(text: 'chat.tabs.active'),
                     tab(text: 'chat.tabs.completed'),
+                    tab(text: 'chat.tabs.favorite'),
                   ],
                 ),
                 Expanded(
@@ -171,21 +171,7 @@ class _ChatPageState extends State<ChatPage>
                         onPress: onPress,
                       ),
                       _ListChatsWidget(
-                        typeChat: TypeChat.active,
-                        query: _searchTextController.text,
-                        store: store,
-                        onLongPress: onLongPress,
-                        onPress: onPress,
-                      ),
-                      _ListChatsWidget(
                         typeChat: TypeChat.privates,
-                        query: _searchTextController.text,
-                        store: store,
-                        onLongPress: onLongPress,
-                        onPress: onPress,
-                      ),
-                      _ListChatsWidget(
-                        typeChat: TypeChat.favourites,
                         query: _searchTextController.text,
                         store: store,
                         onLongPress: onLongPress,
@@ -199,7 +185,21 @@ class _ChatPageState extends State<ChatPage>
                         onPress: onPress,
                       ),
                       _ListChatsWidget(
+                        typeChat: TypeChat.active,
+                        query: _searchTextController.text,
+                        store: store,
+                        onLongPress: onLongPress,
+                        onPress: onPress,
+                      ),
+                      _ListChatsWidget(
                         typeChat: TypeChat.completed,
+                        query: _searchTextController.text,
+                        store: store,
+                        onLongPress: onLongPress,
+                        onPress: onPress,
+                      ),
+                      _ListChatsWidget(
+                        typeChat: TypeChat.favourites,
                         query: _searchTextController.text,
                         store: store,
                         onLongPress: onLongPress,

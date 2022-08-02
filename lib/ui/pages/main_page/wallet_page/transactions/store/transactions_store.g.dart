@@ -75,8 +75,7 @@ mixin _$TransactionsStore on TransactionsStoreBase, Store {
 
   @override
   Future getTransactions() {
-    return _$getTransactionsAsyncAction
-        .run(() => super.getTransactions());
+    return _$getTransactionsAsyncAction.run(() => super.getTransactions());
   }
 
   final _$getTransactionsMoreAsyncAction =

@@ -114,8 +114,8 @@ mixin _$TransferStore on TransferStoreBase, Store {
     return _$getFeeAsyncAction.run(() => super.getFee());
   }
 
-  late final _$checkBeforeSendAsyncAction =
-  AsyncAction('TransferStoreBase.checkBeforeSend', context: context);
+  final _$checkBeforeSendAsyncAction =
+      AsyncAction('TransferStoreBase.checkBeforeSend');
 
   @override
   Future checkBeforeSend() {
