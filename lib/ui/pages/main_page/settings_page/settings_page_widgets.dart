@@ -154,6 +154,7 @@ class SettingsCard extends StatelessWidget {
     );
   }
 }
+
 class LogoutButton extends StatelessWidget {
   const LogoutButton({Key? key}) : super(key: key);
 
@@ -168,7 +169,7 @@ class LogoutButton extends StatelessWidget {
           confirmAction: () async {
             Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
               SignInPage.routeName,
-                  (route) => false,
+              (route) => false,
             );
             final cookieManager = WebviewCookieManager();
             context.read<ProfileMeStore>().deletePushToken();
@@ -204,60 +205,57 @@ class MyProfileImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context, rootNavigator: true).pushNamed(
-          UserProfile.routeName,
-        );
-      },
-      child: Container(
-        height: 150.0,
-        decoration: BoxDecoration(
-          // color: Colors.blue,
-          borderRadius: BorderRadius.circular(
-            6.0,
-          ),
-        ),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: FadeInImage(
-                width: MediaQuery.of(context).size.width,
-                height: 300,
-                placeholder: MemoryImage(
-                  Uint8List.fromList(base64Decode(Constants.base64BlueHolder)),
-                ),
-                image: NetworkImage(
-                  userStore.userData!.avatar?.url ??
-                      Constants.defaultImageNetwork,
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
-            Positioned(
-              bottom: 16.0,
-              left: 16.0,
-              child: Container(
-                width: 300,
-                child: Text(
-                  " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.0,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(6.0),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context, rootNavigator: true).pushNamed(
+            UserProfile.routeName,
+          );
+        },
+        child: SizedBox(
+          height: 190.0,
+          child: Stack(
+            children: [
+              Positioned.fill(child: ColoredBox(color: Colors.black)),
+              Positioned.fill(
+                child: FadeInImage(
+                  width: MediaQuery.of(context).size.width,
+                  height: 300,
+                  placeholder: MemoryImage(
+                    Uint8List.fromList(base64Decode(Constants.base64BlackHolder)),
                   ),
-                  overflow: TextOverflow.clip,
+                  image: NetworkImage(
+                    userStore.userData!.avatar?.url ?? Constants.defaultImageNetwork,
+                  ),
+                  fit: BoxFit.fitHeight,
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 16.0,
-              right: 23.0,
-              child: Icon(
-                Icons.arrow_right_sharp,
-                color: Colors.white,
+              Positioned(
+                bottom: 16.0,
+                left: 16.0,
+                child: Container(
+                  width: 300,
+                  child: Text(
+                    " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    ),
+                    overflow: TextOverflow.clip,
+                  ),
+                ),
               ),
-            ),
-          ],
+              Positioned(
+                bottom: 16.0,
+                right: 23.0,
+                child: Icon(
+                  Icons.arrow_right_sharp,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
