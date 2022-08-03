@@ -288,7 +288,7 @@ class SettingsPage extends StatelessWidget {
                   InstrumentCard(
                     urlArgument: "crediting",
                     iconPath: "assets/settings_wallet.svg",
-                    title: "crediting.lending".tr(),
+                    title: "ui.menu.crediting.title".tr(),
                     enable: false,
                   ),
                   InstrumentCard(
@@ -307,6 +307,12 @@ class SettingsPage extends StatelessWidget {
                     urlArgument: "staking",
                     iconPath: "assets/work_quest_icon.svg",
                     title: "WorkQuest Staking",
+                    enable: false,
+                  ),
+                  InstrumentCard(
+                    urlArgument: "staking",
+                    iconPath: "assets/work_quest_icon.svg",
+                    title: "Collateral",
                     enable: false,
                   ),
                 ],

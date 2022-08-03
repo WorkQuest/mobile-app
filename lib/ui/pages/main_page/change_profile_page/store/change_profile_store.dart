@@ -63,6 +63,13 @@ abstract class ChangeProfileStoreBase with Store {
     else
       userData.additionalInfo?.secondMobileNumber =
           Phone(phone: "", fullPhone: "", codeRegion: "");
+
+    if (phoneNumber == null)
+      phoneNumber = PhoneNumber(phoneNumber: "", dialCode: "+1", isoCode: "US");
+
+    if (secondPhoneNumber == null)
+      secondPhoneNumber =
+          PhoneNumber(phoneNumber: "", dialCode: "+1", isoCode: "US");
   }
 
   @action

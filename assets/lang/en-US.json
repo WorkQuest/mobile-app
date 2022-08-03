@@ -1267,7 +1267,7 @@
         "desc": "You can select a percentage of each completed quest that will subsequently be automatically credited to your pension account, or you can simply enter the amount you prefer. Group funds are invested on behalf of the employee, and gains on investments generate income for the worker upon retirement."
       },
       "referral": {
-        "title": "Program of recommendations",
+        "title": "Referral program",
         "desc": "Refer and Earn is a program that allows you to earn rewards for each friend you refer, become a customer, and subsequently complete an quest. Friends you've recommended also save by getting a free registration."
       },
       "p2p": {
@@ -1279,7 +1279,7 @@
         "desc": "A cryptocurrency savings account gives you access to the cryptocurrency market, while earning interest, just like a traditional bank savings account. If you're interested in investing in cryptocurrencies for the long term, a cryptocurrency savings account can help you earn interest while keeping your money safe."
       },
       "crediting": {
-        "title": "Loan",
+        "title": "Lending",
         "desc": "Similar to a traditional loan, the amount of the cryptocurrency loan is credited to the borrower's bank account and subsequently the borrower pays a monthly fee to the lender. After paying off the debt, the lender releases the collateral that served as collateral."
       },
       "mining": {
