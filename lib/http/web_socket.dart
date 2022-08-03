@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:app/constants.dart';
 import 'package:app/model/web3/TrxEthereumResponse.dart';
 import 'package:app/model/web3/transactions_response.dart';
 import 'package:app/ui/pages/main_page/wallet_page/store/wallet_store.dart';
@@ -44,7 +45,8 @@ class WebSocket {
   void _connectWallet() {
     currentWss = AccountRepository().getConfigNetworkWorknet().wss;
     walletChannel = IOWebSocketChannel.connect(currentWss!);
-    walletChannel = IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
+    walletChannel =
+        IOWebSocketChannel.connect(AccountRepository().getConfigNetwork().wss);
     walletChannel!.sink.add("""
       {
           "jsonrpc": "2.0",
@@ -79,7 +81,6 @@ class WebSocket {
     _notificationChannel?.sink.close(closeCode, "closeCode");
   }
 
-
   _closeWalletSocket() {
     if (walletChannel != null) {
       walletChannel!.sink.close();
@@ -94,7 +95,10 @@ class WebSocket {
   }
 
   void _connectSender() {
-    _senderChannel = IOWebSocketChannel.connect("wss://dev-app.workquest.co/api");
+    final _wssPath = AccountRepository().notifierNetwork.value == Network.testnet
+        ? "wss://testnet-app.workquest.co/api"
+        : "wss://app.workquest.co/api";
+    _senderChannel = IOWebSocketChannel.connect(_wssPath);
     _senderChannel?.sink.add("""{
           "type": "hello",
           "id": 1,
@@ -112,7 +116,10 @@ class WebSocket {
   }
 
   void _connectListen() {
-    _notificationChannel = IOWebSocketChannel.connect("wss://notifications.workquest.co/api/v1/notifications");
+    final _wsPath = AccountRepository().notifierNetwork.value == Network.testnet
+        ? 'wss://testnet-notification.workquest.co/api/v1/notifications'
+        : 'wss://mainnet-notification.workquest.co/api/v1/notifications';
+    _notificationChannel = IOWebSocketChannel.connect(_wsPath);
 
     _notificationChannel?.sink.add("""{
           "type": "hello",
@@ -234,7 +241,8 @@ class WebSocket {
       } catch (e) {
         _sender = _events?['message.sender']?[2].toString().toLowerCase();
       }
-      final _txHash = _events?['ethereum_tx.ethereumTxHash']?[0]?.toString().toLowerCase();
+      final _txHash =
+          _events?['ethereum_tx.ethereumTxHash']?[0]?.toString().toLowerCase();
       final _blockNumber = _events?['tx.height']?[0];
       final _block = DateTime.now();
       final _value = _events?['ethereum_tx.amount']?[0];
@@ -266,7 +274,9 @@ class WebSocket {
           GetIt.I.get<WalletStore>().getCoins(isForce: false);
         }
       } else {
-        final _txLog = json.decode(transaction.result!.events!['tx_log.txLog']![0].toString().replaceAll('\\', ""));
+        final _txLog = json.decode(transaction.result!.events!['tx_log.txLog']![0]
+            .toString()
+            .replaceAll('\\', ""));
         final _address = _txLog['topics'][2].toString().split('x').first +
             'x' +
             _txLog['topics'][2].toString().split('x').last.substring(24);

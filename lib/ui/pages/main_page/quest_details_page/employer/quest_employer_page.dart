@@ -123,7 +123,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share("https://dev-app.workquest.co/quests/${store.quest.value!.id}");
+          Share.share("https://testnet-app.workquest.co/quests/${store.quest.value!.id}");
         },
       ),
       if (canActionsQuest)

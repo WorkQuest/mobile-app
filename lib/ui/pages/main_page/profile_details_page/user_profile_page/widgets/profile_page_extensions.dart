@@ -83,11 +83,12 @@ extension CustomAppBar on UserProfileState {
           background: Stack(
             fit: StackFit.expand,
             children: [
+              Positioned.fill(child: ColoredBox(color: Colors.black,)),
               Image.network(
                 info.avatar != null
                     ? info.avatar!.url ?? defaultImage
                     : defaultImage,
-                fit: BoxFit.cover,
+                fit: BoxFit.fitHeight,
               ),
               Positioned(
                 bottom: info.ratingStatistic!.status == 1 ? 67.0 : 85.0,
