@@ -42,7 +42,8 @@ class AlertDialogUtils {
     );
   }
 
-  static Future<void> showLoadingDialog(BuildContext context, {String? message}) async {
+  static Future<void> showLoadingDialog(BuildContext context,
+      {String? message}) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -313,6 +314,61 @@ class AlertDialogUtils {
       onTabOk: () => onTabOk(),
       colorCancel: AppColor.enabledButton,
       colorOk: Colors.red,
+    );
+  }
+
+  static void showProfileDialog(BuildContext context, {
+    required Function() onSave,
+}) {
+    showCupertinoDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) {
+        return Platform.isIOS
+            ? CupertinoAlertDialog(
+                title: Text("modals.attention".tr()),
+                content: Text("modals.unsavedChanges".tr()),
+                actions: [
+                  CupertinoDialogAction(
+                    child: Text("meta.ok".tr()),
+                    onPressed: Navigator.of(context).pop,
+                  ),
+                  CupertinoDialogAction(
+                      child: Text("modals.dontSave".tr()),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      }),
+                  CupertinoDialogAction(
+                    child: Text("settings.save".tr()),
+                    onPressed: onSave,
+                  )
+                ],
+              )
+            : AlertDialog(
+                title: Text("modals.error".tr()),
+                content: Text("modals.dontSave".tr()),
+                actions: [
+                  TextButton(
+                    child: Text("meta.ok".tr()),
+                    onPressed: Navigator.of(context).pop,
+                  ),
+                  TextButton(
+                      child: Text("modals.dontSave".tr()),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      }),
+                  TextButton(
+                    child: Text("settings.save".tr()),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      onSave();
+                    },
+                  )
+                ],
+              );
+      },
     );
   }
 }
