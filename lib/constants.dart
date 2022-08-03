@@ -1,4 +1,5 @@
 import 'package:app/keys.dart';
+import 'package:app/web3/contractEnums.dart';
 import 'package:flutter/material.dart';
 class Commission {
   static const commissionBuy = 0.98;
@@ -325,11 +326,15 @@ class DataCoins {
   final TokenSymbols symbolToken;
   final String? addressToken;
   final String iconPath;
+  final bool? isEnable;
+  final String? title;
 
   const DataCoins({
     required this.symbolToken,
     required this.iconPath,
     this.addressToken,
+    this.isEnable,
+    this.title,
   });
 }
 
@@ -338,6 +343,14 @@ class WorkerBadge {
   final Color color;
 
   const WorkerBadge(this.title, this.color);
+}
+
+class WalletItem {
+  String iconPath;
+  String title;
+  TYPE_WALLET typeWallet;
+
+  WalletItem(this.iconPath, this.title, this.typeWallet);
 }
 
 enum NetworkName {

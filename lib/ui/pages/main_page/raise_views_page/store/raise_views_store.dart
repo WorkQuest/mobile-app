@@ -71,6 +71,36 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   List<String> forWeek = [r"35$", r"28$", r"22$", r"18$"];
   List<String> forMonth = [r"50$", r"35$", r"29$", r"21$"];
 
+  List<DataCoins> coins = [
+    DataCoins(
+        symbolToken: TokenSymbols.WUSD,
+        iconPath: "assets/coins/wusd.svg",
+        title: 'WUSD',
+        isEnable: true),
+    DataCoins(
+        symbolToken: TokenSymbols.WQT,
+        iconPath: "assets/coins/wqt.svg",
+        title: 'WQT',
+        isEnable: true),
+  ];
+
+  List<WalletItem> wallets = [
+    WalletItem(
+        "assets/coinpaymebts.svg", "Сoinpaymebts", TYPE_WALLET.Coinpaymebts),
+  ];
+
+  @observable
+  DataCoins? currentCoin;
+
+  @observable
+  WalletItem? currentWallet;
+
+  @computed
+  bool get selectedCoin => currentCoin != null;
+
+  @computed
+  bool get selectedWallet => currentWallet != null;
+
   setQuestId(String value) => questId = value;
 
   @action
@@ -86,10 +116,22 @@ abstract class _RaiseViewStore extends IStore<bool> with Store {
   setTitleSelectedWallet(TYPE_WALLET? value) => typeWallet = value;
 
   @action
+  void setCurrentCoin(DataCoins value) => currentCoin = value;
+
+  @action
+  void setCurrentWallet(WalletItem value) => currentWallet = value;
+
+  @action
   void initPrice() {
     price[1] = forDay;
     price[2] = forWeek;
     price[3] = forMonth;
+  }
+
+  @action
+  void initValue() {
+    currentCoin = coins[0];
+    currentWallet = wallets[0];
   }
 
   int getPeriod({bool isQuest = false}) {
