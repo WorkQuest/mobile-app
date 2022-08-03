@@ -5,25 +5,23 @@ import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/chat_page/store/chat_store.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/my_quests_item.dart';
+import 'package:app/ui/pages/main_page/my_quests_page/shimmer/shimmer_my_quest_item.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/notification_page/notification_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
+import 'package:app/ui/pages/main_page/quest_page/quest_list/shimmer/shimmer_workers_item.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/workers_item.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
+import 'package:app/utils/deep_link_util.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
-import 'package:uni_links/uni_links.dart';
-
-import '../../profile_details_page/user_profile_page/pages/user_profile_page.dart';
-import '../../quest_details_page/details/quest_details_page.dart';
 
 class QuestList extends StatefulWidget {
   final Function() changePage;
@@ -43,9 +41,8 @@ class _QuestListState extends State<QuestList> {
 
   final QuestsType questItemPriorityType = QuestsType.Favorites;
   final scrollKey = new GlobalKey();
-  bool _initialURILinkHandled = false;
-  StreamSubscription? _streamSubscription;
-  String id = "";
+
+  // String id = "";
   late UserRole role;
 
   @override
@@ -64,8 +61,7 @@ class _QuestListState extends State<QuestList> {
       questsStore!.role = profileMeStore!.userData!.role;
       role = profileMeStore!.userData!.role;
     });
-    _incomingLinkHandler();
-    _initURIHandler();
+    DeepLinkUtil().initDeepLink(context: context, store: profileMeStore!);
   }
 
   @override
@@ -207,12 +203,8 @@ class _QuestListState extends State<QuestList> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SvgPicture.asset("assets/filter.svg"),
-                        SizedBox(
-                          width: 13,
-                        ),
-                        Text(
-                          "quests.filter.btn".tr(),
-                        ),
+                        const SizedBox(width: 13),
+                        Text("quests.filter.btn".tr()),
                       ],
                     ),
                   ),
@@ -245,9 +237,7 @@ class _QuestListState extends State<QuestList> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(height: 15),
-                          SvgPicture.asset(
-                            "assets/empty_quest_icon.svg",
-                          ),
+                          SvgPicture.asset("assets/empty_quest_icon.svg"),
                           const SizedBox(height: 10),
                           Text(
                             profileMeStore!.userData!.role == UserRole.Worker
@@ -316,9 +306,7 @@ class _QuestListState extends State<QuestList> {
   Widget _getDivider() {
     return SizedBox(
       height: 6,
-      child: Container(
-        color: Color(0xFFF7F8FA),
-      ),
+      child: Container(color: Color(0xFFF7F8FA)),
     );
   }
 
@@ -330,137 +318,5 @@ class _QuestListState extends State<QuestList> {
     if (object is ProfileMeResponse) {
       object.showAnimation = false;
     }
-  }
-
-  Future<void> _initURIHandler() async {
-    if (!_initialURILinkHandled) {
-      _initialURILinkHandled = true;
-      try {
-        var initialURI = await getInitialUri();
-        print("InitialUri: $initialURI");
-        if (initialURI != null) {
-          print("Initial URI received $initialURI");
-          if (!mounted) {
-            return;
-          }
-          final argument = initialURI.path.split("/").last;
-          if (initialURI.path.contains("quests"))
-            Navigator.of(context, rootNavigator: true).pushNamed(
-              QuestDetails.routeName,
-              arguments: QuestArguments(
-                questInfo: null,
-                id: argument,
-              ),
-            );
-          else if (initialURI.path.contains("profile")) {
-            await profileMeStore!.getQuestHolder(argument);
-            await Navigator.of(context, rootNavigator: true).pushNamed(
-              UserProfile.routeName,
-              arguments: ProfileArguments(
-                role: profileMeStore!.questHolder!.role,
-                userId: profileMeStore!.questHolder!.id,
-              ),
-            );
-          }
-        } else {
-          print("Null Initial URI received");
-        }
-      } on PlatformException {
-        print("Failed to receive initial uri");
-      } on FormatException {
-        if (!mounted) {
-          return;
-        }
-        print('Malformed Initial URI received');
-      }
-    }
-  }
-
-  void _incomingLinkHandler() {
-    _streamSubscription = uriLinkStream.listen((Uri? uri) async {
-      if (!mounted) {
-        return;
-      }
-      print('Received URI: $uri');
-      final argument = uri?.path.split("/").last;
-      if ((uri?.path ?? "").contains("quests"))
-        Navigator.of(context, rootNavigator: true).pushNamed(
-          QuestDetails.routeName,
-          arguments: QuestArguments(
-            questInfo: null,
-            id: argument,
-          ),
-        );
-      else if ((uri?.path ?? "").contains("profile")) {
-        await profileMeStore!.getQuestHolder(argument!);
-        await Navigator.of(context, rootNavigator: true).pushNamed(
-          UserProfile.routeName,
-          arguments: ProfileArguments(
-            role: profileMeStore!.questHolder!.role,
-            userId: argument,
-          ),
-        );
-      }
-    }, onError: (Object err) {
-      if (!mounted) {
-        return;
-      }
-      print('Error occurred: $err');
-    });
-  }
-}
-
-class _AnimationWorkersQuestsItems extends StatefulWidget {
-  final Widget child;
-  final int index;
-  final bool enabled;
-
-  const _AnimationWorkersQuestsItems({
-    Key? key,
-    required this.child,
-    this.enabled = false,
-    this.index = 0,
-  }) : super(key: key);
-
-  @override
-  _AnimationWorkersQuestsItemsState createState() =>
-      _AnimationWorkersQuestsItemsState();
-}
-
-class _AnimationWorkersQuestsItemsState
-    extends State<_AnimationWorkersQuestsItems> with TickerProviderStateMixin {
-  late AnimationController _animationController;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 550));
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget.enabled) {
-      _animationController.forward();
-    }
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (_, child) {
-        return Transform.translate(
-          offset: Offset(25 - (25 * _animationController.value), 0),
-          child: Opacity(
-            opacity: 0.1 + 0.9 * _animationController.value,
-            child: child,
-          ),
-        );
-      },
-      child: widget.child,
-    );
   }
 }
