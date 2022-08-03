@@ -73,9 +73,11 @@ class NotificationNotification {
   List<dynamic>? recipients;
 
   factory NotificationNotification.fromJson(Map<String, dynamic> json) {
-    final _data = jsonDecode(json['data']);
+    final _data = json['data'].runtimeType == String
+        ? jsonDecode(json['data'].toString())
+        : json['data'];
     return NotificationNotification(
-      data: Data.fromJson(_data as Map<String, dynamic>),
+      data: Data.fromJson(_data),
       action: json["action"],
       recipients: json["recipients"] == null
           ? null
@@ -105,10 +107,10 @@ class Data {
   String questId;
   String chatId;
   String? disputeId;
-  User user;
+  User? user;
 
   factory Data.fromJson(Map<String, dynamic> json) {
-    String title = "";
+    String? title = "";
     json["decision"] == null
         ? json["title"] == null
             ? json["quest"] == null
@@ -129,7 +131,9 @@ class Data {
       user: json["fromUser"] == null
           ? json["user"] == null
               ? json["sender"] == null
-                  ? User.fromJson(json["quest"]["user"])
+                  ? json["quest"] == null
+                      ? null
+                      : User.fromJson(json["quest"]["user"])
                   : User.fromJson(json["sender"]["user"])
               : User.fromJson(json["user"])
           : User.fromJson(json["fromUser"]),

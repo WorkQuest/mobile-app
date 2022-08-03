@@ -150,7 +150,8 @@ extension QuestService on ApiProvider {
         '&northAndSouthCoordinates[south][latitude]=${bounds.southwest.latitude.toString()}&' +
         'northAndSouthCoordinates[south][longitude]=${bounds.southwest.longitude.toString()}';
 
-    final response = await httpClient.post(query: query, data: {"specializations": []});
+    final response =
+        await httpClient.post(query: query, data: {"specializations": []});
     return List<BaseQuestResponse>.from(
       response["quests"].map(
         (x) => BaseQuestResponse.fromJson(x),
@@ -269,7 +270,8 @@ extension QuestService on ApiProvider {
       );
     else
       responseData = await httpClient.post(
-        query: '/v1/worker/$userId/get-quests?limit=$limit&offset=$offset&$status'
+        query:
+            '/v1/worker/$userId/get-quests?limit=$limit&offset=$offset&$status'
             '$invite$response$star$sort',
         data: {
           "specializations": [],
@@ -334,7 +336,8 @@ extension QuestService on ApiProvider {
       search = 'q=$searchWord&';
     }
     final responseData = await httpClient.post(
-      query: '/v1/get-quests?offset=$offset&limit=$limit&$workplaces$employments'
+      query:
+          '/v1/get-quests?offset=$offset&limit=$limit&$workplaces$employments'
           '$priorities$payPeriods$price&responded=$responded&invited=$invited'
           '&starred=$starred&$status$search$sort',
       data: {
@@ -384,7 +387,8 @@ extension QuestService on ApiProvider {
       search = 'q=$searchWord&';
     }
     final responseData = await httpClient.post(
-      query: '/v1/profile/get-workers?$search$priorities$ratingStatuses$workplaces'
+      query:
+          '/v1/profile/get-workers?$search$priorities$ratingStatuses$workplaces'
           '$payPeriods$sort&$price&offset=$offset&limit=$limit',
       data: {
         "specializations": specializations ?? [],
@@ -412,8 +416,8 @@ extension QuestService on ApiProvider {
       query: '/v1/skill-filters',
     );
     Map<int, List<int>> list = (responseData as Map).map((key, value) {
-      return MapEntry<int, List<int>>(
-          value["id"], (value["skills"] as Map).values.map((e) => e as int).toList());
+      return MapEntry<int, List<int>>(value["id"],
+          (value["skills"] as Map).values.map((e) => e as int).toList());
     });
     return list;
   }
@@ -455,7 +459,8 @@ extension QuestService on ApiProvider {
 
   Future<List<BaseQuestResponse>> responsesQuests() async {
     try {
-      final responseData = await httpClient.get(query: '/v1/quest/responses/my');
+      final responseData =
+          await httpClient.get(query: '/v1/quest/responses/my');
       return List<BaseQuestResponse>.from(
         responseData["responses"].map(
           (x) => BaseQuestResponse.fromJson(x),
@@ -526,7 +531,9 @@ extension Notification on ApiProvider {
     required int offset,
   }) async {
     final responseData = await httpClient.get(
-      query: 'https://notifications.workquest.co/api/notifications',
+      query: 'https://notifications.workquest.co/api/notifications?'
+          'exclude=bridge&exclude=proposal&exclude=daily_liquidity&exclude=dao&'
+          'exclude=referral&exclude=pension_fund&exclude=bridge_usdt',
       queryParameters: {
         "offset": offset,
       },
@@ -646,37 +653,45 @@ extension UserInfoService on ApiProvider {
       if (userData.role == UserRole.Worker) "workplace": userData.workplace,
       if (userData.role == UserRole.Worker) "payPeriod": userData.payPeriod,
       "additionalInfo": {
-        "secondMobileNumber": userData.additionalInfo?.secondMobileNumber != null
-            ? {
-                "codeRegion": userData.additionalInfo?.secondMobileNumber!.codeRegion,
-                "phone": userData.additionalInfo?.secondMobileNumber!.phone,
-                "fullPhone": userData.additionalInfo?.secondMobileNumber!.fullPhone,
-              }
-            : null,
+        "secondMobileNumber":
+            userData.additionalInfo?.secondMobileNumber != null
+                ? {
+                    "codeRegion":
+                        userData.additionalInfo?.secondMobileNumber!.codeRegion,
+                    "phone": userData.additionalInfo?.secondMobileNumber!.phone,
+                    "fullPhone":
+                        userData.additionalInfo?.secondMobileNumber!.fullPhone,
+                  }
+                : null,
         "address": (userData.additionalInfo?.address?.isNotEmpty ?? false)
             ? userData.additionalInfo?.address
             : null,
         "socialNetwork": {
           "instagram":
-              (userData.additionalInfo?.socialNetwork?.instagram?.isNotEmpty ?? false)
+              (userData.additionalInfo?.socialNetwork?.instagram?.isNotEmpty ??
+                      false)
                   ? userData.additionalInfo?.socialNetwork?.instagram
                   : null,
           "twitter":
-              (userData.additionalInfo?.socialNetwork?.twitter?.isNotEmpty ?? false)
+              (userData.additionalInfo?.socialNetwork?.twitter?.isNotEmpty ??
+                      false)
                   ? userData.additionalInfo?.socialNetwork?.twitter
                   : null,
           "linkedin":
-              (userData.additionalInfo?.socialNetwork?.linkedin?.isNotEmpty ?? false)
+              (userData.additionalInfo?.socialNetwork?.linkedin?.isNotEmpty ??
+                      false)
                   ? userData.additionalInfo?.socialNetwork?.linkedin
                   : null,
           "facebook":
-              (userData.additionalInfo?.socialNetwork?.facebook?.isNotEmpty ?? false)
+              (userData.additionalInfo?.socialNetwork?.facebook?.isNotEmpty ??
+                      false)
                   ? userData.additionalInfo?.socialNetwork?.facebook
                   : null,
         },
-        "description": (userData.additionalInfo?.description?.isNotEmpty ?? false)
-            ? userData.additionalInfo?.description
-            : null,
+        "description":
+            (userData.additionalInfo?.description?.isNotEmpty ?? false)
+                ? userData.additionalInfo?.description
+                : null,
         if (userData.role == UserRole.Employer)
           "company": (userData.additionalInfo?.company?.isNotEmpty ?? false)
               ? userData.additionalInfo?.company
@@ -716,7 +731,8 @@ extension UserInfoService on ApiProvider {
                   ?.arrayRatingStatusCanInviteMeOnQuest ??
               [],
         "ratingStatusInMySearch": userData
-                .workerOrEmployerProfileVisibilitySetting?.arrayRatingStatusInMySearch ??
+                .workerOrEmployerProfileVisibilitySetting
+                ?.arrayRatingStatusInMySearch ??
             []
       }
     };

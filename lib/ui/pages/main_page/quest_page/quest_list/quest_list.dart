@@ -46,6 +46,7 @@ class _QuestListState extends State<QuestList> {
   bool _initialURILinkHandled = false;
   StreamSubscription? _streamSubscription;
   String id = "";
+  late UserRole role;
 
   @override
   void initState() {
@@ -61,6 +62,7 @@ class _QuestListState extends State<QuestList> {
           ? questsStore!.getQuests(true)
           : questsStore!.getWorkers(true);
       questsStore!.role = profileMeStore!.userData!.role;
+      role = profileMeStore!.userData!.role;
     });
     _incomingLinkHandler();
     _initURIHandler();
@@ -73,7 +75,22 @@ class _QuestListState extends State<QuestList> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        body: getBody(),
+        body: questsStore!.searchWord.isNotEmpty
+            ? getBody()
+            : RefreshIndicator(
+                triggerMode: RefreshIndicatorTriggerMode.anywhere,
+                onRefresh: () async {
+                  if (questsStore!.searchWord.isNotEmpty)
+                    return;
+                  else if (role == UserRole.Worker && !questsStore!.isLoading)
+                    return questsStore!.getQuests(true);
+                  else
+                    return questsStore!.getWorkers(true);
+                },
+                displacement: 50,
+                edgeOffset: 300,
+                child: getBody(),
+              ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(left: 25),
@@ -99,214 +116,199 @@ class _QuestListState extends State<QuestList> {
   }
 
   Widget getBody() {
-    final role = profileMeStore?.userData?.role;
-    return RefreshIndicator(
-      triggerMode: RefreshIndicatorTriggerMode.anywhere,
-      onRefresh: () async {
-        if (questsStore!.searchWord.isNotEmpty) if (role == UserRole.Worker)
-          return questsStore!.getSearchedQuests(true);
-        else
-          return questsStore!.getSearchedWorkers(true);
-        else if (role == UserRole.Worker && !questsStore!.isLoading)
-          return questsStore!.getQuests(true);
-        else
-          return questsStore!.getWorkers(true);
-      },
-      displacement: 50,
-      edgeOffset: 300,
-      child: NotificationListener<ScrollEndNotification>(
-        onNotification: (ScrollEndNotification scrollEnd) {
-          final metrics = scrollEnd.metrics;
-          if (metrics.maxScrollExtent <= metrics.pixels) {
-            if (questsStore!.isLoading) return true;
-            if (profileMeStore!.userData!.role == UserRole.Worker) {
-              questsStore!.searchWord.length > 0
-                  ? questsStore!.getSearchedQuests(false)
-                  : questsStore!.getQuests(false);
-            } else {
-              questsStore!.searchWord.length > 0
-                  ? questsStore!.getSearchedWorkers(false)
-                  : questsStore!.getWorkers(false);
-            }
+    return NotificationListener<ScrollEndNotification>(
+      onNotification: (ScrollEndNotification scrollEnd) {
+        final metrics = scrollEnd.metrics;
+        if (metrics.maxScrollExtent <= metrics.pixels) {
+          if (questsStore!.isLoading) return true;
+          if (profileMeStore!.userData!.role == UserRole.Worker) {
+            questsStore!.searchWord.length > 0
+                ? questsStore!.getSearchedQuests(false)
+                : questsStore!.getQuests(false);
+          } else {
+            questsStore!.searchWord.length > 0
+                ? questsStore!.getSearchedWorkers(false)
+                : questsStore!.getWorkers(false);
           }
-          return true;
-        },
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
-          ),
-          slivers: [
-            CupertinoSliverNavigationBar(
-              largeTitle: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      role == UserRole.Worker
-                          ? "quests.quests".tr()
-                          : "workers.workers".tr(),
-                    ),
+        }
+        return true;
+      },
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        slivers: [
+          CupertinoSliverNavigationBar(
+            largeTitle: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    role == UserRole.Worker
+                        ? "quests.quests".tr()
+                        : "workers.workers".tr(),
                   ),
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () => Navigator.of(
-                      context,
-                      rootNavigator: true,
-                    ).pushNamed(
-                      NotificationPage.routeName,
-                      arguments: profileMeStore!.userData!.id,
-                    ),
-                    child: const Icon(Icons.notifications_none_outlined),
+                ),
+                CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () => Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).pushNamed(
+                    NotificationPage.routeName,
+                    arguments: profileMeStore!.userData!.id,
                   ),
-                  const SizedBox(width: 12.0)
-                ],
-              ),
+                  child: const Icon(Icons.notifications_none_outlined),
+                ),
+                const SizedBox(width: 12.0)
+              ],
             ),
-            SliverAppBar(
-              pinned: true,
-              title: TextFormField(
-                onChanged: (value) => value.isNotEmpty
-                    ? questsStore!.setSearchWord(value)
-                    : profileMeStore!.userData!.role == UserRole.Worker
-                        ? questsStore!.getQuests(true)
-                        : questsStore!.getWorkers(true),
-                decoration: InputDecoration(
-                  fillColor: Color(0xFFF7F8FA),
-                  hintText: profileMeStore!.userData!.role == UserRole.Worker
-                      ? "quests.hintWorker".tr()
-                      : "quests.hintEmployer".tr(),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    size: 25.0,
-                  ),
+          ),
+          SliverAppBar(
+            pinned: true,
+            title: TextFormField(
+              onChanged: (value) => value.isNotEmpty
+                  ? questsStore!.setSearchWord(value)
+                  : profileMeStore!.userData!.role == UserRole.Worker
+                      ? questsStore!.getQuests(true)
+                      : questsStore!.getWorkers(true),
+              decoration: InputDecoration(
+                fillColor: Color(0xFFF7F8FA),
+                hintText: profileMeStore!.userData!.role == UserRole.Worker
+                    ? "quests.hintWorker".tr()
+                    : "quests.hintEmployer".tr(),
+                prefixIcon: Icon(
+                  Icons.search,
+                  size: 25.0,
                 ),
               ),
             ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  const SizedBox(height: 8),
-                  _getDivider(),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: OutlinedButton(
-                      onPressed: () async {
-                        await Navigator.of(context, rootNavigator: true).pushNamed(
-                            FilterQuestsPage.routeName,
-                            arguments: filterQuestsStore!.skillFilters);
-                      },
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6.0),
-                          ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                const SizedBox(height: 8),
+                _getDivider(),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: OutlinedButton(
+                    onPressed: () async {
+                      await Navigator.of(context, rootNavigator: true)
+                          .pushNamed(FilterQuestsPage.routeName,
+                              arguments: filterQuestsStore!.skillFilters);
+                    },
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6.0),
                         ),
                       ),
-                      child: Row(
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset("assets/filter.svg"),
+                        SizedBox(
+                          width: 13,
+                        ),
+                        Text(
+                          "quests.filter.btn".tr(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                _getDivider(),
+                Observer(builder: (_) {
+                  if (questsStore!.isLoading) {
+                    return ListView.separated(
+                      key: scrollKey,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) {
+                        return _getDivider();
+                      },
+                      padding: EdgeInsets.zero,
+                      itemCount: 8,
+                      itemBuilder: (_, index) {
+                        if (role == UserRole.Worker) {
+                          return ShimmerMyQuestItem();
+                        }
+                        return ShimmerWorkersItem();
+                      },
+                    );
+                  }
+                  if (questsStore!.emptySearch)
+                    return Container(
+                      height: MediaQuery.of(context).size.height / 4,
+                      alignment: Alignment.center,
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SvgPicture.asset("assets/filter.svg"),
-                          SizedBox(
-                            width: 13,
+                          const SizedBox(height: 15),
+                          SvgPicture.asset(
+                            "assets/empty_quest_icon.svg",
                           ),
+                          const SizedBox(height: 10),
                           Text(
-                            "quests.filter.btn".tr(),
+                            profileMeStore!.userData!.role == UserRole.Worker
+                                ? "quests.noQuest".tr()
+                                : "Worker not found",
+                            style: TextStyle(
+                              color: Color(0xFFD8DFE3),
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                  _getDivider(),
-                  Observer(builder: (_) {
-                    if (questsStore!.isLoading) {
-                      return ListView.separated(
-                        key: scrollKey,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        separatorBuilder: (context, index) {
-                          return _getDivider();
-                        },
-                        padding: EdgeInsets.zero,
-                        itemCount: 8,
-                        itemBuilder: (_, index) {
+                    );
+                  else
+                    return ListView.separated(
+                      key: scrollKey,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) {
+                        return _getDivider();
+                      },
+                      padding: EdgeInsets.zero,
+                      itemCount: () {
+                        if (role == UserRole.Worker)
+                          return questsStore!.questsList.length;
+                        return questsStore!.workersList.length;
+                      }(),
+                      itemBuilder: (_, index) {
+                        return Observer(builder: (_) {
                           if (role == UserRole.Worker) {
-                            return ShimmerMyQuestItem();
-                          }
-                          return ShimmerWorkersItem();
-                        },
-                      );
-                    }
-                    if (questsStore!.emptySearch)
-                      return Container(
-                        height: MediaQuery.of(context).size.height / 4,
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const SizedBox(height: 15),
-                            SvgPicture.asset(
-                              "assets/empty_quest_icon.svg",
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              profileMeStore!.userData!.role == UserRole.Worker
-                                  ? "quests.noQuest".tr()
-                                  : "Worker not found",
-                              style: TextStyle(
-                                color: Color(0xFFD8DFE3),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    else
-                      return ListView.separated(
-                        key: scrollKey,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        separatorBuilder: (context, index) {
-                          return _getDivider();
-                        },
-                        padding: EdgeInsets.zero,
-                        itemCount: () {
-                          if (role == UserRole.Worker)
-                            return questsStore!.questsList.length;
-                          return questsStore!.workersList.length;
-                        }(),
-                        itemBuilder: (_, index) {
-                          return Observer(builder: (_) {
-                            if (role == UserRole.Worker) {
-                              final item = questsStore!.questsList[index];
-                              _markItem(item);
-                              return MyQuestsItem(
-                                questInfo: item,
-                                myRole: role,
-                                itemType: this.questItemPriorityType,
-                              );
-                            }
-                            final item = questsStore!.workersList[index];
+                            final item = questsStore!.questsList[index];
                             _markItem(item);
-                            return WorkersItem(
-                              item,
-                              questsStore!,
+                            return MyQuestsItem(
+                              questInfo: item,
+                              myRole: role,
+                              itemType: this.questItemPriorityType,
                             );
-                          });
-                        },
-                      );
-                  }),
-                ],
-              ),
+                          }
+                          final item = questsStore!.workersList[index];
+                          _markItem(item);
+                          return WorkersItem(
+                            item,
+                            questsStore!,
+                          );
+                        });
+                      },
+                    );
+                }),
+              ],
             ),
-            SliverToBoxAdapter(
-              child: Observer(
-                builder: (_) => (questsStore!.isLoading || questsStore!.isLoadingMore)
-                    ? Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      )
-                    : const SizedBox(),
-              ),
+          ),
+          SliverToBoxAdapter(
+            child: Observer(
+              builder: (_) =>
+                  (questsStore!.isLoading || questsStore!.isLoadingMore)
+                      ? Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        )
+                      : const SizedBox(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -421,11 +423,12 @@ class _AnimationWorkersQuestsItems extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AnimationWorkersQuestsItemsState createState() => _AnimationWorkersQuestsItemsState();
+  _AnimationWorkersQuestsItemsState createState() =>
+      _AnimationWorkersQuestsItemsState();
 }
 
-class _AnimationWorkersQuestsItemsState extends State<_AnimationWorkersQuestsItems>
-    with TickerProviderStateMixin {
+class _AnimationWorkersQuestsItemsState
+    extends State<_AnimationWorkersQuestsItems> with TickerProviderStateMixin {
   late AnimationController _animationController;
 
   @override
