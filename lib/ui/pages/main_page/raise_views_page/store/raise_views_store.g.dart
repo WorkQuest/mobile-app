@@ -9,6 +9,20 @@ part of 'raise_views_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$RaiseViewStore on _RaiseViewStore, Store {
+  Computed<bool>? _$selectedCoinComputed;
+
+  @override
+  bool get selectedCoin =>
+      (_$selectedCoinComputed ??= Computed<bool>(() => super.selectedCoin,
+              name: '_RaiseViewStore.selectedCoin'))
+          .value;
+  Computed<bool>? _$selectedWalletComputed;
+
+  @override
+  bool get selectedWallet =>
+      (_$selectedWalletComputed ??= Computed<bool>(() => super.selectedWallet,
+              name: '_RaiseViewStore.selectedWallet'))
+          .value;
   Computed<bool>? _$canSubmitComputed;
 
   @override
@@ -92,6 +106,36 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
     });
   }
 
+  final _$currentCoinAtom = Atom(name: '_RaiseViewStore.currentCoin');
+
+  @override
+  DataCoins? get currentCoin {
+    _$currentCoinAtom.reportRead();
+    return super.currentCoin;
+  }
+
+  @override
+  set currentCoin(DataCoins? value) {
+    _$currentCoinAtom.reportWrite(value, super.currentCoin, () {
+      super.currentCoin = value;
+    });
+  }
+
+  final _$currentWalletAtom = Atom(name: '_RaiseViewStore.currentWallet');
+
+  @override
+  WalletItem? get currentWallet {
+    _$currentWalletAtom.reportRead();
+    return super.currentWallet;
+  }
+
+  @override
+  set currentWallet(WalletItem? value) {
+    _$currentWalletAtom.reportWrite(value, super.currentWallet, () {
+      super.currentWallet = value;
+    });
+  }
+
   final _$checkAllowanceAsyncAction =
       AsyncAction('_RaiseViewStore.checkAllowance');
 
@@ -162,6 +206,17 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
   }
 
   @override
+  void initValue() {
+    final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
+        name: '_RaiseViewStore.initValue');
+    try {
+      return super.initValue();
+    } finally {
+      _$_RaiseViewStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   dynamic changePeriod(int? value) {
     final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
         name: '_RaiseViewStore.changePeriod');
@@ -191,6 +246,10 @@ typeWallet: ${typeWallet},
 periodGroupValue: ${periodGroupValue},
 levelGroupValue: ${levelGroupValue},
 needApprove: ${needApprove},
+currentCoin: ${currentCoin},
+currentWallet: ${currentWallet},
+selectedCoin: ${selectedCoin},
+selectedWallet: ${selectedWallet},
 canSubmit: ${canSubmit}
     ''';
   }

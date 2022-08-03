@@ -3,6 +3,7 @@ import 'package:app/base_store/i_store.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/chat_model/message_model.dart';
+import 'package:app/model/chat_model/star.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat.dart';
 import 'package:app/http/web_socket.dart';
 import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
@@ -40,6 +41,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
   @observable
   TypeChat typeChat = TypeChat.active;
 
+  String myId = "";
+
   ObservableMap<ChatModel, bool> selectedChats = ObservableMap.of({});
 
   void initialStore() async {
@@ -50,6 +53,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
   void initialSetup(String myId) async {
     WebSocket().connect();
   }
+
+  void setMyId(String value) => myId = value;
 
   @action
   Future<void> loadChats({
@@ -86,7 +91,11 @@ abstract class _ChatStore extends IStore<bool> with Store {
   }
 
   void refreshChats() {
-    loadChats(questChatStatus: 0);
+    loadChats();
+    loadChats(type: TypeChat.privates);
+    loadChats(type: TypeChat.group);
+    loadChats(type: TypeChat.active, questChatStatus: 0);
+    loadChats(type: TypeChat.completed, questChatStatus: -1);
     loadChats(starred: true, type: TypeChat.favourites);
   }
 
@@ -137,7 +146,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
       });
 
   @action
-  void setChatHighlighted(ChatModel chat) => selectedChats[chat] = !selectedChats[chat]!;
+  void setChatHighlighted(ChatModel chat) =>
+      selectedChats[chat] = !selectedChats[chat]!;
 
   String getCountStarredChats() {
     int count = 0;
@@ -149,16 +159,37 @@ abstract class _ChatStore extends IStore<bool> with Store {
 
   @action
   Future<void> setStar() async {
-    selectedChats.forEach((key, value) async {
-      if (selectedChats[key] == true) {
-        if (key.star == null)
-          await _apiProvider.setChatStar(chatId: key.id);
-        else
-          await _apiProvider.removeStarFromChat(chatId: key.id);
+    selectedChats.forEach((key1, value1) async {
+      if (selectedChats[key1] == true) {
+        if (key1.star == null) {
+          await _apiProvider.setChatStar(chatId: key1.id);
+          key1.star = Star(id: "");
+        } else {
+          await _apiProvider.removeStarFromChat(chatId: key1.id);
+          key1.star = null;
+        }
+        changeChat(key1);
       }
     });
+
     setChatSelected(false);
     resetSelectedChats();
+  }
+
+  @action
+  void changeChat(ChatModel chat) {
+    chats = ObservableMap.of(chats.map((key, value) {
+      value.chat.map((element) {
+        if (element.id == chat.id) {
+          final _old = chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
+          _old.star = chat.star;
+          final index =  chats[key]!.chat.indexWhere((chat) => chat.id == element.id);
+          chats[key]!.chat.removeWhere((chat) => chat.id == element.id);
+          chats[key]!.chat.insert(index, _old);
+        }
+      }).toList();
+      return MapEntry(key, value);
+    }));
   }
 
   @action

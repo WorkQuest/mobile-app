@@ -121,10 +121,10 @@ class _NotificationCellState extends State<NotificationCell> {
                   await Navigator.of(context, rootNavigator: true).pushNamed(
                     UserProfile.routeName,
                     arguments:
-                        widget.body.notification.data.user.id != widget.userId
+                        widget.body.notification.data.user!.id != widget.userId
                             ? ProfileArguments(
-                                role: widget.body.notification.data.user.role,
-                                userId: widget.body.notification.data.user.id,
+                                role: widget.body.notification.data.user!.role,
+                                userId: widget.body.notification.data.user!.id,
                               )
                             : null,
                   );
@@ -135,7 +135,7 @@ class _NotificationCellState extends State<NotificationCell> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: Image.network(
-                        widget.body.notification.data.user.avatar?.url ??
+                        widget.body.notification.data.user!.avatar?.url ??
                             Constants.defaultImageNetwork,
                         width: 40,
                         height: 40,
@@ -145,9 +145,9 @@ class _NotificationCellState extends State<NotificationCell> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        widget.body.notification.data.user.firstName +
+                        widget.body.notification.data.user!.firstName +
                             " " +
-                            widget.body.notification.data.user.lastName,
+                            widget.body.notification.data.user!.lastName,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),

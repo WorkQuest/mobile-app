@@ -1,6 +1,8 @@
 import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
+import 'package:app/ui/pages/main_page/raise_views_page/widgets/level_card.dart';
+import 'package:app/ui/pages/main_page/raise_views_page/widgets/period_card.dart';
 import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
@@ -79,14 +81,14 @@ class _RaiseViewsState extends State<RaiseViews> {
                       ),
                     ),
                     _divider,
-                    _PeriodCard(
+                    PeriodCard(
                       period: "raising-views.forOneDay".tr(),
                       groupValue: raiseViewStore.periodGroupValue,
                       value: 1,
                       onChanged: raiseViewStore.changePeriod,
                     ),
                     _divider,
-                    _PeriodCard(
+                    PeriodCard(
                       period: widget.questId.isEmpty
                           ? "raising-views.forOneWeek".tr()
                           : "raising-views.forFiveDay".tr(),
@@ -95,7 +97,7 @@ class _RaiseViewsState extends State<RaiseViews> {
                       onChanged: raiseViewStore.changePeriod,
                     ),
                     _divider,
-                    _PeriodCard(
+                    PeriodCard(
                       period: widget.questId.isEmpty
                           ? "raising-views.forOneMonth".tr()
                           : "raising-views.forOneWeek".tr(),
@@ -112,7 +114,7 @@ class _RaiseViewsState extends State<RaiseViews> {
                       ),
                     ),
                     _divider,
-                    _LevelCard(
+                    LevelCard(
                       value: 1,
                       onChanged: raiseViewStore.changeLevel,
                       groupValue: raiseViewStore.levelGroupValue,
@@ -124,7 +126,7 @@ class _RaiseViewsState extends State<RaiseViews> {
                           "raising-views.levels.goldPlus.description".tr(),
                     ),
                     _divider,
-                    _LevelCard(
+                    LevelCard(
                       value: 2,
                       groupValue: raiseViewStore.levelGroupValue,
                       onChanged: raiseViewStore.changeLevel,
@@ -135,7 +137,7 @@ class _RaiseViewsState extends State<RaiseViews> {
                       description: "raising-views.levels.gold.description".tr(),
                     ),
                     _divider,
-                    _LevelCard(
+                    LevelCard(
                       value: 3,
                       onChanged: raiseViewStore.changeLevel,
                       groupValue: raiseViewStore.levelGroupValue,
@@ -147,7 +149,7 @@ class _RaiseViewsState extends State<RaiseViews> {
                           "raising-views.levels.silver.description".tr(),
                     ),
                     _divider,
-                    _LevelCard(
+                    LevelCard(
                       value: 4,
                       groupValue: raiseViewStore.levelGroupValue,
                       onChanged: raiseViewStore.changeLevel,
@@ -243,118 +245,5 @@ class _RaiseViewsState extends State<RaiseViews> {
         title: "Error",
         content: "Try again",
       );
-  }
-}
-
-class _PeriodCard extends StatelessWidget {
-  final String period;
-  final int value;
-  final int groupValue;
-  final Function(int?)? onChanged;
-
-  const _PeriodCard({
-    Key? key,
-    required this.period,
-    required this.value,
-    required this.groupValue,
-    required this.onChanged,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color(0xFFF7F8FA),
-        borderRadius: BorderRadius.circular(6.0),
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      child: RadioListTile(
-        value: value,
-        groupValue: groupValue,
-        onChanged: onChanged,
-        contentPadding: EdgeInsets.zero,
-        title: Text(
-          period,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 16.0,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _LevelCard extends StatelessWidget {
-  final int value;
-  final int groupValue;
-  final Function(int?)? onChanged;
-  final Color color;
-  final String price;
-  final String level;
-  final String description;
-
-  const _LevelCard({
-    Key? key,
-    required this.value,
-    required this.groupValue,
-    required this.onChanged,
-    required this.color,
-    required this.price,
-    required this.level,
-    required this.description,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color(0xFFF7F8FA),
-        borderRadius: BorderRadius.circular(6.0),
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      child: Column(
-        children: [
-          RadioListTile(
-            value: value,
-            groupValue: groupValue,
-            onChanged: onChanged,
-            contentPadding: EdgeInsets.zero,
-            title: Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 5.0,
-                    vertical: 2.0,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3.0),
-                    color: color,
-                  ),
-                  child: Text(
-                    level,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                Spacer(),
-                Text(
-                  price,
-                  style: TextStyle(
-                    fontSize: 17.0,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 10.0),
-            child: Text(description),
-          ),
-          const SizedBox(height: 15.0),
-        ],
-      ),
-    );
   }
 }

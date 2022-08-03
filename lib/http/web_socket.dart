@@ -94,7 +94,7 @@ class WebSocket {
   }
 
   void _connectSender() {
-    _senderChannel = IOWebSocketChannel.connect("wss://testnet-app.workquest.co/api");
+    _senderChannel = IOWebSocketChannel.connect("wss://dev-app.workquest.co/api");
     _senderChannel?.sink.add("""{
           "type": "hello",
           "id": 1,
@@ -112,7 +112,7 @@ class WebSocket {
   }
 
   void _connectListen() {
-    _notificationChannel = IOWebSocketChannel.connect("wss://testnet-notification.workquest.co/api/v1/notifications");
+    _notificationChannel = IOWebSocketChannel.connect("wss://notifications.workquest.co/api/v1/notifications");
 
     _notificationChannel?.sink.add("""{
           "type": "hello",

@@ -105,7 +105,9 @@ import 'ui/pages/main_page/profile_details_page/user_profile_page/pages/profile_
 
 class Routes {
   static TextDirection checkDirection(BuildContext context) {
-    return context.locale.toString() == "ar_SA" ? TextDirection.rtl : TextDirection.ltr;
+    return context.locale.toString() == "ar_SA"
+        ? TextDirection.rtl
+        : TextDirection.ltr;
   }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -324,7 +326,8 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: FilterQuestsPage(settings.arguments as Map<int, List<int>>),
+              child:
+                  FilterQuestsPage(settings.arguments as Map<int, List<int>>),
             ),
           ),
         );
@@ -439,7 +442,9 @@ class Routes {
             ],
             child: Directionality(
               textDirection: checkDirection(context),
-              child: _isWorker ? WorkerProfile(arguments) : EmployerProfile(arguments),
+              child: _isWorker
+                  ? WorkerProfile(arguments)
+                  : EmployerProfile(arguments),
             ),
           ),
         );
@@ -666,8 +671,15 @@ class Routes {
 
       case ChatPage.routeName:
         return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<ChatStore>(),
+          builder: (context) => MultiProvider(
+            providers: [
+              Provider(
+                create: (context) => getIt.get<ChatStore>(),
+              ),
+              Provider(
+                create: (context) => getIt.get<ProfileMeStore>(),
+              ),
+            ],
             child: Directionality(
               textDirection: checkDirection(context),
               child: ChatPage(),

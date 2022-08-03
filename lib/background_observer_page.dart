@@ -62,14 +62,14 @@ class _BackgroundObserverPageState extends State<BackgroundObserverPage>
 
   Future _inactive() async {
     final sp = await SharedPreferences.getInstance();
-    final prevState = sp.getInt(lastKnownStateKey);
+    // final prevState = sp.getInt(lastKnownStateKey);
 
-    final prevStateIsNotPaused = prevState != null &&
-        AppLifecycleState.values[prevState] != AppLifecycleState.paused;
+    // final prevStateIsNotPaused = prevState != null &&
+    //     AppLifecycleState.values[prevState] != AppLifecycleState.paused;
 
-    if (prevStateIsNotPaused) {
+    // if (prevStateIsNotPaused) {
       sp.setInt(backgroundedTimeKey, DateTime.now().millisecondsSinceEpoch);
-    }
+    // }
 
     sp.setInt(lastKnownStateKey, AppLifecycleState.inactive.index);
   }

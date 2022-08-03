@@ -144,6 +144,17 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   @override
+  void changeChat(ChatModel chat) {
+    final _$actionInfo =
+        _$_ChatStoreActionController.startAction(name: '_ChatStore.changeChat');
+    try {
+      return super.changeChat(chat);
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void addedMessage(dynamic json) {
     final _$actionInfo = _$_ChatStoreActionController.startAction(
         name: '_ChatStore.addedMessage');

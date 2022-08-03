@@ -24,6 +24,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   UserRole role = UserRole.Worker;
 
+  int offset = 0;
+
   @observable
   bool isLoadingMore = false;
 
@@ -32,7 +34,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   List<String> selectedSkill = [];
 
-  ObservableMap<int, ObservableList<bool>> selectedSkillFilters = ObservableMap.of({});
+  ObservableMap<int, ObservableList<bool>> selectedSkillFilters =
+      ObservableMap.of({});
 
   @observable
   String sort = "sort[createdAt]=desc";
@@ -72,7 +75,8 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   setEmployment(List<String> employment) => employments = employment;
 
-  setEmployeeRating(List<int> employeeRating) => employeeRatings = employeeRating;
+  setEmployeeRating(List<int> employeeRating) =>
+      employeeRatings = employeeRating;
 
   setWorkplace(List<String> workplace) => workplaces = workplace;
 
@@ -117,16 +121,19 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     String result = '';
     if (role == UserRole.Worker) {
       if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
-        final _fromPrice = Decimal.parse(fromPrice.isNotEmpty ? fromPrice : '0') *
-            Decimal.fromInt(10).pow(18);
+        final _fromPrice =
+            Decimal.parse(fromPrice.isNotEmpty ? fromPrice : '0') *
+                Decimal.fromInt(10).pow(18);
         result += '&priceBetween[from]=${_fromPrice.toBigInt()}';
-        final _toPrice = Decimal.parse(toPrice.isNotEmpty ? toPrice : '999999999999999') *
-            Decimal.fromInt(10).pow(18);
+        final _toPrice =
+            Decimal.parse(toPrice.isNotEmpty ? toPrice : '999999999999999') *
+                Decimal.fromInt(10).pow(18);
         result += '&priceBetween[to]=${_toPrice.toBigInt()}';
       }
     } else {
       if (fromPrice.isNotEmpty || toPrice.isNotEmpty) {
-        result += '&betweenCostPerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
+        result +=
+            '&betweenCostPerHour[from]=${fromPrice.isNotEmpty ? fromPrice : '0'}';
         result +=
             '&betweenCostPerHour[to]=${toPrice.isNotEmpty ? toPrice : '999999999999999'}';
       }
@@ -169,27 +176,32 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       this.onSuccess(true);
     }
     if (searchWord.length > 0)
-      role == UserRole.Worker ? getSearchedQuests(false) : getSearchedWorkers(false);
+      role == UserRole.Worker
+          ? getSearchedQuests(true)
+          : getSearchedWorkers(true);
     else {
       role == UserRole.Worker ? getQuests(true) : getWorkers(true);
     }
   }
 
   @computed
-  bool get emptySearch => workersList.isEmpty && questsList.isEmpty && !this.isLoading;
+  bool get emptySearch =>
+      workersList.isEmpty && questsList.isEmpty && !this.isLoading;
 
   @action
   Future getSearchedQuests(bool newList) async {
     try {
       if (newList) {
         questsList.clear();
+        offset = 0;
       }
+      if (offset != questsList.length) return;
       this.onLoading();
       debounce = Timer(const Duration(milliseconds: 300), () async {
         questsList.addAll(await _apiProvider.getQuests(
           price: getFilterPrice(),
           searchWord: searchWord,
-          offset: questsList.length,
+          offset: offset,
           employment: employments,
           workplace: workplaces,
           priority: priorities,
@@ -197,6 +209,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
           specializations: selectedSkill,
           statuses: [1],
         ));
+        offset += 10;
         this.onSuccess(true);
       });
     } catch (e) {
@@ -208,13 +221,15 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   Future getSearchedWorkers(bool newList) async {
     if (newList) {
       workersList.clear();
+      offset = 0;
     }
+    if (offset != workersList.length) return;
     this.onLoading();
     debounce = Timer(const Duration(milliseconds: 300), () async {
       workersList.addAll(await _apiProvider.getWorkers(
         searchWord: this.searchWord,
         price: getFilterPrice(),
-        offset: workersList.length,
+        offset: offset,
         sort: this.sort,
         workplace: workplaces,
         payPeriod: payPeriod,
@@ -222,6 +237,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         ratingStatus: employeeRatings,
         specializations: selectedSkill,
       ));
+      offset += 10;
       this.onSuccess(true);
     });
   }
@@ -232,24 +248,26 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       if (newList) {
         this.onLoading();
         questsList.clear();
+        offset = 0;
       } else {
         isLoadingMore = true;
       }
+      if (offset != questsList.length) return;
       questsList.addAll(await _apiProvider.getQuests(
-        // searchWord: searchWord,
         price: getFilterPrice(),
         statuses: [1],
         employment: employments,
         workplace: workplaces,
         priority: priorities,
         payPeriod: payPeriod,
-        offset: questsList.length,
+        offset: offset,
         sort: this.sort,
         specializations: selectedSkill,
         // north: this.latitude.toString(),
         // south: this.longitude.toString(),
       ));
 
+      offset += 10;
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -264,11 +282,12 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       if (newList) {
         this.onLoading();
         workersList.clear();
+        offset = 0;
       } else {
         isLoadingMore = true;
       }
+      if (offset != workersList.length) return;
       workersList.addAll(await _apiProvider.getWorkers(
-        // searchWord: searchWord,
         sort: this.sort,
         price: getFilterPrice(),
         offset: workersList.length,
@@ -281,6 +300,7 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         // south: this.longitude.toString(),
       ));
 
+      offset += 10;
       this.onSuccess(true);
     } catch (e, trace) {
       print("getWorkers error: $e\n$trace");

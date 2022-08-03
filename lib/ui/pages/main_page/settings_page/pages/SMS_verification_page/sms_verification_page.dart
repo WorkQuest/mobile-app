@@ -28,6 +28,7 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
   void initState() {
     _smsController = TextEditingController();
     smsStore = context.read<SMSVerificationStore>();
+    smsStore.setCode("");
     profileStore = context.read<ProfileMeStore>();
     super.initState();
   }
@@ -86,7 +87,7 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
                   LoginButton(
                     withColumn: true,
                     enabled: smsStore.isLoading,
-                    onTap: smsStore.canSubmitCode ? null : _sendCodeOnPressed,
+                    onTap: smsStore.canSubmitCode ? smsStore.submitCode : null,
                     title: "meta.send".tr(),
                   ),
                 ],
@@ -96,9 +97,5 @@ class _SMSVerificationPageState extends State<SMSVerificationPage> {
         ),
       ),
     );
-  }
-
-  _sendCodeOnPressed() {
-    smsStore.submitCode();
   }
 }
