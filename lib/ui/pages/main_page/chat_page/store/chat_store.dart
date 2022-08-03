@@ -41,6 +41,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
   @observable
   TypeChat typeChat = TypeChat.active;
 
+  String myId = "";
+
   ObservableMap<ChatModel, bool> selectedChats = ObservableMap.of({});
 
   void initialStore() async {
@@ -51,6 +53,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
   void initialSetup(String myId) async {
     WebSocket().connect();
   }
+
+  void setMyId(String value) => myId = value;
 
   @action
   Future<void> loadChats({
