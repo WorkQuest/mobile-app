@@ -40,8 +40,8 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   KnowledgeWorkSelectionController? _controllerKnowledge;
   KnowledgeWorkSelectionController? _controllerWork;
 
-  PhoneNumber phone = PhoneNumber();
-  PhoneNumber secondPhone = PhoneNumber();
+  // PhoneNumber phone = PhoneNumber();
+  // PhoneNumber secondPhone = PhoneNumber();
 
   Phone? oldPhone;
 
@@ -64,9 +64,10 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
         .getInitCode(pageStore.userData.phone ?? pageStore.userData.tempPhone!,
             pageStore.userData.additionalInfo?.secondMobileNumber)
         .then((value) {
-      phone = pageStore.phoneNumber ?? PhoneNumber();
-      secondPhone = pageStore.secondPhoneNumber ?? PhoneNumber();
-      setState(() {});
+      // phone = pageStore.phoneNumber ?? PhoneNumber();
+      // secondPhone = pageStore.secondPhoneNumber ?? PhoneNumber();
+      // setState(() {});
+      print("inited");
     });
     if (profile!.userData!.locationPlaceName != null)
       pageStore.address = profile!.userData!.locationPlaceName!;
@@ -185,21 +186,26 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                PhoneNumberWidget(
-                  title: "modals.phoneNumber",
-                  initialValue: phone,
-                  onChanged: (PhoneNumber phone) {
-                    pageStore.setPhoneNumber(phone);
-                  },
-                  needValidator: phone.phoneNumber?.isEmpty ?? true,
+                Observer(
+                  builder: (_) => PhoneNumberWidget(
+                    title: "modals.phoneNumber",
+                    initialValue: pageStore.phoneNumber,
+                    onChanged: (PhoneNumber phone) {
+                      pageStore.setPhoneNumber(phone);
+                    },
+                    needValidator:
+                        pageStore.phoneNumber?.phoneNumber?.isEmpty ?? true,
+                  ),
                 ),
                 if (profile!.userData!.role == UserRole.Employer)
-                  PhoneNumberWidget(
-                    title: "modals.secondPhoneNumber",
-                    initialValue: secondPhone,
-                    onChanged: (PhoneNumber phone) {
-                      pageStore.setSecondPhoneNumber(phone);
-                    },
+                  Observer(
+                    builder: (_) => PhoneNumberWidget(
+                      title: "modals.secondPhoneNumber",
+                      initialValue: pageStore.secondPhoneNumber,
+                      onChanged: (PhoneNumber phone) {
+                        pageStore.setSecondPhoneNumber(phone);
+                      },
+                    ),
                   ),
                 InputWidget(
                   title: "signUp.email".tr(),
