@@ -144,6 +144,13 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
     return _$checkAllowanceAsyncAction.run(() => super.checkAllowance());
   }
 
+  final _$approveAsyncAction = AsyncAction('_RaiseViewStore.approve');
+
+  @override
+  Future approve() {
+    return _$approveAsyncAction.run(() => super.approve());
+  }
+
   final _$raiseProfileAsyncAction = AsyncAction('_RaiseViewStore.raiseProfile');
 
   @override
