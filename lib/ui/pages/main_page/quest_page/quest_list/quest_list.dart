@@ -43,7 +43,7 @@ class _QuestListState extends State<QuestList> {
   final scrollKey = new GlobalKey();
 
   // String id = "";
-  late UserRole role;
+  UserRole? role;
 
   @override
   void initState() {
