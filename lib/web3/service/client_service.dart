@@ -415,24 +415,23 @@ extension ApproveCoin on ClientService {
     final _addressWUSD = Web3Utils.getAddressWUSD();
     final contract =
         Erc20(address: EthereumAddress.fromHex(_addressWUSD), client: client!);
-    final ethFunction = contract.self.function(WQBridgeTokenFunctions.approve.name);
-    final fromAddress = await credentials.extractAddress();
-    print('fromAddress: $fromAddress');
-    print('chainID: ${await client!.getChainId()}');
-    final result = await handleContract(
-      contract: contract.self,
-      function: ethFunction,
-      from: fromAddress,
-      params: [
-        address ?? EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
-        price,
-      ],
+    final hashTx = await contract.approve(
+      address ?? EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQFactory()),
+      price,
+      credentials: credentials,
     );
-    print('result.status: ${result.status}');
-    if (result.status ?? false)
-      return true;
-    else
-      return false;
+    int attempts = 0;
+    TransactionReceipt? result;
+    while (result == null) {
+      result = await client!.getTransactionReceipt(hashTx);
+      if (result != null) print('Block: ${result.blockNumber}');
+      await Future.delayed(const Duration(seconds: 3));
+      attempts++;
+      if (attempts == 20) {
+        throw Exception("The waiting time is over. Expect a balance update.");
+      }
+    }
+    return true;
   }
 
   Future<BigInt> allowanceCoin({EthereumAddress? address}) async {
@@ -511,7 +510,6 @@ extension Promote on ClientService {
         contract: contract,
         function: function,
         gasPrice: _gasPrice,
-        maxGas: 3000000,
         parameters: [
           EthereumAddress.fromHex(questAddress),
           BigInt.from(tariff),
@@ -547,7 +545,9 @@ extension Promote on ClientService {
     print('tariff: $tariff');
     print('period: $period');
     final contract = await getDeployedContract(
-        "WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
+      "WQPromotion",
+      Web3Utils.getAddressWorknetWQPromotion(),
+    );
     final function = contract.function(WQPromotionFunctions.promoteUser.name);
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
@@ -559,12 +559,12 @@ extension Promote on ClientService {
         contract: contract,
         function: function,
         gasPrice: _gasPrice,
-        maxGas: 3000000,
         parameters: [
           BigInt.from(tariff),
           BigInt.from(period),
         ],
         from: _fromAddress,
+        value: EtherAmount.zero(),
       ),
       chainId: _chainId.toInt(),
     );
