@@ -186,6 +186,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
         message = MessageModel.fromJson(json["payload"]["result"]);
       } else if (json["message"]["action"] == "QuestStatusUpdated")
         return;
+      else if (json["message"]["action"] == "employerInvitedWorkerToQuest")
+        return;
       else if (json["message"]["action"] == "workerRespondedToQuest")
         return;
       else if (json["message"]["action"] == "groupChatCreate") {
@@ -193,8 +195,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
       } else if (json["type"] == "pub" ||
           json["message"]["action"] == "messageReadByRecipient") {
         message = MessageModel.fromJson(json["message"]["data"]);
-      } else
-        return;
+      }
 
       bool isChatExist = false;
 
@@ -212,7 +213,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
         return MapEntry(key, value);
       }));
 
-      if (!isChatExist) getChat(message.chatId!);
+      if (!isChatExist) getChat(message!.chatId!);
       checkMessage();
     } catch (e, trace) {
       this.onError(e.toString());
