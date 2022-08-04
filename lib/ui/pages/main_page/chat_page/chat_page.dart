@@ -40,12 +40,14 @@ class _ChatPageState extends State<ChatPage>
     _searchTextController = TextEditingController();
     _tabController = TabController(vsync: this, length: 6)
       ..addListener(() {
-        store.getChatTypeFromIndex(_tabController.index);
+        print('tab index: ${_tabController.index}');
+        store.setChatType(_tabController.index);
         setState(() {});
       });
     _searchTextController.addListener(() {
       if (_timer?.isActive ?? false) _timer!.cancel();
       _timer = Timer(const Duration(milliseconds: 300), () {
+        print('typeChat: ${store.typeChat}');
         store.loadChats(
           query: _searchTextController.text,
           type: store.typeChat,
