@@ -509,6 +509,7 @@ extension Promote on ClientService {
       Transaction.callContract(
         contract: contract,
         function: function,
+        maxGas: 3000000,
         gasPrice: _gasPrice,
         parameters: [
           EthereumAddress.fromHex(questAddress),

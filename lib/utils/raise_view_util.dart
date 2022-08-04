@@ -36,35 +36,35 @@ class RaiseViewUtils {
       switch (period) {
         case 1:
           switch (tariff) {
-            case 1:
+            case 0:
               return '20';
-            case 2:
+            case 1:
               return '12';
-            case 3:
+            case 2:
               return '9';
-            case 4:
+            case 3:
               return '7';
           }
           break;
         case 5:
           switch (tariff) {
-            case 1:
+            case 0:
               return '35';
-            case 2:
+            case 1:
               return '28';
-            case 3:
+            case 2:
               return '22';
-            case 4:
+            case 3:
               return '18';
           }
           break;
         case 7:
           switch (tariff) {
-            case 1:
+            case 0:
               return '50';
-            case 2:
+            case 1:
               return '35';
-            case 3:
+            case 2:
               return '29';
             case 4:
               return '21';
@@ -75,37 +75,37 @@ class RaiseViewUtils {
       switch (period) {
         case 1:
           switch (tariff) {
-            case 1:
+            case 0:
               return '20';
-            case 2:
+            case 1:
               return '12';
-            case 3:
+            case 2:
               return '9';
-            case 4:
+            case 3:
               return '7';
           }
           break;
         case 7:
           switch (tariff) {
-            case 1:
+            case 0:
               return '35';
-            case 2:
+            case 1:
               return '28';
-            case 3:
+            case 2:
               return '22';
-            case 4:
+            case 3:
               return '18';
           }
           break;
         case 30:
           switch (tariff) {
-            case 1:
+            case 0:
               return '50';
-            case 2:
+            case 1:
               return '35';
-            case 3:
+            case 2:
               return '29';
-            case 4:
+            case 3:
               return '21';
           }
           break;

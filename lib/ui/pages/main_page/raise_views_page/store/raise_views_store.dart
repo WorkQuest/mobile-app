@@ -173,8 +173,8 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
         periodGroupValue: periodGroupValue,
         isQuest: true,
       );
-      final _price = BigInt.from(double.parse(amount) * pow(10, 18));
-      await AccountRepository().getClientWorkNet().approveCoin(price: _price);
+      // final _price = BigInt.from(double.parse(amount) * pow(10, 18));
+      // await AccountRepository().getClientWorkNet().approveCoin(price: _price);
       await AccountRepository().getClientWorkNet().promoteQuest(
             tariff: levelGroupValue,
             period: period,
