@@ -38,57 +38,64 @@ class _QuestMapState extends State<QuestMap> {
       builder: (_) => Scaffold(
         body: mapStore?.initialCameraPosition == null
             ? Center(child: CircularProgressIndicator.adaptive())
-            : Visibility(
-                visible: hasPermission,
-                maintainState: false,
-                replacement: GoogleMap(
-                  mapType: MapType.normal,
-                  rotateGesturesEnabled: false,
-                  initialCameraPosition: mapStore!.initialCameraPosition!,
-                  myLocationButtonEnabled: false,
-                  zoomControlsEnabled: false,
-                  minMaxZoomPreference: MinMaxZoomPreference(4, 17),
-                ),
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    GoogleMap(
-                      onCameraMove: (CameraPosition position) {
-                        if (mapStore?.debounce != null)
-                          mapStore!.debounce!.cancel();
-                        mapStore!.debounce = Timer(
-                          const Duration(milliseconds: 200),
-                          () async {
-                            LatLngBounds bounds =
-                                await _controller.getVisibleRegion();
-                            mapStore!.getQuestsOnMap(bounds);
-                          },
-                        );
-                        mapStore!.clusterManager.onCameraMove(position);
-                      },
+            : SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Visibility(
+                    visible: hasPermission,
+                    maintainState: false,
+                    replacement: GoogleMap(
                       mapType: MapType.normal,
-                      zoomControlsEnabled: false,
                       rotateGesturesEnabled: false,
-                      myLocationEnabled: true,
-                      minMaxZoomPreference: MinMaxZoomPreference(4, 17),
                       initialCameraPosition: mapStore!.initialCameraPosition!,
                       myLocationButtonEnabled: false,
-                      markers: mapStore!.markers,
-                      onCameraIdle: mapStore!.clusterManager.updateMap,
-                      onMapCreated: (GoogleMapController controller) async {
-                        _controller = controller;
-                        LatLngBounds bounds =
-                            await _controller.getVisibleRegion();
-                        await mapStore!.getQuestsOnMap(bounds);
-                        mapStore!.clusterManager.setMapId(controller.mapId);
-                        _onMyLocationPressed();
-                      },
+                      zoomControlsEnabled: false,
+                      minMaxZoomPreference: MinMaxZoomPreference(4, 17),
                     ),
-                    QuestQuickInfo(),
-                    searchBar(),
-                  ],
-                ),
+                    child: Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        GoogleMap(
+                          onCameraMove: (CameraPosition position) {
+                            if (mapStore?.debounce != null)
+                              mapStore!.debounce!.cancel();
+                            mapStore!.debounce = Timer(
+                              const Duration(milliseconds: 200),
+                              () async {
+                                LatLngBounds bounds =
+                                    await _controller.getVisibleRegion();
+                                mapStore!.getQuestsOnMap(bounds);
+                              },
+                            );
+                            mapStore!.clusterManager.onCameraMove(position);
+                          },
+                          mapType: MapType.normal,
+                          zoomControlsEnabled: false,
+                          rotateGesturesEnabled: false,
+                          myLocationEnabled: true,
+                          minMaxZoomPreference: MinMaxZoomPreference(4, 17),
+                          initialCameraPosition: mapStore!.initialCameraPosition!,
+                          myLocationButtonEnabled: false,
+                          markers: mapStore!.markers,
+                          onCameraIdle: mapStore!.clusterManager.updateMap,
+                          onMapCreated: (GoogleMapController controller) async {
+                            _controller = controller;
+                            LatLngBounds bounds =
+                                await _controller.getVisibleRegion();
+                            await mapStore!.getQuestsOnMap(bounds);
+                            mapStore!.clusterManager.setMapId(controller.mapId);
+                            _onMyLocationPressed();
+                          },
+                        ),
+                        QuestQuickInfo(),
+                        searchBar(),
+                      ],
+                    ),
+                  ),
               ),
+            ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: AnimatedPadding(
           padding: EdgeInsets.only(
