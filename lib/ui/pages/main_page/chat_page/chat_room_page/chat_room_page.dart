@@ -92,109 +92,94 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (widget.arguments.refreshChat)
-          _chatStore!.loadChats(
-            starred: _store.chatRoom!.star == null ? null : true,
-            type: _store.chatRoom!.type,
-            questChatStatus: _store.chatRoom!.type == TypeChat.active
-                ? 0
-                : _store.chatRoom!.type == TypeChat.completed
-                    ? -1
-                    : null,
-          );
-        return true;
-      },
-      child: Observer(
-        builder: (_) => _store.initPage || _store.isLoading
-            ? Scaffold(
-                body: Center(child: CircularProgressIndicator.adaptive()),
-              )
-            : Scaffold(
-                appBar:
-                    _store.messageSelected ? _selectedMessages() : _appBar(),
-                body: Container(
-                  alignment: Alignment.bottomLeft,
-                  height: MediaQuery.of(context).size.height,
-                  child: Observer(
-                    builder: (_) => Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(
-                          child: NotificationListener<ScrollStartNotification>(
-                            onNotification: (scrollStart) {
-                              final metrics = scrollStart.metrics;
-                              if (metrics.maxScrollExtent < metrics.pixels &&
-                                  !_store.loadMessage) {
-                                _store.getMessages(chatId: _store.idChat!);
-                              }
-                              return true;
-                            },
-                            child: ListView.builder(
-                              physics: const BouncingScrollPhysics(
-                                parent: AlwaysScrollableScrollPhysics(),
-                              ),
-                              itemCount: _store.messages.length,
-                              itemBuilder: (context, index) => MessageCell(
-                                UniqueKey(),
-                                _store.messages[index],
-                                profile!.userData!.id,
-                                _store.mediaPaths,
-                              ),
-                              reverse: true,
+    return Observer(
+      builder: (_) => _store.initPage || _store.isLoading
+          ? Scaffold(
+              body: Center(child: CircularProgressIndicator.adaptive()),
+            )
+          : Scaffold(
+              appBar:
+                  _store.messageSelected ? _selectedMessages() : _appBar(),
+              body: Container(
+                alignment: Alignment.bottomLeft,
+                height: MediaQuery.of(context).size.height,
+                child: Observer(
+                  builder: (_) => Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: NotificationListener<ScrollStartNotification>(
+                          onNotification: (scrollStart) {
+                            final metrics = scrollStart.metrics;
+                            if (metrics.maxScrollExtent < metrics.pixels &&
+                                !_store.loadMessage) {
+                              _store.getMessages(chatId: _store.idChat!);
+                            }
+                            return true;
+                          },
+                          child: ListView.builder(
+                            physics: const BouncingScrollPhysics(
+                              parent: AlwaysScrollableScrollPhysics(),
+                            ),
+                            itemCount: _store.messages.length,
+                            itemBuilder: (context, index) => MessageCell(
+                              UniqueKey(),
+                              _store.messages[index],
+                              profile!.userData!.id,
+                              _store.mediaPaths,
+                            ),
+                            reverse: true,
+                          ),
+                        ),
+                      ),
+                      _store.chatRoom!.questChat?.status != -1 &&
+                              (_store.chatRoom!.meMember?.status == 0 ||
+                                  meMember)
+                          ? InputToolbar(_store)
+                          : profile!.userData!.role == UserRole.Employer &&
+                                  _store.chatRoom!.questChat != null
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  child: LoginButton(
+                                    title: "quests.addToQuest".tr(),
+                                    onTap: () async {
+                                      await Navigator.of(
+                                        context,
+                                        rootNavigator: true,
+                                      ).pushNamed(
+                                        ChooseQuestPage.routeName,
+                                        arguments:
+                                            profile!.userData!.id != id1
+                                                ? id1!
+                                                : id2!,
+                                      );
+                                    },
+                                  ),
+                                )
+                              : SizedBox(),
+                      if (_store.progressImages.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16.0,
+                            right: 16.0,
+                            top: 16.0,
+                          ),
+                          child: Container(
+                            height: 250,
+                            child: ListMediaView(
+                              store: _store,
                             ),
                           ),
                         ),
-                        _store.chatRoom!.questChat?.status != -1 &&
-                                (_store.chatRoom!.meMember?.status == 0 ||
-                                    meMember)
-                            ? InputToolbar(_store)
-                            : profile!.userData!.role == UserRole.Employer &&
-                                    _store.chatRoom!.questChat != null
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                    ),
-                                    child: LoginButton(
-                                      title: "quests.addToQuest".tr(),
-                                      onTap: () async {
-                                        await Navigator.of(
-                                          context,
-                                          rootNavigator: true,
-                                        ).pushNamed(
-                                          ChooseQuestPage.routeName,
-                                          arguments:
-                                              profile!.userData!.id != id1
-                                                  ? id1!
-                                                  : id2!,
-                                        );
-                                      },
-                                    ),
-                                  )
-                                : SizedBox(),
-                        if (_store.progressImages.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 16.0,
-                              right: 16.0,
-                              top: 16.0,
-                            ),
-                            child: Container(
-                              height: 250,
-                              child: ListMediaView(
-                                store: _store,
-                              ),
-                            ),
-                          ),
-                        const SizedBox(height: 16.0),
-                      ],
-                    ),
+                      const SizedBox(height: 16.0),
+                    ],
                   ),
                 ),
               ),
-      ),
+            ),
     );
   }
 
