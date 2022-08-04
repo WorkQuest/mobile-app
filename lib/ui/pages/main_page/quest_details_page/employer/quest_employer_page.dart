@@ -52,7 +52,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   AnimationController? controller;
 
   bool get isMyQuest =>
-      store.quest.value != null && store.quest.value!.userId == profile!.userData!.id;
+      store.quest.value != null &&
+      store.quest.value!.userId == profile!.userData!.id;
 
   bool get canActionsQuest =>
       isMyQuest &&
@@ -61,7 +62,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
 
   bool get canRaiseView =>
       (store.quest.value!.status == QuestConstants.questCreated ||
-          store.quest.value!.status == QuestConstants.questWaitWorkerOnAssign) &&
+          store.quest.value!.status ==
+              QuestConstants.questWaitWorkerOnAssign) &&
       store.quest.value!.raiseView?.status != 0;
 
   bool get canEditOrDelete =>
@@ -83,6 +85,15 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       store.quest.value?.status == QuestConstants.questDispute &&
       store.quest.value!.openDispute != null;
 
+  void getResponded(){
+    if (store.quest.value!.userId == profile!.userData!.id) {
+      store.getRespondedList(
+        store.quest.value!.id,
+        store.quest.value!.assignedWorker?.id ?? "",
+      );
+    }
+  }
+
   @override
   void initState() {
     store = context.read<EmployerStore>();
@@ -92,18 +103,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
     chatStore = context.read<ChatStore>();
 
     if (widget.arguments.questInfo != null) {
-      if (widget.arguments.questInfo!.userId == profile!.userData!.id) {
-        store.getRespondedList(
-          widget.arguments.questInfo!.id,
-          widget.arguments.questInfo!.assignedWorker?.id ?? "",
-        );
-      }
       store.quest.value = widget.arguments.questInfo;
+      getResponded();
       if (store.quest.value!.status == QuestConstants.questDispute) {
         store.getQuest(widget.arguments.questInfo!.id);
       }
     } else {
-      store.getQuest(widget.arguments.id!);
+      store.getQuest(widget.arguments.id!).then((value) => getResponded());
     }
 
     controller = BottomSheet.createAnimationController(this);
@@ -128,7 +134,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           if (AccountRepository().notifierNetwork.value == Network.mainnet) {
             _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
           } else {
-            _url = "https://${Constants.isTestnet ? 'testnet': 'dev'}-app.workquest.co/quests/${store.quest.value!.id}";
+            _url =
+                "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/quests/${store.quest.value!.id}";
           }
           Share.share(_url);
         },
@@ -223,7 +230,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               CreateQuestPage.routeName,
               arguments: widget.arguments.questInfo,
             );
-          } else if (store.successData == EmployerStoreState.validateTotpDelete) {
+          } else if (store.successData ==
+              EmployerStoreState.validateTotpDelete) {
             await store.getFee(store.quest.value?.assignedWorkerId ?? '1',
                 WQContractFunctions.cancelJob.name);
             AlertDialogUtils.showAlertTxConfirm(
@@ -241,7 +249,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                 );
               },
             );
-          } else if (store.successData == EmployerStoreState.acceptCompletedWork) {
+          } else if (store.successData ==
+              EmployerStoreState.acceptCompletedWork) {
             store.setQuestStatus(5);
             setState(() {});
             Navigator.pop(context);
@@ -282,7 +291,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
   Widget questHeader() {
     return QuestHeader(
       itemType: QuestsType.All,
-      questStatus: store.quest.value!.status,
+      questStatus: store.quest.value?.status ?? 10,
       rounded: false,
       responded: store.quest.value!.responded,
       invited: store.quest.value!.invited,
@@ -322,7 +331,10 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
                 (Set<MaterialState> states) {
                   if (states.contains(MaterialState.pressed))
-                    return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                    return Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withOpacity(0.5);
                   return const Color(0xFF0083C7);
                 },
               ),
@@ -478,7 +490,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                     questId: store.quest.value!.id,
                                   );
                                 },
-                                functionName: WQContractFunctions.acceptJobResult.name,
+                                functionName:
+                                    WQContractFunctions.acceptJobResult.name,
                               );
                             },
                       child: Text(
@@ -489,7 +502,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
                               return Theme.of(context)
@@ -530,7 +544,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                                     OpenDisputePage.routeName,
                                     arguments: store.quest.value!,
                                   );
-                                  if (_result != null && _result is OpenDispute) {
+                                  if (_result != null &&
+                                      _result is OpenDispute) {
                                     Navigator.pop(context);
                                     store.quest.value!.status =
                                         QuestConstants.questDispute;
@@ -550,7 +565,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                         fixedSize: MaterialStateProperty.all(
                           Size(double.maxFinite, 43),
                         ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
                             if (states.contains(MaterialState.pressed))
                               return Theme.of(context)
@@ -691,7 +707,8 @@ class _RespondedListState extends State<_RespondedList> {
           child: CircularProgressIndicator.adaptive(),
         );
       }
-      if (widget.store.quest.value!.status == QuestConstants.questWaitEmployerConfirm) {
+      if (widget.store.quest.value!.status ==
+          QuestConstants.questWaitEmployerConfirm) {
         return TextButton(
           onPressed: widget.answerOnQuestPressed,
           child: Text(
@@ -726,14 +743,15 @@ class _RespondedListState extends State<_RespondedList> {
               ),
             ),
             if (widget.store.respondedList.isNotEmpty)
-              for (final respond in widget.store.respondedList) selectableMember(respond),
+              for (final respond in widget.store.respondedList)
+                selectableMember(respond),
             const SizedBox(height: 15),
             Observer(
               builder: (_) => TextButton(
-                onPressed:
-                    widget.store.selectedResponders == null || widget.store.isLoading
-                        ? null
-                        : widget.chooseWorkerPressed,
+                onPressed: widget.store.selectedResponders == null ||
+                        widget.store.isLoading
+                    ? null
+                    : widget.chooseWorkerPressed,
                 child: Text(
                   "quests.chooseWorker".tr(),
                   style: TextStyle(
@@ -748,7 +766,10 @@ class _RespondedListState extends State<_RespondedList> {
                       if (states.contains(MaterialState.disabled))
                         return const Color(0xFFF7F8FA);
                       if (states.contains(MaterialState.pressed))
-                        return Theme.of(context).colorScheme.primary.withOpacity(0.5);
+                        return Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.5);
                       return const Color(0xFF0083C7);
                     },
                   ),

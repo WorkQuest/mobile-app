@@ -98,8 +98,9 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                       },
                     );
                   }),
-                  itemCount:
-                      store.showMore ? store.quests.length + 1 : store.quests.length,
+                  itemCount: store.showMore
+                      ? store.quests.length + 1
+                      : store.quests.length,
                 ),
               ),
       ),
@@ -141,7 +142,7 @@ class _ChooseQuestPageState extends State<ChooseQuestPage> {
                           if (store.isSuccess) {
                             context.read<ChatStore>().refreshChats();
                             Navigator.of(context, rootNavigator: true)
-                                .pushNamed(
+                                .pushReplacementNamed(
                               ChatRoomPage.routeName,
                               arguments: ChatRoomArguments(store.chatId, true),
                             );

@@ -165,9 +165,11 @@ abstract class _ChatStore extends IStore<bool> with Store {
     chats = ObservableMap.of(chats.map((key, value) {
       value.chat.map((element) {
         if (element.id == chat.id) {
-          final _old = chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
+          final _old =
+              chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
           _old.star = chat.star;
-          final index =  chats[key]!.chat.indexWhere((chat) => chat.id == element.id);
+          final index =
+              chats[key]!.chat.indexWhere((chat) => chat.id == element.id);
           chats[key]!.chat.removeWhere((chat) => chat.id == element.id);
           chats[key]!.chat.insert(index, _old);
         }
@@ -191,14 +193,16 @@ abstract class _ChatStore extends IStore<bool> with Store {
       } else if (json["type"] == "pub" ||
           json["message"]["action"] == "messageReadByRecipient") {
         message = MessageModel.fromJson(json["message"]["data"]);
-      }
+      } else
+        return;
 
       bool isChatExist = false;
 
       chats = ObservableMap.of(chats.map((key, value) {
         value.chat.map((element) {
           if (element.id == message!.chatId) {
-            final _old = chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
+            final _old =
+                chats[key]!.chat.firstWhere((chat) => chat.id == element.id);
             _old.chatData.lastMessage = message;
             chats[key]!.chat.removeWhere((chat) => chat.id == element.id);
             chats[key]!.chat.insert(0, _old);
@@ -208,7 +212,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
         return MapEntry(key, value);
       }));
 
-      if (!isChatExist) getChat(message!.chatId!);
+      if (!isChatExist) getChat(message.chatId!);
       checkMessage();
     } catch (e, trace) {
       this.onError(e.toString());
