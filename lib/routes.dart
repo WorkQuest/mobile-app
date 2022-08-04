@@ -47,7 +47,6 @@ import 'package:app/ui/pages/main_page/quest_page/create_quest_page/create_quest
 import 'package:app/ui/pages/main_page/quest_page/create_quest_page/store/create_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/filter_quests_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
-import 'package:app/ui/pages/main_page/raise_views_page/payment_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/raise_views_page.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
@@ -611,16 +610,16 @@ class Routes {
           ),
         );
 
-      case PaymentPage.routeName:
-        return MaterialPageRoute(
-          builder: (context) => Provider(
-            create: (context) => getIt.get<RaiseViewStore>(),
-            child: Directionality(
-              textDirection: checkDirection(context),
-              child: PaymentPage(settings.arguments as RaiseViewStore),
-            ),
-          ),
-        );
+      // case PaymentPage.routeName:
+      //   return MaterialPageRoute(
+      //     builder: (context) => Provider(
+      //       create: (context) => getIt.get<RaiseViewStore>(),
+      //       child: Directionality(
+      //         textDirection: checkDirection(context),
+      //         child: PaymentPage(settings.arguments as RaiseViewStore),
+      //       ),
+      //     ),
+      //   );
 
       case MnemonicPage.routeName:
         return MaterialPageRoute(
