@@ -184,6 +184,10 @@ class WebSocket {
 
   void questNotification(dynamic json) async {
     try {
+      print('type json: ${json.runtimeType}');
+      print('json: $json');
+      final needUpdate = json['action'] != 'userLeftReviewAboutQuest';
+      if (!needUpdate) return;
       if (handlerQuests != null) handlerQuests!(json);
       if (handlerQuestList != null) handlerQuestList!(json);
     } catch (e, trace) {
