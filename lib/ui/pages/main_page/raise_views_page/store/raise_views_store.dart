@@ -178,7 +178,6 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
       await AccountRepository().getClientWorkNet().promoteQuest(
             tariff: levelGroupValue,
             period: period,
-            amount: amount,
             questAddress: _quest!.contractAddress!,
           );
 

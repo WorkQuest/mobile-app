@@ -486,12 +486,10 @@ extension Promote on ClientService {
   Future<TransactionReceipt?> promoteQuest({
     required int tariff,
     required int period,
-    required String amount,
     required String questAddress,
   }) async {
     print('tariff: $tariff');
     print('period: $period');
-    print('amount: $amount');
     print('questAddress: $questAddress');
     final contract = await getDeployedContract(
         "WQPromotion", Web3Utils.getAddressWorknetWQPromotion());
@@ -499,17 +497,13 @@ extension Promote on ClientService {
     final _credentials = await getCredentials(AccountRepository().privateKey);
     final _gasPrice = await client!.getGasPrice();
     final _fromAddress = await _credentials.extractAddress();
-    final _value = EtherAmount.fromUnitAndValue(
-      EtherUnit.wei,
-      (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt(),
-    );
     final _chainId = await client!.getChainId();
     final _transactionHash = await client!.sendTransaction(
       _credentials,
       Transaction.callContract(
         contract: contract,
         function: function,
-        maxGas: 3000000,
+        maxGas: 200000,
         gasPrice: _gasPrice,
         parameters: [
           EthereumAddress.fromHex(questAddress),
@@ -517,7 +511,7 @@ extension Promote on ClientService {
           BigInt.from(period),
         ],
         from: _fromAddress,
-        value: _value,
+        value: EtherAmount.zero(),
       ),
       chainId: _chainId.toInt(),
     );
