@@ -1,17 +1,21 @@
 import 'dart:io';
 
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/observer_consumer.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/store/raise_views_store.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/widgets/level_card.dart';
 import 'package:app/ui/pages/main_page/raise_views_page/widgets/period_card.dart';
 import 'package:app/ui/pages/main_page/wallet_page/confirm_transaction_dialog.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/raise_view_util.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
 
@@ -45,13 +49,21 @@ class _RaiseViewsState extends State<RaiseViews> {
     return ObserverListener<RaiseViewStore>(
       onSuccess: () async {
         if (store.successData == RaiseViewStoreState.approve) {
-          Navigator.of(context, rootNavigator: true).pop();
-          _promotion();
+          store.checkAllowance();
         } else if (store.successData == RaiseViewStoreState.raiseProfile ||
             store.successData == RaiseViewStoreState.raiseQuest) {
           Navigator.of(context, rootNavigator: true).pop();
           context.read<MyQuestStore>().updateListQuest();
-          Navigator.pop(context);
+          final _raiseViewResult = RaiseView(
+            userId: GetIt.I.get<ProfileMeStore>().userData!.id,
+            status: 0,
+            duration: store.period,
+            type: store.levelGroupValue,
+            endedAt: DateTime.now().add(Duration(days: store.period)),
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          );
+          Navigator.pop(context, _raiseViewResult);
           await AlertDialogUtils.showSuccessDialog(context);
         } else if (store.successData == RaiseViewStoreState.checkAllowance) {
           Navigator.of(context, rootNavigator: true).pop();
@@ -141,7 +153,7 @@ class _RaiseViewsState extends State<RaiseViews> {
                       ),
                       _divider,
                       LevelCard(
-                        value: 1,
+                        value: 0,
                         onChanged: store.changeLevel,
                         groupValue: store.levelGroupValue,
                         color: Color(0xFFF6CF00),
@@ -151,7 +163,7 @@ class _RaiseViewsState extends State<RaiseViews> {
                       ),
                       _divider,
                       LevelCard(
-                        value: 2,
+                        value: 1,
                         groupValue: store.levelGroupValue,
                         onChanged: store.changeLevel,
                         color: Color(0xFFF6CF00),
@@ -161,7 +173,7 @@ class _RaiseViewsState extends State<RaiseViews> {
                       ),
                       _divider,
                       LevelCard(
-                        value: 3,
+                        value: 2,
                         onChanged: store.changeLevel,
                         groupValue: store.levelGroupValue,
                         color: Color(0xFFBBC0C7),
@@ -171,7 +183,7 @@ class _RaiseViewsState extends State<RaiseViews> {
                       ),
                       _divider,
                       LevelCard(
-                        value: 4,
+                        value: 3,
                         groupValue: store.levelGroupValue,
                         onChanged: store.changeLevel,
                         color: Color(0xFFB79768),
@@ -191,10 +203,11 @@ class _RaiseViewsState extends State<RaiseViews> {
   }
 
   _onPressedPay() {
-    store.getAmount(
+    store.setAmount(
       isQuest: widget.questId.isNotEmpty,
       tariff: store.levelGroupValue,
-      period: store.getPeriod(
+      period: RaiseViewUtils.getPeriod(
+        periodGroupValue: store.periodGroupValue,
         isQuest: widget.questId.isNotEmpty,
       ),
     );
@@ -222,11 +235,13 @@ class _RaiseViewsState extends State<RaiseViews> {
       );
     } on SocketException catch (_) {
       // Navigator.of(context, rootNavigator: true).pop();
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: 'Lost connection to server');
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'Error', content: 'Lost connection to server');
       throw FormatException('Lost connection to server');
     } catch (e) {
       // Navigator.of(context, rootNavigator: true).pop();
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: e.toString());
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'Error', content: e.toString());
     }
   }
 
@@ -254,10 +269,12 @@ class _RaiseViewsState extends State<RaiseViews> {
       );
     } on SocketException catch (_) {
       // Navigator.of(context, rootNavigator: true).pop();
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: 'Lost connection to server');
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'Error', content: 'Lost connection to server');
     } catch (e) {
       // Navigator.of(context, rootNavigator: true).pop();
-      AlertDialogUtils.showInfoAlertDialog(context, title: 'Error', content: e.toString());
+      AlertDialogUtils.showInfoAlertDialog(context,
+          title: 'Error', content: e.toString());
     }
   }
 }

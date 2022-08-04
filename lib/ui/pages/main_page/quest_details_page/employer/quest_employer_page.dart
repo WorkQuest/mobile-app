@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app/enums.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/assigned_worker.dart';
 import 'package:app/model/quests_models/open_dispute.dart';
 import 'package:app/model/quests_models/your_review.dart';
@@ -149,11 +150,16 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
           ),
           onSelected: (value) async {
             if (value == "quests.raiseViews") {
-              await Navigator.pushNamed(
+              final result = await Navigator.pushNamed(
                 context,
                 RaiseViews.routeName,
                 arguments: store.quest.value!.id,
               );
+              if (result != null && result is RaiseView) {
+                setState(() {
+                  store.quest.value!.raiseView = result;
+                });
+              }
             } else if (value == "registration.edit") {
               if (profile?.userData?.isTotpActive == true) {
                 _showSecurityTOTPDialog(onTabOk: () async {

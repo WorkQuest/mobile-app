@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:app/constants.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/utils/raise_view_util.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:decimal/decimal.dart';
 import 'package:injectable/injectable.dart';
@@ -28,18 +29,10 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
   _RaiseViewStore(this.apiProvider);
 
   @observable
-  TokenSymbols? typeCoin;
-
-  @observable
-  TYPE_WALLET? typeWallet;
-
-  @observable
   int periodGroupValue = 1;
 
   @observable
   int levelGroupValue = 1;
-
-  int periodValue = 0;
 
   String questId = "";
 
@@ -47,7 +40,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
 
   String amount = "";
 
-  bool approved = false;
+  int period = 0;
 
   @observable
   bool needApprove = true;
@@ -60,98 +53,24 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
       ? Constants.worknetMainnetWUSD
       : Constants.worknetTestnetWUSD;
 
-  final address = EthereumAddress.fromHex(Web3Utils.getAddressWorknetWQPromotion());
+  String get addressWQPromotion => Web3Utils.getAddressWorknetWQPromotion();
 
   Map<int, List<String>> price = {};
 
-  List<String> forDay = [r"20$", r"12$", r"9$", r"7$"];
-  List<String> forWeek = [r"35$", r"28$", r"22$", r"18$"];
-  List<String> forMonth = [r"50$", r"35$", r"29$", r"21$"];
-
-  List<DataCoins> coins = [
-    DataCoins(
-        symbolToken: TokenSymbols.WUSD,
-        iconPath: "assets/coins/wusd.svg",
-        title: 'WUSD',
-        isEnable: true),
-    DataCoins(
-        symbolToken: TokenSymbols.WQT,
-        iconPath: "assets/coins/wqt.svg",
-        title: 'WQT',
-        isEnable: true),
-  ];
-
-  List<WalletItem> wallets = [
-    WalletItem("assets/coinpaymebts.svg", "Сoinpaymebts", TYPE_WALLET.Coinpaymebts),
-  ];
-
-  @observable
-  DataCoins? currentCoin;
-
-  @observable
-  WalletItem? currentWallet;
-
-  @computed
-  bool get selectedCoin => currentCoin != null;
-
-  @computed
-  bool get selectedWallet => currentWallet != null;
-
   setQuestId(String value) => questId = value;
 
-  @action
-  setApprove(bool value) {
-    approved = value;
-    print("approved: $approved");
-    if (!value) this.onError("Cancel");
-  }
-
-  @action
-  setTitleSelectedCoin(TokenSymbols? value) => typeCoin = value;
-
-  @action
-  setTitleSelectedWallet(TYPE_WALLET? value) => typeWallet = value;
-
-  @action
-  void setCurrentCoin(DataCoins value) => currentCoin = value;
-
-  @action
-  void setCurrentWallet(WalletItem value) => currentWallet = value;
+  setAmount({
+    required bool isQuest,
+    required int tariff,
+    required int period,
+  }) =>
+      amount = RaiseViewUtils.getAmount(isQuest: isQuest, tariff: tariff, period: period);
 
   @action
   void initPrice() {
-    price[1] = forDay;
-    price[2] = forWeek;
-    price[3] = forMonth;
-  }
-
-  @action
-  void initValue() {
-    currentCoin = coins[0];
-    currentWallet = wallets[0];
-  }
-
-  int getPeriod({bool isQuest = false}) {
-    if (isQuest) {
-      switch (periodGroupValue) {
-        case 1:
-          return periodValue = 1;
-        case 2:
-          return periodValue = 5;
-        case 3:
-          return periodValue = 7;
-      }
-    } else {
-      switch (periodGroupValue) {
-        case 1:
-          return periodValue = 1;
-        case 2:
-          return periodValue = 7;
-        case 3:
-          return periodValue = 30;
-      }
-    }
-    return periodValue;
+    price[1] = RaiseViewConstants.forDay;
+    price[2] = RaiseViewConstants.forWeek;
+    price[3] = RaiseViewConstants.forMonth;
   }
 
   @action
@@ -159,9 +78,6 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
 
   @action
   changeLevel(int? value) => levelGroupValue = value!;
-
-  @computed
-  bool get canSubmit => !isLoading && typeCoin != null && typeWallet != null;
 
   Future<void> getQuest() async {
     try {
@@ -178,7 +94,9 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
     try {
       this.onLoading();
       final _client = AccountRepository().getClientWorkNet();
-      final _allowance = await _client.allowanceCoin(address: address);
+      final _allowance = await _client.allowanceCoin(
+        address: EthereumAddress.fromHex(addressWQPromotion),
+      );
       print('_allowance: $_allowance');
 
       _priceForApprove = (Decimal.parse(amount) * Decimal.fromInt(10).pow(18)).toBigInt();
@@ -204,7 +122,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
       print('_priceForApprove: $_priceForApprove');
       await AccountRepository().getClientWorkNet().approveCoin(
             price: _priceForApprove!,
-            address: address,
+            address: EthereumAddress.fromHex(addressWQPromotion),
           );
       onSuccess(RaiseViewStoreState.approve);
     } on FormatException catch (e, trace) {
@@ -221,15 +139,15 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
     try {
       print('raiseProfile');
       this.onLoading();
-      final _period = getPeriod();
+      period = RaiseViewUtils.getPeriod(periodGroupValue: periodGroupValue);
       await Web3Utils.checkPossibilityTx(
         typeCoin: TokenSymbols.WUSD,
         fee: Decimal.parse(gas),
         amount: double.parse(amount),
       );
       await AccountRepository().getClientWorkNet().promoteUser(
-            tariff: levelGroupValue - 1,
-            period: _period,
+            tariff: levelGroupValue,
+            period: period,
           );
       this.onSuccess(RaiseViewStoreState.raiseProfile);
     } on FormatException catch (e, trace) {
@@ -251,12 +169,15 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
         fee: Decimal.parse(gas),
         amount: double.parse(amount),
       );
-      final _period = getPeriod(isQuest: true);
+      period = RaiseViewUtils.getPeriod(
+        periodGroupValue: periodGroupValue,
+        isQuest: true,
+      );
       final _price = BigInt.from(double.parse(amount) * pow(10, 18));
       await AccountRepository().getClientWorkNet().approveCoin(price: _price);
       await AccountRepository().getClientWorkNet().promoteQuest(
-            tariff: levelGroupValue - 1,
-            period: _period,
+            tariff: levelGroupValue,
+            period: period,
             amount: amount,
             questAddress: _quest!.contractAddress!,
           );
@@ -282,8 +203,9 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
         function: _contractPromote.function(WQPromotionFunctions.promoteQuest.name),
         params: [
           EthereumAddress.fromHex(_quest!.contractAddress!),
-          BigInt.from(levelGroupValue - 1),
-          BigInt.from(getPeriod(isQuest: true)),
+          BigInt.from(levelGroupValue),
+          BigInt.from(RaiseViewUtils.getPeriod(
+              periodGroupValue: periodGroupValue, isQuest: true)),
         ],
       );
     else
@@ -291,8 +213,9 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
         contract: _contractPromote,
         function: _contractPromote.function(WQPromotionFunctions.promoteUser.name),
         params: [
-          BigInt.from(levelGroupValue - 1),
-          BigInt.from(getPeriod(isQuest: false)),
+          BigInt.from(levelGroupValue),
+          BigInt.from(RaiseViewUtils.getPeriod(
+              periodGroupValue: periodGroupValue, isQuest: false)),
         ],
       );
     gas = _gasForPromote.toStringAsFixed(17);
@@ -311,7 +234,7 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
           contract: _contract.self,
           function: _contract.self.abi.functions[1],
           parameters: [
-            address,
+            EthereumAddress.fromHex(addressWQPromotion),
             _price,
           ],
           from: EthereumAddress.fromHex(AccountRepository().userAddress),
@@ -337,116 +260,6 @@ abstract class _RaiseViewStore extends IStore<RaiseViewStoreState> with Store {
             Decimal.fromInt(10).pow(18))
         .toDouble()
         .toStringAsFixed(17);
-  }
-
-  void getAmount({
-    required bool isQuest,
-    required int tariff,
-    required int period,
-  }) {
-    if (isQuest) {
-      switch (period) {
-        case 1:
-          switch (tariff) {
-            case 1:
-              amount = '20';
-              return;
-            case 2:
-              amount = '12';
-              return;
-            case 3:
-              amount = '9';
-              return;
-            case 4:
-              amount = '7';
-              return;
-          }
-          break;
-        case 5:
-          switch (tariff) {
-            case 1:
-              amount = '35';
-              return;
-            case 2:
-              amount = '28';
-              return;
-            case 3:
-              amount = '22';
-              return;
-            case 4:
-              amount = '18';
-              return;
-          }
-          break;
-        case 7:
-          switch (tariff) {
-            case 1:
-              amount = '50';
-              return;
-            case 2:
-              amount = '35';
-              return;
-            case 3:
-              amount = '29';
-              return;
-            case 4:
-              amount = '21';
-              return;
-          }
-          break;
-      }
-    } else {
-      switch (period) {
-        case 1:
-          switch (tariff) {
-            case 1:
-              amount = '20';
-              return;
-            case 2:
-              amount = '12';
-              return;
-            case 3:
-              amount = '9';
-              return;
-            case 4:
-              amount = '7';
-              return;
-          }
-          break;
-        case 7:
-          switch (tariff) {
-            case 1:
-              amount = '35';
-              return;
-            case 2:
-              amount = '28';
-              return;
-            case 3:
-              amount = '22';
-              return;
-            case 4:
-              amount = '18';
-              return;
-          }
-          break;
-        case 30:
-          switch (tariff) {
-            case 1:
-              amount = '50';
-              return;
-            case 2:
-              amount = '35';
-              return;
-            case 3:
-              amount = '29';
-              return;
-            case 4:
-              amount = '21';
-              return;
-          }
-          break;
-      }
-    }
   }
 }
 

@@ -1,12 +1,15 @@
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/portfolio.dart';
+import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/portfolio_page/create_portfolio/create_portfolio_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/choose_quest/choose_quest_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/store/user_profile_worker_store.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
+import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/raise_view_util.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -116,10 +119,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
         if (portfolioStore!.portfolioList.isNotEmpty)
           Padding(
             padding: EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              bottom: MediaQuery.of(context).padding.bottom
-            ),
+                left: 16.0, right: 16.0, bottom: MediaQuery.of(context).padding.bottom),
             child: ElevatedButton(
               onPressed: () async {
                 portfolioStore!.setTitleName("Portfolio");
@@ -142,7 +142,6 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               ),
             ),
           ),
-
       ];
 
   @override
@@ -350,25 +349,60 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               ),
             ],
           ),
-        if (viewOtherUser?.userData == null &&
-            userStore!.userData?.raiseView?.status == 1)
-          Column(
-            children: [
-              spacer,
-              ElevatedButton(
-                onPressed: () async {
-                  await Navigator.of(context, rootNavigator: true).pushNamed(
-                    RaiseViews.routeName,
-                    arguments: "",
-                  );
-                },
-                child: Text(
-                  "profiler.raiseViews".tr(),
-                ),
+        Column(
+          children: [
+            spacer,
+            ElevatedButton(
+              onPressed: _onPressedRaiseView,
+              child: Text(
+                "profiler.raiseViews".tr(),
               ),
-            ],
-          ),
+            ),
+          ],
+        ),
       ];
+
+  _onPressedRaiseView() async {
+    final _raiseView = userStore!.userData?.raiseView;
+    final _raiseViewActive = viewOtherUser?.userData == null &&
+        _raiseView?.status == RaiseViewConstants.statusActive;
+    if (_raiseViewActive) {
+      AlertDialogUtils.showAlertDialog(
+        context,
+        title: Text('Active'),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+                'Until ${DateFormat('dd.MM.yyyy HH:mm').format(_raiseView!.endedAt!.toLocal())}'),
+            const SizedBox(
+              height: 5,
+            ),
+            Text(
+              RaiseViewUtils.getTypeTitle(_raiseView.type!),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            )
+          ],
+        ),
+        needCancel: false,
+        colorOk: AppColor.enabledButton,
+      );
+      return;
+    }
+    final result = await Navigator.of(context, rootNavigator: true).pushNamed(
+      RaiseViews.routeName,
+      arguments: "",
+    );
+    if (result != null && result is RaiseView) {
+      setState(() {
+        userStore!.userData!.raiseView = result;
+      });
+    }
+  }
 
   List<Widget> ratingsWidget() => [
         workerRating(
