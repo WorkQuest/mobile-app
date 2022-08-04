@@ -119,7 +119,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                         pinCode: store.pin,
                         isLoading: store.startAnimation,
                       ),
-                      enabled: store.startSwitch,
+                      enabled: store.statePin == StatePinCode.Repeat,
                     ),
                   if (store.attempts != 0)
                     SizedBox(

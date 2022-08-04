@@ -53,6 +53,9 @@ class _AnimationSwitchWidgetState extends State<AnimationSwitchWidget>
     if (widget.enabled) {
       _firstController.forward();
       _secondController.forward();
+    } else {
+      _firstController.reverse();
+      _secondController.reverse();
     }
     return Stack(
       children: [
