@@ -6,6 +6,7 @@ import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_page.dar
 import 'package:app/ui/pages/sign_up_page/generate_wallet/create_wallet_store.dart';
 import 'package:app/ui/pages/sign_up_page/generate_wallet/import_wallet_page.dart';
 import 'package:app/ui/widgets/login_button.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -20,7 +21,14 @@ class ApproveRolePage extends StatelessWidget {
 
   static const String routeName = '/approveRolePage';
 
-  final String _baseUrl = "https://testnet-app.workquest.co/";
+  String get _baseUrl {
+    if (AccountRepository().notifierNetwork.value == Network.mainnet) {
+      return "https://app.workquest.co/";
+    }
+    return Constants.isTestnet
+        ? "https://testnet-app.workquest.co/"
+        : "https://dev-app.workquest.co/";
+  }
 
   @override
   Widget build(BuildContext ctx) {

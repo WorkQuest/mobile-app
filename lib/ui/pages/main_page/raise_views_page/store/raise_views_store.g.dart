@@ -195,6 +195,28 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
   }
 
   @override
+  void setCurrentCoin(DataCoins value) {
+    final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
+        name: '_RaiseViewStore.setCurrentCoin');
+    try {
+      return super.setCurrentCoin(value);
+    } finally {
+      _$_RaiseViewStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setCurrentWallet(WalletItem value) {
+    final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
+        name: '_RaiseViewStore.setCurrentWallet');
+    try {
+      return super.setCurrentWallet(value);
+    } finally {
+      _$_RaiseViewStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void initPrice() {
     final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
         name: '_RaiseViewStore.initPrice');

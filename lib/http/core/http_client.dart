@@ -37,7 +37,9 @@ class _HttpClient implements IHttpClient {
 
   String get _baseUrl {
     if (_network == Network.testnet) {
-      return 'https://testnet-app.workquest.co/api';
+      return Constants.isTestnet
+          ? 'https://testnet-app.workquest.co/api'
+          : 'https://dev-app.workquest.co/api';
     } else if (_network == Network.mainnet) {
       return 'https://app.workquest.co/api';
     }
@@ -172,15 +174,17 @@ class _HttpClient implements IHttpClient {
           SharedPreferences.getInstance().then((value) async {
             List<String> _old = value.getStringList(errorsSharedKeys) ?? [];
             print(_old);
-            _old.insert(0, jsonEncode(ErrorRequestModel(
-              url: options.baseUrl + options.path,
-              method: options.method,
-              query: options.queryParameters.toString(),
-              data: options.data.toString(),
-              message: error.message,
-              response: error.response.toString(),
-              date: DateTime.now().toString(),
-            ).toJson()));
+            _old.insert(
+                0,
+                jsonEncode(ErrorRequestModel(
+                  url: options.baseUrl + options.path,
+                  method: options.method,
+                  query: options.queryParameters.toString(),
+                  data: options.data.toString(),
+                  message: error.message,
+                  response: error.response.toString(),
+                  date: DateTime.now().toString(),
+                ).toJson()));
 
             value.setStringList(
               errorsSharedKeys,
