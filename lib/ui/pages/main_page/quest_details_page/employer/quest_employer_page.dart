@@ -25,6 +25,7 @@ import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/web3_utils.dart';
 import 'package:app/web3/contractEnums.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -123,7 +124,13 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       IconButton(
         icon: Icon(Icons.share_outlined),
         onPressed: () {
-          Share.share("https://dev-app.workquest.co/quests/${store.quest.value!.id}");
+          late String _url;
+          if (AccountRepository().notifierNetwork.value == Network.mainnet) {
+            _url = "https://app.workquest.co/quests/${store.quest.value!.id}";
+          } else {
+            _url = "https://${Constants.isTestnet ? 'testnet': 'dev'}-app.workquest.co/quests/${store.quest.value!.id}";
+          }
+          Share.share(_url);
         },
       ),
       if (canActionsQuest)

@@ -39,7 +39,7 @@ abstract class _ChatStore extends IStore<bool> with Store {
   ObservableMap<TypeChat, Chats> chats = ObservableMap.of({});
 
   @observable
-  TypeChat typeChat = TypeChat.active;
+  TypeChat typeChat = TypeChat.all;
 
   String myId = "";
 
@@ -77,7 +77,8 @@ abstract class _ChatStore extends IStore<bool> with Store {
         questChatStatus: questChatStatus,
         starred: type == TypeChat.favourites ? true : null,
       );
-
+      print('type: $type');
+      print('message first: ${listChats.first.chatData.lastMessage?.text}');
       chats[type]!.setChats(listChats);
 
       listChats.forEach((element) {
@@ -114,27 +115,10 @@ abstract class _ChatStore extends IStore<bool> with Store {
     }
   }
 
-  void getChatTypeFromIndex(int index) {
-    switch (index) {
-      case 0:
-        typeChat = TypeChat.all;
-        return;
-      case 1:
-        typeChat = TypeChat.active;
-        return;
-      case 2:
-        typeChat = TypeChat.privates;
-        return;
-      case 3:
-        typeChat = TypeChat.favourites;
-        return;
-      case 4:
-        typeChat = TypeChat.group;
-        return;
-      case 5:
-        typeChat = TypeChat.completed;
-        return;
-    }
+  @action
+  setChatType(int indexTab) {
+    typeChat = getChatTypeFromIndex(indexTab);
+    print('typeChat: $typeChat');
   }
 
   @action
@@ -271,6 +255,23 @@ abstract class _ChatStore extends IStore<bool> with Store {
       await _apiProvider.setMessageRead(chatId: chatId, messageId: messageId);
     } catch (e) {
       this.onError(e.toString());
+    }
+  }
+
+  getChatTypeFromIndex(int index) {
+    switch (index) {
+      case 0:
+        return TypeChat.all;
+      case 1:
+        return TypeChat.privates;
+      case 2:
+        return TypeChat.group;
+      case 3:
+        return TypeChat.active;
+      case 4:
+        return TypeChat.completed;
+      case 5:
+        return TypeChat.favourites;
     }
   }
 }

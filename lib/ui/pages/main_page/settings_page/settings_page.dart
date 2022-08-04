@@ -211,6 +211,7 @@ class SettingsPage extends StatelessWidget {
                                 },
                               ),
                               _spacer,
+                              // Expanded(child: Container()),
                               SettingsCard(
                                 icon: Icon(
                                   Icons.error_outline,

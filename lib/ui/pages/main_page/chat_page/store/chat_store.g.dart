@@ -111,6 +111,17 @@ mixin _$ChatStore on _ChatStore, Store {
   final _$_ChatStoreActionController = ActionController(name: '_ChatStore');
 
   @override
+  dynamic setChatType(int index) {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore.setChatType');
+    try {
+      return super.setChatType(index);
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setChatSelected(bool value) {
     final _$actionInfo = _$_ChatStoreActionController.startAction(
         name: '_ChatStore.setChatSelected');

@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:app/constants.dart';
 import 'package:app/model/login_model.dart';
 import 'package:app/ui/pages/sign_in_page/mnemonic_page.dart';
 import 'package:app/utils/storage.dart';
+import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -25,7 +27,12 @@ class _WebViewPageState extends State<WebViewPage> {
   final Completer<WebViewController> _controllerCompleter =
       Completer<WebViewController>();
 
-  final String baseUrl = "https://dev-app.workquest.co/";
+  String get baseUrl {
+    if (AccountRepository().notifierNetwork.value == Network.mainnet) {
+      return "https://app.workquest.co/";
+    }
+    return "https://${Constants.isTestnet ? 'testnet' : 'dev'}-app.workquest.co/";
+  }
   final storage = new FlutterSecureStorage();
   WebViewController? _controller;
   bool loading = false;
@@ -74,7 +81,7 @@ class _WebViewPageState extends State<WebViewPage> {
               },
               onPageStarted: (String url) async {
                 print('Page started loading: $url');
-                if (url.contains("dev-app.workquest.co"))
+                if (url.contains(baseUrl))
                   setState(() {
                     print("url: $url");
                     loading = true;
