@@ -210,6 +210,7 @@ class _KnowledgeWorkSelection extends State<KnowledgeWorkSelection> {
     if (dateFrom != null) {
       if (dateFrom.contains("-")) minTime.addAll(dateFrom.split("-"));
       if (dateFrom.contains(".")) minTime.addAll(dateFrom.split("."));
+      if (int.parse(minTime[0]) > 31) minTime = minTime.reversed.toList();
     }
     return Container(
       height: 43,

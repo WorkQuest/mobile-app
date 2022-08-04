@@ -5,10 +5,12 @@ import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pa
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
 import 'package:app/ui/pages/main_page/settings_page/pages/my_disputes/dispute/dispute_page.dart';
+import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 class NotificationCell extends StatefulWidget {
   final NotificationStore store;
@@ -203,6 +205,15 @@ class _NotificationCellState extends State<NotificationCell> {
                     DisputePage.routeName,
                     arguments: widget.body.notification.data.disputeId,
                   );
+                } else if (action.contains("updateratingstatistic")) {
+                  final userData = context.read<ProfileMeStore>().userData;
+                  await Navigator.of(context, rootNavigator: true).pushNamed(
+                    UserProfile.routeName,
+                    arguments: ProfileArguments(
+                      userId: userData!.id,
+                      role: userData.role,
+                    ),
+                  );
                 }
               },
               child: Row(
@@ -212,7 +223,8 @@ class _NotificationCellState extends State<NotificationCell> {
                 children: [
                   Expanded(
                     child: Text(
-                      widget.body.notification.data.title!,
+                      widget.body.notification.data.title ??
+                          userRating(widget.body.notification.data.status),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(fontSize: 15),
@@ -230,5 +242,19 @@ class _NotificationCellState extends State<NotificationCell> {
         ],
       ),
     );
+  }
+
+  String userRating(int? status) {
+    switch (status) {
+      case 0:
+        return "No status";
+      case 1:
+        return "Verified";
+      case 2:
+        return "Reliable";
+      case 3:
+        return "TopRanked";
+    }
+    return "";
   }
 }

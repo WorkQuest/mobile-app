@@ -100,6 +100,7 @@ class Data {
     required this.chatId,
     required this.disputeId,
     required this.user,
+    required this.status,
   });
 
   String id;
@@ -108,6 +109,7 @@ class Data {
   String chatId;
   String? disputeId;
   User? user;
+  int? status;
 
   factory Data.fromJson(Map<String, dynamic> json) {
     String? title = "";
@@ -137,6 +139,7 @@ class Data {
                   : User.fromJson(json["sender"]["user"])
               : User.fromJson(json["user"])
           : User.fromJson(json["fromUser"]),
+      status: json["user"] != null ? json["user"]["status"] : null,
     );
   }
 

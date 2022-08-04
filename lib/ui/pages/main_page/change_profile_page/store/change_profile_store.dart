@@ -136,6 +136,26 @@ abstract class ChangeProfileStoreBase with Store {
         errorAlert(context, "modals.errorEducation".tr());
         chek = false;
       }
+
+      String dateFrom = "";
+      element["from"]!.split(".").forEach((element) {
+        if (int.parse(element) < 10) element = "0" + element;
+        dateFrom += element + "-";
+      });
+      dateFrom = dateFrom.substring(0, dateFrom.length - 1);
+
+      String dateTo = "";
+      element["to"]!.split(".").forEach((element) {
+        if (int.parse(element) < 10) element = "0" + element;
+        dateTo += element + "-";
+      });
+      dateTo = dateTo.substring(0, dateTo.length - 1);
+
+      if (DateTime.parse(dateFrom).millisecondsSinceEpoch >
+          DateTime.parse(dateTo).millisecondsSinceEpoch) {
+        errorAlert(context, "modals.errorDate".tr());
+        chek = false;
+      }
     });
     return chek;
   }

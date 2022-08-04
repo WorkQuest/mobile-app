@@ -96,7 +96,7 @@ class WebSocket {
 
   void _connectSender() {
     final _wssPath = AccountRepository().notifierNetwork.value == Network.testnet
-        ? "wss://testnet-app.workquest.co/api"
+        ? "wss://dev-app.workquest.co/api"
         : "wss://app.workquest.co/api";
     _senderChannel = IOWebSocketChannel.connect(_wssPath);
     _senderChannel?.sink.add("""{
@@ -117,7 +117,7 @@ class WebSocket {
 
   void _connectListen() {
     final _wsPath = AccountRepository().notifierNetwork.value == Network.testnet
-        ? 'wss://testnet-notification.workquest.co/api/v1/notifications'
+        ? 'wss://notification.workquest.co/api/v1/notifications'
         : 'wss://mainnet-notification.workquest.co/api/v1/notifications';
     _notificationChannel = IOWebSocketChannel.connect(_wsPath);
 

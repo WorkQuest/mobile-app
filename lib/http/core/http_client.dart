@@ -37,7 +37,7 @@ class _HttpClient implements IHttpClient {
 
   String get _baseUrl {
     if (_network == Network.testnet) {
-      return 'https://testnet-app.workquest.co/api';
+      return 'https://dev-app.workquest.co/api';
     } else if (_network == Network.mainnet) {
       return 'https://app.workquest.co/api';
     }

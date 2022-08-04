@@ -374,7 +374,7 @@ class _ItemInfoFromTransaction extends StatelessWidget {
     if (_isMainnet) {
       launchUrl(Uri.parse('https://explorer.workquest.co/tx/$info'));
     } else {
-      launchUrl(Uri.parse('https://testnet-explorer.workquest.co/tx/$info'));
+      launchUrl(Uri.parse('https://dev-explorer.workquest.co/tx/$info'));
     }
   }
 }
