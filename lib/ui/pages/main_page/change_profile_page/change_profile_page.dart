@@ -43,7 +43,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
   // PhoneNumber phone = PhoneNumber();
   // PhoneNumber secondPhone = PhoneNumber();
 
-  Phone? oldPhone;
 
   @override
   void initState() {
@@ -52,12 +51,6 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
     profile!.workplaceToValue();
     profile!.priorityToValue();
     profile!.payPeriodToValue();
-
-    oldPhone = Phone(
-      codeRegion: profile!.userData?.phone?.codeRegion ?? "",
-      fullPhone: profile!.userData?.phone?.fullPhone ?? "",
-      phone: profile!.userData?.phone?.phone ?? "",
-    );
     if (profile!.userData!.additionalInfo?.address != null)
       pageStore.address = profile!.userData!.additionalInfo!.address!;
     pageStore
@@ -103,9 +96,9 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
       ),
       body: ObserverListener<ProfileMeStore>(
         onSuccess: () async {
-          if (oldPhone != null &&
-              oldPhone!.fullPhone.isNotEmpty &&
-              !pageStore.numberChanged(oldPhone!.fullPhone)) {
+          if (pageStore.phoneNumber != null &&
+              pageStore.phoneNumber!.phoneNumber!.isNotEmpty &&
+              !pageStore.numberChanged(pageStore.oldPhoneNumber!.phoneNumber!)) {
             await AlertDialogUtils.showSuccessDialog(context);
             Navigator.pop(context, true);
           } else {
@@ -189,7 +182,7 @@ class _ChangeProfilePageState extends State<ChangeProfilePage> {
                 Observer(
                   builder: (_) => PhoneNumberWidget(
                     title: "modals.phoneNumber",
-                    initialValue: pageStore.phoneNumber,
+                    initialValue: pageStore.oldPhoneNumber,
                     onChanged: (PhoneNumber phone) {
                       pageStore.setPhoneNumber(phone);
                     },
