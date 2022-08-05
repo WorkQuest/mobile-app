@@ -31,9 +31,11 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
 
   final store = UserProfileWorkerStore();
 
+  bool get isMyProfile => viewOtherUser?.userData == null;
+
   List<Widget> questPortfolio() => [
         ///Add new portfolio
-        if (viewOtherUser?.userData == null)
+        if (isMyProfile)
           Container(
             color: Colors.white,
             padding: const EdgeInsets.symmetric(
@@ -110,7 +112,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
                       ? Constants.defaultImageNetwork
                       : portfolioStore!.portfolioList[index].medias.first.url,
                   title: portfolioStore!.portfolioList[index].title,
-                  isProfileYour: viewOtherUser?.userData == null ? true : false,
+                  isProfileYour: isMyProfile ? true : false,
                 ),
             ],
           );
@@ -150,14 +152,12 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
         Padding(
           padding: const EdgeInsets.only(bottom: 5.0),
           child: Text(
-            viewOtherUser?.userData == null
-                ? "skills.yourSkills".tr()
-                : "skills.title".tr(),
+            isMyProfile ? "skills.yourSkills".tr() : "skills.title".tr(),
             textAlign: TextAlign.start,
             style: style,
           ),
         ),
-        viewOtherUser?.userData == null
+        isMyProfile
             ? (userStore!.userData!.userSpecializations.isEmpty)
                 ? Text(
                     "skills.noSkills".tr(),
@@ -208,7 +208,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
           ),
         ),
         Observer(builder: (_) {
-          final description = viewOtherUser?.userData == null
+          final description = isMyProfile
               ? userStore!.userData?.additionalInfo?.description ??
                   "modals.noDescription".tr()
               : viewOtherUser!.userData!.additionalInfo?.description ??
@@ -232,7 +232,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
             ),
           ),
         ),
-        viewOtherUser?.userData == null
+        isMyProfile
             ? (userStore!.userData!.additionalInfo!.educations.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
@@ -281,7 +281,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
             ),
           ),
         ),
-        viewOtherUser?.userData == null
+        isMyProfile
             ? (userStore!.userData!.additionalInfo!.workExperiences.isNotEmpty)
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
@@ -329,8 +329,7 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
       ];
 
   List<Widget> addToQuest() => [
-        if (viewOtherUser?.userData != null &&
-            userStore!.userData!.role == UserRole.Employer)
+        if (!isMyProfile && userStore!.userData!.role == UserRole.Employer)
           Column(
             children: [
               spacer,
@@ -349,23 +348,23 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
               ),
             ],
           ),
-        Column(
-          children: [
-            spacer,
-            ElevatedButton(
-              onPressed: _onPressedRaiseView,
-              child: Text(
-                "profiler.raiseViews".tr(),
+        if (isMyProfile)
+          Column(
+            children: [
+              spacer,
+              ElevatedButton(
+                onPressed: _onPressedRaiseView,
+                child: Text(
+                  "profiler.raiseViews".tr(),
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
       ];
 
   _onPressedRaiseView() async {
     final _raiseView = userStore!.userData?.raiseView;
-    final _raiseViewActive = viewOtherUser?.userData == null &&
-        _raiseView?.status == RaiseViewConstants.statusActive;
+    final _raiseViewActive = _raiseView?.status == RaiseViewConstants.statusActive;
     if (_raiseViewActive) {
       AlertDialogUtils.showAlertDialog(
         context,
@@ -406,29 +405,27 @@ class _WorkerProfileState extends UserProfileState<UserProfile> {
 
   List<Widget> ratingsWidget() => [
         workerRating(
-          completedQuests: viewOtherUser?.userData == null
+          completedQuests: isMyProfile
               ? userStore!.userData!.questsStatistic == null
                   ? '0'
                   : userStore!.userData!.questsStatistic!.completed.toString()
               : viewOtherUser!.userData!.questsStatistic == null
                   ? '0'
                   : viewOtherUser!.userData!.questsStatistic!.completed.toString(),
-          activeQuests: viewOtherUser?.userData == null
+          activeQuests: isMyProfile
               ? userStore!.userData!.questsStatistic == null
                   ? '0'
                   : userStore!.userData!.questsStatistic!.opened.toString()
               : viewOtherUser!.userData!.questsStatistic == null
                   ? '0'
                   : viewOtherUser!.userData!.questsStatistic!.opened.toString(),
-          averageRating: viewOtherUser?.userData == null
+          averageRating: isMyProfile
               ? userStore!.userData!.ratingStatistic!.averageMark
               : viewOtherUser!.userData!.ratingStatistic!.averageMark,
-          reviews: viewOtherUser?.userData == null
+          reviews: isMyProfile
               ? userStore!.userData!.ratingStatistic!.reviewCount.toString()
               : viewOtherUser!.userData!.ratingStatistic!.reviewCount.toString(),
-          userId: viewOtherUser?.userData == null
-              ? userStore!.userData!.id
-              : viewOtherUser!.userData!.id,
+          userId: isMyProfile ? userStore!.userData!.id : viewOtherUser!.userData!.id,
           context: context,
         ),
       ];

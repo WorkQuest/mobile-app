@@ -33,6 +33,8 @@ abstract class ChangeProfileStoreBase with Store {
   @observable
   PhoneNumber? secondPhoneNumber;
 
+  PhoneNumber? oldPhoneNumber;
+
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Keys.googleKey);
 
   @action
@@ -57,6 +59,7 @@ abstract class ChangeProfileStoreBase with Store {
   Future<void> getInitCode(Phone firstPhone, Phone? secondPhone) async {
     phoneNumber =
         await PhoneNumber.getRegionInfoFromPhoneNumber(firstPhone.fullPhone);
+    oldPhoneNumber = await PhoneNumber.getRegionInfoFromPhoneNumber(firstPhone.fullPhone);
     if (secondPhone != null)
       secondPhoneNumber =
           await PhoneNumber.getRegionInfoFromPhoneNumber(secondPhone.fullPhone);
