@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
@@ -22,6 +23,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
 import "package:provider/provider.dart";
 import 'package:easy_localization/easy_localization.dart';
+
+const _divider = const SizedBox(height: 6, child: ColoredBox(color: AppColor.disabledButton));
 
 class QuestList extends StatefulWidget {
   final Function() changePage;
@@ -183,14 +186,14 @@ class _QuestListState extends State<QuestList> {
             delegate: SliverChildListDelegate(
               [
                 const SizedBox(height: 8),
-                _getDivider(),
+                _divider,
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: OutlinedButton(
                     onPressed: () async {
-                      await Navigator.of(context, rootNavigator: true)
-                          .pushNamed(FilterQuestsPage.routeName,
-                              arguments: filterQuestsStore!.skillFilters);
+                      await Navigator.of(context, rootNavigator: true).pushNamed(
+                          FilterQuestsPage.routeName,
+                          arguments: filterQuestsStore!.skillFilters);
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(
@@ -209,7 +212,7 @@ class _QuestListState extends State<QuestList> {
                     ),
                   ),
                 ),
-                _getDivider(),
+                _divider,
                 Observer(builder: (_) {
                   if (questsStore!.isLoading) {
                     return ListView.separated(
@@ -217,7 +220,7 @@ class _QuestListState extends State<QuestList> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       separatorBuilder: (context, index) {
-                        return _getDivider();
+                        return _divider;
                       },
                       padding: EdgeInsets.zero,
                       itemCount: 8,
@@ -256,7 +259,7 @@ class _QuestListState extends State<QuestList> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       separatorBuilder: (context, index) {
-                        return _getDivider();
+                        return _divider;
                       },
                       padding: EdgeInsets.zero,
                       itemCount: () {
@@ -290,23 +293,15 @@ class _QuestListState extends State<QuestList> {
           ),
           SliverToBoxAdapter(
             child: Observer(
-              builder: (_) =>
-                  (questsStore!.isLoading || questsStore!.isLoadingMore)
-                      ? Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        )
-                      : const SizedBox(),
+              builder: (_) => (questsStore!.isLoading || questsStore!.isLoadingMore)
+                  ? Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    )
+                  : const SizedBox(),
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _getDivider() {
-    return SizedBox(
-      height: 6,
-      child: Container(color: Color(0xFFF7F8FA)),
     );
   }
 

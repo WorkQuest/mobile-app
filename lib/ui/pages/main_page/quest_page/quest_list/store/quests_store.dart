@@ -24,8 +24,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
 
   UserRole role = UserRole.Worker;
 
-  int offset = 0;
-
   @observable
   bool isLoadingMore = false;
 
@@ -193,15 +191,13 @@ abstract class _QuestsStore extends IStore<bool> with Store {
     try {
       if (newList) {
         questsList.clear();
-        offset = 0;
       }
-      if (offset != questsList.length) return;
       this.onLoading();
       debounce = Timer(const Duration(milliseconds: 300), () async {
         questsList.addAll(await _apiProvider.getQuests(
           price: getFilterPrice(),
           searchWord: searchWord,
-          offset: offset,
+          offset: questsList.length,
           employment: employments,
           workplace: workplaces,
           priority: priorities,
@@ -209,7 +205,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
           specializations: selectedSkill,
           statuses: [1],
         ));
-        offset += 10;
         this.onSuccess(true);
       });
     } catch (e) {
@@ -221,15 +216,13 @@ abstract class _QuestsStore extends IStore<bool> with Store {
   Future getSearchedWorkers(bool newList) async {
     if (newList) {
       workersList.clear();
-      offset = 0;
     }
-    if (offset != workersList.length) return;
     this.onLoading();
     debounce = Timer(const Duration(milliseconds: 300), () async {
       workersList.addAll(await _apiProvider.getWorkers(
         searchWord: this.searchWord,
         price: getFilterPrice(),
-        offset: offset,
+        offset: workersList.length,
         sort: this.sort,
         workplace: workplaces,
         payPeriod: payPeriod,
@@ -237,7 +230,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         ratingStatus: employeeRatings,
         specializations: selectedSkill,
       ));
-      offset += 10;
       this.onSuccess(true);
     });
   }
@@ -248,11 +240,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       if (newList) {
         this.onLoading();
         questsList.clear();
-        offset = 0;
       } else {
         isLoadingMore = true;
       }
-      if (offset != questsList.length) return;
       questsList.addAll(await _apiProvider.getQuests(
         price: getFilterPrice(),
         statuses: [1],
@@ -260,14 +250,13 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         workplace: workplaces,
         priority: priorities,
         payPeriod: payPeriod,
-        offset: offset,
+        offset: questsList.length,
         sort: this.sort,
         specializations: selectedSkill,
         // north: this.latitude.toString(),
         // south: this.longitude.toString(),
       ));
 
-      offset += 10;
       this.onSuccess(true);
     } catch (e, trace) {
       print("getQuests error: $e\n$trace");
@@ -282,11 +271,9 @@ abstract class _QuestsStore extends IStore<bool> with Store {
       if (newList) {
         this.onLoading();
         workersList.clear();
-        offset = 0;
       } else {
         isLoadingMore = true;
       }
-      if (offset != workersList.length) return;
       workersList.addAll(await _apiProvider.getWorkers(
         sort: this.sort,
         price: getFilterPrice(),
@@ -300,7 +287,6 @@ abstract class _QuestsStore extends IStore<bool> with Store {
         // south: this.longitude.toString(),
       ));
 
-      offset += 10;
       this.onSuccess(true);
     } catch (e, trace) {
       print("getWorkers error: $e\n$trace");
