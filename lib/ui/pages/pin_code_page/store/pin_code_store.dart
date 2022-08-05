@@ -33,19 +33,19 @@ abstract class _PinCodeStore extends IStore<StatePinCode> with Store {
     statePin = StatePinCode.NaN;
     Storage.readPinCode().then((value) async {
       var auth = LocalAuthentication();
-      if (value == null) {
+      canCheckBiometrics = await auth.canCheckBiometrics;
+      if (canCheckBiometrics) {
+        final _typesBiometric = await auth.getAvailableBiometrics();
+        isFaceId = _typesBiometric.contains(BiometricType.face);
+      }
+      if (value == null)
         statePin = StatePinCode.Create;
-      } else {
+      else {
         statePin = StatePinCode.Check;
-        canCheckBiometrics = await auth.canCheckBiometrics;
-        if (canCheckBiometrics) {
-          final _typesBiometric = await auth.getAvailableBiometrics();
-          isFaceId = _typesBiometric.contains(BiometricType.face);
-          bool didAuthenticate = await auth.authenticate(
-            localizedReason: 'Login authorization',
-          );
-          if (didAuthenticate) signIn(isBiometric: true);
-        }
+        bool didAuthenticate = await auth.authenticate(
+          localizedReason: 'Login authorization',
+        );
+        if (didAuthenticate) signIn(isBiometric: true);
       }
     });
   }
