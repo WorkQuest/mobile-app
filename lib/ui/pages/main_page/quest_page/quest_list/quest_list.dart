@@ -84,7 +84,7 @@ class _QuestListState extends State<QuestList> {
                     return questsStore!.getWorkers(true);
                 },
                 displacement: 50,
-                edgeOffset: 300,
+                edgeOffset: 250,
                 child: getBody(),
               ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
