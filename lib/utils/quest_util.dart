@@ -1,4 +1,8 @@
+import 'dart:math';
+
+import 'package:app/constants.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 class QuestConstants {
   static final List<String> priorityList = [
@@ -159,6 +163,33 @@ class QuestUtils {
         return "EmploymentContract";
       default:
         throw FormatException('Unknown Employment Value');
+    }
+  }
+
+  static String getPrice(String price) {
+    try {
+      return (BigInt.parse(price).toDouble() * pow(10, -18)).toStringAsFixed(2);
+    } catch (e) {
+      return '0.00';
+    }
+  }
+
+  static Color getColorBorder(int? status, int? type) {
+    if (status == 0) {
+      switch (type) {
+        case 0:
+          return AppColor.gold;
+        case 1:
+          return AppColor.gold;
+        case 2:
+          return AppColor.silver;
+        case 3:
+          return AppColor.bronze;
+        default:
+          return Colors.transparent;
+      }
+    } else {
+      return Colors.transparent;
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:app/enums.dart';
 import 'package:app/http/api_provider.dart';
 import 'package:app/model/quests_models/responded.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 import 'package:app/http/web_socket.dart';
@@ -30,6 +31,26 @@ abstract class _MyQuestStore extends IStore<bool> with Store {
   UserRole role = UserRole.Worker;
 
   List<QuestsType> questsType = [];
+
+  bool isResponded(BaseQuestResponse questItem) =>
+      (questItem.responded!.workerId == myId &&
+              (questItem.status == QuestConstants.questCreated ||
+                  questItem.status == QuestConstants.questWaitWorkerOnAssign) ||
+          questItem.invited != null && questItem.invited?.status == 1) &&
+      role == UserRole.Worker;
+
+  bool isLocation(BaseQuestResponse questItem) =>
+      questItem.userId != myId &&
+      questItem.status != QuestConstants.questWaitEmployerConfirm &&
+      questItem.status != QuestConstants.questDone;
+
+  bool isInvited(BaseQuestResponse questItem) =>
+      questItem.invited != null && questItem.invited?.status == 0;
+
+  bool isRaised(BaseQuestResponse questItem) =>
+      questItem.raiseView != null &&
+      questItem.raiseView!.status != null &&
+      questItem.raiseView!.status == 0;
 
   void setId(String value) => myId = value;
 

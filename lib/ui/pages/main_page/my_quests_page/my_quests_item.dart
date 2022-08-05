@@ -1,31 +1,27 @@
-import 'dart:math';
-
 import 'package:app/constants.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
 import 'package:app/ui/pages/main_page/my_quests_page/store/my_quest_store.dart';
 import 'package:app/ui/pages/main_page/quest_details_page/details/quest_details_page.dart';
-import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/widgets/pay_period_view.dart';
 import 'package:app/ui/widgets/priority_view.dart';
 import 'package:app/ui/widgets/quest_header.dart';
 import 'package:app/ui/widgets/user_avatar.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get_it/get_it.dart';
 import '../../../../enums.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:provider/provider.dart';
 
 class MyQuestsItem extends StatefulWidget {
   final BaseQuestResponse questInfo;
   final bool isExpanded;
   final QuestsType itemType;
   final bool showStar;
-  final UserRole? myRole;
 
   const MyQuestsItem({
     required this.questInfo,
     required this.itemType,
-    this.myRole,
     this.isExpanded = false,
     this.showStar = true,
   });
@@ -35,31 +31,32 @@ class MyQuestsItem extends StatefulWidget {
 }
 
 class _MyQuestsItemState extends State<MyQuestsItem> {
-  late final MyQuestStore myQuestStore;
+  late final MyQuestStore store;
 
   @override
   void initState() {
     super.initState();
-    myQuestStore = GetIt.I.get<MyQuestStore>();
+    store = context.read<MyQuestStore>();
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        final result = await Navigator.of(context, rootNavigator: true).pushNamed(
+        final result =
+            await Navigator.of(context, rootNavigator: true).pushNamed(
           QuestDetails.routeName,
           arguments: QuestArguments(questInfo: widget.questInfo, id: null),
         );
         if (result != null && result as bool) {
-          myQuestStore.deleteQuestFromList(widget.itemType, widget.questInfo.id);
+          store.deleteQuestFromList(widget.itemType, widget.questInfo.id);
         }
       },
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
-            color: _getColorBorder(
+            color: QuestUtils.getColorBorder(
               widget.questInfo.raiseView?.status,
               widget.questInfo.raiseView?.type,
             ),
@@ -76,10 +73,10 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 itemType: widget.itemType,
                 questStatus: widget.questInfo.status,
                 rounded: true,
-                responded:
-                    widget.questInfo.responded ?? widget.questInfo.questChat?.response,
+                responded: widget.questInfo.responded ??
+                    widget.questInfo.questChat?.response,
                 invited: widget.questInfo.invited,
-                role: widget.myRole,
+                role: store.role,
               ),
             Row(
               children: [
@@ -103,21 +100,14 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                   ),
                 ),
                 if (widget.questInfo.responded != null)
-                  if ((widget.questInfo.responded!.workerId ==
-                                  GetIt.I.get<ProfileMeStore>().userData!.id &&
-                              (widget.questInfo.status == 1 ||
-                                  widget.questInfo.status == 2) ||
-                          widget.questInfo.invited != null &&
-                              widget.questInfo.invited?.status == 1) &&
-                      GetIt.I.get<ProfileMeStore>().userData!.role == UserRole.Worker)
+                  if (store.isResponded(widget.questInfo))
                     Row(
                       children: [
                         const SizedBox(width: 5),
                         Text("quests.youResponded".tr()),
                       ],
                     ),
-                if (widget.questInfo.invited != null &&
-                    widget.questInfo.invited?.status == 0)
+                if (store.isInvited(widget.questInfo))
                   Row(
                     children: [
                       const SizedBox(width: 5),
@@ -128,23 +118,21 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                   IconButton(
                     icon: Icon(
                       Icons.star,
-                      color:
-                          widget.questInfo.star ? Color(0xFFE8D20D) : Color(0xFFE9EDF2),
+                      color: widget.questInfo.star
+                          ? AppColor.gold
+                          : Colors.white,
                     ),
                     onPressed: () async {
-                      await myQuestStore.setStar(
+                      await store.setStar(
                         widget.questInfo,
                         !widget.questInfo.star,
                       );
-                      setState(() {});
                     },
                   ),
               ],
             ),
             const SizedBox(height: 17.5),
-            if (widget.questInfo.userId != GetIt.I.get<ProfileMeStore>().userData!.id &&
-                widget.questInfo.status != 5 &&
-                widget.questInfo.status != 6)
+            if (store.isLocation(widget.questInfo))
               Column(
                 children: [
                   Row(
@@ -153,9 +141,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                         Icons.location_on_rounded,
                         color: Color(0xFF7C838D),
                       ),
-                      SizedBox(
-                        width: 9,
-                      ),
+                      const SizedBox(width: 9),
                       Flexible(
                         child: Text(
                           widget.questInfo.locationPlaceName,
@@ -172,9 +158,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
               ),
             Row(
               children: [
-                if (widget.questInfo.raiseView != null &&
-                    widget.questInfo.raiseView!.status != null &&
-                    widget.questInfo.raiseView!.status == 0)
+                if (store.isRaised(widget.questInfo))
                   Row(
                     children: [
                       SvgPicture.asset(
@@ -182,9 +166,7 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                         height: 18,
                         width: 18,
                       ),
-                      SizedBox(
-                        width: 5,
-                      ),
+                      const SizedBox(width: 5),
                     ],
                   ),
                 Expanded(
@@ -214,7 +196,9 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 Row(
                   children: [
                     PriorityView(
-                      widget.questInfo.priority != 0 ? widget.questInfo.priority - 1 : 0,
+                      widget.questInfo.priority != 0
+                          ? widget.questInfo.priority - 1
+                          : 0,
                     ),
                     const SizedBox(width: 5),
                     PayPeriodView(widget.questInfo.payPeriod),
@@ -222,10 +206,10 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
                 ),
                 Flexible(
                   child: Text(
-                    _getPrice(widget.questInfo.price) + "  WUSD",
+                    QuestUtils.getPrice(widget.questInfo.price) + "  WUSD",
                     textAlign: TextAlign.end,
                     style: TextStyle(
-                      color: Color(0xFF00AA5B),
+                      color: AppColor.green,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -239,32 +223,5 @@ class _MyQuestsItemState extends State<MyQuestsItem> {
         ),
       ),
     );
-  }
-
-  Color _getColorBorder(int? status, int? type) {
-    if (status == 0) {
-      switch (type) {
-        case 0:
-          return Color(0xFFF6CF00);
-        case 1:
-          return Color(0xFFF6CF00);
-        case 2:
-          return Color(0xFFBBC0C7);
-        case 3:
-          return Color(0xFFB79768);
-        default:
-          return Colors.transparent;
-      }
-    } else {
-      return Colors.transparent;
-    }
-  }
-
-  _getPrice(String value) {
-    try {
-      return (BigInt.parse(value).toDouble() * pow(10, -18)).toStringAsFixed(2);
-    } catch (e) {
-      return '0.00';
-    }
   }
 }

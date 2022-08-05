@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
@@ -287,7 +286,7 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
               children: [
                 Expanded(
                   child: Text(
-                    "${_getPrice(store.quest.value?.price ?? '0')} WUSD",
+                    "${QuestUtils.getPrice(store.quest.value?.price ?? '0')} WUSD",
                     overflow: TextOverflow.fade,
                     style: const TextStyle(
                       color: Color(0xFF00AA5B),
@@ -468,14 +467,6 @@ class _QuestWorkerState extends QuestDetailsState<QuestWorker> {
         ),
       ),
     );
-  }
-
-  _getPrice(String value) {
-    try {
-      return (BigInt.parse(value).toDouble() * pow(10, -18)).toStringAsFixed(2);
-    } catch (e) {
-      return '0.00';
-    }
   }
 
   bottomForm({

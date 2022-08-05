@@ -62,7 +62,6 @@ class QuestsList extends StatelessWidget {
             ),
             MyQuestsItem(
               questInfo: questsList[index],
-              myRole: role,
               itemType: questItemPriorityType,
               showStar: from == FromQuestList.myQuest,
             ),

@@ -54,7 +54,8 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
     });
   }
 
-  final _$checkAllowanceAsyncAction = AsyncAction('_RaiseViewStore.checkAllowance');
+  final _$checkAllowanceAsyncAction =
+      AsyncAction('_RaiseViewStore.checkAllowance');
 
   @override
   Future<void> checkAllowance() {
@@ -82,12 +83,13 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
     return _$raiseQuestAsyncAction.run(() => super.raiseQuest(questId));
   }
 
-  final _$_RaiseViewStoreActionController = ActionController(name: '_RaiseViewStore');
+  final _$_RaiseViewStoreActionController =
+      ActionController(name: '_RaiseViewStore');
 
   @override
   void initPrice() {
-    final _$actionInfo =
-        _$_RaiseViewStoreActionController.startAction(name: '_RaiseViewStore.initPrice');
+    final _$actionInfo = _$_RaiseViewStoreActionController.startAction(
+        name: '_RaiseViewStore.initPrice');
     try {
       return super.initPrice();
     } finally {
@@ -122,7 +124,7 @@ mixin _$RaiseViewStore on _RaiseViewStore, Store {
     return '''
 periodGroupValue: ${periodGroupValue},
 levelGroupValue: ${levelGroupValue},
-needApprove: ${needApprove},
+needApprove: ${needApprove}
     ''';
   }
 }

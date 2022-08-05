@@ -271,7 +271,6 @@ class _QuestListState extends State<QuestList> {
                             _markItem(item);
                             return MyQuestsItem(
                               questInfo: item,
-                              myRole: role,
                               itemType: this.questItemPriorityType,
                             );
                           }

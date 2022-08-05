@@ -111,11 +111,11 @@ mixin _$ChatStore on _ChatStore, Store {
   final _$_ChatStoreActionController = ActionController(name: '_ChatStore');
 
   @override
-  dynamic setChatType(int index) {
+  dynamic setChatType(int indexTab) {
     final _$actionInfo = _$_ChatStoreActionController.startAction(
         name: '_ChatStore.setChatType');
     try {
-      return super.setChatType(index);
+      return super.setChatType(indexTab);
     } finally {
       _$_ChatStoreActionController.endAction(_$actionInfo);
     }

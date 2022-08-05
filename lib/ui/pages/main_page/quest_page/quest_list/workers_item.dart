@@ -2,6 +2,7 @@ import 'package:app/constants.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
+import 'package:app/utils/quest_util.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -33,7 +34,7 @@ class WorkersItem extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
-            color: _getColorBorder(
+            color: QuestUtils.getColorBorder(
               workersInfo.raiseView?.status,
               workersInfo.raiseView?.type,
             ),
@@ -116,7 +117,7 @@ class WorkersItem extends StatelessWidget {
                         const SizedBox(width: 5),
                         Icon(
                           Icons.star,
-                          color: AppColor.star,
+                          color: AppColor.gold,
                         )
                       ],
                     ),
@@ -167,25 +168,6 @@ class WorkersItem extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Color _getColorBorder(int? status, int? type) {
-    if (status == 0) {
-      switch (type) {
-        case 0:
-          return Color(0xFFF6CF00);
-        case 1:
-          return Color(0xFFF6CF00);
-        case 2:
-          return Color(0xFFBBC0C7);
-        case 3:
-          return Color(0xFFB79768);
-        default:
-          return Colors.transparent;
-      }
-    } else {
-      return Colors.transparent;
-    }
   }
 
   Widget tagSkills(List<String> skills) {

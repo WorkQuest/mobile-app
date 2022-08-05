@@ -37,7 +37,6 @@ class _QuestQuickInfoState extends State<QuestQuickInfo> {
               if (mapStore.isWorker ?? true)
                 return MyQuestsItem(
                   questInfo: mapStore.currentQuestCluster[index],
-                  myRole: UserRole.Worker,
                   itemType: QuestsType.All,
                   isExpanded: true,
                 );

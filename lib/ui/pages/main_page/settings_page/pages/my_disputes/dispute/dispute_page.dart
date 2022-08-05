@@ -101,7 +101,6 @@ class _DisputePageState extends State<DisputePage> {
       children: [
         MyQuestsItem(
           questInfo: store.dispute!.quest,
-          myRole: null,
           itemType: QuestsType.All,
         ),
         const SizedBox(height: 20),

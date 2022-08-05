@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:app/constants.dart';
 import 'package:app/enums.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
@@ -272,7 +270,7 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
                         const SizedBox(width: 50),
                         Flexible(
                           child: Text(
-                            _getPrice(storeQuest.questInfo!.price) + "  WUSD",
+                            QuestUtils.getPrice(storeQuest.questInfo!.price) + "  WUSD",
                             textAlign: TextAlign.end,
                             style: TextStyle(
                               color: Color(0xFF00AA5B),
@@ -295,14 +293,6 @@ class QuestDetailsState<T extends QuestDetails> extends State<T>
         ),
       ),
     );
-  }
-
-  _getPrice(String value) {
-    try {
-      return (BigInt.parse(value).toDouble() * pow(10, -18)).toStringAsFixed(2);
-    } catch (e) {
-      return '0.00';
-    }
   }
 
   Widget inProgressBy() {
