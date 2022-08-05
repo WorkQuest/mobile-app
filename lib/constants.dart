@@ -7,7 +7,7 @@ class Commission {
 }
 class Constants {
   /// Testnet - true/ dev-net - false
-  static const isTestnet = true;
+  static const isTestnet = false;
 
   static const Map<String, Locale> languageList = {
     "English": Locale('en', 'US'),
@@ -70,7 +70,9 @@ abstract class AppColor {
   static const disabledButton = Color(0xffF7F8FA);
   static const unselectedBottomIcon = Color(0xffAAB0B9);
   static const selectedBottomIcon = enabledButton;
-  static const star = Color(0xffE8D20D);
+  static const gold = Color(0xFFF6CF00);
+  static const silver = Color(0xFFBBC0C7);
+  static const bronze = Color(0xFFB79768);
 }
 
 class RegExpFields {
