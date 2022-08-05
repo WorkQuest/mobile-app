@@ -54,7 +54,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
   }
 
   bool get isVerify => viewOtherUser != null
-      ? viewOtherUser!.userData!.phone != null
+      ? viewOtherUser!.userData?.phone != null
       : userStore!.userData?.phone != null;
 
   @override

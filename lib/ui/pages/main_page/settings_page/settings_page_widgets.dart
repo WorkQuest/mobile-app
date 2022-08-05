@@ -230,10 +230,12 @@ class MyProfileImage extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   height: 300,
                   placeholder: MemoryImage(
-                    Uint8List.fromList(base64Decode(Constants.base64BlackHolder)),
+                    Uint8List.fromList(
+                        base64Decode(Constants.base64BlackHolder)),
                   ),
                   image: NetworkImage(
-                    userStore.userData!.avatar?.url ?? Constants.defaultImageNetwork,
+                    userStore.userData!.avatar?.url ??
+                        Constants.defaultImageNetwork,
                   ),
                   fit: BoxFit.fitHeight,
                 ),
@@ -243,13 +245,28 @@ class MyProfileImage extends StatelessWidget {
                 left: 16.0,
                 child: Container(
                   width: 300,
-                  child: Text(
-                    " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    ),
-                    overflow: TextOverflow.clip,
+                  child: Stack(
+                    children: [
+                      Text(
+                        " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = 1
+                            ..color = Colors.black,
+                        ),
+                        overflow: TextOverflow.clip,
+                      ),
+                      Text(
+                        " ${userStore.userData?.firstName ?? " "}  ${userStore.userData?.lastName ?? " "} ",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),
+                        overflow: TextOverflow.clip,
+                      ),
+                    ],
                   ),
                 ),
               ),
