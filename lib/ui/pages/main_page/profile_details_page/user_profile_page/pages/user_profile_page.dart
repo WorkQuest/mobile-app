@@ -46,13 +46,16 @@ class UserProfileState<T extends UserProfile> extends State<T>
   UserProfileStore? viewOtherUser;
   MyQuestStore? myQuests;
   late UserRole role;
-  bool? isVerify;
 
   @override
   void dispose() {
     _streamController.close();
     super.dispose();
   }
+
+  bool get isVerify => viewOtherUser != null
+      ? viewOtherUser!.userData!.phone != null
+      : userStore!.userData?.phone != null;
 
   @override
   void initState() {
@@ -85,7 +88,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
         true,
       );
 
-      isVerify = userStore!.userData?.phone != null;
     } else {
       viewOtherUser = context.read<UserProfileStore>();
       viewOtherUser!.quests.clear();
@@ -107,7 +109,6 @@ class UserProfileState<T extends UserProfile> extends State<T>
                 .getPortfolio(userId: viewOtherUser!.userData!.id, isForce: true);
           portfolioStore!.getReviews(userId: viewOtherUser!.userData!.id, isForce: true);
 
-          isVerify = viewOtherUser!.userData!.phone != null;
         });
       });
     }
@@ -244,7 +245,7 @@ class UserProfileState<T extends UserProfile> extends State<T>
                                 email: viewOtherUser?.userData == null
                                     ? userStore!.userData?.email ?? " "
                                     : viewOtherUser!.userData!.email ?? " ",
-                                isVerify: isVerify ?? false,
+                                isVerify: isVerify,
                                 role: viewOtherUser?.userData == null
                                     ? userStore!.userData!.role
                                     : viewOtherUser!.userData!.role,
