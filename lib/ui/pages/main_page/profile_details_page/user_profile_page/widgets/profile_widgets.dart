@@ -165,12 +165,15 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                   onTap: () async {
                     await Navigator.of(context, rootNavigator: true).pushNamed(
                       UserProfile.routeName,
-                      arguments: widget.id == GetIt.I.get<ProfileMeStore>().userData?.id
+                      arguments: widget.id == GetIt.I
+                          .get<ProfileMeStore>()
+                          .userData
+                          ?.id
                           ? null
                           : ProfileArguments(
-                              role: widget.role,
-                              userId: widget.id,
-                            ),
+                        role: widget.role,
+                        userId: widget.id,
+                      ),
                     );
                     profile.assignedWorker = null;
                   },
@@ -263,18 +266,18 @@ class _ReviewsWidgetState extends State<ReviewsWidget> {
                 ),
                 child: widget.message.length < 50
                     ? Text(
-                        widget.message,
-                        overflow: TextOverflow.ellipsis,
-                      )
+                  widget.message,
+                  overflow: TextOverflow.ellipsis,
+                )
                     : AnimationShowMore(
-                        text: widget.message,
-                        enabled: enabled,
-                        onShowMore: (value) {
-                          setState(() {
-                            this.enabled = value;
-                          });
-                        },
-                      ),
+                  text: widget.message,
+                  enabled: enabled,
+                  onShowMore: (value) {
+                    setState(() {
+                      this.enabled = value;
+                    });
+                  },
+                ),
               ),
             ],
           ),
@@ -399,7 +402,7 @@ Widget employerRating({
                     style: TextStyle(
                       decoration: TextDecoration.underline,
                       color:
-                          completedQuests != "0" ? Color(0xFF00AA5B) : Color(0xFFF7F8FA),
+                      completedQuests != "0" ? Color(0xFF00AA5B) : Color(0xFFF7F8FA),
                       fontSize: 12.0,
                     ),
                   ),
@@ -472,7 +475,9 @@ Widget workerQuestStats({
   required BuildContext context,
   required bool active,
   Color textColor = const Color(0xFF00AA5B),
-}) =>
+}) {
+  final viewOtherUser = context.read<UserProfileStore>();
+  return
     Flexible(
       child: Container(
         padding: EdgeInsets.all(16.0),
@@ -507,7 +512,9 @@ Widget workerQuestStats({
                     context,
                     ProfileQuestsPage.routeName,
                     arguments: ProfileQuestsArguments(
-                      profile: profile.userData!,
+                      profile: viewOtherUser.userData == null
+                          ? profile.userData!
+                          : viewOtherUser.userData!,
                       active: active,
                     ),
                   );
@@ -526,6 +533,7 @@ Widget workerQuestStats({
         ),
       ),
     );
+}
 
 Widget workerRating({
   required String completedQuests,
@@ -642,8 +650,8 @@ Widget _socialMediaIcon({
         child: IconButton(
           onPressed: title != null
               ? () {
-                  _launchSocial(launchUrl, fallbackUrl);
-                }
+            _launchSocial(launchUrl, fallbackUrl);
+          }
               : null,
           icon: icon,
         ),
@@ -688,18 +696,18 @@ Widget socialAccounts({SocialNetwork? socialNetwork}) {
           launchUrl: '',
           icon: instagram != null
               ? GradientIcon(
-                  SvgPicture.asset(
-                    "assets/instagram_disabled.svg",
-                  ),
-                  20.0,
-                  const <Color>[
-                    Color(0xFFAD00FF),
-                    Color(0xFFFF9900),
-                  ],
-                )
+            SvgPicture.asset(
+              "assets/instagram_disabled.svg",
+            ),
+            20.0,
+            const <Color>[
+              Color(0xFFAD00FF),
+              Color(0xFFFF9900),
+            ],
+          )
               : SvgPicture.asset(
-                  "assets/instagram_disabled.svg",
-                ),
+            "assets/instagram_disabled.svg",
+          ),
         ),
         _socialMediaIcon(
           title: linkedin,
@@ -1052,75 +1060,77 @@ Widget skills({
     runSpacing: 0.0,
     children: isProfileMy
         ? (skills!
-            .map(
-              (item) => new ActionChip(
-                padding: EdgeInsets.symmetric(
-                  vertical: 8.0,
-                  horizontal: 10.0,
+        .map(
+          (item) =>
+      new ActionChip(
+        padding: EdgeInsets.symmetric(
+          vertical: 8.0,
+          horizontal: 10.0,
+        ),
+        onPressed: () => null,
+        label: Text(
+          item,
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Color(0xFF0083C7),
+          ),
+        ),
+        backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
+      ),
+    )
+        .toList()
+      ..add(
+        ActionChip(
+          padding: EdgeInsets.symmetric(
+            vertical: 10.0,
+            horizontal: 10.0,
+          ),
+          onPressed: () {
+            Navigator.pushNamed(
+              context,
+              ChangeProfilePage.routeName,
+            );
+          },
+          label: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "settings.add".tr(),
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.white,
                 ),
-                onPressed: () => null,
-                label: Text(
-                  item,
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    color: Color(0xFF0083C7),
-                  ),
-                ),
-                backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
               ),
-            )
-            .toList()
-          ..add(
-            ActionChip(
-              padding: EdgeInsets.symmetric(
-                vertical: 10.0,
-                horizontal: 10.0,
+              Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 20,
               ),
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  ChangeProfilePage.routeName,
-                );
-              },
-              label: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "settings.add".tr(),
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ],
-              ),
-              backgroundColor: Color(0xFF0083C7),
-            ),
-          ))
+            ],
+          ),
+          backgroundColor: Color(0xFF0083C7),
+        ),
+      ))
         : skills!
-            .map(
-              (item) => new ActionChip(
-                padding: EdgeInsets.symmetric(
-                  vertical: 8.0,
-                  horizontal: 10.0,
-                ),
-                onPressed: () => null,
-                label: Text(
-                  item,
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    color: Color(0xFF0083C7),
-                  ),
-                ),
-                backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
-              ),
-            )
-            .toList(),
+        .map(
+          (item) =>
+      new ActionChip(
+        padding: EdgeInsets.symmetric(
+          vertical: 8.0,
+          horizontal: 10.0,
+        ),
+        onPressed: () => null,
+        label: Text(
+          item,
+          style: TextStyle(
+            fontSize: 16.0,
+            color: Color(0xFF0083C7),
+          ),
+        ),
+        backgroundColor: Color(0xFF0083C7).withOpacity(0.1),
+      ),
+    )
+        .toList(),
   );
 }
 
