@@ -26,7 +26,7 @@ class CreateQuestStore extends _CreateQuestStore with _$CreateQuestStore {
   CreateQuestStore(ApiProvider questApiProvider) : super(questApiProvider);
 }
 
-abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
+abstract class _CreateQuestStore extends IMediaStore<CreateQuestStoreState> with Store {
   final ApiProvider apiProvider;
 
   _CreateQuestStore(this.apiProvider);
@@ -97,6 +97,10 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
 
   String? idNewQuest;
 
+  String? gas;
+
+  bool needApprove = false;
+
   @action
   void increaseRuntime() {}
 
@@ -165,13 +169,17 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
   }
 
   @action
-  Future<String?> getGasApprove({String? addressQuest}) async {
+  checkAllowance({String? addressQuest}) async {
+    print('checkAllowance');
     try {
-      this.onLoading();
+      onLoading();
+      // await Future.delayed(const Duration(seconds: 1));
+      // throw Exception('Error checkAllowance');
       final _client = AccountRepository().getClientWorkNet();
       final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
       final _isNeedCheckApprove = _price.toBigInt() > oldPrice;
       if (_isNeedCheckApprove) {
+        print('addressQuest: $addressQuest');
         final _allowance = await _client.allowanceCoin(
           address: addressQuest == null ? null : EthereumAddress.fromHex(addressQuest),
         );
@@ -179,55 +187,47 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         final _priceForApprove =
             _price * Decimal.parse(Constants.commissionForQuest.toString());
         print('priceForApprove: $_priceForApprove');
-        final _isNeedApprove = _allowance < _priceForApprove.toBigInt();
-        if (_isNeedApprove) {
-          final _gasForApprove =
-              await _client.getEstimateGasForApprove(_price.toBigInt());
-          return _gasForApprove.toStringAsFixed(17);
-        }
+        needApprove = _allowance < _priceForApprove.toBigInt();
+        onSuccess(CreateQuestStoreState.checkAllowance);
       }
     } catch (e) {
-      onError('Try again.');
-      throw FormatException('Try again.');
-    }
-    return null;
-  }
-
-  Future<String> getGasEditOrCreateQuest({bool isEdit = false}) async {
-    final _client = AccountRepository().getClientWorkNet();
-    if (isEdit) {
-      final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
-      final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
-      final _function = _contract.function(WQContractFunctions.editJob.name);
-      final _params = [
-        _price.toBigInt(),
-      ];
-      final _gas = await _client.getEstimateGasCallContract(
-          contract: _contract, function: _function, params: _params);
-      return _gas.toStringAsFixed(17);
-    } else {
-      final _contract = await _client.getDeployedContract(
-          "WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
-      final _function = _contract.function(WQFContractFunctions.newWorkQuest.name);
-      final _params = [
-        _client.stringToBytes32(description),
-        BigInt.zero,
-        BigInt.from(0.0),
-        BigInt.from(0.0),
-      ];
-      final _gas = await _client.getEstimateGasCallContract(
-          contract: _contract, function: _function, params: _params);
-      return _gas.toStringAsFixed(17);
+      onError(e.toString());
     }
   }
 
   @action
-  Future<void> createQuest({
+  approve({String? contractAddress}) async {
+    print('approve');
+    try {
+      onLoading();
+      // await Future.delayed(const Duration(seconds: 1));
+      // throw Exception('Error approve');
+      final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
+      final _priceForApprove =
+          _price * Decimal.parse(Constants.commissionForQuest.toString());
+      final _isEdit = contractAddress != null;
+      await AccountRepository().getClientWorkNet().approveCoin(
+        price: _priceForApprove.toBigInt(),
+        address: _isEdit
+            ? EthereumAddress.fromHex(contractAddress!)
+            : null,
+      );
+      onSuccess(CreateQuestStoreState.approve);
+    } catch (e) {
+      onError(e.toString());
+    }
+  }
+
+  @action
+  createQuest({
     bool isEdit = false,
     String questId = "",
   }) async {
+    print('createQuest');
     try {
       this.onLoading();
+      // await Future.delayed(const Duration(seconds: 1));
+      // throw Exception('Error createQuest');
       final LocationFull location = LocationFull(
         locationPlaceName: locationPlaceName,
         locationCode: LocationCode(
@@ -252,7 +252,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         category: category,
         media: medias.map((media) => media.id).toList(),
         title: isEdit ? null : questTitle,
-        description: isEdit ? null :description,
+        description: isEdit ? null : description,
         price: isEdit ? null : (_price.toDouble()).toStringAsFixed(0),
       );
       //priority show item
@@ -313,7 +313,7 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
         }
       }
 
-      this.onSuccess(true);
+      this.onSuccess(CreateQuestStoreState.createQuest);
     } on FormatException catch (e) {
       print('createQuest FormatException | ${e.message}');
       this.onError(e.message);
@@ -322,4 +322,88 @@ abstract class _CreateQuestStore extends IMediaStore<bool> with Store {
       this.onError(e.toString());
     }
   }
+
+  @action
+  getGasApprove({String? addressQuest}) async {
+    print('getGasApprove');
+    try {
+      this.onLoading();
+      // await Future.delayed(const Duration(seconds: 1));
+      // throw Exception('Error getGasApprove');
+      final _client = AccountRepository().getClientWorkNet();
+      final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
+      final _gasForApprove = await _client.getEstimateGasForApprove(_price.toBigInt());
+      await Web3Utils.checkPossibilityTx(
+        typeCoin: TokenSymbols.WUSD,
+        fee: Decimal.parse(_gasForApprove.toString()),
+        amount: double.parse(price),
+        isMain: true,
+      );
+      gas = _gasForApprove.toStringAsFixed(17);
+      onSuccess(CreateQuestStoreState.getGasApprove);
+    } catch (e) {
+      onError(e.toString());
+    }
+  }
+
+  @action
+  getGasEditOrCreateQuest({bool isEdit = false}) async {
+    print('getGasEditOrCreateQuest');
+    try {
+      onLoading();
+      // await Future.delayed(const Duration(seconds: 1));
+      // throw Exception('Error getGasEditOrCreateQuest');
+      final _client = AccountRepository().getClientWorkNet();
+      if (isEdit) {
+        final _price = Decimal.parse(price) * Decimal.fromInt(10).pow(18);
+        final _contract = await _client.getDeployedContract("WorkQuest", contractAddress);
+        final _function = _contract.function(WQContractFunctions.editJob.name);
+        final _params = [
+          _price.toBigInt(),
+        ];
+        final _gas = await _client.getEstimateGasCallContract(
+            contract: _contract, function: _function, params: _params);
+        await Web3Utils.checkPossibilityTx(
+          typeCoin: TokenSymbols.WUSD,
+          fee: Decimal.parse(_gas.toString()),
+          amount: double.parse(price),
+          isMain: true,
+        );
+        gas = _gas.toStringAsFixed(17);
+        onSuccess(CreateQuestStoreState.getGasEditOrCreateQuest);
+      } else {
+        final _contract = await _client.getDeployedContract(
+            "WorkQuestFactory", Web3Utils.getAddressWorknetWQFactory());
+        final _function = _contract.function(WQFContractFunctions.newWorkQuest.name);
+        final _params = [
+          _client.stringToBytes32(description),
+          BigInt.zero,
+          BigInt.from(0.0),
+          BigInt.from(0.0),
+        ];
+        final _gas = await _client.getEstimateGasCallContract(
+            contract: _contract, function: _function, params: _params);
+        await Web3Utils.checkPossibilityTx(
+          typeCoin: TokenSymbols.WUSD,
+          fee: Decimal.parse(_gas.toString()),
+          amount: double.parse(price),
+          isMain: true,
+        );
+        gas = _gas.toStringAsFixed(17);
+        onSuccess(CreateQuestStoreState.getGasEditOrCreateQuest);
+      }
+    } catch (e) {
+      onError(e.toString());
+    }
+  }
+}
+
+enum CreateQuestStoreState {
+  getPrediction,
+  displayPrediction,
+  getGasApprove,
+  getGasEditOrCreateQuest,
+  createQuest,
+  checkAllowance,
+  approve
 }

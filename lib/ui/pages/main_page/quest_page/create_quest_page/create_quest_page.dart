@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -19,9 +18,6 @@ import 'package:app/utils/alert_dialog.dart';
 import 'package:app/utils/quest_util.dart';
 import 'package:app/utils/validator.dart';
 import 'package:app/utils/web3_utils.dart';
-import 'package:app/web3/repository/account_repository.dart';
-import 'package:app/web3/service/client_service.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +25,6 @@ import 'package:flutter/services.dart';
 import "package:provider/provider.dart";
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:web3dart/credentials.dart';
 
 const _addressIndex = 0;
 const _specializationIndex = 1;
@@ -99,311 +94,265 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
 
   @override
   Widget build(context) {
-    return Form(
-      key: _formKey,
-      child: Scaffold(
-        body: DismissKeyboard(
-          child: CustomScrollView(
-            cacheExtent: 1000,
-            slivers: [
-              CupertinoSliverNavigationBar(
-                largeTitle: Text(
-                  isEdit ? "registration.edit".tr() : "quests.createAQuest".tr(),
-                ),
+    return ObserverListener<CreateQuestStore>(
+      onSuccess: () async {
+        if (store.successData == CreateQuestStoreState.checkAllowance) {
+          if (store.needApprove) {
+            store.getGasApprove(addressQuest: widget.questInfo?.contractAddress);
+          } else {
+            store.getGasEditOrCreateQuest(isEdit: isEdit);
+          }
+        } else
+        if (store.successData == CreateQuestStoreState.getGasApprove) {
+          Navigator.of(context, rootNavigator: true).pop();
+          _approve();
+        } else if (store.successData == CreateQuestStoreState.getGasEditOrCreateQuest) {
+          Navigator.of(context, rootNavigator: true).pop();
+          if (isEdit) {
+            _onEditQuest();
+          } else {
+            _onCreateQuest();
+          }
+        } else if (store.successData == CreateQuestStoreState.approve) {
+          Navigator.of(context, rootNavigator: true).pop();
+          AlertDialogUtils.showLoadingDialog(context);
+          store.checkAllowance(addressQuest: widget.questInfo?.contractAddress);
+        } else if (store.successData == CreateQuestStoreState.createQuest) {
+          final questStore = context.read<MyQuestStore>();
+          await questStore.getQuests(
+            QuestsType.Created,
+            UserRole.Employer,
+            true,
+          );
+          await questStore.getQuests(
+            QuestsType.All,
+            UserRole.Employer,
+            true,
+          );
+          if (isEdit) {
+            final updatedQuest = await store.getQuest(
+              widget.questInfo!.id,
+            );
+            Navigator.of(context, rootNavigator: true).pop();
+            Navigator.pop(context);
+            Navigator.pushReplacementNamed(
+              context,
+              QuestDetails.routeName,
+              arguments: QuestArguments(
+                questInfo: updatedQuest,
+                id: null,
               ),
-              SliverPadding(
-                padding: EdgeInsets.fromLTRB(
-                  16.0,
-                  16.0,
-                  16.0,
-                  0.0,
+            );
+            await AlertDialogUtils.showSuccessDialog(context);
+          } else {
+            Navigator.of(context, rootNavigator: true).pop();
+            Navigator.pop(context, true);
+            await AlertDialogUtils.showSuccessDialog(context);
+          }
+        }
+      },
+      onFailure: () {
+        print('onFailure ${store.errorMessage}');
+        Navigator.of(context, rootNavigator: true).pop();
+        return false;
+      },
+      child: Form(
+        key: _formKey,
+        child: Scaffold(
+          body: DismissKeyboard(
+            child: CustomScrollView(
+              cacheExtent: 1000,
+              slivers: [
+                CupertinoSliverNavigationBar(
+                  largeTitle: Text(
+                    isEdit ? "registration.edit".tr() : "quests.createAQuest".tr(),
+                  ),
                 ),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      _TitleWithField(
-                        "settings.priority".tr(),
-                        Container(
-                          height: 50,
-                          padding: EdgeInsets.symmetric(horizontal: 15.0),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFF7F8FA),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(6.0),
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(
+                    16.0,
+                    16.0,
+                    16.0,
+                    0.0,
+                  ),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        _TitleWithField(
+                          "settings.priority".tr(),
+                          Container(
+                            height: 50,
+                            padding: EdgeInsets.symmetric(horizontal: 15.0),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF7F8FA),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(6.0),
+                              ),
                             ),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          child: IgnorePointer(
-                            ignoring: isEdit,
-                            child: Observer(
-                              builder: (_) => Platform.isIOS
-                                  ? dropDownWithModalSheep(
-                                      value: store.priority,
-                                      children: QuestConstants.priorityList,
-                                      onPressed: (value) {
-                                        store.changedPriority(value);
-                                      },
-                                    )
-                                  : DropdownButtonHideUnderline(
-                                      child: DropdownButton(
-                                        isExpanded: true,
+                            alignment: Alignment.centerLeft,
+                            child: IgnorePointer(
+                              ignoring: isEdit,
+                              child: Observer(
+                                builder: (_) => Platform.isIOS
+                                    ? dropDownWithModalSheep(
                                         value: store.priority,
-                                        onChanged: (String? value) {
-                                          store.changedPriority(value!);
+                                        children: QuestConstants.priorityList,
+                                        onPressed: (value) {
+                                          store.changedPriority(value);
                                         },
-                                        items: QuestConstants.priorityList
-                                            .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value.tr(),
-                                              child: Text(value.tr()),
-                                            );
+                                      )
+                                    : DropdownButtonHideUnderline(
+                                        child: DropdownButton(
+                                          isExpanded: true,
+                                          value: store.priority,
+                                          onChanged: (String? value) {
+                                            store.changedPriority(value!);
                                           },
-                                        ).toList(),
-                                        icon: Icon(
-                                          Icons.arrow_drop_down,
-                                          size: 30,
-                                          color: Colors.blueAccent,
-                                        ),
-                                        hint: Text(
-                                          'mining.choose'.tr(),
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.grey,
+                                          items: QuestConstants.priorityList
+                                              .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value.tr(),
+                                                child: Text(value.tr()),
+                                              );
+                                            },
+                                          ).toList(),
+                                          icon: Icon(
+                                            Icons.arrow_drop_down,
+                                            size: 30,
+                                            color: Colors.blueAccent,
+                                          ),
+                                          hint: Text(
+                                            'mining.choose'.tr(),
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      __WarningFields(
-                        warningEnabled:
-                            _warningFields[_specializationIndex].warningEnabled,
-                        errorMessage: 'quests.specializationRequired'.tr(),
-                        child: Container(
-                          key: _warningFields[_specializationIndex].key,
-                          child: SkillSpecializationSelection(
-                            controller: _controller,
-                            callback: (value) {
-                              print('value: $value');
-                              if (value is int && value > 0) {
-                                setState(() {
-                                  _warningFields[_specializationIndex].warningEnabled =
-                                      false;
-                                });
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      __WarningFields(
-                        warningEnabled: _warningFields[_addressIndex].warningEnabled,
-                        errorMessage: 'quests.addressRequired'.tr(),
-                        child: _TitleWithField(
-                          "quests.address".tr(),
-                          Observer(
-                            builder: (_) => GestureDetector(
-                              onTap: () async {
-                                await store.getPrediction(context);
-                                if (store.locationPlaceName.isNotEmpty) {
+                        __WarningFields(
+                          warningEnabled:
+                              _warningFields[_specializationIndex].warningEnabled,
+                          errorMessage: 'quests.specializationRequired'.tr(),
+                          child: Container(
+                            key: _warningFields[_specializationIndex].key,
+                            child: SkillSpecializationSelection(
+                              controller: _controller,
+                              callback: (value) {
+                                print('value: $value');
+                                if (value is int && value > 0) {
                                   setState(() {
-                                    _warningFields[_addressIndex].warningEnabled = false;
+                                    _warningFields[_specializationIndex].warningEnabled =
+                                        false;
                                   });
                                 }
                               },
-                              child: Container(
-                                key: _warningFields[_addressIndex].key,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFF7F8FA),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(6.0),
+                            ),
+                          ),
+                        ),
+                        __WarningFields(
+                          warningEnabled: _warningFields[_addressIndex].warningEnabled,
+                          errorMessage: 'quests.addressRequired'.tr(),
+                          child: _TitleWithField(
+                            "quests.address".tr(),
+                            Observer(
+                              builder: (_) => GestureDetector(
+                                onTap: () async {
+                                  await store.getPrediction(context);
+                                  if (store.locationPlaceName.isNotEmpty) {
+                                    setState(() {
+                                      _warningFields[_addressIndex].warningEnabled =
+                                          false;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  key: _warningFields[_addressIndex].key,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFF7F8FA),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(6.0),
+                                    ),
                                   ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 17,
-                                    ),
-                                    Icon(
-                                      Icons.map_outlined,
-                                      color: Colors.blueAccent,
-                                      size: 26.0,
-                                    ),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    Flexible(
-                                      child: store.locationPlaceName.isEmpty
-                                          ? Text(
-                                              "Moscow, Lenina street, 3",
-                                              style: TextStyle(
-                                                color: Color(
-                                                  0xFFD8DFE3,
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 17,
+                                      ),
+                                      Icon(
+                                        Icons.map_outlined,
+                                        color: Colors.blueAccent,
+                                        size: 26.0,
+                                      ),
+                                      SizedBox(
+                                        width: 12,
+                                      ),
+                                      Flexible(
+                                        child: store.locationPlaceName.isEmpty
+                                            ? Text(
+                                                "Moscow, Lenina street, 3",
+                                                style: TextStyle(
+                                                  color: Color(
+                                                    0xFFD8DFE3,
+                                                  ),
                                                 ),
+                                                overflow: TextOverflow.fade,
+                                              )
+                                            : Text(
+                                                store.locationPlaceName,
+                                                overflow: TextOverflow.fade,
                                               ),
-                                              overflow: TextOverflow.fade,
-                                            )
-                                          : Text(
-                                              store.locationPlaceName,
-                                              overflow: TextOverflow.fade,
-                                            ),
-                                    ),
-                                  ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      _TitleWithField(
-                        "quests.employment.title".tr(),
-                        Container(
-                          height: 50,
-                          padding: EdgeInsets.symmetric(horizontal: 15.0),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFF7F8FA),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(6.0),
+                        _TitleWithField(
+                          "quests.employment.title".tr(),
+                          Container(
+                            height: 50,
+                            padding: EdgeInsets.symmetric(horizontal: 15.0),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF7F8FA),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(6.0),
+                              ),
                             ),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          child: Observer(
-                            builder: (_) => Platform.isIOS
-                                ? dropDownWithModalSheep(
-                                    value: store.employment,
-                                    children: QuestConstants.employmentList,
-                                    onPressed: (value) {
-                                      store.changedEmployment(value);
-                                    },
-                                  )
-                                : DropdownButtonHideUnderline(
-                                    child: DropdownButton(
-                                      isExpanded: true,
-                                      value: store.employment,
-                                      onChanged: (String? value) {
-                                        store.changedEmployment(value!);
-                                      },
-                                      items: QuestConstants.employmentList
-                                          .map<DropdownMenuItem<String>>((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: new Text(value),
-                                        );
-                                      }).toList(),
-                                      icon: Icon(
-                                        Icons.arrow_drop_down,
-                                        size: 30,
-                                        color: Colors.blueAccent,
-                                      ),
-                                      hint: Text(
-                                        'mining.choose'.tr(),
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      ),
-                      _TitleWithField(
-                        "quests.distantWork.title".tr(),
-                        Container(
-                          height: 50,
-                          padding: EdgeInsets.symmetric(horizontal: 15.0),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFF7F8FA),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(6.0),
-                            ),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          child: Observer(
-                            builder: (_) => Platform.isIOS
-                                ? dropDownWithModalSheep(
-                                    value: store.workplace,
-                                    children: QuestConstants.distantWorkList,
-                                    onPressed: (value) {
-                                      store.changedDistantWork(value);
-                                    },
-                                  )
-                                : DropdownButtonHideUnderline(
-                                    child: DropdownButton(
-                                      isExpanded: true,
-                                      value: store.workplace,
-                                      onChanged: (String? value) {
-                                        store.changedDistantWork(value!);
-                                      },
-                                      items: QuestConstants.distantWorkList
-                                          .map<DropdownMenuItem<String>>((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: new Text(value),
-                                        );
-                                      }).toList(),
-                                      icon: Icon(
-                                        Icons.arrow_drop_down,
-                                        size: 30,
-                                        color: Colors.blueAccent,
-                                      ),
-                                      hint: Text(
-                                        'mining.choose'.tr(),
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      ),
-                      _TitleWithField(
-                        "quests.payPeriod.title".tr(),
-                        Container(
-                          height: 50,
-                          padding: EdgeInsets.symmetric(horizontal: 15.0),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFF7F8FA),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(6.0),
-                            ),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          child: IgnorePointer(
-                            ignoring: isEdit,
+                            alignment: Alignment.centerLeft,
                             child: Observer(
                               builder: (_) => Platform.isIOS
                                   ? dropDownWithModalSheep(
-                                      value: store.payPeriod,
-                                      children: QuestConstants.payPeriodList,
+                                      value: store.employment,
+                                      children: QuestConstants.employmentList,
                                       onPressed: (value) {
-                                        store.changedPayPeriod(value.tr());
+                                        store.changedEmployment(value);
                                       },
                                     )
                                   : DropdownButtonHideUnderline(
                                       child: DropdownButton(
                                         isExpanded: true,
-                                        value: store.payPeriod,
+                                        value: store.employment,
                                         onChanged: (String? value) {
-                                          store.changedPayPeriod(value!.tr());
+                                          store.changedEmployment(value!);
                                         },
-                                        items: QuestConstants.payPeriodList
+                                        items: QuestConstants.employmentList
                                             .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value.tr(),
-                                              child: Text(value.tr()),
-                                            );
-                                          },
-                                        ).toList(),
+                                                (String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: new Text(value),
+                                          );
+                                        }).toList(),
                                         icon: Icon(
                                           Icons.arrow_drop_down,
                                           size: 30,
@@ -422,177 +371,260 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
                             ),
                           ),
                         ),
-                      ),
-                      _TitleWithField(
-                        "quests.title".tr(),
-                        Container(
-                          key: _warningFields[_titleIndex].key,
-                          height: 60,
-                          alignment: Alignment.centerLeft,
-                          child: TextFormField(
-                            onChanged: store.setQuestTitle,
-                            validator: (value) => Validators.emptyValidator(value, customMessage: 'errors.fieldRequired'.tr(namedArgs: {'name': 'Title'})),
-                            initialValue: store.questTitle,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            maxLines: 1,
-                            enabled: !isEdit,
-                            decoration: InputDecoration(
-                              hintText: 'modals.title'.tr(),
+                        _TitleWithField(
+                          "quests.distantWork.title".tr(),
+                          Container(
+                            height: 50,
+                            padding: EdgeInsets.symmetric(horizontal: 15.0),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF7F8FA),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(6.0),
+                              ),
                             ),
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                      _TitleWithField(
-                        "quests.aboutQuest".tr(),
-                        TextFormField(
-                          key: _warningFields[_descriptionIndex].key,
-                          initialValue: store.description,
-                          onChanged: store.setAboutQuest,
-                          validator: (value) => Validators.emptyValidator(value, customMessage: 'errors.fieldRequired'.tr(namedArgs: {'name': 'Description'})),
-                          keyboardType: TextInputType.multiline,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          enabled: !isEdit,
-                          maxLines: 12,
-                          decoration: InputDecoration(
-                            hintText: 'quests.questText'.tr(),
-                          ),
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      if (!this.isEdit)
-                        Observer(
-                          builder: (_) => Padding(
-                            padding: const EdgeInsets.only(
-                              top: 10.0,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CheckboxListTile(
-                                  key: _warningFields[_confirmUnderstandAboutEdit].key,
-                                  contentPadding: const EdgeInsets.all(0),
-                                  value: store.confirmUnderstandAboutEdit,
-                                  onChanged: (value) =>
-                                      store.setConfirmUnderstandAboutEdit(value!),
-                                  controlAffinity: ListTileControlAffinity.leading,
-                                  title: Text(
-                                    'I understand that editing the title and the description of this quest will be '
-                                    'impossible after its creation',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                                if (!store.confirmUnderstandAboutEdit)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4.0, left: 10.0),
-                                    child: Text(
-                                      'The field is required',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.red,
+                            alignment: Alignment.centerLeft,
+                            child: Observer(
+                              builder: (_) => Platform.isIOS
+                                  ? dropDownWithModalSheep(
+                                      value: store.workplace,
+                                      children: QuestConstants.distantWorkList,
+                                      onPressed: (value) {
+                                        store.changedDistantWork(value);
+                                      },
+                                    )
+                                  : DropdownButtonHideUnderline(
+                                      child: DropdownButton(
+                                        isExpanded: true,
+                                        value: store.workplace,
+                                        onChanged: (String? value) {
+                                          store.changedDistantWork(value!);
+                                        },
+                                        items: QuestConstants.distantWorkList
+                                            .map<DropdownMenuItem<String>>(
+                                                (String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: new Text(value),
+                                          );
+                                        }).toList(),
+                                        icon: Icon(
+                                          Icons.arrow_drop_down,
+                                          size: 30,
+                                          color: Colors.blueAccent,
+                                        ),
+                                        hint: Text(
+                                          'mining.choose'.tr(),
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                              ],
                             ),
                           ),
                         ),
-
-                      ///Upload media
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 20.0,
+                        _TitleWithField(
+                          "quests.payPeriod.title".tr(),
+                          Container(
+                            height: 50,
+                            padding: EdgeInsets.symmetric(horizontal: 15.0),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF7F8FA),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(6.0),
+                              ),
+                            ),
+                            alignment: Alignment.centerLeft,
+                            child: IgnorePointer(
+                              ignoring: isEdit,
+                              child: Observer(
+                                builder: (_) => Platform.isIOS
+                                    ? dropDownWithModalSheep(
+                                        value: store.payPeriod,
+                                        children: QuestConstants.payPeriodList,
+                                        onPressed: (value) {
+                                          store.changedPayPeriod(value.tr());
+                                        },
+                                      )
+                                    : DropdownButtonHideUnderline(
+                                        child: DropdownButton(
+                                          isExpanded: true,
+                                          value: store.payPeriod,
+                                          onChanged: (String? value) {
+                                            store.changedPayPeriod(value!.tr());
+                                          },
+                                          items: QuestConstants.payPeriodList
+                                              .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value.tr(),
+                                                child: Text(value.tr()),
+                                              );
+                                            },
+                                          ).toList(),
+                                          icon: Icon(
+                                            Icons.arrow_drop_down,
+                                            size: 30,
+                                            color: Colors.blueAccent,
+                                          ),
+                                          hint: Text(
+                                            'mining.choose'.tr(),
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ),
                         ),
-                        child: MediaUploadWithProgress(
-                          store: store,
-                          type: MediaType.images,
+                        _TitleWithField(
+                          "quests.title".tr(),
+                          Container(
+                            key: _warningFields[_titleIndex].key,
+                            height: 60,
+                            alignment: Alignment.centerLeft,
+                            child: TextFormField(
+                              onChanged: store.setQuestTitle,
+                              validator: (value) => Validators.emptyValidator(value,
+                                  customMessage: 'errors.fieldRequired'
+                                      .tr(namedArgs: {'name': 'Title'})),
+                              initialValue: store.questTitle,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              maxLines: 1,
+                              enabled: !isEdit,
+                              decoration: InputDecoration(
+                                hintText: 'modals.title'.tr(),
+                              ),
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      _TitleWithField(
-                        "quests.price".tr(),
-                        Container(
-                          key: _warningFields[_priceIndex].key,
-                          height: 60,
-                          child: TextFormField(
-                            onChanged: store.setPrice,
-                            initialValue: store.price.toString(),
-                            validator: (value) => Validators.zeroValidator(value, customMessage: 'errors.fieldRequired'.tr(namedArgs: {'name': 'Price'})),
+                        _TitleWithField(
+                          "quests.aboutQuest".tr(),
+                          TextFormField(
+                            key: _warningFields[_descriptionIndex].key,
+                            initialValue: store.description,
+                            onChanged: store.setAboutQuest,
+                            validator: (value) => Validators.emptyValidator(value,
+                                customMessage: 'errors.fieldRequired'
+                                    .tr(namedArgs: {'name': 'Description'})),
+                            keyboardType: TextInputType.multiline,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'^\d+\.?\d{0,18}')),
-                            ],
-                            keyboardType:
-                                const TextInputType.numberWithOptions(decimal: true),
+                            enabled: !isEdit,
+                            maxLines: 12,
                             decoration: InputDecoration(
-                              hintText: 'quests.price'.tr(),
+                              hintText: 'quests.questText'.tr(),
                             ),
                             style: TextStyle(
                               fontSize: 16,
                             ),
                           ),
                         ),
-                      ),
-                      Container(
-                        height: 50.0,
-                        margin: const EdgeInsets.symmetric(vertical: 30),
-                        child: ObserverListener<CreateQuestStore>(
-                          onFailure: () {
-                            Navigator.of(context, rootNavigator: true).pop();
-                            return false;
-                          },
-                          onSuccess: () async {
-                            ///review
-                            final questStore = context.read<MyQuestStore>();
-                            await questStore.getQuests(
-                              QuestsType.Created,
-                              UserRole.Employer,
-                              true,
-                            );
-                            await questStore.getQuests(
-                              QuestsType.All,
-                              UserRole.Employer,
-                              true,
-                            );
-                            if (isEdit) {
-                              final updatedQuest = await store.getQuest(
-                                widget.questInfo!.id,
-                              );
-                              Navigator.pushReplacementNamed(
-                                context,
-                                QuestDetails.routeName,
-                                arguments: QuestArguments(
-                                  questInfo: updatedQuest,
-                                  id: null,
-                                ),
-                              );
-                            }
-                            Navigator.pop(context, true);
-                            await AlertDialogUtils.showSuccessDialog(context);
-                          },
+                        if (!this.isEdit)
+                          Observer(
+                            builder: (_) => Padding(
+                              padding: const EdgeInsets.only(
+                                top: 10.0,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CheckboxListTile(
+                                    key: _warningFields[_confirmUnderstandAboutEdit].key,
+                                    contentPadding: const EdgeInsets.all(0),
+                                    value: store.confirmUnderstandAboutEdit,
+                                    onChanged: (value) =>
+                                        store.setConfirmUnderstandAboutEdit(value!),
+                                    controlAffinity: ListTileControlAffinity.leading,
+                                    title: Text(
+                                      'I understand that editing the title and the description of this quest will be '
+                                      'impossible after its creation',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  if (!store.confirmUnderstandAboutEdit)
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(top: 4.0, left: 10.0),
+                                      child: Text(
+                                        'The field is required',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                        ///Upload media
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 20.0,
+                          ),
+                          child: MediaUploadWithProgress(
+                            store: store,
+                            type: MediaType.images,
+                          ),
+                        ),
+                        _TitleWithField(
+                          "quests.price".tr(),
+                          Container(
+                            key: _warningFields[_priceIndex].key,
+                            height: 60,
+                            child: TextFormField(
+                              onChanged: store.setPrice,
+                              initialValue: store.price.toString(),
+                              validator: (value) => Validators.zeroValidator(value,
+                                  customMessage: 'errors.fieldRequired'
+                                      .tr(namedArgs: {'name': 'Price'})),
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'^\d+\.?\d{0,18}')),
+                              ],
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(decimal: true),
+                              decoration: InputDecoration(
+                                hintText: 'quests.price'.tr(),
+                              ),
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 50.0,
+                          margin: const EdgeInsets.symmetric(vertical: 30),
                           child: Observer(
                             builder: (context) => LoginButton(
                               withColumn: true,
                               enabled: store.isLoading,
-                              onTap: store.isLoading
-                                  ? null
-                                  : () => _onPressedOnCreateOrEditQuest(store),
+                              onTap:
+                                  store.isLoading ? null : _onPressedOnCreateOrEditQuest,
                               title: isEdit
                                   ? "quests.editQuest".tr()
                                   : 'quests.createAQuest'.tr(),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -607,115 +639,74 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
     });
   }
 
-  _onPressedOnCreateOrEditQuest(CreateQuestStore store) async {
-    try {
-      store.skillFilters = _controller.getSkillAndSpecialization();
-      if (store.skillFilters.isEmpty) {
-        _setWarning(_warningFields[_specializationIndex]);
-        return;
-      } else if (store.locationPlaceName.isEmpty) {
-        _setWarning(_warningFields[_addressIndex]);
-        return;
-      } else if (store.questTitle.isEmpty) {
-        _formKey.currentState?.validate();
-        _setWarning(_warningFields[_titleIndex]);
-        return;
-      } else if (store.description.isEmpty) {
-        _formKey.currentState?.validate();
-        _setWarning(_warningFields[_descriptionIndex]);
-        return;
-      } else if (store.price.isEmpty) {
-        _formKey.currentState?.validate();
-        _setWarning(_warningFields[_priceIndex]);
-        return;
-      } else if (!store.confirmUnderstandAboutEdit) {
-        Scrollable.ensureVisible(
-            _warningFields[_confirmUnderstandAboutEdit].key.currentContext!);
-        return;
-      }
+  _onPressedOnCreateOrEditQuest() async {
+    store.skillFilters = _controller.getSkillAndSpecialization();
+    if (store.skillFilters.isEmpty) {
+      _setWarning(_warningFields[_specializationIndex]);
+      return;
+    } else if (store.locationPlaceName.isEmpty) {
+      _setWarning(_warningFields[_addressIndex]);
+      return;
+    } else if (store.questTitle.isEmpty) {
+      _formKey.currentState?.validate();
+      _setWarning(_warningFields[_titleIndex]);
+      return;
+    } else if (store.description.isEmpty) {
+      _formKey.currentState?.validate();
+      _setWarning(_warningFields[_descriptionIndex]);
+      return;
+    } else if (store.price.isEmpty) {
+      _formKey.currentState?.validate();
+      _setWarning(_warningFields[_priceIndex]);
+      return;
+    } else if (!store.confirmUnderstandAboutEdit) {
+      Scrollable.ensureVisible(
+          _warningFields[_confirmUnderstandAboutEdit].key.currentContext!);
+      return;
+    }
+    AlertDialogUtils.showLoadingDialog(context);
+    store.checkAllowance(addressQuest: widget.questInfo?.contractAddress);
+  }
 
-      final _gasApprove = await store.getGasApprove(
-        addressQuest: isEdit ? widget.questInfo!.contractAddress! : null,
-      );
-      if (_gasApprove != null) {
-        await confirmTransaction(
+  _approve() {
+    confirmTransaction(
+      context,
+      fee: store.gas!,
+      transaction: '${"ui.txInfo".tr()} Approve',
+      address: Web3Utils.getAddressWorknetWQFactory(),
+      amount: ((double.tryParse(store.price) ?? 0.0) * Constants.commissionForQuest)
+          .toString(),
+      onPressConfirm: () async {
+        Navigator.pop(context);
+        AlertDialogUtils.showLoadingDialog(
           context,
-          fee: _gasApprove,
-          transaction: '${"ui.txInfo".tr()} Approve',
-          address: Web3Utils.getAddressWorknetWQFactory(),
-          amount: ((double.tryParse(store.price) ?? 0.0) * Constants.commissionForQuest)
-              .toString(),
-          onPressConfirm: () async {
-            try {
-              Navigator.pop(context);
-              final _price = Decimal.parse(store.price) * Decimal.fromInt(10).pow(18);
-              final _priceForApprove =
-                  _price * Decimal.parse(Constants.commissionForQuest.toString());
-              AlertDialogUtils.showLoadingDialog(
-                context,
-              );
-              await AccountRepository().getClientWorkNet().approveCoin(
-                price: _priceForApprove.toBigInt(),
-                address: isEdit
-                    ? EthereumAddress.fromHex(widget.questInfo!.contractAddress!)
-                    : null,
-              );
-              Navigator.pop(context);
-              _onPressedOnCreateOrEditQuest(store);
-            } on FormatException catch (e, trace) {
-              print('FormatException Approve: $e\n$trace');
-              Navigator.pop(context);
-              AlertDialogUtils.showInfoAlertDialog(context,
-                  title: 'Error', content: e.message);
-            } catch (e, trace) {
-              print('Exception Approve: $e\n$trace');
-              Navigator.pop(context);
-              AlertDialogUtils.showInfoAlertDialog(context,
-                  title: 'Error', content: e.toString());
-            }
-          },
-          onPressCancel: () {
-            store.onError("Cancel");
-            Navigator.pop(context);
-          },
         );
-        return;
-      }
-      final _gasEditOrCreate = await store.getGasEditOrCreateQuest(isEdit: isEdit);
-      print('store.canSubmitEditQuest: ${store.canSubmitEditQuest}');
-      if (isEdit) {
-        _onEditQuest(store, _gasEditOrCreate);
-      } else if (store.canCreateQuest) {
-        _onCreateQuest(store, _gasEditOrCreate);
-      }
-    } catch (e, trace) {
-      print('_onPressedOnCreateOrEditQuest | $e\n$trace');
-      store.onError(e.toString());
-
-    }
+        store.approve(contractAddress: widget.questInfo?.contractAddress);
+      },
+      onPressCancel: () {
+        Navigator.pop(context);
+      },
+    );
   }
 
-  _onCreateQuest(CreateQuestStore store, String fee) async {
+  _onCreateQuest() async {
     if (_formKey.currentState?.validate() ?? false) {
-      await _checkPossibilityTx(store.price, fee);
-
-      _showConfirmTxAlert(store, fee);
+      _showConfirmTxAlert();
     }
   }
 
-  _onEditQuest(CreateQuestStore store, String fee) async {
+  _onEditQuest() async {
     if (store.canSubmitEditQuest) {
       if (_formKey.currentState?.validate() ?? false) {
-        await _checkPossibilityTx(store.price, fee);
-        _showConfirmTxAlert(store, fee, isEdit: true);
+        _showConfirmTxAlert(isEdit: true);
       }
     }
   }
 
-  _showConfirmTxAlert(CreateQuestStore store, String fee, {bool isEdit = false}) async {
-    await confirmTransaction(
+  _showConfirmTxAlert({bool isEdit = false}) {
+    confirmTransaction(
       context,
-      fee: fee,
+      fee: store.gas!,
       transaction: "ui.txInfo".tr(),
       address: Web3Utils.getAddressWorknetWQFactory(),
       amount: store.price,
@@ -732,43 +723,11 @@ class _CreateQuestPageState extends State<CreateQuestPage> {
         AlertDialogUtils.showLoadingDialog(
           context,
         );
-        Timer.periodic(Duration(seconds: 1), (timer) {
-          if (!store.isLoading) {
-            timer.cancel();
-            Navigator.pop(context);
-          }
-        });
       },
       onPressCancel: () {
-        store.onError("Cancel");
         Navigator.pop(context);
       },
     );
-  }
-
-  _checkPossibilityTx(String price, String gas) async {
-    try {
-      await Web3Utils.checkPossibilityTx(
-        typeCoin: TokenSymbols.WUSD,
-        fee: Decimal.parse(gas),
-        amount: double.parse(price),
-        isMain: true,
-      );
-    } on FormatException catch (e) {
-      AlertDialogUtils.showInfoAlertDialog(
-        context,
-        title: 'modals.error'.tr(),
-        content: e.message,
-      );
-      throw FormatException(e.message);
-    } catch (e) {
-      AlertDialogUtils.showInfoAlertDialog(
-        context,
-        title: 'modals.error'.tr(),
-        content: e.toString(),
-      );
-      throw Exception(e.toString());
-    }
   }
 
   dropDownWithModalSheep({
