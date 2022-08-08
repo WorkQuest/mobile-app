@@ -7,6 +7,7 @@ import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.d
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/review_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/widgets/profile_widgets.dart';
+import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -17,8 +18,6 @@ import '../../../../report_page/report_page.dart';
 extension CustomAppBar on UserProfileState {
   Widget sliverAppBar(ProfileMeResponse info,
       StreamController<AppBarParams> streamController, Function() updateState) {
-    final String defaultImage =
-        'https://workquest-cdn.fra1.digitaloceanspaces.com/sUYNZfZJvHr8fyVcrRroVo8PpzA5RbTghdnP0yEcJuIhTW26A5vlCYG8mZXs';
     final mark = info.ratingStatistic!.averageMark;
     final markDev = mark.toInt();
     final markMod = (mark % (markDev == 0 ? 1 : markDev) * 10).round() / 10;
@@ -43,8 +42,7 @@ extension CustomAppBar on UserProfileState {
                 color: Colors.white,
               ),
               onPressed: () async {
-                final result =
-                    await Navigator.of(context, rootNavigator: true).pushNamed(
+                final result = await Navigator.of(context, rootNavigator: true).pushNamed(
                   ChangeProfilePage.routeName,
                 );
                 if (result != null && result as bool) {
@@ -83,12 +81,16 @@ extension CustomAppBar on UserProfileState {
           background: Stack(
             fit: StackFit.expand,
             children: [
-              Positioned.fill(child: ColoredBox(color: Colors.black,)),
-              Image.network(
-                info.avatar != null
-                    ? info.avatar!.url ?? defaultImage
-                    : defaultImage,
+              Positioned.fill(
+                  child: ColoredBox(
+                color: Colors.black,
+              )),
+              UserAvatar(
+                url: info.avatar?.url,
                 fit: BoxFit.fitHeight,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                loadingFitSize: false,
               ),
               Positioned(
                 bottom: info.ratingStatistic!.status == 1 ? 67.0 : 85.0,
@@ -161,22 +163,17 @@ extension ReviewsTab on UserProfileState {
                                 : 3);
                         index++)
                       ReviewsWidget(
-                        avatar: portfolioStore!
-                                .reviewsList[index].fromUser.avatar?.url ??
+                        avatar: portfolioStore!.reviewsList[index].fromUser.avatar?.url ??
                             Constants.defaultImageNetwork,
-                        name: portfolioStore!
-                                .reviewsList[index].fromUser.firstName +
+                        name: portfolioStore!.reviewsList[index].fromUser.firstName +
                             " " +
-                            portfolioStore!
-                                .reviewsList[index].fromUser.lastName,
+                            portfolioStore!.reviewsList[index].fromUser.lastName,
                         mark: portfolioStore!.reviewsList[index].mark,
-                        userRole:
-                            portfolioStore!.reviewsList[index].fromUser.role ==
-                                    UserRole.Employer
-                                ? "role.employer"
-                                : "role.worker",
-                        questTitle:
-                            portfolioStore!.reviewsList[index].quest.title,
+                        userRole: portfolioStore!.reviewsList[index].fromUser.role ==
+                                UserRole.Employer
+                            ? "role.employer"
+                            : "role.worker",
+                        questTitle: portfolioStore!.reviewsList[index].quest.title,
                         message: portfolioStore!.reviewsList[index].message,
                         id: portfolioStore!.reviewsList[index].fromUserId,
                         myId: viewOtherUser?.userData == null

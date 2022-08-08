@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
-import 'package:app/constants.dart';
 import 'package:app/ui/pages/main_page/profile_details_page/user_profile_page/pages/user_profile_page.dart';
 import 'package:app/ui/pages/main_page/quest_page/filter_quests_page/store/filter_quests_store.dart';
 import 'package:app/ui/pages/main_page/quest_page/quest_list/store/quests_store.dart';
@@ -9,6 +5,7 @@ import 'package:app/ui/pages/profile_me_store/profile_me_store.dart';
 import 'package:app/ui/pages/sign_in_page/sign_in_page.dart';
 import 'package:app/ui/widgets/alert_dialog.dart';
 import 'package:app/ui/widgets/gradient_icon.dart';
+import 'package:app/ui/widgets/user_avatar.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/utils/alert_dialog.dart';
 import 'package:app/web3/repository/account_repository.dart';
@@ -226,16 +223,12 @@ class MyProfileImage extends StatelessWidget {
             children: [
               Positioned.fill(child: ColoredBox(color: Colors.black)),
               Positioned.fill(
-                child: FadeInImage(
+                child: UserAvatar(
+                  url: userStore.userData!.avatar?.url,
                   width: MediaQuery.of(context).size.width,
                   height: 300,
-                  placeholder: MemoryImage(
-                    Uint8List.fromList(base64Decode(Constants.base64BlackHolder)),
-                  ),
-                  image: NetworkImage(
-                    userStore.userData!.avatar?.url ?? Constants.defaultImageNetwork,
-                  ),
                   fit: BoxFit.fitHeight,
+                  loadingFitSize: false,
                 ),
               ),
               Positioned(
