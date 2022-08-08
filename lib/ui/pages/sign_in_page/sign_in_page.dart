@@ -160,17 +160,9 @@ class _SignInPageState extends State<SignInPage> {
                     builder: (context) {
                       return LoginButton(
                         withColumn: true,
-                        onTap: store.canSignIn
-                            ? store.isLoading
-                                ? () {}
-                                : () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      store.signIn(Platform.isIOS ? "iOS" : "Android");
-                                    }
-                                  }
-                            : null,
-                        title: "signIn.login".tr(),
                         enabled: store.isLoading,
+                        onTap: store.canSignIn ? _onPressedLogin : null,
+                        title: "signIn.login".tr(),
                       );
                     },
                   ),
@@ -200,6 +192,12 @@ class _SignInPageState extends State<SignInPage> {
         ),
       ),
     );
+  }
+
+  _onPressedLogin() {
+    if (_formKey.currentState!.validate()) {
+      store.signIn(Platform.isIOS ? "iOS" : "Android");
+    }
   }
 
   _showAlertTotp(BuildContext context, SignInStore signInStore) {
