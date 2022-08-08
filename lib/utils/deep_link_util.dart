@@ -8,10 +8,8 @@ import 'package:app/utils/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:injectable/injectable.dart';
 import 'package:uni_links/uni_links.dart';
 
-@singleton
 class DeepLinkUtil {
   bool _initialURILinkHandled = false;
   StreamSubscription? _streamSubscription;

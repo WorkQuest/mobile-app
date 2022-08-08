@@ -92,14 +92,6 @@ class _RaiseViewsState extends State<RaiseViews> {
           body: CustomScrollView(
             slivers: [
               CupertinoSliverNavigationBar(
-                trailing: widget.questId.isNotEmpty
-                    ? TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text("startPage.skip".tr()),
-                      )
-                    : const SizedBox(),
                 largeTitle: Text("raising-views.raisingViews".tr()),
               ),
               SliverPadding(
@@ -159,7 +151,8 @@ class _RaiseViewsState extends State<RaiseViews> {
                         color: Color(0xFFF6CF00),
                         level: "raising-views.levels.goldPlus.title".tr(),
                         price: store.price[store.periodGroupValue]![0],
-                        description: "raising-views.levels.goldPlus.description".tr(),
+                        description:
+                            "raising-views.levels.goldPlus.description".tr(),
                       ),
                       _divider,
                       LevelCard(
@@ -169,7 +162,8 @@ class _RaiseViewsState extends State<RaiseViews> {
                         color: Color(0xFFF6CF00),
                         level: "raising-views.levels.gold.title".tr(),
                         price: store.price[store.periodGroupValue]![1],
-                        description: "raising-views.levels.gold.description".tr(),
+                        description:
+                            "raising-views.levels.gold.description".tr(),
                       ),
                       _divider,
                       LevelCard(
@@ -179,7 +173,8 @@ class _RaiseViewsState extends State<RaiseViews> {
                         color: Color(0xFFBBC0C7),
                         level: "raising-views.levels.silver.title".tr(),
                         price: store.price[store.periodGroupValue]![2],
-                        description: "raising-views.levels.silver.description".tr(),
+                        description:
+                            "raising-views.levels.silver.description".tr(),
                       ),
                       _divider,
                       LevelCard(
@@ -189,7 +184,8 @@ class _RaiseViewsState extends State<RaiseViews> {
                         color: Color(0xFFB79768),
                         level: "raising-views.levels.bronze.title".tr(),
                         price: store.price[store.periodGroupValue]![3],
-                        description: "raising-views.levels.bronze.description".tr(),
+                        description:
+                            "raising-views.levels.bronze.description".tr(),
                       ),
                     ],
                   ),

@@ -3,7 +3,6 @@ import 'package:app/model/chat_model/chat_model.dart';
 import 'package:app/model/profile_response/portfolio.dart';
 import 'package:app/model/profile_response/profile_me_response.dart';
 import 'package:app/model/quests_models/base_quest_response.dart';
-import 'package:app/splashScreen.dart';
 import 'package:app/ui/pages/main_page/change_profile_page/change_profile_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_page.dart';
 import 'package:app/ui/pages/main_page/chat_page/chat_room_page/chat_room_page.dart';
@@ -129,9 +128,6 @@ class Routes {
             ),
           ),
         );
-
-      case SplashScreen.routeName:
-        return MaterialPageRoute(builder: (context) => SplashScreen());
 
       case StartPage.routeName:
         return MaterialPageRoute(

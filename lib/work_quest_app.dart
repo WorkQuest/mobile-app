@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 import 'package:app/routes.dart';
-import 'package:app/splashScreen.dart';
+import 'package:app/ui/pages/pin_code_page/pin_code_page.dart';
+import 'package:app/ui/pages/start_page/start_page.dart';
 import 'package:app/ui/widgets/CustomBanner.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,8 @@ import 'constants.dart';
 import 'main.dart';
 
 class WorkQuestApp extends StatelessWidget {
+  final bool isToken;
+  WorkQuestApp(this.isToken);
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Network>(
@@ -55,7 +58,7 @@ class WorkQuestApp extends StatelessWidget {
           },
           debugShowCheckedModeBanner: false,
           onGenerateRoute: Routes.generateRoute,
-          initialRoute: SplashScreen.routeName,
+          initialRoute: isToken ? PinCodePage.routeName : StartPage.routeName,
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,

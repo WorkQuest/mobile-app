@@ -39,6 +39,14 @@ class Storage {
     _secureStorage.write(key: "pinCode", value: pinCode);
   }
 
+  static Future<void> writeDeepLinkCheck(String deepLinkCheck) async {
+    _secureStorage.write(key: "deepLinkCheck", value: deepLinkCheck);
+  }
+
+  static Future<String?> readDeepLinkCheck() async {
+    return await _secureStorage.read(key: "deepLinkCheck");
+  }
+
   static Future<String?> readTimeTimer() async {
     return await _secureStorage.read(key: "timeTimer");
   }

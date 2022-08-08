@@ -86,7 +86,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       store.quest.value?.status == QuestConstants.questDispute &&
       store.quest.value!.openDispute != null;
 
-  void getResponded(){
+  void getResponded() {
     if (store.quest.value!.userId == profile!.userData!.id) {
       store.getRespondedList(
         store.quest.value!.id,
@@ -299,8 +299,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
       itemType: QuestsType.All,
       questStatus: store.quest.value?.status ?? 10,
       rounded: false,
-      responded: store.quest.value!.responded,
-      invited: store.quest.value!.invited,
+      responded: store.quest.value?.responded,
+      invited: store.quest.value?.invited,
       role: UserRole.Employer,
     );
   }
@@ -383,7 +383,7 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            store.quest.value!.status == QuestConstants.questDone
+            store.quest.value?.status == QuestConstants.questDone
                 ? "quests.finishedBy".tr()
                 : "quests.inProgressBy".tr(),
             style: TextStyle(
@@ -411,7 +411,8 @@ class _QuestEmployerState extends QuestDetailsState<QuestEmployer> {
                   child: UserAvatar(
                     width: 30,
                     height: 30,
-                    url: store.quest.value!.assignedWorker?.avatar?.url,
+                    url: store.quest.value?.assignedWorker?.avatar?.url ??
+                        Constants.defaultImageNetwork,
                   ),
                 ),
                 const SizedBox(width: 10),

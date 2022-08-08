@@ -13,6 +13,7 @@ import 'package:app/ui/widgets/dropdown_adaptive_widget.dart';
 import 'package:app/ui/widgets/login_button.dart';
 import 'package:app/ui/widgets/web_view_page/web_view_page.dart';
 import 'package:app/utils/alert_dialog.dart';
+import 'package:app/utils/deep_link_util.dart';
 import 'package:app/utils/storage.dart';
 import 'package:app/web3/repository/account_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -53,6 +54,11 @@ class _SignInPageState extends State<SignInPage> {
   void initState() {
     store = context.read<SignInStore>();
     store.setPlatform(Platform.isIOS ? "iOS" : "Android");
+    Storage.readDeepLinkCheck().then((value) {
+      if (value != "0") return;
+      DeepLinkUtil().initDeepLink(context: context);
+      Storage.writeDeepLinkCheck("1");
+    });
     super.initState();
   }
 
@@ -165,7 +171,8 @@ class _SignInPageState extends State<SignInPage> {
                                 ? () {}
                                 : () async {
                                     if (_formKey.currentState!.validate()) {
-                                      store.signIn(Platform.isIOS ? "iOS" : "Android");
+                                      store.signIn(
+                                          Platform.isIOS ? "iOS" : "Android");
                                     }
                                   }
                             : null,

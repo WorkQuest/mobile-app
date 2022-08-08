@@ -65,18 +65,16 @@ void main() async {
       // name: "WorkQuest",
       options: DefaultFirebaseOptions.currentPlatform,
     ).then(
-          (value) => _initialisePushNotification(),
+      (value) => _initialisePushNotification(),
     );
-  }
-  else {
+  } else {
     await Firebase.initializeApp(
       // name: "WorkQuest_iOS",
       options: DefaultFirebaseOptions.currentPlatform,
     ).then(
-          (value) => _initialisePushNotification(),
+      (value) => _initialisePushNotification(),
     );
   }
-
 
   await EasyLocalization.ensureInitialized();
   try {
@@ -99,9 +97,12 @@ void main() async {
     AccountRepository().clearData();
   }
 
+  final deepLinksCheck = await Storage.readDeepLinkCheck();
+  if (deepLinksCheck != "0") Storage.writeDeepLinkCheck("0");
+
   runApp(
     EasyLocalization(
-      child: WorkQuestApp(),
+      child: WorkQuestApp(await Storage.toLoginCheck()),
       supportedLocales: [
         Locale('en', 'US'),
         // Locale('ru', 'RU'),
